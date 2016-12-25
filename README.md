@@ -1,5 +1,6 @@
 # Cardgame2017 - тест мультиплеера  
 
+1. Зарегистрироваться на сайте и скинуть мне название аккаунта     
 1. Установить GitShell https://git-scm.com/downloads  
 2. Клонировать репозиторий в GitShell: git clone https://github.com/unshame/Cardgame2017.git  
 3. Установить node.js https://nodejs.org/en/  
