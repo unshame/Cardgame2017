@@ -1,5 +1,5 @@
 //Assets
 function preload () {
-    game.load.image('earth', 'assets/desert.png');
-    game.load.image('cardback', 'assets/cardbackSmall.png');
+    game.load.image('earth', 'assets/table.png');
+    game.load.image('cardback', 'assets/Cards/cardBack_red4.png');
 }

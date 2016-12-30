@@ -52,4 +52,16 @@ var EurecaClientSetup = function() {
 			charactersList[id].update();
 		}
 	}
+
+	Client.exports.recieveCards = function(cards){
+		console.log('Cards recieved')
+		for(var ci in cards){
+			var card = cards[ci];
+			console.log(card)
+		}
+	}
+	Client.exports.recieveAction = function(pid, action){
+		
+		console.log(pid, action)
+	}
 }
