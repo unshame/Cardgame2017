@@ -2,11 +2,15 @@
 var express = require('express')
   , app = express(app)
   , server = require('http').createServer(app);
+var Game = require('./serverjs/gamelogic').Game;
+var Bot = require('./serverjs/bots').Bot;
+var Player = require('./serverjs/players').Player;
+var localize = require('./commonjs/loc')
 
 // serve static files from the current directory
 app.use(express.static(__dirname));
-// app.use(express.static("./js/phaser.js"));
-// app.use(express.static("./js/tanks.js"));
+// app.use(express.static('./js/phaser.js'));
+// app.use(express.static('./js/tanks.js'));
 
 //we'll keep clients data here
 var clients = {};
@@ -19,7 +23,9 @@ var Server = new Eureca.Server({allow:[
 	'setId',
 	'spawnOpponent',
 	'removePlayer',
-	'updateState'
+	'updateState',
+	'recieveCards',
+	'recieveAction'
 ]
 });
 
@@ -41,6 +47,8 @@ Server.onConnect(function (conn) {
 	//here we call setId (defined in the client side)
 	remote.setId(conn.id)
 
+	players.push(new Player(remote))
+	games.push(new Game(players));
 });
 
 //detect client disconnection
@@ -59,7 +67,7 @@ Server.onDisconnect(function (conn) {
 	}
 });
 
-
+//Tell clients about each other
 Server.exports.handshake = function(id)
 {
 	var enemy=clients[id]
@@ -92,3 +100,48 @@ Server.exports.handleKeys = function (keys,id) {
 }
 
 server.listen(8000, '0.0.0.0');
+
+var players = []
+var games = [];
+for (var i = 0; i < 1; i++) {
+	for (var n = 0; n < 3; n++) {
+		var bot = new Bot();
+		players.push(bot);
+	}
+
+	
+}
+
+
+/*console.log('\nGame started', testGame.id);
+for(var handI in testGame.hands){
+	var hand = testGame.hands[handI];
+	console.log('\nHand ' + handI);
+	for(var ci in hand){
+		var cid = hand[ci];
+		var card = testGame.cards[cid];
+		var value = localize.cardValueToChar(card.value);
+		var suit = card.suit;
+		console.log(ci, card.id, value, suit);
+	}
+}
+
+console.log('\nDeck');
+for(var cardIndex in testGame.deck){
+	var card = testGame.deck[cardIndex];
+	var value = localize.cardValueToChar(card.value);
+	var suit = card.suit;
+	console.log(cardIndex, card.id, value, suit, card.position);
+}
+
+console.log('\nAll cards');
+for(var cid in testGame.cards){
+	if(testGame.cards.hasOwnProperty(cid)){
+		var card = testGame.cards[cid];
+		var value = localize.cardValueToChar(card.value);
+		var suit = card.suit;
+		console.log(cid, value, suit, card.position);
+	}
+}
+
+console.log('\nTrump suit:', testGame.trumpSuit);*/
