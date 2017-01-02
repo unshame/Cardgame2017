@@ -18,4 +18,6 @@
   * Запомнить IP4-адрес  
 7. В браузере открыть IP4-адрес:8000 (лучше в нескольких вкладках для теста)  
 8. Должно быть так:   
-![MultiplayerTest](https://i.imgur.com/V1cAtIg.png "Multiplayer Test")
+![MultiplayerTest](https://i.imgur.com/VcGXHGO.png "Multiplayer Test")
+И если нажать F12:
+![DevConsole](https://i.imgur.com/HyQXwbl.png "F12 Developer Console")
