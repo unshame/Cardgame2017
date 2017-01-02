@@ -19,9 +19,13 @@ Character = function (options) {
     var y = Math.round(Math.random()*screenHeight);
 
     //Sprites
+    this.headSprite = game.add.sprite(x, y, 'cardsModern');
+    this.headSprite.frame = Math.floor(Math.random()*67)
 
-    this.headSprite = game.add.sprite(x, y, 'cardback');
-    this.headSprite.animations.add('move');
+    //this.headSprite = game.add.sprite(x, y, 'cardsClassic');
+    //this.headSprite.frame = Math.floor(Math.random()*52)
+    //this.headSprite.scale.setTo(0.5, 0.5);
+
     this.headSprite.anchor.set(0.5, 0.5);
 
     //Applying player ID
