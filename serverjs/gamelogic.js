@@ -16,7 +16,15 @@ var Game = function(players){
 		this.playersById[player.id] = player;
 
 		//Сообщаем игрокам о соперниках
-		player.meetOpponents(players);
+		player.meetOpponents(players.map(
+			(p) => {
+				var o = {
+					id: p.id,
+					name: p.name
+				}
+				return o;
+			}
+		));
 	}
 
 	this.gameNumber = 0;
@@ -67,9 +75,9 @@ Game.prototype.reset = function(){
 
 	this.playersActing = [];
 	this.validActions = [];
-	this.turnStarted = false;
 	this.turnNumber = 1;
-	this.turnStage = 'INITIALATTACK';
+	this.turnStage = null;
+	this.lastTurnStage = null;
 	this.shouldDeal = false;
 
 	this.attacker = null;
@@ -132,9 +140,8 @@ Game.prototype.make = function(){
 
 	//Запоминаем козырь
 	var lastcid = this.deck[this.deck.length - 1];
-	this.lastCard = this.cards[lastcid];
-	this.lastCard.position = 'BOTTOM';
-	this.trumpSuit = this.lastCard.suit;
+	this.cards[lastcid].position = 'BOTTOM';
+	this.trumpSuit = this.cards[lastcid].suit;
 
 	//Сообщаем игрокам о составе колоды
 	this.deckNotify();
@@ -334,7 +341,7 @@ Game.prototype.discardAndNotify = function(){
 			utils.log('First discard, field expanded to', this.fullField);
 		}
 
-		this.shouldDeal = true;
+		this.turnStage = 'ENDDEAL';
 		this.waitForResponse(5, this.players);
 		for (var pi in this.players) {
 			var player = this.players[pi];
@@ -614,6 +621,8 @@ Game.prototype.findPlayerToGoNext = function(){
 	return true;
 }
 
+//Устанавливает текущую фазу хода и запоминает предыдущую
+//INITIALATTACK -> DEFENSE -> SUPPORT -> DEFENSE -> ATTACK -> DEFENSE -> ... -> FOLLOWUP -> DEFENSE -> [ENDDEAL] -> ENDED
 Game.prototype.setTurnStage = function(stage){
 	this.lastTurnStage = this.turnStage;
 	this.turnStage = stage;
@@ -781,9 +790,8 @@ Game.prototype.letDefend = function(pid){
 
 //Завершает ход и убирает битые карты в сброс
 Game.prototype.endTurn = function(){
-	this.turnStarted = false;
 	this.fieldUsedSpots = 0;
-	this.turnStage = 'INITIALATTACK';
+	this.turnStage = 'ENDED';
 	this.lastTurnStage = null;
 	this.skipCounter = 0;
 
@@ -791,7 +799,6 @@ Game.prototype.endTurn = function(){
 
 	utils.log('Turn Ended')
 }
-
 
 //Выбирает следующую стадию игры
 Game.prototype.continueTurn = function(){
@@ -803,14 +810,14 @@ Game.prototype.continueTurn = function(){
 	}
 
 	//Раздаем карты после окончания хода
-	if(this.shouldDeal){
-		this.shouldDeal = false;
+	if(this.turnStage == 'ENDDEAL'){
+		this.turnStage = 'ENDED';
 		this.dealTillFullHand();
 		return;
 	}
 
 	//Начинаем ход
-	if(!this.turnStarted){	
+	if(!this.turnStage || this.turnStage == 'ENDED'){	
 		
 		if(!this.findPlayerToGoNext()){
 			utils.log('Game ended', this.id, '\n\n');
@@ -827,8 +834,8 @@ Game.prototype.continueTurn = function(){
 			utils.log(this.playersById[pid].name, this.hands[pid].length);
 		}
 		this.turnNumber++;	
-		this.turnStarted = true;	
-		this.letAttack(this.attacker);
+		this.setTurnStage('INITIALATTACK');	
+		this.continueTurn();
 		return;
 	}	
 

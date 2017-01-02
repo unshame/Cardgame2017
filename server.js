@@ -2,6 +2,7 @@
 var express = require('express')
   , app = express(app)
   , server = require('http').createServer(app);
+var path = require('path');
 var Game = require('./serverjs/gamelogic').Game;
 var Bot = require('./serverjs/bots').Bot;
 var Player = require('./serverjs/players').Player;
@@ -14,54 +15,55 @@ for (var n = 0; n < 5; n++) {
 	players.push(bot);
 }
 
-// serve static files from the current directory
-app.use(express.static(__dirname));
-// app.use(express.static('./js/phaser.js'));
-// app.use(express.static('./js/tanks.js'));
+// Открываем доступ к 
+app.use(express.static('public'))
 
 //we'll keep clients data here
 var clients = {};
 
-//get Server class
+//Загружаем серверную библиотеку
 var Eureca = require('eureca.io');
 
-//create an instance of Server
+//Создаем сервер и добавляем разрешенные клиентские функции
 var Server = new Eureca.Server({allow:[
 	'setId',
 	'spawnOpponent',
 	'removePlayer',
 	'updateState',
+	'meetOpponents',
+	'recieveDeck',
 	'recieveCards',
-	'recieveAction'
+	'recieveMinTrumpCards',
+	'recieveValidActions',
+	'recieveAction',
+	'handleLateness'
 ]
 });
 
-//attach eureca.io to our http server
+//Подключаем eureca к нашему http серверу
 Server.attach(server);
 
-//eureca.io provides events to detect clients connect/disconnect
-
-//detect client connection
+//Клиент подключился
 Server.onConnect(function (conn) {
     console.log('New Client id=%s ', conn.id, conn.remoteAddress);
 
-	//the getClient method provide a proxy allowing us to call remote client functions
+	//getClient позволяет нам получить доступ к функциям на стороне клиента
     var remote = Server.getClient(conn.id);
 
-	//register the client
+	//Запоминаем информацию о клиенте
 	clients[conn.id] = {id:conn.id, remote:remote};
 
-	//here we call setId (defined in the client side)
+	//Сообщаем клиенту его айди
 	remote.setId(conn.id)
 
-	//Запускаем игру с тремя ботами и одним игроком
+	//Запускаем игру с ботами и игроком
 	if(!games.length){
-		players.push(new Player(remote))
+		players.push(new Player(remote, conn.id))
 		games.push(new Game(players));
 	}
 });
 
-//detect client disconnection
+//Клиент отключился
 Server.onDisconnect(function (conn) {
     console.log('Client disconnected ', conn.id);
 
