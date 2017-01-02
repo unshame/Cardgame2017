@@ -61,7 +61,8 @@ Player.prototype.recieveCards = function(deals){
 		this.cards[deal.cid].position = deal.pid;
 		this.hands[deal.pid].push(deal.cid);
 	}
-	this.remote.recieveCards(deals);
+	if(this.remote)
+		this.remote.recieveCards(deals);
 	//this.logState();
 	setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
 }
@@ -81,27 +82,8 @@ Player.prototype.recieveValidActions = function(actions){
 }
 
 Player.prototype.recieveAction = function(pid, action){
-	this.remote.recieveAction(pid, action);
-	switch(action.type){
-		case 'ATTACK':
-			var ci = this.hands[this.id].indexOf(action.cid);
-			var card = this.cards[action.cid];
-
-			card.position = action.position;
-
-			this.hands[this.id].splice(ci, 1);
-			this.field[action.position].attack = action.cid;
-			
-		case 'DEFENSE':
-			break;
-		case 'SKIP':
-			break;
-		case 'TAKE':
-			break;
-		default:
-			utils.echo(this.id, 'Unknown action')
-			break;
-	}
+	if(this.remote)
+		this.remote.recieveAction(pid, action);
 	setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
 }
 
@@ -111,27 +93,27 @@ Player.prototype.handleLateness = function(){
 
 Player.prototype.sendResponse = function(action){
 	if(!this.game){
-		utils.echo(this.id, 'No game has been assigned');
+		utils.log(this.id, 'No game has been assigned');
 		return
 	}
 	this.game.recieveResponse(this, action ? action : null);
 }
 
 Player.prototype.logState = function(){
-	utils.echo('\n', this.id);
+	utils.log('\n', this.id);
 
-	utils.echo('Deck');
-	this.deck.map( (card) => utils.echo(card) )
-	utils.echo('Hand');
-	this.hands[this.id].map( (cid) => utils.echo(this.cards[cid]) )
+	utils.log('Deck');
+	this.deck.map( (card) => utils.log(card) )
+	utils.log('Hand');
+	this.hands[this.id].map( (cid) => utils.log(this.cards[cid]) )
 
-	utils.echo('\nAll cards');
+	utils.log('\nAll cards');
 	for(var cid in this.cards){
 		if(this.cards.hasOwnProperty(cid)){
 			var card = this.cards[cid];
 			var value = card.value;
 			var suit = card.suit;
-			utils.echo(cid, value, suit, card.position);
+			utils.log(cid, value, suit, card.position);
 		}
 	}
 }

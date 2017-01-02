@@ -1,25 +1,86 @@
 var utils = require('../serverjs/utils')
 
 var Game = function(players){
+
+	//Генерируем айди игры
 	this.id = 'game_' + utils.generateID();
-	this.players = players;	
+
+	//Сохраняем ссылки на игроков локально
+	this.players = players.slice();	
+
+	//Создаем массив игроков по айди
 	this.playersById = {};
 	for(var pi in players){
 		var player = players[pi];
 		player.game = this;
 		this.playersById[player.id] = player;
+
+		//Сообщаем игрокам о соперниках
 		player.meetOpponents(players);
 	}
 
 	this.gameNumber = 0;
+
+	//Запускаем игру
 	this.reset();
 	this.make();
+}
+
+//Ресет игры
+Game.prototype.reset = function(){
+
+	this.gameNumber++;
+
+	this.cardValues = []
+	this.numOfSuits = 4;
+	this.maxCardValue = 14;
+
+	//Карты (объекты)
+	this.cards = [];
+
+	//Перемешанная колода (id карт)
+	this.deck = [];
+
+	//Сброс (id карт)
+	this.discardPile = [];
+
+	//Карты 'в игре' (id карт)
+	this.field = [];
+	this.fieldSpots = {};
+	for (var i = 0; i <= 6; i++) {
+		var id = 'FIELD'+i;
+		var fieldSpot = {
+			attack: null,
+			defense: null,
+			id: id
+		}
+		this.field.push(fieldSpot);
+		this.fieldSpots[id] = fieldSpot;
+	}
+	this.fieldUsedSpots = 0;
+	this.fullField = this.zeroDiscardFieldSize = 5;
+	this.skipCounter = 0;
+
+	//Руки (объекты по id игроков, содержащие id карт)
+	this.hands = {};
+	this.normalHandSize = 6;
+
+	this.playersActing = [];
+	this.validActions = [];
+	this.turnStarted = false;
+	this.turnNumber = 1;
+	this.turnStage = 'INITIALATTACK';
+	this.shouldDeal = false;
+
+	this.attacker = null;
+	this.defender = null;
+	this.ally = null;
 }
 
 //Подготовка к игре
 Game.prototype.make = function(){
 
-	utils.echo('Game started', this.id)
+	utils.log('Game started', this.id)
 
 	this.activePlayers = this.players.map((p) => p.id);
 
@@ -96,56 +157,6 @@ Game.prototype.make = function(){
 	this.deal(deals);
 }
 
-Game.prototype.reset = function(){
-	this.gameNumber++;
-
-	this.cardValues = []
-	this.numOfSuits = 4;
-	this.maxCardValue = 14;
-
-	//Карты (объекты)
-	this.cards = [];
-
-	//Перемешанная колода (id карт)
-	this.deck = [];
-
-	//Сброс (id карт)
-	this.discardPile = [];
-
-	//Карты 'в игре' (id карт)
-	this.field = [];
-	this.fieldSpots = {};
-	for (var i = 0; i <= 6; i++) {
-		var id = 'FIELD'+i;
-		var fieldSpot = {
-			attack: null,
-			defense: null,
-			id: id
-		}
-		this.field.push(fieldSpot);
-		this.fieldSpots[id] = fieldSpot;
-	}
-	this.fieldUsedSpots = 0;
-	this.fullField = 5;
-	this.skipCounter = 0;
-
-	//Руки (объекты по id игроков, содержащие id карт)
-	this.hands = {};
-	this.normalHandSize = 6;
-
-	this.playersActing = [];
-	this.validActions = [];
-	this.turnStarted = false;
-	this.turnNumber = 1;
-	this.turnStage = -1;
-	this.defended = false;
-	this.shouldDeal = false;
-
-	this.attacker = null;
-	this.defender = null;
-	this.ally = null;
-}
-
 //Размешивает колоду
 Game.prototype.shuffleDeck = function(){
 
@@ -209,8 +220,8 @@ Game.prototype.deal = function(dealsIn){
 
 			var card = this.cards[this.deck[0]];
 
-			//utils.echo(card.id, ':', 'DEAL', card.position, '=>', dealInfo.pid);
-			utils.echo(card.suit, card.value, ':', 'DEAL', card.position, '=>', dealInfo.pid);
+			//utils.log(card.id, ':', 'DEAL', card.position, '=>', dealInfo.pid);
+			this.logAction(card, 'DEAL', card.position, dealInfo.pid);
 
 			this.hands[dealInfo.pid].push(card.id);
 			card.position = dealInfo.pid;
@@ -287,8 +298,8 @@ Game.prototype.deckNotify = function(){
 	}	
 }
 
-//Оповещает игроков о сбросе карт
-Game.prototype.discardNotify = function(){
+//Сбрасывает карты и оповещает игроков
+Game.prototype.discardAndNotify = function(){
 
 	var action = {
 		type: 'DISCARD',
@@ -299,18 +310,16 @@ Game.prototype.discardNotify = function(){
 		var fieldSpot = this.field[fi];
 		if(fieldSpot.attack){
 			var card = this.cards[fieldSpot.attack];
-			utils.echo(card.suit, card.value, ':', 'DISCARD', card.position, '=>', 'DISCARDPILE');
+			this.logAction(card, 'DISCARD', card.position, 'DISCARDPILE');
 			card.position = 'DISCARDPILE';
 
-			action.ids.push({
-				id:fieldSpot.attack
-			});
+			action.ids.push(fieldSpot.attack);
 			this.discardPile.push(fieldSpot.attack);
 			fieldSpot.attack = null;
 		}
 		if(fieldSpot.defense){
 			var card = this.cards[fieldSpot.defense];
-			utils.echo(card.suit, card.value, ':', 'DISCARD', card.position, '=>', 'DISCARDPILE');
+			this.logAction(card, 'DISCARD', card.position, 'DISCARDPILE');
 			card.position = 'DISCARDPILE';
 
 			action.ids.push(fieldSpot.defense);
@@ -318,12 +327,18 @@ Game.prototype.discardNotify = function(){
 			fieldSpot.defense = null;
 		}
 	}
-	if(action.length){
+	if(action.ids.length){
+
+		if(this.fullField <= this.zeroDiscardFieldSize){
+			this.fullField++;
+			utils.log('First discard, field expanded to', this.fullField);
+		}
+
 		this.shouldDeal = true;
 		this.waitForResponse(5, this.players);
 		for (var pi in this.players) {
 			var player = this.players[pi];
-			player.recieveAction(action);
+			player.recieveAction(null,action);
 		}
 		return;
 	}
@@ -331,8 +346,6 @@ Game.prototype.discardNotify = function(){
 		this.dealTillFullHand();
 		return;
 	}
-
-	
 }
 
 //Ждет ответа об окончании анимации от игроков
@@ -341,8 +354,8 @@ Game.prototype.waitForResponse = function(time, players){
 		var player = players[pi];
 		this.playersActing.push(player.id);
 	}
-	//utils.echo('Waiting for response from', players.length, 'players')
-	//utils.echo('Waiting for response from: ', players.map((p) => p.id))
+	//utils.log('Waiting for response from', players.length, 'players')
+	//utils.log('Waiting for response from: ', players.map((p) => p.id))
 	this.setResponseTimer(time)
 }
 
@@ -354,9 +367,10 @@ Game.prototype.setResponseTimer = function(time){
 	
 	this.timer = setTimeout(() => {
 
-		if(this.validActions){
-			this.processAction(this.playersActing[0], this.validActions[0]);
-			this.playersById[this.playersActing[0]].handleLateness()
+		if(this.validActions.length){
+			var player = this.playersById[this.playersActing[0]];
+			this.processAction(player, this.validActions[0]);
+			player.handleLateness()
 		}
 		this.validActions = []; 
 
@@ -365,7 +379,7 @@ Game.prototype.setResponseTimer = function(time){
 			var pid = this.playersActing[pi];
 			stringToLog += pid + ' ';
 		}
-		utils.echo('Players timed out: ', stringToLog);
+		utils.log('Players timed out: ', stringToLog);
 
 		this.playersActing = [];
 		this.continueTurn();	
@@ -378,14 +392,14 @@ Game.prototype.recieveResponse = function(player, action){
 
 	var pi = this.playersActing.indexOf(player.id);
 	if(!~pi){
-		utils.echo(player.id, 'Late or uncalled response');
+		utils.log(player.id, 'Late or uncalled response');
 		return
 	}
 	if(this.validActions.length && !action){
-		utils.echo('Wating for action but no action recieved')
+		utils.log('Wating for action but no action recieved')
 		return;
 	}
-	//utils.echo('Response from', player.id, action ? action : '');
+	//utils.log('Response from', player.id, action ? action : '');
 	if(action){
 		this.processAction(player, action);
 	}
@@ -403,17 +417,18 @@ Game.prototype.processAction = function(player, action){
 	var pi = this.playersActing.indexOf(player.id);
 
 	if( !~ai || !~pi ){
-		utils.echo('Invalid player or action');
+		clearTimeout(this.timer);
+		utils.log('Invalid player or action', player.id, action);
 		return;
 	}
 
 	switch(action.type){
 		case 'ATTACK':
-			utils.echo(player.name, "attacks")
+			utils.log(player.name, this.lastTurnStage == 'FOLLOWUP' ? 'follows up' : 'attacks')
 			var ci = this.hands[player.id].indexOf(action.cid);
 			var card = this.cards[action.cid];
 
-			utils.echo(card.suit, card.value, ':', action.type, card.position, '=>', action.position );
+			this.logAction(card, action.type, card.position, action.position );
 			card.position = action.position;
 
 			this.hands[player.id].splice(ci, 1);
@@ -423,14 +438,20 @@ Game.prototype.processAction = function(player, action){
 			action.suit = card.suit;
 
 			this.fieldUsedSpots++;
+
+			if(this.lastTurnStage == 'FOLLOWUP')
+				this.setTurnStage('FOLLOWUP')
+			else
+				this.skipCounter = 0;
+
 			break;
 
 		case 'DEFENSE':
-			utils.echo(player.name, "defends")
+			utils.log(player.name, 'defends')
 			var ci = this.hands[player.id].indexOf(action.cid);
 			var card = this.cards[action.cid];
 
-			utils.echo(card.suit, card.value, ':', action.type, card.position, '=>', action.position );
+			this.logAction(card, action.type, card.position, action.position );
 			card.position = action.position;
 
 			this.hands[player.id].splice(ci, 1);
@@ -441,48 +462,45 @@ Game.prototype.processAction = function(player, action){
 			break;
 
 		case 'SKIP':
-			utils.echo(player.name, "skips turn")
-			this.skipCounter++;
-			if(this.skipCounter < 2 && this.activePlayers.length > 2){
-				this.turnStage++;
+			utils.log(player.name, 'skips turn');
+			if(this.activePlayers.length > 2 && !this.ally){
+				utils.log('More than 2 players but no ally assigned')
 			}
+			if(this.ally){
+				switch(this.lastTurnStage){
 
+					case 'FOLLOWUP':
+						if(!this.skipCounter){
+							this.skipCounter++;
+							this.setTurnStage('FOLLOWUP');
+						}
+						break;
+
+					case 'INITIALATTACK':
+						this.setTurnStage('SUPPORT');
+						break;
+
+					default:
+						this.skipCounter++;
+						if(this.skipCounter < 2){
+							if(this.lastTurnStage == 'SUPPORT')
+								this.setTurnStage('ATTACK');
+							else
+								this.setTurnStage('SUPPORT');
+						}
+						break;
+				}
+			}
 			break;
 
 		case 'TAKE':
-			utils.echo(player.name, "takes")
-			action.ids = [];
-			for(var fi in this.field){
-				var fieldSpot = this.field[fi];
-				if(fieldSpot.attack){
-
-					var card = this.cards[fieldSpot.attack];
-					utils.echo(card.suit, card.value, ':', action.type, card.position, '=>', player.id);
-					card.position = player.id;
-
-					this.hands[player.id].push(fieldSpot.attack);
-					fieldSpot.attack = null;
-
-					action.ids.push(card.id);
-				}
-				if(fieldSpot.defense){
-
-					var card = this.cards[fieldSpot.defense];
-					utils.echo(card.suit, card.value, ':', action.type, card.position, '=>', player.id);
-					card.position = player.id;
-
-
-					this.hands[player.id].push(fieldSpot.defense);
-					fieldSpot.defense = null;
-
-					action.ids.push(card.id);
-				}
-			}
-			this.defended = true;
+			utils.log(player.name, "takes")
+			this.skipCounter = 0;
+			this.setTurnStage('FOLLOWUP');
 			break;
 
 		default:
-			utils.echo('Unknown action')
+			utils.log('Unknown action')
 			break;
 	}
 
@@ -539,7 +557,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 		this.attacker = minTCard.pid;
 		this.defender = defender && defender.id || this.players[0].id;
 		this.ally = support && support.id || defender ? this.players[0].id : this.players[1].id; 
-		utils.echo('Player to go first: ', this.attacker, minTCard)
+		utils.log('Player to go first: ', this.playersById[this.attacker].name)
 
 		this.waitForResponse(5, this.players);
 		for(var pi in this.players){
@@ -571,10 +589,10 @@ Game.prototype.findPlayerToGoNext = function(){
 					if(~newai)
 						ai = newai
 					else if(!this.activePlayers[ai])
-						ai = 0
+						ai = this.activePlayers.length - 1
 				}
 
-				utils.echo(pid, 'is out of the game');	
+				utils.log(pid, 'is out of the game');	
 
 			}
 		}
@@ -585,16 +603,20 @@ Game.prototype.findPlayerToGoNext = function(){
 
 	var attacker = this.activePlayers[ai + 1];
 	var defender = this.activePlayers[ai + 2];
-	if(this.players.length > 2)
-		var support = this.activePlayers[ai + 3];
+	var support = this.activePlayers[ai + 3];
 
 	this.attacker = attacker ? attacker : this.activePlayers[0];
 	this.defender = defender ? defender : attacker ? this.activePlayers[0] : this.activePlayers[1];
-	if(this.players.length > 2)
+	if(this.activePlayers.length > 2)
 		this.ally = support ? support : defender ? attacker ? this.activePlayers[0] : this.activePlayers[1] : this.activePlayers[2];
 	else
 		this.ally = null;
 	return true;
+}
+
+Game.prototype.setTurnStage = function(stage){
+	this.lastTurnStage = this.turnStage;
+	this.turnStage = stage;
 }
 
 //Отправляет атакующему возможные ходы
@@ -603,8 +625,8 @@ Game.prototype.letAttack = function(pid){
 	var player = this.playersById[pid];
 
 	if(this.fieldUsedSpots >= this.fullField){
-		utils.echo('Field is full');
-		this.turnStage++;
+		utils.log('Field is full');
+		this.setTurnStage('DEFENSE');
 		this.continueTurn();
 		return;
 	}
@@ -642,14 +664,16 @@ Game.prototype.letAttack = function(pid){
 		}
 	}
 
-	if(this.turnStage % 4){
+	if(this.turnStage != 'INITIALATTACK'){
 		var action = {
 			type: 'SKIP'
 		}
-		actions.push(action)
+		actions.push(action)		
 	}
+	
+	this.setTurnStage('DEFENSE');
+
 	this.validActions = actions;
-	this.turnStage++;
 	this.waitForResponse(15, [player])
 	player.recieveValidActions(actions);	
 	return;
@@ -662,20 +686,62 @@ Game.prototype.letDefend = function(pid){
 
 	var defenseSpot = null;
 
+	if(this.lastTurnStage == 'FOLLOWUP'){
+		var action = {
+			type: 'TAKE',
+			ids:[]
+		}
+		for(var fi in this.field){
+			var fieldSpot = this.field[fi];
+			if(fieldSpot.attack){
+
+				var card = this.cards[fieldSpot.attack];
+				this.logAction(card, action.type, card.position, player.id);
+				card.position = player.id;
+
+				this.hands[player.id].push(fieldSpot.attack);
+				fieldSpot.attack = null;
+
+				action.ids.push(card.id);
+			}
+			if(fieldSpot.defense){
+
+				var card = this.cards[fieldSpot.defense];
+				this.logAction(card, action.type, card.position, player.id);
+				card.position = player.id;
+
+				this.hands[player.id].push(fieldSpot.defense);
+				fieldSpot.defense = null;
+
+				action.ids.push(card.id);
+			}
+		}
+
+		this.attacker = player.id;
+		this.setTurnStage('END');
+
+		this.waitForResponse(5, this.players);
+		for(var pi in this.players){
+			var p = this.players[pi];
+			p.recieveAction(player.id, action)
+		}
+		return;
+	}
+
 	for(var fi in this.field){
 		var fieldSpot = this.field[fi];
 		if(fieldSpot.attack && !fieldSpot.defense){
 			defenseSpot = fieldSpot;
-			break;
+			break
 		} 
 	}
 
 	if(!defenseSpot){
-		utils.echo(pid, 'successfully defended');
+		utils.log(this.playersById[pid].name, 'successfully defended');
 
-		this.defended = true;
+		this.setTurnStage('END');
 		this.continueTurn();
-		return;
+		return
 	}
 
 	var actions = [];
@@ -703,8 +769,13 @@ Game.prototype.letDefend = function(pid){
 	actions.push(action)
 
 	this.validActions = actions;
-	this.turnStage++;
-	this.waitForResponse(15, [player])
+
+	if(this.lastTurnStage == 'INITIALATTACK' || this.lastTurnStage == 'SUPPORT')
+		this.setTurnStage('ATTACK');
+	else
+		this.setTurnStage('SUPPORT');
+
+	this.waitForResponse(15, [player]);
 	player.recieveValidActions(actions);	
 }
 
@@ -712,12 +783,13 @@ Game.prototype.letDefend = function(pid){
 Game.prototype.endTurn = function(){
 	this.turnStarted = false;
 	this.fieldUsedSpots = 0;
-	this.turnStage = 0;
+	this.turnStage = 'INITIALATTACK';
+	this.lastTurnStage = null;
 	this.skipCounter = 0;
 
-	this.discardNotify();
+	this.discardAndNotify();
 
-	utils.echo('Turn Ended')
+	utils.log('Turn Ended')
 }
 
 
@@ -741,7 +813,7 @@ Game.prototype.continueTurn = function(){
 	if(!this.turnStarted){	
 		
 		if(!this.findPlayerToGoNext()){
-			utils.echo('Game ended', this.id, '\n\n');
+			utils.log('Game ended', this.id, '\n\n');
 			if(this.gameNumber < 10){
 				this.reset();
 				this.make();
@@ -749,45 +821,58 @@ Game.prototype.continueTurn = function(){
 			return;
 		}
 
-		utils.echo('\nTurn', this.turnNumber, this.attacker, '\nCards in deck:', this.deck.length);
+		utils.log('\nTurn', this.turnNumber, this.playersById[this.attacker].name, '\nCards in deck:', this.deck.length);
 		
 		for(var pid in this.hands){
-			utils.echo(pid, this.hands[pid].length);
+			utils.log(this.playersById[pid].name, this.hands[pid].length);
 		}
 		this.turnNumber++;	
-		this.turnStarted = true;
-		this.defended = false;		
+		this.turnStarted = true;	
 		this.letAttack(this.attacker);
 		return;
 	}	
 
-	//Даем игрокам ходить
-	if(!this.defended){
-		switch(this.turnStage % 4){
-			case 0:
-				this.letAttack(this.attacker);
-				break;
-			case 1:
-				this.letDefend(this.defender);
-				break;
-			case 2:
-				this.letAttack(this.ally ? this.ally : this.attacker)
-				break;
-			case 3:
-				this.letDefend(this.defender);
-				break;
-			default:
-				utils.echo('Invalid turn stage', this.turnStage % 4);
-				break;
-		}
-		return;
-	}
+	//Стадии хода
+	switch(this.turnStage){
+		case 'INITIALATTACK':
+			this.letAttack(this.attacker);
+			break;
 
-	//Завершаем ход
-	else{
-		this.endTurn();
-		return;
+		case 'ATTACK':
+			this.letAttack(this.attacker);
+			break;
+
+		case 'SUPPORT':
+			this.letAttack(this.ally || this.attacker)
+			break;
+
+		case 'FOLLOWUP':
+			this.letAttack(!this.skipCounter ? this.attacker : this.ally || this.attacker);
+			break;
+
+		case 'DEFENSE':
+			this.letDefend(this.defender);
+			break;
+
+		case 'END':
+			this.endTurn();
+			break;
+
+		default:
+			utils.log('Invalid turn stage', this.turnStage);
+			break;
 	}
+	return;
+}
+
+Game.prototype.logAction = function(card, actionType, from, to){
+	utils.log(
+		card.suit, card.value, ':', 
+		actionType,
+		this.playersById[from] ? this.playersById[from].name : from,
+		'=>',
+		this.playersById[to] ? this.playersById[to].name : to
+	);
 }
 
 exports.Game = Game

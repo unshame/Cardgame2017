@@ -1,4 +1,8 @@
-var isInDebugMode = true;
+var isInDebugMode = false;
+
+var fs = require('fs');
+fs.writeFile('./logs/log.txt','');
+var logStream = fs.createWriteStream('./logs/log.txt', {'flags': 'a'});
 
 exports.generateID = function(){
 	return Math.random().toString(36).substr(2, 9);
@@ -13,7 +17,17 @@ exports.copyObject = function(obj){
 	return newObj;
 }
 
-exports.echo = function(){
+exports.log = function(){
 	if(isInDebugMode)
-		console.log.apply(this, arguments)
+		console.log.apply(this, arguments);
+	
+	var logLine = "";
+	for(var i in arguments){
+		var arg = arguments[i];
+		if(logLine.length)
+			logLine += " ";
+		logLine += String(arg);
+	}
+	logLine += "\n";
+	logStream.write(logLine)
 }

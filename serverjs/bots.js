@@ -98,8 +98,10 @@ Bot.prototype.recieveAction = function(pid, action){
 			break;
 		case 'TAKE':
 			break;
+		case 'DISCARD':
+			break;
 		default:
-			utils.echo(this.id, 'Unknown action')
+			utils.log(this.id, 'Unknown action')
 			break;
 	}
 	setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
@@ -111,27 +113,27 @@ Bot.prototype.handleLateness = function(){
 
 Bot.prototype.sendResponse = function(action){
 	if(!this.game){
-		utils.echo(this.id, 'No game has been assigned');
+		utils.log(this.id, 'No game has been assigned');
 		return
 	}
 	this.game.recieveResponse(this, action ? action : null);
 }
 
 Bot.prototype.logState = function(){
-	utils.echo('\n', this.id);
+	utils.log('\n', this.id);
 
-	utils.echo('Deck');
-	this.deck.map( (card) => utils.echo(card) )
-	utils.echo('Hand');
-	this.hands[this.id].map( (cid) => utils.echo(this.cards[cid]) )
+	utils.log('Deck');
+	this.deck.map( (card) => utils.log(card) )
+	utils.log('Hand');
+	this.hands[this.id].map( (cid) => utils.log(this.cards[cid]) )
 
-	utils.echo('\nAll cards');
+	utils.log('\nAll cards');
 	for(var cid in this.cards){
 		if(this.cards.hasOwnProperty(cid)){
 			var card = this.cards[cid];
 			var value = card.value;
 			var suit = card.suit;
-			utils.echo(cid, value, suit, card.position);
+			utils.log(cid, value, suit, card.position);
 		}
 	}
 }
