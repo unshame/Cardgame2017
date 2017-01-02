@@ -58,7 +58,7 @@ Server.onConnect(function (conn) {
 
 	//Запускаем игру с ботами и игроком
 	if(!games.length){
-		players.push(new Player(remote, conn.id))
+		//players.push(new Player(remote, conn.id))
 		games.push(new Game(players));
 	}
 });
