@@ -648,8 +648,19 @@ Game.prototype.findPlayerToGoNext = function(){
 	this.defender = defender ? defender : attacker ? this.activePlayers[0] : this.activePlayers[1];
 
 	//Помогающий есть только когда в игре осталось более двух игроков
-	if(this.activePlayers.length > 2)
-		this.ally = support ? support : defender ? attacker ? this.activePlayers[0] : this.activePlayers[1] : this.activePlayers[2];
+	if(this.activePlayers.length > 2){
+		if(support)
+			this.ally = support
+		else if(defender)
+			this.ally = this.activePlayers[0]
+		else
+			if(attacker)
+				this.ally = this.activePlayers[1]
+			else
+				this.ally = this.activePlayers[2];
+		
+
+	}
 	else
 		this.ally = null;
 
