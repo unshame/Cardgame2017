@@ -1,5 +1,4 @@
 var utils = require('../serverjs/utils')
-var fakeDescisionTimer = 1000;
 
 var Player = function(remote, connid){
 	this.id = 'player_' + utils.generateID();
