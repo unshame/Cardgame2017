@@ -33,7 +33,7 @@ function create ()
     game.stage.disableVisibilityChange  = true;
     
     //Ground
-    land = game.add.tileSprite(0, 0, screenWidth, screenHeight, 'earth');
+    land = game.add.tileSprite(0, 0, screenWidth, screenHeight, 'table8x');
     land.fixedToCamera = true;
 
     //Players will go here
