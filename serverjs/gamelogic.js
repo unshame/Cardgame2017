@@ -10,21 +10,25 @@ var Game = function(players){
 
 	//Создаем массив игроков по айди
 	this.playersById = {};
-	for(var pi in players){
-		var player = players[pi];
+	for(var pi in this.players){
+		var player = this.players[pi];
 		player.game = this;
 		this.playersById[player.id] = player;
 
 		//Сообщаем игрокам о соперниках
-		player.meetOpponents(players.map(
-			(p) => {
+		var opponents = [];
+		for(var pi in this.players){
+			var p = this.players[pi];
+			if(p.id != player.id){
 				var o = {
 					id: p.id,
 					name: p.name
 				}
-				return o;
+				opponents.push(o)
 			}
-		));
+		}
+		if(opponents.length)
+			player.meetOpponents(opponents);
 	}
 
 	this.gameNumber = 0;
@@ -334,23 +338,26 @@ Game.prototype.setResponseTimer = function(time){
 	
 	this.timer = setTimeout(() => {
 
-		var stringToLog = '';
+		var names = '';
 		for(var pi in this.playersActing){
 			var pid = this.playersActing[pi];
-			stringToLog += pid + ' ';
+			var name = this.playersById[pid].name;
+			names += name + ' ';
 		}
-		utils.log('Players timed out: ', stringToLog);
+		utils.log('Players timed out: ', names);
+
 
 		//Выполняем первое попавшееся действие
 		if(this.validActions.length){
 			var player = this.playersById[this.playersActing[0]];
 			this.processAction(player, this.validActions[0]);
-			player.handleLateness()
+			player.handleLateness();
+			return
 		}
 
 		//Обнуляем действующих игроков, возможные действия и продолжаем ход
-		this.validActions = [];
 		this.playersActing = [];
+		this.validActions = [];
 		this.continueTurn();
 
 	}, time * 1000)
@@ -362,7 +369,7 @@ Game.prototype.recieveResponse = function(player, action){
 	//Проверяем валидность ответа
 	var pi = this.playersActing.indexOf(player.id);
 	if(!~pi){
-		utils.log('ERROR:', player.id, 'Late or uncalled response');
+		utils.log('ERROR:', this.playersById[player.id].name, 'Late or uncalled response');
 		return
 	}
 	if(this.validActions.length && !action){
@@ -514,14 +521,16 @@ Game.prototype.processAction = function(player, action){
 			break;
 	}
 
-	//Обнуляем вохможные действия
+	//Обнуляем возможные действия
 	this.validActions = [];
+
+	action.pid = player.id;
 
 	//Сообщаем игрока о действии
 	this.waitForResponse(5, this.players);
 	for(var pi in this.players){
 		var p = this.players[pi];
-		p.recieveAction(player.id, action)
+		p.recieveAction(action)
 	}
 }
 
@@ -535,7 +544,8 @@ Game.prototype.findPlayerToGoFirst = function(){
 			var hand = this.hands[hid];
 			var minTCard = {
 				pid: hid,
-				value: this.maxCardValue + 1
+				value: this.maxCardValue + 1,
+				suit: this.trumpSuit
 			};
 			for(var ci in hand){
 				var cid = hand[ci];
@@ -556,7 +566,8 @@ Game.prototype.findPlayerToGoFirst = function(){
 	if(minTCards.length){
 		var minTCard = {
 			pid: null,
-			value: this.maxCardValue + 1
+			value: this.maxCardValue + 1,
+			suit: this.trumpSuit
 		};
 
 		//Находим минимальный из них
@@ -570,12 +581,19 @@ Game.prototype.findPlayerToGoFirst = function(){
 		var pid = minTCard.pid;
 		var pi = this.players.indexOf(this.playersById[pid]);
 		var defender = this.players[pi + 1];
-		var support = this.players[pi + 2];
+		var ally = this.players[pi + 2];
 
 		this.attacker = minTCard.pid;
 		this.defender = defender && defender.id || this.players[0].id;
-		if(this.activePlayers.length > 2)
-			this.ally = support && support.id || defender ? this.players[0].id : this.players[1].id;
+		if(this.activePlayers.length > 2){
+			if(ally)
+				this.ally = ally.id
+			else
+				if(defender)
+					this.ally = this.players[0].id
+				else
+					this.ally = this.players[1].id;
+		}
 		
 		utils.log('Player to go first: ', this.playersById[this.attacker].name)
 
@@ -633,7 +651,7 @@ Game.prototype.findPlayerToGoNext = function(){
 			}
 		}
 
-		//Если осталось остался один игрок, завершаем игру
+		//Если осталось меньше одного игрока, завершаем игру
 		if(this.activePlayers.length < 2){			
 			return false;
 		}
@@ -642,15 +660,15 @@ Game.prototype.findPlayerToGoNext = function(){
 	//Находим участников нового хода
 	var attacker = this.activePlayers[ai + 1];
 	var defender = this.activePlayers[ai + 2];
-	var support = this.activePlayers[ai + 3];
+	var ally = this.activePlayers[ai + 3];
 
 	this.attacker = attacker ? attacker : this.activePlayers[0];
 	this.defender = defender ? defender : attacker ? this.activePlayers[0] : this.activePlayers[1];
 
 	//Помогающий есть только когда в игре осталось более двух игроков
 	if(this.activePlayers.length > 2){
-		if(support)
-			this.ally = support
+		if(ally)
+			this.ally = ally
 		else if(defender)
 			this.ally = this.activePlayers[0]
 		else
@@ -785,10 +803,12 @@ Game.prototype.letDefend = function(pid){
 		this.attacker = player.id;
 		this.setTurnStage('END');
 
+		action.pid = player.id;
+
 		this.waitForResponse(5, this.players);
 		for(var pi in this.players){
 			var p = this.players[pi];
-			p.recieveAction(player.id, action)
+			p.recieveAction(action)
 		}
 		return;
 	}
@@ -929,7 +949,7 @@ Game.prototype.discardAndNotify = function(){
 		this.waitForResponse(5, this.players);
 		for (var pi in this.players) {
 			var player = this.players[pi];
-			player.recieveAction(null,action);
+			player.recieveAction(action);
 		}
 		return;
 	}
