@@ -27,14 +27,8 @@ var Eureca = require('eureca.io');
 //Создаем сервер и добавляем разрешенные клиентские функции
 var Server = new Eureca.Server({allow:[
 	'setId',
-	'spawnOpponent',
-	'removePlayer',
-	'updateState',
 	'meetOpponents',
-	'recieveDeck',
-	'recieveCards',
-	'recieveMinTrumpCards',
-	'recieveValidActions',
+	'recievePossibleActions',
 	'recieveAction',
 	'handleLateness'
 ]
@@ -53,12 +47,9 @@ Server.onConnect(function (conn) {
 	//Запоминаем информацию о клиенте
 	clients[conn.id] = {id:conn.id, remote:remote};
 
-	//Сообщаем клиенту его айди
-	remote.setId(conn.id)
-
 	//Запускаем игру с ботами и игроком
+	players.push(new Player(remote, conn.id))
 	if(!games.length){
-		//players.push(new Player(remote, conn.id))
 		games.push(new Game(players));
 	}
 });
@@ -70,13 +61,6 @@ Server.onDisconnect(function (conn) {
 	var removeId = clients[conn.id].id;
 
 	delete clients[removeId];
-	for (var c in clients)
-	{
-		var remote = clients[c].remote;
-
-		//here we call kill() method defined in the client side
-		remote.removePlayer(removeId);
-	}
 });
 
 //Tell clients about each other

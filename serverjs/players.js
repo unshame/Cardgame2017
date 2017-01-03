@@ -7,6 +7,9 @@ var Player = function(remote, connid){
 	this.remote = remote;
 	this.connid = connid;
 
+	if(this.remote)
+		this.remote.setId(this.id);
+
 	this.name = this.id;
 
 	this.game = null;
@@ -14,32 +17,51 @@ var Player = function(remote, connid){
 
 Player.prototype.meetOpponents = function(opponents){
 	if(this.remote)
-			this.remote.meetOpponents(opponents);
+		this.remote.meetOpponents(opponents);
 }
 
 Player.prototype.recieveDeck = function(deck){
+	var action = {
+		type: 'DECK_INFO',
+		cards: []
+	}
+	for(var ci in deck){
+		action.cards.push(deck[ci])
+	}
 	if(this.remote)
-		this.remote.recieveDeck(deck);
+		this.remote.recieveAction(action);
 }
 
 Player.prototype.recieveCards = function(deals){
+	var action = {
+		type: 'DRAW',
+		cards: []
+	}
+	for(var ci in deals){
+		action.cards.push(deals[ci])
+	}
 	if(this.remote)
-		this.remote.recieveCards(deals);
+		this.remote.recieveAction(action);
 }
 
 Player.prototype.recieveMinTrumpCards = function(cards, winner){
+	var action = {
+		type: 'TRUMP_CARDS',
+		cards: cards,
+		pid: winner
+	}
 	if(this.remote)
-		this.remote.recieveMinTrumpCards(cards, winner);
+		this.remote.recieveAction(action);
 }
 
 Player.prototype.recieveValidActions = function(actions){
 	if(this.remote)
-		this.remote.recieveValidActions(actions);
+		this.remote.recievePossibleActions(actions);
 }
 
-Player.prototype.recieveAction = function(pid, action){
+Player.prototype.recieveAction = function(action){
 	if(this.remote)
-		this.remote.recieveAction(pid, action);
+		this.remote.recieveAction(action);
 }
 
 Player.prototype.handleLateness = function(){

@@ -62,19 +62,7 @@ function create ()
 
 
 function update () {
-    //Don't update client if not ready
-    if (!ready) 
-        return;
-
-    //Update players and projectiles
-    for (var i in charactersList)
-    {
-		if (!charactersList[i]) continue;     
-
-        if (charactersList[i].alive){
-            charactersList[i].update();
-        }
-    };
+    
 }
 
 function render () {

@@ -1,6 +1,4 @@
 var Server;
-var ready = false;
-var found = false;
 
 var EurecaClientSetup = function() {
 	//create an instance of eureca.io client
@@ -16,52 +14,23 @@ var EurecaClientSetup = function() {
 	
 	Client.exports.setId = function(id) 
 	{
-		//create() is moved here to make sure nothing is created before uniq id assignation
-		if(typeof myId != 'undefined'){
-			location.href = location.href;
-			return
-		}
-		Object.defineProperty(window, 'myId', {
-		    value: id,
-		    writable : false,
-		    enumerable : true,
-		    configurable : false
-		});
+		window.myId = id;
 		create();
-		Server.handshake(id);
-		ready = true;
 	}	
-	Client.exports.removePlayer = function(id)
-	{	
-		if (charactersList[id]) charactersList[id].kill();
-	}	
-	
-	Client.exports.spawnOpponent = function(options)
-	{
-		//console.log(options);
-		if (options.id == myId) 
-			return; //this is me
-		var char = new Character(options);
-		charactersList[options.id] = char;
-	}
-	
-	Client.exports.updateState = function(id, state)
-	{
-		if (charactersList[id])  {
-			charactersList[id].input = state;
-			charactersList[id].update();
+	Client.exports.meetOpponents = function(opponents){
+		console.log(opponents);
+		for(var oi in opponents){
+			new Character(opponents[oi].id);
 		}
-	}
-
-	Client.exports.recieveCards = function(cards){
-		console.log('Cards recieved')
-		for(var ci in cards){
-			var card = cards[ci];
-			console.log(card)
-		}
-	}
-	Client.exports.recieveAction = function(pid, action){
 		
-		console.log(pid, action)
+	}
+	Client.exports.recievePossibleActions = function(actions){		
+		console.log(actions)
+	}
+	Client.exports.recieveAction = function(action){		
+		console.log(action)
+	}
+	Client.exports.handleLateness = function(){
+		console.log('Too late');
 	}
 }

@@ -81,7 +81,7 @@ Bot.prototype.recieveValidActions = function(actions){
 	this.sendResponse(action);
 }
 
-Bot.prototype.recieveAction = function(pid, action){
+Bot.prototype.recieveAction = function(action){
 	switch(action.type){
 		case 'ATTACK':
 			var ci = this.hands[this.id].indexOf(action.cid);
