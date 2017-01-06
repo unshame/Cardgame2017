@@ -1,48 +1,69 @@
-
-var character,
-    headSprite;
-
-Character = function (options) {
+Card = function (options) {
     this.options = {
         id:null,
-        game:game
+        game:game,
+        value:0,
+        suit:null
     };
-    for(o in options)
-        this.options[o] = options[o];
+    for(o in options){
+        if(options.hasOwnProperty(o))
+            this.options[o] = options[o];
+    }
     
     this.input = {};
 
     //Alive status
     this.alive = true;
 
-    var x = Math.round(Math.random()*screenWidth);
-    var y = Math.round(Math.random()*screenHeight);
+
 
     //Sprites
-    this.headSprite = game.add.sprite(x, y, 'cardsModern');
-    this.headSprite.frame = Math.floor(Math.random()*67)
+    this.sprite = game.add.sprite(0, 0, 'cardsModern');
 
-    //this.headSprite = game.add.sprite(x, y, 'cardsClassic');
-    //this.headSprite.frame = Math.floor(Math.random()*52)
-    //this.headSprite.scale.setTo(0.5, 0.5);
+    this.sprite.inputEnabled = true;
+    this.sprite.input.enableDrag();
 
-    this.headSprite.anchor.set(0.5, 0.5);
+    this.setValue(this.options.suit, this.options.value);
 
-    //Applying player ID
+    //this.style = { font: "16px Arial", fill: "#fff", wordWrap: true, wordWrapWidth: this.sprite.width, align: "center" };
+    //this.text = game.add.text(0, 0, this.options.suit !== null && this.options.suit !== undefined && (cardValueToString(this.options.value, 'RU') + ' ' + getSuitStrings('RU')[this.options.suit]) || '??', this.style);
+    //this.text.anchor.set(0.5);
+
+
+
+    //this.sprite = game.add.sprite(x, y, 'cardsClassic');
+    //this.sprite.frame = Math.floor(Math.random()*52)
+    //this.sprite.scale.setTo(0.5, 0.5);
+
+    this.sprite.anchor.set(0.5, 0.5);
+
+    //Applying player Id
     this.id = this.options.id;
 
     //Put players behind the HUD
-    playersGroup.add(this.headSprite);  
+    playersGroup.add(this.sprite);  
     playersGroup.sendToBack(playersGroup)
-    playersGroup.sendToBack(this.headSprite);
+    playersGroup.sendToBack(this.sprite);
 
 };
 
-Character.prototype.kill = function() {
-    //console.log('killed')
-    this.alive = false;
-    this.headSprite.kill();        
+Card.prototype.setValue = function(suit, value){
+    if(suit === null || suit === undefined)
+        this.sprite.frame =  65
+    else
+        this.sprite.frame =  suit*14-suit+value-2;
 }
 
-Character.prototype.update = function() {
+Card.prototype.setPosition = function(x, y){
+    this.sprite.x = x;
+    this.sprite.y = y;
+}
+
+Card.prototype.kill = function() {
+    //console.log('killed')
+    this.alive = false;
+    this.sprite.kill();        
+}
+
+Card.prototype.update = function() {
 };

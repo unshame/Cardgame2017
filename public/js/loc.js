@@ -1,33 +1,32 @@
-var cardValueToChar = function(value){
-	switch(value){
-	case 11:
-		return 'J';
-	case 12:
-		return 'Q';
-	case 13:
-		return 'K';
-	case 14:
-		return 'A';
-	default:
-		return String(value);
-	}
+var cardValuesChar = {
+	EN: ['J', 'Q', 'K', 'A'],
+	RU: ['В', 'Д', 'К', 'Т']
+}
+var cardValuesString = {
+	EN: ['Jack', 'Queen', 'King', 'Ace'],
+	RU: ['Валет', 'Дама', 'Король', 'Туз']
+}
+var cardSuitString = {
+	EN: ['Hearts', 'Diamonds', 'Clubs', 'Spades'],
+	RU: ['Червы', 'Бубны', 'Трефы', 'Пики']
 }
 
-var cardValueToString = function(value){
-	switch(value){
-	case 11:
-		return 'Jack';
-	case 12:
-		return 'Queen';
-	case 13:
-		return 'King';
-	case 14:
-		return 'Ace';
-	default:
-		return String(value);
-	}
+var cardValueToChar = function(value, locale){
+
+	if(value < 10 || value > 14)
+		return String(value)
+	else
+		return cardValuesChar[locale] && cardValuesChar[locale][value - 11] || String(value);
 }
 
-var getSuitStrings = function(){
-	return ['Diamonds', 'Hearts', 'Clubs', 'Spades'];
+var cardValueToString = function(value, locale){
+
+	if(value < 10 || value > 14)
+		return String(value)
+	else
+		return cardValuesString[locale][value - 11] || String(value);
+}
+
+var getSuitStrings = function(locale){
+	return cardSuitString[locale] && cardSuitString[locale].slice() || null;
 }
