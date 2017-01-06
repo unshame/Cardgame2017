@@ -1,16 +1,18 @@
-var utils = require('../serverjs/utils')
+var utils = require('./utils')
 
-var Player = function(remote, connid){
-	this.id = 'player_' + utils.generateID();
+var Player = function(remote, connid, name){
+	this.id = 'player_' + utils.generateId();
 	this.type = 'player';
 
 	this.remote = remote;
 	this.connid = connid;
 
-	if(this.remote)
+	if(this.remote){
 		this.remote.setId(this.id);
+		this.connected = true;
+	}
 
-	this.name = this.id;
+	this.name = name || this.id;
 
 	this.game = null;
 }
@@ -20,19 +22,22 @@ Player.prototype.meetOpponents = function(opponents){
 		this.remote.meetOpponents(opponents);
 }
 
-Player.prototype.recieveDeck = function(deck){
+Player.prototype.recieveCards = function(cards, trumpSuit){
 	var action = {
-		type: 'DECK_INFO',
+		type: 'CARDS',
 		cards: []
 	}
-	for(var ci in deck){
-		action.cards.push(deck[ci])
+	if(trumpSuit || trumpSuit === 0)
+		action.trumpSuit = trumpSuit;
+
+	for(var ci in cards){
+		action.cards.push(cards[ci])
 	}
 	if(this.remote)
 		this.remote.recieveAction(action);
 }
 
-Player.prototype.recieveCards = function(deals){
+Player.prototype.recieveDeals = function(deals){
 	var action = {
 		type: 'DRAW',
 		cards: []
