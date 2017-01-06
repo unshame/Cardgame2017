@@ -12,16 +12,13 @@ Card = function (options) {
     
     this.input = {};
 
-    //Alive status
-    this.alive = true;
-
-
-
     //Sprites
     this.sprite = game.add.sprite(0, 0, 'cardsModern');
 
     this.sprite.inputEnabled = true;
-    this.sprite.input.enableDrag();
+    this.sprite.input.enableDrag(false, true);
+    this.sprite.events.onDragStart.add(this.dragStart, this);
+    this.sprite.events.onDragStop.add(this.dragStop, this);
 
     this.setValue(this.options.suit, this.options.value);
 
@@ -39,11 +36,29 @@ Card = function (options) {
 
     this.id = this.options.id;
 
-    cardsGroup.add(this.sprite);  
-    game.world.bringToTop(cardsGroup)
-    game.world.bringToTop(this.sprite);
-    cardsGroup.align(Math.floor(screenWidth / this.sprite.width), -1, this.sprite.width, this.sprite.height);
 
+
+    this.emitter = game.add.emitter(this.sprite.centerX, this.sprite.centerY, 200);
+    this.emitter.minParticleSpeed.x = 0;
+    this.emitter.minParticleSpeed.y = 0;
+    this.emitter.maxParticleSpeed.x = 0;
+    this.emitter.maxParticleSpeed.y = 100;
+    this.emitter.gravity = -100;
+
+    this.emitter.makeParticles('particle');
+
+    this.emitter.width = this.sprite.width;
+    this.emitter.height = this.sprite.height;
+
+    this.bundle = game.add.group();
+    this.bundle.add(this.emitter);
+    this.bundle.add(this.sprite);
+    cardsGroup.add(this.bundle);  
+    cardsGroup.align(Math.floor(screenWidth / this.sprite.width), -1, this.sprite.width, this.sprite.height);
+    cardsGroup.bringToTop(this.bundle);
+    this.emitter.start(false, 1000, 1);
+    if(!this.options.suit && this.options.suit != 0)
+        this.emitter.on = false;
 };
 
 Card.prototype.setValue = function(suit, value){
@@ -58,13 +73,32 @@ Card.prototype.setPosition = function(x, y){
     this.sprite.y = y;
 }
 
+Card.prototype.dragStart = function(p,x,y){
+    cardsGroup.bringToTop(this.bundle);
+    this.lastPosition = {
+        x: this.sprite.x,
+        y: this.sprite.y
+    };
+}
+
+Card.prototype.dragStop = function(){
+    var easeOut = game.add.tween(this.sprite);
+    var dest = new Phaser.Point(this.lastPosition.x, this.lastPosition.y);
+    easeOut.to(dest, 200, Phaser.Easing.Quadratic.Out);
+    this.sprite.inputEnabled = false;
+    easeOut.onComplete.addOnce(() => {this.sprite.inputEnabled = true}, this);
+    easeOut.start();
+}
+
 Card.prototype.kill = function() {
-    //console.log('killed')
-    this.alive = false;
-    this.sprite.kill();        
+    this.emitter.on = false;
+    this.sprite.kill();  
+
 }
 
 Card.prototype.update = function() {
+    this.emitter.position.x = this.sprite.centerX;
+    this.emitter.position.y = this.sprite.centerY;
 };
 
 //party time
@@ -76,7 +110,7 @@ var throwCards = function(){
     for(var i = 0; i < 52; i++){
         frames.push(i)
     }
-    this.emitter.makeParticles('cardsModern',frames);
+    this.emitter.makeParticles('cardsModern', frames);
 
     this.emitter.start(false, 5000, 20);
     this.emitter.width = screenWidth

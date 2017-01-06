@@ -1,4 +1,4 @@
-var cardsGroup;
+var cardsGroup, emitterGroup;
 var cards = {};
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
@@ -38,27 +38,26 @@ function create ()
 
     //Players will go here
     cardsGroup = game.add.group();
+    emitterGroup = game.add.group();
 
     if(game.renderType!=2){
 	    game.scale.pageAlignHorizontally = true;
 	    game.scale.pageAlignVertically = true;
 	    game.scale.setScreenSize(true);
     } 
-
+    game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
     //Camera
     //game.camera.follow(baseSprite);
 }
 
 
 function update () {
-    /*for(var ci in cards){
+    for(var ci in cards){
         if(!cards.hasOwnProperty(ci))
             continue;
 
-        var c = cards[ci];
-        c.text.x = Math.floor(c.sprite.x);
-        c.text.y = Math.floor(c.sprite.y - c.sprite.height / 2 - 20);
-    }*/
+        cards[ci].update();
+    }
 }
 
 function render () {

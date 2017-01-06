@@ -18,7 +18,7 @@ var EurecaClientSetup = function() {
 		create();
 	}	
 	client.exports.meetOpponents = function(opponents){
-		console.log(opponents);
+		//console.log(opponents);
 		//for(var oi in opponents){
 		//	new Card(opponents[oi].id);
 		//}
@@ -31,7 +31,8 @@ var EurecaClientSetup = function() {
 		if(action.cid){
 			if(cards[action.cid]){
 				cards[action.cid].setValue(action.suit, action.value);
-				cardsGroup.align(Math.floor(screenWidth / cards[action.cid].sprite.width), -1, cards[action.cid].sprite.width, cards[action.cid].sprite.height);
+				//cardsGroup.align(Math.floor(screenWidth / cards[action.cid].sprite.width), -1, cards[action.cid].sprite.width, cards[action.cid].sprite.height);
+				cards[action.cid].emitter.on = action.suit || action.suit == 0;
 			}
 			else{
 				var options = {
@@ -47,7 +48,8 @@ var EurecaClientSetup = function() {
 				var c = action.cards[ci];
 				if(cards[c.cid]){
 					cards[c.cid].setValue(c.suit, c.value);
-					cardsGroup.align(Math.floor(screenWidth / cards[c.cid].sprite.width), -1, cards[c.cid].sprite.width, cards[c.cid].sprite.height);
+					//cardsGroup.align(Math.floor(screenWidth / cards[c.cid].sprite.width), -1, cards[c.cid].sprite.width, cards[c.cid].sprite.height);
+					cards[c.cid].emitter.on = c.suit || c.suit == 0;
 				}
 				else{
 					var options = {
