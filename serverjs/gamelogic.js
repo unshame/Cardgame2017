@@ -636,6 +636,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 			var hand = this.hands[hid];
 			var minTCard = {
 				pid: hid,
+				cid: null,
 				value: this.maxCardValue + 1,
 				suit: this.trumpSuit
 			};
@@ -644,6 +645,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 				var card = this.cards[cid];
 				if(card.suit == this.trumpSuit && card.value < minTCard.value){
 					minTCard.pid = card.position;
+					minTCard.cid = card.id;
 					minTCard.value = card.value;
 				}
 			}
@@ -658,6 +660,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 	if(minTCards.length){
 		var minTCard = {
 			pid: null,
+			cid: null,
 			value: this.maxCardValue + 1,
 			suit: this.trumpSuit
 		};
@@ -861,7 +864,7 @@ Game.prototype.letDefend = function(pid){
 	if(this.lastTurnStage == 'FOLLOWUP'){
 		var action = {
 			type: 'TAKE',
-			ids:[]
+			cards:[]
 		}
 		for(var fi in this.field){
 			var fieldSpot = this.field[fi];
@@ -875,7 +878,13 @@ Game.prototype.letDefend = function(pid){
 				this.hands[player.id].push(fieldSpot.attack);
 				fieldSpot.attack = null;
 
-				action.ids.push(card.id);
+				var cardToSend = {
+					cid: card.id,
+					suit: card.suit,
+					value: card.value
+				};
+
+				action.cards.push(cardToSend);
 			}
 
 			if(fieldSpot.defense){
@@ -887,7 +896,13 @@ Game.prototype.letDefend = function(pid){
 				this.hands[player.id].push(fieldSpot.defense);
 				fieldSpot.defense = null;
 
-				action.ids.push(card.id);
+				var cardToSend = {
+					cid: card.id,
+					suit: card.suit,
+					value: card.value
+				};
+
+				action.cards.push(cardToSend);
 			}
 
 		}
@@ -899,8 +914,28 @@ Game.prototype.letDefend = function(pid){
 
 		this.waitForResponse(1, this.players);
 		for(var pi in this.players){
+
+			var newAction = {};
 			var p = this.players[pi];
-			p.recieveAction(action)
+
+			if(p.id != action.pid){
+
+				newAction.pid = action.pid;
+				newAction.cards = [];
+
+				for(var ci in action.cards){
+					
+					var card = utils.copyObject(action.cards[ci]);
+					delete card.value;
+					delete card.suit;
+					
+					newAction.cards.push(card);
+				}
+			}
+			else{
+				newAction = action;
+			}
+			p.recieveAction(newAction)
 		}
 		return;
 	}
