@@ -2,19 +2,21 @@
 	Серверные боты
 */
 
-var utils = require('../serverjs/utils')
+var utils = require('./utils')
 var randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavonne','Leola','Arlena','Marilynn','Shawnna','Alanna','Armando','Julieann','Alyson','Rutha','Wilber','Marty','Tyrone','Mammie','Shalon','Faith','Mi','Denese','Flora','Josphine','Christa','Sharonda','Sofia','Collene','Marlyn','Herma','Mac','Marybelle','Casimira','Nicholle','Ervin','Evia','Noriko','Yung','Devona','Kenny','Aliza','Stacey','Toni','Brigette','Lorri','Bernetta','Sonja','Margaretta'];
 var fakeDescisionTimer = 1;
 
 var Bot = function(){
-	this.id = 'bot_' + utils.generateID();
+	this.id = 'bot_' + utils.generateId();
 	this.type = 'bot';
+	this.connected = true;
 
 	this.opponents = [];
 
 	var nameIndex = Math.floor(Math.random()*randomNames.length);
 	this.name = randomNames[nameIndex];
 	randomNames.splice(nameIndex,1);
+
 
 	this.hands = {};
 	this.hands[this.id] = []
@@ -43,18 +45,19 @@ Bot.prototype.meetOpponents = function(opponents){
 	}
 }
 
-Bot.prototype.recieveDeck = function(deck){
-	for(var ci in deck){
-		var card = deck[ci];
-		this.cards[card.id] = card;
-		this.deck.push(this.cards[card.id]);	
+Bot.prototype.recieveCards = function(cards){
+	for(var ci in cards){
+		var card = cards[ci];
+		this.cards[card.cid] = card;
+		this.deck.push(card.cid);	
 	}
 	this.trumpSuit = this.deck[this.deck.length - 1].suit;
+	setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
 }
 
-Bot.prototype.recieveCards = function(deals){
-	for (var dealN in deals) {
-		var deal = deals[dealN];
+Bot.prototype.recieveDeals = function(deals){
+	for (var di in deals) {
+		var deal = deals[di];
 		//var cardIndexInDeck = this.deck.map( (card) => {return card.id} ).indexOf(deal.cid);
 		//~cardIndexInDeck && this.deck.splice(cardIndexInDeck, 1);
 		this.deck.shift();
@@ -117,25 +120,6 @@ Bot.prototype.sendResponse = function(action){
 		return
 	}
 	this.game.recieveResponse(this, action ? action : null);
-}
-
-Bot.prototype.logState = function(){
-	utils.log('\n', this.id);
-
-	utils.log('Deck');
-	this.deck.map( (card) => utils.log(card) )
-	utils.log('Hand');
-	this.hands[this.id].map( (cid) => utils.log(this.cards[cid]) )
-
-	utils.log('\nAll cards');
-	for(var cid in this.cards){
-		if(this.cards.hasOwnProperty(cid)){
-			var card = this.cards[cid];
-			var value = card.value;
-			var suit = card.suit;
-			utils.log(cid, value, suit, card.position);
-		}
-	}
 }
 
 exports.Bot = Bot;
