@@ -4,7 +4,7 @@ var fs = require('fs');
 fs.writeFile('./logs/log.txt','');
 var logStream = fs.createWriteStream('./logs/log.txt', {'flags': 'a'});
 
-exports.generateID = function(){
+exports.generateId = function(){
 	return Math.random().toString(36).substr(2, 9);
 }
 
