@@ -133,14 +133,14 @@ Game.prototype.make = function(){
 	}
 
 	//Создаем колоду
-	for(var valueI in this.cardValues){
+	for(var vi in this.cardValues){
 
-		for(var suitI = 0; suitI < this.numOfSuits; suitI++){
+		for(var si = 0; si < this.numOfSuits; si++){
 			var id = 'card_' + utils.generateId();
 			var card = {
 				id: id,
-				value: this.cardValues[valueI],
-				suit: suitI,
+				value: this.cardValues[vi],
+				suit: si,
 				position: 'DECK'
 			}
 			this.cards[id] = card;
