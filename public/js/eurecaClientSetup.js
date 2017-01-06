@@ -30,10 +30,8 @@ var EurecaClientSetup = function() {
 	client.exports.recieveAction = function(action){		
 		if(action.cid){
 			if(cards[action.cid]){
-				var x = Math.round(Math.random()*screenWidth);
-				var y = Math.round(Math.random()*screenHeight);
 				cards[action.cid].setValue(action.suit, action.value);
-				cards[action.cid].setPosition(x, y)
+				cardsGroup.align(Math.floor(screenWidth / cards[action.cid].sprite.width), -1, cards[action.cid].sprite.width, cards[action.cid].sprite.height);
 			}
 			else{
 				var options = {
@@ -48,10 +46,8 @@ var EurecaClientSetup = function() {
 			for(var ci in action.cards){
 				var c = action.cards[ci];
 				if(cards[c.cid]){
-					var x = Math.round(Math.random()*screenWidth);
-					var y = Math.round(Math.random()*screenHeight);
 					cards[c.cid].setValue(c.suit, c.value);
-					cards[c.cid].setPosition(x, y);
+					cardsGroup.align(Math.floor(screenWidth / cards[c.cid].sprite.width), -1, cards[c.cid].sprite.width, cards[c.cid].sprite.height);
 				}
 				else{
 					var options = {
@@ -60,6 +56,23 @@ var EurecaClientSetup = function() {
 						value: c.value
 					}
 					cards[c.cid] = new Card(options);
+				}
+			}
+		}
+		else if(action.type == 'DISCARD'){
+			for(var i in action.ids){
+				var cid = action.ids[i];
+				if(cards[cid]){
+					cards[cid].kill();
+					delete cards[cid];
+				}
+			}
+		} 
+		else if(action.type == 'TAKE' && action.ids){
+			for(var i in action.ids){
+				var cid = action.ids[i];
+				if(cards[cid]){
+					cards[cid].setValue(null,0);
 				}
 			}
 		}

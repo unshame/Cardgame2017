@@ -1,4 +1,4 @@
-var player, playersGroup;
+var cardsGroup;
 var cards = {};
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
@@ -37,18 +37,7 @@ function create ()
     land.fixedToCamera = true;
 
     //Players will go here
-    playersGroup = game.add.group();
-
-    //Creating local player
-    var options = {
-        id:myId,
-        game:game
-    }
-    player = new Card(options);
-
-    //Players list and shortcuts
-    cards[myId] = player;
-    sprite = player.sprite;
+    cardsGroup = game.add.group();
 
     if(game.renderType!=2){
 	    game.scale.pageAlignHorizontally = true;
