@@ -19,46 +19,49 @@ Card = function (options) {
     this.sprite.input.enableDrag(false, true);
     this.sprite.events.onDragStart.add(this.dragStart, this);
     this.sprite.events.onDragStop.add(this.dragStop, this);
+    this.sprite.anchor.set(0.5, 0.5);
+
+    this.glow = game.add.sprite(0, 0, 'glow');
+    this.glow.anchor.set(0.5, 0.5);
+    this.glow.tint = Math.random() * 0xffffff;;
+
+    this.glowOff = game.add.tween(this.glow);
+    this.glowOff.to({alpha: 0.25}, 1500, Phaser.Easing.Linear.None);
+
+    this.glowOn = game.add.tween(this.glow);
+    this.glowOn.to({alpha: 0.75}, 1500, Phaser.Easing.Linear.None);
+
+    this.glowOn.onComplete.add(() => {
+        if(this.glow.visible)
+            this.glowOff.start();
+    },this)
+    this.glowOff.onComplete.add(() => {
+        if(this.glow.visible)
+            this.glowOn.start();
+    },this)
 
     this.setValue(this.options.suit, this.options.value);
-
-    //this.style = { font: "16px Arial", fill: "#fff", wordWrap: true, wordWrapWidth: this.sprite.width, align: "center" };
-    //this.text = game.add.text(0, 0, this.options.suit !== null && this.options.suit !== undefined && (cardValueToString(this.options.value, 'RU') + ' ' + getSuitStrings('RU')[this.options.suit]) || '??', this.style);
-    //this.text.anchor.set(0.5);
-
-
 
     //this.sprite = game.add.sprite(x, y, 'cardsClassic');
     //this.sprite.frame = Math.floor(Math.random()*52)
     //this.sprite.scale.setTo(0.5, 0.5);
 
-    this.sprite.anchor.set(0.5, 0.5);
+    
 
     this.id = this.options.id;
 
-
-
-    this.emitter = game.add.emitter(this.sprite.centerX, this.sprite.centerY, 200);
-    this.emitter.minParticleSpeed.x = 0;
-    this.emitter.minParticleSpeed.y = 0;
-    this.emitter.maxParticleSpeed.x = 0;
-    this.emitter.maxParticleSpeed.y = 100;
-    this.emitter.gravity = -100;
-
-    this.emitter.makeParticles('particle');
-
-    this.emitter.width = this.sprite.width;
-    this.emitter.height = this.sprite.height;
-
     this.bundle = game.add.group();
-    this.bundle.add(this.emitter);
+    this.bundle.add(this.glow);
     this.bundle.add(this.sprite);
     cardsGroup.add(this.bundle);  
     cardsGroup.align(Math.floor(screenWidth / this.sprite.width), -1, this.sprite.width, this.sprite.height);
     cardsGroup.bringToTop(this.bundle);
-    this.emitter.start(false, 1000, 1);
-    if(!this.options.suit && this.options.suit != 0)
-        this.emitter.on = false;
+
+    if(this.options.suit || this.options.suit == 0)
+        this.glowOff.start()
+    else
+        this.glow.visible = false;
+        
 };
 
 Card.prototype.setValue = function(suit, value){
@@ -91,14 +94,14 @@ Card.prototype.dragStop = function(){
 }
 
 Card.prototype.kill = function() {
-    this.emitter.on = false;
+    this.glow.kill();
     this.sprite.kill();  
 
 }
 
 Card.prototype.update = function() {
-    this.emitter.position.x = this.sprite.centerX;
-    this.emitter.position.y = this.sprite.centerY;
+    this.glow.x = this.sprite.x ;
+    this.glow.y = this.sprite.y ;
 };
 
 //party time
