@@ -66,3 +66,26 @@ Card.prototype.kill = function() {
 
 Card.prototype.update = function() {
 };
+
+//party time
+var throwCards = function(){
+
+    this.emitter = game.add.emitter(game.world.centerX, 200, 200);
+
+    var frames = [];
+    for(var i = 0; i < 52; i++){
+        frames.push(i)
+    }
+    this.emitter.makeParticles('cardsModern',frames);
+
+    this.emitter.start(false, 5000, 20);
+    this.emitter.width = screenWidth
+    this.emitter.height = screenHeight
+
+    game.world.bringToTop(this.emitter)
+}
+throwCards.prototype.stop = function(){
+    if(this.emitter.on){
+        this.emitter.destroy();
+    }
+}
