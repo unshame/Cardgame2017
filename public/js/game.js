@@ -1,5 +1,5 @@
 var player, playersGroup;
-var charactersList = {};
+var cards = {};
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
 var game = new Phaser.Game(
@@ -44,11 +44,11 @@ function create ()
         id:myId,
         game:game
     }
-    player = new Character(options);
+    player = new Card(options);
 
     //Players list and shortcuts
-    charactersList[myId] = player;
-    headSprite = player.headSprite;
+    cards[myId] = player;
+    sprite = player.sprite;
 
     if(game.renderType!=2){
 	    game.scale.pageAlignHorizontally = true;
@@ -62,7 +62,14 @@ function create ()
 
 
 function update () {
-    
+    /*for(var ci in cards){
+        if(!cards.hasOwnProperty(ci))
+            continue;
+
+        var c = cards[ci];
+        c.text.x = Math.floor(c.sprite.x);
+        c.text.y = Math.floor(c.sprite.y - c.sprite.height / 2 - 20);
+    }*/
 }
 
 function render () {

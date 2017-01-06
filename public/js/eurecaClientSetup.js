@@ -1,36 +1,71 @@
-var Server;
+var server;
 
 var EurecaClientSetup = function() {
 	//create an instance of eureca.io client
 
-	var Client = new Eureca.Client();
+	var client = new Eureca.Client();
 	
-	Client.ready(function (proxy) {		
-		Server = proxy;
+	client.ready(function (proxy) {		
+		server = proxy;
 	});
 	
 	
 	//methods defined under "exports" namespace become available in the server side
 	
-	Client.exports.setId = function(id) 
+	client.exports.setId = function(id) 
 	{
 		window.myId = id;
 		create();
 	}	
-	Client.exports.meetOpponents = function(opponents){
+	client.exports.meetOpponents = function(opponents){
 		console.log(opponents);
-		for(var oi in opponents){
-			new Character(opponents[oi].id);
-		}
+		//for(var oi in opponents){
+		//	new Card(opponents[oi].id);
+		//}
 		
 	}
-	Client.exports.recievePossibleActions = function(actions){		
+	client.exports.recievePossibleActions = function(actions){		
 		console.log(actions)
 	}
-	Client.exports.recieveAction = function(action){		
+	client.exports.recieveAction = function(action){		
+		if(action.cid){
+			if(cards[action.cid]){
+				var x = Math.round(Math.random()*screenWidth);
+				var y = Math.round(Math.random()*screenHeight);
+				cards[action.cid].setValue(action.suit, action.value);
+				cards[action.cid].setPosition(x, y)
+			}
+			else{
+				var options = {
+					id: action.cid,
+					suit: action.suit,
+					value: action.value
+				}
+				cards[action.cid] = new Card(options);
+			}
+		}
+		else if(action.cards){
+			for(var ci in action.cards){
+				var c = action.cards[ci];
+				if(cards[c.cid]){
+					var x = Math.round(Math.random()*screenWidth);
+					var y = Math.round(Math.random()*screenHeight);
+					cards[c.cid].setValue(c.suit, c.value);
+					cards[c.cid].setPosition(x, y);
+				}
+				else{
+					var options = {
+						id: c.cid,
+						suit: c.suit,
+						value: c.value
+					}
+					cards[c.cid] = new Card(options);
+				}
+			}
+		}
 		console.log(action)
 	}
-	Client.exports.handleLateness = function(){
+	client.exports.handleLateness = function(){
 		console.log('Too late');
 	}
 }
