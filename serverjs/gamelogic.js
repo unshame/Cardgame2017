@@ -578,7 +578,8 @@ Game.prototype.processAction = function(player, action){
 					//Атакующий не доложил карту, переходим к помогающему
 					case 'REPEATING_ATTACK':
 						this.skipCounter++;
-						this.setTurnStage('SUPPORT')
+						this.setTurnStage('SUPPORT');
+						break;
 
 					default:
 						//Если кто-то из игроков еще не походил, даем ему возможность 
@@ -789,7 +790,7 @@ Game.prototype.setTurnStage = function(stage){
 }
 
 //Отправляет атакующему возможные ходы
-Game.prototype.letAttack = function(pid){	
+Game.prototype.letAttack = function(pid){
 
 	var player = this.playersById[pid];
 
@@ -854,7 +855,7 @@ Game.prototype.letAttack = function(pid){
 }
 
 //Отправляет защищающемуся возможные ходы
-Game.prototype.letDefend = function(pid){	
+Game.prototype.letDefend = function(pid){
 
 	var player = this.playersById[pid];
 
