@@ -11,62 +11,21 @@ var Bot = function(){
 	this.type = 'bot';
 	this.connected = true;
 
-	this.opponents = [];
-
 	var nameIndex = Math.floor(Math.random()*randomNames.length);
 	this.name = randomNames[nameIndex];
 	randomNames.splice(nameIndex,1);
-
-
-	this.hands = {};
-	this.hands[this.id] = []
-
-	this.deck = [];
-	this.cards = {};
-
-	this.field = {};
-
-	for (var i = 0; i <= 6; i++) {
-		this.field['FIELD'+i] = {
-			attack: null,
-			defense: null
-		}
-	}
 
 	this.game = null;
 }
 
 Bot.prototype.meetOpponents = function(opponents){
-	for (var opponentN in opponents) {
-		var opponent = opponents[opponentN];
-		if(opponent.id == this.id) 
-			continue;
-		this.hands[opponent.id] = [];
-	}
 }
 
 Bot.prototype.recieveCards = function(cards){
-	for(var ci in cards){
-		var card = cards[ci];
-		this.cards[card.cid] = card;
-		this.deck.push(card.cid);	
-	}
-	this.trumpSuit = this.deck[this.deck.length - 1].suit;
 	setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
 }
 
 Bot.prototype.recieveDeals = function(deals){
-	for (var di in deals) {
-		var deal = deals[di];
-		//var cardIndexInDeck = this.deck.map( (card) => {return card.id} ).indexOf(deal.cid);
-		//~cardIndexInDeck && this.deck.splice(cardIndexInDeck, 1);
-		this.deck.shift();
-		this.cards[deal.cid].value = deal.value || null;
-		this.cards[deal.cid].suit = deal.suit || null;
-		this.cards[deal.cid].position = deal.pid;
-		this.hands[deal.pid].push(deal.cid);
-	}
-	//this.logState();
 	setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
 }
 
@@ -85,28 +44,6 @@ Bot.prototype.recieveValidActions = function(actions){
 }
 
 Bot.prototype.recieveAction = function(action){
-	switch(action.type){
-		case 'ATTACK':
-			var ci = this.hands[this.id].indexOf(action.cid);
-			var card = this.cards[action.cid];
-
-			card.position = action.position;
-
-			this.hands[this.id].splice(ci, 1);
-			this.field[action.position].attack = action.cid;
-			
-		case 'DEFENSE':
-			break;
-		case 'SKIP':
-			break;
-		case 'TAKE':
-			break;
-		case 'DISCARD':
-			break;
-		default:
-			utils.log(this.id, 'Unknown action')
-			break;
-	}
 	setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
 }
 
