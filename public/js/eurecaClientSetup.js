@@ -7,6 +7,7 @@ var EurecaClientSetup = function() {
 	
 	client.ready(function (proxy) {		
 		server = proxy;
+		create();
 	});
 	
 	
@@ -15,7 +16,6 @@ var EurecaClientSetup = function() {
 	client.exports.setId = function(id) 
 	{
 		window.myId = id;
-		create();
 	}	
 	client.exports.meetOpponents = function(opponents){
 		//console.log(opponents);
@@ -87,4 +87,5 @@ var EurecaClientSetup = function() {
 	client.exports.handleLateness = function(){
 		console.log('Too late');
 	}
+	return client;
 }

@@ -371,7 +371,11 @@ Game.prototype.gameStateNotify = function(player){
 			cardsToSend.push(newCard);
 		}		
 	}
-
+	for(var ci in cardsToSend){
+		var card = cardsToSend[ci];
+		card.cid = card.id;
+		delete card.id;
+	}
 	player.recieveCards(cardsToSend, this.trumpSuit);
 }
 

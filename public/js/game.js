@@ -1,23 +1,24 @@
-var cardsGroup, emitterGroup;
+var cardsGroup;
 var cards = {};
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
 var game = new Phaser.Game(
 	screenWidth, 
-	screenHeight, 
-    //!Phaser.Device.Desktop ? Phaser.CANVAS : Phaser.WEBGL, 
+	screenHeight,  
 	Phaser.WEBGL, 
-	'phaser-example', 
+	'cardgame', 
 	{ preload: preload, create: EurecaClientSetup, update: update, render: render }
 );
 
 var onScreenChange = function() {
-	
+    screenWidth = window.innerWidth;
+    screenHeight = window.innerHeight;
+	game.scale.setGameSize(screenWidth, screenHeight)
+    land.width = screenWidth;
+    land.height =  screenHeight;
 }
 window.addEventListener("resize",onScreenChange);
 window.addEventListener("orientationchange",onScreenChange);
-
-
 
 function handleInput(player)
 {
@@ -38,16 +39,8 @@ function create ()
 
     //Players will go here
     cardsGroup = game.add.group();
-    emitterGroup = game.add.group();
 
-    if(game.renderType!=2){
-	    game.scale.pageAlignHorizontally = true;
-	    game.scale.pageAlignVertically = true;
-	    game.scale.setScreenSize(true);
-    } 
     game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
-    //Camera
-    //game.camera.follow(baseSprite);
 }
 
 
