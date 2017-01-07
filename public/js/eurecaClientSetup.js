@@ -27,7 +27,11 @@ var EurecaClientSetup = function() {
 	client.exports.recievePossibleActions = function(actions){		
 		console.log(actions)
 	}
-	client.exports.recieveAction = function(action){		
+	client.exports.recieveAction = function(action){
+		if(action.type == 'CARDS'){
+			cards = {};
+			cardsGroup.removeAll();
+		}		
 		if(action.cid){
 			if(cards[action.cid]){
 				cards[action.cid].setValue(action.suit, action.value);
