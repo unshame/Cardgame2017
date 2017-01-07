@@ -67,6 +67,7 @@ server.onConnect(function (conn) {
 			p.connid = conn.id;
 			p.connected = true;
 			remote.setId(conn.id);
+			game.gameStateNotify(p);
 			game.disconnectedPlayers.shift();
 		}
 	}
