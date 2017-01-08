@@ -1,4 +1,5 @@
 var server;
+var isInDebugMode = false;
 
 var EurecaClientSetup = function() {
 	//create an instance of eureca.io client
@@ -25,12 +26,18 @@ var EurecaClientSetup = function() {
 		
 	}
 	client.exports.recievePossibleActions = function(actions){		
-		console.log(actions)
+		if(isInDebugMode)
+			console.log(actions)
 	}
 	client.exports.recieveAction = function(action){
 		if(action.type == 'CARDS'){
+			for(var cid in cards){
+				if(cards.hasOwnProperty(cid)){
+					cards[cid].bundle.removeAll(true);
+				}
+			}
 			cards = {};
-			cardsGroup.removeAll();
+			cardsGroup.removeAll(true);
 		}		
 		if(action.cid){
 			if(cards[action.cid]){
@@ -97,13 +104,16 @@ var EurecaClientSetup = function() {
 				}
 			}
 		}
-		console.log(action)
+		if(isInDebugMode)
+			console.log(action)
 	}
 	client.exports.recieveNotification = function(note, actions){
-		console.log(note, actions)
+		if(isInDebugMode)
+			console.log(note, actions)
 	}
 	client.exports.handleLateness = function(){
-		console.log('Too late');
+		if(isInDebugMode)
+			console.log('Too late');
 	}
 	return client;
 }

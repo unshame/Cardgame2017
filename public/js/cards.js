@@ -16,7 +16,7 @@ Card = function (options) {
     this.sprite = game.add.sprite(0, 0, 'cardsModern');
 
     this.sprite.inputEnabled = true;
-    this.sprite.input.enableDrag(false, true);
+    this.sprite.input.enableDrag(false);
     this.sprite.events.onDragStart.add(this.dragStart, this);
     this.sprite.events.onDragStop.add(this.dragStop, this);
     this.sprite.anchor.set(0.5, 0.5);
@@ -76,20 +76,39 @@ Card.prototype.setPosition = function(x, y){
 }
 
 Card.prototype.dragStart = function(p,x,y){
+
+    if(this.easeOut){
+        this.easeOut.stop();
+        this.easeOut = null;
+    }
+
     cardsGroup.bringToTop(this.bundle);
-    this.lastPosition = {
-        x: this.sprite.x,
-        y: this.sprite.y
-    };
+    if(!this.isReturning){
+        this.lastPosition = {
+            x: this.sprite.x,
+            y: this.sprite.y
+        }
+    }
 }
 
 Card.prototype.dragStop = function(){
-    var easeOut = game.add.tween(this.sprite);
+
+    this.isReturning = true;
+
+    if(this.easeOut){
+        this.easeOut.stop();
+        this.easeOut = null;
+    }
+
+    this.easeOut = game.add.tween(this.sprite);
     var dest = new Phaser.Point(this.lastPosition.x, this.lastPosition.y);
-    easeOut.to(dest, 200, Phaser.Easing.Quadratic.Out);
-    this.sprite.inputEnabled = false;
-    easeOut.onComplete.addOnce(() => {this.sprite.inputEnabled = true}, this);
-    easeOut.start();
+
+    this.easeOut.to(dest, 200, Phaser.Easing.Quadratic.Out);
+    this.easeOut.onComplete.addOnce(() => {
+        this.isReturning = false;
+    }, this);
+
+    this.easeOut.start();
 }
 
 Card.prototype.kill = function() {
