@@ -46,12 +46,12 @@ Card = function (options) {
 			this.glowOn.start();
 	},this)
 
-	this.moveEmitter = game.add.emitter(this.sprite.centerX, this.sprite.centerY, 200);
+	this.moveEmitter = game.add.emitter(this.sprite.centerX, this.sprite.centerY);
+	this.moveEmitter.maxParticles = 30;
 	this.moveEmitter.gravity = 0;
-	this.moveEmitter.lifespan = 750;
+	this.moveEmitter.lifespan = 600;
 	this.moveEmitter.minParticleSpeed.setTo(-this.sprite.width, -this.sprite.height);
 	this.moveEmitter.maxParticleSpeed.setTo(this.sprite.width, this.sprite.height);
-	this.moveEmitter.maxParicles = 10;
 
 	this.setValue(this.suit, this.value);
 
@@ -71,13 +71,12 @@ Card = function (options) {
 	if(this.suit || this.suit === 0)
 		this.glowOff.start()
 	else
-		this.glow.visible = false;
-	this.moveEmitter.on = false;		
+		this.glow.visible = false;	
 };
 
 Card.prototype.setValue = function(suit, value){
 	if(suit === null || suit === undefined){
-		this.sprite.frame =  65;
+		this.sprite.frame =  55;
 		this.moveEmitter.makeParticles('suits', [1,2,3,4]);
 		this.suit = null;
 		this.value = 0;
@@ -114,7 +113,6 @@ Card.prototype.mouseDown = function(){
 Card.prototype.mouseUp = function(){
 	if(this.clickState == 'PICKED_UP'){
 		this.clickState = 'PUT_DOWN';
-		this.moveEmitter.on = false;
 		this.dragStop();
 	}
 	else if(this.clickState == 'CLICKED'){
@@ -190,11 +188,25 @@ Card.prototype.clickedInbound = function(){
 }
 
 Card.prototype.spawnTrail = function(){
+	var curTime = new Date().getTime();
+	if(this.lastParticleTime && curTime - this.lastParticleTime < 20)
+		return;
+
+	this.lastParticleTime = curTime;
+
+	var distance = this.sprite.position.distance(new Phaser.Point(this.moveEmitter.emitX, this.moveEmitter.emitY), true);
+	if(distance < 2){
+		this.moveEmitter.width = this.sprite.width - 35;
+		this.moveEmitter.height = this.sprite.height - 35;
+	}
+	else{
+		this.moveEmitter.width = this.moveEmitter.height = 0;
+	}
 	this.moveEmitter.emitX = this.sprite.x;
 	this.moveEmitter.emitY = this.sprite.y;
 	this.moveEmitter.emitParticle();
 	this.moveEmitter.forEachAlive((p) => {
-		p.alpha = p.lifespan / this.moveEmitter.lifespan * 0.5;
+		p.alpha = p.lifespan / this.moveEmitter.lifespan * 0.6;
 	})
 }
 
@@ -222,7 +234,7 @@ Card.prototype.update = function() {
 		mP = new Phaser.Point(game.input.activePointer.x - this.bundle.x, game.input.activePointer.y - this.bundle.y);
 		this.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
 	}
-	if(this.clickState == 'PICKED_UP' || this.dragState == 'DRAGGED'){
+	if(this.clickState == 'PICKED_UP' || this.dragState == 'DRAGGED' || this.isReturning){
 		this.spawnTrail();
 	}
 	this.glow.x = this.sprite.x;
