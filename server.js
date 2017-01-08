@@ -43,10 +43,10 @@ server.attach(Server);
 
 //Клиент подключился
 server.onConnect(function (conn) {
-    console.log('New Client id=%s ', conn.id, conn.remoteAddress);
+	console.log('New Client id=%s ', conn.id, conn.remoteAddress);
 
 	//getClient позволяет нам получить доступ к функциям на стороне клиента
-    var remote = server.getClient(conn.id);
+	var remote = server.getClient(conn.id);
 
 	//Запоминаем информацию о клиенте
 	clients[conn.id] = {id:conn.id, remote:remote};
@@ -76,7 +76,7 @@ server.onConnect(function (conn) {
 
 //Клиент отключился
 server.onDisconnect(function (conn) {
-    console.log('Client disconnected ', conn.id);
+	console.log('Client disconnected ', conn.id);
 
 	var removeId = clients[conn.id].id;
 

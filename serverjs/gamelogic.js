@@ -203,15 +203,15 @@ Game.prototype.make = function(){
 //Размешивает колоду
 Game.prototype.shuffleDeck = function(){
 
-    for (var ci = this.deck.length; ci; ci--) {
+	for (var ci = this.deck.length; ci; ci--) {
 
-        var randomIndex = Math.floor(Math.random() * ci);
-        var temp = this.deck[ci - 1];
+		var randomIndex = Math.floor(Math.random() * ci);
+		var temp = this.deck[ci - 1];
 
-        this.deck[ci - 1] = this.deck[randomIndex];
-        this.deck[randomIndex] = temp;
+		this.deck[ci - 1] = this.deck[randomIndex];
+		this.deck[randomIndex] = temp;
 
-    }
+	}
 }
 
 //Раздает карты пока у всех не по 6 карт или пока колода не закончится
