@@ -392,7 +392,7 @@ Game.prototype.gameStateNotify = function(player){
 		delete card.id;
 	}
 	try{
-		player.recieveCards(cardsToSend, this.trumpSuit);
+		player.recieveCards(cardsToSend, this.trumpSuit, this.discardPile.length);
 	}
 	catch(e){
 		console.log(e);

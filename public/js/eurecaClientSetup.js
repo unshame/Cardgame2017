@@ -36,7 +36,7 @@ var EurecaClientSetup = function() {
 			if(cards[action.cid]){
 				cards[action.cid].setValue(action.suit, action.value);
 				//cardsGroup.align(Math.floor(screenWidth / cards[action.cid].sprite.width), -1, cards[action.cid].sprite.width, cards[action.cid].sprite.height);
-				cards[action.cid].glow.visible = action.suit || action.suit == 0;
+				cards[action.cid].glow.visible = action.suit || action.suit === 0;
 				cards[action.cid].glowOff.start()
 				cardsGroup.bringToTop(cards[action.cid].bundle)
 			}
@@ -55,7 +55,7 @@ var EurecaClientSetup = function() {
 				if(cards[c.cid]){
 					cards[c.cid].setValue(c.suit, c.value);
 					//cardsGroup.align(Math.floor(screenWidth / cards[c.cid].sprite.width), -1, cards[c.cid].sprite.width, cards[c.cid].sprite.height);
-					cards[c.cid].glow.visible = c.suit || c.suit == 0;
+					cards[c.cid].glow.visible = c.suit || c.suit === 0;
 					cards[c.cid].glowOff.start()
 					cardsGroup.bringToTop(cards[c.cid].bundle)
 				}
@@ -66,6 +66,15 @@ var EurecaClientSetup = function() {
 						value: c.value
 					}
 					cards[c.cid] = new Card(options);
+				}
+			}
+			if(action.numDiscarded){
+				for (var i = 0; i < action.numDiscarded; i++) {
+					var id = 'discarded_'+i;
+					var options = {
+						id: id
+					}
+					cards[id] = new Card(options);
 				}
 			}
 		}

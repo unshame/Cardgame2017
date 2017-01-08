@@ -22,13 +22,16 @@ Player.prototype.meetOpponents = function(opponents){
 		this.remote.meetOpponents(opponents);
 }
 
-Player.prototype.recieveCards = function(cards, trumpSuit){
+Player.prototype.recieveCards = function(cards, trumpSuit, numDiscarded){
 	var action = {
 		type: 'CARDS',
 		cards: []
 	}
 	if(trumpSuit || trumpSuit === 0)
 		action.trumpSuit = trumpSuit;
+
+	if(numDiscarded || numDiscarded === 0)
+		action.numDiscarded = numDiscarded;	
 
 	for(var ci in cards){
 		action.cards.push(cards[ci])

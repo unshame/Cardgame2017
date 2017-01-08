@@ -57,7 +57,7 @@ Card = function (options) {
     cardsGroup.align(Math.floor(screenWidth / (this.sprite.width + 20)), -1, this.sprite.width + 20, this.sprite.height + 20);
     cardsGroup.bringToTop(this.bundle);
 
-    if(this.options.suit || this.options.suit == 0)
+    if(this.options.suit || this.options.suit === 0)
         this.glowOff.start()
     else
         this.glow.visible = false;
