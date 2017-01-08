@@ -45,10 +45,6 @@ function update () {
 	for(var ci in cards){
 		if(!cards.hasOwnProperty(ci))
 			continue;
-		var c = cards[ci];
-		if(c.clickState == 'PICKED_UP'){
-			c.setPosition(game.input.activePointer.x, game.input.activePointer.y)
-		}
 		cards[ci].update();
 	}
 }

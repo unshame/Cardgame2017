@@ -7,4 +7,5 @@ function preload () {
 	game.load.image('glow', 'assets/glow.png');
 	game.load.spritesheet('cardsClassic', 'assets/cards/classic.png', 390, 570, 52);
 	game.load.spritesheet('cardsModern', 'assets/cards/modern.png', 140, 190, 67);
+	game.load.spritesheet('suits', 'assets/particles/trails.png', 35, 35, 4);
 }

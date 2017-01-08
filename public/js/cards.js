@@ -28,7 +28,8 @@ Card = function (options) {
 
 	this.glow = game.add.sprite(0, 0, 'glow');
 	this.glow.anchor.set(0.5, 0.5);
-	this.glow.tint = Math.random() * 0xffffff;;
+	//this.glow.tint = Math.random() * 0xffffff;
+	this.glow.tint = 0xFFFF0A;
 
 	this.glowOff = game.add.tween(this.glow);
 	this.glowOff.to({alpha: 0.25}, 1500, Phaser.Easing.Linear.None);
@@ -45,6 +46,13 @@ Card = function (options) {
 			this.glowOn.start();
 	},this)
 
+	this.moveEmitter = game.add.emitter(this.sprite.centerX, this.sprite.centerY, 200);
+	this.moveEmitter.gravity = 0;
+	this.moveEmitter.lifespan = 750;
+	this.moveEmitter.minParticleSpeed.setTo(-this.sprite.width, -this.sprite.height);
+	this.moveEmitter.maxParticleSpeed.setTo(this.sprite.width, this.sprite.height);
+	this.moveEmitter.maxParicles = 10;
+
 	this.setValue(this.suit, this.value);
 
 	//this.sprite = game.add.sprite(x, y, 'cardsClassic');
@@ -54,6 +62,7 @@ Card = function (options) {
 	this.id = this.options.id;
 
 	this.bundle = game.add.group();
+	this.bundle.add(this.moveEmitter);
 	this.bundle.add(this.glow);
 	this.bundle.add(this.sprite);
 	cardsGroup.add(this.bundle);  
@@ -63,14 +72,22 @@ Card = function (options) {
 		this.glowOff.start()
 	else
 		this.glow.visible = false;
-		
+	this.moveEmitter.on = false;		
 };
 
 Card.prototype.setValue = function(suit, value){
-	if(suit === null || suit === undefined)
-		this.sprite.frame =  65
-	else
+	if(suit === null || suit === undefined){
+		this.sprite.frame =  65;
+		this.moveEmitter.makeParticles('suits', [1,2,3,4]);
+		this.suit = null;
+		this.value = 0;
+	}
+	else{
 		this.sprite.frame =  suit*13+value-2;
+		this.moveEmitter.makeParticles('suits', suit);
+		this.suit = suit;
+		this.value = value;
+	}
 }
 
 Card.prototype.setPosition = function(x, y){
@@ -97,6 +114,7 @@ Card.prototype.mouseDown = function(){
 Card.prototype.mouseUp = function(){
 	if(this.clickState == 'PICKED_UP'){
 		this.clickState = 'PUT_DOWN';
+		this.moveEmitter.on = false;
 		this.dragStop();
 	}
 	else if(this.clickState == 'CLICKED'){
@@ -106,6 +124,13 @@ Card.prototype.mouseUp = function(){
 				this.easeOut.stop();
 				this.easeOut = null;
 			}
+			this.shiftPosition = new Phaser.Point(
+				game.input.activePointer.x - this.bundle.x - this.sprite.x,
+				game.input.activePointer.y - this.bundle.y - this.sprite.y
+			);
+			this.shiftDuration = 100;
+			this.shiftTime = new Date().getTime() + this.shiftDuration;
+			cardsGroup.bringToTop(this.bundle);
 			this.clickState = 'PICKED_UP';
 		}
 		else{
@@ -119,24 +144,22 @@ Card.prototype.dragStart = function(){
 	if(this.clickState == 'PICKED_UP')
 		return;
 
+	this.dragState = 'DRAGGED';
+
 	if(this.easeOut){
 		this.easeOut.stop();
 		this.easeOut = null;
 	}
 
 	cardsGroup.bringToTop(this.bundle);
-	if(!this.isReturning){
-		this.lastPosition = {
-			x: this.sprite.x,
-			y: this.sprite.y
-		}
-	}
 }
 
 Card.prototype.dragStop = function(){
 
 	if(this.clickState == 'PICKED_UP')
 		return;
+
+	this.dragState = 'RESTED';
 
 	this.isReturning = true;
 
@@ -146,7 +169,7 @@ Card.prototype.dragStop = function(){
 	}
 
 	this.easeOut = game.add.tween(this.sprite);
-	var dest = new Phaser.Point(this.lastPosition.x, this.lastPosition.y);
+	var dest = new Phaser.Point(0, 0);
 
 	this.easeOut.to(dest, 200, Phaser.Easing.Quadratic.Out);
 	this.easeOut.onComplete.addOnce(() => {
@@ -166,15 +189,44 @@ Card.prototype.clickedInbound = function(){
 	return cond
 }
 
+Card.prototype.spawnTrail = function(){
+	this.moveEmitter.emitX = this.sprite.x;
+	this.moveEmitter.emitY = this.sprite.y;
+	this.moveEmitter.emitParticle();
+	this.moveEmitter.forEachAlive((p) => {
+		p.alpha = p.lifespan / this.moveEmitter.lifespan * 0.5;
+	})
+}
+
 Card.prototype.kill = function() {
+	this.moveEmitter.on = false;
+	this.moveEmitter.destroy();
 	this.glow.kill();
 	this.sprite.kill();  
 
 }
 
 Card.prototype.update = function() {
-	this.glow.x = this.sprite.x ;
-	this.glow.y = this.sprite.y ;
+	if(this.clickState == 'PICKED_UP'){
+		var sTime, sP, mP;
+		sTime = this.shiftTime - new Date().getTime();
+		if(sTime > 0){
+			sP = new Phaser.Point(
+				Math.round(this.shiftPosition.x / this.shiftDuration * sTime), 
+				Math.round(this.shiftPosition.y / this.shiftDuration * sTime)
+			);
+		}
+		else{
+			sP = new Phaser.Point(0, 0);
+		}
+		mP = new Phaser.Point(game.input.activePointer.x - this.bundle.x, game.input.activePointer.y - this.bundle.y);
+		this.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
+	}
+	if(this.clickState == 'PICKED_UP' || this.dragState == 'DRAGGED'){
+		this.spawnTrail();
+	}
+	this.glow.x = this.sprite.x;
+	this.glow.y = this.sprite.y;
 };
 
 //party time
@@ -189,8 +241,8 @@ var throwCards = function(){
 	this.emitter.makeParticles('cardsModern', frames);
 
 	this.emitter.start(false, 5000, 20);
-	this.emitter.width = screenWidth
-	this.emitter.height = screenHeight
+	this.emitter.width = screenWidth;
+	this.emitter.height = screenHeight;
 
 	game.world.bringToTop(this.emitter)
 }
