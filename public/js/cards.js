@@ -13,11 +13,15 @@ Card = function (options) {
     this.suit = this.options.suit;
     this.value = this.options.value;
 
+    this.clickState = 'PUT_DOWN'
+
     //Sprites
     this.sprite = game.add.sprite(0, 0, 'cardsModern');
 
     this.sprite.inputEnabled = true;
     this.sprite.input.enableDrag(false);
+    this.sprite.events.onInputDown.add(this.mouseDown, this);
+    this.sprite.events.onInputUp.add(this.mouseUp, this);
     this.sprite.events.onDragStart.add(this.dragStart, this);
     this.sprite.events.onDragStop.add(this.dragStop, this);
     this.sprite.anchor.set(0.5, 0.5);
@@ -70,11 +74,40 @@ Card.prototype.setValue = function(suit, value){
 }
 
 Card.prototype.setPosition = function(x, y){
-    this.sprite.x = x;
-    this.sprite.y = y;
+    this.bundle.x = x;
+    this.bundle.y = y;
 }
 
-Card.prototype.dragStart = function(p,x,y){
+Card.prototype.mouseDown = function(){
+    if(this.clickState != 'PICKED_UP'){
+        this.clickState = this.clickedInbound() ? 'CLICKED' : 'PUT_DOWN';
+    }
+}
+
+Card.prototype.mouseUp = function(){
+    if(this.clickState == 'PICKED_UP'){
+        this.clickState = 'PUT_DOWN';
+        this.dragStop();
+    }
+    else if(this.clickState == 'CLICKED'){
+        
+        if(this.clickedInbound()){
+            if(this.easeOut){
+                this.easeOut.stop();
+                this.easeOut = null;
+            }
+            this.clickState = 'PICKED_UP';
+        }
+        else{
+            this.clickState = 'PUT_DOWN';
+        }
+    }
+}
+
+Card.prototype.dragStart = function(){
+
+    if(this.clickState == 'PICKED_UP')
+        return;
 
     if(this.easeOut){
         this.easeOut.stop();
@@ -92,6 +125,9 @@ Card.prototype.dragStart = function(p,x,y){
 
 Card.prototype.dragStop = function(){
 
+    if(this.clickState == 'PICKED_UP')
+        return;
+
     this.isReturning = true;
 
     if(this.easeOut){
@@ -108,6 +144,16 @@ Card.prototype.dragStop = function(){
     }, this);
 
     this.easeOut.start();
+}
+
+Card.prototype.clickedInbound = function(){
+    var cond = 
+        game.input.activePointer.button == Phaser.Mouse.LEFT_BUTTON &&
+        game.input.activePointer.x >= this.bundle.x - this.bundle.width / 2 &&
+        game.input.activePointer.x <= this.bundle.x + this.bundle.width / 2 &&
+        game.input.activePointer.y >= this.bundle.y - this.bundle.height / 2 &&
+        game.input.activePointer.y <= this.bundle.y + this.bundle.height / 2
+    return cond
 }
 
 Card.prototype.kill = function() {

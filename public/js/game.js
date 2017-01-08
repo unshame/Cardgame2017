@@ -45,7 +45,10 @@ function update () {
     for(var ci in cards){
         if(!cards.hasOwnProperty(ci))
             continue;
-
+        if(cards[ci].clickState == 'PICKED_UP'){
+           cards[ci].sprite.x = game.input.activePointer.x - cards[ci].bundle.x;
+           cards[ci].sprite.y = game.input.activePointer.y - cards[ci].bundle.y;
+        }
         cards[ci].update();
     }
 }
