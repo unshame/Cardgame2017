@@ -18,12 +18,20 @@ var Game = function(players){
 	//Сохраняем ссылки на игроков локально
 	this.players = players.slice();	
 
+	//Счет побед и проигрышей игроков (объекты по id игроков)
+	this.scores = {};
+
 	//Создаем массив игроков по айди
 	this.playersById = {};
 	for(var pi in this.players){
 		var player = this.players[pi];
 		player.game = this;
 		this.playersById[player.id] = player;
+		this.scores[player.id] = {
+			wins: 0,
+			losses: 0,
+			cardsWhenLost: 0
+		};
 
 		//Сообщаем игрокам о соперниках
 		var opponents = [];
@@ -54,6 +62,7 @@ var Game = function(players){
 
 	//Запускаем игру
 	this.reset();
+	this.gameState = 'SHOULD_START';
 	this.make();
 }
 
@@ -63,6 +72,10 @@ Game.prototype.reset = function(){
 	//Свойства игры
 	this.gameNumber++;
 	this.gameState = 'NOT_STARTED';
+	this.gameResult = {
+		winners: [],
+		loser: null
+	}
 
 	//Свойства карт
 	this.cardValues = []
@@ -102,6 +115,10 @@ Game.prototype.reset = function(){
 
 	//'Действующие' игроки (id игроков)
 	this.playersActing = [];
+
+	//Невышедшие и вышедшие из игры игроки
+	this.activePlayers = [];
+	this.inactivePlayers = [];
 
 	//Возможные действия игроков
 	this.validActions = [];
@@ -473,11 +490,15 @@ Game.prototype.discardAndNotify = function(){
 	}
 }
 
-//Оповещает игроков об окончании игры и позволяет им голосовать за рематч
-Game.prototype.gameEndNotify = function(){
+//Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч
+Game.prototype.endGameAndNotify = function(){
+
+	utils.log('Game ended', this.id, '\n\n');
+	
 	var note = {
 		message: 'GAME_ENDED',
-		scores: {}				 //TODO: add scoreboard
+		scores: utils.copyObject(this.scores),
+		results: utils.copyObject(this.gameResult)				 
 	};
 	var actionAccept = {
 		type: 'ACCEPT'
@@ -485,10 +506,13 @@ Game.prototype.gameEndNotify = function(){
 	var actionDecline = {
 		type: 'DECLINE'
 	}
+
+	this.reset();
 	
 	this.validActions.push(actionAccept);
 	this.validActions.push(actionDecline);
 
+	this.waitForResponse(1, this.players);
 	this.notify(note, this.validActions.slice());
 }
 
@@ -899,13 +923,63 @@ Game.prototype.findPlayerToGoNext = function(){
 						ai = this.activePlayers.length - 1
 				}
 
-				utils.log(pid, 'is out of the game');	
+				utils.log(this.playersById[pid].name, 'is out of the game');	
 
 			}
 		}
 
-		//Если осталось меньше одного игрока, завершаем игру
-		if(this.activePlayers.length < 2){			
+		//Находим игроков, только что вышедших из игры
+		var newInactivePlayers = [];
+
+		for(var pi in this.players){
+
+			var p = this.players[pi];
+			var pid = p.id;			
+
+			if( !~this.activePlayers.indexOf(pid) && !~this.inactivePlayers.indexOf(pid) ){
+				newInactivePlayers.push(pid);
+			}
+		}
+
+		if(newInactivePlayers.length){
+
+			//Находим победителей
+			if(!this.inactivePlayers.length){
+
+				for(var i in newInactivePlayers){
+
+					var pid = newInactivePlayers[i];
+
+					this.scores[pid].wins++;
+					this.gameResult.winners.push(pid);
+
+					utils.log(this.playersById[pid].name, 'is a winner');
+				}
+				
+			}
+
+			//Запоминаем вышедших из игры игроков
+			this.inactivePlayers = this.inactivePlayers.concat(newInactivePlayers);
+		}
+
+		//Если осталось меньше двух игроков, завершаем игру
+		if(this.activePlayers.length < 2){		
+
+			//Находим проигравшего
+			if(this.activePlayers.length == 1){
+
+				var pid = this.activePlayers[0]
+
+				this.gameResult.loser = pid;
+				this.scores[pid].losses++;
+				this.scores[pid].cardsWhenLost += this.hands[pid].length;
+
+				utils.log(this.playersById[pid].name, 'is the loser');
+			}
+			else{
+				utils.log('Draw');
+			}
+
 			return false;
 		}
 	}
@@ -1079,7 +1153,9 @@ Game.prototype.letDefend = function(pid){
 		this.waitForResponse(1, this.players);
 		for(var pi in this.players){
 
-			var newAction = {};
+			var newAction = {
+				type: 'TAKE'
+			};
 			var p = this.players[pi];
 
 			if(p.id != action.pid){
@@ -1195,66 +1271,57 @@ Game.prototype.letDefend = function(pid){
 //Выбирает следующую стадию игры
 Game.prototype.continueGame = function(){
 
-	//Проверяем, нужно ли начинать игру
+	//Проверяем, нужно ли перезапускать игру
 	if(this.gameState == 'NOT_STARTED'){
 
-		//Проверяем только если это не первая игра
-		if(this.gameNumber){
+		//Считаем голоса
+		var numAccepted = 0;
+		var minAcceptedNeeded = Math.ceil(this.players.length / 2); //TODO: заменить на this.players.length в финальной версии
+		
+		for(var pi in this.players){
 
-			//Считаем голоса
-			var numAccepted = 0;
-			var minAcceptedNeeded = Math.ceil(this.players.length / 2); //TODO: заменить на this.players.length в финальной версии
-			
-			for(var pi in this.players){
+			var pid = this.players[pi].id;
+			var action = this.storedActions[pid];
 
-				var pid = this.players[pi].id;
-				var action = this.storedActions[pid];
-
-				if(action && action.type == 'ACCEPT')
-					numAccepted++;
-			}
-
-			utils.log(numAccepted, 'out of', this.players.length, 'voted for rematch')
-
-			var note = {
-				message: 'VOTE_RESULTS',
-				results: utils.copyObject(this.storedActions)
-			}
-
-			//Если голосов хватает, запускаем игру
-			if(numAccepted >= minAcceptedNeeded){
-
-				utils.log('Rematch');
-
-				//Оповещаем игроков о результате голосования
-				note.successful = true;
-				this.notify(note);
-
-				this.validActions = [];
-				this.storedActions = [];
-				this.gameState = 'SHOULD_START';
-
-				this.make();
-			}
-
-			//Иначе, не запускаем игру
-			else{
-
-				//Оповещаем игроков о результате голосования
-				note.successful = false;
-				this.notify(note);
-
-				utils.log('No rematch');
-
-				//TODO: оповестить лобби
-			}			
+			if(action && action.type == 'ACCEPT')
+				numAccepted++;
 		}
 
-		//Если игра первая, запускаем в любом случае
-		else{
+		utils.log(numAccepted, 'out of', this.players.length, 'voted for rematch')
+
+		var note = {
+			message: 'VOTE_RESULTS',
+			results: utils.copyObject(this.storedActions)
+		}
+
+		//Если голосов хватает, запускаем игру
+		if(numAccepted >= minAcceptedNeeded){
+
+			utils.log('Rematch');
+
+			//Оповещаем игроков о результате голосования
+			note.successful = true;
+			this.notify(note);
+
+			this.validActions = [];
+			this.storedActions = [];
 			this.gameState = 'SHOULD_START';
-			this.continueGame();
+
+			this.make();
 		}
+
+		//Иначе, не запускаем игру
+		else{
+
+			//Оповещаем игроков о результате голосования
+			note.successful = false;
+			this.notify(note);
+
+			utils.log('No rematch');
+
+			//TODO: оповестить лобби
+		}			
+
 		return
 	}
 
@@ -1292,26 +1359,23 @@ Game.prototype.continueGame = function(){
 		return
 	}
 
-	//Начинаем ход
-	if(!this.turnStage || this.turnStage == 'ENDED'){	
+	//Находим следующего игрока и проверяем, закончилась ли игра
+	if(this.turnStage == 'ENDED'){
 
-		if(this.turnStage){
+		utils.log('Turn Ended');
 
-			utils.log('Turn Ended');
+		var shouldContinue = this.findPlayerToGoNext();
 
-			//Находим следующего игрока и проверяем, закончилась ли игра
-			var shouldContinue = this.findPlayerToGoNext();
-
-			//Если игра закончилась, нужно будет дать возможность запустить еще одну игрокам
-			//В данный момент просто запускается еще одна, пока не дойдет до 10-й
-			if(!shouldContinue){
-				utils.log('Game ended', this.id, '\n\n');
-				this.reset();
-				this.waitForResponse(1, this.players, true);
-				this.gameEndNotify();
-				return
-			}
+		if(!shouldContinue){
+			this.endGameAndNotify();
+			return
 		}
+
+		this.turnStage = null;
+	}
+
+	//Начинаем ход
+	if(!this.turnStage){		
 
 		utils.log('\nTurn', this.turnNumber, this.playersById[this.attacker].name, this.playersById[this.defender].name, this.ally ? this.playersById[this.ally].name : null, '\nCards in deck:', this.deck.length);
 		
