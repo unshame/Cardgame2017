@@ -122,7 +122,7 @@ Game.prototype.reset = function(){
 //Подготовка к игре
 Game.prototype.make = function(){
 
-	utils.log('Game started', this.id)
+	utils.log('Game started', this.id, this.gameNumber)
 
 	//Игроки, которые еще не закончили игру
 	this.activePlayers = this.players.map((p) => p.id);
@@ -400,6 +400,115 @@ Game.prototype.gameStateNotify = function(player){
 	}
 }
 
+//Сбрасывает карты и оповещает игроков
+Game.prototype.discardAndNotify = function(){
+
+	//Сбрасываем счетчики и забываем предыдущую стадию хода
+	this.lastTurnStage = null;
+	this.fieldUsedSpots = 0;
+	this.skipCounter = 0;
+
+	var action = {
+		type: 'DISCARD',
+		ids: []
+	};
+
+	//Убираем карты со всех позиций на столе
+	for(var fi in this.field){
+
+		var fieldSpot = this.field[fi];
+
+		if(fieldSpot.attack){
+			var card = this.cards[fieldSpot.attack];
+			this.logAction(card, 'DISCARD', card.position, 'DISCARD_PILE');
+			card.position = 'DISCARD_PILE';
+
+			action.ids.push(fieldSpot.attack);
+			this.discardPile.push(fieldSpot.attack);
+			fieldSpot.attack = null;
+		}
+
+		if(fieldSpot.defense){
+			var card = this.cards[fieldSpot.defense];
+			this.logAction(card, 'DISCARD', card.position, 'DISCARD_PILE');
+			card.position = 'DISCARD_PILE';
+
+			action.ids.push(fieldSpot.defense);
+			this.discardPile.push(fieldSpot.defense);
+			fieldSpot.defense = null;
+		}
+
+	}
+
+	//Если карты были убраны, оповещаем игроков и переходим в фазу раздачи карт игрокам
+	if(action.ids.length){
+
+		//После первого сброса на стол можно класть больше карт
+		if(this.fullField <= this.zeroDiscardFieldSize){
+			this.fullField++;
+			utils.log('First discard, field expanded to', this.fullField);
+		}
+
+		this.turnStage = 'END_DEAL';
+
+		this.waitForResponse(1, this.players);
+		for (var pi in this.players) {
+			var player = this.players[pi];
+			try{
+				player.recieveAction(action);
+			}
+			catch(e){
+				console.log(e);
+				utils.log('ERROR: Couldn\'t send action to', player);
+			}
+		}
+		return;
+	}
+
+	//Иначе раздаем карты и переходим в фазу конца хода
+	else{
+		this.turnStage = 'ENDED';
+		this.dealTillFullHand();
+		return;
+	}
+}
+
+//Оповещает игроков об окончании игры и позволяет им голосовать за рематч
+Game.prototype.gameEndNotify = function(){
+	var note = {
+		message: 'GAME_ENDED',
+		scores: {}				 //TODO: add scoreboard
+	};
+	var actionAccept = {
+		type: 'ACCEPT'
+	}
+	var actionDecline = {
+		type: 'DECLINE'
+	}
+	
+	this.validActions.push(actionAccept);
+	this.validActions.push(actionDecline);
+
+	this.notify(note, this.validActions.slice());
+}
+
+//Отправляет сообщение игрокам с опциональными действиями
+Game.prototype.notify = function(note, actions){
+
+	for(var pi in this.players){
+
+		var player = this.players[pi];
+
+		try{
+			player.recieveNotification(utils.copyObject(note) || null, actions || null);
+		}
+		catch(e){
+			console.log(e);
+			utils.log('ERROR: Couldn\'t notify', player.name, note && ('of ' + note.message) || '' );
+		}
+	}
+}
+
 //Ждет ответа от игроков
 Game.prototype.waitForResponse = function(time, players){
 
@@ -484,7 +593,7 @@ Game.prototype.setResponseTimer = function(time){
 			this.continueGame();
 		}		
 
-	}, time * 1000)
+	}, time * 100) //TODO: заменить на 1000 в финальной версии
 }
 
 //Получает ответ от игрока
@@ -1081,114 +1190,6 @@ Game.prototype.letDefend = function(pid){
 		utils.log('ERROR: Couldn\'t send possible actions to', player);
 	}
 	return;
-}
-
-//Сбрасывает карты и оповещает игроков
-Game.prototype.discardAndNotify = function(){
-
-	//Сбрасываем счетчики и забываем предыдущую стадию хода
-	this.lastTurnStage = null;
-	this.fieldUsedSpots = 0;
-	this.skipCounter = 0;
-
-	var action = {
-		type: 'DISCARD',
-		ids: []
-	};
-
-	//Убираем карты со всех позиций на столе
-	for(var fi in this.field){
-
-		var fieldSpot = this.field[fi];
-
-		if(fieldSpot.attack){
-			var card = this.cards[fieldSpot.attack];
-			this.logAction(card, 'DISCARD', card.position, 'DISCARD_PILE');
-			card.position = 'DISCARD_PILE';
-
-			action.ids.push(fieldSpot.attack);
-			this.discardPile.push(fieldSpot.attack);
-			fieldSpot.attack = null;
-		}
-
-		if(fieldSpot.defense){
-			var card = this.cards[fieldSpot.defense];
-			this.logAction(card, 'DISCARD', card.position, 'DISCARD_PILE');
-			card.position = 'DISCARD_PILE';
-
-			action.ids.push(fieldSpot.defense);
-			this.discardPile.push(fieldSpot.defense);
-			fieldSpot.defense = null;
-		}
-
-	}
-
-	//Если карты были убраны, оповещаем игроков и переходим в фазу раздачи карт игрокам
-	if(action.ids.length){
-
-		//После первого сброса на стол можно класть больше карт
-		if(this.fullField <= this.zeroDiscardFieldSize){
-			this.fullField++;
-			utils.log('First discard, field expanded to', this.fullField);
-		}
-
-		this.turnStage = 'END_DEAL';
-
-		this.waitForResponse(1, this.players);
-		for (var pi in this.players) {
-			var player = this.players[pi];
-			try{
-				player.recieveAction(action);
-			}
-			catch(e){
-				console.log(e);
-				utils.log('ERROR: Couldn\'t send action to', player);
-			}
-		}
-		return;
-	}
-
-	//Иначе раздаем карты и переходим в фазу конца хода
-	else{
-		this.turnStage = 'ENDED';
-		this.dealTillFullHand();
-		return;
-	}
-}
-
-Game.prototype.gameEndNotify = function(){
-	var note = {
-		message: 'GAME_ENDED',
-		scores: {}				 //TODO: add scoreboard
-	};
-	var actionAccept = {
-		type: 'ACCEPT'
-	}
-	var actionDecline = {
-		type: 'DECLINE'
-	}
-	
-	this.validActions.push(actionAccept);
-	this.validActions.push(actionDecline);
-
-	this.notify(note, this.validActions.slice());
-}
-
-Game.prototype.notify = function(note, actions){
-
-
-	for(var pi in this.players){
-
-		var player = this.players[pi];
-
-		try{
-			player.recieveNotification(utils.copyObject(note) || null, actions || null);
-		}
-		catch(e){
-			console.log(e);
-			utils.log('ERROR: Couldn\'t notify', player.name, note && ('of ' + note.message) || '' );
-		}
-	}
 }
 
 //Выбирает следующую стадию игры
