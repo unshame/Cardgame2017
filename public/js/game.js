@@ -21,11 +21,6 @@ var onScreenChange = function() {
 window.addEventListener("resize",onScreenChange);
 window.addEventListener("orientationchange",onScreenChange);
 
-function handleInput(player)
-{
-
-}
-
 function create () 
 {
     game.world.setBounds(0, 

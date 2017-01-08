@@ -9,8 +9,9 @@ Card = function (options) {
         if(options.hasOwnProperty(o))
             this.options[o] = options[o];
     }
-    
-    this.input = {};
+
+    this.suit = this.options.suit;
+    this.value = this.options.value;
 
     //Sprites
     this.sprite = game.add.sprite(0, 0, 'cardsModern');
@@ -40,13 +41,11 @@ Card = function (options) {
             this.glowOn.start();
     },this)
 
-    this.setValue(this.options.suit, this.options.value);
+    this.setValue(this.suit, this.value);
 
     //this.sprite = game.add.sprite(x, y, 'cardsClassic');
     //this.sprite.frame = Math.floor(Math.random()*52)
-    //this.sprite.scale.setTo(0.5, 0.5);
-
-    
+    //this.sprite.scale.setTo(0.5, 0.5);    
 
     this.id = this.options.id;
 
@@ -56,7 +55,7 @@ Card = function (options) {
     cardsGroup.add(this.bundle);  
     cardsGroup.bringToTop(this.bundle);
 
-    if(this.options.suit || this.options.suit === 0)
+    if(this.suit || this.suit === 0)
         this.glowOff.start()
     else
         this.glow.visible = false;
@@ -67,7 +66,7 @@ Card.prototype.setValue = function(suit, value){
     if(suit === null || suit === undefined)
         this.sprite.frame =  65
     else
-        this.sprite.frame =  suit*14-suit+value-2;
+        this.sprite.frame =  suit*13+value-2;
 }
 
 Card.prototype.setPosition = function(x, y){
