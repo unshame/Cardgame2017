@@ -74,6 +74,16 @@ Card.prototype.setValue = function(suit, value){
 }
 
 Card.prototype.setPosition = function(x, y){
+    this.sprite.x = x - this.bundle.x;
+    this.sprite.y = y - this.bundle.y;
+}
+
+Card.prototype.setRelativePosition = function(x, y){
+    this.sprite.x = x;
+    this.sprite.y = y;
+}
+
+Card.prototype.setBase = function(x, y){
     this.bundle.x = x;
     this.bundle.y = y;
 }
