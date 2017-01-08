@@ -1,4 +1,5 @@
-var cardsGroup;
+var land = null;
+var cardsGroup = null;
 var cards = {};
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
@@ -34,11 +35,12 @@ function create ()
     game.stage.disableVisibilityChange  = true;
     
     //Ground
-    land = game.add.tileSprite(0, 0, screenWidth, screenHeight, 'table8x');
-    land.fixedToCamera = true;
+    if(!land)
+        land = game.add.tileSprite(0, 0, screenWidth, screenHeight, 'table8x');
 
     //Players will go here
-    cardsGroup = game.add.group();
+    if(!cardsGroup)
+        cardsGroup = game.add.group();
 
     game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 }
