@@ -54,7 +54,6 @@ Card = function (options) {
     this.bundle.add(this.glow);
     this.bundle.add(this.sprite);
     cardsGroup.add(this.bundle);  
-    cardsGroup.align(Math.floor(screenWidth / (this.sprite.width + 20)), -1, this.sprite.width + 20, this.sprite.height + 20);
     cardsGroup.bringToTop(this.bundle);
 
     if(this.options.suit || this.options.suit === 0)

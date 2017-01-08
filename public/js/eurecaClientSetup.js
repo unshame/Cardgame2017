@@ -77,6 +77,8 @@ var EurecaClientSetup = function() {
 					cards[id] = new Card(options);
 				}
 			}
+			if(action.type == 'CARDS')
+				cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
 		}
 		else if(action.type == 'DISCARD'){
 			for(var i in action.ids){
