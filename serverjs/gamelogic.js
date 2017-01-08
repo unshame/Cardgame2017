@@ -1252,7 +1252,7 @@ Game.prototype.continueGame = function(){
 		//Если игра первая, запускаем в любом случае
 		else{
 			this.gameState = 'SHOULD_START';
-			this.make();
+			this.continueGame();
 		}
 		return
 	}
