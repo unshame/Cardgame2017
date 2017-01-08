@@ -8,4 +8,5 @@ function preload () {
 	game.load.spritesheet('cardsClassic', 'assets/cards/classic.png', 390, 570, 52);
 	game.load.spritesheet('cardsModern', 'assets/cards/modern.png', 140, 190, 67);
 	game.load.spritesheet('suits', 'assets/particles/trails.png', 35, 35, 4);
+	game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 3);
 }

@@ -1,3 +1,5 @@
+var debugSpotValidity = true;
+
 Card = function (options) {
 	this.options = {
 		id:null,
@@ -46,12 +48,12 @@ Card = function (options) {
 			this.glowOn.start();
 	},this)
 
-	this.moveEmitter = game.add.emitter(this.sprite.centerX, this.sprite.centerY);
-	this.moveEmitter.maxParticles = 30;
-	this.moveEmitter.gravity = 0;
-	this.moveEmitter.lifespan = 600;
-	this.moveEmitter.minParticleSpeed.setTo(-this.sprite.width, -this.sprite.height);
-	this.moveEmitter.maxParticleSpeed.setTo(this.sprite.width, this.sprite.height);
+	this.trail = game.add.emitter(this.sprite.centerX, this.sprite.centerY);
+	this.trail.maxParticles = 30;
+	this.trail.gravity = 0;
+	this.trail.lifespan = 600;
+	this.trail.minParticleSpeed.setTo(-this.sprite.width, -this.sprite.height);
+	this.trail.maxParticleSpeed.setTo(this.sprite.width, this.sprite.height);
 
 	this.setValue(this.suit, this.value);
 
@@ -61,12 +63,12 @@ Card = function (options) {
 
 	this.id = this.options.id;
 
-	this.bundle = game.add.group();
-	this.bundle.add(this.moveEmitter);
-	this.bundle.add(this.glow);
-	this.bundle.add(this.sprite);
-	cardsGroup.add(this.bundle);  
-	cardsGroup.bringToTop(this.bundle);
+	this.base = game.add.group();
+	this.base.add(this.trail);
+	this.base.add(this.glow);
+	this.base.add(this.sprite);
+	cardsGroup.add(this.base);  
+	cardsGroup.bringToTop(this.base);
 
 	if(this.suit || this.suit === 0)
 		this.glowOff.start()
@@ -77,21 +79,21 @@ Card = function (options) {
 Card.prototype.setValue = function(suit, value){
 	if(suit === null || suit === undefined){
 		this.sprite.frame =  55;
-		this.moveEmitter.makeParticles('suits', [1,2,3,4]);
+		this.trail.makeParticles('suits', [1,2,3,4]);
 		this.suit = null;
 		this.value = 0;
 	}
 	else{
 		this.sprite.frame =  suit*13+value-2;
-		this.moveEmitter.makeParticles('suits', suit);
+		this.trail.makeParticles('suits', suit);
 		this.suit = suit;
 		this.value = value;
 	}
 }
 
 Card.prototype.setPosition = function(x, y){
-	this.sprite.x = x - this.bundle.x;
-	this.sprite.y = y - this.bundle.y;
+	this.sprite.x = x - this.base.x;
+	this.sprite.y = y - this.base.y;
 }
 
 Card.prototype.setRelativePosition = function(x, y){
@@ -100,8 +102,10 @@ Card.prototype.setRelativePosition = function(x, y){
 }
 
 Card.prototype.setBase = function(x, y){
-	this.bundle.x = x;
-	this.bundle.y = y;
+	this.trail.position.x -= x - this.base.x; 
+	this.trail.position.y -= y - this.base.y; 
+	this.base.x = x;
+	this.base.y = y;
 }
 
 Card.prototype.mouseDown = function(){
@@ -118,17 +122,18 @@ Card.prototype.mouseUp = function(){
 	else if(this.clickState == 'CLICKED'){
 		
 		if(this.clickedInbound()){
-			if(this.easeOut){
-				this.easeOut.stop();
-				this.easeOut = null;
+			if(this.returner){
+				this.returner.stop();
+				this.returner = null;
 			}
 			this.shiftPosition = new Phaser.Point(
-				game.input.activePointer.x - this.bundle.x - this.sprite.x,
-				game.input.activePointer.y - this.bundle.y - this.sprite.y
+				game.input.activePointer.x - this.base.x - this.sprite.x,
+				game.input.activePointer.y - this.base.y - this.sprite.y
 			);
+			this.resetTrail();
 			this.shiftDuration = 100;
 			this.shiftTime = new Date().getTime() + this.shiftDuration;
-			cardsGroup.bringToTop(this.bundle);
+			cardsGroup.bringToTop(this.base);
 			this.clickState = 'PICKED_UP';
 		}
 		else{
@@ -144,12 +149,14 @@ Card.prototype.dragStart = function(){
 
 	this.dragState = 'DRAGGED';
 
-	if(this.easeOut){
-		this.easeOut.stop();
-		this.easeOut = null;
+	this.resetTrail();
+
+	if(this.returner){
+		this.returner.stop();
+		this.returner = null;
 	}
 
-	cardsGroup.bringToTop(this.bundle);
+	cardsGroup.bringToTop(this.base);
 }
 
 Card.prototype.dragStop = function(){
@@ -159,32 +166,42 @@ Card.prototype.dragStop = function(){
 
 	this.dragState = 'RESTED';
 
-	this.isReturning = true;
-
-	if(this.easeOut){
-		this.easeOut.stop();
-		this.easeOut = null;
+	if(this.validSpot()){
+		this.setBase(this.base.x + this.sprite.x, this.base.y + this.sprite.y);
+		this.setRelativePosition(0, 0)
 	}
+	else{
+		this.isReturning = true;
 
-	this.easeOut = game.add.tween(this.sprite);
-	var dest = new Phaser.Point(0, 0);
+		if(this.returner){
+			this.returner.stop();
+			this.returner = null;
+		}
 
-	this.easeOut.to(dest, 200, Phaser.Easing.Quadratic.Out);
-	this.easeOut.onComplete.addOnce(() => {
-		this.isReturning = false;
-	}, this);
+		this.returner = game.add.tween(this.sprite);
+		var dest = new Phaser.Point(0, 0);
 
-	this.easeOut.start();
+		this.returner.to(dest, 200, Phaser.Easing.Quadratic.Out);
+		this.returner.onComplete.addOnce(() => {
+			this.isReturning = false;
+		}, this);
+
+		this.returner.start();
+	}
 }
 
 Card.prototype.clickedInbound = function(){
 	var cond = 
 		game.input.activePointer.button == Phaser.Mouse.LEFT_BUTTON &&
-		game.input.activePointer.x >= this.bundle.x - this.bundle.width / 2 &&
-		game.input.activePointer.x <= this.bundle.x + this.bundle.width / 2 &&
-		game.input.activePointer.y >= this.bundle.y - this.bundle.height / 2 &&
-		game.input.activePointer.y <= this.bundle.y + this.bundle.height / 2
+		game.input.activePointer.x >= this.base.x - this.base.width / 2 &&
+		game.input.activePointer.x <= this.base.x + this.base.width / 2 &&
+		game.input.activePointer.y >= this.base.y - this.base.height / 2 &&
+		game.input.activePointer.y <= this.base.y + this.base.height / 2
 	return cond
+}
+
+Card.prototype.validSpot = function(){
+	return debugSpotValidity;
 }
 
 Card.prototype.spawnTrail = function(){
@@ -194,25 +211,32 @@ Card.prototype.spawnTrail = function(){
 
 	this.lastParticleTime = curTime;
 
-	var distance = this.sprite.position.distance(new Phaser.Point(this.moveEmitter.emitX, this.moveEmitter.emitY), true);
+	var distance = this.sprite.position.distance(new Phaser.Point(this.trail.emitX, this.trail.emitY), true);
 	if(distance < 2){
-		this.moveEmitter.width = this.sprite.width - 35;
-		this.moveEmitter.height = this.sprite.height - 35;
+		this.trail.width = this.sprite.width - 35;
+		this.trail.height = this.sprite.height - 35;
 	}
 	else{
-		this.moveEmitter.width = this.moveEmitter.height = 0;
+		this.trail.width = this.trail.height = 0;
 	}
-	this.moveEmitter.emitX = this.sprite.x;
-	this.moveEmitter.emitY = this.sprite.y;
-	this.moveEmitter.emitParticle();
-	this.moveEmitter.forEachAlive((p) => {
-		p.alpha = p.lifespan / this.moveEmitter.lifespan * 0.6;
+	this.trail.emitX = this.sprite.x;
+	this.trail.emitY = this.sprite.y;
+	this.trail.emitParticle();
+	this.trail.forEachAlive((p) => {
+		p.alpha = p.lifespan / this.trail.lifespan * 0.6;
 	})
 }
 
+Card.prototype.resetTrail = function(){
+	this.trail.forEachAlive((p) => {
+		p.alpha = 0;
+	})
+	this.trail.position = {x: 0, y: 0};
+}
+
 Card.prototype.kill = function() {
-	this.moveEmitter.on = false;
-	this.moveEmitter.destroy();
+	this.trail.on = false;
+	this.trail.destroy();
 	this.glow.kill();
 	this.sprite.kill();  
 
@@ -231,7 +255,7 @@ Card.prototype.update = function() {
 		else{
 			sP = new Phaser.Point(0, 0);
 		}
-		mP = new Phaser.Point(game.input.activePointer.x - this.bundle.x, game.input.activePointer.y - this.bundle.y);
+		mP = new Phaser.Point(game.input.activePointer.x - this.base.x, game.input.activePointer.y - this.base.y);
 		this.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
 	}
 	if(this.clickState == 'PICKED_UP' || this.dragState == 'DRAGGED' || this.isReturning){

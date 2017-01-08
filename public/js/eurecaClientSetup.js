@@ -33,7 +33,7 @@ var EurecaClientSetup = function() {
 		if(action.type == 'CARDS'){
 			for(var cid in cards){
 				if(cards.hasOwnProperty(cid)){
-					cards[cid].bundle.removeAll(true);
+					cards[cid].base.removeAll(true);
 				}
 			}
 			cards = {};
@@ -45,7 +45,7 @@ var EurecaClientSetup = function() {
 				//cardsGroup.align(Math.floor(screenWidth / cards[action.cid].sprite.width), -1, cards[action.cid].sprite.width, cards[action.cid].sprite.height);
 				cards[action.cid].glow.visible = action.suit || action.suit === 0;
 				cards[action.cid].glowOff.start()
-				cardsGroup.bringToTop(cards[action.cid].bundle)
+				cardsGroup.bringToTop(cards[action.cid].base)
 			}
 			else{
 				var options = {
@@ -64,7 +64,7 @@ var EurecaClientSetup = function() {
 					//cardsGroup.align(Math.floor(screenWidth / cards[c.cid].sprite.width), -1, cards[c.cid].sprite.width, cards[c.cid].sprite.height);
 					cards[c.cid].glow.visible = c.suit || c.suit === 0;
 					cards[c.cid].glowOff.start()
-					cardsGroup.bringToTop(cards[c.cid].bundle)
+					cardsGroup.bringToTop(cards[c.cid].base)
 				}
 				else{
 					var options = {
