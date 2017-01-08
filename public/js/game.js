@@ -1,5 +1,6 @@
 var land = null;
 var cardsGroup = null;
+unclickMe = null;
 var cards = {};
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
@@ -66,6 +67,14 @@ function update () {
 		if(!cards.hasOwnProperty(ci))
 			continue;
 		cards[ci].update();
+	}
+
+	//Возвращаем перетаскиваемую карту на место по правому клику
+	if(game.input.activePointer.rightButton.isDown && unclickMe && unclickMe.dragState == 'DRAGGED'){
+		unclickMe.dragState = 'RESTED';
+		unclickMe.clickState = 'PUT_DOWN';
+		unclickMe.dragStop();
+		unclickMe = null;
 	}
 }
 

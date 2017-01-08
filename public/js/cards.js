@@ -21,11 +21,11 @@ Card = function (options) {
 	this.sprite = game.add.sprite(0, 0, 'cardsModern');
 
 	this.sprite.inputEnabled = true;
-	this.sprite.input.enableDrag(false);
+	//this.sprite.input.enableDrag(false);
 	this.sprite.events.onInputDown.add(this.mouseDown, this);
 	this.sprite.events.onInputUp.add(this.mouseUp, this);
-	this.sprite.events.onDragStart.add(this.dragStart, this);
-	this.sprite.events.onDragStop.add(this.dragStop, this);
+	//this.sprite.events.onDragStart.add(this.dragStart, this);
+	//this.sprite.events.onDragStop.add(this.dragStop, this);
 	this.sprite.anchor.set(0.5, 0.5);
 
 	this.glow = game.add.sprite(0, 0, 'glow');
@@ -108,46 +108,70 @@ Card.prototype.setBase = function(x, y){
 	this.base.y = y;
 }
 
-Card.prototype.mouseDown = function(){
+Card.prototype.mouseDown = function(sprite, pointer){
+	
+	//Карта будет проверяться каждый апдейт и будет возвращена обратно по правому клику
+	//Ивент не срабатывает при нажатии правой кнопки, если левая нажата
+	//TODO: придумать, как сделать все это сторонним объектом со своим апдейтом
+	if(!unclickMe)
+		unclickMe = this;
 	if(this.clickState != 'PICKED_UP'){
 		this.clickState = this.clickedInbound() ? 'CLICKED' : 'PUT_DOWN';
+
+		if(this.clickState == 'CLICKED'){
+			
+			this.applyTrailing();
+			this.dragState = 'DRAGGED';
+		}
 	}
 }
 
-Card.prototype.mouseUp = function(){
+Card.prototype.mouseUp = function(sprite, pointer){
+	
 	if(this.clickState == 'PICKED_UP'){
+		
 		this.clickState = 'PUT_DOWN';
 		this.dragStop();
 	}
 	else if(this.clickState == 'CLICKED'){
 		
 		if(this.clickedInbound()){
-			if(this.returner){
-				this.returner.stop();
-				this.returner = null;
-			}
-			this.shiftPosition = new Phaser.Point(
-				game.input.activePointer.x - this.base.x - this.sprite.x,
-				game.input.activePointer.y - this.base.y - this.sprite.y
-			);
-			this.resetTrail();
-			this.shiftDuration = 100;
-			this.shiftTime = new Date().getTime() + this.shiftDuration;
-			cardsGroup.bringToTop(this.base);
+
+			this.applyTrailing();
+
+			this.dragState = 'RESTED';
 			this.clickState = 'PICKED_UP';
 		}
 		else{
+			this.dragState = 'RESTED';
 			this.clickState = 'PUT_DOWN';
+			this.dragStop();
 		}
+
 	}
+}
+
+Card.prototype.applyTrailing = function(){
+
+	if(this.returner){
+		this.returner.stop();
+		this.returner = null;
+	}
+
+	this.shiftPosition = new Phaser.Point(
+		game.input.activePointer.x - this.base.x - this.sprite.x,
+		game.input.activePointer.y - this.base.y - this.sprite.y
+	);
+	this.resetTrail();
+	this.shiftDuration = 100;
+	this.shiftTime = new Date().getTime() + this.shiftDuration;
+	cardsGroup.bringToTop(this.base);
 }
 
 Card.prototype.dragStart = function(){
 
 	if(this.clickState == 'PICKED_UP')
-		return;
-
-	this.dragState = 'DRAGGED';
+		return;	
 
 	this.resetTrail();
 
@@ -161,12 +185,7 @@ Card.prototype.dragStart = function(){
 
 Card.prototype.dragStop = function(){
 
-	if(this.clickState == 'PICKED_UP')
-		return;
-
-	this.dragState = 'RESTED';
-
-	if(this.validSpot()){
+	if(this.validSpot() && game.input.activePointer.button == Phaser.Mouse.LEFT_BUTTON){
 		this.setBase(this.base.x + this.sprite.x, this.base.y + this.sprite.y);
 		this.setRelativePosition(0, 0)
 	}
@@ -187,6 +206,8 @@ Card.prototype.dragStop = function(){
 		}, this);
 
 		this.returner.start();
+
+		unclickMe = null;
 	}
 }
 
@@ -243,7 +264,7 @@ Card.prototype.kill = function() {
 }
 
 Card.prototype.update = function() {
-	if(this.clickState == 'PICKED_UP'){
+	if(this.clickState == 'PICKED_UP' || this.dragState == 'DRAGGED'){
 		var sTime, sP, mP;
 		sTime = this.shiftTime - new Date().getTime();
 		if(sTime > 0){

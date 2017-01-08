@@ -1,5 +1,5 @@
 var server;
-var isInDebugMode = true;
+var isInDebugMode = false;
 
 var EurecaClientSetup = function() {
 	//create an instance of eureca.io client
