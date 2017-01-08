@@ -88,6 +88,9 @@ var EurecaClientSetup = function() {
 		}
 		console.log(action)
 	}
+	client.exports.recieveNotification = function(note, actions){
+		console.log(note, actions)
+	}
 	client.exports.handleLateness = function(){
 		console.log('Too late');
 	}

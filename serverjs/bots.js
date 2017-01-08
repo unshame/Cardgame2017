@@ -47,6 +47,11 @@ Bot.prototype.recieveAction = function(action){
 	setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
 }
 
+Bot.prototype.recieveNotification = function(note, actions){
+	if(actions)
+		setTimeout(() => {this.sendResponse(actions[0])},Math.random()*fakeDescisionTimer)
+}
+
 Bot.prototype.handleLateness = function(){
 
 }

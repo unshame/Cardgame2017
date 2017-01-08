@@ -33,6 +33,7 @@ var server = new Eureca.Server({allow:[
 	'meetOpponents',
 	'recievePossibleActions',
 	'recieveAction',
+	'recieveNotification',
 	'handleLateness'
 ]
 });

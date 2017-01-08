@@ -5,7 +5,7 @@
 * Отправляет информацию игрокам через экземпляры игроков
 * После каждого отправления ожидает ответа от игроков (waitForResponse)
 * После ответа игроков (recieveResponse) или по истечении времени (setResponseTimer)
-* автоматически продолжает игру (continueTurn)
+* автоматически продолжает игру (continueGame)
 */
 
 var utils = require('./utils')
@@ -37,13 +37,20 @@ var Game = function(players){
 				opponents.push(o)
 			}
 		}
-		if(opponents.length)
-			player.meetOpponents(opponents);
+		if(opponents.length){
+			try{
+				player.meetOpponents(opponents);
+			}
+			catch(e){
+				console.log(e);
+				utils.log('ERROR: Couldn\' notify', player, 'about opponents')
+			}
+		}
 	}
 
 	this.disconnectedPlayers = [];
 
-	this.gameNumber = 0;
+	this.gameNumber = -1;
 
 	//Запускаем игру
 	this.reset();
@@ -53,9 +60,11 @@ var Game = function(players){
 //Ресет игры
 Game.prototype.reset = function(){
 
+	//Свойства игры
 	this.gameNumber++;
-	this.gameStarted = false;
+	this.gameState = 'NOT_STARTED';
 
+	//Свойства карт
 	this.cardValues = []
 	this.numOfSuits = 4;
 	this.maxCardValue = 14;
@@ -96,6 +105,7 @@ Game.prototype.reset = function(){
 
 	//Возможные действия игроков
 	this.validActions = [];
+	this.storedActions = [];
 
 	//Свойства хода
 	this.turnNumber = 1;
@@ -168,9 +178,9 @@ Game.prototype.make = function(){
 	this.cards[lastcid].position = 'BOTTOM';
 	this.trumpSuit = this.cards[lastcid].suit;
 
-	//Сообщаем игрокам о составе колоды
+	//Сообщаем игрокам о составе колоды и запускаем игру
 	this.waitForResponse(1, this.players);
-	this.deckNotify();	// --> continueTurn()
+	this.deckNotify();	// --> continueGame()
 }
 
 //Размешивает колоду
@@ -216,7 +226,7 @@ Game.prototype.dealTillFullHand = function(){
 		return;
 	}
 	else{
-		this.continueTurn();
+		this.continueGame();
 		return;
 	}
 }
@@ -258,7 +268,7 @@ Game.prototype.deal = function(dealsIn){
 		this.dealNotify(dealsOut);
 	}
 	else{
-		this.continueTurn();
+		this.continueGame();
 	}
 }
 
@@ -283,10 +293,15 @@ Game.prototype.dealNotify = function(deals){
 				dealsToSend[i].value = this.cards[deal.cid].value;
 				dealsToSend[i].suit = this.cards[deal.cid].suit;
 			}
-
 		}
-		player.recieveDeals(dealsToSend)
-		
+
+		try{
+			player.recieveDeals(dealsToSend);
+		}
+		catch(e){
+			console.log(e);
+			utils.log('ERROR: Couldn\'t send deals to', player);
+		}
 	}	
 }
 
@@ -376,7 +391,13 @@ Game.prototype.gameStateNotify = function(player){
 		card.cid = card.id;
 		delete card.id;
 	}
-	player.recieveCards(cardsToSend, this.trumpSuit);
+	try{
+		player.recieveCards(cardsToSend, this.trumpSuit);
+	}
+	catch(e){
+		console.log(e);
+		utils.log('ERROR: Couldn\'t send cards to', player);
+	}
 }
 
 //Ждет ответа от игроков
@@ -429,7 +450,7 @@ Game.prototype.setResponseTimer = function(time){
 
 
 		//Если есть действия, выполняем первое попавшееся действие
-		if(this.validActions.length){
+		if(this.validActions.length && this.gameState == 'STARTED'){
 			var actionIndex = 0;
 			for(var ai in this.validActions){
 				var action = this.validActions[ai];
@@ -444,7 +465,13 @@ Game.prototype.setResponseTimer = function(time){
 			this.processAction(player, this.validActions[actionIndex]);
 
 			//Отправляем оповещение о том, что время хода вышло
-			player.handleLateness();
+			try{
+				player.handleLateness();
+			}
+			catch(e){
+				console.log(e);
+				utils.log('ERROR: Couldn\'t notify', player, 'about lateness');
+			}
 
 			//Убираем игрока из списка действующих
 			this.playersActing.splice(0,1);
@@ -454,7 +481,7 @@ Game.prototype.setResponseTimer = function(time){
 		else{
 			this.playersActing = [];
 			this.validActions = [];
-			this.continueTurn();
+			this.continueGame();
 		}		
 
 	}, time * 1000)
@@ -478,7 +505,10 @@ Game.prototype.recieveResponse = function(player, action){
 
 	//Выполняем действие
 	if(action){
-		this.processAction(player, action);
+		if(this.gameState == 'STARTED')
+			this.processAction(player, action)
+		else
+			this.storeAction(player, action);
 	}
 
 	//Убираем игрока из списка действующих
@@ -487,7 +517,7 @@ Game.prototype.recieveResponse = function(player, action){
 	//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
 	if(!this.playersActing.length){
 		clearTimeout(this.timer);
-		this.continueTurn();
+		this.continueGame();
 	}
 }
 
@@ -499,7 +529,7 @@ Game.prototype.processAction = function(player, action){
 	//Проверка действия
 	if( !~ai ){
 		clearTimeout(this.timer);
-		utils.log('ERROR: Invalid action', player.id, action);
+		utils.log('ERROR: Invalid action', player.id, action.type, action);
 		return;
 	}
 
@@ -631,6 +661,20 @@ Game.prototype.processAction = function(player, action){
 	}
 }
 
+Game.prototype.storeAction = function(player, action){
+
+	var ai = this.validActions.indexOf(action);
+
+	//Проверка действия
+	if( !~ai ){
+		clearTimeout(this.timer);
+		utils.log('ERROR: Invalid action', player.id, action.type, action);
+		return;
+	}
+
+	this.storedActions[player.id] = utils.copyObject(action);
+}
+
 //Находит игрока, начинающего игру, по минимальному козырю в руке
 Game.prototype.findPlayerToGoFirst = function(){
 	var minTCards = [];
@@ -709,7 +753,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 		this.attacker = this.players[0].id;
 		this.defender = this.players[1].id;
 		this.ally = this.players[2].id; 
-		this.continueTurn();
+		this.continueGame();
 	}
 }
 
@@ -801,7 +845,7 @@ Game.prototype.letAttack = function(pid){
 	if(this.fieldUsedSpots >= this.fullField || this.turnStage != 'FOLLOWUP' && !this.hands[this.defender].length){
 		utils.log('Field is full or defender has no cards');
 		this.setTurnStage('DEFENSE');
-		this.continueTurn();
+		this.continueGame();
 		return;
 	}
 
@@ -854,8 +898,14 @@ Game.prototype.letAttack = function(pid){
 
 	this.validActions = actions;
 	this.waitForResponse(1, [player])
-	player.recieveValidActions(actions);	
-	return;
+	try{
+		player.recieveValidActions(actions.slice());	
+	}
+	catch(e){
+		console.log(e);
+		utils.log('ERROR: Couldn\'t send possible actions to', player);
+	}
+	return
 }
 
 //Отправляет защищающемуся возможные ходы
@@ -961,7 +1011,7 @@ Game.prototype.letDefend = function(pid){
 		utils.log(this.playersById[pid].name, 'successfully defended');
 
 		this.setTurnStage('END');
-		this.continueTurn();
+		this.continueGame();
 		return
 	}
 
@@ -1023,7 +1073,13 @@ Game.prototype.letDefend = function(pid){
 	}
 
 	this.waitForResponse(1, [player]);
-	player.recieveValidActions(actions);	
+	try{
+		player.recieveValidActions(actions);	
+	}
+	catch(e){
+		console.log(e);
+		utils.log('ERROR: Couldn\'t send possible actions to', player);
+	}
 	return;
 }
 
@@ -1081,7 +1137,13 @@ Game.prototype.discardAndNotify = function(){
 		this.waitForResponse(1, this.players);
 		for (var pi in this.players) {
 			var player = this.players[pi];
-			player.recieveAction(action);
+			try{
+				player.recieveAction(action);
+			}
+			catch(e){
+				console.log(e);
+				utils.log('ERROR: Couldn\'t send action to', player);
+			}
 		}
 		return;
 	}
@@ -1094,14 +1156,112 @@ Game.prototype.discardAndNotify = function(){
 	}
 }
 
+Game.prototype.gameEndNotify = function(){
+	var note = {
+		message: 'GAME_ENDED',
+		scores: {}				 //TODO: add scoreboard
+	};
+	var actionAccept = {
+		type: 'ACCEPT'
+	}
+	var actionDecline = {
+		type: 'DECLINE'
+	}
+	
+	this.validActions.push(actionAccept);
+	this.validActions.push(actionDecline);
+
+	this.notify(note, this.validActions.slice());
+}
+
+Game.prototype.notify = function(note, actions){
+
+
+	for(var pi in this.players){
+
+		var player = this.players[pi];
+
+		try{
+			player.recieveNotification(utils.copyObject(note) || null, actions || null);
+		}
+		catch(e){
+			console.log(e);
+			utils.log('ERROR: Couldn\'t notify', player.name, note && ('of ' + note.message) || '' );
+		}
+	}
+}
+
 //Выбирает следующую стадию игры
-Game.prototype.continueTurn = function(){
+Game.prototype.continueGame = function(){
+
+	//Проверяем, нужно ли начинать игру
+	if(this.gameState == 'NOT_STARTED'){
+
+		//Проверяем только если это не первая игра
+		if(this.gameNumber){
+
+			//Считаем голоса
+			var numAccepted = 0;
+			var minAcceptedNeeded = Math.ceil(this.players.length / 2); //TODO: заменить на this.players.length в финальной версии
+			
+			for(var pi in this.players){
+
+				var pid = this.players[pi].id;
+				var action = this.storedActions[pid];
+
+				if(action && action.type == 'ACCEPT')
+					numAccepted++;
+			}
+
+			utils.log(numAccepted, 'out of', this.players.length, 'voted for rematch')
+
+			var note = {
+				message: 'VOTE_RESULTS',
+				results: utils.copyObject(this.storedActions)
+			}
+
+			//Если голосов хватает, запускаем игру
+			if(numAccepted >= minAcceptedNeeded){
+
+				utils.log('Rematch');
+
+				//Оповещаем игроков о результате голосования
+				note.successful = true;
+				this.notify(note);
+
+				this.validActions = [];
+				this.storedActions = [];
+				this.gameState = 'SHOULD_START';
+
+				this.make();
+			}
+
+			//Иначе, не запускаем игру
+			else{
+
+				//Оповещаем игроков о результате голосования
+				note.successful = false;
+				this.notify(note);
+
+				utils.log('No rematch');
+
+				//TODO: оповестить лобби
+			}			
+		}
+
+		//Если игра первая, запускаем в любом случае
+		else{
+			this.gameState = 'SHOULD_START';
+			this.make();
+		}
+		return
+	}
 
 	//Раздаем карты в начале игры
-	if(!this.gameStarted){
-		this.gameStarted = true;
+	if(this.gameState == 'SHOULD_START'){
+		this.gameState = 'STARTED';
 		for (var pi in this.players) {
-			this.hands[this.players[pi].id] = []
+			this.hands[this.players[pi].id] = [];
 		}
 		var deals = [];
 
@@ -1115,20 +1275,20 @@ Game.prototype.continueTurn = function(){
 			}
 		}
 		this.deal(deals);
-		return;
+		return
 	}
 
 	//Находим игрока, делающего первый ход в игре
 	if(!this.attacker){
 		this.findPlayerToGoFirst();		
-		return;		
+		return	
 	}
 
 	//Раздаем карты после окончания хода
 	if(this.turnStage == 'END_DEAL'){
 		this.turnStage = 'ENDED';
 		this.dealTillFullHand();
-		return;
+		return
 	}
 
 	//Начинаем ход
@@ -1145,11 +1305,10 @@ Game.prototype.continueTurn = function(){
 			//В данный момент просто запускается еще одна, пока не дойдет до 10-й
 			if(!shouldContinue){
 				utils.log('Game ended', this.id, '\n\n');
-				if(this.gameNumber < 10){
-					this.reset();
-					this.make();
-				}
-				return;
+				this.reset();
+				this.waitForResponse(1, this.players, true);
+				this.gameEndNotify();
+				return
 			}
 		}
 
@@ -1163,8 +1322,8 @@ Game.prototype.continueTurn = function(){
 		//Увеличиваем счетчик ходов, меняем стадию игры на первую атаку и продолжаем ход
 		this.turnNumber++;	
 		this.setTurnStage('INITIAL_ATTACK');	
-		this.continueTurn();
-		return;
+		this.continueGame();
+		return
 	}	
 
 	//Стадии хода

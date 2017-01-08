@@ -69,6 +69,11 @@ Player.prototype.recieveAction = function(action){
 		this.remote.recieveAction(action);
 }
 
+Player.prototype.recieveNotification = function(note, actions){
+	if(this.remote)
+		this.remote.recieveNotification(note, actions);
+}
+
 Player.prototype.handleLateness = function(){
 	if(this.remote)
 		this.remote.handleLateness();
