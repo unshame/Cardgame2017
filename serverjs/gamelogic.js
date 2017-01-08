@@ -78,7 +78,7 @@ Game.prototype.reset = function(){
 	}
 
 	//Свойства карт
-	this.cardValues = []
+	this.cardValues = [];
 	this.numOfSuits = 4;
 	this.maxCardValue = 14;
 
@@ -97,7 +97,6 @@ Game.prototype.reset = function(){
 	this.fieldSize = 6;
 	this.fieldUsedSpots = 0;
 	this.fullField = this.zeroDiscardFieldSize = this.fieldSize - 1;
-	this.skipCounter = 0;
 	for (var i = 0; i < this.fieldSize; i++) {
 		var id = 'FIELD'+i;
 		var fieldSpot = {
@@ -116,6 +115,9 @@ Game.prototype.reset = function(){
 	//'Действующие' игроки (id игроков)
 	this.playersActing = [];
 
+	//Счетчик пропущенных ходов
+	this.skipCounter = 0;
+
 	//Невышедшие и вышедшие из игры игроки
 	this.activePlayers = [];
 	this.inactivePlayers = [];
@@ -128,7 +130,6 @@ Game.prototype.reset = function(){
 	this.turnNumber = 1;
 	this.turnStage = null;
 	this.lastTurnStage = null;
-	this.shouldDeal = false;
 
 	//Учавствующие в ходе игроки (id игроков)
 	this.attacker = null;
@@ -617,7 +618,7 @@ Game.prototype.setResponseTimer = function(time){
 			this.continueGame();
 		}		
 
-	}, time * 100) //TODO: заменить на 1000 в финальной версии
+	}, time * 500) //TODO: заменить на 1000 в финальной версии
 }
 
 //Получает ответ от игрока
