@@ -26,10 +26,8 @@ window.addEventListener("orientationchange",onScreenChange);
 
 function create () 
 {
-	if(!game){
-		game.world.setBounds(0, 0, screenWidth, screenHeight);
-		game.stage.disableVisibilityChange  = true;
-	}
+	game.world.setBounds(0, 0, screenWidth, screenHeight);
+	game.stage.disableVisibilityChange  = true;
 	
 	//Ground
 	if(!land)
