@@ -144,19 +144,34 @@ Controller.prototype.validSpot = function(){
 	return debugSpotValidity;
 }
 
-Controller.prototype.resetTrail = function(){
+Controller.prototype.resetTrail = function(soft){
 	this.trail.forEachAlive((p) => {
-		p.kill();
-		p.reset();
+		if(soft)
+			p.alpha = 0
+		else{
+			p.kill();
+			p.reset();
+		}
 	})
 	this.trail.position = {x: 0, y: 0};
 }
 
+Controller.prototype.reset = function(){
+	this.resetTrail(true);
+	this.card = null;
+	this.pointer = null;
+}
+
 Controller.prototype.update = function(){
-	if(this.card && this.pointer.button == Phaser.Mouse.RIGHT_BUTTON){
-		this.cardPutDown();
-	}
 	if(this.card){
+		if(!this.card.sprite.visible){
+			this.reset();
+			return;
+		}
+		if(this.pointer.button == Phaser.Mouse.RIGHT_BUTTON || !this.card.suit && this.card.suit !== 0){
+			this.cardPutDown();
+			return;
+		}
 
 		if(!this.card.returner){
 			var sTime, sP, mP;
