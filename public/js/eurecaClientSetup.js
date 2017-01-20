@@ -33,7 +33,7 @@ var EurecaClientSetup = function() {
 		if(action.type == 'CARDS'){
 			for(var cid in cards){
 				if(cards.hasOwnProperty(cid)){
-					cards[cid].base.removeAll(true);
+					cards[cid].base.removeAll();
 				}
 			}
 			cards = {};

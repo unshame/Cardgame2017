@@ -53,6 +53,7 @@ Controller.prototype.cardPickup = function(card, pointer){
 		this.card.returner.stop();
 		this.card.returner = null;
 	}
+	this.shiftCardToCursor();
 	cardsGroup.bringToTop(this.card.base);
 }
 
@@ -79,7 +80,7 @@ Controller.prototype.spawnTrail = function(){
 	})
 }
 
-Controller.prototype.shiftToCursor = function(){
+Controller.prototype.shiftCardToCursor = function(){
 
 	if(this.card.returner){
 		this.card.returner.stop();
@@ -90,9 +91,7 @@ Controller.prototype.shiftToCursor = function(){
 		this.pointer.x - this.card.base.x - this.card.sprite.x,
 		this.pointer.y - this.card.base.y - this.card.sprite.y
 	);
-	this.resetTrail();
 	this.shiftTime = new Date().getTime() + this.shiftDuration;
-	cardsGroup.bringToTop(this.base);
 }
 
 Controller.prototype.cardPutDown = function(){
