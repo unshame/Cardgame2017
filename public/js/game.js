@@ -47,6 +47,7 @@ function create ()
 			debugSpotValidity = !debugSpotValidity;
 			if(!debugSpotValidity){
 				button.setFrames(1, 2, 0, 2);
+				controller.resetTrail(true);
 				cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
 			}
 			else{
