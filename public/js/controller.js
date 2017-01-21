@@ -3,7 +3,9 @@
 * На данный момент отвечает за перенос карт и отображение хвоста карты
 */
 
-var Controller = function(){
+var Controller = function(isInDebugMode){
+
+	this.isInDebugMode = isInDebugMode || false;
 
 	this.card = null;
 	this.pointer = null;
@@ -14,13 +16,17 @@ var Controller = function(){
 	this.trail.maxParticles = 30;
 	this.trail.gravity = 0;
 	this.trail.lifespan = 600;
-	this.shiftDuration = 100;
+	this.cardShiftDuration = 100;
+	this.cardReturnTime = 200;
 }
 
 //Обрабатывает нажатие на карту
 Controller.prototype.cardClick = function(card, pointer){
 	if(!card.isPlayable)
 		return;
+
+	if(this.isInDebugMode)
+		console.log('Controller: Clicked', card.id);
 
 	if(this.card){
 		this.cardPutDown();
@@ -35,6 +41,9 @@ Controller.prototype.cardUnclick = function(card){
 	if(!this.card || this.card != card)
 		return;
 
+	if(this.isInDebugMode)
+		console.log('Controller: Unclicked', card.id);
+
 	if(!this.cardClickedInbound() || !this.cardClickTimer){
 		this.cardPutDown();
 	}
@@ -42,12 +51,22 @@ Controller.prototype.cardUnclick = function(card){
 
 //Поднимает карту
 Controller.prototype.cardPickup = function(card, pointer){
-	this.card = card;
-	this.pointer = pointer;
-	if(!this.card){
+	if(!card){
 		console.error('Controller: cardPickup called but no Card assigned.');
 		return
 	}
+
+	this.card = card;
+	this.pointer = pointer;
+
+	if(!this.cardClickedInbound() || !this.pointer.leftButton.isDown){
+		this.reset();
+		return;
+	}
+
+	if(this.isInDebugMode)
+		console.log('Controller: Picked up', this.card.id);
+
 	this.setCardClickTimer();
 	this.cardResetTrail();
 	this.card.base.addAt(this.trail, 0);
@@ -80,7 +99,7 @@ Controller.prototype.cardShiftToCursor = function(){
 		this.pointer.x - this.card.base.x - this.card.sprite.x,
 		this.pointer.y - this.card.base.y - this.card.sprite.y
 	);
-	this.shiftTime = new Date().getTime() + this.shiftDuration;
+	this.shiftTime = new Date().getTime() + this.cardShiftDuration;
 }
 
 //Кладет карту
@@ -91,7 +110,10 @@ Controller.prototype.cardPutDown = function(){
 		return
 	}
 
-	if(this.cardOnValidSpot() && this.pointer.button == Phaser.Mouse.LEFT_BUTTON){
+	if(this.isInDebugMode)
+		console.log('Controller: Putting down', this.card.id);
+
+	if(this.cardOnValidSpot() && this.pointer.leftButton.isDown){
 		this.cardRebaseAtPointer();
 	}
 	else{
@@ -107,11 +129,18 @@ Controller.prototype.cardRebaseAtPointer = function(){
 		return
 	}
 
+
+	this.trail.position.x -= this.card.sprite.x; 
+	this.trail.position.y -= this.card.sprite.y; 
+
 	var x = this.card.base.x + this.card.sprite.x;
 	var y = this.card.base.y + this.card.sprite.y;
-	this.trail.position.x -= x - this.card.base.x; 
-	this.trail.position.y -= y - this.card.base.y; 
+	
+	if(this.isInDebugMode)
+		console.log('Controller: Rebasing', this.card.id, 'at', x, y);
+
 	this.card.setBase(x, y);
+
 	this.card.setRelativePosition(0, 0);
 
 	this.card = null;
@@ -126,13 +155,16 @@ Controller.prototype.cardReturn = function(){
 		return
 	}
 
+	if(this.isInDebugMode)
+		console.log('Controller: Returning', this.card.id, 'to base');
+
 	if(this.card.returner){
 		this.card.returner.stop();
 		this.card.returner = null;
 	}
 
 	this.card.returner = game.add.tween(this.card.sprite);
-	this.card.returner.to({x:0, y:0}, 200, Phaser.Easing.Quadratic.Out);
+	this.card.returner.to({x:0, y:0}, this.cardReturnTime, Phaser.Easing.Quadratic.Out);
 	this.card.returner.onComplete.addOnce(() => {
 		this.returner = null;
 	}, this.card);
@@ -146,10 +178,10 @@ Controller.prototype.cardReturn = function(){
 //Проверка нажатия на базу карты
 Controller.prototype.cardClickedInbound = function(){
 	var cond = 
-		this.pointer.x >= this.card.base.x - this.card.base.width / 2 &&
-		this.pointer.x <= this.card.base.x + this.card.base.width / 2 &&
-		this.pointer.y >= this.card.base.y - this.card.base.height / 2 &&
-		this.pointer.y <= this.card.base.y + this.card.base.height / 2
+		this.pointer.x >= this.card.base.x - this.card.sprite.width / 2 &&
+		this.pointer.x <= this.card.base.x + this.card.sprite.width / 2 &&
+		this.pointer.y >= this.card.base.y - this.card.sprite.height / 2 &&
+		this.pointer.y <= this.card.base.y + this.card.sprite.height / 2
 	return cond
 }
 
@@ -222,7 +254,7 @@ Controller.prototype.update = function(){
 		}
 
 		//Возвращаем карту по нажатию правой кнопки или если она была перевернута
-		if(this.pointer.button == Phaser.Mouse.RIGHT_BUTTON || !this.card.isPlayable){
+		if(this.pointer.rightButton.isDown || !this.card.isPlayable){
 			this.cardReturn();
 			return;
 		}
@@ -233,8 +265,8 @@ Controller.prototype.update = function(){
 			sTime = this.shiftTime - new Date().getTime();
 			if(sTime > 0){
 				sP = new Phaser.Point(
-					Math.round(this.shiftPosition.x / this.shiftDuration * sTime), 
-					Math.round(this.shiftPosition.y / this.shiftDuration * sTime)
+					Math.round(this.shiftPosition.x / this.cardShiftDuration * sTime), 
+					Math.round(this.shiftPosition.y / this.cardShiftDuration * sTime)
 				);
 			}
 			else{
@@ -251,6 +283,10 @@ Controller.prototype.update = function(){
 
 //Ресет модуля
 Controller.prototype.reset = function(){
+
+	if(this.isInDebugMode)
+		console.log('Controller: Reset');
+
 	this.cardResetTrail(true);
 	this.card = null;
 	this.pointer = null;

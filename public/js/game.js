@@ -41,7 +41,7 @@ function create ()
 		cardsGroup = game.add.group();
 
 	if(!controller)
-		controller = new Controller();
+		controller = new Controller(false);
 
 	game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 
