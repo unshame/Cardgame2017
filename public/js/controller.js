@@ -9,6 +9,8 @@ var Controller = function(){
 	this.pointer = null;
 
 	this.trail = game.add.emitter(0, 0);
+	this.holder = game.add.group();
+	this.holder.add(this.trail);
 	this.trail.maxParticles = 30;
 	this.trail.gravity = 0;
 	this.trail.lifespan = 600;
@@ -17,7 +19,7 @@ var Controller = function(){
 
 //Обрабатывает нажатие на карту
 Controller.prototype.cardClick = function(card, pointer){
-	if(!card.suit && card.suit !== 0)
+	if(!card.isPlayable)
 		return;
 
 	if(this.card){
@@ -33,7 +35,7 @@ Controller.prototype.cardUnclick = function(card){
 	if(!this.card || this.card != card)
 		return;
 
-	if(!this.cardClickedInbound() || this.clickTimedOut){
+	if(!this.cardClickedInbound() || !this.cardClickTimer){
 		this.cardPutDown();
 	}
 }
@@ -46,6 +48,7 @@ Controller.prototype.cardPickup = function(card, pointer){
 		console.error('Controller: cardPickup called but no Card assigned.');
 		return
 	}
+	this.setCardClickTimer();
 	this.cardResetTrail();
 	this.card.base.addAt(this.trail, 0);
 	this.trail.position = {
@@ -190,20 +193,41 @@ Controller.prototype.cardResetTrail = function(soft){
 		}
 	})
 	this.trail.position = {x: 0, y: 0};
+	this.holder.add(this.trail);
+}
+
+Controller.prototype.setCardClickTimer = function(){
+	this.resetCardClickTimer();
+
+	this.cardClickTimer = game.time.events.add(300, function(){
+		this.resetCardClickTimer();
+	}, this);
+}
+
+Controller.prototype.resetCardClickTimer = function(){
+	if(this.cardClickTimer){
+		game.time.events.remove(this.cardClickTimer);
+		this.cardClickTimer = null;
+	}
 }
 
 //Обновление позиции карты и хвоста
 Controller.prototype.update = function(){
 	if(this.card){
+
+		//Ресетим контроллер, если карта была спрятана\удалена
 		if(!this.card.sprite.visible){
 			this.reset();
 			return;
 		}
-		if(this.pointer.button == Phaser.Mouse.RIGHT_BUTTON || !this.card.suit && this.card.suit !== 0){
+
+		//Возвращаем карту по нажатию правой кнопки или если она была перевернута
+		if(this.pointer.button == Phaser.Mouse.RIGHT_BUTTON || !this.card.isPlayable){
 			this.cardReturn();
 			return;
 		}
 
+		//Устанавливаем позицию карты и плавно передивгаем ее к курсору
 		if(!this.card.returner){
 			var sTime, sP, mP;
 			sTime = this.shiftTime - new Date().getTime();
@@ -219,6 +243,8 @@ Controller.prototype.update = function(){
 			mP = new Phaser.Point(this.pointer.x - this.card.base.x, this.pointer.y - this.card.base.y);
 			this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
 		}
+
+		//Спавним хвост
 		this.cardSpawnTrail();
 	}
 }

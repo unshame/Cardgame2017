@@ -76,6 +76,7 @@ Card.prototype.setValue = function(suit, value){
 		this.sprite.frame =  55;		
 		this.suit = null;
 		this.value = 0;
+		this.isPlayable = false;
 		if(this.glow.visible)
 			this.glow.visible = false;
 	}
@@ -83,6 +84,7 @@ Card.prototype.setValue = function(suit, value){
 		this.sprite.frame =  suit*13+value-2;
 		this.suit = suit;
 		this.value = value;
+		this.isPlayable = true;
 		if(!this.glow.visible){
 			this.glow.visible = true;
 			this.glowOff.start();
