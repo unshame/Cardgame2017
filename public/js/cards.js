@@ -1,3 +1,7 @@
+/*
+* Конструктор карт
+*/
+
 var debugSpotValidity = true;
 
 Card = function (options) {
@@ -15,8 +19,6 @@ Card = function (options) {
 	this.suit = this.options.suit;
 	this.value = this.options.value;
 
-	this.clickState = 'PUT_DOWN'
-
 	//Sprites
 	this.sprite = game.add.sprite(0, 0, 'cardsModern');
 
@@ -33,11 +35,13 @@ Card = function (options) {
 	//this.glow.tint = Math.random() * 0xffffff;
 	this.glow.tint = 0xFFFF0A;
 
+	this.glowDelayRange = 500;
+
 	this.glowOff = game.add.tween(this.glow);
-	this.glowOff.to({alpha: 0.25}, 1500, Phaser.Easing.Linear.None);
+	this.glowOff.to({alpha: 0.25}, 1500, Phaser.Easing.Linear.None, false, Math.floor(Math.random()*this.glowDelayRange));
 
 	this.glowOn = game.add.tween(this.glow);
-	this.glowOn.to({alpha: 0.75}, 1500, Phaser.Easing.Linear.None);
+	this.glowOn.to({alpha: 0.75}, 1500, Phaser.Easing.Linear.None, false, Math.floor(Math.random()*this.glowDelayRange));
 
 	this.glowOn.onComplete.add(function(){
 		if(this.glow.visible)
@@ -73,11 +77,17 @@ Card.prototype.setValue = function(suit, value){
 		this.sprite.frame =  55;		
 		this.suit = null;
 		this.value = 0;
+		if(this.glow.visible)
+			this.glow.visible = false;
 	}
 	else{
 		this.sprite.frame =  suit*13+value-2;
 		this.suit = suit;
 		this.value = value;
+		if(!this.glow.visible){
+			this.glow.visible = true;
+			this.glowOff.start();
+		}
 	}
 }
 

@@ -65,8 +65,12 @@ function create ()
 
 
 function update () {
+	if(!game.created)
+		return;
+
 	if(controller)
 		controller.update();
+	
 	for(var ci in cards){
 		if(!cards.hasOwnProperty(ci))
 			continue;

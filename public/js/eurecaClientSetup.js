@@ -1,3 +1,8 @@
+/*
+* Модуль отвечает за общение между клиентом и сервером
+* Инициализирует игру по готовности клиента
+*/
+
 var server;
 var isInDebugMode = false;
 
@@ -43,8 +48,6 @@ var EurecaClientSetup = function() {
 			if(cards[action.cid]){
 				cards[action.cid].setValue(action.suit, action.value);
 				//cardsGroup.align(Math.floor(screenWidth / cards[action.cid].sprite.width), -1, cards[action.cid].sprite.width, cards[action.cid].sprite.height);
-				cards[action.cid].glow.visible = action.suit || action.suit === 0;
-				cards[action.cid].glowOff.start()
 				cardsGroup.bringToTop(cards[action.cid].base)
 			}
 			else{
@@ -62,8 +65,6 @@ var EurecaClientSetup = function() {
 				if(cards[c.cid]){
 					cards[c.cid].setValue(c.suit, c.value);
 					//cardsGroup.align(Math.floor(screenWidth / cards[c.cid].sprite.width), -1, cards[c.cid].sprite.width, cards[c.cid].sprite.height);
-					cards[c.cid].glow.visible = c.suit || c.suit === 0;
-					cards[c.cid].glowOff.start()
 					cardsGroup.bringToTop(cards[c.cid].base)
 				}
 				else{

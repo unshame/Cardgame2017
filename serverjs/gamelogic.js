@@ -241,11 +241,9 @@ Game.prototype.dealTillFullHand = function(){
 	}
 	if(deals.length){
 		this.deal(deals);
-		return;
 	}
 	else{
 		this.continueGame();
-		return;
 	}
 }
 
@@ -480,14 +478,12 @@ Game.prototype.discardAndNotify = function(){
 				utils.log('ERROR: Couldn\'t send action to', player);
 			}
 		}
-		return;
 	}
 
 	//Иначе раздаем карты и переходим в фазу конца хода
 	else{
 		this.turnStage = 'ENDED';
 		this.dealTillFullHand();
-		return;
 	}
 }
 
