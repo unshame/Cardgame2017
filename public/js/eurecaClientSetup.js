@@ -48,7 +48,6 @@ var EurecaClientSetup = function() {
 			if(cards[action.cid]){
 				cards[action.cid].setValue(action.suit, action.value);
 				//cardsGroup.align(Math.floor(screenWidth / cards[action.cid].sprite.width), -1, cards[action.cid].sprite.width, cards[action.cid].sprite.height);
-				cardsGroup.bringToTop(cards[action.cid].base)
 			}
 			else{
 				var options = {
@@ -65,7 +64,6 @@ var EurecaClientSetup = function() {
 				if(cards[c.cid]){
 					cards[c.cid].setValue(c.suit, c.value);
 					//cardsGroup.align(Math.floor(screenWidth / cards[c.cid].sprite.width), -1, cards[c.cid].sprite.width, cards[c.cid].sprite.height);
-					cardsGroup.bringToTop(cards[c.cid].base)
 				}
 				else{
 					var options = {

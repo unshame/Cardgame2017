@@ -52,8 +52,6 @@ Card = function (options) {
 			this.glowOn.start();
 	},this)
 
-	this.setValue(this.suit, this.value);
-
 	//this.sprite = game.add.sprite(x, y, 'cardsClassic');
 	//this.sprite.frame = Math.floor(Math.random()*52)
 	//this.sprite.scale.setTo(0.5, 0.5);	
@@ -64,7 +62,8 @@ Card = function (options) {
 	this.base.add(this.glow);
 	this.base.add(this.sprite);
 	cardsGroup.add(this.base);  
-	cardsGroup.bringToTop(this.base);
+
+	this.setValue(this.suit, this.value);
 
 	if(this.suit || this.suit === 0)
 		this.glowOff.start()
@@ -87,6 +86,10 @@ Card.prototype.setValue = function(suit, value){
 		if(!this.glow.visible){
 			this.glow.visible = true;
 			this.glowOff.start();
+		}
+		cardsGroup.bringToTop(this.base);
+		if(controller.card){
+			cardsGroup.bringToTop(controller.card.base);
 		}
 	}
 }
