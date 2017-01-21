@@ -5,6 +5,8 @@
 var debugSpotValidity = true;
 
 Card = function (options) {
+
+	//Options
 	this.options = {
 		id:null,
 		game:game,
@@ -16,26 +18,26 @@ Card = function (options) {
 			this.options[o] = options[o];
 	}
 
-	this.suit = this.options.suit;
-	this.value = this.options.value;
+	//Id
+	this.id = this.options.id;
 
-	//Sprites
+	//Sprite
 	this.sprite = game.add.sprite(0, 0, 'cardsModern');
-
 	this.sprite.inputEnabled = true;
-	//this.sprite.input.enableDrag(false);
 	this.sprite.events.onInputDown.add(this.mouseDown, this);
 	this.sprite.events.onInputUp.add(this.mouseUp, this);
-	//this.sprite.events.onDragStart.add(this.dragStart, this);
-	//this.sprite.events.onDragStop.add(this.dragStop, this);
 	this.sprite.anchor.set(0.5, 0.5);
 
+	//Классический скин карт
+	//this.sprite = game.add.sprite(x, y, 'cardsClassic');
+	//this.sprite.scale.setTo(0.5, 0.5);	
+
+	//Glow
 	this.glow = game.add.sprite(0, 0, 'glow');
 	this.glow.anchor.set(0.5, 0.5);
-	//this.glow.tint = Math.random() * 0xffffff;
 	this.glow.tint = 0xFFFF0A;
-
 	this.glowDelayRange = 500;
+	this.glow.visible = false;
 
 	this.glowOff = game.add.tween(this.glow);
 	this.glowOff.to({alpha: 0.25}, 1500, Phaser.Easing.Linear.None, false, Math.floor(Math.random()*this.glowDelayRange));
@@ -52,23 +54,14 @@ Card = function (options) {
 			this.glowOn.start();
 	},this)
 
-	//this.sprite = game.add.sprite(x, y, 'cardsClassic');
-	//this.sprite.frame = Math.floor(Math.random()*52)
-	//this.sprite.scale.setTo(0.5, 0.5);	
-
-	this.id = this.options.id;
-
+	//Base
 	this.base = game.add.group();
 	this.base.add(this.glow);
 	this.base.add(this.sprite);
 	cardsGroup.add(this.base);  
 
-	this.setValue(this.suit, this.value);
-
-	if(this.suit || this.suit === 0)
-		this.glowOff.start()
-	else
-		this.glow.visible = false;	
+	//Value
+	this.setValue(this.options.suit, this.options.value);
 };
 
 Card.prototype.setValue = function(suit, value){
@@ -77,6 +70,7 @@ Card.prototype.setValue = function(suit, value){
 		this.suit = null;
 		this.value = 0;
 		this.isPlayable = false;
+		this.sprite.input.useHandCursor = false;
 		if(this.glow.visible)
 			this.glow.visible = false;
 	}
@@ -85,6 +79,7 @@ Card.prototype.setValue = function(suit, value){
 		this.suit = suit;
 		this.value = value;
 		this.isPlayable = true;
+		this.sprite.input.useHandCursor = true;
 		if(!this.glow.visible){
 			this.glow.visible = true;
 			this.glowOff.start();
