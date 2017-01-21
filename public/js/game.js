@@ -50,7 +50,7 @@ function create ()
 			debugSpotValidity = !debugSpotValidity;
 			if(!debugSpotValidity){
 				button.setFrames(1, 2, 0, 2);
-				controller.resetTrail(true);
+				controller.cardResetTrail(true);
 				cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
 			}
 			else{
@@ -70,7 +70,7 @@ function update () {
 
 	if(controller)
 		controller.update();
-	
+
 	for(var ci in cards){
 		if(!cards.hasOwnProperty(ci))
 			continue;
