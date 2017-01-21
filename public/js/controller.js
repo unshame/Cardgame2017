@@ -113,7 +113,7 @@ Controller.prototype.cardPutDown = function(){
 	if(this.isInDebugMode)
 		console.log('Controller: Putting down', this.card.id);
 
-	if(this.cardOnValidSpot() && this.pointer.leftButton.isDown){
+	if(this.cardOnValidSpot() && !this.pointer.rightButton.isDown){
 		this.cardRebaseAtPointer();
 	}
 	else{
