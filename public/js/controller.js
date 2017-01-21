@@ -94,8 +94,6 @@ Controller.prototype.cardPutDown = function(){
 	else{
 		this.cardReturn();
 	}
-	this.card = null;
-	this.pointer = null;
 }
 
 //Оставляет карту в позиции курсора
@@ -111,7 +109,10 @@ Controller.prototype.cardRebaseAtPointer = function(){
 	this.trail.position.x -= x - this.card.base.x; 
 	this.trail.position.y -= y - this.card.base.y; 
 	this.card.setBase(x, y);
-	this.card.setRelativePosition(0, 0)
+	this.card.setRelativePosition(0, 0);
+
+	this.card = null;
+	this.pointer = null;
 }
 
 //Возвращает карту на базу
@@ -134,6 +135,9 @@ Controller.prototype.cardReturn = function(){
 	}, this.card);
 
 	this.card.returner.start();
+
+	this.card = null;
+	this.pointer = null;
 }
 
 //Проверка нажатия на базу карты
