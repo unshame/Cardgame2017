@@ -42,7 +42,7 @@ var EurecaClientSetup = function() {
 				}
 			}
 			cards = {};
-			cardsGroup.removeAll(true);
+			cardsGroup.removeAll();
 		}		
 		if(action.cid){
 			if(cards[action.cid]){
