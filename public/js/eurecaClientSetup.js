@@ -36,6 +36,7 @@ var EurecaClientSetup = function() {
 	}
 	client.exports.recieveAction = function(action){
 		if(action.type == 'CARDS'){
+			controller.reset();
 			for(var cid in cards){
 				if(cards.hasOwnProperty(cid)){
 					cards[cid].base.removeAll();
