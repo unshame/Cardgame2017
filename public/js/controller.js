@@ -16,8 +16,10 @@ var Controller = function(isInDebugMode){
 	this.trail.maxParticles = 30;
 	this.trail.gravity = 0;
 	this.trail.lifespan = 600;
+	this.trailSpawnInterval = 20;
 	this.cardShiftDuration = 100;
 	this.cardReturnTime = 200;
+	this.cardClickMaxDelay = 200;
 }
 
 //Обрабатывает нажатие на карту
@@ -91,10 +93,10 @@ Controller.prototype.cardSetPathToCursor = function(){
 		this.card.returner = null;
 	}
 
-	this.shiftPosition = new Phaser.Point(
-		this.pointer.x - this.card.base.x - this.card.sprite.x,
-		this.pointer.y - this.card.base.y - this.card.sprite.y
-	);
+	this.shiftPosition = {
+		x: this.pointer.x - this.card.base.x - this.card.sprite.x,
+		y: this.pointer.y - this.card.base.y - this.card.sprite.y
+	};
 	this.shiftTime = new Date().getTime() + this.cardShiftDuration;
 }
 
@@ -188,12 +190,15 @@ Controller.prototype.cardOnValidSpot = function(){
 //Создает хвост карты при движении
 Controller.prototype.cardSpawnTrail = function(){
 	var curTime = new Date().getTime();
-	if(this.lastParticleTime && curTime - this.lastParticleTime < 20)
+	if(this.lastParticleTime && curTime - this.lastParticleTime < this.trailSpawnInterval)
 		return;
 
 	this.lastParticleTime = curTime;
 
-	var distance = this.card.sprite.position.distance(new Phaser.Point(this.trail.emitX, this.trail.emitY), true);
+	var distance = this.card.sprite.position.distance({
+		x: this.trail.emitX, 
+		y: this.trail.emitY
+	}, true);
 	if(distance < 2){
 		this.trail.width = this.card.sprite.width - 35;
 		this.trail.height = this.card.sprite.height - 35;
@@ -223,14 +228,16 @@ Controller.prototype.cardResetTrail = function(soft){
 	this.holder.add(this.trail);
 }
 
+//Запускает таймер клика по карте
 Controller.prototype.setCardClickTimer = function(){
 	this.resetCardClickTimer();
 
-	this.cardClickTimer = game.time.events.add(300, function(){
+	this.cardClickTimer = game.time.events.add(this.cardClickMaxDelay, function(){
 		this.resetCardClickTimer();
 	}, this);
 }
 
+//Обнуляет таймер клика по карте
 Controller.prototype.resetCardClickTimer = function(){
 	if(this.cardClickTimer){
 		game.time.events.remove(this.cardClickTimer);
@@ -259,15 +266,18 @@ Controller.prototype.update = function(){
 			var sTime, sP, mP;
 			sTime = this.shiftTime - new Date().getTime();
 			if(sTime > 0){
-				sP = new Phaser.Point(
-					Math.round(this.shiftPosition.x / this.cardShiftDuration * sTime), 
-					Math.round(this.shiftPosition.y / this.cardShiftDuration * sTime)
-				);
+				sP = {
+					x: Math.round(this.shiftPosition.x / this.cardShiftDuration * sTime), 
+					y: Math.round(this.shiftPosition.y / this.cardShiftDuration * sTime)
+				};
 			}
 			else{
-				sP = new Phaser.Point(0, 0);
+				sP = {x:0, y:0};
 			}
-			mP = new Phaser.Point(this.pointer.x - this.card.base.x, this.pointer.y - this.card.base.y);
+			mP = {
+				x: this.pointer.x - this.card.base.x,
+				y: this.pointer.y - this.card.base.y
+			};
 			this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
 		}
 
@@ -276,22 +286,30 @@ Controller.prototype.update = function(){
 	}
 }
 
+//Рисует дебаг хвоста
 Controller.prototype.updateDebug = function(){
 	if(!this.isInDebugMode)
 		return;
 
+	//База хвоста
 	if(!this.debugBase){
 		this.debugBase = new Phaser.Rectangle() ;
 	}
 	var width = this.card && this.card.sprite.width || this.debugBase.width || 0;
 	var height = this.card && this.card.sprite.height || this.debugBase.height || 0;
-
-	this.debugBase.x = this.trail.parent.x - width/2;
-	this.debugBase.y = this.trail.parent.y - height/2;
+	var x = this.trail.parent.x;
+	var y = this.trail.parent.y;
+	this.debugBase.x = x - width/2;
+	this.debugBase.y = y - height/2;
 	this.debugBase.width = width;
 	this.debugBase.height = height;
 	game.debug.geom( this.debugBase, 'rgba(255,0,0,0.6)' ) ;
 
+	//Таймер клика
+	var time = this.cardClickTimer && this.cardClickTimer.timer.nextTick - new Date().getTime() || 0;
+	game.debug.text(time + 'sec', x, y );
+
+	//Визуализация максимальной скорости хвоста
 	if(!this.debugSpeed){
 		this.debugSpeed = new Phaser.Circle();
 	}
@@ -303,6 +321,7 @@ Controller.prototype.updateDebug = function(){
 	this.debugSpeed.diameter = diameter + (width + height)/2;
 	game.debug.geom( this.debugSpeed, 'rgba(0,255,0,0.2)' ) ;
 
+	//Позиция спавна последнего партикля хвоста
 	if(!this.debugSpawn){
 		this.debugSpawn = new Phaser.Rectangle() ;
 	}
@@ -313,6 +332,7 @@ Controller.prototype.updateDebug = function(){
 	game.debug.geom( this.debugSpawn, 'rgba(0,0,255,0.3)' ) ;
 }
 
+//Переключает дебаг
 Controller.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	if(!this.isInDebugMode){
