@@ -82,7 +82,7 @@ function update () {
 function render () {
 	if(!game.created)
 		return;
-	
+
 	if(controller)
 		controller.updateDebug();
 }

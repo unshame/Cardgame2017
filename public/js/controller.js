@@ -13,10 +13,10 @@ var Controller = function(isInDebugMode){
 	this.trail = game.add.emitter(0, 0);
 	this.holder = game.add.group();
 	this.holder.add(this.trail);
-	this.trail.maxParticles = 30;
 	this.trail.gravity = 0;
 	this.trail.lifespan = 600;
-	this.trailSpawnInterval = 20;
+	this.trail.interval = 20;	//Свойство используется модулем, а не движком
+	this.trail.maxParticles = Math.ceil(this.trail.lifespan / this.trail.interval);
 	this.cardShiftDuration = 100;
 	this.cardReturnTime = 200;
 	this.cardClickMaxDelay = 200;
@@ -24,7 +24,7 @@ var Controller = function(isInDebugMode){
 
 //Обрабатывает нажатие на карту
 Controller.prototype.cardClick = function(card, pointer){
-	if(!card.isPlayable)
+	if(!card.isPlayable || this.card && this.card != card)
 		return;
 
 	if(this.isInDebugMode)
@@ -60,8 +60,8 @@ Controller.prototype.cardPickup = function(card, pointer){
 
 	this.card = card;
 	this.pointer = pointer;
-
-	if(!this.cardClickedInbound() || !this.pointer.leftButton.isDown){
+	
+	if(!this.cardClickedInbound() || (this.pointer.isMouse && !this.pointer.leftButton.isDown)){
 		this.reset();
 		return;
 	}
@@ -190,7 +190,7 @@ Controller.prototype.cardOnValidSpot = function(){
 //Создает хвост карты при движении
 Controller.prototype.cardSpawnTrail = function(){
 	var curTime = new Date().getTime();
-	if(this.lastParticleTime && curTime - this.lastParticleTime < this.trailSpawnInterval)
+	if(this.lastParticleTime && curTime - this.lastParticleTime < this.trail.interval)
 		return;
 
 	this.lastParticleTime = curTime;
@@ -330,6 +330,9 @@ Controller.prototype.updateDebug = function(){
 	this.debugSpawn.width = width;
 	this.debugSpawn.height = height;
 	game.debug.geom( this.debugSpawn, 'rgba(0,0,255,0.3)' ) ;
+
+	if(this.pointer)
+		game.debug.pointer(this.pointer);
 }
 
 //Переключает дебаг
