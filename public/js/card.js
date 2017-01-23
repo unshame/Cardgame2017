@@ -9,7 +9,6 @@ Card = function (options) {
 	//Options
 	this.options = {
 		id:null,
-		game:game,
 		value:0,
 		suit:null
 	};
@@ -20,6 +19,8 @@ Card = function (options) {
 
 	//Id
 	this.id = this.options.id;
+
+	this.spot = null;
 
 	//Sprite
 	this.sprite = game.add.sprite(0, 0, 'cardsModern');
@@ -56,6 +57,8 @@ Card = function (options) {
 
 	//Base
 	this.base = game.add.group();
+	this.base.x = screenWidth/2;
+	this.base.y = screenHeight + 300;
 	this.base.add(this.glow);
 	this.base.add(this.sprite);
 	cardsGroup.add(this.base);  
@@ -66,24 +69,33 @@ Card = function (options) {
 
 Card.prototype.setValue = function(suit, value){
 	if(suit === null || suit === undefined){
-		this.sprite.frame =  55;		
 		this.suit = null;
 		this.value = 0;
+		if(!this.sprite.visible)
+			return;
+
+		this.sprite.frame =  55;		
 		this.isPlayable = false;
 		this.sprite.input.useHandCursor = false;
+
 		if(this.glow.visible)
 			this.glow.visible = false;
 	}
 	else{
-		this.sprite.frame =  suit*13+value-2;
 		this.suit = suit;
 		this.value = value;
+		if(!this.sprite.visible)
+			return;
+
+		this.sprite.frame =  suit*13+value-2;
 		this.isPlayable = true;
 		this.sprite.input.useHandCursor = true;
+
 		if(!this.glow.visible){
 			this.glow.visible = true;
 			this.glowOff.start();
 		}
+
 		cardsGroup.bringToTop(this.base);
 		if(controller.card){
 			cardsGroup.bringToTop(controller.card.base);
@@ -94,16 +106,53 @@ Card.prototype.setValue = function(suit, value){
 Card.prototype.setPosition = function(x, y){
 	this.sprite.x = x - this.base.x;
 	this.sprite.y = y - this.base.y;
+	this.update();
 }
 
 Card.prototype.setRelativePosition = function(x, y){
 	this.sprite.x = x;
 	this.sprite.y = y;
+	this.update();
 }
 
 Card.prototype.setBase = function(x, y){
 	this.base.x = x;
 	this.base.y = y;
+	this.update();
+}
+
+Card.prototype.moveTo = function(x, y, time, delay, relative, shouldRebase){
+
+	relative = relative || false;
+	shouldRebase = shouldRebase || false;
+
+	if(this.mover){
+		this.mover.stop();
+		this.mover = null;
+	}
+	var moveX, moveY;
+	if(shouldRebase){
+		moveX = moveY = 0;
+		var newBaseX = relative ? x + this.base.x : x;
+		var newBaseY = relative ? y + this.base.y : y;
+		var newX = this.base.x - newBaseX;
+		var newY = this.base.y - newBaseY;
+		this.setBase(newBaseX, newBaseY);
+		this.setRelativePosition(newX,newY);
+	}
+	else{
+		moveX = relative ? x : x - this.base.x;
+		moveY = relative ? y : y - this.base.y;
+	}
+	this.mover = game.add.tween(this.sprite);
+	this.mover.to({x: moveX, y: moveY}, time || 0, Phaser.Easing.Quadratic.Out, true, delay || 0);
+	this.mover.onComplete.addOnce(() => {
+		this.mover = null;
+	}, this);
+}
+
+Card.prototype.returnToBase = function(time, delay){
+	this.moveTo(0, 0, time || 0, delay || 0, true)
 }
 
 Card.prototype.mouseDown = function(sprite, pointer){
@@ -119,8 +168,12 @@ Card.prototype.kill = function() {
 	this.sprite.kill();  
 }
 
-Card.prototype.update = function() {
+Card.prototype.reset = function(){
+	this.sprite.reset();  
+	this.setValue(this.suit, this.value);
+}
 
+Card.prototype.update = function() {
 	this.glow.x = this.sprite.x;
 	this.glow.y = this.sprite.y;
 };

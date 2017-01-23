@@ -91,9 +91,9 @@ Controller.prototype.cardPickup = function(card, pointer){
 //Устанавливает путь и время смещения карты к курсору
 Controller.prototype.cardSetPathToCursor = function(){
 
-	if(this.card.returner){
-		this.card.returner.stop();
-		this.card.returner = null;
+	if(this.card.mover){
+		this.card.mover.stop();
+		this.card.mover = null;
 	}
 
 	this.cardShiftPosition = {
@@ -158,18 +158,12 @@ Controller.prototype.cardReturn = function(){
 	if(this.isInDebugMode)
 		console.log('Controller: Returning', this.card.id, 'to base');
 
-	if(this.card.returner){
-		this.card.returner.stop();
-		this.card.returner = null;
+	if(this.card.mover){
+		this.card.mover.stop();
+		this.card.mover = null;
 	}
 
-	this.card.returner = game.add.tween(this.card.sprite);
-	this.card.returner.to({x:0, y:0}, this.cardReturnTime, Phaser.Easing.Quadratic.Out);
-	this.card.returner.onComplete.addOnce(function(){
-		this.returner = null;
-	}, this.card);
-
-	this.card.returner.start();
+	this.card.returnToBase(this.cardReturnTime, 0);
 
 	this.card = null;
 	this.pointer = null;
@@ -253,7 +247,7 @@ Controller.prototype.update = function(){
 	if(this.card){
 
 		//Ресетим контроллер, если карта была спрятана\удалена
-		if(!this.card.sprite.visible){
+		if(!this.card.sprite.visible || this.card.mover){
 			this.reset();
 			return;
 		}
@@ -265,7 +259,7 @@ Controller.prototype.update = function(){
 		}
 
 		//Устанавливаем позицию карты и плавно передивгаем ее к курсору
-		if(!this.card.returner){
+		if(!this.card.mover){
 			var sTime, sP, mP;
 			sTime = this.cardShiftEndTime - new Date().getTime();
 			if(sTime > 0){

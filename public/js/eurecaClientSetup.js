@@ -84,8 +84,16 @@ var EurecaClientSetup = function() {
 					cards[id] = new Card(options);
 				}
 			}
-			if(action.type == 'CARDS')
-				cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
+			if(action.type == 'CARDS'){
+				//cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
+				spot.reset();
+				var crds = [];
+				for(ci in cards){
+					if(cards.hasOwnProperty(ci))
+						crds.push(cards[ci]);
+				}
+				spot.addCards(crds)
+			}
 		}
 		else if(action.type == 'DISCARD'){
 			for(var i in action.ids){

@@ -2,6 +2,7 @@ var land = null;
 var cardsGroup = null;
 var unclickMe = null;
 var cards = {};
+var spot = null;
 var controller = null;
 var button = null;
 var screenWidth = window.innerWidth;
@@ -20,6 +21,8 @@ var onScreenChange = function() {
 	game.scale.setGameSize(screenWidth, screenHeight)
 	land.width = screenWidth;
 	land.height =  screenHeight;
+	if(!debugSpotValidity)
+		cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
 }
 window.addEventListener("resize",onScreenChange);
 window.addEventListener("orientationchange",onScreenChange);
@@ -32,16 +35,17 @@ function create ()
 		game.created = true;
 	}
 	
-	//Ground
 	if(!land)
 		land = game.add.tileSprite(0, 0, screenWidth, screenHeight, 'table8x');
 
-	//Players will go here
 	if(!cardsGroup)
 		cardsGroup = game.add.group();
 
+	if(!spot)
+		spot = new Spot({x:85,y:300, width:screenWidth - 170});
+
 	if(!controller)
-		controller = new Controller(true);
+		controller = new Controller(false);
 
 	game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 
@@ -51,7 +55,8 @@ function create ()
 			if(!debugSpotValidity){
 				button.setFrames(1, 2, 0, 2);
 				controller.cardResetTrail(true);
-				cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
+				//cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
+				spot.placeCards(null, true);
 			}
 			else{
 				button.setFrames(1, 0, 2, 0);
