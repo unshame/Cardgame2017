@@ -11,8 +11,8 @@ var Controller = function(isInDebugMode){
 	this.pointer = null;
 
 	this.trail = game.add.emitter(0, 0);
-	this.holder = game.add.group();
-	this.holder.add(this.trail);
+	this.trailDefaultBase = game.add.group();
+	this.trailDefaultBase.add(this.trail);
 	this.trail.gravity = 0;
 	this.trail.lifespan = 600;
 	this.trail.interval = 20;	//Свойство используется модулем, а не движком
@@ -46,7 +46,10 @@ Controller.prototype.cardUnclick = function(card){
 	if(this.isInDebugMode)
 		console.log('Controller: Unclicked', card.id);
 
-	if(!this.cardClickedInbound() || !this.cardClickTimer){
+	if(!this.pointer.withinGame){
+		this.cardReturn();
+	}
+	else if(!this.cardClickedInbound() || !this.cardClickTimer || !this.pointer.isMouse){
 		this.cardPutDown();
 	}
 }
@@ -93,11 +96,11 @@ Controller.prototype.cardSetPathToCursor = function(){
 		this.card.returner = null;
 	}
 
-	this.shiftPosition = {
+	this.cardShiftPosition = {
 		x: this.pointer.x - this.card.base.x - this.card.sprite.x,
 		y: this.pointer.y - this.card.base.y - this.card.sprite.y
 	};
-	this.shiftTime = new Date().getTime() + this.cardShiftDuration;
+	this.cardShiftEndTime = new Date().getTime() + this.cardShiftDuration;
 }
 
 //Кладет карту
@@ -225,7 +228,7 @@ Controller.prototype.cardResetTrail = function(soft){
 		}
 	})
 	this.trail.position = {x: 0, y: 0};
-	this.holder.add(this.trail);
+	this.trailDefaultBase.add(this.trail);
 }
 
 //Запускает таймер клика по карте
@@ -256,7 +259,7 @@ Controller.prototype.update = function(){
 		}
 
 		//Возвращаем карту по нажатию правой кнопки или если она была перевернута
-		if(this.pointer.rightButton.isDown || !this.card.isPlayable){
+		if(this.pointer.rightButton.isDown || !this.card.isPlayable || !this.pointer.withinGame){
 			this.cardReturn();
 			return;
 		}
@@ -264,11 +267,11 @@ Controller.prototype.update = function(){
 		//Устанавливаем позицию карты и плавно передивгаем ее к курсору
 		if(!this.card.returner){
 			var sTime, sP, mP;
-			sTime = this.shiftTime - new Date().getTime();
+			sTime = this.cardShiftEndTime - new Date().getTime();
 			if(sTime > 0){
 				sP = {
-					x: Math.round(this.shiftPosition.x / this.cardShiftDuration * sTime), 
-					y: Math.round(this.shiftPosition.y / this.cardShiftDuration * sTime)
+					x: Math.round(this.cardShiftPosition.x / this.cardShiftDuration * sTime), 
+					y: Math.round(this.cardShiftPosition.y / this.cardShiftDuration * sTime)
 				};
 			}
 			else{
@@ -319,7 +322,7 @@ Controller.prototype.updateDebug = function(){
 	this.debugSpeed.x = this.trail.parent.x + this.trail.position.x + this.trail.emitX;
 	this.debugSpeed.y = this.trail.parent.y + this.trail.position.y + this.trail.emitY;
 	this.debugSpeed.diameter = diameter + (width + height)/2;
-	game.debug.geom( this.debugSpeed, 'rgba(0,255,0,0.2)' ) ;
+	game.debug.geom( this.debugSpeed, 'rgba(255,255,0,0.2)' ) ;
 
 	//Позиция спавна последнего партикля хвоста
 	if(!this.debugSpawn){
