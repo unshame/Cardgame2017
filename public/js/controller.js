@@ -165,7 +165,7 @@ Controller.prototype.cardReturn = function(){
 
 	this.card.returner = game.add.tween(this.card.sprite);
 	this.card.returner.to({x:0, y:0}, this.cardReturnTime, Phaser.Easing.Quadratic.Out);
-	this.card.returner.onComplete.addOnce(() => {
+	this.card.returner.onComplete.addOnce(function(){
 		this.returner = null;
 	}, this.card);
 
