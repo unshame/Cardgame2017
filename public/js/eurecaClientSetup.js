@@ -39,11 +39,11 @@ var EurecaClientSetup = function() {
 			controller.reset();
 			for(var cid in cards){
 				if(cards.hasOwnProperty(cid)){
-					cards[cid].base.removeAll();
+					cards[cid].base.removeAll(true);
 				}
 			}
 			cards = {};
-			cardsGroup.removeAll();
+			cardsGroup.removeAll(true);
 		}		
 		if(action.cid){
 			if(cards[action.cid]){
