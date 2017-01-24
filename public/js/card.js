@@ -10,7 +10,8 @@ Card = function (options) {
 	this.options = {
 		id:null,
 		value:0,
-		suit:null
+		suit:null,
+		skin:sm.skin
 	};
 	for(o in options){
 		if(options.hasOwnProperty(o))
@@ -20,21 +21,24 @@ Card = function (options) {
 	//Id
 	this.id = this.options.id;
 
+	this.skin = this.options.skin;
+
 	this.spot = null;
 
+
 	//Sprite
-	this.sprite = game.add.sprite(0, 0, 'cardsModern');
+	this.sprite = game.add.sprite(0, 0, this.skin.sheetName);
 	this.sprite.inputEnabled = true;
 	this.sprite.events.onInputDown.add(this.mouseDown, this);
 	this.sprite.events.onInputUp.add(this.mouseUp, this);
 	this.sprite.anchor.set(0.5, 0.5);
+	this.sprite.scale.setTo(this.skin.scale.x, this.skin.scale.y);	
 
 	//Классический скин карт
 	//this.sprite = game.add.sprite(x, y, 'cardsClassic');
-	//this.sprite.scale.setTo(0.5, 0.5);	
 
 	//Glow
-	this.glow = game.add.sprite(0, 0, 'glow');
+	this.glow = game.add.sprite(0, 0, this.skin.glowName);
 	this.glow.anchor.set(0.5, 0.5);
 	this.glow.tint = 0xFFFF0A;
 	this.glowDelayRange = 500;
@@ -75,7 +79,7 @@ Card.prototype.setValue = function(suit, value){
 		if(!this.sprite.visible)
 			return;
 
-		this.sprite.frame =  55;		
+		this.sprite.frame =  this.skin.cardbackFrame;		
 		this.isPlayable = false;
 		this.sprite.input.useHandCursor = false;
 
@@ -88,7 +92,7 @@ Card.prototype.setValue = function(suit, value){
 		if(!this.sprite.visible)
 			return;
 
-		this.sprite.frame =  suit*13+value-2;
+		this.sprite.frame =  this.skin.firstValueFrame + suit*13 + value - 2;
 		this.isPlayable = true;
 		this.sprite.input.useHandCursor = true;
 
@@ -197,6 +201,22 @@ Card.prototype.returnToBase = function(time, delay){
 }
 
 /* /ПЕРЕДВИЖЕНИЕ */
+
+Card.prototype.applySkin = function(){
+	if(!this.suit && this.suit !== 0){
+		this.sprite.frame = this.skin.cardbackFrame;
+	}
+	else{
+		this.sprite.frame =  this.skin.firstValueFrame + this.suit*13 + this.value - 2;
+	}
+	//stub
+}
+
+Card.prototype.applyCardback = function(){
+	if(!this.suit && this.suit !== 0){
+		this.sprite.frame = this.skin.cardbackFrame;
+	}
+}
 
 //Вызывается при нажатии на карту
 Card.prototype.mouseDown = function(sprite, pointer){

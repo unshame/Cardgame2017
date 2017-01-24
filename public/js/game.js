@@ -1,4 +1,5 @@
 var land = null;
+var sm = null;
 var cardsGroup = null;
 var unclickMe = null;
 var cards = {};
@@ -10,7 +11,7 @@ var screenHeight = window.innerHeight;
 var game = new Phaser.Game(
 	screenWidth, 
 	screenHeight,  
-	Phaser.WEBGL, 
+	Phaser.Canvas, 
 	'cardgame', 
 	{ preload: preload, create: EurecaClientSetup, update: update, render: render }
 );

@@ -82,7 +82,7 @@ Controller.prototype.cardPickup = function(card, pointer){
 	this.trail.minParticleSpeed.setTo(-this.card.sprite.width, -this.card.sprite.height);
 	this.trail.maxParticleSpeed.setTo(this.card.sprite.width, this.card.sprite.height);
 
-	this.trail.makeParticles('suits', this.card.suit);
+	this.trail.makeParticles(this.card.skin.trailName, this.card.suit);
 
 	this.cardSetPathToCursor();
 	cardsGroup.bringToTop(this.card.base);

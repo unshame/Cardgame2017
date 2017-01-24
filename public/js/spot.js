@@ -72,8 +72,14 @@ Spot.prototype.placeCards = function(newCards, delayStray){
 		var y = this.base.y + this.area.height/2;
 		if(newCards && ~newCards.indexOf(card) || delayStray && (card.base.x != x || card.base.y != y))
 			di++;
-		card.moveTo(x, y, 200, 50*di, false, true);
+		if(controller.card != card)
+			card.moveTo(x, y, 200, 50*di, false, true)
+		else{
+			card.setBase(x, y);
+		}
 	}
+	if(controller.card)
+		cardsGroup.bringToTop(controller.card.base);
 }
 
 Spot.prototype.removeCards = function(cards){
