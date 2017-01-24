@@ -213,12 +213,7 @@ Card.prototype.kill = function() {
 	this.glow.kill();
 	this.sprite.kill();  
 	if(this.spot){
-		var i = this.spot.cards.indexOf(this);
-		if(~i){
-			this.spot.cards.splice(i, 1);
-			this.spot.sortCards();
-			this.spot.placeCards();
-		}
+		this.spot.removeCard(this);
 	}
 }
 

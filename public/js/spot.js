@@ -76,6 +76,23 @@ Spot.prototype.placeCards = function(newCards, delayStray){
 	}
 }
 
+Spot.prototype.removeCards = function(cards){
+	for(var ci in cards){
+		var card = cards[ci];
+		var i = this.cards.indexOf(card);
+		if(~i){
+			this.cards.splice(i, 1);
+		}
+	}
+	this.sortCards();
+	this.placeCards();
+
+}
+
+Spot.prototype.removeCard = function(card){
+	this.removeCards([card])
+}
+
 Spot.prototype.reset = function(){
 	this.cards = [];
 }
