@@ -144,6 +144,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	relativeToBase = relativeToBase || false;
 	shouldRebase = shouldRebase || false;
 
+	cardsGroup.bringToTop(this.base);
+
 	//Останавливаем твин, если он есть
 	if(this.mover){
 		this.mover.stop();
@@ -210,6 +212,14 @@ Card.prototype.mouseUp = function(sprite, pointer){
 Card.prototype.kill = function() {
 	this.glow.kill();
 	this.sprite.kill();  
+	if(this.spot){
+		var i = this.spot.cards.indexOf(this);
+		if(~i){
+			this.spot.cards.splice(i, 1);
+			this.spot.sortCards();
+			this.spot.placeCards();
+		}
+	}
 }
 
 //Восстанавливает карту

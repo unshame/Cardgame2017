@@ -21,12 +21,44 @@ var Spot = function(options){
 	this.cards = [];
 }
 
+Spot.prototype.sortCards = function(){
+	this.cards.sort(this.comparator);
+}
+
+Spot.prototype.comparator = function(a, b){
+	if(!a.suit && a.suit !== 0){
+		if(b.suit || b.suit === 0)
+			return -1
+		else
+			return 0
+	}
+	if(!b.suit && b.suit !== 0){
+		if(a.suit || a.suit === 0)
+			return 1
+		else
+			return 0
+	}
+	if(a.suit == b.suit){
+		if(a.value == b.value)
+			return 0
+		else if(a.value > b.value)
+			return 1
+		else
+			return -1;
+	}
+	else if(a.suit > b.suit)
+		return 1
+	else
+		return -1;
+}
+
 Spot.prototype.addCards = function(cards){
 	for(ci in cards){
 		var card = cards[ci];
 		card.spot = this;
 		this.cards.push(card);
 	}
+	this.sortCards();
 	this.placeCards(cards);
 }
 
