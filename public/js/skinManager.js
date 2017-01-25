@@ -57,7 +57,7 @@ SkinManager.prototype.applySkin = function(skinName){
 }
 
 SkinManager.prototype.setCardback = function(i){
-	if(i >= this.skin.cardbackPossibleFrames.length || i < 0 || i === undefined || i === null){
+	if(typeof i != 'number' || i >= this.skin.cardbackPossibleFrames.length || i < 0 || i === undefined || i === null){
 		console.error(
 			'SkinManager: Cardback with index', i, 'not found.',
 			'Highest possible index for current skin', this.skin.name, 'is',
