@@ -148,6 +148,11 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	relativeToBase = relativeToBase || false;
 	shouldRebase = shouldRebase || false;
 
+	//Убираем хвост, т.к. он отображается только при перетаскивании карты игроком
+	if(controller.trail.parent == this.base)
+		controller.cardResetTrail(true);
+
+	//Поднимаем карту на верх
 	cardsGroup.bringToTop(this.base);
 
 	//Останавливаем твин, если он есть
@@ -190,6 +195,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		true,
 		delay || 0
 	);
+
+	//Ресет твина по окончанию
 	this.mover.onComplete.addOnce(function(){
 		this.mover = null;
 	}, this);
