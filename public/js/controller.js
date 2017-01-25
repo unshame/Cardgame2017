@@ -20,6 +20,7 @@ var Controller = function(isInDebugMode){
 	this.cardShiftDuration = 100;
 	this.cardReturnTime = 200;
 	this.cardClickMaxDelay = 200;
+	this.cardMoveThreshold = 2;
 }
 
 //Обрабатывает нажатие на карту
@@ -196,7 +197,7 @@ Controller.prototype.cardSpawnTrail = function(){
 		x: this.trail.emitX, 
 		y: this.trail.emitY
 	}, true);
-	if(distance < 2){
+	if(distance < this.cardMoveThreshold){
 		this.trail.width = this.card.sprite.width - 35;
 		this.trail.height = this.card.sprite.height - 35;
 	}
@@ -206,21 +207,21 @@ Controller.prototype.cardSpawnTrail = function(){
 	this.trail.emitX = this.card.sprite.x;
 	this.trail.emitY = this.card.sprite.y;
 	this.trail.emitParticle();
-	this.trail.forEachAlive((p) => {
+	this.trail.forEachAlive(function(p){
 		p.alpha = p.lifespan / this.trail.lifespan * 0.6;
-	})
+	}, this)
 }
 
 //Ресетит хвост карты
 Controller.prototype.cardResetTrail = function(soft){
-	this.trail.forEachAlive((p) => {
+	this.trail.forEachAlive(function(p){
 		if(soft)
 			p.alpha = 0
 		else{
 			p.kill();
 			p.reset();
 		}
-	})
+	}, this)
 	this.trail.position = {x: 0, y: 0};
 	this.trailDefaultBase.add(this.trail);
 }
