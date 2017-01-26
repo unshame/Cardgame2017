@@ -3,7 +3,7 @@ var Spot = function(options){
 		id:null,
 		x:0,
 		y:0,
-		width:800,
+		width:1,
 		height:300,
 		type:'HAND'
 	};
@@ -62,7 +62,11 @@ Spot.prototype.addCards = function(cards){
 	this.placeCards(cards);
 }
 
-Spot.prototype.placeCards = function(newCards, delayStray){
+Spot.prototype.addCard = function(card){
+	this.addCards([card]);
+}
+
+Spot.prototype.placeCards = function(newCards, delayMisplaced){
 	this.spaceWidth = this.area.width/this.cards.length;
 	di = 0;
 	for(ci in this.cards){
@@ -70,13 +74,9 @@ Spot.prototype.placeCards = function(newCards, delayStray){
 		var card = this.cards[ci];		
 		var x = this.spaceWidth*i + card.sprite.width/4 + this.base.x;
 		var y = this.base.y + this.area.height/2;
-		if(newCards && ~newCards.indexOf(card) || delayStray && (card.base.x != x || card.base.y != y))
+		if(newCards && ~newCards.indexOf(card) || delayMisplaced && (card.base.x != x || card.base.y != y))
 			di++;
-		if(controller.card != card)
-			card.moveTo(x, y, 200, 50*di, false, true)
-		else{
-			card.setBase(x, y);
-		}
+		card.moveTo(x, y, 200, 50*di, false, true)
 	}
 	if(controller.card)
 		cardsGroup.bringToTop(controller.card.base);

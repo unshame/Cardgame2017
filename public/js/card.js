@@ -11,7 +11,8 @@ Card = function (options) {
 		id:null,
 		value:0,
 		suit:null,
-		skin:sm.skin
+		skin:sm.skin,
+		position: 'DECK'
 	};
 	for(o in options){
 		if(options.hasOwnProperty(o))
@@ -21,10 +22,14 @@ Card = function (options) {
 	//Id
 	this.id = this.options.id;
 
+	//Position
+	this.position = this.options.position;
+
+	//Skin
 	this.skin = this.options.skin;
 
+	//Spot
 	this.spot = null;
-
 
 	//Sprite
 	this.sprite = game.add.sprite(0, 0, this.skin.sheetName);
@@ -40,24 +45,7 @@ Card = function (options) {
 	//Glow
 	this.glow = game.add.sprite(0, 0, this.skin.glowName);
 	this.glow.anchor.set(0.5, 0.5);
-	this.glow.tint = 0xFFFF0A;
-	this.glowDelayRange = 500;
 	this.glow.visible = false;
-
-	this.glowOff = game.add.tween(this.glow);
-	this.glowOff.to({alpha: 0.25}, 1500, Phaser.Easing.Linear.None, false, Math.floor(Math.random()*this.glowDelayRange));
-
-	this.glowOn = game.add.tween(this.glow);
-	this.glowOn.to({alpha: 0.75}, 1500, Phaser.Easing.Linear.None, false, Math.floor(Math.random()*this.glowDelayRange));
-
-	this.glowOn.onComplete.add(function(){
-		if(this.glow.visible)
-			this.glowOff.start();
-	},this)
-	this.glowOff.onComplete.add(function(){
-		if(this.glow.visible)
-			this.glowOn.start();
-	},this)
 
 	//Base
 	this.base = game.add.group();
@@ -83,8 +71,7 @@ Card.prototype.setValue = function(suit, value){
 		this.isPlayable = false;
 		this.sprite.input.useHandCursor = false;
 
-		if(this.glow.visible)
-			this.glow.visible = false;
+		this.glowStop();
 	}
 	else{
 		this.suit = suit;
@@ -96,10 +83,7 @@ Card.prototype.setValue = function(suit, value){
 		this.isPlayable = true;
 		this.sprite.input.useHandCursor = true;
 
-		if(!this.glow.visible){
-			this.glow.visible = true;
-			this.glowOff.start();
-		}
+		this.glowStart(0.25, 0.75, 1500, 500, 0xFFFF0A)
 
 		cardsGroup.bringToTop(this.base);
 		if(controller.card){
@@ -129,6 +113,10 @@ Card.prototype.setBase = function(x, y){
 	this.base.x = x;
 	this.base.y = y;
 	this.update();
+}
+
+Card.prototype.setSpot = function(spot){
+	this.position = spot;
 }
 
 /* /ПОЗИЦИОНИРОВАНИЕ */
@@ -163,19 +151,20 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	var moveX, moveY;
 
+	//Новая позиция базы
+	var newBaseX = relativeToBase ? x + this.base.x : x;
+	var newBaseY = relativeToBase ? y + this.base.y : y;
+
 	//Меняем позицию базы карты перед началом анимации
 	//и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась
-	if(shouldRebase){
+	if(shouldRebase && (newBaseX != this.base.x || newBaseY != this.base.y)){
 
 		//Мы будем двигать карту к новой позиции базы
 		moveX = moveY = 0;
-		
-		var newBaseX = relativeToBase ? x + this.base.x : x;
-		var newBaseY = relativeToBase ? y + this.base.y : y;
 		var newX = this.base.x + this.sprite.x - newBaseX;
 		var newY = this.base.y + this.sprite.y - newBaseY;
 		this.setBase(newBaseX, newBaseY);
-		this.setRelativePosition(newX,newY);
+		this.setRelativePosition(newX, newY);
 	}
 	else{
 		//Если база остается прежней, то двигаем карту к нужной позиции
@@ -209,6 +198,7 @@ Card.prototype.returnToBase = function(time, delay){
 
 /* /ПЕРЕДВИЖЕНИЕ */
 
+/* СКИН */
 Card.prototype.applySkin = function(){
 	if(!this.suit && this.suit !== 0){
 		this.sprite.frame = this.skin.cardbackFrame;
@@ -224,6 +214,61 @@ Card.prototype.applyCardback = function(){
 		this.sprite.frame = this.skin.cardbackFrame;
 	}
 }
+/* /СКИН */
+
+/* СВЕЧЕНИЕ */
+//Запускает свечение
+Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
+	
+	this.glowReset();
+
+	this.glow.tint = color || 0xFFFFFF;
+
+	this.glowDecreaser = game.add.tween(this.glow);
+	this.glowDecreaser.to({alpha: minGlow}, speed, Phaser.Easing.Linear.None, false, Math.floor(Math.random()*(delayRange || 0)));
+
+	this.glowIncreaser = game.add.tween(this.glow);
+	this.glowIncreaser.to({alpha: maxGlow}, speed, Phaser.Easing.Linear.None, false, Math.floor(Math.random()*(delayRange || 0)));
+
+	this.glowIncreaser.onComplete.add(function(){
+		if(this.glow.visible && this.glowDecreaser)
+			this.glowDecreaser.start();
+	},this)
+	this.glowDecreaser.onComplete.add(function(){
+		if(this.glow.visible && this.glowIncreaser)
+			this.glowIncreaser.start();
+	},this)
+	this.glowDecreaser.start()
+}
+
+//Останавливает свечение
+Card.prototype.glowStop = function(){
+	if(this.glowIncreaser){
+		this.glowIncreaser.stop();
+		this.glowIncreaser = null;
+	}
+	if(this.glowDecreaser){
+		this.glowDecreaser.stop();
+		this.glowDecreaser = null;
+	}
+	if(this.glow.visible){
+		this.glow.kill();
+	}
+}
+
+//Останавливает и восстанавливает свечение
+Card.prototype.glowReset = function(){
+	this.glowStop();
+	this.glow.reset();
+	this.glowUpdatePosition();
+}
+
+//Обновляет позицию свечения
+Card.prototype.glowUpdatePosition = function(){
+	this.glow.x = this.sprite.x;
+	this.glow.y = this.sprite.y;
+}
+/* /СВЕЧЕНИЕ */
 
 //Вызывается при нажатии на карту
 Card.prototype.mouseDown = function(sprite, pointer){
@@ -250,10 +295,9 @@ Card.prototype.reset = function(){
 	this.setValue(this.suit, this.value);
 }
 
-//Обновляет позицию свечения
+
 Card.prototype.update = function() {
-	this.glow.x = this.sprite.x;
-	this.glow.y = this.sprite.y;
+	this.glowUpdatePosition();
 };
 
 //party time

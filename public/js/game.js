@@ -4,6 +4,8 @@ var cardsGroup = null;
 var unclickMe = null;
 var cards = {};
 var spot = null;
+var deck = null;
+var discard = null;
 var controller = null;
 var button = null;
 var screenWidth = window.innerWidth;
@@ -42,8 +44,17 @@ function create ()
 	if(!cardsGroup)
 		cardsGroup = game.add.group();
 
-	if(!spot)
-		spot = new Spot({x:85,y:300, width:screenWidth - 170});
+	if(!spot){
+		spot = new Spot({x:85,y:100, width:screenWidth - 170});
+	}
+
+	if(!deck){
+		deck = new Spot({x:85,y:500, width:10});
+	}
+
+	if(!discard){
+		discard = new Spot({x:500,y:500, width:10});
+	}
 
 	if(!controller)
 		controller = new Controller(false);
