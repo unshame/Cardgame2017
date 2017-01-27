@@ -158,10 +158,12 @@ Controller.prototype.cardReturn = function(){
 		this.card.mover = null;
 	}
 
-	this.card.returnToBase(this.cardReturnTime, 0);
+	var card = this.card;
 
 	this.card = null;
 	this.pointer = null;
+
+	card.returnToBase(this.cardReturnTime, 0);
 }
 
 //Проверка нажатия на базу карты

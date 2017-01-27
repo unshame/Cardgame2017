@@ -91,7 +91,7 @@ var EurecaClientSetup = function() {
 						id: c.cid,
 						suit: c.suit,
 						value: c.value,
-						spot: c.spot
+						spotId: c.spot
 					}
 					cards[c.cid] = new Card(options);
 				}

@@ -12,7 +12,7 @@ Card = function (options) {
 		value:0,
 		suit:null,
 		skin:sm.skin,
-		spot: 'DECK'
+		spotId: 'DECK'
 	};
 	for(o in options){
 		if(options.hasOwnProperty(o))
@@ -22,13 +22,11 @@ Card = function (options) {
 	//Id
 	this.id = this.options.id;
 
-	//Spot
-	this.spotId = this.options.spot;
-	
 	//Skin
 	this.skin = this.options.skin;
 
 	//Spot
+	this.spotId = this.options.spotId;
 	this.spot = null;
 
 	//Sprite
@@ -95,14 +93,14 @@ Card.prototype.setValue = function(suit, value){
 /* ПОЗИЦИОНИРОВАНИЕ */
 
 //Устанавливает абсолютную позицию карты
-Card.prototype.setspot = function(x, y){
+Card.prototype.setPosition = function(x, y){
 	this.sprite.x = x - this.base.x;
 	this.sprite.y = y - this.base.y;
 	this.update();
 }
 
 //Устанавливает положение карты по отношению к базе карты
-Card.prototype.setRelativespot = function(x, y){
+Card.prototype.setRelativePosition = function(x, y){
 	this.sprite.x = x;
 	this.sprite.y = y;
 	this.update();
@@ -116,8 +114,7 @@ Card.prototype.setBase = function(x, y){
 }
 
 Card.prototype.setSpot = function(spotId){
-	console.log(spotId);
-	this.spotId = spot;
+	this.spotId = spotId;
 }
 
 /* /ПОЗИЦИОНИРОВАНИЕ */
@@ -165,7 +162,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		var newX = this.base.x + this.sprite.x - newBaseX;
 		var newY = this.base.y + this.sprite.y - newBaseY;
 		this.setBase(newBaseX, newBaseY);
-		this.setRelativespot(newX, newY);
+		this.setRelativePosition(newX, newY);
 	}
 	else{
 		//Если база остается прежней, то двигаем карту к нужной позиции
@@ -264,11 +261,11 @@ Card.prototype.glowStop = function(){
 Card.prototype.glowReset = function(){
 	this.glowStop();
 	this.glow.reset();
-	this.glowUpdatespot();
+	this.glowUpdatePosition();
 }
 
 //Обновляет позицию свечения
-Card.prototype.glowUpdatespot = function(){
+Card.prototype.glowUpdatePosition = function(){
 	this.glow.x = this.sprite.x;
 	this.glow.y = this.sprite.y;
 }
@@ -302,7 +299,7 @@ Card.prototype.reset = function(){
 //Обновление карты
 //В будущем вохможно будет делать что-то еще
 Card.prototype.update = function() {
-	this.glowUpdatespot();
+	this.glowUpdatePosition();
 };
 
 //party time
