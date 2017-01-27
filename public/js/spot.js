@@ -7,6 +7,7 @@ var Spot = function(options){
 		height:0,
 		margin:10,
 		focusable: true,
+		spacing: true,
 		type:'HAND',
 		align:'center',
 		verticalAlign:'middle'
@@ -23,6 +24,7 @@ var Spot = function(options){
 	this.verticalAlign = this.options.verticalAlign;
 	this.margin = this.options.margin;
 
+	this.spacing = this.options.spacing;
 	this.focusable = this.options.focusable;
 
 	this.base = game.add.group();
@@ -89,14 +91,16 @@ Spot.prototype.addCard = function(card){
 
 Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
-	//Ширина карты
+	//Размеры карт
 	var cardWidth = sm.skin.width;
+	var cardHeight = sm.skin.height;
 
 	//Необходимая ширина для размещения карт
 	var requiredActiveWidth = (this.cards.length-1)*cardWidth;
 
-	//Отступ слева
+	//Отступы
 	var leftMargin = cardWidth/2 + this.margin;
+	var topMargin = 0;
 
 	//Активная ширина поля
 	var areaActiveWidth = this.area.width - cardWidth - this.margin*2;
@@ -128,8 +132,22 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 		}
 	}
 
+	switch(this.verticalAlign){
+		case 'top':
+			topMargin = this.margin + cardHeight/2;
+			break;
+		case 'bottom':
+			topMargin = this.area.height - this.margin - cardHeight/2;
+			break;
+		default:
+			topMargin = this.area.height/2;
+			break;
+	}
+
 	//Отступ между карт
 	var cardSpacing = requiredActiveWidth/(this.cards.length-1);
+	if(!this.spacing && cardSpacing > 1)
+		cardSpacing = 1;
 
 	//Если курсор находится над одной из карт и карты не вмещаются в поле, указываем сдвиг карты от курсора
 	if(this.focusedCard && requiredActiveWidth == areaActiveWidth){
@@ -151,7 +169,7 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 		var x = leftMargin + cardSpacing*i + this.base.x + localShift;
 
 		//Вертикальная позиция
-		var y = this.base.y + this.area.height/2;
+		var y = this.base.y + topMargin;
 
 		//Добавляем задержку передвижения, если указаны новые карты или если необходимо задерживать смещенные карты
 		if(newCards && ~newCards.indexOf(card) || delayMisplaced && (card.base.x != x || card.base.y != y))

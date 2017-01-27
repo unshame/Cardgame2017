@@ -54,7 +54,8 @@ function create ()
 			x:100,
 			y:screenHeight - 250,
 			align:'left',
-			focusable:false
+			focusable:false,
+			spacing: false
 		});
 	}
 
@@ -63,7 +64,8 @@ function create ()
 			x:screenWidth - 200,
 			y:screenHeight - 250,
 			align:'left',
-			focusable:false
+			focusable:false,
+			spacing: false
 		});
 	}
 
