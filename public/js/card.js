@@ -34,6 +34,8 @@ Card = function (options) {
 	this.sprite.inputEnabled = true;
 	this.sprite.events.onInputDown.add(this.mouseDown, this);
 	this.sprite.events.onInputUp.add(this.mouseUp, this);
+	this.sprite.events.onInputOver.add(this.mouseOver, this);
+	this.sprite.events.onInputOut.add(this.mouseOut, this);
 	this.sprite.anchor.set(0.5, 0.5);
 	this.sprite.scale.setTo(this.skin.scale.x, this.skin.scale.y);	
 
@@ -135,7 +137,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	shouldRebase = shouldRebase || false;
 
 	//Убираем хвост, т.к. он отображается только при перетаскивании карты игроком
-	if(controller.trail.parent == this.base)
+	if(controller.trail.parent == this.base && shouldRebase)
 		controller.cardResetTrail(true);
 
 	//Поднимаем карту на верх
@@ -279,6 +281,18 @@ Card.prototype.mouseDown = function(sprite, pointer){
 //Вызывается при окончании нажатия на карту
 Card.prototype.mouseUp = function(sprite, pointer){
 	controller.cardUnclick(this, pointer);
+}
+
+Card.prototype.mouseOver = function(sprite, pointer){
+	if(!this.spot)
+		return;
+	this.spot.focusOnCard(this, pointer);
+}
+
+Card.prototype.mouseOut = function(sprite, pointer){
+	if(!this.spot)
+		return;
+	this.spot.focusOffCard();
 }
 
 //Убивает спрайты карты

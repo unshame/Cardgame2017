@@ -1,7 +1,6 @@
 var land = null;
 var sm = null;
 var cardsGroup = null;
-var unclickMe = null;
 var cards = {};
 var spot = null;
 var deck = null;
@@ -24,8 +23,6 @@ var onScreenChange = function() {
 	game.scale.setGameSize(screenWidth, screenHeight)
 	land.width = screenWidth;
 	land.height =  screenHeight;
-	if(!debugSpotValidity)
-		cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
 }
 window.addEventListener("resize",onScreenChange);
 window.addEventListener("orientationchange",onScreenChange);
@@ -45,15 +42,29 @@ function create ()
 		cardsGroup = game.add.group();
 
 	if(!spot){
-		spot = new Spot({x:85,y:100, width:screenWidth - 170});
+		spot = new Spot({
+			x:100,
+			y:100,
+			width:screenWidth - 170
+		});
 	}
 
 	if(!deck){
-		deck = new Spot({x:85,y:500, width:10});
+		deck = new Spot({
+			x:100,
+			y:screenHeight - 250,
+			align:'left',
+			focusable:false
+		});
 	}
 
 	if(!discard){
-		discard = new Spot({x:500,y:500, width:10});
+		discard = new Spot({
+			x:screenWidth - 200,
+			y:screenHeight - 250,
+			align:'left',
+			focusable:false
+		});
 	}
 
 	if(!controller)
