@@ -6,16 +6,21 @@ var Spot = function(options){
 		width:0,
 		height:0,
 		margin:10,
-		focusable: true,
-		spacing: true,
+		minActiveWidth: 10,	//Минимальная ширина для расположения карт
+		focusable: true,	//Нужно ли сдвигать карты при наведении
+		spacing: true,		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать 1
 		type:'HAND',
 		align:'center',
-		verticalAlign:'middle'
+		verticalAlign:'middle',
+		texture: null
 	};
 	for(o in options){
 		if(options.hasOwnProperty(o))
 			this.options[o] = options[o];
 	}
+
+	this.cards = [];
+	this.focusedCard = null;
 
 	this.type = this.options.type;
 	this.id = this.options.id;
@@ -31,17 +36,34 @@ var Spot = function(options){
 	this.base.x = this.options.x;
 	this.base.y = this.options.y;
 
+	this.minActiveWidth = this.options.minActiveWidth;
+	
 	if(this.options.width < sm.skin.width)
-		this.options.width = sm.skin.width + 10;
+		this.options.width = sm.skin.width + this.minActiveWidth;
 
 	if(this.options.height < sm.skin.height)
-		this.options.height = sm.skin.height + 10;
+		this.options.height = sm.skin.height + this.minActiveWidth;
 
-	this.area = game.add.tileSprite(0, 0, this.options.width + this.margin*2, this.options.height + this.margin*2, 'spot');
-	this.base.add(this.area);
+	if(this.options.texture){
+		this.area = game.add.tileSprite(
+			0,
+			0,
+			this.options.width + this.margin*2,
+			this.options.height + this.margin*2,
+			this.options.texture
+		);
+		this.base.add(this.area);
+	}
+	else{
+		this.area = {
+			x: 0,
+			y: 0,
+			width: this.options.width + this.margin*2,
+			height: this.options.height + this.margin*2
+		};
+	}
+	
 	game.world.setChildIndex(this.base, 1);
-	this.cards = [];
-	this.focusedCard = null;
 }
 
 Spot.prototype.sortCards = function(){
@@ -166,7 +188,7 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 			localShift = ci < focusedIndex ? -shift : shift;
 
 		//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению к предыдущим картам, позиции базы поля и сдвига от курсора
-		var x = leftMargin + cardSpacing*i + this.base.x + localShift;
+		var x = this.base.x + leftMargin + cardSpacing*i + localShift;
 
 		//Вертикальная позиция
 		var y = this.base.y + topMargin;

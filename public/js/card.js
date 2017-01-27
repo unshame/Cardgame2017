@@ -172,23 +172,29 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		moveY = relativeToBase ? y : y - this.base.y;
 	}
 
-	//Создаем и запускаем твин
-	this.mover = game.add.tween(this.sprite);
-	this.mover.to(
-		{
-			x: moveX,
-			y: moveY
-		},
-		time || 0,
-		Phaser.Easing.Quadratic.Out,
-		true,
-		delay || 0
-	);
+	//Создаем и запускаем твин или перемещаем карту если игра остановлена
+	if(game.paused){
+		this.setRelativePosition(moveX, moveY);
+	}
+	else{
+		this.mover = game.add.tween(this.sprite);
+		this.mover.to(
+			{
+				x: moveX,
+				y: moveY
+			},
+			time || 0,
+			Phaser.Easing.Quadratic.Out,
+			true,
+			delay || 0
+		);
 
-	//Ресет твина по окончанию
-	this.mover.onComplete.addOnce(function(){
-		this.mover = null;
-	}, this);
+		//Ресет твина по окончанию
+		this.mover.onComplete.addOnce(function(){
+			this.mover = null;
+		}, this);
+	}
+
 }
 
 //Плавно возвращает карту на базу

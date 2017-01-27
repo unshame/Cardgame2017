@@ -24,8 +24,8 @@ var onScreenChange = function() {
 	land.width = screenWidth;
 	land.height =  screenHeight;
 }
-window.addEventListener("resize",onScreenChange);
-window.addEventListener("orientationchange",onScreenChange);
+window.addEventListener('resize',onScreenChange);
+window.addEventListener('orientationchange',onScreenChange);
 
 function create () 
 {
@@ -45,7 +45,8 @@ function create ()
 		spot = new Spot({
 			x:100,
 			y:100,
-			width:screenWidth - 170
+			width:screenWidth - 170,
+			texture: 'spot'
 		});
 	}
 
@@ -55,7 +56,8 @@ function create ()
 			y:screenHeight - 250,
 			align:'left',
 			focusable:false,
-			spacing: false
+			spacing: false,
+			texture: 'spot'
 		});
 	}
 
@@ -65,7 +67,8 @@ function create ()
 			y:screenHeight - 250,
 			align:'left',
 			focusable:false,
-			spacing: false
+			spacing: false,
+			texture: 'spot'
 		});
 	}
 
