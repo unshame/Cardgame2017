@@ -23,8 +23,8 @@ Card = function (options) {
 	this.id = this.options.id;
 
 	//Spot
-	this.spot = this.options.spot;
-
+	this.spotId = this.options.spot;
+	
 	//Skin
 	this.skin = this.options.skin;
 
@@ -115,8 +115,9 @@ Card.prototype.setBase = function(x, y){
 	this.update();
 }
 
-Card.prototype.setSpot = function(spot){
-	this.spot = spot;
+Card.prototype.setSpot = function(spotId){
+	console.log(spotId);
+	this.spotId = spot;
 }
 
 /* /ПОЗИЦИОНИРОВАНИЕ */
@@ -321,7 +322,7 @@ var ThrowCards = function(){
 
 	game.world.bringToTop(this.emitter)
 }
-throwCards.prototype.stop = function(){
+ThrowCards.prototype.stop = function(){
 	if(this.emitter.on){
 		this.emitter.destroy();
 	}
