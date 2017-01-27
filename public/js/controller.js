@@ -76,10 +76,6 @@ Controller.prototype.cardPickup = function(card, pointer){
 	this.setCardClickTimer();
 	this.cardResetTrail();
 	this.card.base.addAt(this.trail, 0);
-	this.trail.position = {
-		x: this.card.sprite.centerX,
-		y: this.card.sprite.centerY
-	}
 	this.trail.minParticleSpeed.setTo(-this.card.sprite.width, -this.card.sprite.height);
 	this.trail.maxParticleSpeed.setTo(this.card.sprite.width, this.card.sprite.height);
 
@@ -96,7 +92,6 @@ Controller.prototype.cardSetPathToCursor = function(){
 		this.card.mover.stop();
 		this.card.mover = null;
 	}
-
 	this.cardShiftPosition = {
 		x: this.pointer.x - this.card.base.x - this.card.sprite.x,
 		y: this.pointer.y - this.card.base.y - this.card.sprite.y
@@ -130,7 +125,6 @@ Controller.prototype.cardRebaseAtPointer = function(){
 		console.error('Controller: cardRebaseAtPointer called but no Card assigned.');
 		return
 	}
-
 
 	this.trail.position.x -= this.card.sprite.x; 
 	this.trail.position.y -= this.card.sprite.y; 
@@ -185,8 +179,15 @@ Controller.prototype.cardOnValidSpot = function(){
 	return debugSpotValidity;
 }
 
+//Смещает хвост относительно базы карты
+Controller.prototype.cardShiftTrial = function(x, y){
+	this.trail.position.x += x;
+	this.trail.position.y += y;
+}
+
 //Создает хвост карты при движении
 Controller.prototype.cardSpawnTrail = function(){
+
 	var curTime = new Date().getTime();
 	if(this.lastParticleTime && curTime - this.lastParticleTime < this.trail.interval)
 		return;
@@ -194,8 +195,8 @@ Controller.prototype.cardSpawnTrail = function(){
 	this.lastParticleTime = curTime;
 
 	var distance = this.card.sprite.position.distance({
-		x: this.trail.emitX, 
-		y: this.trail.emitY
+		x: this.trail.emitX + this.trail.position.x, 
+		y: this.trail.emitY + this.trail.position.y
 	}, true);
 	if(distance < this.cardMoveThreshold){
 		this.trail.width = this.card.sprite.width - 35;
@@ -204,8 +205,8 @@ Controller.prototype.cardSpawnTrail = function(){
 	else{
 		this.trail.width = this.trail.height = 0;
 	}
-	this.trail.emitX = this.card.sprite.x;
-	this.trail.emitY = this.card.sprite.y;
+	this.trail.emitX = this.card.sprite.x - this.trail.position.x;
+	this.trail.emitY = this.card.sprite.y - this.trail.position.y;
 	this.trail.emitParticle();
 	this.trail.forEachAlive(function(p){
 		p.alpha = p.lifespan / this.trail.lifespan * 0.6;
@@ -260,24 +261,22 @@ Controller.prototype.update = function(){
 		}
 
 		//Устанавливаем позицию карты и плавно передивгаем ее к курсору
-		if(!this.card.mover){
-			var sTime, sP, mP;
-			sTime = this.cardShiftEndTime - new Date().getTime();
-			if(sTime > 0){
-				sP = {
-					x: Math.round(this.cardShiftPosition.x / this.cardShiftDuration * sTime), 
-					y: Math.round(this.cardShiftPosition.y / this.cardShiftDuration * sTime)
-				};
-			}
-			else{
-				sP = {x:0, y:0};
-			}
-			mP = {
-				x: this.pointer.x - this.card.base.x,
-				y: this.pointer.y - this.card.base.y
+		var sTime, sP, mP;
+		sTime = this.cardShiftEndTime - new Date().getTime();
+		if(sTime > 0){
+			sP = {
+				x: Math.round(this.cardShiftPosition.x / this.cardShiftDuration * sTime), 
+				y: Math.round(this.cardShiftPosition.y / this.cardShiftDuration * sTime)
 			};
-			this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
 		}
+		else{
+			sP = {x:0, y:0};
+		}
+		mP = {
+			x: this.pointer.x - this.card.base.x,
+			y: this.pointer.y - this.card.base.y
+		};
+		this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
 
 		//Спавним хвост
 		this.cardSpawnTrail();

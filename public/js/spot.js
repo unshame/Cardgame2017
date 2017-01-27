@@ -76,7 +76,12 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 		var y = this.base.y + this.area.height/2;
 		if(newCards && ~newCards.indexOf(card) || delayMisplaced && (card.base.x != x || card.base.y != y))
 			di++;
-		card.moveTo(x, y, 200, 50*di, false, true)
+		if(controller.card != card)
+			card.moveTo(x, y, 500, 50*di, false, true)
+		else{
+			controller.cardShiftTrial(card.base.x - x, card.base.y - y)
+			card.setBase(x, y);
+		}
 	}
 	if(controller.card)
 		cardsGroup.bringToTop(controller.card.base);
