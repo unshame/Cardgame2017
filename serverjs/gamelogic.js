@@ -169,7 +169,7 @@ Game.prototype.make = function(){
 				id: id,
 				value: this.cardValues[vi],
 				suit: si,
-				position: 'DECK'
+				spot: 'DECK'
 			}
 			this.cards[id] = card;
 			this.deck.push(card.id);
@@ -193,7 +193,7 @@ Game.prototype.make = function(){
 
 	//Запоминаем козырь
 	var lastcid = this.deck[this.deck.length - 1];
-	this.cards[lastcid].position = 'BOTTOM';
+	this.cards[lastcid].spot = 'BOTTOM';
 	this.trumpSuit = this.cards[lastcid].suit;
 
 	//Сообщаем игрокам о составе колоды и запускаем игру
@@ -262,15 +262,15 @@ Game.prototype.deal = function(dealsIn){
 
 			var card = this.cards[this.deck[0]];
 
-			//utils.log(card.id, ':', 'DEAL', card.position, '=>', dealInfo.pid);
-			this.logAction(card, 'DEAL', card.position, dealInfo.pid);
+			//utils.log(card.id, ':', 'DEAL', card.spot, '=>', dealInfo.pid);
+			this.logAction(card, 'DEAL', card.spot, dealInfo.pid);
 
 			this.hands[dealInfo.pid].push(card.id);
-			card.position = dealInfo.pid;
+			card.spot = dealInfo.pid;
 
 			var dealFullInfo = {
 				pid: dealInfo.pid,
-				cardPosition: card.position,
+				cardPosition: card.spot,
 				cid: card.id
 			}
 
@@ -337,7 +337,7 @@ Game.prototype.deckNotify = function(){
 		delete deckToSend[ci].id;
 
 		//Игроки знают только о значении карты на дне колоды
-		if(card.position != 'BOTTOM'){
+		if(card.spot != 'BOTTOM'){
 			deckToSend[ci].value = null;
 			deckToSend[ci].suit = null;			
 		} 
@@ -360,7 +360,7 @@ Game.prototype.gameStateNotify = function(player){
 		var newCard = utils.copyObject(card);
 
 		//Игроки знают только о значении карты на дне колоды
-		if(card.position != 'BOTTOM'){
+		if(card.spot != 'BOTTOM'){
 			newCard.value = null;
 			newCard.suit = null;			
 		} 
@@ -379,7 +379,7 @@ Game.prototype.gameStateNotify = function(player){
 			var card = this.cards[cid];
 			var newCard = utils.copyObject(card);
 
-			if(card.position != player.id){
+			if(card.spot != player.id){
 				newCard.value = null;
 				newCard.suit = null;			
 			} 
@@ -436,8 +436,8 @@ Game.prototype.discardAndNotify = function(){
 
 		if(fieldSpot.attack){
 			var card = this.cards[fieldSpot.attack];
-			this.logAction(card, 'DISCARD', card.position, 'DISCARD_PILE');
-			card.position = 'DISCARD_PILE';
+			this.logAction(card, 'DISCARD', card.spot, 'DISCARD_PILE');
+			card.spot = 'DISCARD_PILE';
 
 			action.ids.push(fieldSpot.attack);
 			this.discardPile.push(fieldSpot.attack);
@@ -446,8 +446,8 @@ Game.prototype.discardAndNotify = function(){
 
 		if(fieldSpot.defense){
 			var card = this.cards[fieldSpot.defense];
-			this.logAction(card, 'DISCARD', card.position, 'DISCARD_PILE');
-			card.position = 'DISCARD_PILE';
+			this.logAction(card, 'DISCARD', card.spot, 'DISCARD_PILE');
+			card.spot = 'DISCARD_PILE';
 
 			action.ids.push(fieldSpot.defense);
 			this.discardPile.push(fieldSpot.defense);
@@ -673,12 +673,12 @@ Game.prototype.processAction = function(player, action){
 			var ci = this.hands[player.id].indexOf(action.cid);
 			var card = this.cards[action.cid];
 
-			this.logAction(card, action.type, card.position, action.position );
+			this.logAction(card, action.type, card.spot, action.spot );
 
 			//Перемещаем карту на стол и убираем карту из руки
-			card.position = action.position;
+			card.spot = action.spot;
 			this.hands[player.id].splice(ci, 1);
-			this.fieldSpots[action.position].attack = action.cid;
+			this.fieldSpots[action.spot].attack = action.cid;
 
 			//Добавляем информацию о карте в действие
 			action.value = card.value;
@@ -703,12 +703,12 @@ Game.prototype.processAction = function(player, action){
 			var ci = this.hands[player.id].indexOf(action.cid);
 			var card = this.cards[action.cid];
 
-			this.logAction(card, action.type, card.position, action.position );
+			this.logAction(card, action.type, card.spot, action.spot );
 
 			//Перемещаем карту на стол и убираем карту из руки
-			card.position = action.position;
+			card.spot = action.spot;
 			this.hands[player.id].splice(ci, 1);
-			this.fieldSpots[action.position].defense = action.cid;
+			this.fieldSpots[action.spot].defense = action.cid;
 
 			//Добавляем информацию о карте в действие
 			action.value = card.value;
@@ -823,7 +823,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 				var cid = hand[ci];
 				var card = this.cards[cid];
 				if(card.suit == this.trumpSuit && card.value < minTCard.value){
-					minTCard.pid = card.position;
+					minTCard.pid = card.spot;
 					minTCard.cid = card.id;
 					minTCard.value = card.value;
 				}
@@ -1049,7 +1049,7 @@ Game.prototype.letAttack = function(pid){
 		validValues = null;
 
 	//Выбираем первую незаполненную позицию на столе
-	var position = 'FIELD' + this.fieldUsedSpots;
+	var spot = 'FIELD' + this.fieldUsedSpots;
 
 	//Выбираем подходящие карты из руки атакующего и собираем из них возможные действия
 	for(var ci in hand){
@@ -1059,7 +1059,7 @@ Game.prototype.letAttack = function(pid){
 			var action = {
 				type: 'ATTACK',
 				cid: cid,
-				position: position
+				spot: spot
 			}
 			actions.push(action);
 		}
@@ -1107,8 +1107,8 @@ Game.prototype.letDefend = function(pid){
 			if(fieldSpot.attack){
 
 				var card = this.cards[fieldSpot.attack];
-				this.logAction(card, action.type, card.position, player.id);
-				card.position = player.id;
+				this.logAction(card, action.type, card.spot, player.id);
+				card.spot = player.id;
 
 				this.hands[player.id].push(fieldSpot.attack);
 				fieldSpot.attack = null;
@@ -1125,8 +1125,8 @@ Game.prototype.letDefend = function(pid){
 			if(fieldSpot.defense){
 
 				var card = this.cards[fieldSpot.defense];
-				this.logAction(card, action.type, card.position, player.id);
-				card.position = player.id;
+				this.logAction(card, action.type, card.spot, player.id);
+				card.spot = player.id;
 
 				this.hands[player.id].push(fieldSpot.defense);
 				fieldSpot.defense = null;
@@ -1199,7 +1199,7 @@ Game.prototype.letDefend = function(pid){
 
 	var actions = [];
 	var hand = this.hands[pid];
-	var position = defenseSpot.id;
+	var spot = defenseSpot.id;
 
 	//Создаем список возможных действий защищающегося
 	for(var ci in hand){
@@ -1215,7 +1215,7 @@ Game.prototype.letDefend = function(pid){
 			var action = {
 				type: 'DEFENSE',
 				cid: cid,
-				position: position
+				spot: spot
 			}
 			actions.push(action);
 		}

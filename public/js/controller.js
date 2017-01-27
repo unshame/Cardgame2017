@@ -283,6 +283,19 @@ Controller.prototype.update = function(){
 	}
 }
 
+//Ресет модуля
+Controller.prototype.reset = function(){
+
+	if(this.isInDebugMode)
+		console.log('Controller: Reset');
+
+	this.cardResetTrail(true);
+	this.card = null;
+	this.pointer = null;
+}
+
+/* ДЕБАГ */
+
 //Рисует дебаг хвоста
 Controller.prototype.updateDebug = function(){
 	if(!this.isInDebugMode)
@@ -342,15 +355,4 @@ Controller.prototype.toggleDebugMode = function(){
 	else{
 		console.log('Controller: Debug mode ON');
 	}
-}
-
-//Ресет модуля
-Controller.prototype.reset = function(){
-
-	if(this.isInDebugMode)
-		console.log('Controller: Reset');
-
-	this.cardResetTrail(true);
-	this.card = null;
-	this.pointer = null;
 }

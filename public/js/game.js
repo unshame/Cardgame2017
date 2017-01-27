@@ -34,7 +34,7 @@ function create ()
 {
 	if(!game.created){
 		game.world.setBounds(0, 0, screenWidth, screenHeight);
-		game.stage.disableVisibilityChange  = true;
+		//game.stage.disableVisibilityChange  = true;
 		game.created = true;
 	}
 	

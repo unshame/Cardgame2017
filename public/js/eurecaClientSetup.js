@@ -69,8 +69,8 @@ var EurecaClientSetup = function() {
 				var card = cards[c.cid]
 				if(card){
 					card.setValue(c.suit, c.value);
-					card.setSpot(c.position || c.pid);
-					if((card.position == 'DECK' || card.position == 'BOTTOM') && card.spot != deck){							
+					card.setSpot(c.spot || c.pid);
+					if((card.spot == 'DECK' || card.spot == 'BOTTOM') && card.spot != deck){							
 						spot.removeCard(card);
 						deck.addCard(card);
 					}
@@ -91,7 +91,7 @@ var EurecaClientSetup = function() {
 						id: c.cid,
 						suit: c.suit,
 						value: c.value,
-						position: c.position
+						spot: c.spot
 					}
 					cards[c.cid] = new Card(options);
 				}
@@ -104,7 +104,7 @@ var EurecaClientSetup = function() {
 				var deckCards = [];
 				for(ci in cards){
 					if(cards.hasOwnProperty(ci)){
-						if(cards[ci].position == 'DECK')							
+						if(cards[ci].spot == 'DECK')							
 							deckCards.push(cards[ci]);
 						else
 							spotCards.push(cards[ci]);

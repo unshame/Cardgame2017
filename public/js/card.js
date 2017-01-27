@@ -12,7 +12,7 @@ Card = function (options) {
 		value:0,
 		suit:null,
 		skin:sm.skin,
-		position: 'DECK'
+		spot: 'DECK'
 	};
 	for(o in options){
 		if(options.hasOwnProperty(o))
@@ -22,8 +22,8 @@ Card = function (options) {
 	//Id
 	this.id = this.options.id;
 
-	//Position
-	this.position = this.options.position;
+	//Spot
+	this.spot = this.options.spot;
 
 	//Skin
 	this.skin = this.options.skin;
@@ -95,14 +95,14 @@ Card.prototype.setValue = function(suit, value){
 /* ПОЗИЦИОНИРОВАНИЕ */
 
 //Устанавливает абсолютную позицию карты
-Card.prototype.setPosition = function(x, y){
+Card.prototype.setspot = function(x, y){
 	this.sprite.x = x - this.base.x;
 	this.sprite.y = y - this.base.y;
 	this.update();
 }
 
 //Устанавливает положение карты по отношению к базе карты
-Card.prototype.setRelativePosition = function(x, y){
+Card.prototype.setRelativespot = function(x, y){
 	this.sprite.x = x;
 	this.sprite.y = y;
 	this.update();
@@ -116,7 +116,7 @@ Card.prototype.setBase = function(x, y){
 }
 
 Card.prototype.setSpot = function(spot){
-	this.position = spot;
+	this.spot = spot;
 }
 
 /* /ПОЗИЦИОНИРОВАНИЕ */
@@ -164,7 +164,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		var newX = this.base.x + this.sprite.x - newBaseX;
 		var newY = this.base.y + this.sprite.y - newBaseY;
 		this.setBase(newBaseX, newBaseY);
-		this.setRelativePosition(newX, newY);
+		this.setRelativespot(newX, newY);
 	}
 	else{
 		//Если база остается прежней, то двигаем карту к нужной позиции
@@ -199,6 +199,8 @@ Card.prototype.returnToBase = function(time, delay){
 /* /ПЕРЕДВИЖЕНИЕ */
 
 /* СКИН */
+
+//Применяет текущий скин к карте
 Card.prototype.applySkin = function(){
 	if(!this.suit && this.suit !== 0){
 		this.sprite.frame = this.skin.cardbackFrame;
@@ -209,6 +211,7 @@ Card.prototype.applySkin = function(){
 	//stub
 }
 
+//Меняет рубашку карт на текущую
 Card.prototype.applyCardback = function(){
 	if(!this.suit && this.suit !== 0){
 		this.sprite.frame = this.skin.cardbackFrame;
@@ -260,11 +263,11 @@ Card.prototype.glowStop = function(){
 Card.prototype.glowReset = function(){
 	this.glowStop();
 	this.glow.reset();
-	this.glowUpdatePosition();
+	this.glowUpdatespot();
 }
 
 //Обновляет позицию свечения
-Card.prototype.glowUpdatePosition = function(){
+Card.prototype.glowUpdatespot = function(){
 	this.glow.x = this.sprite.x;
 	this.glow.y = this.sprite.y;
 }
@@ -295,13 +298,14 @@ Card.prototype.reset = function(){
 	this.setValue(this.suit, this.value);
 }
 
-
+//Обновление карты
+//В будущем вохможно будет делать что-то еще
 Card.prototype.update = function() {
-	this.glowUpdatePosition();
+	this.glowUpdatespot();
 };
 
 //party time
-var throwCards = function(){
+var ThrowCards = function(){
 
 	this.emitter = game.add.emitter(game.world.centerX, 200, 200);
 
