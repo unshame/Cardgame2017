@@ -76,8 +76,8 @@ Controller.prototype.cardPickup = function(card, pointer){
 	this.setCardClickTimer();
 	this.cardResetTrail();
 	this.card.base.addAt(this.trail, 0);
-	this.trail.minParticleSpeed.setTo(-this.card.sprite.width, -this.card.sprite.height);
-	this.trail.maxParticleSpeed.setTo(this.card.sprite.width, this.card.sprite.height);
+	this.trail.minParticleSpeed.setTo(-sm.skin.width, -sm.skin.height);
+	this.trail.maxParticleSpeed.setTo(sm.skin.width, sm.skin.height);
 
 	this.trail.makeParticles(this.card.skin.trailName, this.card.suit);
 
@@ -174,10 +174,10 @@ Controller.prototype.cardReturn = function(){
 //Проверка нажатия на базу карты
 Controller.prototype.cardClickedInbound = function(){
 	var cond = 
-		this.pointer.x >= this.card.base.x - this.card.sprite.width / 2 &&
-		this.pointer.x <= this.card.base.x + this.card.sprite.width / 2 &&
-		this.pointer.y >= this.card.base.y - this.card.sprite.height / 2 &&
-		this.pointer.y <= this.card.base.y + this.card.sprite.height / 2
+		this.pointer.x >= this.card.base.x - sm.skin.width / 2 &&
+		this.pointer.x <= this.card.base.x + sm.skin.width / 2 &&
+		this.pointer.y >= this.card.base.y - sm.skin.height / 2 &&
+		this.pointer.y <= this.card.base.y + sm.skin.height / 2
 	return cond
 }
 
@@ -206,8 +206,8 @@ Controller.prototype.cardSpawnTrail = function(){
 		y: this.trail.emitY + this.trail.position.y
 	}, true);
 	if(distance < this.cardMoveThreshold){
-		this.trail.width = this.card.sprite.width - 35;
-		this.trail.height = this.card.sprite.height - 35;
+		this.trail.width = sm.skin.width - 35;
+		this.trail.height = sm.skin.height - 35;
 	}
 	else{
 		this.trail.width = this.trail.height = 0;
@@ -312,8 +312,8 @@ Controller.prototype.updateDebug = function(){
 	if(!this.debugBase){
 		this.debugBase = new Phaser.Rectangle() ;
 	}
-	var width = this.card && this.card.sprite.width || this.debugBase.width || 0;
-	var height = this.card && this.card.sprite.height || this.debugBase.height || 0;
+	var width = this.card && sm.skin.width || this.debugBase.width || 0;
+	var height = this.card && sm.skin.height || this.debugBase.height || 0;
 	var x = this.trail.parent.x;
 	var y = this.trail.parent.y;
 	this.debugBase.x = x - width/2;

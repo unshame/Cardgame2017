@@ -5,24 +5,9 @@
 */
 
 var Spot = function(options){
-	this.options = {
-		id:null,
-		x:0,
-		y:0,
-		width:0,
-		height:0,
-		margin:10,
-		minActiveWidth: 10,	//Минимальная ширина для расположения карт
-		focusable: true,	//Нужно ли сдвигать карты при наведении
-		spacing: true,		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать 1
-		sorting: true,	//Нужно ли сортировать карты
-		type:'GENERIC',
-		align:'center',
-		verticalAlign:'middle',
-		texture: null,
-		alpha: 0.35,
-		debug: true
-	};
+	
+	this.options = this.getDefaultOptions();
+
 	for(o in options){
 		if(options.hasOwnProperty(o))
 			this.options[o] = options[o];
@@ -61,6 +46,28 @@ var Spot = function(options){
 	game.world.setChildIndex(this.base, 1);
 
 	this.isInDebugMode = this.options.debug;
+}
+
+Spot.prototype.getDefaultOptions = function(){
+	var options = {
+		id:null,
+		x:0,
+		y:0,
+		width:0,
+		height:0,
+		margin:10,
+		minActiveWidth: 10,	//Минимальная ширина для расположения карт
+		focusable: true,	//Нужно ли сдвигать карты при наведении
+		spacing: true,		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать 1
+		sorting: true,	//Нужно ли сортировать карты
+		type:'GENERIC',
+		align:'center',
+		verticalAlign:'middle',
+		texture: null,
+		alpha: 0.35,
+		debug: true
+	}
+	return options
 }
 
 //Устанавливает позицию поля
@@ -187,6 +194,9 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 	//Сдвиг карты
 	var shift = 0;
 
+	//Отступ между картами
+	var cardSpacing = 0;
+
 	//Задержка передвижения
 	var di = 0;
 
@@ -228,7 +238,6 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 	}
 
 	//Отступ между картами
-	var cardSpacing = 0;
 	if(this.cards.length > 1)
 		cardSpacing = requiredActiveWidth/(this.cards.length-1);
 	if(!this.spacing)
@@ -239,9 +248,10 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 		this.focusedCard = null;
 	}
 
+	focusedIndex = this.cards.indexOf(this.focusedCard);
 	//Если курсор находится над одной из карт и карты не вмещаются в поле, указываем сдвиг карты от курсора
 	if(this.focusedCard && requiredActiveWidth == areaActiveWidth){
-		focusedIndex = this.cards.indexOf(this.focusedCard);
+		
 		shift = cardWidth - cardSpacing;
 	}
 	
@@ -252,8 +262,15 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
 		//Сдвиг текущей карты
 		var localShift = 0;
-		if(this.focusedCard && ci != focusedIndex )
-			localShift = ci < focusedIndex ? -shift : shift;
+		//card.sprite.scale.setTo(1,1);
+		if(this.focusedCard){
+			if(ci != focusedIndex){
+				localShift = ci < focusedIndex ? -shift : shift;				
+			}
+			else{
+				//card.sprite.scale.setTo(1.05, 1.05)
+			}
+		}
 
 		//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению к предыдущим картам, позиции базы поля и сдвига от курсора
 		var x = this.base.x + leftMargin + cardSpacing*i + localShift;

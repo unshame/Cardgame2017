@@ -7,13 +7,7 @@ var debugSpotValidity = true;
 Card = function (options) {
 
 	//Options
-	this.options = {
-		id:null,
-		value:0,
-		suit:null,
-		skin:sm.skin,
-		spotId: 'DECK'
-	};
+	this.options = this.getDefaultOptions();
 	for(o in options){
 		if(options.hasOwnProperty(o))
 			this.options[o] = options[o];
@@ -58,6 +52,17 @@ Card = function (options) {
 	//Value
 	this.setValue(this.options.suit, this.options.value);
 };
+
+Card.prototype.getDefaultOptions = function(){
+	var options = {
+		id:null,
+		value:0,
+		suit:null,
+		skin:sm.skin,
+		spotId: 'DECK'
+	}
+	return options
+}
 
 //Устанавливает значение карты 
 Card.prototype.setValue = function(suit, value){
@@ -284,6 +289,7 @@ Card.prototype.glowReset = function(){
 Card.prototype.glowUpdatePosition = function(){
 	this.glow.x = this.sprite.x;
 	this.glow.y = this.sprite.y;
+	this.glow.scale.setTo(this.sprite.scale.x, this.sprite.scale.y)
 }
 /* /СВЕЧЕНИЕ */
 
