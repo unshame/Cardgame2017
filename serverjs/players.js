@@ -65,6 +65,13 @@ Player.prototype.recieveMinTrumpCards = function(cards, winner){
 Player.prototype.recieveValidActions = function(actions){
 	if(this.remote)
 		this.remote.recievePossibleActions(actions);
+	var randomIndex
+	if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'SKIP'))
+		randomIndex = Math.floor(Math.random()*(actions.length-1))
+	else
+		randomIndex = Math.floor(Math.random()*actions.length);
+	var action = actions[randomIndex];
+	this.sendResponse(action);
 }
 
 Player.prototype.recieveAction = function(action){

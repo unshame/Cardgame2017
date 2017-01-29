@@ -292,7 +292,8 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
 		//Запускаем перемещение карты
 		if(controller.card != card){
-
+			if(this.type == 'DISCARD_PILE')
+				console.log(this.cards.length, di*50);
 			card.moveTo(x, y, 200, 50*di, false, true);
 		}
 		else{

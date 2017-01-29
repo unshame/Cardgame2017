@@ -85,8 +85,8 @@ var EurecaClientSetup = function() {
 					card.spot && card.spot.removeCard(card);
 					discardCards.push(card)
 				}
-				discard.addCards(discardCards);
 			}
+			discard.addCards(discardCards);
 		}
 		else if(action.type == 'TAKE' || action.type == 'SKIP'){
 			//do nothing
