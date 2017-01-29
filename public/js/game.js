@@ -52,7 +52,6 @@ function create ()
 			y:screenHeight - 250,
 			width:screenWidth - 600,
 			texture: 'spot',
-			sorting:false,
 			type: 'HAND',
 			id: 'player'
 		});
