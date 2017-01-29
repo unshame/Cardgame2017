@@ -128,6 +128,7 @@ function placeCards(newCards, pid){
 	var fieldCards = [];
 	var botCards = [];
 	var deckCards = [];
+	var delay = 0;
 	for(var ci in newCards){
 		var c = newCards[ci];
 		var card = cards[c.cid];
@@ -154,25 +155,25 @@ function placeCards(newCards, pid){
 		if((card.spotId == 'DECK' || card.spotId == 'BOTTOM') && card.spot != deck){							
 			card.spot && card.spot.removeCard(card);
 			card.setPlayability(false);
-			deckCards.push(card);
+			delay = deck.queueCards([card], delay)
 		}
 		else if(card.spotId.match('FIELD') && card.spot != field){
 			card.spot && card.spot.removeCard(card);
 			card.setPlayability(false);
-			fieldCards.push(card);
+			delay = field.queueCards([card], delay)
 		}
 		else if(card.spotId.match('bot') && card.spot != botSpot){
 			card.spot && card.spot.removeCard(card);
 			card.setPlayability(false);
-			botCards.push(card);
+			delay = botSpot.queueCards([card], delay)
 		}
 		else if(card.spot != spot){
 			card.spot && card.spot.removeCard(card);
-			spotCards.push(card);
+			delay = spot.queueCards([card], delay)
 		}
 	}
-	deck.addCards(deckCards);
-	field.addCards(fieldCards);
-	botSpot.addCards(botCards);
-	spot.addCards(spotCards);
+	deck.placeQueuedCards();
+	field.placeQueuedCards();
+	botSpot.placeQueuedCards();
+	spot.placeQueuedCards();
 }

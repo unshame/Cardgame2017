@@ -8,6 +8,7 @@ var cards = {};
 var spot, botSpot, deck, discard, field;
 var controller = null;
 var button = null;
+var debugSpotValidity = false;
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
 var game = new Phaser.Game(
@@ -39,7 +40,7 @@ function create ()
 {
 	if(!game.created){
 		game.world.setBounds(0, 0, screenWidth, screenHeight);
-		//game.stage.disableVisibilityChange  = true;
+		game.stage.disableVisibilityChange  = true;
 		game.created = true;
 	}
 	
@@ -99,7 +100,8 @@ function create ()
 			type: 'DECK',
 			id: 'deck',
 			alignment: 'vertical',
-			direction: 'backward'
+			direction: 'backward',
+			delayTime: 50
 		});
 	}
 
@@ -120,24 +122,6 @@ function create ()
 		controller = new Controller(false);
 
 	game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
-
-	if(!button){
-		button = game.add.button(12, 12, 'button_grey_wide', function(){
-			debugSpotValidity = !debugSpotValidity;
-			if(!debugSpotValidity){
-				button.setFrames(1, 2, 0, 2);
-				controller.cardResetTrail(true);
-				//cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
-				//spot.placeCards(null, true);
-			}
-			else{
-				button.setFrames(1, 0, 2, 0);
-			}
-		}, this, 1, 0, 2);
-		var style = { font: '18px Verdana', fill: '#000', align: 'center' };
-		var buttonText = game.add.text(button.centerX, button.centerY, 'Toggle snap to grid', style);
-		buttonText.anchor.set(0.5, 0.5)
-	}
 }
 
 

@@ -1,8 +1,6 @@
 /*
  * Конструктор карт
-*/
-
-var debugSpotValidity = true;
+ */
 
 Card = function (options) {
 
@@ -128,6 +126,8 @@ Card.prototype.setRelativePosition = function(x, y){
 
 //Устанавливает позицию базы карты
 Card.prototype.setBase = function(x, y){
+	this.sprite.x += this.base.x - x;
+	this.sprite.y += this.base.y - y;
 	this.base.x = x;
 	this.base.y = y;
 	this.update();
@@ -191,8 +191,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 		//Мы будем двигать карту к новой позиции базы
 		moveX = moveY = 0;
-		var newX = this.base.x + this.sprite.x - newBaseX;
-		var newY = this.base.y + this.sprite.y - newBaseY;
+		var newX = this.sprite.x - (newBaseX - this.base.x);
+		var newY = this.sprite.y - (newBaseY - this.base.y);
 		this.setBase(newBaseX, newBaseY);
 		this.setRelativePosition(newX, newY);
 	}
