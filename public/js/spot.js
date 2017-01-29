@@ -292,6 +292,8 @@ Spot.prototype.removeCards = function(cardsToRemove){
 		var card = cardsToRemove[ci];
 		var i = this.cards.indexOf(card);
 		if(~i){
+			if(this.focusedCard && this.focusedCard == card)
+				this.focusedCard = null;
 			this.cards.splice(i, 1);
 			card.spot = null;
 		}

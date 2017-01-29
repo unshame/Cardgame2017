@@ -160,7 +160,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		console.warn(
 			'Moving card', this.id, 'out of the screen (' + newBaseX + ', ' + newBaseY + ')\n',
 			this.moveTo.caller || 'Called from the top or not supported', '\n',
-			this);
+			this
+		);
 
 	//Меняем позицию базы карты перед началом анимации
 	//и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась
