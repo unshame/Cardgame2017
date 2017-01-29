@@ -167,11 +167,6 @@ Spot.prototype.addCard = function(card){
  */
 Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
-	//Проверка сфокусированной карты
-	if(!controller.card && controller.card != this.focusedCard && !this.cardIsInside(this.focusedCard)){
-		this.focusedCard = null;
-	}
-
 	//Размеры карт
 	var cardWidth = sm.skin.width;
 	var cardHeight = sm.skin.height;
@@ -238,6 +233,11 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 		cardSpacing = requiredActiveWidth/(this.cards.length-1);
 	if(!this.spacing)
 		cardSpacing = Math.min(cardSpacing, 1);
+
+	//Проверка сфокусированной карты
+	if(!controller.card && controller.card != this.focusedCard && !this.cardIsInside(this.focusedCard, cardSpacing)){
+		this.focusedCard = null;
+	}
 
 	//Если курсор находится над одной из карт и карты не вмещаются в поле, указываем сдвиг карты от курсора
 	if(this.focusedCard && requiredActiveWidth == areaActiveWidth){
@@ -318,13 +318,16 @@ Spot.prototype.removeCard = function(card){
 	this.removeCards([card])
 }
 
-Spot.prototype.cardIsInside = function(card){
+Spot.prototype.cardIsInside = function(card, cardSpacing){
+	if(cardSpacing === null || cardSpacing === undefined)
+		cardSpacing = 0;
+	var shift = sm.skin.width - cardSpacing;
 	if(
 		!card ||
-		card.base.x + card.sprite.x < this.base.x - sm.skin.width ||
-		card.base.x + card.sprite.x > this.base.x + this.area.width + sm.skin.width ||
-		card.base.y + card.sprite.y < this.base.y ||
-		card.base.y + card.sprite.y > this.base.y + this.area.height
+		card.base.x + card.sprite.x < this.base.x + this.margin - shift ||
+		card.base.x + card.sprite.x > this.base.x + this.area.width - this.margin + shift ||
+		card.base.y + card.sprite.y < this.base.y + this.margin ||
+		card.base.y + card.sprite.y > this.base.y + this.area.height - this.margin
 	)
 		return false
 	else
