@@ -2,9 +2,7 @@ var land = null;
 var sm = null;
 var cardsGroup = null;
 var cards = {};
-var spot = null;
-var deck = null;
-var discard = null;
+var spot, botSpot, deck, discard, field;
 var controller = null;
 var button = null;
 var screenWidth = window.innerWidth;
@@ -23,6 +21,13 @@ var onScreenChange = function() {
 	game.scale.setGameSize(screenWidth, screenHeight)
 	land.width = screenWidth;
 	land.height =  screenHeight;
+	botSpot.resize(screenWidth - 200, null, true);
+	deck.setBase(null, screenHeight - 250, true);
+	discard.setBase(screenWidth - 250, screenHeight - 250, true);
+	field.resize(screenWidth - 200, null, true);
+	spot.setBase(null, screenHeight - 250);
+	spot.resize(screenWidth - 600, null, true);
+
 }
 window.addEventListener('resize',onScreenChange);
 window.addEventListener('orientationchange',onScreenChange);
@@ -43,10 +48,37 @@ function create ()
 
 	if(!spot){
 		spot = new Spot({
+			x:300,
+			y:screenHeight - 250,
+			width:screenWidth - 600,
+			texture: 'spot',
+			type: 'HAND',
+			id: 'player'
+		});
+	}
+
+	if(!botSpot){
+		botSpot = new Spot({
 			x:100,
 			y:100,
-			width:screenWidth - 170,
-			texture: 'spot'
+			width:screenWidth - 200,
+			texture: 'spot',
+			sorting:false,
+			focusable:false,
+			type: 'HAND',
+			id: 'bots'
+		});
+	}
+
+	if(!field){
+		field = new Spot({
+			x:100,
+			y:400,
+			width:screenWidth - 200,
+			texture: 'spot',
+			focusable:false,
+			sorting:false,
+			type: 'FIELD'
 		});
 	}
 
@@ -57,18 +89,22 @@ function create ()
 			align:'left',
 			focusable:false,
 			spacing: false,
-			texture: 'spot'
+			texture: 'spot',
+			sorting: false,
+			type: 'DECK'
 		});
 	}
 
 	if(!discard){
 		discard = new Spot({
-			x:screenWidth - 200,
+			x:screenWidth - 250,
 			y:screenHeight - 250,
 			align:'left',
 			focusable:false,
 			spacing: false,
-			texture: 'spot'
+			texture: 'spot',
+			sorting: false,
+			type: 'DISCARD_PILE'
 		});
 	}
 
@@ -84,7 +120,7 @@ function create ()
 				button.setFrames(1, 2, 0, 2);
 				controller.cardResetTrail(true);
 				//cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
-				spot.placeCards(null, true);
+				//spot.placeCards(null, true);
 			}
 			else{
 				button.setFrames(1, 0, 2, 0);
@@ -116,6 +152,10 @@ function render () {
 	if(!game.created)
 		return;
 
-	if(controller)
-		controller.updateDebug();
+	controller && controller.updateDebug();
+	spot && spot.updateDebug();
+	deck && deck.updateDebug();
+	field && field.updateDebug();
+	botSpot && botSpot.updateDebug();
+	discard && discard.updateDebug();
 }

@@ -1,5 +1,5 @@
 /*
-* Конструктор карт
+ * Конструктор карт
 */
 
 var debugSpotValidity = true;
@@ -154,6 +154,13 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	//Новая позиция базы
 	var newBaseX = relativeToBase ? x + this.base.x : x;
 	var newBaseY = relativeToBase ? y + this.base.y : y;
+
+	//Предупреждаем о том, что карта вышла за пределы экрана
+	if(newBaseX < 0 || newBaseX > screenWidth || newBaseY < 0 || newBaseY > screenHeight)
+		console.warn(
+			'Moving card', this.id, 'out of the screen (' + newBaseX + ', ' + newBaseY + ')\n',
+			this.moveTo.caller || 'Called from the top or not supported', '\n',
+			this);
 
 	//Меняем позицию базы карты перед началом анимации
 	//и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась

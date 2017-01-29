@@ -1,6 +1,6 @@
 /*
-* Модуль отвечает за общение между клиентом и сервером
-* Инициализирует игру по готовности клиента
+ * Модуль отвечает за общение между клиентом и сервером
+ * Инициализирует игру по готовности клиента
 */
 
 var server;
@@ -34,86 +34,32 @@ var EurecaClientSetup = function() {
 		if(isInDebugMode)
 			console.log(actions)
 	}
-	client.exports.recieveAction = function(action){
-		if(action.type == 'CARDS'){
-			controller.reset();
-			for(var cid in cards){
-				if(cards.hasOwnProperty(cid)){
-					cards[cid].base.removeAll(true);
-				}
-			}
-			cards = {};
-			cardsGroup.removeAll(true);
-		}		
+	client.exports.recieveAction = function(action){	
 		if(action.cid){
-			if(cards[action.cid]){
-				cards[action.cid].setValue(action.suit, action.value);
-				spot.sortCards();
-				spot.placeCards();
-				deck.sortCards();
-				deck.placeCards();
-				//cardsGroup.align(Math.floor(screenWidth / cards[action.cid].sprite.width), -1, cards[action.cid].sprite.width, cards[action.cid].sprite.height);
-			}
-			else{
-				var options = {
-					id: action.cid,
-					suit: action.suit,
-					value: action.value
-				}
-				cards[action.cid] = new Card(options);
-			}
+			placeCards([action])
 		}
-		else if(action.cards && action.type != 'TAKE'){
-			for(var ci in action.cards){
-				var c = action.cards[ci];
-				var card = cards[c.cid]
-				if(card){
-					card.setValue(c.suit, c.value);
-					card.setSpot(c.spot || c.pid);
-					if((card.spotId == 'DECK' || card.spotId == 'BOTTOM') && card.spot != deck){							
-						spot.removeCard(card);
-						deck.addCard(card);
-					}
-					else if(card.spot != spot){
-						deck.removeCard(card);
-						spot.addCard(card);
-					}
-					else{
-						spot.sortCards();
-						spot.placeCards();
-						deck.sortCards();
-						deck.placeCards();
-					}
-					//cardsGroup.align(Math.floor(screenWidth / cards[c.cid].sprite.width), -1, cards[c.cid].sprite.width, cards[c.cid].sprite.height);
-				}
-				else{
-					var options = {
-						id: c.cid,
-						suit: c.suit,
-						value: c.value,
-						spotId: c.spot
-					}
-					cards[c.cid] = new Card(options);
-				}
-			}
+		else if(action.cards){	
+			var pid;
+			if(action.type == 'TAKE')
+				pid = action.pid;		
 			if(action.type == 'CARDS'){
-				//cardsGroup.align(Math.floor(screenWidth / 170), -1, 170, 220, Phaser.CENTER);
-				spot.reset();
 				deck.reset();
-				var spotCards = [];
-				var deckCards = [];
-				for(ci in cards){
-					if(cards.hasOwnProperty(ci)){
-						if(cards[ci].spotId == 'DECK')							
-							deckCards.push(cards[ci]);
-						else
-							spotCards.push(cards[ci]);
+				field.reset();
+				botSpot.reset();
+				spot.reset();
+				discard.reset();
+
+				controller.reset();
+
+				for(var cid in cards){
+					if(cards.hasOwnProperty(cid)){
+						cards[cid].base.removeAll(true);
 					}
 				}
-				spot.addCards(spotCards);
-				deck.addCards(deckCards);
-
+				cards = {};
+				cardsGroup.removeAll(true);
 			}
+			placeCards(action.cards, pid);
 			if(action.numDiscarded){
 				for (var i = 0; i < action.numDiscarded; i++) {
 					var id = 'discarded_'+i;
@@ -133,25 +79,16 @@ var EurecaClientSetup = function() {
 				if(card){
 					card.setValue(null, 0);
 					card.setSpot('DISCARD_PILE');
-					card.spot.removeCard(card);
-					discard.addCard(card)
-				//	card.kill();
-				//	delete card;
-				}
-
-			}
-		} 
-		else if(action.type == 'TAKE' && action.cards){
-			for(var ci in action.cards){
-				var cid = action.cards[ci].cid;
-				if(cards[cid]){
-					cards[cid].setValue(null,0);
-					spot.sortCards();
-					spot.placeCards();
-					deck.sortCards();
-					deck.placeCards();
+					card.spot && card.spot.removeCard(card);
+					discard.addCard(card);
 				}
 			}
+		}
+		else if(action.type == 'TAKE' || action.type == 'SKIP'){
+			//do nothing
+		}
+		else{
+			console.warn('Unknown action type:', action.type, action)
 		}
 		if(isInDebugMode)
 			console.log(action)
@@ -165,4 +102,55 @@ var EurecaClientSetup = function() {
 			console.log('Too late');
 	}
 	return client;
+}
+
+function placeCards(newCards, pid){
+	for(var ci in newCards){
+		var c = newCards[ci];
+		var card = cards[c.cid];
+		var spotCards = [];
+		var fieldCards = [];
+		var botCards = [];
+		var deckCards = [];
+		if(card){
+			if(pid){
+				if(!pid.match('player_'))
+					cards[c.cid].setValue(null,0);
+			}
+			else{
+				card.setValue(c.suit, c.value);		
+			}
+			card.setSpot(c.spot || c.pid || pid);
+		}
+		else{
+			var options = {
+				id: c.cid,
+				suit: c.suit,
+				value: c.value,
+				spotId: c.spot || c.pid || pid
+			}
+			cards[c.cid] = new Card(options);
+			card = cards[c.cid];
+		}
+		if((card.spotId == 'DECK' || card.spotId == 'BOTTOM') && card.spot != deck){							
+			card.spot && card.spot.removeCard(card);
+			deckCards.push(card);
+		}
+		else if(card.spotId.match('FIELD') && card.spot != field){
+			card.spot && card.spot.removeCard(card);
+			fieldCards.push(card);
+		}
+		else if(card.spotId.match('bot') && card.spot != botSpot){
+			card.spot && card.spot.removeCard(card);
+			botCards.push(card);
+		}
+		else if(card.spot != spot){
+			card.spot && card.spot.removeCard(card);
+			spotCards.push(card);
+		}
+		deck.addCards(deckCards);
+		field.addCards(fieldCards);
+		botSpot.addCards(botCards);
+		spot.addCards(spotCards);
+	}
 }

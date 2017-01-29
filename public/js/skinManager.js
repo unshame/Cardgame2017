@@ -1,3 +1,7 @@
+/*
+ * Модуль, управляющий внешним видом карт
+*/
+
 var SkinManager = function(skinToSetWhenLoaded){
 	this.skins = {};
 	this.skin = skinToSetWhenLoaded || null;
