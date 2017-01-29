@@ -171,7 +171,7 @@ function placeCards(newCards, pid){
 			spotCards.push(card);
 		}
 	}
-	deck.addCards(deckCards, true);
+	deck.addCards(deckCards);
 	field.addCards(fieldCards);
 	botSpot.addCards(botCards);
 	spot.addCards(spotCards);

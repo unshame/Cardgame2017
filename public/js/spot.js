@@ -19,8 +19,12 @@ var Spot = function(options){
 	this.type = this.options.type;
 	this.id = this.options.id;
 
+	this.alignment = this.options.alignment;
+	if(this.alignment != 'vertical' && this.alignment != 'horizontal')
+		this.alignment = this.getDefaultOptions().alignment;
+
 	this.direction = this.options.direction;
-	if(this.direction != 'vertical' && this.direction != 'horizontal')
+	if(this.direction != 'forward' && this.direction != 'backward')
 		this.direction = this.getDefaultOptions().direction;
 
 	this.align = this.options.align;
@@ -31,10 +35,10 @@ var Spot = function(options){
 	this.focusable = this.options.focusable;
 	this.sorting = this.options.sorting;
 
-	if(this.focusable && this.direction == 'vertical'){
+	if(this.focusable && this.alignment == 'vertical'){
 		this.focusable = false;
 		console.warn(
-			'Spot', this.type, this.id, 'set to focusable and ' + this.direction,
+			'Spot', this.type, this.id, 'set to focusable and ' + this.alignment,
 			'. This is not supported, focusable defaulted to false\n', this
 		)
 	}
@@ -79,7 +83,8 @@ Spot.prototype.getDefaultOptions = function(){
 
 		align:'center',
 		verticalAlign:'middle',
-		direction: 'horizontal',
+		alignment: 'horizontal',
+		direction: 'forward',
 
 		texture: null,
 		alpha: 0.35,
@@ -119,7 +124,7 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 
 	if(shouldPlace === undefined)
 		shouldPlace = false;
-	if(this.direction == 'vertical'){
+	if(this.alignment == 'vertical'){
 		if(width < sm.skin.height){
 			width = sm.skin.height;
 		}
@@ -180,36 +185,22 @@ Spot.prototype.comparator = function(a, b){
 }
 
 //Добавляет карты в поле
-Spot.prototype.addCards = function(newCards, shouldReverse){
+Spot.prototype.addCards = function(newCards){
 
 	if(!newCards.length)
 		return;
 
-	if(shouldReverse === undefined)
-		shouldReverse = false;
-
-	var ci;
-	if(shouldReverse){
-		for(ci = newCards.length - 1; ci >= 0;ci--){
-			var card = newCards[ci];
-			card.spot = this;
-			this.cards.push(card);
-		}
-	}
-	else{
-		for(ci in newCards){
-			var card = newCards[ci];
-			card.spot = this;
-			this.cards.push(card);
-		}
+	for(var ci in newCards){
+		var card = newCards[ci];
+		card.spot = this;
+		this.cards.push(card);
 	}
 	this.sortCards();
 	this.placeCards(newCards);
 }
 
 //Для добавления одной карты
-Spot.prototype.addCard = function(card){
-	
+Spot.prototype.addCard = function(card){	
 	this.addCards([card]);
 }
 
@@ -220,9 +211,9 @@ Spot.prototype.addCard = function(card){
  */
 Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
-	var areaWidth = (this.direction == 'vertical') ?  this.area.height : this.area.width;
-	var areaHeight = (this.direction == 'vertical') ? this.area.width : this.area.height;
-	var angle = (this.direction == 'vertical') ? 90 : 0;
+	var areaWidth = (this.alignment == 'vertical') ?  this.area.height : this.area.width;
+	var areaHeight = (this.alignment == 'vertical') ? this.area.width : this.area.height;
+	var angle = (this.alignment == 'vertical') ? 90 : 0;
 
 	//Размеры карт
 	var cardWidth = sm.skin.width;
@@ -308,34 +299,38 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 		shift = cardWidth - cardSpacing;
 	}
 	
-	for(ci in this.cards){
+	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
+	var iterator = this.direction == 'backward' ? -1 : 1;
 
-		var i = Number(ci);
-		var card = this.cards[ci];	
+	for(; i >= 0 && i < this.cards.length; i += iterator){
+
+		var card = this.cards[i];	
 
 		//Сдвиг текущей карты
 		var localShift = 0;
 		//card.sprite.scale.setTo(1,1);
 		if(this.focusedCard){
-			if(ci != focusedIndex){
-				localShift = ci < focusedIndex ? -shift : shift;				
+			if(i != focusedIndex){
+				localShift = i < focusedIndex ? -shift : shift;				
 			}
 			else{
 				//card.sprite.scale.setTo(1.05, 1.05)
 			}
 		}
-		
+
 		var localTopMargin = topMargin;
-		if(card.spotId == 'BOTTOM')
-			localTopMargin -= 50;
+		var localLeftMargin = leftMargin;
+		if(card.spotId == 'BOTTOM'){
+			localLeftMargin += 30;
+		}
 
 		//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению к предыдущим картам, позиции базы поля и сдвига от курсора
-		var x = leftMargin + cardSpacing*i + localShift;
+		var x = localLeftMargin + cardSpacing*i + localShift;
 
 		//Вертикальная позиция
 		var y = localTopMargin;
 
-		if(this.direction == 'vertical'){
+		if(this.alignment == 'vertical'){
 			var temp = x;
 			x = y + this.base.x;
 			y = temp + this.base.y;
@@ -345,7 +340,10 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 			y += this.base.y;
 		}
 
-		card.rotateTo(angle, 200, 150*di);
+		if(card.spotId == 'BOTTOM')
+			card.rotateTo(angle == 90 ? 0 : 90, 200, 150*di);
+		else
+			card.rotateTo(angle, 200, 150*di);
 
 		//Запускаем перемещение карты
 		if(controller.card != card){

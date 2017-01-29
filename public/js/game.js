@@ -1,3 +1,6 @@
+//Тестовый модуль игры и приложения
+//В будущем будет разделен на AppManager, GameManager и SpotManager
+
 var land = null;
 var sm = null;
 var cardsGroup = null;
@@ -48,7 +51,7 @@ function create ()
 
 	if(!spot){
 		spot = new Spot({
-			x:350,
+			x:390,
 			y:screenHeight - 250,
 			width:screenWidth - 700,
 			texture: 'spot',
@@ -87,15 +90,16 @@ function create ()
 		deck = new Spot({
 			x:100,
 			y:screenHeight - 250,
-			height: 190,
-			align: 'left',
+			align: 'right',
+			margin: 30,
 			focusable:false,
 			spacing: false,
 			texture: 'spot',
 			sorting: false,
 			type: 'DECK',
 			id: 'deck',
-			direction: 'vertical'
+			alignment: 'vertical',
+			direction: 'backward'
 		});
 	}
 
@@ -162,4 +166,10 @@ function render () {
 	field && field.updateDebug();
 	botSpot && botSpot.updateDebug();
 	discard && discard.updateDebug();
+
+	for(var ci in cards){
+		if(!cards.hasOwnProperty(ci))
+			continue;
+		cards[ci].updateDebug();
+	}
 }

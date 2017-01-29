@@ -13,6 +13,8 @@ Card = function (options) {
 			this.options[o] = options[o];
 	}
 
+	this.isInDebugMode = this.options.debug;
+
 	//Id
 	this.id = this.options.id;
 
@@ -63,7 +65,8 @@ Card.prototype.getDefaultOptions = function(){
 		value:0,
 		suit:null,
 		skin:sm.skin,
-		spotId: 'DECK'
+		spotId: 'DECK',
+		debug: false
 	}
 	return options
 }
@@ -179,7 +182,6 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	if(newBaseX < 0 || newBaseX > screenWidth || newBaseY < 0 || newBaseY > screenHeight)
 		console.warn(
 			'Moving card', this.id, 'out of the screen (' + newBaseX + ', ' + newBaseY + ')\n',
-			this.moveTo.caller || 'Called from the top or not supported', '\n',
 			this
 		);
 
@@ -385,6 +387,16 @@ Card.prototype.reset = function(){
 Card.prototype.update = function() {
 	this.glowUpdatePosition();
 };
+
+Card.prototype.updateDebug = function(){
+	if(!this.isInDebugMode)
+		return;
+
+	var x = this.base.x + this.sprite.x - this.skin.width/2;
+	var y = this.base.y + this.sprite.y + this.skin.height/2 + 12;
+	if(this.suit || this.suit === 0)
+		game.debug.text(getSuitStrings('EN')[this.suit] + ' ' + cardValueToString(this.value, 'EN'), x, y );
+}
 
 //party time
 var ThrowCards = function(){
