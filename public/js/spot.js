@@ -152,7 +152,7 @@ Spot.prototype.comparator = function(a, b){
 
 //Добавляет карты в поле
 Spot.prototype.addCards = function(newCards){
-	
+
 	if(!newCards.length)
 		return;
 
@@ -288,10 +288,6 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 		//Вертикальная позиция
 		var y = this.base.y + topMargin;
 
-		//Добавляем задержку передвижения, если указаны новые карты или если необходимо задерживать смещенные карты
-		if(newCards && ~newCards.indexOf(card) || delayMisplaced && (card.base.x != x || card.base.y != y))
-			di++;
-
 		card.rotateTo(angle, 200, 50*di);
 
 		//Запускаем перемещение карты
@@ -303,6 +299,10 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 			controller.cardShiftTrial(card.base.x - x, card.base.y - y)
 			card.setBase(x, y);
 		}
+
+		//Добавляем задержку передвижения, если указаны новые карты или если необходимо задерживать смещенные карты
+		if(newCards && ~newCards.indexOf(card) || delayMisplaced && (card.base.x != x || card.base.y != y))
+			di++;
 	}
 
 	//Поднимаем карту контроллера наверх
