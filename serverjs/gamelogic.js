@@ -614,7 +614,7 @@ Game.prototype.setResponseTimer = function(time){
 			this.continueGame();
 		}		
 
-	}, time * 500) //TODO: заменить на 1000 в финальной версии
+	}, time * 2000) //TODO: заменить на 1000 в финальной версии
 }
 
 //Получает ответ от игрока
