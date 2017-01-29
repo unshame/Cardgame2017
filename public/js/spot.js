@@ -5,7 +5,7 @@
 */
 
 var Spot = function(options){
-	
+
 	this.options = this.getDefaultOptions();
 
 	for(o in options){
@@ -19,6 +19,7 @@ var Spot = function(options){
 	this.type = this.options.type;
 	this.id = this.options.id;
 
+	this.direction = this.options.direction;
 	this.align = this.options.align;
 	this.verticalAlign = this.options.verticalAlign;
 	this.margin = this.options.margin;
@@ -65,7 +66,8 @@ Spot.prototype.getDefaultOptions = function(){
 		verticalAlign:'middle',
 		texture: null,
 		alpha: 0.35,
-		debug: true
+		debug: true,
+		direction: 'horizontal'
 	}
 	return options
 }
@@ -150,6 +152,7 @@ Spot.prototype.comparator = function(a, b){
 
 //Добавляет карты в поле
 Spot.prototype.addCards = function(newCards){
+	
 	if(!newCards.length)
 		return;
 
@@ -164,6 +167,7 @@ Spot.prototype.addCards = function(newCards){
 
 //Для добавления одной карты
 Spot.prototype.addCard = function(card){
+	
 	this.addCards([card]);
 }
 
@@ -173,6 +177,12 @@ Spot.prototype.addCard = function(card){
  * @delayMisplaced - нужно ли перемещать сдвинутые карты по очереди
  */
 Spot.prototype.placeCards = function(newCards, delayMisplaced){
+
+	//console.log(newCards);
+
+	var areaWidth = (this.direction == 'horizontal') ? this.area.width : this.area.height;
+	var areaHeight = (this.direction == 'horizontal') ? this.area.height : this.area.width;
+	var angle = (this.direction == 'horizontal') ? 0 : 90;
 
 	//Размеры карт
 	var cardWidth = sm.skin.width;
@@ -186,7 +196,7 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 	var topMargin = 0;
 
 	//Активная ширина поля
-	var areaActiveWidth = this.area.width - cardWidth - this.margin*2;
+	var areaActiveWidth = areaWidth - cardWidth - this.margin*2;
 
 	//Индекс карты под курсором
 	var focusedIndex;
@@ -210,10 +220,10 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 	else{
 		switch(this.align){
 			case 'center':
-				leftMargin = (this.area.width - requiredActiveWidth)/2;
+				leftMargin = (areaWidth - requiredActiveWidth)/2;
 				break;
 			case 'right':
-				leftMargin = this.area.width - requiredActiveWidth - cardWidth/2 - this.margin;
+				leftMargin = areaWidth - requiredActiveWidth - cardWidth/2 - this.margin;
 				break;
 		}
 	}
@@ -228,12 +238,12 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
 		//Выравнивание по нижнему краю
 		case 'bottom':
-			topMargin = this.area.height - this.margin - cardHeight/2;
+			topMargin = areaHeight - this.margin - cardHeight/2;
 			break;
 
 		//Выравнивание по центру
 		default:
-			topMargin = this.area.height/2;
+			topMargin = areaHeight/2;
 			break;
 	}
 
@@ -282,8 +292,11 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 		if(newCards && ~newCards.indexOf(card) || delayMisplaced && (card.base.x != x || card.base.y != y))
 			di++;
 
+		card.rotateTo(angle, 200, 50*di);
+
 		//Запускаем перемещение карты
 		if(controller.card != card){
+
 			card.moveTo(x, y, 200, 50*di, false, true);
 		}
 		else{

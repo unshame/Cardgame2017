@@ -61,17 +61,20 @@ var EurecaClientSetup = function() {
 			}
 			placeCards(action.cards, pid);
 			if(action.numDiscarded){
+				var discardCards = [];
 				for (var i = 0; i < action.numDiscarded; i++) {
 					var id = 'discarded_'+i;
 					var options = {
 						id: id
 					}
 					cards[id] = new Card(options);
-					discard.addCard(cards[id])
+					discardCards.push(cards[id])
 				}
+				discard.addCards(discardCards);
 			}
 		}
 		else if(action.type == 'DISCARD'){
+			var discardCards = [];
 			for(var i in action.ids){
 				var cid = action.ids[i];
 				var card = cards[cid]
@@ -80,8 +83,9 @@ var EurecaClientSetup = function() {
 					card.setValue(null, 0);
 					card.setSpot('DISCARD_PILE');
 					card.spot && card.spot.removeCard(card);
-					discard.addCard(card);
+					discardCards.push(card)
 				}
+				discard.addCards(discardCards);
 			}
 		}
 		else if(action.type == 'TAKE' || action.type == 'SKIP'){
@@ -105,13 +109,13 @@ var EurecaClientSetup = function() {
 }
 
 function placeCards(newCards, pid){
+	var spotCards = [];
+	var fieldCards = [];
+	var botCards = [];
+	var deckCards = [];
 	for(var ci in newCards){
 		var c = newCards[ci];
 		var card = cards[c.cid];
-		var spotCards = [];
-		var fieldCards = [];
-		var botCards = [];
-		var deckCards = [];
 		if(card){
 			if(pid){
 				if(!pid.match('player_'))
@@ -148,9 +152,9 @@ function placeCards(newCards, pid){
 			card.spot && card.spot.removeCard(card);
 			spotCards.push(card);
 		}
-		deck.addCards(deckCards);
-		field.addCards(fieldCards);
-		botSpot.addCards(botCards);
-		spot.addCards(spotCards);
 	}
+	deck.addCards(deckCards);
+	field.addCards(fieldCards);
+	botSpot.addCards(botCards);
+	spot.addCards(spotCards);
 }

@@ -49,6 +49,10 @@ Card = function (options) {
 	this.base.add(this.sprite);
 	cardsGroup.add(this.base);  
 
+	this.mover = null;
+	this.rotator = null;
+	this.scaler = null;
+
 	//Value
 	this.setValue(this.options.suit, this.options.value);
 };
@@ -122,6 +126,11 @@ Card.prototype.setBase = function(x, y){
 
 Card.prototype.setSpot = function(spotId){
 	this.spotId = spotId;
+}
+
+Card.prototype.setAngle = function(angle){
+	this.sprite.angle = angle;
+	this.update();
 }
 
 /* /ПОЗИЦИОНИРОВАНИЕ */
@@ -215,6 +224,40 @@ Card.prototype.returnToBase = function(time, delay){
 	this.moveTo(0, 0, time || 0, delay || 0, true)
 }
 
+Card.prototype.rotateTo = function(angle, time, delay){
+
+	//Останавливаем твин, если он есть
+	if(this.rotator){
+		this.rotator.stop();
+		this.rotator = null;
+	}
+
+	if(angle == this.sprite.angle)
+		return;
+
+	//Создаем и запускаем твин или поворачиваем карту если игра остановлена
+	if(game.paused){
+		this.setAngle(angle);
+	}
+	else{
+		this.rotator = game.add.tween(this.sprite);
+		this.rotator.to(
+			{
+				angle: angle
+			},
+			time || 0,
+			Phaser.Easing.Quadratic.Out,
+			true,
+			delay || 0
+		);
+
+		//Ресет твина по окончанию
+		this.rotator.onComplete.addOnce(function(){
+			this.rotator = null;
+		}, this);
+	}
+}
+
 /* /ПЕРЕДВИЖЕНИЕ */
 
 /* СКИН */
@@ -290,6 +333,7 @@ Card.prototype.glowUpdatePosition = function(){
 	this.glow.x = this.sprite.x;
 	this.glow.y = this.sprite.y;
 	this.glow.scale.setTo(this.sprite.scale.x, this.sprite.scale.y)
+	this.glow.angle = this.sprite.angle;
 }
 /* /СВЕЧЕНИЕ */
 
