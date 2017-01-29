@@ -232,7 +232,7 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 	var areaActiveWidth = areaWidth - cardWidth - this.margin*2;
 
 	//Индекс карты под курсором
-	var focusedIndex;
+	var focusedIndex = null;
 
 	//Сдвиг карты
 	var shift = 0;
@@ -241,7 +241,7 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 	var cardSpacing = 0;
 
 	//Задержка передвижения
-	var di = 0;
+	var delayIndex = 0;
 
 	//Ширина карт не может быть больше активной ширины поля
 	if(requiredActiveWidth > areaActiveWidth){
@@ -294,8 +294,7 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
 	focusedIndex = this.cards.indexOf(this.focusedCard);
 	//Если курсор находится над одной из карт и карты не вмещаются в поле, указываем сдвиг карты от курсора
-	if(this.focusedCard && requiredActiveWidth == areaActiveWidth){
-		
+	if(this.focusedCard && requiredActiveWidth == areaActiveWidth){		
 		shift = cardWidth - cardSpacing;
 	}
 	
@@ -305,58 +304,9 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 
 		var card = this.cards[i];	
+		var increaseDelayIndex = (newCards && ~newCards.indexOf(card) || delayMisplaced && (card.base.x != x || card.base.y != y));
+		delayIndex = this.moveCard(card, i, topMargin, leftMargin, cardSpacing, shift, angle, focusedIndex, delayIndex, increaseDelayIndex)
 
-		//Сдвиг текущей карты
-		var localShift = 0;
-		//card.sprite.scale.setTo(1,1);
-		if(this.focusedCard){
-			if(i != focusedIndex){
-				localShift = i < focusedIndex ? -shift : shift;				
-			}
-			else{
-				//card.sprite.scale.setTo(1.05, 1.05)
-			}
-		}
-
-		var localTopMargin = topMargin;
-		var localLeftMargin = leftMargin;
-		if(card.spotId == 'BOTTOM'){
-			localLeftMargin += 30;
-		}
-
-		//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению к предыдущим картам, позиции базы поля и сдвига от курсора
-		var x = localLeftMargin + cardSpacing*i + localShift;
-
-		//Вертикальная позиция
-		var y = localTopMargin;
-
-		if(this.alignment == 'vertical'){
-			var temp = x;
-			x = y + this.base.x;
-			y = temp + this.base.y;
-		}
-		else{
-			x += this.base.x;
-			y += this.base.y;
-		}
-
-		if(card.spotId == 'BOTTOM')
-			card.rotateTo(angle == 90 ? 0 : 90, 200, 150*di);
-		else
-			card.rotateTo(angle, 200, 150*di);
-
-		//Запускаем перемещение карты
-		if(controller.card != card){
-			card.moveTo(x, y, 200, 150*di, false, true);
-		}
-		else{
-			controller.cardShiftTrial(card.base.x - x, card.base.y - y)
-			card.setBase(x, y);
-		}
-
-		//Добавляем задержку передвижения, если указаны новые карты или если необходимо задерживать смещенные карты
-		if(newCards && ~newCards.indexOf(card) || delayMisplaced && (card.base.x != x || card.base.y != y))
-			di++;
 	}
 
 	//Поднимаем карту контроллера наверх
@@ -374,6 +324,74 @@ Spot.prototype.placeCard = function(card){
 	for(i++; i < this.cards.length; i++){
 		cardsGroup.bringToTop(this.cards[i].base);
 	}*/
+}
+
+/*
+ * Перемещает заданную карту в соответствии с переданными данными
+ * Внутренний метод, проверка данных не проводится
+ * @card - карта
+ * @index - индекс карты в поле
+ * @topMargin - отступ сверху
+ * @leftMargin - отступ слева
+ * @cardSpacing - отступ от предыдущей карты
+ * @angle - угол поворота
+ * @shift - сдвиг от выделенной карты
+ * @focusedIndex - индекс выделенной карты в поле
+ * @delayIndex - индекс карты в очереди
+ * @increaseDelayIndex - нужно ли увеличивать индекс очереди в конце выполнения функции
+ */
+Spot.prototype.moveCard = function(card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex, delayIndex, increaseDelayIndex){
+
+	//Сдвиг текущей карты
+	//card.sprite.scale.setTo(1,1);
+	if(this.focusedCard){
+		if(index != focusedIndex){
+			shift = (index < focusedIndex) ? -shift : shift;				
+		}
+		else{
+			//card.sprite.scale.setTo(1.05, 1.05)
+		}
+	}
+
+	//Устанавливаем сдвиг для козыря в колоде
+	if(card.spotId == 'BOTTOM'){
+		leftMargin += 30;
+	}
+
+	//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению к предыдущим картам, позиции базы поля и сдвига от курсора
+	var x = leftMargin + cardSpacing*index + shift;
+
+	//Вертикальная позиция
+	var y = topMargin;
+
+	if(this.alignment == 'vertical'){
+		var temp = x;
+		x = y + this.base.x;
+		y = temp + this.base.y;
+	}
+	else{
+		x += this.base.x;
+		y += this.base.y;
+	}
+
+	//Устанавливаем поворот карты
+	if(card.spotId == 'BOTTOM')
+		angle = Math.abs(angle - 90);
+	card.rotateTo(angle, 200, 150*delayIndex);
+
+	//Запускаем перемещение карты
+	if(controller.card != card){
+		card.moveTo(x, y, 200, 150*delayIndex, false, true);
+	}
+	else{
+		controller.cardShiftTrial(card.base.x - x, card.base.y - y)
+		card.setBase(x, y);
+	}
+
+	//Добавляем задержку передвижения, если указаны новые карты или если необходимо задерживать смещенные карты
+	if(increaseDelayIndex)
+		delayIndex++;
+	return delayIndex;
 }
 
 //Удаляет карты из поля
