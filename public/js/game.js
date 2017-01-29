@@ -26,7 +26,7 @@ var onScreenChange = function() {
 	discard.setBase(screenWidth - 250, screenHeight - 250, true);
 	field.resize(screenWidth - 200, null, true);
 	spot.setBase(null, screenHeight - 250);
-	spot.resize(screenWidth - 600, null, true);
+	spot.resize(screenWidth - 700, null, true);
 
 }
 window.addEventListener('resize',onScreenChange);
@@ -48,9 +48,9 @@ function create ()
 
 	if(!spot){
 		spot = new Spot({
-			x:300,
+			x:350,
 			y:screenHeight - 250,
-			width:screenWidth - 600,
+			width:screenWidth - 700,
 			texture: 'spot',
 			type: 'HAND',
 			id: 'player'
