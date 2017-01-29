@@ -35,6 +35,9 @@ var Spot = function(options){
 	this.focusable = this.options.focusable;
 	this.sorting = this.options.sorting;
 
+	this.moveTime = this.options.moveTime;
+	this.delayTime = this.options.delayTime;
+
 	if(this.focusable && this.alignment == 'vertical'){
 		this.focusable = false;
 		console.warn(
@@ -73,6 +76,9 @@ Spot.prototype.getDefaultOptions = function(){
 		height:0,
 		margin:10,
 		minActiveSpace: 10,	//Минимальная ширина для расположения карт
+
+		moveTime: 200,
+		delayTime: 150,
 
 		focusable: true,	//Нужно ли сдвигать карты при наведении
 		spacing: true,		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать 1
@@ -305,7 +311,7 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
 		var card = this.cards[i];	
 		var increaseDelayIndex = (newCards && ~newCards.indexOf(card) || delayMisplaced && (card.base.x != x || card.base.y != y));
-		delayIndex = this.moveCard(card, i, topMargin, leftMargin, cardSpacing, shift, angle, focusedIndex, delayIndex, increaseDelayIndex)
+		delayIndex = this.moveCard(card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex, delayIndex, increaseDelayIndex)
 
 	}
 
@@ -342,6 +348,8 @@ Spot.prototype.placeCard = function(card){
  */
 Spot.prototype.moveCard = function(card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex, delayIndex, increaseDelayIndex){
 
+	var delay = this.delayTime*delayIndex;
+
 	//Сдвиг текущей карты
 	//card.sprite.scale.setTo(1,1);
 	if(this.focusedCard){
@@ -377,11 +385,11 @@ Spot.prototype.moveCard = function(card, index, topMargin, leftMargin, cardSpaci
 	//Устанавливаем поворот карты
 	if(card.spotId == 'BOTTOM')
 		angle = Math.abs(angle - 90);
-	card.rotateTo(angle, 200, 150*delayIndex);
+	card.rotateTo(angle, this.moveTime, delay);
 
 	//Запускаем перемещение карты
 	if(controller.card != card){
-		card.moveTo(x, y, 200, 150*delayIndex, false, true);
+		card.moveTo(x, y, this.moveTime, delay, false, true);
 	}
 	else{
 		controller.cardShiftTrial(card.base.x - x, card.base.y - y)
