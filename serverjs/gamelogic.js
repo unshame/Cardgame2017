@@ -197,7 +197,7 @@ Game.prototype.make = function(){
 	this.trumpSuit = this.cards[lastcid].suit;
 
 	//Сообщаем игрокам о составе колоды и запускаем игру
-	this.waitForResponse(1, this.players);
+	this.waitForResponse(5, this.players);
 	this.deckNotify();	// --> continueGame()
 }
 
@@ -280,7 +280,7 @@ Game.prototype.deal = function(dealsIn){
 		}
 	}
 	if(dealsOut.length){
-		this.waitForResponse(1, this.players);
+		this.waitForResponse(3, this.players);
 		this.dealNotify(dealsOut);
 	}
 	else{
@@ -467,7 +467,7 @@ Game.prototype.discardAndNotify = function(){
 
 		this.turnStage = 'END_DEAL';
 
-		this.waitForResponse(1, this.players);
+		this.waitForResponse(2, this.players);
 		for (var pi in this.players) {
 			var player = this.players[pi];
 			try{
@@ -509,7 +509,7 @@ Game.prototype.endGameAndNotify = function(){
 	this.validActions.push(actionAccept);
 	this.validActions.push(actionDecline);
 
-	this.waitForResponse(1, this.players);
+	this.waitForResponse(5, this.players);
 	this.notify(note, this.validActions.slice());
 }
 
@@ -614,7 +614,7 @@ Game.prototype.setResponseTimer = function(time){
 			this.continueGame();
 		}		
 
-	}, time * 500) //TODO: заменить на 1000 в финальной версии
+	}, time * 1000) //TODO: заменить на 1000 в финальной версии
 }
 
 //Получает ответ от игрока
@@ -1077,7 +1077,7 @@ Game.prototype.letAttack = function(pid){
 	this.setTurnStage('DEFENSE');
 
 	this.validActions = actions;
-	this.waitForResponse(1, [player])
+	this.waitForResponse(5, [player])
 	try{
 		player.recieveValidActions(actions.slice());	
 	}
@@ -1147,7 +1147,7 @@ Game.prototype.letDefend = function(pid){
 
 		action.pid = player.id;
 
-		this.waitForResponse(1, this.players);
+		this.waitForResponse(5, this.players);
 		for(var pi in this.players){
 
 			var newAction = {
@@ -1254,7 +1254,7 @@ Game.prototype.letDefend = function(pid){
 			break;
 	}
 
-	this.waitForResponse(1, [player]);
+	this.waitForResponse(5, [player]);
 	try{
 		player.recieveValidActions(actions);	
 	}

@@ -31,10 +31,24 @@ var EurecaClientSetup = function() {
 		
 	}
 	client.exports.recievePossibleActions = function(actions){		
+		for(var ci in spot.cards){
+			spot.cards[ci].setPlayability(false);
+		}
+		for(var ai in actions){
+			var action = actions[ai];
+			if(action.cid && cards[action.cid]){
+				cards[action.cid].setPlayability(true);
+			}
+		}
 		if(isInDebugMode)
 			console.log(actions)
 	}
-	client.exports.recieveAction = function(action){	
+	client.exports.recieveAction = function(action){
+		if(action.type == 'TRUMP_CARDS')
+			return;
+		for(var ci in spot.cards){
+			spot.cards[ci].setPlayability(false);
+		}	
 		if(action.cid){
 			placeCards([action])
 		}
@@ -83,6 +97,7 @@ var EurecaClientSetup = function() {
 					card.setValue(null, 0);
 					card.setSpot('DISCARD_PILE');
 					card.spot && card.spot.removeCard(card);
+					card.setPlayability(false);
 					discardCards.push(card)
 				}
 			}
@@ -138,14 +153,17 @@ function placeCards(newCards, pid){
 		}
 		if((card.spotId == 'DECK' || card.spotId == 'BOTTOM') && card.spot != deck){							
 			card.spot && card.spot.removeCard(card);
+			card.setPlayability(false);
 			deckCards.push(card);
 		}
 		else if(card.spotId.match('FIELD') && card.spot != field){
 			card.spot && card.spot.removeCard(card);
+			card.setPlayability(false);
 			fieldCards.push(card);
 		}
 		else if(card.spotId.match('bot') && card.spot != botSpot){
 			card.spot && card.spot.removeCard(card);
+			card.setPlayability(false);
 			botCards.push(card);
 		}
 		else if(card.spot != spot){

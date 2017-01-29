@@ -60,25 +60,31 @@ var Spot = function(options){
 	this.isInDebugMode = this.options.debug;
 }
 
+//Возвращает опции по умолчанию
 Spot.prototype.getDefaultOptions = function(){
 	var options = {
-		id:null,
 		x:0,
 		y:0,
 		width:0,
 		height:0,
 		margin:10,
 		minActiveSpace: 10,	//Минимальная ширина для расположения карт
+
 		focusable: true,	//Нужно ли сдвигать карты при наведении
 		spacing: true,		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать 1
 		sorting: true,	//Нужно ли сортировать карты
+		
+		id:null,
 		type:'GENERIC',
+
 		align:'center',
 		verticalAlign:'middle',
+		direction: 'horizontal',
+
 		texture: null,
 		alpha: 0.35,
-		debug: true,
-		direction: 'horizontal'
+
+		debug: true
 	}
 	return options
 }
@@ -200,8 +206,6 @@ Spot.prototype.addCard = function(card){
  * @delayMisplaced - нужно ли перемещать сдвинутые карты по очереди
  */
 Spot.prototype.placeCards = function(newCards, delayMisplaced){
-
-	//console.log(newCards);
 
 	var areaWidth = (this.direction == 'vertical') ?  this.area.height : this.area.width;
 	var areaHeight = (this.direction == 'vertical') ? this.area.width : this.area.height;

@@ -71,7 +71,7 @@ Player.prototype.recieveValidActions = function(actions){
 	else
 		randomIndex = Math.floor(Math.random()*actions.length);
 	var action = actions[randomIndex];
-	this.sendResponse(action);
+	setTimeout(() => {this.sendResponse(action)},4000)	
 }
 
 Player.prototype.recieveAction = function(action){

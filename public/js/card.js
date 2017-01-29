@@ -75,12 +75,9 @@ Card.prototype.setValue = function(suit, value){
 		this.value = 0;
 		if(!this.sprite.visible)
 			return;
-
+		this.setPlayability(false);
 		this.sprite.frame =  this.skin.cardbackFrame;		
-		this.isPlayable = false;
-		this.sprite.input.useHandCursor = false;
 
-		this.glowStop();
 	}
 	else{
 		this.suit = suit;
@@ -89,16 +86,25 @@ Card.prototype.setValue = function(suit, value){
 			return;
 
 		this.sprite.frame =  this.skin.firstValueFrame + suit*13 + value - 2;
-		this.isPlayable = true;
-		this.sprite.input.useHandCursor = true;
-
-		this.glowStart(0.25, 0.75, 1500, 500, 0xFFFF0A)
 
 		cardsGroup.bringToTop(this.base);
 		if(controller.card){
 			cardsGroup.bringToTop(controller.card.base);
 		}
 	}
+}
+
+Card.prototype.setPlayability = function(playable){	
+	if(playable && !this.isPlayable){
+		this.sprite.input.useHandCursor = true;
+		this.glowStart(0.25, 0.75, 1500, 500, 0xFFFF0A)
+	}
+	else if(this.isPlayable){
+		this.sprite.input.useHandCursor = false;
+		this.glowStop();
+	}
+	this.isPlayable = playable;
+
 }
 
 /* ПОЗИЦИОНИРОВАНИЕ */
