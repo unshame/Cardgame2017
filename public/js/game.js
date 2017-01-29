@@ -102,15 +102,12 @@ function create ()
 		discard = new Spot({
 			x:screenWidth - 250,
 			y:screenHeight - 250,
-			height: 190,
-			align:'right',
 			focusable:false,
 			spacing: false,
 			texture: 'spot',
 			sorting: false,
 			type: 'DISCARD_PILE',
-			id: 'discard',
-			direction: 'vertical'
+			id: 'discard'
 		});
 	}
 
