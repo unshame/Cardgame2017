@@ -20,6 +20,9 @@ var Spot = function(options){
 	this.id = this.options.id;
 
 	this.direction = this.options.direction;
+	if(this.direction != 'vertical' && this.direction != 'horizontal')
+		this.direction = this.getDefaultOptions().direction;
+
 	this.align = this.options.align;
 	this.verticalAlign = this.options.verticalAlign;
 	this.margin = this.options.margin;
@@ -28,10 +31,18 @@ var Spot = function(options){
 	this.focusable = this.options.focusable;
 	this.sorting = this.options.sorting;
 
+	if(this.focusable && this.direction == 'vertical'){
+		this.focusable = false;
+		console.warn(
+			'Spot', this.type, this.id, 'set to focusable and ' + this.direction,
+			'. This is not supported, focusable defaulted to false\n', this
+		)
+	}
+
 	this.base = game.add.group();
 	this.setBase(this.options.x, this.options.y);
 
-	this.minActiveWidth = this.options.minActiveWidth;
+	this.minActiveSpace = this.options.minActiveSpace;
 
 	if(this.options.texture){
 		this.area = game.add.tileSprite(0, 0, 0, 0, this.options.texture);
@@ -57,7 +68,7 @@ Spot.prototype.getDefaultOptions = function(){
 		width:0,
 		height:0,
 		margin:10,
-		minActiveWidth: 10,	//Минимальная ширина для расположения карт
+		minActiveSpace: 10,	//Минимальная ширина для расположения карт
 		focusable: true,	//Нужно ли сдвигать карты при наведении
 		spacing: true,		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать 1
 		sorting: true,	//Нужно ли сортировать карты
@@ -102,12 +113,24 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 
 	if(shouldPlace === undefined)
 		shouldPlace = false;
+	if(this.direction == 'vertical'){
+		if(width < sm.skin.height){
+			width = sm.skin.height;
+		}
 
-	if(width < sm.skin.width)
-		width = sm.skin.width + this.minActiveWidth;
+		if(height < sm.skin.width){
+			height = sm.skin.width + this.minActiveSpace;
+		}
+	}
+	else{
+		if(width < sm.skin.width){
+			width = sm.skin.width + this.minActiveSpace;
+		}
 
-	if(height < sm.skin.height)
-		height = sm.skin.height + this.minActiveWidth;
+		if(height < sm.skin.height){
+			height = sm.skin.height;
+		}
+	}
 
 	this.area.width = width + this.margin*2,
 	this.area.height = height + this.margin*2;
@@ -180,16 +203,18 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
 	//console.log(newCards);
 
-	var areaWidth = (this.direction == 'horizontal') ? this.area.width : this.area.height;
-	var areaHeight = (this.direction == 'horizontal') ? this.area.height : this.area.width;
-	var angle = (this.direction == 'horizontal') ? 0 : 90;
+	var areaWidth = (this.direction == 'vertical') ?  this.area.height : this.area.width;
+	var areaHeight = (this.direction == 'vertical') ? this.area.width : this.area.height;
+	var angle = (this.direction == 'vertical') ? 90 : 0;
 
 	//Размеры карт
 	var cardWidth = sm.skin.width;
 	var cardHeight = sm.skin.height;
 
 	//Необходимая ширина для размещения карт
-	var requiredActiveWidth = (this.cards.length-1)*cardWidth;
+	var requiredActiveWidth = (this.cards.length-1);
+	if(this.spacing)
+		requiredActiveWidth *= cardWidth;
 
 	//Отступы
 	var leftMargin = cardWidth/2 + this.margin;
@@ -283,10 +308,20 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 		}
 
 		//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению к предыдущим картам, позиции базы поля и сдвига от курсора
-		var x = this.base.x + leftMargin + cardSpacing*i + localShift;
+		var x = leftMargin + cardSpacing*i + localShift;
 
 		//Вертикальная позиция
-		var y = this.base.y + topMargin;
+		var y = topMargin;
+
+		if(this.direction == 'vertical'){
+			var temp = x;
+			x = y + this.base.x;
+			y = temp + this.base.y;
+		}
+		else{
+			x += this.base.x;
+			y += this.base.y;
+		}
 
 		card.rotateTo(angle, 200, 50*di);
 

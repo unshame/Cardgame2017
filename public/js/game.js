@@ -78,7 +78,8 @@ function create ()
 			texture: 'spot',
 			focusable:false,
 			sorting:false,
-			type: 'FIELD'
+			type: 'FIELD',
+			id: 'field'
 		});
 	}
 
@@ -86,12 +87,14 @@ function create ()
 		deck = new Spot({
 			x:100,
 			y:screenHeight - 250,
-			align:'left',
+			height: 190,
 			focusable:false,
 			spacing: false,
 			texture: 'spot',
 			sorting: false,
-			type: 'DECK'
+			type: 'DECK',
+			id: 'deck',
+			direction: 'vertical'
 		});
 	}
 
@@ -99,12 +102,15 @@ function create ()
 		discard = new Spot({
 			x:screenWidth - 250,
 			y:screenHeight - 250,
-			align:'left',
+			height: 190,
+			align:'right',
 			focusable:false,
 			spacing: false,
 			texture: 'spot',
 			sorting: false,
-			type: 'DISCARD_PILE'
+			type: 'DISCARD_PILE',
+			id: 'discard',
+			direction: 'vertical'
 		});
 	}
 
