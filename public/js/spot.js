@@ -180,15 +180,28 @@ Spot.prototype.comparator = function(a, b){
 }
 
 //Добавляет карты в поле
-Spot.prototype.addCards = function(newCards){
+Spot.prototype.addCards = function(newCards, shouldReverse){
 
 	if(!newCards.length)
 		return;
 
-	for(ci in newCards){
-		var card = newCards[ci];
-		card.spot = this;
-		this.cards.push(card);
+	if(shouldReverse === undefined)
+		shouldReverse = false;
+
+	var ci;
+	if(shouldReverse){
+		for(ci = newCards.length - 1; ci >= 0;ci--){
+			var card = newCards[ci];
+			card.spot = this;
+			this.cards.push(card);
+		}
+	}
+	else{
+		for(ci in newCards){
+			var card = newCards[ci];
+			card.spot = this;
+			this.cards.push(card);
+		}
 	}
 	this.sortCards();
 	this.placeCards(newCards);
@@ -276,6 +289,7 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 			break;
 	}
 
+
 	//Отступ между картами
 	if(this.cards.length > 1)
 		cardSpacing = requiredActiveWidth/(this.cards.length-1);
@@ -310,12 +324,16 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 				//card.sprite.scale.setTo(1.05, 1.05)
 			}
 		}
+		
+		var localTopMargin = topMargin;
+		if(card.spotId == 'BOTTOM')
+			localTopMargin -= 50;
 
 		//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению к предыдущим картам, позиции базы поля и сдвига от курсора
 		var x = leftMargin + cardSpacing*i + localShift;
 
 		//Вертикальная позиция
-		var y = topMargin;
+		var y = localTopMargin;
 
 		if(this.direction == 'vertical'){
 			var temp = x;
@@ -327,11 +345,11 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 			y += this.base.y;
 		}
 
-		card.rotateTo(angle, 200, 50*di);
+		card.rotateTo(angle, 200, 150*di);
 
 		//Запускаем перемещение карты
 		if(controller.card != card){
-			card.moveTo(x, y, 200, 50*di, false, true);
+			card.moveTo(x, y, 200, 150*di, false, true);
 		}
 		else{
 			controller.cardShiftTrial(card.base.x - x, card.base.y - y)

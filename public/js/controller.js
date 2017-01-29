@@ -169,6 +169,7 @@ Controller.prototype.cardReturn = function(){
 	else{
 		card.returnToBase(this.cardReturnTime, 0);
 	}
+	game.canvas.style.cursor = "default";
 }
 
 //Проверка нажатия на базу карты
@@ -299,6 +300,7 @@ Controller.prototype.reset = function(){
 	this.cardResetTrail(true);
 	this.card = null;
 	this.pointer = null;
+	game.canvas.style.cursor = "default";
 }
 
 /* ДЕБАГ */

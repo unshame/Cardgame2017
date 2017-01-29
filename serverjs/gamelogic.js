@@ -197,7 +197,7 @@ Game.prototype.make = function(){
 	this.trumpSuit = this.cards[lastcid].suit;
 
 	//Сообщаем игрокам о составе колоды и запускаем игру
-	this.waitForResponse(5, this.players);
+	this.waitForResponse(10, this.players);
 	this.deckNotify();	// --> continueGame()
 }
 

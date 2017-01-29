@@ -87,7 +87,7 @@ Card.prototype.setValue = function(suit, value){
 
 		this.sprite.frame =  this.skin.firstValueFrame + suit*13 + value - 2;
 
-		cardsGroup.bringToTop(this.base);
+		//cardsGroup.bringToTop(this.base);
 		if(controller.card){
 			cardsGroup.bringToTop(controller.card.base);
 		}

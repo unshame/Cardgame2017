@@ -88,6 +88,7 @@ function create ()
 			x:100,
 			y:screenHeight - 250,
 			height: 190,
+			align: 'left',
 			focusable:false,
 			spacing: false,
 			texture: 'spot',
