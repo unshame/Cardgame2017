@@ -167,6 +167,11 @@ Spot.prototype.addCard = function(card){
  */
 Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
+	//Проверка сфокусированной карты
+	if(!controller.card && controller.card != this.focusedCard && !this.cardIsInside(this.focusedCard)){
+		this.focusedCard = null;
+	}
+
 	//Размеры карт
 	var cardWidth = sm.skin.width;
 	var cardHeight = sm.skin.height;
@@ -276,14 +281,15 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 }
 
 //Для размещения одной карты
-Spot.prototype.placeCard = function(card, time){
+Spot.prototype.placeCard = function(card){
 	var i = this.cards.indexOf(card);
 	if(!~i)
 		return;
-	card.returnToBase(time || 200, 0);
+	this.placeCards([card]);
+	/*card.returnToBase(time || 200, 0);
 	for(i++; i < this.cards.length; i++){
 		cardsGroup.bringToTop(this.cards[i].base);
-	}
+	}*/
 }
 
 //Удаляет карты из поля
@@ -310,6 +316,19 @@ Spot.prototype.removeAllCards = function(){
 //Для удаления одной карты
 Spot.prototype.removeCard = function(card){
 	this.removeCards([card])
+}
+
+Spot.prototype.cardIsInside = function(card){
+	if(
+		!card ||
+		card.base.x + card.sprite.x < this.base.x - sm.skin.width ||
+		card.base.x + card.sprite.x > this.base.x + this.area.width + sm.skin.width ||
+		card.base.y + card.sprite.y < this.base.y ||
+		card.base.y + card.sprite.y > this.base.y + this.area.height
+	)
+		return false
+	else
+		return true
 }
 
 //Запоминает карту, над которой находится курсор

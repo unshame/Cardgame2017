@@ -159,13 +159,16 @@ Controller.prototype.cardReturn = function(){
 	}
 
 	var card = this.card;
+	var pointer = this.pointer;
 
 	this.card = null;
 	this.pointer = null;
-	if(card.spot)
-		card.spot.placeCard(card)
-	else
+	if(card.spot){
+		card.spot.placeCard(card);
+	}
+	else{
 		card.returnToBase(this.cardReturnTime, 0);
+	}
 }
 
 //Проверка нажатия на базу карты
