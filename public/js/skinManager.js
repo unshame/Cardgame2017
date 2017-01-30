@@ -1,6 +1,6 @@
 /*
  * Модуль, управляющий внешним видом карт
-*/
+ */
 
 var SkinManager = function(skinToSetWhenLoaded){
 	this.skins = {};
@@ -26,7 +26,8 @@ SkinManager.prototype.addSkin = function(options){
 
 	skin.numOfFrames = options.numOfFrames || 67;
 	skin.firstValueFrame = options.firstValueFrame || 0;
-	skin.cardbackPossibleFrames = options.cardbackPossibleFrames || [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66];
+	skin.cardbackPossibleFrames = 
+		options.cardbackPossibleFrames || [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66];
 	skin.cardbackFrame = options.cardbackFrame || 55;
 
 	skin.glowPath = options.glowPath || 'assets/glow.png';
@@ -41,7 +42,13 @@ SkinManager.prototype.addSkin = function(options){
 	skin.trailPath = options.trailPath || 'assets/particles/trails.png';
 	skin.trailName = options.trailName || options.name + 'Trail';
 
-	game.load.spritesheet(skin.sheetName, skin.sheetPath, skin.frameWidth, skin.frameHeight, skin.numOfFrames);
+	game.load.spritesheet(
+		skin.sheetName, 
+		skin.sheetPath, 
+		skin.frameWidth, 
+		skin.frameHeight, 
+		skin.numOfFrames
+	);
 	game.load.image(skin.glowName, skin.glowPath);
 	game.load.spritesheet(skin.trailName, skin.trailPath, skin.trailWidth, skin.trailHeight, 4);
 
@@ -61,7 +68,13 @@ SkinManager.prototype.applySkin = function(skinName){
 }
 
 SkinManager.prototype.setCardback = function(i){
-	if(typeof i != 'number' || i >= this.skin.cardbackPossibleFrames.length || i < 0 || i === undefined || i === null){
+	if(
+		typeof i != 'number' || 
+		i >= this.skin.cardbackPossibleFrames.length || 
+		i < 0 || 
+		i === undefined || 
+		i === null
+	){
 		console.error(
 			'SkinManager: Cardback with index', i, 'not found.',
 			'Highest possible index for current skin', this.skin.name, 'is',

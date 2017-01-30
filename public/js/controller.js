@@ -325,7 +325,10 @@ Controller.prototype.updateDebug = function(){
 	game.debug.geom( this.debugBase, 'rgba(255,0,0,0.6)' ) ;
 
 	//Таймер клика
-	var time = this.cardClickTimer && this.cardClickTimer.timer.nextTick - new Date().getTime() || 0;
+	var time = (
+		this.cardClickTimer && 
+		this.cardClickTimer.timer.nextTick - new Date().getTime()
+	) || 0;
 	game.debug.text(time + 'sec', x, y );
 
 	//Визуализация максимальной скорости хвоста
@@ -334,7 +337,12 @@ Controller.prototype.updateDebug = function(){
 	}
 	width = this.trail.width || 5;
 	height = this.trail.height || 5;
-	var diameter = game.math.distance(0,0,this.trail.maxParticleSpeed.x,this.trail.maxParticleSpeed.y) ;
+	var diameter = game.math.distance(
+		0,
+		0,
+		this.trail.maxParticleSpeed.x,
+		this.trail.maxParticleSpeed.y
+	) ;
 	this.debugSpeed.x = this.trail.parent.x + this.trail.position.x + this.trail.emitX;
 	this.debugSpeed.y = this.trail.parent.y + this.trail.position.y + this.trail.emitY;
 	this.debugSpeed.diameter = diameter + (width + height)/2;

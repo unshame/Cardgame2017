@@ -1,5 +1,10 @@
 /*
  * Конструктор карт
+ * 
+ * Тестовые функции:
+ * throwCards - конструктор разлетающихся карт
+ * getCards(num, except) - выбирает num карт из cards, пропускает карты из except
+ * getCard(except) - выбирает одну карту из cards, пропускает карты из except
  */
 
 Card = function (options) {
@@ -57,6 +62,7 @@ Card = function (options) {
 	this.setValue(this.options.suit, this.options.value);
 };
 
+//Возвращает опции по умолчанию
 Card.prototype.getDefaultOptions = function(){
 	var options = {
 		id:null,
@@ -69,6 +75,9 @@ Card.prototype.getDefaultOptions = function(){
 	return options
 }
 
+
+//ЗНАЧЕНИЯ
+
 //Устанавливает значение карты 
 Card.prototype.setValue = function(suit, value){
 	if(suit === null || suit === undefined){
@@ -77,7 +86,9 @@ Card.prototype.setValue = function(suit, value){
 		if(!this.sprite.visible)
 			return;
 		this.setPlayability(false);
-		//this.sprite.frame =  this.skin.cardbackPossibleFrames[Math.floor(Math.random()*this.skin.cardbackPossibleFrames.length)];		
+		/*this.sprite.frame =  this.skin.cardbackPossibleFrames[
+			Math.floor(Math.random()*this.skin.cardbackPossibleFrames.length)
+		];*/
 		this.sprite.frame =  this.skin.cardbackFrame;		
 	}
 	else{
@@ -95,20 +106,22 @@ Card.prototype.setValue = function(suit, value){
 	}
 }
 
+//Устанавливает играбильность карты
 Card.prototype.setPlayability = function(playable){	
-	if(playable && !this.isPlayable){
-		this.sprite.input.useHandCursor = true;
+	if(playable){
+		//this.sprite.input.useHandCursor = true;
 		this.glowStart(0.25, 0.75, 1500, 500, 0xFFFF0A)
 	}
-	else if(this.isPlayable){
-		this.sprite.input.useHandCursor = false;
+	else{
+		//this.sprite.input.useHandCursor = false;
 		this.glowStop();
 	}
-	this.isPlayable = playable;
+	//this.isPlayable = playable;
 
 }
 
-/* ПОЗИЦИОНИРОВАНИЕ */
+
+//ПОЗИЦИОНИРОВАНИЕ
 
 //Устанавливает абсолютную позицию карты
 Card.prototype.setPosition = function(x, y){
@@ -135,6 +148,12 @@ Card.prototype.setBase = function(x, y){
 
 Card.prototype.setSpot = function(spotId){
 	this.spotId = spotId;
+	/*	
+	 if(spotId.match('player')){
+		this.sprite.input.useHandCursor = true;
+		this.isPlayable = true;
+	}
+	*/
 }
 
 Card.prototype.setAngle = function(angle){
@@ -142,9 +161,8 @@ Card.prototype.setAngle = function(angle){
 	this.update();
 }
 
-/* /ПОЗИЦИОНИРОВАНИЕ */
 
-/* ПЕРЕДВИЖЕНИЕ */
+//ПЕРЕДВИЖЕНИЕ
 
 /*
  * Плавно перемещает карту
@@ -153,12 +171,16 @@ Card.prototype.setAngle = function(angle){
  * @delay Number (мс) - задержка перед перемещением
  * @relativeToBase Bool - перемещение происходит относительно базы карты
  * @shouldRebase Bool - нужно ли перемещать базу карты или только карту
+ * @bringUpOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
 */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn){
 
-	relativeToBase = relativeToBase || false;
-	shouldRebase = shouldRebase || false;
-	bringToTopOn = bringToTopOn || 'init';
+	if(relativeToBase === undefined)
+		relativeToBase = false;
+	if(shouldRebase === undefined)
+		shouldRebase = false;
+	if(bringToTopOn === undefined || !~['never', 'init', 'start', 'end'].indexOf(bringToTopOn))
+		bringToTopOn = 'init';
 
 	if(bringToTopOn == 'init' || game.paused && bringToTopOn != 'never')
 		cardsGroup.bringToTop(this.base);
@@ -273,9 +295,8 @@ Card.prototype.rotateTo = function(angle, time, delay){
 	}
 }
 
-/* /ПЕРЕДВИЖЕНИЕ */
 
-/* СКИН */
+//СКИН
 
 //Применяет текущий скин к карте
 Card.prototype.applySkin = function(){
@@ -294,9 +315,10 @@ Card.prototype.applyCardback = function(){
 		this.sprite.frame = this.skin.cardbackFrame;
 	}
 }
-/* /СКИН */
 
-/* СВЕЧЕНИЕ */
+
+//СВЕЧЕНИЕ
+
 //Запускает свечение
 Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 	
@@ -305,10 +327,22 @@ Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 	this.glow.tint = color || 0xFFFFFF;
 
 	this.glowDecreaser = game.add.tween(this.glow);
-	this.glowDecreaser.to({alpha: minGlow}, speed, Phaser.Easing.Linear.None, false, Math.floor(Math.random()*(delayRange || 0)));
+	this.glowDecreaser.to(
+		{alpha: minGlow}, 
+		speed, 
+		Phaser.Easing.Linear.None, 
+		false, 
+		Math.floor(Math.random()*(delayRange || 0))
+	);
 
 	this.glowIncreaser = game.add.tween(this.glow);
-	this.glowIncreaser.to({alpha: maxGlow}, speed, Phaser.Easing.Linear.None, false, Math.floor(Math.random()*(delayRange || 0)));
+	this.glowIncreaser.to(
+		{alpha: maxGlow},
+		speed, 
+		Phaser.Easing.Linear.None, 
+		false, 
+		Math.floor(Math.random()*(delayRange || 0))
+	);
 
 	this.glowIncreaser.onComplete.add(function(){
 		if(this.glow.visible && this.glowDecreaser)
@@ -350,7 +384,9 @@ Card.prototype.glowUpdatePosition = function(){
 	this.glow.scale.setTo(this.sprite.scale.x, this.sprite.scale.y)
 	this.glow.angle = this.sprite.angle;
 }
-/* /СВЕЧЕНИЕ */
+
+
+//СОБЫТИЯ
 
 //Вызывается при нажатии на карту
 Card.prototype.mouseDown = function(sprite, pointer){
@@ -375,6 +411,9 @@ Card.prototype.mouseOut = function(sprite, pointer){
 	this.spot.focusOffCard();
 }
 
+
+//KILL, RESET, UPDATE
+
 //Убивает спрайты карты
 Card.prototype.kill = function() {
 	this.glow.kill();
@@ -391,11 +430,12 @@ Card.prototype.reset = function(){
 }
 
 //Обновление карты
-//В будущем вохможно будет делать что-то еще
+//В будущем возможно будет делать что-то еще
 Card.prototype.update = function() {
 	this.glowUpdatePosition();
 };
 
+//Обновляет позицию текста карты
 Card.prototype.updateDebug = function(){
 	if(!this.isInDebugMode)
 		return;
@@ -403,10 +443,17 @@ Card.prototype.updateDebug = function(){
 	var x = this.base.x + this.sprite.x - this.skin.width/2;
 	var y = this.base.y + this.sprite.y + this.skin.height/2 + 12;
 	if(this.suit || this.suit === 0)
-		game.debug.text(getSuitStrings('EN')[this.suit] + ' ' + cardValueToString(this.value, 'EN'), x, y );
+		game.debug.text(
+			getSuitStrings('EN')[this.suit] + ' ' + cardValueToString(this.value, 'EN'),
+			x, 
+			y 
+		);
 }
 
-//party time
+
+//ТЕСТОВЫЕ ФУНКЦИИ
+
+//Party time
 var ThrowCards = function(){
 
 	this.emitter = game.add.emitter(game.world.centerX, 200, 200);
@@ -427,4 +474,30 @@ ThrowCards.prototype.stop = function(){
 	if(this.emitter.on){
 		this.emitter.destroy();
 	}
+}
+
+//Возвращает несколько карт в массиве
+//Если не указать num, возвратит все карты
+function getCards(num, except){
+	if(!num)
+		num = Number.MAX_VALUE;
+	var crds = [];
+	for(var ci in cards){
+		if(!cards.hasOwnProperty(ci) || except && except.length && ~except.indexOf(cards[ci]))
+			continue;
+		if(num-- <= 0)
+			break
+		crds.push(cards[ci]);
+	}
+	return crds
+}
+
+//Возвращает одну карту, которая не входит в except
+function getCard(except){
+	var card = getCards(1, except);
+	if(card.length)
+		card = card[0]
+	else
+		card = null;
+	return card
 }

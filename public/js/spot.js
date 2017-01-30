@@ -7,14 +7,16 @@
  *
  * .queueCards(newCards, delay) и .placeQueuedCards():
  *		Добавляет карты в очередь и размещает их с указанной задержкой
- *		.placeQueuedCards финализирует размещение и должно быть использовано до дальнейшей работы с полем
- *		Этот метод также отключает выделение карт при наведении на время перемещения карт
+ *		.placeQueuedCards финализирует размещение и должно быть использовано до дальнейшей работы с 
+ *		полем. Этот метод также отключает выделение карт при наведении на время перемещения карт.
  *
  * .addCards(newCards)
  * 		Добавляет карты сразу без возможности указания задержки
  *		Задержка рассчитывается автоматически
  *
- * Использование второго метода до финализации первого (.queueCards -> .addCards -> .placeQueuedCards) не тестировалось
+ * Использование второго метода до финализации первого добавляет карты в очередь и запускает очередь
+ * .queueCards(c1) -> .addCards(c2) => .queueCards(c1) -> .queueCards(c2) -> .placeQueuedCards() 
+ * Так делать не рекомендуется
  */
 
 var Spot = function(options){
@@ -26,6 +28,8 @@ var Spot = function(options){
 			this.options[o] = options[o];
 	}
 
+	this.isInDebugMode = this.options.debug;
+
 	this.cards = [];
 	this.delays = {};
 	this.queuedCards = [];
@@ -35,15 +39,21 @@ var Spot = function(options){
 	this.id = this.options.id;
 
 	this.alignment = this.options.alignment;
-	if(this.alignment != 'vertical' && this.alignment != 'horizontal')
+	if(!~['vertical', 'horizontal'].indexOf(this.alignment))
 		this.alignment = this.getDefaultOptions().alignment;
 
 	this.direction = this.options.direction;
-	if(this.direction != 'forward' && this.direction != 'backward')
+	if(!~['forward', 'backward'].indexOf(this.direction))
 		this.direction = this.getDefaultOptions().direction;
 
 	this.align = this.options.align;
+	if(!~['left', 'center', 'right'].indexOf(this.align))
+		this.align = this.getDefaultOptions().align;
+
 	this.verticalAlign = this.options.verticalAlign;
+	if(!~['top', 'middle', 'bottom'].indexOf(this.verticalAlign))
+		this.verticalAlign = this.getDefaultOptions().verticalAlign;
+
 	this.margin = this.options.margin;
 
 	this.forcedSpace = this.options.forcedSpace;
@@ -66,20 +76,20 @@ var Spot = function(options){
 
 	this.minActiveSpace = this.options.minActiveSpace;
 
-	if(this.options.texture){
-		this.area = game.add.tileSprite(0, 0, 0, 0, this.options.texture);
-		this.area.alpha = this.options.alpha;
-		this.base.add(this.area);
-	}
-	else{
-		this.area = {x:0, y:0, width:0, height:0};
-	}
+	//Текстура для дебага и область поля
+	var pixel = game.make.graphics(0, 0);
+	pixel.beginFill(0xffffff);
+	pixel.drawRect(0, 0, 1, 1);
+	pixel.endFill();
+
+	this.area = game.add.tileSprite(0, 0, 0, 0, pixel.generateTexture());
+	this.area.alpha = 0.35;
+	this.area.visible = this.isInDebugMode;
+	this.base.add(this.area);
 
 	this.resize(this.options.width, this.options.height)
 	
-	game.world.setChildIndex(this.base, 1);
-
-	this.isInDebugMode = this.options.debug;
+	game.world.setChildIndex(this.base, 1);	
 }
 
 //Возвращает опции по умолчанию
@@ -94,8 +104,10 @@ Spot.prototype.getDefaultOptions = function(){
 
 		moveTime: 200,
 		delayTime: 100,
+		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать
+		//заданное значение
+		forcedSpace: false,	
 
-		forcedSpace: false,	//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать заданное значение
 		focusable: true,	//Нужно ли сдвигать карты при наведении
 		sorting: true,		//Нужно ли сортировать карты
 		
@@ -104,7 +116,9 @@ Spot.prototype.getDefaultOptions = function(){
 
 		align:'center',			 //Выравнивание по горизонтали
 		verticalAlign:'middle',
-		alignment: 'horizontal', //Поворот поля, меняет местами align и verticalAlign (right станет bottom и т.д.), не влияет на width и height
+		//Поворот поля, меняет местами align и verticalAlign (right станет bottom и т.д.),
+		//не влияет на width и height
+		alignment: 'horizontal', 
 		direction: 'forward',	 //Направление поля
 
 		texture: null,
@@ -114,6 +128,9 @@ Spot.prototype.getDefaultOptions = function(){
 	}
 	return options
 }
+
+
+//ПОЗИЦИОНИРОВАНИЕ ПОЛЯ
 
 //Устанавливает позицию поля
 Spot.prototype.setBase = function(x, y, shouldPlace){
@@ -171,6 +188,9 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 		this.placeCards();
 }
 
+
+//СОРТИРОВКА
+
 //Сортирует карты
 Spot.prototype.sortCards = function(){
 	if(this.sorting)
@@ -205,27 +225,21 @@ Spot.prototype.comparator = function(a, b){
 		return -1;
 }
 
-Spot.prototype.setNoFocusTimer = function(time){
 
-	if(!time || typeof time != 'number')
-		return;
-
-	if(this.noFocusTimer)
-		game.time.events.remove(this.noFocusTimer);
-
-	this.noFocusTimer = game.time.events.add(time, function(){
-		this.placeCards();
-		this.noFocusTimer = null;
-	}, this);
-}
+//ОЧЕРЕДЬ
 
 //Добавляет карты в очередь на добавление, возвращает планируемое время добавления
 Spot.prototype.queueCards = function(newCards, delay){
 	if(!newCards.length)
 		return;
 
-	if(typeof delay != 'number')
-		delay = 0;
+	if(typeof delay != 'number'){
+		var lastQueuedCard = this.queuedCards[this.queuedCards.length - 1];
+		if(lastQueuedCard)
+			delay = this.delays[lastQueuedCard.id] || 0
+		else
+			delay = 0;
+	}
 
 	for(var ci in this.cards){
 		this.delays[this.cards[ci].id] = delay;
@@ -254,12 +268,22 @@ Spot.prototype.placeQueuedCards = function(){
 
 	var bringUpOn = (this.type == 'DECK') ? 'init' : 'start';
 	this.sortCards();
-	this.placeCards(this.queuedCards, bringUpOn);
+	this.placeCards(null, bringUpOn);
 	this.setNoFocusTimer(this.expectedDelay);
 	this.queuedCards = [];
 	this.delays = {};
 	this.expectedDelay = 0;
 }
+
+//Очищает очередь на добавление
+Spot.prototype.resetQueue = function(){
+	this.queuedCards = [];
+	this.delays = {};
+	this.expectedDelay = 0;
+}
+
+
+//ДОБАВЛЕНИЕ КАРТ
 
 //Добавляет карты в поле, возвращает время добавления
 Spot.prototype.addCards = function(newCards){
@@ -267,14 +291,28 @@ Spot.prototype.addCards = function(newCards){
 	if(!newCards.length)
 		return;
 
-	for(var ci in newCards){
-		var card = newCards[ci];
-		card.spot = this;
-		this.cards.push(card);
+	if(this.queuedCards.length){
+		var lastQueuedCard = this.queuedCards[this.queuedCards.length - 1];
+		var delay = this.delays[lastQueuedCard.id] || 0;
+		delay += this.delayTime;
+		this.queueCards(newCards, delay);
+		this.placeQueuedCards();
+		delay += (this.queuedCards.length - 1)*this.delayTime;
+		return delay
 	}
-	this.sortCards();
-	return this.placeCards(newCards, 'start');
+	else{
+		for(var ci in newCards){
+			var card = newCards[ci];
+			card.spot = this;
+			this.cards.push(card);
+		}
+		this.sortCards();
+		return this.placeCards(newCards, 'start');
+	}
 }
+
+
+//РАЗМЕЩЕНИЕ КАРТ
 
 //Для добавления одной карты, возвращает время добавления
 Spot.prototype.addCard = function(card){
@@ -371,14 +409,18 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 		cardSpacing = Math.min(cardSpacing, this.forcedSpace);
 
 	//Проверка выделенной карты
-	if(!controller.card && controller.card != this.focusedCard && !this.cardIsInside(this.focusedCard, cardSpacing)){
+	if(
+		!controller.card && controller.card != this.focusedCard && 
+		!this.cardIsInside(this.focusedCard, cardSpacing)
+	){
 		this.focusedCard = null;
 	}
 
 	//Индекс выделенной карты
 	focusedIndex = this.cards.indexOf(this.focusedCard);
 
-	//Если курсор находится над одной из карт и карты не вмещаются в поле, указываем сдвиг карты от курсора
+	//Если курсор находится над одной из карт и карты не вмещаются в поле,
+	//указываем сдвиг карты от курсора
 	if(this.focusedCard && requiredActiveWidth == areaActiveWidth){		
 		shift = cardWidth - cardSpacing;
 	}
@@ -471,7 +513,8 @@ Spot.prototype.moveCard = function(
 		leftMargin += 30;
 	}
 
-	//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению к предыдущим картам, позиции базы поля и сдвига от курсора
+	//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению
+	//к предыдущим картам, позиции базы поля и сдвига от курсора
 	var x = leftMargin + cardSpacing*index + shift;
 
 	//Вертикальная позиция
@@ -501,11 +544,14 @@ Spot.prototype.moveCard = function(
 		card.setBase(x, y);
 	}
 
-	//Добавляем задержку передвижения, если указаны новые карты или если необходимо задерживать смещенные карты
+	//Добавляем задержку передвижения, если указаны новые карты или
+	//если необходимо задерживать смещенные карты
 	if(increaseDelayIndex)
 		delayIndex++;
 	return delayIndex;
 }
+
+//УДАЛЕНИЕ КАРТ ИЗ ПОЛЯ
 
 //Удаляет карты из поля
 Spot.prototype.removeCards = function(cardsToRemove){
@@ -536,6 +582,13 @@ Spot.prototype.removeCard = function(card){
 	this.removeCards([card])
 }
 
+//Ресет поля
+Spot.prototype.reset = function(){
+	this.removeAllCards();
+}
+
+//БУЛЕВЫ ФУНКЦИИ
+
 //Проверяет нахождение карты внутри поля (по координатам)
 Spot.prototype.cardIsInside = function(card, cardSpacing){
 	if(cardSpacing === null || cardSpacing === undefined)
@@ -551,6 +604,24 @@ Spot.prototype.cardIsInside = function(card, cardSpacing){
 		return false
 	else
 		return true
+}
+
+
+//ВЫДЕЛЕНИЕ КАРТ КУРСОРОМ
+
+//Запускает таймер, во время которого карты не реагируют на курсор
+Spot.prototype.setNoFocusTimer = function(time){
+
+	if(!time || typeof time != 'number')
+		return;
+
+	if(this.noFocusTimer)
+		game.time.events.remove(this.noFocusTimer);
+
+	this.noFocusTimer = game.time.events.add(time, function(){
+		this.placeCards();
+		this.noFocusTimer = null;
+	}, this);
 }
 
 //Запоминает карту, над которой находится курсор
@@ -573,10 +644,10 @@ Spot.prototype.focusOffCard = function(){
 		this.placeCards();
 }
 
-Spot.prototype.reset = function(){
-	this.removeAllCards();
-}
 
+//ДЕБАГ
+
+//Обновляет позицию названия поля
 Spot.prototype.updateDebug = function(){
 	if(!this.isInDebugMode)
 		return;
@@ -589,4 +660,10 @@ Spot.prototype.updateDebug = function(){
 	else
 		str = this.type + ' ' + this.id;
 	game.debug.text(str, x, y );
+}
+
+//Переключает режим дебага
+Spot.prototype.toggleDebugMode = function(){
+	this.isInDebugMode = !this.isInDebugMode;
+	this.area.visible = this.isInDebugMode;
 }
