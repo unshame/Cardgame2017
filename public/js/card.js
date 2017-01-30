@@ -109,14 +109,14 @@ Card.prototype.setValue = function(suit, value){
 //Устанавливает играбильность карты
 Card.prototype.setPlayability = function(playable){	
 	if(playable){
-		//this.sprite.input.useHandCursor = true;
+		this.sprite.input.useHandCursor = true;
 		this.glowStart(0.25, 0.75, 1500, 500, 0xFFFF0A)
 	}
 	else{
-		//this.sprite.input.useHandCursor = false;
+		this.sprite.input.useHandCursor = false;
 		this.glowStop();
 	}
-	//this.isPlayable = playable;
+	this.isPlayable = playable;
 
 }
 
