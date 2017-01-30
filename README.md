@@ -1,4 +1,4 @@
-# Cardgame2017 - тест мультиплеера  
+# Cardgame2017
 
 1. Зарегистрироваться на сайте и скинуть мне название аккаунта     
 1. Установить GitShell https://git-scm.com/downloads  
@@ -25,3 +25,27 @@
 Полезные команды в консоли:  
 * isInDebugMode = true - включает лог сообщений от сервера (см. картинку выше)  
 * controller.toggleDebugMode() - включает дебаг при перетаскивании карт  
+
+Что сделано clientside:  
+* Конструктор карт (Card)  
+* Конструктор полей карт (Spot)  
+* Частично контроллер (Controller)
+* Частично менеджер скинов (SkinManager)  
+
+Что нужно сделать clientside:  
+* AppManager  
+* ConnectionManager
+* LobbyManager  
+* GameManager  
+* SpotManager  
+* UI  
+* Chat  
+
+Что сделано serverside:  
+* Конструктор игры (Game)  
+
+Что нужно сделать srverside:
+* Конструктор лобби (Lobby)  
+* Менеджер лобби (LobbyManager\LobbyBrowser)  
+* Менеджер сервера и соединения с игроками (Server)  
+* Конструктор чата (Chat)  
