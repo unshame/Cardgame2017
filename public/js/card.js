@@ -77,8 +77,8 @@ Card.prototype.setValue = function(suit, value){
 		if(!this.sprite.visible)
 			return;
 		this.setPlayability(false);
+		//this.sprite.frame =  this.skin.cardbackPossibleFrames[Math.floor(Math.random()*this.skin.cardbackPossibleFrames.length)];		
 		this.sprite.frame =  this.skin.cardbackFrame;		
-
 	}
 	else{
 		this.suit = suit;
@@ -154,17 +154,18 @@ Card.prototype.setAngle = function(angle){
  * @relativeToBase Bool - перемещение происходит относительно базы карты
  * @shouldRebase Bool - нужно ли перемещать базу карты или только карту
 */
-Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase){
+Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn){
 
 	relativeToBase = relativeToBase || false;
 	shouldRebase = shouldRebase || false;
+	bringToTopOn = bringToTopOn || 'init';
+
+	if(bringToTopOn == 'init' || game.paused && bringToTopOn != 'never')
+		cardsGroup.bringToTop(this.base);
 
 	//Убираем хвост, т.к. он отображается только при перетаскивании карты игроком
 	if(controller.trail.parent == this.base && shouldRebase)
 		controller.cardResetTrail(true);
-
-	//Поднимаем карту на верх
-	cardsGroup.bringToTop(this.base);
 
 	//Останавливаем твин, если он есть
 	if(this.mover){
@@ -218,9 +219,15 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 			true,
 			delay || 0
 		);
-
+		if(bringToTopOn == 'start'){
+			this.mover.onStart.addOnce(function(){
+				cardsGroup.bringToTop(this.base);
+			}, this);
+		}
 		//Ресет твина по окончанию
 		this.mover.onComplete.addOnce(function(){
+			if(bringToTopOn == 'end')
+				cardsGroup.bringToTop(this.base);
 			this.mover = null;
 		}, this);
 	}
@@ -362,6 +369,7 @@ Card.prototype.mouseOver = function(sprite, pointer){
 }
 
 Card.prototype.mouseOut = function(sprite, pointer){
+	game.canvas.style.cursor = "default";
 	if(!this.spot)
 		return;
 	this.spot.focusOffCard();

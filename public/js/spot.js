@@ -46,7 +46,7 @@ var Spot = function(options){
 	this.verticalAlign = this.options.verticalAlign;
 	this.margin = this.options.margin;
 
-	this.spacing = this.options.spacing;
+	this.forcedSpace = this.options.forcedSpace;
 	this.focusable = this.options.focusable;
 	this.sorting = this.options.sorting;
 
@@ -91,12 +91,12 @@ Spot.prototype.getDefaultOptions = function(){
 		height:0,
 		margin:10,
 		minActiveSpace: 10,	//Минимальная ширина для расположения карт
+		forcedSpace: false,		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать 1
 
 		moveTime: 200,
 		delayTime: 100,
 
 		focusable: true,	//Нужно ли сдвигать карты при наведении
-		spacing: true,		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать 1
 		sorting: true,	//Нужно ли сортировать карты
 		
 		id:null,
@@ -205,6 +205,20 @@ Spot.prototype.comparator = function(a, b){
 		return -1;
 }
 
+Spot.prototype.setNoFocusTimer = function(time){
+
+	if(!time || typeof time != 'number')
+		return;
+
+	if(this.noFocusTimer)
+		game.time.events.remove(this.noFocusTimer);
+
+	this.noFocusTimer = game.time.events.add(time, function(){
+		this.placeCards();
+		this.noFocusTimer = null;
+	}, this);
+}
+
 //Добавляет карты в очередь на добавление, возвращает планируемое время добавления
 Spot.prototype.queueCards = function(newCards, delay){
 	if(!newCards.length)
@@ -213,10 +227,12 @@ Spot.prototype.queueCards = function(newCards, delay){
 	if(typeof delay != 'number')
 		delay = 0;
 
+	for(var ci in this.cards){
+		this.delayArray[this.cards[ci].id] = delay;
+	}
+
 	for(var ci in newCards){
-		var card = newCards[ci];
-		card.spot = this;
-		this.cards.push(card);
+		var card = newCards[ci];		
 		this.queuedCards.push(card);
 		this.delayArray[card.id] = delay;
 		delay += this.delayTime;
@@ -226,23 +242,23 @@ Spot.prototype.queueCards = function(newCards, delay){
 }
 
 //Размещает карты из очереди
-Spot.prototype.placeQueuedCards = function(){
+Spot.prototype.placeQueuedCards = function(delay){
 	if(!this.queuedCards.length)
 		return;
 	//console.log(this.delayArray)
+	
+	for(var ci in this.queuedCards){
+		var card = this.queuedCards[ci];
+		card.spot = this;
+		this.cards.push(card)
+	}
 
+	var bringUpOn = (this.type == 'DECK') ? 'init' : 'start';
 	this.sortCards();
-	this.placeCards(this.queuedCards);
-
+	this.placeCards(this.queuedCards, bringUpOn);
+	this.setNoFocusTimer(this.expectedDelay);
 	this.queuedCards = [];
 	this.delayArray = {};
-
-	if(this.noFocusTimer)
-		game.time.events.remove(this.noFocusTimer);
-	this.noFocusTimer = game.time.events.add(this.expectedDelay, function(){
-		this.placeCards();
-		this.noFocusTimer = null;
-	}, this);
 	this.expectedDelay = 0;
 }
 
@@ -258,7 +274,7 @@ Spot.prototype.addCards = function(newCards){
 		this.cards.push(card);
 	}
 	this.sortCards();
-	return this.placeCards(newCards);
+	return this.placeCards(newCards, 'start');
 }
 
 //Для добавления одной карты, возвращает время добавления
@@ -269,16 +285,12 @@ Spot.prototype.addCard = function(card){
 /*
  * Размещает карты в поле
  * @newCards - только что добавленные карты, они будут перемещены в поле по очереди
- * @delayMisplaced - нужно ли перемещать сдвинутые карты по очереди (не будет использоваться)
  * Возвращает задержку следующей карты
  */
-Spot.prototype.placeCards = function(newCards, delayMisplaced){
+Spot.prototype.placeCards = function(newCards, bringUpOn){
 
 	if(newCards === undefined)
 		newCards = null;
-
-	if(delayMisplaced === undefined)
-		delayMisplaced = false;
 
 	var areaWidth = (this.alignment == 'vertical') ?  this.area.height : this.area.width;
 	var areaHeight = (this.alignment == 'vertical') ? this.area.width : this.area.height;
@@ -290,7 +302,9 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 
 	//Необходимая ширина для размещения карт
 	var requiredActiveWidth = (this.cards.length-1);
-	if(this.spacing)
+	if(this.forcedSpace)
+		requiredActiveWidth *= this.forcedSpace
+	else
 		requiredActiveWidth *= cardWidth;
 
 	//Отступы
@@ -353,8 +367,8 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 	//Отступ между картами
 	if(this.cards.length > 1)
 		cardSpacing = requiredActiveWidth/(this.cards.length-1);
-	if(!this.spacing)
-		cardSpacing = Math.min(cardSpacing, 1);
+	if(this.forcedSpace)
+		cardSpacing = Math.min(cardSpacing, this.forcedSpace);
 
 	//Проверка выделенной карты
 	if(!controller.card && controller.card != this.focusedCard && !this.cardIsInside(this.focusedCard, cardSpacing)){
@@ -371,13 +385,10 @@ Spot.prototype.placeCards = function(newCards, delayMisplaced){
 	
 	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
 	var iterator = this.direction == 'backward' ? -1 : 1;
-
 	for(; i >= 0 && i < this.cards.length; i += iterator){
-
 		var card = this.cards[i];	
-		var increaseDelayIndex = (newCards && ~newCards.indexOf(card) || delayMisplaced && (card.base.x != x || card.base.y != y));
-		delayIndex = this.moveCard(card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex, delayIndex, increaseDelayIndex)
-
+		var increaseDelayIndex = (newCards && ~newCards.indexOf(card));
+		delayIndex = this.moveCard(card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex, delayIndex, increaseDelayIndex, bringUpOn)
 	}
 
 	//Поднимаем карту контроллера наверх
@@ -394,7 +405,7 @@ Spot.prototype.placeCard = function(card){
 	var i = this.cards.indexOf(card);
 	if(!~i)
 		return;
-	return this.placeCards([card]);
+	return this.placeCards([card], 'init');
 	/*card.returnToBase(time || 200, 0);
 	for(i++; i < this.cards.length; i++){
 		cardsGroup.bringToTop(this.cards[i].base);
@@ -415,13 +426,12 @@ Spot.prototype.placeCard = function(card){
  * @delayIndex - индекс карты в очереди
  * @increaseDelayIndex - нужно ли увеличивать индекс очереди в конце выполнения функции
  */
-Spot.prototype.moveCard = function(card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex, delayIndex, increaseDelayIndex){
+Spot.prototype.moveCard = function(card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex, delayIndex, increaseDelayIndex, bringUpOn){
 
-	var addedDelay = this.delayArray[card.id];
-	if(typeof addedDelay != 'number')
-		addedDelay = 0;
-
-	var delay = addedDelay || this.delayTime*delayIndex;
+	var delay = this.delayArray[card.id];
+	if(delay === null || delay === undefined){
+		delay = this.delayTime*delayIndex;
+	}
 
 	//Сдвиг текущей карты
 	//card.sprite.scale.setTo(1,1);
@@ -466,7 +476,7 @@ Spot.prototype.moveCard = function(card, index, topMargin, leftMargin, cardSpaci
 
 	//Запускаем перемещение карты
 	if(controller.card != card){
-		card.moveTo(x, y, this.moveTime, delay, false, true);
+		card.moveTo(x, y, this.moveTime, delay, false, true, bringUpOn);
 	}
 	else{
 		controller.cardShiftTrial(card.base.x - x, card.base.y - y);	
@@ -492,8 +502,9 @@ Spot.prototype.removeCards = function(cardsToRemove){
 		}
 	}
 	if(this.cards.length){
+		var bringUpOn = (this.type == 'DECK') ? 'never' : 'end';
 		this.sortCards();
-		this.placeCards();
+		this.placeCards(null, bringUpOn);
 	}
 }
 

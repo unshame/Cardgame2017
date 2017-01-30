@@ -124,10 +124,18 @@ var EurecaClientSetup = function() {
 }
 
 function placeCards(newCards, pid){
+
+
 	var spotCards = [];
 	var fieldCards = [];
 	var botCards = [];
 	var deckCards = [];
+
+	spot.remove = [];
+	field.remove = [];
+	botSpot.remove = [];
+	deck.remove = [];
+
 	var delay = 0;
 	for(var ci in newCards){
 		var c = newCards[ci];
@@ -153,26 +161,32 @@ function placeCards(newCards, pid){
 			card = cards[c.cid];
 		}
 		if((card.spotId == 'DECK' || card.spotId == 'BOTTOM') && card.spot != deck){							
-			card.spot && card.spot.removeCard(card);
+			card.spot && card.spot.remove.push(card);
 			card.setPlayability(false);
 			delay = deck.queueCards([card], delay)
 		}
 		else if(card.spotId.match('FIELD') && card.spot != field){
-			card.spot && card.spot.removeCard(card);
+			card.spot && card.spot.remove.push(card);
 			card.setPlayability(false);
 			delay = field.queueCards([card], delay)
 		}
 		else if(card.spotId.match('bot') && card.spot != botSpot){
-			card.spot && card.spot.removeCard(card);
+			card.spot && card.spot.remove.push(card);
 			card.setPlayability(false);
 			delay = botSpot.queueCards([card], delay)
 		}
 		else if(card.spot != spot){
-			card.spot && card.spot.removeCard(card);
+			card.spot && card.spot.remove.push(card);
 			delay = spot.queueCards([card], delay)
 		}
 	}
-	deck.placeQueuedCards();
+
+	deck.removeCards(deck.remove);
+	field.removeCards(field.remove);
+	botSpot.removeCards(botSpot.remove);
+	spot.removeCards(spot.remove);
+
+	deck.placeQueuedCards(delay);
 	field.placeQueuedCards();
 	botSpot.placeQueuedCards();
 	spot.placeQueuedCards();
