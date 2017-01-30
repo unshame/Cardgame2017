@@ -83,7 +83,7 @@ function create ()
 			focusable:false,
 			sorting:false,
 			type: 'FIELD',
-			id: 'field'
+			id: 'FIELD'
 		});
 	}
 
@@ -99,7 +99,7 @@ function create ()
 			texture: 'spot',
 			sorting: false,
 			type: 'DECK',
-			id: 'deck',
+			id: 'DECK',
 			alignment: 'vertical',
 			direction: 'backward',
 			delayTime: 50
@@ -115,7 +115,7 @@ function create ()
 			texture: 'spot',
 			sorting: false,
 			type: 'DISCARD_PILE',
-			id: 'discard'
+			id: 'DISCARD_PILE'
 		});
 	}
 

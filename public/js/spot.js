@@ -90,22 +90,22 @@ Spot.prototype.getDefaultOptions = function(){
 		width:0,
 		height:0,
 		margin:10,
-		minActiveSpace: 10,	//Минимальная ширина для расположения карт
-		forcedSpace: false,		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать 1
+		minActiveSpace: 10,	//Минимальная ширина\высота для расположения карт
 
 		moveTime: 200,
 		delayTime: 100,
 
+		forcedSpace: false,	//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать заданное значение
 		focusable: true,	//Нужно ли сдвигать карты при наведении
-		sorting: true,	//Нужно ли сортировать карты
+		sorting: true,		//Нужно ли сортировать карты
 		
 		id:null,
 		type:'GENERIC',
 
-		align:'center',
+		align:'center',			 //Выравнивание по горизонтали
 		verticalAlign:'middle',
-		alignment: 'horizontal',
-		direction: 'forward',
+		alignment: 'horizontal', //Поворот поля, меняет местами align и verticalAlign (right станет bottom и т.д.), не влияет на width и height
+		direction: 'forward',	 //Направление поля
 
 		texture: null,
 		alpha: 0.35,
@@ -277,13 +277,14 @@ Spot.prototype.addCards = function(newCards){
 }
 
 //Для добавления одной карты, возвращает время добавления
-Spot.prototype.addCard = function(card){	
+Spot.prototype.addCard = function(card){
 	return this.addCards([card]);
 }
 
 /*
  * Размещает карты в поле
  * @newCards - только что добавленные карты, они будут перемещены в поле по очереди
+ * @bringUpOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
  * Возвращает задержку следующей карты
  */
 Spot.prototype.placeCards = function(newCards, bringUpOn){
@@ -291,6 +292,7 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	if(newCards === undefined)
 		newCards = null;
 
+	//Размеры и угол поля
 	var areaWidth = (this.alignment == 'vertical') ?  this.area.height : this.area.width;
 	var areaHeight = (this.alignment == 'vertical') ? this.area.width : this.area.height;
 	var angle = (this.alignment == 'vertical') ? 90 : 0;
@@ -362,7 +364,6 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 			break;
 	}
 
-
 	//Отступ между картами
 	if(this.cards.length > 1)
 		cardSpacing = requiredActiveWidth/(this.cards.length-1);
@@ -382,23 +383,30 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 		shift = cardWidth - cardSpacing;
 	}
 
-
+	//Создаем массив задержек в зависимости от направления поля
 	var delayArray = [];
 	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
 	var iterator = this.direction == 'backward' ? -1 : 1;
+
 	for(; i >= 0 && i < this.cards.length; i += iterator){
+
 		var localDelay = this.delays[this.cards[i].id]; 
+
 		delayArray.push(localDelay)
 	}
 	
+	//Передвигаем карты
 	i = this.direction == 'backward' ? this.cards.length - 1 : 0;
 	for(; i >= 0 && i < this.cards.length; i += iterator){
+
 		var card = this.cards[i];	
 		var increaseDelayIndex = (newCards && ~newCards.indexOf(card));
+
 		delayIndex = this.moveCard(
 			card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
 			delayArray, delayIndex, increaseDelayIndex, bringUpOn
 		)
+
 	}
 
 	//Поднимаем карту контроллера наверх
@@ -416,10 +424,6 @@ Spot.prototype.placeCard = function(card){
 	if(!~i)
 		return;
 	return this.placeCards([card], 'init');
-	/*card.returnToBase(time || 200, 0);
-	for(i++; i < this.cards.length; i++){
-		cardsGroup.bringToTop(this.cards[i].base);
-	}*/
 }
 
 /*
@@ -432,9 +436,11 @@ Spot.prototype.placeCard = function(card){
  * @cardSpacing - отступ от предыдущей карты
  * @angle - угол поворота
  * @shift - сдвиг от выделенной карты
+ * @delayArray - массив задержек карт
  * @focusedIndex - индекс выделенной карты в поле
  * @delayIndex - индекс карты в очереди
  * @increaseDelayIndex - нужно ли увеличивать индекс очереди в конце выполнения функции
+ * @bringUpOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
  */
 Spot.prototype.moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
@@ -576,5 +582,11 @@ Spot.prototype.updateDebug = function(){
 		return;
 	var x = this.base.x;
 	var y = this.base.y - 5;
-	game.debug.text(this.type + ' ' + this.id, x, y );
+
+	var str;
+	if(this.type == this.id)
+		str = this.type
+	else
+		str = this.type + ' ' + this.id;
+	game.debug.text(str, x, y );
 }
