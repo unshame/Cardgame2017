@@ -55,6 +55,7 @@ var Spot = function(options){
 		this.verticalAlign = this.getDefaultOptions().verticalAlign;
 
 	this.margin = this.options.margin;
+	this.padding = this.options.padding;
 
 	this.forcedSpace = this.options.forcedSpace;
 	this.focusable = this.options.focusable;
@@ -100,6 +101,7 @@ Spot.prototype.getDefaultOptions = function(){
 		width:0,
 		height:0,
 		margin:10,
+		padding:10,
 		minActiveSpace: 10,	//Минимальная ширина\высота для расположения карт
 
 		moveTime: 200,
@@ -168,12 +170,12 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 		}
 
 		if(height < sm.skin.width){
-			height = sm.skin.width + this.minActiveSpace;
+			height = sm.skin.width + this.minActiveSpace + this.padding*2;
 		}
 	}
 	else{
 		if(width < sm.skin.width){
-			width = sm.skin.width + this.minActiveSpace;
+			width = sm.skin.width + this.minActiveSpace + this.padding*2;
 		}
 
 		if(height < sm.skin.height){
@@ -342,8 +344,11 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	var angle = (this.alignment == 'vertical') ? 90 : 0;
 
 	//Размеры карт
-	var cardWidth = sm.skin.width;
+	var cardWidth = sm.skin.width + this.padding*2;
 	var cardHeight = sm.skin.height;
+
+	//Активная ширина поля
+	var areaActiveWidth = areaWidth - cardWidth - this.margin*2;
 
 	//Необходимая ширина для размещения карт
 	var requiredActiveWidth = (this.cards.length-1);
@@ -352,12 +357,16 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	else
 		requiredActiveWidth *= cardWidth;
 
+	//Ширина карт не может быть больше активной ширины поля
+	if(requiredActiveWidth > areaActiveWidth){
+		areaActiveWidth += this.padding*2;
+		cardWidth -= this.padding*2;
+		requiredActiveWidth = areaActiveWidth;
+	}
+
 	//Отступы
 	var leftMargin = cardWidth/2 + this.margin;
 	var topMargin = 0;
-
-	//Активная ширина поля
-	var areaActiveWidth = areaWidth - cardWidth - this.margin*2;
 
 	//Индекс карты под курсором
 	var focusedIndex = null;
@@ -371,14 +380,9 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	//Задержка передвижения
 	var delayIndex = 0;
 
-	//Ширина карт не может быть больше активной ширины поля
-	if(requiredActiveWidth > areaActiveWidth){
-		requiredActiveWidth = areaActiveWidth;
-	}
-
 	//Если ширина карт меньше ширины поля, устанавливаем отступ
 	//По умолчанию отступ слева уже указан
-	else{
+	if(requiredActiveWidth != areaActiveWidth){
 		switch(this.align){
 			case 'center':
 				leftMargin = (areaWidth - requiredActiveWidth)/2;
@@ -427,7 +431,7 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 
 	//Если курсор находится над одной из карт и карты не вмещаются в поле,
 	//указываем сдвиг карты от курсора
-	if(this.focusedCard && requiredActiveWidth == areaActiveWidth){		
+	if(this.focusedCard && cardWidth*(this.cards.length - 1) > areaActiveWidth){		
 		shift = cardWidth - cardSpacing;
 	}
 

@@ -93,6 +93,7 @@ function create ()
 			y:screenHeight - 250,
 			minActiveSpace: 26,
 			align: 'right',
+			padding: 0,
 			margin: 22,
 			focusable:false,
 			forcedSpace: 0.5,
@@ -110,6 +111,7 @@ function create ()
 		discard = new Spot({
 			x:screenWidth - 250,
 			y:screenHeight - 250,
+			padding:0,
 			focusable:false,
 			forcedSpace: 0.5,
 			texture: 'spot',
