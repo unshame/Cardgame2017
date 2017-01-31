@@ -1,8 +1,9 @@
 # Cardgame2017
 
 1. Зарегистрироваться на сайте и скинуть мне название аккаунта     
-1. Установить GitShell https://git-scm.com/downloads  
-2. Клонировать репозиторий в GitShell: git clone https://github.com/unshame/Cardgame2017.git  
+1. Установить GitHub Desktop https://desktop.github.com/  
+2. Авторизоваться в нем
+2. Клонировать репозиторий в GitShell (идет с GitHub Desktop): git clone https://github.com/unshame/Cardgame2017.git  
 3. Установить node.js https://nodejs.org/en/  
 4. Установить необходимые библиотеки через Node.js command prompt в папку с репозиторием:  
   * cd директорияУстановки  
