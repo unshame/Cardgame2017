@@ -343,7 +343,7 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	var areaHeight = (this.alignment == 'vertical') ? this.area.width : this.area.height;
 	var angle = (this.alignment == 'vertical') ? 90 : 0;
 
-	//Размеры карт
+	//Размеры карт, ширина включает отступ между картами
 	var cardWidth = sm.skin.width + this.padding*2;
 	var cardHeight = sm.skin.height;
 
@@ -359,8 +359,11 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 
 	//Ширина карт не может быть больше активной ширины поля
 	if(requiredActiveWidth > areaActiveWidth){
+
+		//Когда карты с отступом не вмещаются в поле, мы убираем отступ
 		areaActiveWidth += this.padding*2;
 		cardWidth -= this.padding*2;
+		
 		requiredActiveWidth = areaActiveWidth;
 	}
 
