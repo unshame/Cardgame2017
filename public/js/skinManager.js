@@ -10,6 +10,9 @@ var SkinManager = function(skinToSetWhenLoaded){
 SkinManager.prototype.addSkin = function(options){
 	var skin = {};
 
+	if(!options)
+		options = {};
+
 	skin.frameWidth = options.width || 140;
 	skin.frameHeight = options.height || 190;
 
