@@ -1,8 +1,6 @@
 //Assets
 function preload () {
-	game.load.image('table', 'assets/table.png');
-	game.load.image('table4x', 'assets/table4x.png');
-	game.load.image('table8x', 'assets/table8x.png');
+	game.load.image('table', 'assets/pool_table.png');
 	game.load.image('particle', 'assets/particle.png');
 	game.load.image('spot', 'assets/spot.png');
 	game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 3);

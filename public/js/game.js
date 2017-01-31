@@ -45,7 +45,7 @@ function create ()
 	}
 	
 	if(!land)
-		land = game.add.tileSprite(0, 0, screenWidth, screenHeight, 'table8x');
+		land = game.add.tileSprite(0, 0, screenWidth, screenHeight, 'table');
 
 	if(!cardsGroup)
 		cardsGroup = game.add.group();

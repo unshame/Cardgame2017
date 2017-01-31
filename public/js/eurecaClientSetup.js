@@ -175,7 +175,7 @@ function placeCards(newCards, pid){
 			card.setPlayability(false);
 			delay = botSpot.queueCards([card], delay)
 		}
-		else if(card.spot != spot){
+		else if(card.spotId.match('player') && card.spot != spot){
 			card.spot && card.spot.remove.push(card);
 			delay = spot.queueCards([card], delay)
 		}
