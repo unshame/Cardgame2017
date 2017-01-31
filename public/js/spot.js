@@ -233,6 +233,7 @@ Spot.prototype.queueCards = function(newCards, delay){
 	if(!newCards.length)
 		return;
 
+	//Если задержка не указана, используем задержку последней карты в очереди
 	if(typeof delay != 'number'){
 		var lastQueuedCard = this.queuedCards[this.queuedCards.length - 1];
 		if(lastQueuedCard)
@@ -241,16 +242,21 @@ Spot.prototype.queueCards = function(newCards, delay){
 			delay = 0;
 	}
 
+	//Устанавливаем задержку для всех карт, равную задержке первой карты в очереди
 	for(var ci in this.cards){
-		this.delays[this.cards[ci].id] = delay;
+		if(this.delays[this.cards[ci].id] === undefined)
+			this.delays[this.cards[ci].id] = delay;
 	}
 
+	//Устанавливаем задержку для кард в очереди, увеличивая каждую следующую
 	for(var ci in newCards){
 		var card = newCards[ci];		
 		this.queuedCards.push(card);
 		this.delays[card.id] = delay;
 		delay += this.delayTime;
 	}
+
+	//Запоминаем задержку для noFocusTimer
 	this.expectedDelay = delay;
 	return delay
 }

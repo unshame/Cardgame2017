@@ -94,7 +94,7 @@ var EurecaClientSetup = function() {
 				var card = cards[cid]
 				
 				if(card){
-					card.setValue(null, 0);
+					card.presetValue(null, 0);
 					card.setSpot('DISCARD_PILE');
 					card.spot && card.spot.removeCard(card);
 					card.setPlayability(false);
@@ -143,10 +143,10 @@ function placeCards(newCards, pid){
 		if(card){
 			if(pid){
 				if(!pid.match('player_'))
-					cards[c.cid].setValue(null,0);
+					cards[c.cid].presetValue(null,0);
 			}
 			else{
-				card.setValue(c.suit, c.value);		
+				card.presetValue(c.suit, c.value);		
 			}
 			card.setSpot(c.spot || c.pid || pid);
 		}

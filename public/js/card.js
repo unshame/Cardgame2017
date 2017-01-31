@@ -38,9 +38,6 @@ Card = function (options) {
 	this.sprite.anchor.set(0.5, 0.5);
 	this.sprite.scale.setTo(this.skin.scale.x, this.skin.scale.y);	
 
-	//Классический скин карт
-	//this.sprite = game.add.sprite(x, y, 'cardsClassic');
-
 	//Glow
 	this.glow = game.add.sprite(0, 0, this.skin.glowName);
 	this.glow.anchor.set(0.5, 0.5);
@@ -57,9 +54,12 @@ Card = function (options) {
 	this.mover = null;
 	this.rotator = null;
 	this.scaler = null;
+	this.flipper = null;
 
 	//Value
-	this.setValue(this.options.suit, this.options.value);
+	this.setValue(this.options.suit, this.options.value, false);
+	this.valueChanged = false;
+	this.flipTime = this.options.flipTime;
 };
 
 //Возвращает опции по умолчанию
@@ -68,6 +68,7 @@ Card.prototype.getDefaultOptions = function(){
 		id:null,
 		value:0,
 		suit:null,
+		flipTime: 150,
 		skin:sm.skin,
 		spotId: 'DECK',
 		debug: false
@@ -78,32 +79,82 @@ Card.prototype.getDefaultOptions = function(){
 
 //ЗНАЧЕНИЯ
 
-//Устанавливает значение карты 
-Card.prototype.setValue = function(suit, value){
-	if(suit === null || suit === undefined){
+//Задает значения для установки в будущем
+Card.prototype.presetValue = function(suit, value){
+	if(suit === undefined)
+		suit = null;
+
+	if(
+		(suit === null && this.suit === null) ||
+		(suit == this.suit && value == this.value)
+	)
+		return;
+
+	if(suit === null){
 		this.suit = null;
 		this.value = 0;
-		if(!this.sprite.visible)
-			return;
-		this.setPlayability(false);
-		/*this.sprite.frame =  this.skin.cardbackPossibleFrames[
-			Math.floor(Math.random()*this.skin.cardbackPossibleFrames.length)
-		];*/
-		this.sprite.frame =  this.skin.cardbackFrame;		
 	}
 	else{
 		this.suit = suit;
 		this.value = value;
-		if(!this.sprite.visible)
-			return;
-
-		this.sprite.frame =  this.skin.firstValueFrame + suit*13 + value - 2;
-
-		//cardsGroup.bringToTop(this.base);
-		if(controller.card){
-			cardsGroup.bringToTop(controller.card.base);
-		}
 	}
+	this.valueChanged = true;
+}
+
+//Устанавливает заданные ранее значения и переворачивает карту
+Card.prototype.updateValue = function(){
+	if(!this.valueChanged)
+		return;
+
+	this.valueChanged = false;
+
+	if(this.flipper){
+		this.flipper.stop();
+		this.flipper = null;
+	}
+	this.flipper = game.add.tween(this.sprite.scale);
+	this.flipper.to({x: 0}, this.flipTime/2);
+	this.flipper.to({x: 1}, this.flipTime/2);
+
+	if(this.suit === null){
+		this.flipper.onChildComplete.addOnce(function(){
+			this.sprite.frame = this.skin.cardbackFrame;
+		}, this);
+		this.setPlayability(false);
+	}
+	else{
+		this.flipper.onChildComplete.addOnce(function(){
+			this.sprite.frame =  this.skin.firstValueFrame + this.suit*13 + this.value - 2;
+		}, this)
+	}
+	this.flipper.start();
+
+}
+
+//Устанавливает значение карты сразу, с анимацией или без
+Card.prototype.setValue = function(suit, value, animate){
+
+	if(suit === undefined)
+		suit = null;
+
+	if(animate === undefined)
+		animate = true;
+
+	if(animate){
+		this.presetValue(suit, value);
+		this.updateValue();
+	}
+	else if(suit === null){
+		this.suit = null;
+		this.value = 0;
+		this.sprite.frame = this.skin.cardbackFrame;
+	}
+	else{
+		this.suit = suit;
+		this.value = value;
+		this.sprite.frame =  this.skin.firstValueFrame + this.suit*13 + this.value - 2;
+	}		
+
 }
 
 //Устанавливает играбильность карты
@@ -241,11 +292,11 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 			true,
 			delay || 0
 		);
-		if(bringToTopOn == 'start'){
-			this.mover.onStart.addOnce(function(){
+		this.mover.onStart.addOnce(function(){
+			this.updateValue();
+			if(bringToTopOn == 'start')
 				cardsGroup.bringToTop(this.base);
-			}, this);
-		}
+		}, this);
 		//Ресет твина по окончанию
 		this.mover.onComplete.addOnce(function(){
 			if(bringToTopOn == 'end')
@@ -426,7 +477,7 @@ Card.prototype.kill = function() {
 //Восстанавливает карту
 Card.prototype.reset = function(){
 	this.sprite.reset();  
-	this.setValue(this.suit, this.value);
+	this.setValue(this.suit, this.value, false);
 }
 
 //Обновление карты
