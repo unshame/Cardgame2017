@@ -7,12 +7,12 @@ function preload () {
 	game.load.image('spot', 'assets/spot.png');
 	game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 3);
 
-	sm = new SkinManager('cardsClassic');
-	sm.addSkin({name: 'modernCards'});
+	sm = new SkinManager('modern');
+	sm.addSkin({name: 'modern'});
 	var options = {
 		width: 390,
 		height: 750,
-		name: 'cardsFamiliar',
+		name: 'familiar',
 		sheetPath: 'assets/cards/familiar.png',
 		numOfFrames: 52,
 		cardbackPossibleFrames: [51],
@@ -25,7 +25,7 @@ function preload () {
 	options = {
 		width: 150,
 		height: 218,
-		name: 'cardsClassic',
+		name: 'classic',
 		sheetPath: 'assets/cards/classic.png',
 		numOfFrames: 53,
 		cardbackPossibleFrames: [52],

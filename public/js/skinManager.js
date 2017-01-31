@@ -21,7 +21,8 @@ SkinManager.prototype.addSkin = function(options){
 	skin.width = skin.frameWidth*skin.scale.x;
 	skin.height = skin.frameHeight*skin.scale.y;
 
-	skin.name = skin.sheetName = options.name || 'defaultCards';
+	skin.name = options.name || 'default';
+	skin.sheetName = skin.name + 'Cards';
 	skin.sheetPath = options.sheetPath || 'assets/cards/modern.png';
 
 	skin.numOfFrames = options.numOfFrames || 67;
