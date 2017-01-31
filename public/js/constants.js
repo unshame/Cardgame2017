@@ -1,6 +1,9 @@
 //Assets
 function preload () {
+	game.load.image('wood', 'assets/retina_wood.png');
 	game.load.image('table', 'assets/pool_table.png');
+	game.load.image('black', 'assets/tactile_noise.png');
+	game.load.image('assault', 'assets/assault.png');
 	game.load.image('particle', 'assets/particle.png');
 	game.load.image('spot', 'assets/spot.png');
 	game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 3);
