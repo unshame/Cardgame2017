@@ -329,8 +329,8 @@ Spot.prototype.addCard = function(card){
 
 /*
  * Размещает карты в поле
- * @newCards - только что добавленные карты, они будут перемещены в поле по очереди
- * @bringUpOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
+ * @newCards Array (Card) - только что добавленные карты, они будут перемещены в поле по очереди
+ * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
  * Возвращает задержку следующей карты
  */
 Spot.prototype.placeCards = function(newCards, bringUpOn){
@@ -363,7 +363,7 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 		//Когда карты с отступом не вмещаются в поле, мы убираем отступ
 		areaActiveWidth += this.padding*2;
 		cardWidth -= this.padding*2;
-		
+
 		requiredActiveWidth = areaActiveWidth;
 	}
 
@@ -484,18 +484,18 @@ Spot.prototype.placeCard = function(card){
 /*
  * Перемещает заданную карту в соответствии с переданными данными
  * Внутренний метод, проверка данных не проводится
- * @card - карта
- * @index - индекс карты в поле
- * @topMargin - отступ сверху
- * @leftMargin - отступ слева
- * @cardSpacing - отступ от предыдущей карты
- * @angle - угол поворота
- * @shift - сдвиг от выделенной карты
- * @delayArray - массив задержек карт
- * @focusedIndex - индекс выделенной карты в поле
- * @delayIndex - индекс карты в очереди
- * @increaseDelayIndex - нужно ли увеличивать индекс очереди в конце выполнения функции
- * @bringUpOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
+ * @card Object (Card) - карта
+ * @index Number (int) - индекс карты в поле
+ * @topMargin Number (px) - отступ сверху
+ * @leftMargin Number (px) - отступ слева
+ * @cardSpacing Number (px) - отступ от предыдущей карты
+ * @angle Number (градусы) - угол поворота
+ * @shift Number (px) - сдвиг от выделенной карты
+ * @delayArray Array (мс) - массив задержек карт
+ * @focusedIndex Number (int) - индекс выделенной карты в поле
+ * @delayIndex Number (int) - индекс карты в очереди
+ * @increaseDelayIndex Bool - нужно ли увеличивать индекс очереди в конце выполнения функции
+ * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
  */
 Spot.prototype.moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
@@ -523,7 +523,7 @@ Spot.prototype.moveCard = function(
 
 	//Устанавливаем сдвиг для козыря в колоде
 	if(card.spotId == 'BOTTOM'){
-		leftMargin += 30;
+		leftMargin += sm.skin.trumpOffset;
 	}
 
 	//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению

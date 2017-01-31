@@ -30,6 +30,8 @@ SkinManager.prototype.addSkin = function(options){
 		options.cardbackPossibleFrames || [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66];
 	skin.cardbackFrame = options.cardbackFrame || 55;
 
+	skin.trumpOffset = options.trumpOffset || 35;
+
 	skin.glowPath = options.glowPath || 'assets/glow.png';
 	skin.glowName = options.name + 'Glow';
 	skin.glowRealWidth = options.glowWidth || 170;

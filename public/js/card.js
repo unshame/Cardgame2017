@@ -107,12 +107,12 @@ Card.prototype.updateValue = function(){
 		return;
 
 	this.valueChanged = false;
-	
+
 	if(this.flipper){
 		this.flipper.stop();
 		this.flipper = null;
 	}
-	
+
 	if(game.paused){
 		this.setValue(this.suit, this.value, false);
 		return;
@@ -120,7 +120,7 @@ Card.prototype.updateValue = function(){
 
 	this.flipper = game.add.tween(this.sprite.scale);
 	this.flipper.to({x: 0}, this.flipTime/2);
-	this.flipper.to({x: 1}, this.flipTime/2);
+	this.flipper.to({x: this.skin.scale.x}, this.flipTime/2);
 
 	if(this.suit === null){
 		this.flipper.onChildComplete.addOnce(function(){
@@ -228,6 +228,7 @@ Card.prototype.setAngle = function(angle){
  * @delay Number (мс) - задержка перед перемещением
  * @relativeToBase Bool - перемещение происходит относительно базы карты
  * @shouldRebase Bool - нужно ли перемещать базу карты или только карту
+ * Если база не изменилась, то эта переменная всегда будет false
  * @bringUpOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
 */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn){
@@ -245,16 +246,13 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	if(bringToTopOn == 'init' || game.paused && bringToTopOn != 'never')
 		cardsGroup.bringToTop(this.base);
 
-	//Убираем хвост, т.к. он отображается только при перетаскивании карты игроком
-	if(controller.trail.parent == this.base && shouldRebase)
-		controller.cardResetTrail(true);
-
 	//Останавливаем твин, если он есть
 	if(this.mover){
 		this.mover.stop();
 		this.mover = null;
 	}
 
+	//Куда двигать карту
 	var moveX, moveY;
 
 	//Новая позиция базы
@@ -268,9 +266,18 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 			this
 		);
 
+	//Нет смысла менять базу, если координаты не изменились
+	if(shouldRebase && newBaseX == this.base.x && newBaseY == this.base.y)
+		shouldRebase = false;
+
+	//Убираем хвост, т.к. он отображается только при перетаскивании карты игроком
+	//Хвост остается, если карта возвращается на базу
+	if(controller.trail.parent == this.base && shouldRebase)
+		controller.cardResetTrail(true);
+
 	//Меняем позицию базы карты перед началом анимации
 	//и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась
-	if(shouldRebase && (newBaseX != this.base.x || newBaseY != this.base.y)){
+	if(shouldRebase){
 
 		//Мы будем двигать карту к новой позиции базы
 		moveX = moveY = 0;
