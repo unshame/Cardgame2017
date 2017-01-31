@@ -34,7 +34,7 @@ SkinManager.prototype.addSkin = function(options){
 		options.cardbackPossibleFrames || [53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66];
 	skin.cardbackFrame = options.cardbackFrame || 55;
 
-	skin.trumpOffset = options.trumpOffset || 35;
+	skin.trumpOffset = options.trumpOffset || 33;
 
 	skin.glowPath = options.glowPath || 'assets/glow.png';
 	skin.glowName = options.name + 'Glow';
@@ -67,9 +67,9 @@ SkinManager.prototype.applySkin = function(skinName){
 	if(!this.skins[skinName])
 		return;
 	this.skin = this.skins[skinName];
-	for(var ci in cards){
-		if(cards.hasOwnProperty(ci))
-			cards[ci].skin = this.skin;
+	for(var ci in gameManager.cards){
+		if(gameManager.cards.hasOwnProperty(ci))
+			gameManager.cards[ci].skin = this.skin;
 	}
 }
 
@@ -89,8 +89,8 @@ SkinManager.prototype.setCardback = function(i){
 		return;
 	}
 	this.skin.cardbackFrame = this.skin.cardbackPossibleFrames[i];
-	for(var ci in cards){
-		if(cards.hasOwnProperty(ci))
-			cards[ci].applyCardback();
+	for(var ci in gameManager.cards){
+		if(gameManager.cards.hasOwnProperty(ci))
+			gameManager.cards[ci].applyCardback();
 	}
 }

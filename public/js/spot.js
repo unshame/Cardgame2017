@@ -91,6 +91,8 @@ var Spot = function(options){
 	this.resize(this.options.width, this.options.height)
 	
 	game.world.setChildIndex(this.base, 1);	
+
+	this.debugActiveSpace = new Phaser.Rectangle();
 }
 
 //Возвращает опции по умолчанию
@@ -165,21 +167,21 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 	if(shouldPlace === undefined)
 		shouldPlace = false;
 	if(this.alignment == 'vertical'){
-		if(width < sm.skin.height){
-			width = sm.skin.height;
+		if(width < app.skinManager.skin.height){
+			width = app.skinManager.skin.height;
 		}
 
-		if(height < sm.skin.width){
-			height = sm.skin.width + this.minActiveSpace + this.padding*2;
+		if(height < app.skinManager.skin.width){
+			height = app.skinManager.skin.width + this.minActiveSpace + this.padding*2;
 		}
 	}
 	else{
-		if(width < sm.skin.width){
-			width = sm.skin.width + this.minActiveSpace + this.padding*2;
+		if(width < app.skinManager.skin.width){
+			width = app.skinManager.skin.width + this.minActiveSpace + this.padding*2;
 		}
 
-		if(height < sm.skin.height){
-			height = sm.skin.height;
+		if(height < app.skinManager.skin.height){
+			height = app.skinManager.skin.height;
 		}
 	}
 
@@ -252,7 +254,13 @@ Spot.prototype.queueCards = function(newCards, delay){
 
 	//Устанавливаем задержку для кард в очереди, увеличивая каждую следующую
 	for(var ci in newCards){
-		var card = newCards[ci];		
+		var card = newCards[ci];
+
+		//Если карта переходит из поля, одну из карт которых перетаскивает игрок,
+		//возвращаем перетаскиваемую карту
+		if(controller.card && controller.card.spot && controller.card.spot == card.spot)
+			controller.cardReturn();
+
 		this.queuedCards.push(card);
 		this.delays[card.id] = delay;
 		delay += this.delayTime;
@@ -319,13 +327,13 @@ Spot.prototype.addCards = function(newCards){
 	}
 }
 
-
-//РАЗМЕЩЕНИЕ КАРТ
-
 //Для добавления одной карты, возвращает время добавления
 Spot.prototype.addCard = function(card){
 	return this.addCards([card]);
 }
+
+
+//РАЗМЕЩЕНИЕ КАРТ
 
 /*
  * Размещает карты в поле
@@ -344,14 +352,14 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	var angle = (this.alignment == 'vertical') ? 90 : 0;
 
 	//Размеры карт, ширина включает отступ между картами
-	var cardWidth = sm.skin.width + this.padding*2;
-	var cardHeight = sm.skin.height;
+	var cardWidth = app.skinManager.skin.width + this.padding*2;
+	var cardHeight = app.skinManager.skin.height;
 
 	//Активная ширина поля
 	var areaActiveWidth = areaWidth - cardWidth - this.margin*2;
 
 	//Необходимая ширина для размещения карт
-	var requiredActiveWidth = (this.cards.length-1);
+	var requiredActiveWidth = this.cards.length - 1;
 	if(this.forcedSpace)
 		requiredActiveWidth *= this.forcedSpace
 	else
@@ -423,8 +431,8 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 
 	//Проверка выделенной карты
 	if(
-		!controller.card && controller.card != this.focusedCard && 
-		!this.cardIsInside(this.focusedCard, cardSpacing)
+		controller.card && 
+		controller.card != this.focusedCard
 	){
 		this.focusedCard = null;
 	}
@@ -451,7 +459,7 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	}
 	
 	//Передвигаем карты
-	i = this.direction == 'backward' ? this.cards.length - 1 : 0;
+	i = (this.direction == 'backward') ? this.cards.length - 1 : 0;
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 
 		var card = this.cards[i];	
@@ -461,12 +469,30 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 			card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
 			delayArray, delayIndex, increaseDelayIndex, bringUpOn
 		)
-
 	}
 
 	//Поднимаем карту контроллера наверх
 	if(controller.card)
-		cardsGroup.bringToTop(controller.card.base);
+		gameManager.cardsGroup.bringToTop(controller.card.base);
+
+
+	//Дебаг отображение активно используемого пространства
+	if(this.isInDebugMode){
+		this.debugActiveSpace.x = this.base.x;
+		this.debugActiveSpace.y = this.base.y;
+		if(this.alignment == 'vertical'){
+			this.debugActiveSpace.x += topMargin - cardHeight/2;
+			this.debugActiveSpace.y += leftMargin;
+			this.debugActiveSpace.width = cardHeight;
+			this.debugActiveSpace.height = requiredActiveWidth;
+		}
+		else{
+			this.debugActiveSpace.x += leftMargin;
+			this.debugActiveSpace.y += topMargin - cardHeight/2;
+			this.debugActiveSpace.width = requiredActiveWidth;
+			this.debugActiveSpace.height = cardHeight;
+		}
+	}
 
 	//Возвращаем время задержки
 	var delay = delayIndex*this.delayTime + this.moveTime;
@@ -523,7 +549,7 @@ Spot.prototype.moveCard = function(
 
 	//Устанавливаем сдвиг для козыря в колоде
 	if(card.spotId == 'BOTTOM'){
-		leftMargin += sm.skin.trumpOffset;
+		leftMargin += app.skinManager.skin.trumpOffset;
 	}
 
 	//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению
@@ -564,6 +590,7 @@ Spot.prototype.moveCard = function(
 	return delayIndex;
 }
 
+
 //УДАЛЕНИЕ КАРТ ИЗ ПОЛЯ
 
 //Удаляет карты из поля
@@ -600,13 +627,14 @@ Spot.prototype.reset = function(){
 	this.removeAllCards();
 }
 
+
 //БУЛЕВЫ ФУНКЦИИ
 
 //Проверяет нахождение карты внутри поля (по координатам)
 Spot.prototype.cardIsInside = function(card, cardSpacing){
 	if(cardSpacing === null || cardSpacing === undefined)
 		cardSpacing = 0;
-	var shift = sm.skin.width - cardSpacing;
+	var shift = app.skinManager.skin.width - cardSpacing;
 	if(
 		!card ||
 		card.base.x + card.sprite.x < this.base.x + this.margin - shift ||
@@ -660,7 +688,7 @@ Spot.prototype.focusOffCard = function(){
 
 //ДЕБАГ
 
-//Обновляет позицию названия поля
+//Обновляет дебаг
 Spot.prototype.updateDebug = function(){
 	if(!this.isInDebugMode)
 		return;
@@ -673,10 +701,14 @@ Spot.prototype.updateDebug = function(){
 	else
 		str = this.type + ' ' + this.id;
 	game.debug.text(str, x, y );
+
+	game.debug.geom( this.debugActiveSpace, 'rgba(0,127,127,0.3)' ) ;
 }
 
 //Переключает режим дебага
 Spot.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	this.area.visible = this.isInDebugMode;
+	if(!this.isInDebugMode)
+		game.debug.reset();
 }

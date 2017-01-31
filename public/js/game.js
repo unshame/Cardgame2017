@@ -1,36 +1,36 @@
 //Тестовый модуль игры и приложения
-//В будущем будет разделен на AppManager, GameManager и SpotManager
+//В будущем будет разделен на AppManager и GameManager
 
-var land = null;
-var sm = null;
-var cardsGroup = null;
-var cards = {};
-var spot, botSpot, deck, discard, field;
-var controller = null;
-var button = null;
-var debugSpotValidity = false;
-var screenWidth = window.innerWidth;
-var screenHeight = window.innerHeight;
-var game = new Phaser.Game(
-	screenWidth, 
-	screenHeight,  
+window.gameManager = {
+	cards: {},
+	cardsGroup: null
+};
+window.controller = null;
+
+window.game = new Phaser.Game(
+	app.screenWidth, 
+	app.screenHeight,  
 	Phaser.Canvas, 
 	'cardgame', 
 	{ preload: preload, create: EurecaClientSetup, update: update, render: render }
 );
 
+var spot, botSpot, deck, discard, field;
+
+var debugSpotValidity = false;
+
 var onScreenChange = function() {
-	screenWidth = window.innerWidth;
-	screenHeight = window.innerHeight;
-	game.scale.setGameSize(screenWidth, screenHeight)
-	land.width = screenWidth;
-	land.height =  screenHeight;
-	botSpot.resize(screenWidth - 200, null, true);
-	deck.setBase(null, screenHeight - 250, true);
-	discard.setBase(screenWidth - 250, screenHeight - 250, true);
-	field.resize(screenWidth - 200, null, true);
-	spot.setBase(null, screenHeight - 250);
-	spot.resize(screenWidth - 700, null, true);
+	app.screenWidth = window.innerWidth;
+	app.screenHeight = window.innerHeight;
+	game.scale.setGameSize(app.screenWidth, app.screenHeight)
+	app.background.width = app.screenWidth;
+	app.background.height =  app.screenHeight;
+	botSpot.resize(app.screenWidth - 200, null, true);
+	deck.setBase(null, app.screenHeight - 250, true);
+	discard.setBase(app.screenWidth - 250, app.screenHeight - 250, true);
+	field.resize(app.screenWidth - 200, null, true);
+	spot.setBase(null, app.screenHeight - 250);
+	spot.resize(app.screenWidth - 700, null, true);
 
 }
 window.addEventListener('resize',onScreenChange);
@@ -39,22 +39,22 @@ window.addEventListener('orientationchange',onScreenChange);
 function create () 
 {
 	if(!game.created){
-		game.world.setBounds(0, 0, screenWidth, screenHeight);
+		game.world.setBounds(0, 0, app.screenWidth, app.screenHeight);
 		//game.stage.disableVisibilityChange  = true;
 		game.created = true;
 	}
 	
-	if(!land)
-		land = game.add.tileSprite(0, 0, screenWidth, screenHeight, 'assault');
+	if(!app.background)
+		app.background = game.add.tileSprite(0, 0, app.screenWidth, app.screenHeight, 'assault');
 
-	if(!cardsGroup)
-		cardsGroup = game.add.group();
+	if(!gameManager.cardsGroup)
+		gameManager.cardsGroup = game.add.group();
 
 	if(!spot){
 		spot = new Spot({
 			x:390,
-			y:screenHeight - 250,
-			width:screenWidth - 700,
+			y:app.screenHeight - 250,
+			width:app.screenWidth - 700,
 			texture: 'spot',
 			type: 'HAND',
 			id: 'player'
@@ -65,7 +65,7 @@ function create ()
 		botSpot = new Spot({
 			x:100,
 			y:100,
-			width:screenWidth - 200,
+			width:app.screenWidth - 200,
 			texture: 'spot',
 			sorting:false,
 			focusable:false,
@@ -78,7 +78,7 @@ function create ()
 		field = new Spot({
 			x:100,
 			y:400,
-			width:screenWidth - 200,
+			width:app.screenWidth - 200,
 			texture: 'spot',
 			focusable:false,
 			sorting:false,
@@ -90,7 +90,7 @@ function create ()
 	if(!deck){
 		deck = new Spot({
 			x:100,
-			y:screenHeight - 250,
+			y:app.screenHeight - 250,
 			minActiveSpace: 26,
 			align: 'right',
 			padding: 0,
@@ -109,8 +109,8 @@ function create ()
 
 	if(!discard){
 		discard = new Spot({
-			x:screenWidth - 250,
-			y:screenHeight - 250,
+			x:app.screenWidth - 250,
+			y:app.screenHeight - 250,
 			padding:0,
 			focusable:false,
 			forcedSpace: 0.5,
@@ -135,10 +135,10 @@ function update () {
 	if(controller)
 		controller.update();
 
-	for(var ci in cards){
-		if(!cards.hasOwnProperty(ci))
+	for(var ci in gameManager.cards){
+		if(!gameManager.cards.hasOwnProperty(ci))
 			continue;
-		cards[ci].update();
+		gameManager.cards[ci].update();
 	}
 }
 
@@ -154,9 +154,9 @@ function render () {
 	botSpot && botSpot.updateDebug();
 	discard && discard.updateDebug();
 
-	for(var ci in cards){
-		if(!cards.hasOwnProperty(ci))
+	for(var ci in gameManager.cards){
+		if(!gameManager.cards.hasOwnProperty(ci))
 			continue;
-		cards[ci].updateDebug();
+		gameManager.cards[ci].updateDebug();
 	}
 }

@@ -1,3 +1,10 @@
+window.app = {
+	background: null,
+	skinManager: null,
+	screenWidth: window.innerWidth,
+	screenHeight: window.innerHeight
+};
+
 //Assets
 function preload () {
 	game.load.image('wood', 'assets/retina_wood.png');
@@ -8,11 +15,11 @@ function preload () {
 	game.load.image('spot', 'assets/spot.png');
 	game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 3);
 
-	sm = new SkinManager('modern');
-	sm.addSkin({name: 'modern'});
+	app.skinManager = new SkinManager('modern');
+	app.skinManager.addSkin({name: 'modern'});
 	var options = {
 		width: 390,
-		height: 750,
+		height: 570,
 		name: 'familiar',
 		sheetPath: 'assets/cards/familiar.png',
 		numOfFrames: 52,
@@ -20,9 +27,9 @@ function preload () {
 		cardbackFrame: 51,
 		scaleX: 0.5,
 		scaleY: 0.5,
-		trumpOffset: 35
+		trumpOffset: 90
 	}
-	sm.addSkin(options);
+	app.skinManager.addSkin(options);
 	options = {
 		width: 150,
 		height: 218,
@@ -33,5 +40,5 @@ function preload () {
 		cardbackFrame: 52,
 		trumpOffset: 32
 	}
-	sm.addSkin(options);
+	app.skinManager.addSkin(options);
 }

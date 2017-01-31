@@ -1,6 +1,7 @@
 /*
  * Модуль отвечает за общение между клиентом и сервером
  * Инициализирует игру по готовности клиента
+ * В будущем будет разделен на ConnectionManager и SpotManager
 */
 
 var server;
@@ -36,8 +37,8 @@ var EurecaClientSetup = function() {
 		}
 		for(var ai in actions){
 			var action = actions[ai];
-			if(action.cid && cards[action.cid]){
-				cards[action.cid].setPlayability(true);
+			if(action.cid && gameManager.cards[action.cid]){
+				gameManager.cards[action.cid].setPlayability(true);
 			}
 		}
 		if(isInDebugMode)
@@ -65,13 +66,13 @@ var EurecaClientSetup = function() {
 
 				controller.reset();
 
-				for(var cid in cards){
-					if(cards.hasOwnProperty(cid)){
-						cards[cid].base.removeAll(true);
+				for(var cid in gameManager.cards){
+					if(gameManager.cards.hasOwnProperty(cid)){
+						gameManager.cards[cid].base.removeAll(true);
 					}
 				}
-				cards = {};
-				cardsGroup.removeAll(true);
+				gameManager.cards = {};
+				gameManager.cardsGroup.removeAll(true);
 			}
 			placeCards(action.cards, pid);
 			if(action.numDiscarded){
@@ -81,8 +82,8 @@ var EurecaClientSetup = function() {
 					var options = {
 						id: id
 					}
-					cards[id] = new Card(options);
-					discardCards.push(cards[id])
+					gameManager.cards[id] = new Card(options);
+					discardCards.push(gameManager.cards[id])
 				}
 				discard.addCards(discardCards);
 			}
@@ -91,7 +92,7 @@ var EurecaClientSetup = function() {
 			var discardCards = [];
 			for(var i in action.ids){
 				var cid = action.ids[i];
-				var card = cards[cid]
+				var card = gameManager.cards[cid]
 				
 				if(card){
 					card.presetValue(null, 0);
@@ -125,7 +126,6 @@ var EurecaClientSetup = function() {
 
 function placeCards(newCards, pid){
 
-
 	var spotCards = [];
 	var fieldCards = [];
 	var botCards = [];
@@ -139,11 +139,11 @@ function placeCards(newCards, pid){
 	var delay = 0;
 	for(var ci in newCards){
 		var c = newCards[ci];
-		var card = cards[c.cid];
+		var card = gameManager.cards[c.cid];
 		if(card){
 			if(pid){
 				if(!pid.match('player_'))
-					cards[c.cid].presetValue(null,0);
+					gameManager.cards[c.cid].presetValue(null,0);
 			}
 			else{
 				card.presetValue(c.suit, c.value);		
@@ -157,22 +157,19 @@ function placeCards(newCards, pid){
 				value: c.value,
 				spotId: c.spot || c.pid || pid
 			}
-			cards[c.cid] = new Card(options);
-			card = cards[c.cid];
+			gameManager.cards[c.cid] = new Card(options);
+			card = gameManager.cards[c.cid];
 		}
 		if((card.spotId == 'DECK' || card.spotId == 'BOTTOM') && card.spot != deck){							
 			card.spot && card.spot.remove.push(card);
-			card.setPlayability(false);
 			delay = deck.queueCards([card], delay)
 		}
 		else if(card.spotId.match('FIELD') && card.spot != field){
 			card.spot && card.spot.remove.push(card);
-			card.setPlayability(false);
 			delay = field.queueCards([card], delay)
 		}
 		else if(card.spotId.match('bot') && card.spot != botSpot){
 			card.spot && card.spot.remove.push(card);
-			card.setPlayability(false);
 			delay = botSpot.queueCards([card], delay)
 		}
 		else if(card.spotId.match('player') && card.spot != spot){

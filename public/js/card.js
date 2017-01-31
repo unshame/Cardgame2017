@@ -25,7 +25,7 @@ Card = function (options) {
 	this.skin = this.options.skin;
 
 	//Spot
-	this.spotId = this.options.spotId;
+	this.setSpot(this.options.spotId)
 	this.spot = null;
 
 	//Sprite
@@ -45,11 +45,11 @@ Card = function (options) {
 
 	//Base
 	this.base = game.add.group();
-	this.base.x = screenWidth/2;
-	this.base.y = screenHeight + 300;
+	this.base.x = app.screenWidth/2;
+	this.base.y = app.screenHeight + 300;
 	this.base.add(this.glow);
 	this.base.add(this.sprite);
-	cardsGroup.add(this.base);  
+	gameManager.cardsGroup.add(this.base);  
 
 	this.mover = null;
 	this.rotator = null;
@@ -69,7 +69,7 @@ Card.prototype.getDefaultOptions = function(){
 		value:0,
 		suit:null,
 		flipTime: 150,
-		skin:sm.skin,
+		skin:app.skinManager.skin,
 		spotId: 'DECK',
 		debug: false
 	}
@@ -126,7 +126,7 @@ Card.prototype.updateValue = function(){
 		this.flipper.onChildComplete.addOnce(function(){
 			this.sprite.frame = this.skin.cardbackFrame;
 		}, this);
-		this.setPlayability(false);
+		this.setDraggability(false);
 	}
 	else{
 		this.flipper.onChildComplete.addOnce(function(){
@@ -163,14 +163,17 @@ Card.prototype.setValue = function(suit, value, animate){
 
 }
 
-//Устанавливает играбильность карты
-Card.prototype.setPlayability = function(playable){	
+//Устанавливает перетаскиваемость карты
+Card.prototype.setDraggability = function(draggable){	
+	this.isDraggable = draggable;
+}
+
+//Устанавливает, можно ли ходить этой картой
+Card.prototype.setPlayability = function(playable){
 	if(playable){
-		this.sprite.input.useHandCursor = true;
 		this.glowStart(0.25, 0.75, 1500, 500, 0xFFFF0A)
 	}
 	else{
-		this.sprite.input.useHandCursor = false;
 		this.glowStop();
 	}
 	this.isPlayable = playable;
@@ -205,12 +208,12 @@ Card.prototype.setBase = function(x, y){
 
 Card.prototype.setSpot = function(spotId){
 	this.spotId = spotId;
-	/*	
 	 if(spotId.match('player')){
-		this.sprite.input.useHandCursor = true;
-		this.isPlayable = true;
+		this.setDraggability(true);
 	}
-	*/
+	else{
+		this.setDraggability(false);
+	}
 }
 
 Card.prototype.setAngle = function(angle){
@@ -243,8 +246,11 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	if(game.paused)
 		this.updateValue();
 
-	if(bringToTopOn == 'init' || game.paused && bringToTopOn != 'never')
-		cardsGroup.bringToTop(this.base);
+	if(bringToTopOn == 'init' || game.paused && bringToTopOn != 'never'){
+		gameManager.cardsGroup.bringToTop(this.base);
+		if(controller.card)
+			gameManager.cardsGroup.bringToTop(controller.card.base);
+	}
 
 	//Останавливаем твин, если он есть
 	if(this.mover){
@@ -260,7 +266,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	var newBaseY = relativeToBase ? y + this.base.y : y;
 
 	//Предупреждаем о том, что карта вышла за пределы экрана
-	if(newBaseX < 0 || newBaseX > screenWidth || newBaseY < 0 || newBaseY > screenHeight)
+	if(newBaseX < 0 || newBaseX > app.screenWidth || newBaseY < 0 || newBaseY > app.screenHeight)
 		console.warn(
 			'Moving card', this.id, 'out of the screen (' + newBaseX + ', ' + newBaseY + ')\n',
 			this
@@ -310,13 +316,19 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		);
 		this.mover.onStart.addOnce(function(){
 			this.updateValue();
-			if(bringToTopOn == 'start')
-				cardsGroup.bringToTop(this.base);
+			if(bringToTopOn == 'start'){
+				gameManager.cardsGroup.bringToTop(this.base);
+				if(controller.card)
+					gameManager.cardsGroup.bringToTop(controller.card.base);
+			}
 		}, this);
 		//Ресет твина по окончанию
 		this.mover.onComplete.addOnce(function(){
-			if(bringToTopOn == 'end')
-				cardsGroup.bringToTop(this.base);
+			if(bringToTopOn == 'end'){
+				gameManager.cardsGroup.bringToTop(this.base);
+				if(controller.card)
+					gameManager.cardsGroup.bringToTop(controller.card.base);
+			}
 			this.mover = null;
 		}, this);
 	}
@@ -465,17 +477,22 @@ Card.prototype.mouseUp = function(sprite, pointer){
 	controller.cardUnclick(this, pointer);
 }
 
+//Вызывается при наведении на карту
 Card.prototype.mouseOver = function(sprite, pointer){
-	if(!this.spot)
-		return;
-	this.spot.focusOnCard(this, pointer);
+	if(this.spot)
+		this.spot.focusOnCard(this, pointer);
 }
 
+//Вызывается когда курсор покидает спрайт карты
 Card.prototype.mouseOut = function(sprite, pointer){
-	game.canvas.style.cursor = "default";
-	if(!this.spot)
-		return;
-	this.spot.focusOffCard();
+	if(this.spot)
+		this.spot.focusOffCard();
+}
+
+
+//БУЛЕВЫ ФУНКЦИИ
+Card.prototype.mouseIsOver = function(){
+	return this.sprite.input.pointerOver();
 }
 
 
@@ -532,8 +549,8 @@ var ThrowCards = function(){
 	this.emitter.makeParticles('cardsModern', frames);
 
 	this.emitter.start(false, 5000, 20);
-	this.emitter.width = screenWidth;
-	this.emitter.height = screenHeight;
+	this.emitter.width = app.screenWidth;
+	this.emitter.height = app.screenHeight;
 
 	game.world.bringToTop(this.emitter)
 }
@@ -549,12 +566,12 @@ function getCards(num, except){
 	if(!num)
 		num = Number.MAX_VALUE;
 	var crds = [];
-	for(var ci in cards){
-		if(!cards.hasOwnProperty(ci) || except && except.length && ~except.indexOf(cards[ci]))
+	for(var ci in gameManager.cards){
+		if(!gameManager.cards.hasOwnProperty(ci) || except && except.length && ~except.indexOf(gameManager.cards[ci]))
 			continue;
 		if(num-- <= 0)
 			break
-		crds.push(cards[ci]);
+		crds.push(gameManager.cards[ci]);
 	}
 	return crds
 }

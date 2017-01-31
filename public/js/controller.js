@@ -1,6 +1,6 @@
 /*
  * Модуль, обрабатывающий взаимодействие игрока с игрой
- * На данный момент отвечает за перенос карт и отображение хвоста карты
+ * На данный момент отвечает за перенос карт, отображение хвоста карты и курсора
 */
 
 var Controller = function(isInDebugMode){
@@ -25,7 +25,7 @@ var Controller = function(isInDebugMode){
 
 //Обрабатывает нажатие на карту
 Controller.prototype.cardClick = function(card, pointer){
-	if(!card.isPlayable || this.card && this.card != card)
+	if(!card.isDraggable || this.card && this.card != card)
 		return;
 
 	if(this.isInDebugMode)
@@ -76,13 +76,13 @@ Controller.prototype.cardPickup = function(card, pointer){
 	this.setCardClickTimer();
 	this.cardResetTrail();
 	this.card.base.addAt(this.trail, 0);
-	this.trail.minParticleSpeed.setTo(-sm.skin.width, -sm.skin.height);
-	this.trail.maxParticleSpeed.setTo(sm.skin.width, sm.skin.height);
+	this.trail.minParticleSpeed.setTo(-app.skinManager.skin.width, -app.skinManager.skin.height);
+	this.trail.maxParticleSpeed.setTo(app.skinManager.skin.width, app.skinManager.skin.height);
 
 	this.trail.makeParticles(this.card.skin.trailName, this.card.suit);
 
 	this.cardSetPathToCursor();
-	cardsGroup.bringToTop(this.card.base);
+	gameManager.cardsGroup.bringToTop(this.card.base);
 }
 
 //Устанавливает путь и время смещения карты к курсору
@@ -164,6 +164,7 @@ Controller.prototype.cardReturn = function(){
 	this.card = null;
 	this.pointer = null;
 	if(card.spot){
+		card.spot.focusedCard = null;
 		card.spot.placeCard(card);
 	}
 	else{
@@ -175,10 +176,10 @@ Controller.prototype.cardReturn = function(){
 //Проверка нажатия на базу карты
 Controller.prototype.cardClickedInbound = function(){
 	var cond = 
-		this.pointer.x >= this.card.base.x - sm.skin.width / 2 &&
-		this.pointer.x <= this.card.base.x + sm.skin.width / 2 &&
-		this.pointer.y >= this.card.base.y - sm.skin.height / 2 &&
-		this.pointer.y <= this.card.base.y + sm.skin.height / 2
+		this.pointer.x >= this.card.base.x - app.skinManager.skin.width / 2 &&
+		this.pointer.x <= this.card.base.x + app.skinManager.skin.width / 2 &&
+		this.pointer.y >= this.card.base.y - app.skinManager.skin.height / 2 &&
+		this.pointer.y <= this.card.base.y + app.skinManager.skin.height / 2
 	return cond
 }
 
@@ -207,8 +208,8 @@ Controller.prototype.cardSpawnTrail = function(){
 		y: this.trail.emitY + this.trail.position.y
 	}, true);
 	if(distance < this.cardMoveThreshold){
-		this.trail.width = sm.skin.width - 35;
-		this.trail.height = sm.skin.height - 35;
+		this.trail.width = app.skinManager.skin.width - 35;
+		this.trail.height = app.skinManager.skin.height - 35;
 	}
 	else{
 		this.trail.width = this.trail.height = 0;
@@ -252,7 +253,19 @@ Controller.prototype.resetCardClickTimer = function(){
 	}
 }
 
-//Обновление позиции карты и хвоста
+//Обновляет курсор
+Controller.prototype.updateCursor = function(){
+	for(var ci in gameManager.cards){
+		var card = gameManager.cards[ci];
+		if(card.mouseIsOver() && card.isDraggable){
+			game.canvas.style.cursor = "pointer";
+			return;
+		}
+	}
+	game.canvas.style.cursor = "default";
+}
+
+//Обновление позиции карты, курсора и хвоста
 Controller.prototype.update = function(){
 	if(this.card){
 
@@ -263,7 +276,7 @@ Controller.prototype.update = function(){
 		}
 
 		//Возвращаем карту по нажатию правой кнопки или если она была перевернута
-		if(this.pointer.rightButton.isDown || !this.card.isPlayable || !this.pointer.withinGame){
+		if(this.pointer.rightButton.isDown || !this.card.isDraggable || !this.pointer.withinGame){
 			this.cardReturn();
 			return;
 		}
@@ -289,6 +302,7 @@ Controller.prototype.update = function(){
 		//Спавним хвост
 		this.cardSpawnTrail();
 	}
+	this.updateCursor();
 }
 
 //Ресет модуля
@@ -300,7 +314,6 @@ Controller.prototype.reset = function(){
 	this.cardResetTrail(true);
 	this.card = null;
 	this.pointer = null;
-	game.canvas.style.cursor = "default";
 }
 
 /* ДЕБАГ */
@@ -314,8 +327,8 @@ Controller.prototype.updateDebug = function(){
 	if(!this.debugBase){
 		this.debugBase = new Phaser.Rectangle() ;
 	}
-	var width = this.card && sm.skin.width || this.debugBase.width || 0;
-	var height = this.card && sm.skin.height || this.debugBase.height || 0;
+	var width = this.card && app.skinManager.skin.width || this.debugBase.width || 0;
+	var height = this.card && app.skinManager.skin.height || this.debugBase.height || 0;
 	var x = this.trail.parent.x;
 	var y = this.trail.parent.y;
 	this.debugBase.x = x - width/2;
