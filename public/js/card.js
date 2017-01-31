@@ -107,11 +107,17 @@ Card.prototype.updateValue = function(){
 		return;
 
 	this.valueChanged = false;
-
+	
 	if(this.flipper){
 		this.flipper.stop();
 		this.flipper = null;
 	}
+	
+	if(game.paused){
+		this.setValue(this.suit, this.value, false);
+		return;
+	}
+
 	this.flipper = game.add.tween(this.sprite.scale);
 	this.flipper.to({x: 0}, this.flipTime/2);
 	this.flipper.to({x: 1}, this.flipTime/2);
@@ -232,6 +238,9 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		shouldRebase = false;
 	if(bringToTopOn === undefined || !~['never', 'init', 'start', 'end'].indexOf(bringToTopOn))
 		bringToTopOn = 'init';
+
+	if(game.paused)
+		this.updateValue();
 
 	if(bringToTopOn == 'init' || game.paused && bringToTopOn != 'never')
 		cardsGroup.bringToTop(this.base);
