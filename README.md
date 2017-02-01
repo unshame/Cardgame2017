@@ -32,6 +32,7 @@
 * Конструктор карт (Card)  
 * Конструктор полей карт (Spot)  
 * Частично контроллер (Controller)
+* Частично менеджер полей (SpotManager)  
 * Частично менеджер скинов (SkinManager)  
 
 Что нужно сделать clientside:  
@@ -39,7 +40,6 @@
 * ConnectionManager
 * LobbyManager  
 * GameManager  
-* SpotManager  
 * UI  
 * Chat  
 

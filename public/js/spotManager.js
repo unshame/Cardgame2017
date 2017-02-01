@@ -298,9 +298,10 @@ SpotManager.prototype.removeMarkedCards = function(){
 			return;
 		var spot = this.spots[si];
 		var cards = this.cardsToRemove[si];
-		if(cards.length)
-		spot.removeCards(cards);
-		this.cardsToRemove[si] = [];
+		if(cards.length){
+			spot.removeCards(cards);
+			this.cardsToRemove[si] = [];
+		}
 	}
 }
 
