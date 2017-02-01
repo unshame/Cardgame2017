@@ -166,7 +166,7 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 
 	if(shouldPlace === undefined)
 		shouldPlace = false;
-	
+
 	if(this.alignment == 'vertical'){
 		if(width < app.skinManager.skin.height){
 			width = app.skinManager.skin.height;
@@ -701,6 +701,7 @@ Spot.prototype.updateDebug = function(){
 		str = this.type
 	else
 		str = this.type + ' ' + this.id;
+	str += ' ' + this.cards.length
 	game.debug.text(str, x, y );
 
 	game.debug.geom( this.debugActiveSpace, 'rgba(0,127,127,0.3)' ) ;

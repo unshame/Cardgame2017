@@ -25,6 +25,9 @@ var Controller = function(isInDebugMode){
 
 //Обрабатывает нажатие на карту
 Controller.prototype.cardClick = function(card, pointer){
+	if(pointer.button == 1 || pointer.button == 4)
+		console.log(card);
+
 	if(!card.isDraggable || this.card && this.card != card)
 		return;
 
