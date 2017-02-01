@@ -74,7 +74,7 @@ Card.prototype.getDefaultOptions = function(){
 		value:0,
 		suit:null,
 		flipTime: 150,
-		skin:app.skinManager.skin,
+		skin:skinManager.skin,
 		spotId: 'DECK',
 		debug: false
 	}

@@ -79,8 +79,8 @@ Controller.prototype.cardPickup = function(card, pointer){
 	this.setCardClickTimer();
 	this.cardResetTrail();
 	this.card.base.addAt(this.trail, 0);
-	this.trail.minParticleSpeed.setTo(-app.skinManager.skin.width, -app.skinManager.skin.height);
-	this.trail.maxParticleSpeed.setTo(app.skinManager.skin.width, app.skinManager.skin.height);
+	this.trail.minParticleSpeed.setTo(-skinManager.skin.width, -skinManager.skin.height);
+	this.trail.maxParticleSpeed.setTo(skinManager.skin.width, skinManager.skin.height);
 
 	this.trail.makeParticles(this.card.skin.trailName, this.card.suit);
 
@@ -182,10 +182,10 @@ Controller.prototype.cardReturn = function(){
 //Проверка нажатия на базу карты
 Controller.prototype.cardClickedInbound = function(){
 	var cond = 
-		this.pointer.x >= this.card.base.x - app.skinManager.skin.width / 2 &&
-		this.pointer.x <= this.card.base.x + app.skinManager.skin.width / 2 &&
-		this.pointer.y >= this.card.base.y - app.skinManager.skin.height / 2 &&
-		this.pointer.y <= this.card.base.y + app.skinManager.skin.height / 2
+		this.pointer.x >= this.card.base.x - skinManager.skin.width / 2 &&
+		this.pointer.x <= this.card.base.x + skinManager.skin.width / 2 &&
+		this.pointer.y >= this.card.base.y - skinManager.skin.height / 2 &&
+		this.pointer.y <= this.card.base.y + skinManager.skin.height / 2
 	return cond
 }
 
@@ -217,8 +217,8 @@ Controller.prototype.cardSpawnTrail = function(){
 		y: this.trail.emitY + this.trail.position.y
 	}, true);
 	if(distance < this.cardMoveThreshold){
-		this.trail.width = app.skinManager.skin.width - 35;
-		this.trail.height = app.skinManager.skin.height - 35;
+		this.trail.width = skinManager.skin.width - 35;
+		this.trail.height = skinManager.skin.height - 35;
 	}
 	else{
 		this.trail.width = this.trail.height = 0;
@@ -348,8 +348,8 @@ Controller.prototype.updateDebug = function(){
 	if(!this.debugBase){
 		this.debugBase = new Phaser.Rectangle() ;
 	}
-	var width = this.card && app.skinManager.skin.width || this.debugBase.width || 0;
-	var height = this.card && app.skinManager.skin.height || this.debugBase.height || 0;
+	var width = this.card && skinManager.skin.width || this.debugBase.width || 0;
+	var height = this.card && skinManager.skin.height || this.debugBase.height || 0;
 	var x = this.trail.parent.x;
 	var y = this.trail.parent.y;
 	this.debugBase.x = x - width/2;

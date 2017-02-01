@@ -1,9 +1,9 @@
 window.app = {
 	background: null,
-	skinManager: null,
 	screenWidth: window.innerWidth,
 	screenHeight: window.innerHeight
 };
+
 
 //Assets
 function preload () {
@@ -15,8 +15,8 @@ function preload () {
 	game.load.image('spot', 'assets/spot.png');
 	game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 3);
 
-	app.skinManager = new SkinManager('modern');
-	app.skinManager.addSkin({name: 'modern'});
+	window.skinManager = new SkinManager('modern');
+	skinManager.addSkin({name: 'modern'});
 	var options = {
 		width: 390,
 		height: 570,
@@ -29,7 +29,7 @@ function preload () {
 		scaleY: 0.5,
 		trumpOffset: 90
 	}
-	app.skinManager.addSkin(options);
+	skinManager.addSkin(options);
 	options = {
 		width: 150,
 		height: 218,
@@ -38,9 +38,9 @@ function preload () {
 		numOfFrames: 53,
 		cardbackPossibleFrames: [52],
 		cardbackFrame: 52,
-		trumpOffset: 32,
+		trumpOffset: 32/*,
 		scaleX: 0.9,
-		scaleY: 0.9
+		scaleY: 0.9*/
 	}
-	app.skinManager.addSkin(options);
+	skinManager.addSkin(options);
 }

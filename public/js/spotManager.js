@@ -49,7 +49,7 @@ var SpotManager = function(){
 
 SpotManager.prototype.createSpotNetwork = function(players){
 
-	this.pid = gameManager.pid;
+	this.pid = app.pid;
 	var numOfCards = players.length > 4 ? 52 : 36;
 	var x, y, id;
 
@@ -103,7 +103,7 @@ SpotManager.prototype.createSpotNetwork = function(players){
 		this.spots[id] = new Spot({
 			x: x,
 			y: y,
-			minActiveSpace: app.skinManager.skin.trumpOffset,
+			minActiveSpace: skinManager.skin.trumpOffset,
 			texture: 'spot',
 			focusable:false,
 			sorting:false,
@@ -292,60 +292,51 @@ SpotManager.prototype.queueCards = function(newCards, pid){
 
 }
 
-SpotManager.prototype.removeMarkedCards = function(){
+SpotManager.prototype.forEachSpot = function(callback){
 	for(var si in this.spots){
 		if(!this.spots.hasOwnProperty(si))
 			return;
 		var spot = this.spots[si];
+		callback.call(this, spot, si)
+	}
+}
+
+SpotManager.prototype.removeMarkedCards = function(){
+	this.forEachSpot(function(spot, si){
 		var cards = this.cardsToRemove[si];
 		if(cards.length){
 			spot.removeCards(cards);
 			this.cardsToRemove[si] = [];
 		}
-	}
+	})
 }
 
 SpotManager.prototype.placeQueuedCards = function(){
-	for(var si in this.spots){
-		if(!this.spots.hasOwnProperty(si))
-			return;
-		var spot = this.spots[si];
+	this.forEachSpot(function(spot, si){
 		spot.placeQueuedCards();
-	}
+	})
 }
 
 SpotManager.prototype.applySkin = function(){
-	for(var si in this.spots){
-		if(!this.spots.hasOwnProperty(si))
-			return;
-		var spot = this.spots[si];
-		spot.resize(null, app.skinManager.skin.height, true);
-	}
+	this.forEachSpot(function(spot, si){
+		spot.resize(null, skinManager.skin.height, true);
+	})
 }
 
 SpotManager.prototype.resetSpots = function(){
-	for(var si in this.spots){
-		if(!this.spots.hasOwnProperty(si))
-			return;
-		var spot = this.spots[si];
+	this.forEachSpot(function(spot, si){
 		spot.reset();
-	}
+	})
 }
 
 SpotManager.prototype.updateDebug = function(){
-	for(var si in this.spots){
-		if(!this.spots.hasOwnProperty(si))
-			return;
-		var spot = this.spots[si];
+	this.forEachSpot(function(spot, si){
 		spot.updateDebug();
-	}
+	})
 }
 
 SpotManager.prototype.toggleDebugMode = function(){
-	for(var si in this.spots){
-		if(!this.spots.hasOwnProperty(si))
-			return;
-		var spot = this.spots[si];
+	this.forEachSpot(function(spot, si){
 		spot.toggleDebugMode();
-	}
+	})
 }

@@ -168,21 +168,21 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 		shouldPlace = false;
 
 	if(this.alignment == 'vertical'){
-		if(width < app.skinManager.skin.height){
-			width = app.skinManager.skin.height;
+		if(width < skinManager.skin.height){
+			width = skinManager.skin.height;
 		}
 
-		if(height < app.skinManager.skin.width){
-			height = app.skinManager.skin.width + this.minActiveSpace + this.padding*2;
+		if(height < skinManager.skin.width){
+			height = skinManager.skin.width + this.minActiveSpace + this.padding*2;
 		}
 	}
 	else{
-		if(width < app.skinManager.skin.width){
-			width = app.skinManager.skin.width + this.minActiveSpace + this.padding*2;
+		if(width < skinManager.skin.width){
+			width = skinManager.skin.width + this.minActiveSpace + this.padding*2;
 		}
 
-		if(height < app.skinManager.skin.height){
-			height = app.skinManager.skin.height;
+		if(height < skinManager.skin.height){
+			height = skinManager.skin.height;
 		}
 	}
 
@@ -353,8 +353,8 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	var angle = (this.alignment == 'vertical') ? 90 : 0;
 
 	//Размеры карт, ширина включает отступ между картами
-	var cardWidth = app.skinManager.skin.width + this.padding*2;
-	var cardHeight = app.skinManager.skin.height;
+	var cardWidth = skinManager.skin.width + this.padding*2;
+	var cardHeight = skinManager.skin.height;
 
 	//Активная ширина поля
 	var areaActiveWidth = areaWidth - cardWidth - this.margin*2;
@@ -550,7 +550,7 @@ Spot.prototype.moveCard = function(
 
 	//Устанавливаем сдвиг для козыря в колоде
 	if(card.spotId == 'BOTTOM'){
-		leftMargin += app.skinManager.skin.trumpOffset;
+		leftMargin += skinManager.skin.trumpOffset;
 	}
 
 	//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению
@@ -635,7 +635,7 @@ Spot.prototype.reset = function(){
 Spot.prototype.cardIsInside = function(card, cardSpacing){
 	if(cardSpacing === null || cardSpacing === undefined)
 		cardSpacing = 0;
-	var shift = app.skinManager.skin.width - cardSpacing;
+	var shift = skinManager.skin.width - cardSpacing;
 	if(
 		!card ||
 		card.base.x + card.sprite.x < this.base.x + this.margin - shift ||

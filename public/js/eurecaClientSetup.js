@@ -8,7 +8,7 @@ var server;
 var isInDebugMode = false;
 
 var EurecaClientSetup = function() {
-	//create an instance of eureca.io client
+	//создаем eureca.io клиент
 
 	var client = new Eureca.Client();
 	
@@ -18,22 +18,17 @@ var EurecaClientSetup = function() {
 	});
 	
 	
-	//methods defined under "exports" namespace become available in the server side
+	//Методы, принадлежащие export, становятся доступны на стороне сервера
 	
 	client.exports.setId = function(id) 
 	{
-		gameManager.pid = id;
+		app.pid = id;
 	}	
 	client.exports.meetOpponents = function(opponents){
 		spotManager.createSpotNetwork(opponents);
 
 		if(isInDebugMode)
 			console.log(opponents);
-
-		//for(var oi in opponents){
-		//	new Card(opponents[oi].id);
-		//}
-		
 	}
 	client.exports.recievePossibleActions = function(actions){		
 		spotManager.highlightPossibleActions(actions);
