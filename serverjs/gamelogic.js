@@ -914,12 +914,14 @@ Game.prototype.findPlayerToGoNext = function(){
 
 					//Если предыдущий ходящий был сдвинут, переставляем индекс на его новую позицию				
 					if(~newai)
-						ai = newai - 1
+						ai = newai
 
 					//Если предыдущий ходящий вышел из игры и он был последним в списке,
 					//переставляем индекс предыдущего ходящего в конец измененного списка
 					else if(!this.activePlayers[ai])
 						ai = this.activePlayers.length - 1
+					else
+						ai--;
 				}
 
 				utils.log(this.playersById[pid].name, 'is out of the game');	
@@ -1079,7 +1081,7 @@ Game.prototype.letAttack = function(pid){
 	this.setTurnStage('DEFENSE');
 
 	this.validActions = actions;
-	this.waitForResponse(15, [player])
+	this.waitForResponse(10, [player])
 	try{
 		player.recieveValidActions(actions.slice());	
 	}
@@ -1149,7 +1151,7 @@ Game.prototype.letDefend = function(pid){
 
 		action.pid = player.id;
 
-		this.waitForResponse(15, this.players);
+		this.waitForResponse(1, this.players);
 		for(var pi = 0; pi < this.players.length; pi++){
 
 			var newAction = {
@@ -1256,7 +1258,7 @@ Game.prototype.letDefend = function(pid){
 			break;
 	}
 
-	this.waitForResponse(15, [player]);
+	this.waitForResponse(10, [player]);
 	try{
 		player.recieveValidActions(actions);	
 	}
