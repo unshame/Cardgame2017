@@ -17,12 +17,25 @@ var Game = function(players){
 
 	//Сохраняем ссылки на игроков локально
 	this.players = players.slice();	
+	this.players = utils.shuffleArray(this.players);
 
 	//Счет побед и проигрышей игроков (объекты по id игроков)
 	this.scores = {};
 
 	//Создаем массив игроков по айди
 	this.playersById = {};
+
+	//Сообщаем игрокам о соперниках
+	var opponents = [];
+	for(var pi in this.players){
+		var p = this.players[pi];
+		var o = {
+			id: p.id,
+			name: p.name
+		}
+		opponents.push(o);
+	}
+
 	for(var pi in this.players){
 		var player = this.players[pi];
 		player.game = this;
@@ -33,18 +46,6 @@ var Game = function(players){
 			cardsWhenLost: 0
 		};
 
-		//Сообщаем игрокам о соперниках
-		var opponents = [];
-		for(var pi in this.players){
-			var p = this.players[pi];
-			if(p.id != player.id){
-				var o = {
-					id: p.id,
-					name: p.name
-				}
-				opponents.push(o)
-			}
-		}
 		if(opponents.length){
 			try{
 				player.meetOpponents(opponents);
@@ -204,7 +205,7 @@ Game.prototype.make = function(){
 //Размешивает колоду
 Game.prototype.shuffleDeck = function(){
 
-	for (var ci = this.deck.length; ci; ci--) {
+	/*for (var ci = this.deck.length; ci; ci--) {
 
 		var randomIndex = Math.floor(Math.random() * ci);
 		var temp = this.deck[ci - 1];
@@ -212,7 +213,8 @@ Game.prototype.shuffleDeck = function(){
 		this.deck[ci - 1] = this.deck[randomIndex];
 		this.deck[randomIndex] = temp;
 
-	}
+	}*/
+	this.deck = utils.shuffleArray(this.deck);
 }
 
 //Раздает карты пока у всех не по 6 карт или пока колода не закончится
