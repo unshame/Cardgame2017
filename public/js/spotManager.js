@@ -7,15 +7,15 @@ var SpotManager = function(){
 	this.positions = {
 		DECK: {
 			x: 100,
-			y: app.screenHeight - 250
+			y: appManager.screenHeight - 250
 		},
 		DISCARD_PILE: {
-			x:app.screenWidth - 250,
-			y:app.screenHeight - 250
+			x:appManager.screenWidth - 250,
+			y:appManager.screenHeight - 250
 		},
 		playerHand: {
 			x:390,
-			y:app.screenHeight - 250
+			y:appManager.screenHeight - 250
 		},
 		firstField: {
 			x:100,
@@ -36,7 +36,7 @@ var SpotManager = function(){
 			//height: 
 		},
 		playerHand: {
-			width:app.screenWidth - 700,
+			width:appManager.screenWidth - 700,
 			//height: 
 		},
 		firstOpponent: {
@@ -49,7 +49,7 @@ var SpotManager = function(){
 
 SpotManager.prototype.createSpotNetwork = function(players){
 
-	this.pid = app.pid;
+	this.pid = appManager.pid;
 	var numOfCards = players.length > 4 ? 52 : 36;
 	var x, y, id;
 
@@ -95,7 +95,7 @@ SpotManager.prototype.createSpotNetwork = function(players){
 	this.cardsToRemove['DISCARD_PILE'] = [];
 
 	//Field
-	var margin = (app.screenWidth - 130) / 7 - 220;
+	var margin = (appManager.screenWidth - 130) / 7 - 220;
 	for(var i = 0; i <= 6; i++){
 		x = this.positions.firstField.x + 220*i + margin*i;
 		y = this.positions.firstField.y;
@@ -134,7 +134,7 @@ SpotManager.prototype.createSpotNetwork = function(players){
 	this.cardsToRemove[this.pid] = [];
 
 	//Opponents
-	var width = (app.screenWidth - 130) / (players.length - 1) - 50;
+	var width = (appManager.screenWidth - 130) / (players.length - 1) - 50;
 	var i = pi + 1;
 	var oi = 0;
 	if(i >= players.length)

@@ -22,7 +22,7 @@ var EurecaClientSetup = function() {
 	
 	client.exports.setId = function(id) 
 	{
-		app.pid = id;
+		appManager.pid = id;
 	}	
 	client.exports.meetOpponents = function(opponents){
 		spotManager.createSpotNetwork(opponents);

@@ -8,9 +8,9 @@ window.gameManager = {
 window.controller = null;
 window.spotManager = new SpotManager();
 
-window.game = new Phaser.Game(
-	app.screenWidth, 
-	app.screenHeight,  
+window.app = new Phaser.Game(
+	appManager.screenWidth, 
+	appManager.screenHeight,  
 	Phaser.Canvas, 
 	'cardgame', 
 	{ preload: preload, create: EurecaClientSetup, update: update, render: render }
@@ -19,11 +19,11 @@ window.game = new Phaser.Game(
 var debugSpotValidity = false;
 
 var onScreenChange = function() {
-	app.screenWidth = window.innerWidth;
-	app.screenHeight = window.innerHeight;
-	game.scale.setGameSize(app.screenWidth, app.screenHeight)
-	app.background.width = app.screenWidth;
-	app.background.height =  app.screenHeight;
+	appManager.screenWidth = window.innerWidth;
+	appManager.screenHeight = window.innerHeight;
+	app.scale.setGameSize(appManager.screenWidth, appManager.screenHeight)
+	appManager.background.width = appManager.screenWidth;
+	appManager.background.height =  appManager.screenHeight;
 
 }
 window.addEventListener('resize',onScreenChange);
@@ -31,27 +31,27 @@ window.addEventListener('orientationchange',onScreenChange);
 
 function create () 
 {
-	if(!game.created){
-		game.world.setBounds(0, 0, app.screenWidth, app.screenHeight);
-		//game.stage.disableVisibilityChange  = true;
-		game.created = true;
+	if(!app.created){
+		app.world.setBounds(0, 0, appManager.screenWidth, appManager.screenHeight);
+		//app.stage.disableVisibilityChange  = true;
+		app.created = true;
 	}
 	
-	if(!app.background)
-		app.background = game.add.tileSprite(0, 0, app.screenWidth, app.screenHeight, 'assault');
+	if(!appManager.background)
+		appManager.background = app.add.tileSprite(0, 0, appManager.screenWidth, appManager.screenHeight, 'assault');
 
 	if(!gameManager.cardsGroup)
-		gameManager.cardsGroup = game.add.group();
+		gameManager.cardsGroup = app.add.group();
 
 	if(!controller)
 		controller = new Controller(false);
 
-	game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
+	app.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 }
 
 
 function update () {
-	if(!game.created)
+	if(!app.created)
 		return;
 
 	if(controller)
@@ -66,7 +66,7 @@ function update () {
 
 
 function render () {
-	if(!game.created)
+	if(!app.created)
 		return;
 
 	controller && controller.updateDebug();

@@ -72,25 +72,25 @@ var Spot = function(options){
 		)
 	}
 
-	this.base = game.add.group();
+	this.base = app.add.group();
 	this.setBase(this.options.x, this.options.y);
 
 	this.minActiveSpace = this.options.minActiveSpace;
 
 	//Текстура для дебага и область поля
-	var pixel = game.make.graphics(0, 0);
+	var pixel = app.make.graphics(0, 0);
 	pixel.beginFill(0xffffff);
 	pixel.drawRect(0, 0, 1, 1);
 	pixel.endFill();
 
-	this.area = game.add.tileSprite(0, 0, 0, 0, pixel.generateTexture());
+	this.area = app.add.tileSprite(0, 0, 0, 0, pixel.generateTexture());
 	this.area.alpha = 0.35;
 	this.area.visible = this.isInDebugMode;
 	this.base.add(this.area);
 
 	this.resize(this.options.width, this.options.height)
 	
-	game.world.setChildIndex(this.base, 1);	
+	app.world.setChildIndex(this.base, 1);	
 
 	this.debugActiveSpace = new Phaser.Rectangle();
 }
@@ -658,9 +658,9 @@ Spot.prototype.setNoFocusTimer = function(time){
 		return;
 
 	if(this.noFocusTimer)
-		game.time.events.remove(this.noFocusTimer);
+		app.time.events.remove(this.noFocusTimer);
 
-	this.noFocusTimer = game.time.events.add(time, function(){
+	this.noFocusTimer = app.time.events.add(time, function(){
 		this.placeCards();
 		this.noFocusTimer = null;
 	}, this);
@@ -702,9 +702,9 @@ Spot.prototype.updateDebug = function(){
 	else
 		str = this.type + ' ' + this.id;
 	str += ' ' + this.cards.length
-	game.debug.text(str, x, y );
+	app.debug.text(str, x, y );
 
-	game.debug.geom( this.debugActiveSpace, 'rgba(0,127,127,0.3)' ) ;
+	app.debug.geom( this.debugActiveSpace, 'rgba(0,127,127,0.3)' ) ;
 }
 
 //Переключает режим дебага
@@ -712,5 +712,5 @@ Spot.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	this.area.visible = this.isInDebugMode;
 	if(!this.isInDebugMode)
-		game.debug.reset();
+		app.debug.reset();
 }
