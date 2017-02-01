@@ -38,7 +38,9 @@ function preload () {
 		numOfFrames: 53,
 		cardbackPossibleFrames: [52],
 		cardbackFrame: 52,
-		trumpOffset: 32
+		trumpOffset: 32,
+		scaleX: 0.9,
+		scaleY: 0.9
 	}
 	app.skinManager.addSkin(options);
 }

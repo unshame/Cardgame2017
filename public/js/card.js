@@ -21,51 +21,56 @@ Card = function (options) {
 	//Id
 	this.id = this.options.id;
 
-	//Skin
-	this.skin = this.options.skin;
-
 	//Spot
 	this.setSpot(this.options.spotId)
 	this.spot = null;
 
 	//Sprite
-	this.sprite = game.add.sprite(0, 0, this.skin.sheetName);
+	this.sprite = game.add.sprite();
 	this.sprite.inputEnabled = true;
 	this.sprite.events.onInputDown.add(this.mouseDown, this);
 	this.sprite.events.onInputUp.add(this.mouseUp, this);
 	this.sprite.events.onInputOver.add(this.mouseOver, this);
 	this.sprite.events.onInputOut.add(this.mouseOut, this);
 	this.sprite.anchor.set(0.5, 0.5);
-	this.sprite.scale.setTo(this.skin.scale.x, this.skin.scale.y);	
 
 	//Glow
-	this.glow = game.add.sprite(0, 0, this.skin.glowName);
+	this.glow = game.add.sprite();
 	this.glow.anchor.set(0.5, 0.5);
 	this.glow.visible = false;
 
 	//Base
 	this.base = game.add.group();
-	this.base.x = app.screenWidth/2;
-	this.base.y = app.screenHeight + 300;
+	this.base.x = this.options.x;
+	this.base.y = this.options.y;
 	this.base.add(this.glow);
 	this.base.add(this.sprite);
 	gameManager.cardsGroup.add(this.base);  
 
+	//Tweens
 	this.mover = null;
 	this.rotator = null;
 	this.scaler = null;
 	this.flipper = null;
 
 	//Value
-	this.setValue(this.options.suit, this.options.value, false);
+	this.suit = this.options.suit;
+	this.value = this.options.value;	
 	this.valueChanged = false;
 	this.flipTime = this.options.flipTime;
+
+	//Skin
+	this.skin = this.options.skin;
+	this.applySkin();
+
 };
 
 //Возвращает опции по умолчанию
 Card.prototype.getDefaultOptions = function(){
 	var options = {
 		id:null,
+		x: app.screenWidth / 2,
+		y: app.screenHeight + 300,
 		value:0,
 		suit:null,
 		flipTime: 150,
@@ -379,13 +384,11 @@ Card.prototype.rotateTo = function(angle, time, delay){
 
 //Применяет текущий скин к карте
 Card.prototype.applySkin = function(){
-	if(!this.suit && this.suit !== 0){
-		this.sprite.frame = this.skin.cardbackFrame;
-	}
-	else{
-		this.sprite.frame =  this.skin.firstValueFrame + this.suit*13 + this.value - 2;
-	}
-	//stub
+	this.sprite.loadTexture(this.skin.sheetName);
+	this.sprite.scale.setTo(this.skin.scale.x, this.skin.scale.y);
+	this.glow.loadTexture(this.skin.glowSheetName);
+	this.glow.scale.setTo(this.skin.scale.x, this.skin.scale.y);
+	this.setValue(this.suit, this.value, false);
 }
 
 //Меняет рубашку карт на текущую

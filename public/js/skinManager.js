@@ -2,11 +2,14 @@
  * Модуль, управляющий внешним видом карт
  */
 
-var SkinManager = function(skinToSetWhenLoaded){
+//@skinToSet String - скин с этим именем будет установлен после его создания
+var SkinManager = function(skinToSet){
 	this.skins = {};
-	this.skin = skinToSetWhenLoaded || null;
+	this.skin = null;
+	this.skinToSet = skinToSet || null;
 }
 
+//Добавляет скин, загружает графику
 SkinManager.prototype.addSkin = function(options){
 	var skin = {};
 
@@ -37,7 +40,7 @@ SkinManager.prototype.addSkin = function(options){
 	skin.trumpOffset = options.trumpOffset || 33;
 
 	skin.glowPath = options.glowPath || 'assets/glow.png';
-	skin.glowName = options.name + 'Glow';
+	skin.glowSheetName = options.name + 'Glow';
 	skin.glowRealWidth = options.glowWidth || 170;
 	skin.glowRealHeight = options.glowHeight || 220;
 	skin.glowWidth = skin.glowRealWidth*skin.scale.x;
@@ -55,24 +58,34 @@ SkinManager.prototype.addSkin = function(options){
 		skin.frameHeight, 
 		skin.numOfFrames
 	);
-	game.load.image(skin.glowName, skin.glowPath);
+	game.load.image(skin.glowSheetName, skin.glowPath);
 	game.load.spritesheet(skin.trailName, skin.trailPath, skin.trailWidth, skin.trailHeight, 4);
 
 	this.skins[skin.name] = skin;
-	if(typeof this.skin == 'string' && this.skin == skin.name)
+	if(this.skinToSet == skin.name){
 		this.skin = skin;
+		this.skinToSet = null;
+	}
 }
 
-SkinManager.prototype.applySkin = function(skinName){
+//Применяет скин
+//@skinName String - название скина
+SkinManager.prototype.setSkin = function(skinName){
 	if(!this.skins[skinName])
 		return;
 	this.skin = this.skins[skinName];
 	for(var ci in gameManager.cards){
-		if(gameManager.cards.hasOwnProperty(ci))
-			gameManager.cards[ci].skin = this.skin;
+		if(gameManager.cards.hasOwnProperty(ci)){
+			var card = gameManager.cards[ci]; 
+			card.skin = this.skin;
+			card.applySkin();
+		}
 	}
+	//spotManager.applySkin();
 }
 
+//Устанавливает рубашку карт
+//@i - индекс рубашки в cardbackPossibleFrames текущего скина
 SkinManager.prototype.setCardback = function(i){
 	if(
 		typeof i != 'number' || 

@@ -58,7 +58,7 @@ Controller.prototype.cardUnclick = function(card){
 //Поднимает карту
 Controller.prototype.cardPickup = function(card, pointer){
 	if(!card){
-		console.error('Controller: cardPickup called but no Card assigned.');
+		console.warn('Controller: cardPickup called but no Card assigned.');
 		return
 	}
 
@@ -103,7 +103,7 @@ Controller.prototype.cardSetPathToCursor = function(){
 Controller.prototype.cardPutDown = function(){
 
 	if(!this.card){
-		console.error('Controller: cardPutDown called but no Card assigned.');
+		console.warn('Controller: cardPutDown called but no Card assigned.');
 		return
 	}
 
@@ -122,7 +122,7 @@ Controller.prototype.cardPutDown = function(){
 Controller.prototype.cardRebaseAtPointer = function(){
 
 	if(!this.card){
-		console.error('Controller: cardRebaseAtPointer called but no Card assigned.');
+		console.warn('Controller: cardRebaseAtPointer called but no Card assigned.');
 		return
 	}
 
@@ -146,7 +146,7 @@ Controller.prototype.cardRebaseAtPointer = function(){
 Controller.prototype.cardReturn = function(){
 
 	if(!this.card){
-		console.error('Controller: cardReturn called but no Card assigned.');
+		console.warn('Controller: cardReturn called but no Card assigned.');
 		return
 	}
 
@@ -173,6 +173,9 @@ Controller.prototype.cardReturn = function(){
 	game.canvas.style.cursor = "default";
 }
 
+
+//БУЛЕВЫ ФУНКЦИИ
+
 //Проверка нажатия на базу карты
 Controller.prototype.cardClickedInbound = function(){
 	var cond = 
@@ -182,6 +185,9 @@ Controller.prototype.cardClickedInbound = function(){
 		this.pointer.y <= this.card.base.y + app.skinManager.skin.height / 2
 	return cond
 }
+
+
+//ХВОСТ КАРТЫ
 
 //Проверка корректности позиции карты
 Controller.prototype.cardOnValidSpot = function(){
@@ -236,6 +242,9 @@ Controller.prototype.cardResetTrail = function(soft){
 	this.trailDefaultBase.add(this.trail);
 }
 
+
+//ТАЙМЕР НАЖАТИЯ
+
 //Запускает таймер клика по карте
 Controller.prototype.setCardClickTimer = function(){
 	this.resetCardClickTimer();
@@ -253,6 +262,9 @@ Controller.prototype.resetCardClickTimer = function(){
 	}
 }
 
+
+//UPDATE, RESET
+
 //Обновляет курсор
 Controller.prototype.updateCursor = function(){
 	for(var ci in gameManager.cards){
@@ -265,43 +277,48 @@ Controller.prototype.updateCursor = function(){
 	game.canvas.style.cursor = "default";
 }
 
-//Обновление позиции карты, курсора и хвоста
-Controller.prototype.update = function(){
-	if(this.card){
+//Обновление позиции карты и хвоста
+Controller.prototype.updateCard = function(){
+	if(!this.card)
+		return;
 
-		//Ресетим контроллер, если карта была спрятана\удалена
-		if(!this.card.sprite.visible || this.card.mover){
-			this.reset();
-			return;
-		}
-
-		//Возвращаем карту по нажатию правой кнопки или если она была перевернута
-		if(this.pointer.rightButton.isDown || !this.card.isDraggable || !this.pointer.withinGame){
-			this.cardReturn();
-			return;
-		}
-
-		//Устанавливаем позицию карты и плавно передивгаем ее к курсору
-		var sTime, sP, mP;
-		sTime = this.cardShiftEndTime - new Date().getTime();
-		if(sTime > 0){
-			sP = {
-				x: Math.round(this.cardShiftPosition.x / this.cardShiftDuration * sTime), 
-				y: Math.round(this.cardShiftPosition.y / this.cardShiftDuration * sTime)
-			};
-		}
-		else{
-			sP = {x:0, y:0};
-		}
-		mP = {
-			x: this.pointer.x - this.card.base.x,
-			y: this.pointer.y - this.card.base.y
-		};
-		this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
-
-		//Спавним хвост
-		this.cardSpawnTrail();
+	//Ресетим контроллер, если карта была спрятана\удалена
+	if(!this.card.sprite.visible || this.card.mover){
+		this.reset();
+		return;
 	}
+
+	//Возвращаем карту по нажатию правой кнопки или если она была перевернута
+	if(this.pointer.rightButton.isDown || !this.card.isDraggable || !this.pointer.withinGame){
+		this.cardReturn();
+		return;
+	}
+
+	//Устанавливаем позицию карты и плавно передивгаем ее к курсору
+	var sTime, sP, mP;
+	sTime = this.cardShiftEndTime - new Date().getTime();
+	if(sTime > 0){
+		sP = {
+			x: Math.round(this.cardShiftPosition.x / this.cardShiftDuration * sTime), 
+			y: Math.round(this.cardShiftPosition.y / this.cardShiftDuration * sTime)
+		};
+	}
+	else{
+		sP = {x:0, y:0};
+	}
+	mP = {
+		x: this.pointer.x - this.card.base.x,
+		y: this.pointer.y - this.card.base.y
+	};
+	this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
+
+	//Спавним хвост
+	this.cardSpawnTrail();
+}
+
+//Обновление контроллера
+Controller.prototype.update = function(){
+	this.updateCard();
 	this.updateCursor();
 }
 
@@ -316,7 +333,8 @@ Controller.prototype.reset = function(){
 	this.pointer = null;
 }
 
-/* ДЕБАГ */
+
+//ДЕБАГ
 
 //Рисует дебаг хвоста
 Controller.prototype.updateDebug = function(){
