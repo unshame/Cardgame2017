@@ -271,6 +271,8 @@ Controller.prototype.resetCardClickTimer = function(){
 //Обновляет курсор
 Controller.prototype.updateCursor = function(){
 	for(var ci in gameManager.cards){
+		if(!gameManager.cards.hasOwnProperty(ci))
+			continue;
 		var card = gameManager.cards[ci];
 		if(card.mouseIsOver() && card.isDraggable){
 			game.canvas.style.cursor = "pointer";

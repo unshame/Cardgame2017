@@ -27,7 +27,7 @@ var Game = function(players){
 
 	//Сообщаем игрокам о соперниках
 	var opponents = [];
-	for(var pi in this.players){
+	for(var pi = 0; pi < this.players.length; pi++){
 		var p = this.players[pi];
 		var o = {
 			id: p.id,
@@ -36,7 +36,7 @@ var Game = function(players){
 		opponents.push(o);
 	}
 
-	for(var pi in this.players){
+	for(var pi = 0; pi < this.players.length; pi++){
 		var player = this.players[pi];
 		player.game = this;
 		this.playersById[player.id] = player;
@@ -98,7 +98,7 @@ Game.prototype.reset = function(){
 	this.fieldSize = 6;
 	this.fieldUsedSpots = 0;
 	this.fullField = this.zeroDiscardFieldSize = this.fieldSize - 1;
-	for (var i = 0; i < this.fieldSize; i++) {
+	for(var i = 0; i < this.fieldSize; i++) {
 		var id = 'FIELD'+i;
 		var fieldSpot = {
 			attack: null,
@@ -162,7 +162,7 @@ Game.prototype.make = function(){
 	}
 
 	//Создаем колоду
-	for(var vi in this.cardValues){
+	for(var vi = 0; vi < this.cardValues.length; vi++){
 
 		for(var si = 0; si < this.numOfSuits; si++){
 			var id = 'card_' + utils.generateId();
@@ -180,7 +180,7 @@ Game.prototype.make = function(){
 	this.shuffleDeck();
 
 	//Находим первый попавшийся не туз и кладем его на дно колоды, это наш козырь
-	for(var ci in this.deck){
+	for(var ci = 0; ci < this.deck.length; ci++){
 
 		var thiscid = this.deck[ci];
 		var othercid = this.deck[this.deck.length - 1];
@@ -297,7 +297,7 @@ Game.prototype.dealNotify = function(deals){
 		var dealsToSend = [];
 		var player = this.players[pi];
 
-		for(var i in deals){
+		for(var i = 0; i < deals.length; i++){
 
 			var deal = deals[i];
 
@@ -328,7 +328,7 @@ Game.prototype.deckNotify = function(){
 
 	var deckToSend = [];
 
-	for(var ci in this.deck){
+	for(var ci = 0; ci < this.deck.length; ci++){
 
 		var cid = this.deck[ci];
 		var card = this.cards[cid];
@@ -355,7 +355,7 @@ Game.prototype.gameStateNotify = function(player){
 
 	var cardsToSend = [];
 
-	for(var ci in this.deck){
+	for(var ci = 0; ci < this.deck.length; ci++){
 
 		var cid = this.deck[ci];
 		var card = this.cards[cid];
@@ -370,12 +370,12 @@ Game.prototype.gameStateNotify = function(player){
 		cardsToSend.push(newCard);
 	}
 
-	for(var pi in this.players){
+	for(var pi = 0; pi < this.players.length; pi++){
 
 		var p = this.players[pi];
 		var pid = p.id;
 
-		for(var ci in this.hands[pid]){
+		for(var ci = 0; ci < this.hands[pid].length; ci++){
 
 			var cid = this.hands[pid][ci];
 			var card = this.cards[cid];
@@ -390,7 +390,7 @@ Game.prototype.gameStateNotify = function(player){
 		}
 	}
 
-	for(var fi in this.field){
+	for(var fi = 0; fi < this.field.length; fi++){
 
 		var fieldSpot = this.field[fi];
 		if(fieldSpot.attack){
@@ -404,7 +404,7 @@ Game.prototype.gameStateNotify = function(player){
 			cardsToSend.push(newCard);
 		}		
 	}
-	for(var ci in cardsToSend){
+	for(var ci = 0; ci < cardsToSend.length; ci++){
 		var card = cardsToSend[ci];
 		card.cid = card.id;
 		delete card.id;
@@ -432,7 +432,7 @@ Game.prototype.discardAndNotify = function(){
 	};
 
 	//Убираем карты со всех позиций на столе
-	for(var fi in this.field){
+	for(var fi = 0; fi < this.field.length; fi++){
 
 		var fieldSpot = this.field[fi];
 
@@ -518,7 +518,7 @@ Game.prototype.endGameAndNotify = function(){
 //Отправляет сообщение игрокам с опциональными действиями
 Game.prototype.notify = function(note, actions){
 
-	for(var pi in this.players){
+	for(var pi = 0; pi < this.players.length; pi++){
 
 		var player = this.players[pi];
 
@@ -535,7 +535,7 @@ Game.prototype.notify = function(note, actions){
 //Ждет ответа от игроков
 Game.prototype.waitForResponse = function(time, players){
 
-	for(var pi in players){
+	for(var pi = 0; pi < players.length; pi++){
 		var player = players[pi];
 		this.playersActing.push(player.id);
 	}
@@ -551,7 +551,7 @@ Game.prototype.setResponseTimer = function(time){
 	if(this.timer)
 		clearTimeout(this.timer);
 
-	for(var pi in this.players){
+	for(var pi = 0; pi < this.players.length; pi++){
 
 		var player = this.players[pi];
 		var pid = player.id;
@@ -573,7 +573,7 @@ Game.prototype.setResponseTimer = function(time){
 	this.timer = setTimeout(() => {
 
 		var names = '';
-		for(var pi in this.playersActing){
+		for(var pi = 0; pi < this.playersActing.length; pi++){
 			var pid = this.playersActing[pi];
 			var name = this.playersById[pid].name;
 			names += name + ' ';
@@ -584,7 +584,7 @@ Game.prototype.setResponseTimer = function(time){
 		//Если есть действия, выполняем первое попавшееся действие
 		if(this.validActions.length && this.gameState == 'STARTED'){
 			var actionIndex = 0;
-			for(var ai in this.validActions){
+			for(var ai = 0; ai < this.validActions.length; ai++){
 				var action = this.validActions[ai];
 				if(action.type == 'SKIP' || action.type == 'TAKE'){
 					actionIndex = ai;
@@ -787,7 +787,7 @@ Game.prototype.processAction = function(player, action){
 
 	//Сообщаем игрока о действии
 	this.waitForResponse(1, this.players);
-	for(var pi in this.players){
+	for(var pi = 0; pi < this.players.length; pi++){
 		var p = this.players[pi];
 		p.recieveAction(action)
 	}
@@ -821,7 +821,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 				value: this.maxCardValue + 1,
 				suit: this.trumpSuit
 			};
-			for(var ci in hand){
+			for(var ci = 0; ci < hand.length; ci++){
 				var cid = hand[ci];
 				var card = this.cards[cid];
 				if(card.suit == this.trumpSuit && card.value < minTCard.value){
@@ -847,7 +847,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 		};
 
 		//Находим минимальный из них
-		for(var ci in minTCards){
+		for(var ci = 0; ci < minTCards.length; ci++){
 			if(minTCards[ci].value < minTCard.value){
 				minTCard = minTCards[ci];
 			}
@@ -875,7 +875,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 
 		//Сообщаем игрокам о минимальных козырях
 		this.waitForResponse(1, this.players);
-		for(var pi in this.players){
+		for(var pi = 0; pi < this.players.length; pi++){
 			this.players[pi].recieveMinTrumpCards(minTCards, minTCard.pid)
 		}		
 	}
@@ -930,7 +930,7 @@ Game.prototype.findPlayerToGoNext = function(){
 		//Находим игроков, только что вышедших из игры
 		var newInactivePlayers = [];
 
-		for(var pi in this.players){
+		for(var pi = 0; pi < this.players.length; pi++){
 
 			var p = this.players[pi];
 			var pid = p.id;			
@@ -945,7 +945,7 @@ Game.prototype.findPlayerToGoNext = function(){
 			//Находим победителей
 			if(!this.inactivePlayers.length){
 
-				for(var i in newInactivePlayers){
+				for(var i = 0; i < newInactivePlayers.length; i++){
 
 					var pid = newInactivePlayers[i];
 
@@ -1036,7 +1036,7 @@ Game.prototype.letAttack = function(pid){
 
 	//Находим значения карт, которые можно подбрасывать
 	var validValues = [];
-	for(var fi in this.field){
+	for(var fi = 0; fi < this.field.length; fi++){
 		var fieldSpot = this.field[fi];
 		if(fieldSpot.attack){
 			var card = this.cards[fieldSpot.attack];
@@ -1054,7 +1054,7 @@ Game.prototype.letAttack = function(pid){
 	var spot = 'FIELD' + this.fieldUsedSpots;
 
 	//Выбираем подходящие карты из руки атакующего и собираем из них возможные действия
-	for(var ci in hand){
+	for(var ci = 0; ci < hand.length; ci++){
 		var cid = hand[ci];
 		var card = this.cards[cid];
 		if(!validValues || ~validValues.indexOf(card.value)){			
@@ -1103,7 +1103,7 @@ Game.prototype.letDefend = function(pid){
 			type: 'TAKE',
 			cards:[]
 		}
-		for(var fi in this.field){
+		for(var fi = 0; fi < this.field.length; fi++){
 			var fieldSpot = this.field[fi];
 
 			if(fieldSpot.attack){
@@ -1150,7 +1150,7 @@ Game.prototype.letDefend = function(pid){
 		action.pid = player.id;
 
 		this.waitForResponse(5, this.players);
-		for(var pi in this.players){
+		for(var pi = 0; pi < this.players.length; pi++){
 
 			var newAction = {
 				type: 'TAKE'
@@ -1162,7 +1162,7 @@ Game.prototype.letDefend = function(pid){
 				newAction.pid = action.pid;
 				newAction.cards = [];
 
-				for(var ci in action.cards){
+				for(var ci = 0; ci < action.cards.length; ci++){
 					
 					var card = utils.copyObject(action.cards[ci]);
 					delete card.value;
@@ -1180,7 +1180,7 @@ Game.prototype.letDefend = function(pid){
 	}
 
 	//Находим карту, которую нужно отбивать
-	for(var fi in this.field){
+	for(var fi = 0; fi < this.field.length; fi++){
 		var fieldSpot = this.field[fi];
 
 		if(fieldSpot.attack && !fieldSpot.defense){
@@ -1204,7 +1204,7 @@ Game.prototype.letDefend = function(pid){
 	var spot = defenseSpot.id;
 
 	//Создаем список возможных действий защищающегося
-	for(var ci in hand){
+	for(var ci = 0; ci < hand.length; ci++){
 		var cid = hand[ci];
 		var card = this.cards[cid];
 		var otherCard = this.cards[defenseSpot.attack];
@@ -1277,7 +1277,7 @@ Game.prototype.continueGame = function(){
 		var numAccepted = 0;
 		var minAcceptedNeeded = Math.ceil(this.players.length / 2); //TODO: заменить на this.players.length в финальной версии
 		
-		for(var pi in this.players){
+		for(var pi = 0; pi < this.players.length; pi++){
 
 			var pid = this.players[pi].id;
 			var action = this.storedActions[pid];
@@ -1333,7 +1333,7 @@ Game.prototype.continueGame = function(){
 		var deals = [];
 
 		for (var cardN = 0; cardN < this.normalHandSize; cardN++) {
-			for(var pi in this.players){
+			for(var pi = 0; pi < this.players.length; pi++){
 				var dealInfo = {
 					pid: this.players[pi].id,
 					numOfCards: 1
@@ -1378,7 +1378,7 @@ Game.prototype.continueGame = function(){
 
 		utils.log('\nTurn', this.turnNumber, this.playersById[this.attacker].name, this.playersById[this.defender].name, this.ally ? this.playersById[this.ally].name : null, '\nCards in deck:', this.deck.length);
 		
-		for(var pi in this.players){
+		for(var pi = 0; pi < this.players.length; pi++){
 			var pid = this.players[pi].id;
 			utils.log(this.playersById[pid].name, this.hands[pid].length);
 		}

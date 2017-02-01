@@ -33,7 +33,7 @@ Player.prototype.recieveCards = function(cards, trumpSuit, numDiscarded){
 	if(numDiscarded || numDiscarded === 0)
 		action.numDiscarded = numDiscarded;	
 
-	for(var ci in cards){
+	for(var ci = 0; ci < cards.length; ci++){
 		action.cards.push(cards[ci])
 	}
 	if(this.remote)
@@ -45,7 +45,7 @@ Player.prototype.recieveDeals = function(deals){
 		type: 'DRAW',
 		cards: []
 	}
-	for(var ci in deals){
+	for(var ci = 0; ci < deals.length; ci++){
 		action.cards.push(deals[ci])
 	}
 	if(this.remote)

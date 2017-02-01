@@ -40,7 +40,7 @@ var SpotManager = function(){
 			//height: 
 		},
 		firstOpponent: {
-			//width:
+			//width: ,
 			//height: 
 		} 
 	}
@@ -179,7 +179,7 @@ SpotManager.prototype.executeAction = function(action){
 	if(action.type == 'TRUMP_CARDS')
 		return;
 	var spot = this.spots[this.pid];
-	for(var ci in spot.cards){
+	for(var ci = 0; ci < spot.cards.length; ci++){
 		spot.cards[ci].setPlayability(false);
 	}
 	if(action.cid){
@@ -193,7 +193,6 @@ SpotManager.prototype.executeAction = function(action){
 			pid = action.pid;		
 		if(action.type == 'CARDS'){
 			this.resetSpots();
-
 			controller.reset();
 
 			for(var cid in gameManager.cards){
@@ -222,7 +221,7 @@ SpotManager.prototype.executeAction = function(action){
 	}
 	else if(action.type == 'DISCARD'){
 		var discardCards = [];
-		for(var i in action.ids){
+		for(var i = 0; i < action.ids.length; i++){
 			var cid = action.ids[i];
 			var card = gameManager.cards[cid]
 			
@@ -246,10 +245,10 @@ SpotManager.prototype.executeAction = function(action){
 
 SpotManager.prototype.highlightPossibleActions = function(actions){
 	var spot = this.spots[this.pid];
-	for(var ci in spot.cards){
+	for(var ci = 0; ci < spot.cards.length; ci++){
 		spot.cards[ci].setPlayability(false);
 	}
-	for(var ai in actions){
+	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
 		if(action.cid && gameManager.cards[action.cid]){
 			gameManager.cards[action.cid].setPlayability(true);
@@ -260,12 +259,12 @@ SpotManager.prototype.highlightPossibleActions = function(actions){
 SpotManager.prototype.queueCards = function(newCards, pid){
 
 	var delay = 0;
-	for(var ci in newCards){
+	for(var ci = 0; ci < newCards.length; ci++){
 		var c = newCards[ci];
 		var card = gameManager.cards[c.cid];
 		if(card){
 			if(pid){
-				if(!pid.match('player_'))
+				if(pid != this.pid)
 					gameManager.cards[c.cid].presetValue(null,0);
 			}
 			else{
@@ -297,7 +296,7 @@ SpotManager.prototype.forEachSpot = function(callback){
 		if(!this.spots.hasOwnProperty(si))
 			return;
 		var spot = this.spots[si];
-		callback.call(this, spot, si)
+		callback.call(this, spot, si);
 	}
 }
 

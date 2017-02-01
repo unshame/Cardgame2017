@@ -80,7 +80,7 @@ server.onDisconnect(function (conn) {
 
 	var removeId = clients[conn.id].id;
 
-	for(var pi in players){
+	for(var pi = 0; pi < players.length; pi++){
 		var p = players[pi];
 		if(p.connid == removeId){
 			if(!p.game){

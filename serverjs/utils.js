@@ -34,7 +34,7 @@ exports.log = function(){
 		console.log.apply(this, arguments);
 	
 	var logLine = "";
-	for(var i in arguments){
+	for(var i = 0; i < arguments.length; i++){
 		var arg = arguments[i];
 		if(logLine.length)
 			logLine += " ";

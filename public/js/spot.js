@@ -248,13 +248,13 @@ Spot.prototype.queueCards = function(newCards, delay){
 	}
 
 	//Устанавливаем задержку для всех карт, равную задержке первой карты в очереди
-	for(var ci in this.cards){
+	for(var ci = 0; ci < this.cards.length; ci++){
 		if(this.delays[this.cards[ci].id] === undefined)
 			this.delays[this.cards[ci].id] = delay;
 	}
 
 	//Устанавливаем задержку для кард в очереди, увеличивая каждую следующую
-	for(var ci in newCards){
+	for(var ci = 0; ci < newCards.length; ci++){
 		var card = newCards[ci];
 
 		//Если карта переходит из поля, одну из карт которых перетаскивает игрок,
@@ -277,7 +277,7 @@ Spot.prototype.placeQueuedCards = function(){
 	if(!this.queuedCards.length)
 		return;
 	
-	for(var ci in this.queuedCards){
+	for(var ci = 0; ci < this.queuedCards.length; ci++){
 		var card = this.queuedCards[ci];
 		card.spot = this;
 		this.cards.push(card)
@@ -318,7 +318,7 @@ Spot.prototype.addCards = function(newCards){
 		return delay
 	}
 	else{
-		for(var ci in newCards){
+		for(var ci = 0; ci < newCards.length; ci++){
 			var card = newCards[ci];
 			card.spot = this;
 			this.cards.push(card);
