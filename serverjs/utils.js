@@ -9,9 +9,9 @@ var logStream = fs.createWriteStream('./logs/log.txt', {'flags': 'a'});
 exports.generateId = function(){
 	var chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 	var howMany = 7;
-	var rnd = crypto.randomBytes(howMany)
-	    , value = new Array(howMany)
-	    , len = chars.length;
+	var rnd = crypto.randomBytes(howMany),
+		value = new Array(howMany),
+		len = chars.length;
 
 	for (var i = 0; i < howMany; i++) {
 	    value[i] = chars[rnd[i] % len]
