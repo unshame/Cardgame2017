@@ -36,7 +36,7 @@ var EurecaClientSetup = function() {
 		
 	}
 	client.exports.recievePossibleActions = function(actions){		
-		spotManager.highlightPossibleActions();
+		spotManager.highlightPossibleActions(actions);
 		if(isInDebugMode)
 			console.log(actions)
 	}

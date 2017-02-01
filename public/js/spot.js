@@ -166,6 +166,7 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 
 	if(shouldPlace === undefined)
 		shouldPlace = false;
+	
 	if(this.alignment == 'vertical'){
 		if(width < app.skinManager.skin.height){
 			width = app.skinManager.skin.height;

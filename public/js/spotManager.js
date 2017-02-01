@@ -313,7 +313,12 @@ SpotManager.prototype.placeQueuedCards = function(){
 }
 
 SpotManager.prototype.applySkin = function(){
-
+	for(var si in this.spots){
+		if(!this.spots.hasOwnProperty(si))
+			return;
+		var spot = this.spots[si];
+		spot.resize(null, app.skinManager.skin.height, true);
+	}
 }
 
 SpotManager.prototype.resetSpots = function(){
