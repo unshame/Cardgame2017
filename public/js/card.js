@@ -22,7 +22,7 @@ Card = function (options) {
 	this.id = this.options.id;
 
 	//Spot
-	this.setSpot(this.options.spotId)
+	this.presetSpot(this.options.spotId)
 	this.spot = null;
 
 	//Sprite
@@ -176,7 +176,7 @@ Card.prototype.setDraggability = function(draggable){
 //Устанавливает, можно ли ходить этой картой
 Card.prototype.setPlayability = function(playable){
 	if(playable){
-		this.glowStart(0.25, 0.75, 1500, 500, 0xFFFF0A)
+		this.glowStart(0.25, 0.75, 1500, 500, 0xFF8300)
 	}
 	else{
 		this.glowStop();
@@ -211,7 +211,7 @@ Card.prototype.setBase = function(x, y){
 	this.update();
 }
 
-Card.prototype.setSpot = function(spotId){
+Card.prototype.presetSpot = function(spotId){
 	this.spotId = spotId;
 	 if(spotId.match('player')){
 		this.setDraggability(true);
@@ -492,7 +492,7 @@ Card.prototype.mouseOver = function(sprite, pointer){
 //Вызывается когда курсор покидает спрайт карты
 Card.prototype.mouseOut = function(sprite, pointer){
 	if(this.spot)
-		this.spot.focusOffCard();
+		this.spot.focusOffCard(this);
 }
 
 

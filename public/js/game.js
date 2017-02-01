@@ -24,6 +24,7 @@ var onScreenChange = function() {
 	app.scale.setGameSize(appManager.screenWidth, appManager.screenHeight)
 	appManager.background.width = appManager.screenWidth;
 	appManager.background.height =  appManager.screenHeight;
+	spotManager.resizeSpots();
 
 }
 window.addEventListener('resize',onScreenChange);

@@ -24,8 +24,9 @@ var Spot = function(options){
 	this.options = this.getDefaultOptions();
 
 	for(o in options){
-		if(options.hasOwnProperty(o))
+		if(options.hasOwnProperty(o) && options[o] !== undefined){
 			this.options[o] = options[o];
+		}
 	}
 
 	this.isInDebugMode = this.options.debug;
@@ -87,6 +88,8 @@ var Spot = function(options){
 	this.area.alpha = 0.35;
 	this.area.visible = this.isInDebugMode;
 	this.base.add(this.area);
+
+	this.isHighlighted = false;
 
 	this.resize(this.options.width, this.options.height)
 	
@@ -172,13 +175,13 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 			width = skinManager.skin.height;
 		}
 
-		if(height < skinManager.skin.width){
-			height = skinManager.skin.width + this.minActiveSpace + this.padding*2;
+		if(height < skinManager.skin.width + this.minActiveSpace){
+			height = skinManager.skin.width + this.minActiveSpace;
 		}
 	}
 	else{
-		if(width < skinManager.skin.width){
-			width = skinManager.skin.width + this.minActiveSpace + this.padding*2;
+		if(width < skinManager.skin.width + this.minActiveSpace){
+			width = skinManager.skin.width + this.minActiveSpace;
 		}
 
 		if(height < skinManager.skin.height){
@@ -191,6 +194,12 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 
 	if(shouldPlace)
 		this.placeCards();
+}
+
+Spot.prototype.setHighlight = function(on){
+	this.area.tint = on ? 0xFF8300 : 0xFFFFFF;
+	this.area.alpha = on ? 1 : 0.35;
+	this.isHighlighted = on;
 }
 
 
@@ -483,14 +492,14 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 		this.debugActiveSpace.y = this.base.y;
 		if(this.alignment == 'vertical'){
 			this.debugActiveSpace.x += topMargin - cardHeight/2;
-			this.debugActiveSpace.y += leftMargin;
+			this.debugActiveSpace.y += leftMargin - shift;
 			this.debugActiveSpace.width = cardHeight;
-			this.debugActiveSpace.height = requiredActiveWidth;
+			this.debugActiveSpace.height = requiredActiveWidth + shift*2;
 		}
 		else{
-			this.debugActiveSpace.x += leftMargin;
+			this.debugActiveSpace.x += leftMargin - shift;
 			this.debugActiveSpace.y += topMargin - cardHeight/2;
-			this.debugActiveSpace.width = requiredActiveWidth;
+			this.debugActiveSpace.width = requiredActiveWidth + shift*2;
 			this.debugActiveSpace.height = cardHeight;
 		}
 	}
@@ -634,7 +643,7 @@ Spot.prototype.reset = function(){
 //Проверяет нахождение карты внутри поля (по координатам)
 Spot.prototype.cardIsInside = function(card, cardSpacing){
 	if(cardSpacing === null || cardSpacing === undefined)
-		cardSpacing = 0;
+		cardSpacing = skinManager.skin.width;
 	var shift = skinManager.skin.width - cardSpacing;
 	if(
 		!card ||
@@ -668,7 +677,7 @@ Spot.prototype.setNoFocusTimer = function(time){
 
 //Запоминает карту, над которой находится курсор
 Spot.prototype.focusOnCard = function(card, pointer){
-	if(!card || !~this.cards.indexOf(card) || !this.focusable)
+	if(!card || !~this.cards.indexOf(card) || !this.focusable || !this.cardIsInside(card))
 		return;
 
 	this.focusedCard = card;
@@ -677,8 +686,8 @@ Spot.prototype.focusOnCard = function(card, pointer){
 }
 
 //Обнуляет запомненную карту, когда курсор с нее ушел
-Spot.prototype.focusOffCard = function(){
-	if(!this.focusedCard || !this.focusable)
+Spot.prototype.focusOffCard = function(card){
+	if(!this.focusedCard || !this.focusable || !this.cardIsInside(this.focusedCard) || card != this.focusedCard)
 		return;
 
 	this.focusedCard = null;
