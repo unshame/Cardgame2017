@@ -1,11 +1,11 @@
 var utils = require('./utils')
 
-var Player = function(remote, connid, name){
+var Player = function(remote, connId, name){
 	this.id = 'player_' + utils.generateId();
 	this.type = 'player';
 
 	this.remote = remote;
-	this.connid = connid;
+	this.connId = connId;
 
 	if(this.remote){
 		this.remote.setId(this.id);
@@ -65,13 +65,13 @@ Player.prototype.recieveMinTrumpCards = function(cards, winner){
 Player.prototype.recieveValidActions = function(actions){
 	if(this.remote)
 		this.remote.recievePossibleActions(actions);
-	var randomIndex
+/*	var randomIndex
 	if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'SKIP'))
 		randomIndex = Math.floor(Math.random()*(actions.length-1))
 	else
 		randomIndex = Math.floor(Math.random()*actions.length);
 	var action = actions[randomIndex];
-	setTimeout(() => {this.sendResponse(action)},4000)	
+	setTimeout(() => {this.sendResponse(action)},4000)	*/
 }
 
 Player.prototype.recieveAction = function(action){

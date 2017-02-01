@@ -13,7 +13,7 @@ var LobbyManager = require('./serverjs/lobbyManager').LobbyManager,
 //Добавляем ботов
 var players = [];
 var games = [];
-for (var n = 0; n < 5; n++) {
+for (var n = 0; n < 2; n++) {
 	var bot = new Bot();
 	players.push(bot);
 }
@@ -65,9 +65,9 @@ server.onConnect(function (conn) {
 		if(game.disconnectedPlayers.length){
 			var p = game.playersById[game.disconnectedPlayers[0]];
 			p.remote = remote;
-			p.connid = conn.id;
+			p.connId = conn.id;
 			p.connected = true;
-			remote.setId(conn.id);
+			remote.setId(p.id);
 			game.gameStateNotify(p);
 			game.disconnectedPlayers.shift();
 		}
@@ -82,7 +82,7 @@ server.onDisconnect(function (conn) {
 
 	for(var pi = 0; pi < players.length; pi++){
 		var p = players[pi];
-		if(p.connid == removeId){
+		if(p.connId == removeId){
 			if(!p.game){
 				delete p;
 			}
@@ -94,5 +94,22 @@ server.onDisconnect(function (conn) {
 
 	delete clients[removeId];
 });
+
+server.exports.recieveAction = function(action){
+	var connId = this.connection.id;
+	var pi = players.map((p) => {return p.connId;}).indexOf(connId);
+	var player = players[pi];
+	var game = player.game;
+	var localAction;
+	console.log(game.validActions)
+	for(var ai = 0; ai < game.validActions.length; ai++){
+		var validAction = game.validActions[ai];
+		if(validAction.cid == action.cid && validAction.spot == action.spot){
+			localAction = validAction;
+			break;
+		}
+	}
+	localAction && player.sendResponse(localAction);
+}
 
 Server.listen(8000, '0.0.0.0');

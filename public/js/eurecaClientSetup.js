@@ -6,6 +6,7 @@
 
 var server;
 var isInDebugMode = false;
+var actions = null;
 
 var EurecaClientSetup = function() {
 	//создаем eureca.io клиент
@@ -20,9 +21,10 @@ var EurecaClientSetup = function() {
 	
 	//Методы, принадлежащие export, становятся доступны на стороне сервера
 	
-	client.exports.setId = function(id) 
+	client.exports.setId = function(pid) 
 	{
-		appManager.pid = id;
+		//appManager.connId = connId;
+		appManager.pid = pid;
 	}	
 	client.exports.meetOpponents = function(opponents){
 		spotManager.createSpotNetwork(opponents);
@@ -30,13 +32,14 @@ var EurecaClientSetup = function() {
 		if(isInDebugMode)
 			console.log(opponents);
 	}
-	client.exports.recievePossibleActions = function(actions){		
-		spotManager.highlightPossibleActions(actions);
+	client.exports.recievePossibleActions = function(newActions){		
+		actions = newActions;
+		spotManager.highlightPossibleActions(newActions);
 		if(isInDebugMode)
-			console.log(actions)
+			console.log(newActions)
 	}
 	client.exports.recieveAction = function(action){
-		spotManager.executeAction(action);
+		var delay = spotManager.executeAction(action);
 		
 		if(isInDebugMode)
 			console.log(action)
@@ -50,4 +53,16 @@ var EurecaClientSetup = function() {
 			console.log('Too late');
 	}
 	return client;
+}
+
+function sendAction(spot, card){
+	if(!actions)
+		return;
+	for(var ai = 0; ai < actions.length; ai++){
+		var action = actions[ai];
+		if(action.cid == card.id && spot.id == action.spot){
+			server.recieveAction(action);
+			return;
+		}
+	}
 }

@@ -113,8 +113,10 @@ Controller.prototype.cardPutDown = function(){
 	if(this.isInDebugMode)
 		console.log('Controller: Putting down', this.card.id);
 
-	if(this.cardOnValidSpot() && !this.pointer.rightButton.isDown){
-		this.cardRebaseAtPointer();
+	var spot = this.cardOnValidSpot();
+
+	if(spot && !this.pointer.rightButton.isDown){
+		this.cardRebaseAtPointer(spot);
 	}
 	else{
 		this.cardReturn();
@@ -122,7 +124,7 @@ Controller.prototype.cardPutDown = function(){
 }
 
 //Оставляет карту в позиции курсора
-Controller.prototype.cardRebaseAtPointer = function(){
+Controller.prototype.cardRebaseAtPointer = function(newSpot){
 
 	if(!this.card){
 		console.warn('Controller: cardRebaseAtPointer called but no Card assigned.');
@@ -140,6 +142,21 @@ Controller.prototype.cardRebaseAtPointer = function(){
 
 	this.card.setBase(x, y);
 	this.card.setRelativePosition(0, 0);
+	this.card.setDraggability(false);
+
+	spotManager.forEachSpot(function(spot, si){
+		spot.setHighlight(false);
+	})
+
+
+	var spot = this.card.spot;
+	if(spot){
+		for(var ci = 0; ci < spot.cards.length; ci++){
+			this.card.spot.cards[ci].setPlayability(false);
+		}
+	}
+
+	sendAction(newSpot, this.card);
 
 	this.card = null;
 	this.pointer = null;
@@ -194,7 +211,16 @@ Controller.prototype.cardClickedInbound = function(){
 
 //Проверка корректности позиции карты
 Controller.prototype.cardOnValidSpot = function(){
-	return debugSpotValidity;
+	var spots = spotManager.forEachSpot(function(spot, si){
+		if(spot.isHighlighted && spot.cardIsInside(this.card)){
+			return spot
+		}
+	}, this)
+	if(spots.length){
+		if(spots.length > 1)
+			console.warn('Controller: Card is over more than 1 valid spot')
+		return spots[0];
+	}
 }
 
 //Смещает хвост относительно базы карты

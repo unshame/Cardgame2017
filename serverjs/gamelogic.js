@@ -198,7 +198,7 @@ Game.prototype.make = function(){
 	this.trumpSuit = this.cards[lastcid].suit;
 
 	//Сообщаем игрокам о составе колоды и запускаем игру
-	this.waitForResponse(10, this.players);
+	this.waitForResponse(5, this.players);
 	this.deckNotify();	// --> continueGame()
 }
 
@@ -785,7 +785,7 @@ Game.prototype.processAction = function(player, action){
 
 	action.pid = player.id;
 
-	//Сообщаем игрока о действии
+	//Сообщаем игрокам о действии
 	this.waitForResponse(1, this.players);
 	for(var pi = 0; pi < this.players.length; pi++){
 		var p = this.players[pi];
@@ -874,7 +874,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 		utils.log('Player to go first: ', this.playersById[this.attacker].name)
 
 		//Сообщаем игрокам о минимальных козырях
-		this.waitForResponse(1, this.players);
+		this.waitForResponse(5, this.players);
 		for(var pi = 0; pi < this.players.length; pi++){
 			this.players[pi].recieveMinTrumpCards(minTCards, minTCard.pid)
 		}		
@@ -1079,7 +1079,7 @@ Game.prototype.letAttack = function(pid){
 	this.setTurnStage('DEFENSE');
 
 	this.validActions = actions;
-	this.waitForResponse(5, [player])
+	this.waitForResponse(15, [player])
 	try{
 		player.recieveValidActions(actions.slice());	
 	}
@@ -1149,7 +1149,7 @@ Game.prototype.letDefend = function(pid){
 
 		action.pid = player.id;
 
-		this.waitForResponse(5, this.players);
+		this.waitForResponse(15, this.players);
 		for(var pi = 0; pi < this.players.length; pi++){
 
 			var newAction = {
@@ -1256,7 +1256,7 @@ Game.prototype.letDefend = function(pid){
 			break;
 	}
 
-	this.waitForResponse(5, [player]);
+	this.waitForResponse(15, [player]);
 	try{
 		player.recieveValidActions(actions);	
 	}
