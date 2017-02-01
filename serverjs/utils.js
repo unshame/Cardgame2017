@@ -1,11 +1,23 @@
 var isInDebugMode = false;
 
 var fs = require('fs');
+var crypto = require('crypto');
+
 fs.writeFile('./logs/log.txt','');
 var logStream = fs.createWriteStream('./logs/log.txt', {'flags': 'a'});
 
 exports.generateId = function(){
-	return Math.random().toString(36).substr(2, 9);
+	var chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+	var howMany = 7;
+	var rnd = crypto.randomBytes(howMany)
+	    , value = new Array(howMany)
+	    , len = chars.length;
+
+	for (var i = 0; i < howMany; i++) {
+	    value[i] = chars[rnd[i] % len]
+	};
+
+	return value.join('');
 }
 
 exports.copyObject = function(obj){
