@@ -178,9 +178,10 @@ SpotManager.prototype.addSpot = function(options){
 SpotManager.prototype.executeAction = function(action){
 	if(action.type == 'TRUMP_CARDS')
 		return;
-	/*for(var ci in spot.cards){
+	var spot = this.spots[this.pid];
+	for(var ci in spot.cards){
 		spot.cards[ci].setPlayability(false);
-	}	*/
+	}
 	if(action.cid){
 		this.queueCards([action]);
 		this.removeMarkedCards();
