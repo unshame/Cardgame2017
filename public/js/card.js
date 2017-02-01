@@ -408,6 +408,9 @@ Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 
 	this.glow.tint = color || 0xFFFFFF;
 
+	if(game.paused)
+		return;
+
 	this.glowDecreaser = game.add.tween(this.glow);
 	this.glowDecreaser.to(
 		{alpha: minGlow}, 
