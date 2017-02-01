@@ -21,11 +21,12 @@
 8. Должно быть так:   
 ![Test](https://i.imgur.com/0FKyJMi.jpg "Test")  
 И если нажать F12:  
-![DevConsole](https://i.imgur.com/HyQXwbl.png "F12 Developer Console")  
+![DevConsole](https://i.imgur.com/0Bx0esu.png "F12 Developer Console")  
   
 Полезные команды в консоли:  
 * isInDebugMode = true - включает лог сообщений от сервера (см. картинку выше)  
 * controller.toggleDebugMode() - включает дебаг при перетаскивании карт  
+* spotManager.toggleDebugMode() - переключает дебаг полей карт
 
 Что сделано clientside:  
 * Конструктор карт (Card)  
