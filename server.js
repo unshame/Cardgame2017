@@ -58,7 +58,7 @@ server.onConnect(function (conn) {
 		var players = [];
 		var p = new Player(remote, conn.id);
 		players.push(p);
-		for (var n = 0; n < Math.floor(Math.random())*3 + 1; n++) {
+		for (var n = 0; n < Math.floor(Math.random()*3) + 1; n++) {
 			var bot = new Bot();
 			players.push(bot);
 		}
