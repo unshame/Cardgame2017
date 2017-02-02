@@ -29,7 +29,7 @@ SkinManager.prototype.addSkin = function(options){
 
 	skin.name = options.name || 'default';
 	skin.sheetName = skin.name + 'Cards';
-	skin.sheetPath = options.sheetPath || 'assets/cards/modern.png';
+	skin.sheetPath = options.name && 'assets/skins/' + options.name + '/cards.png' || 'assets/skins/default/cards.png';
 
 	skin.numOfFrames = options.numOfFrames || 67;
 	skin.firstValueFrame = options.firstValueFrame || 0;
@@ -39,7 +39,7 @@ SkinManager.prototype.addSkin = function(options){
 
 	skin.trumpOffset = options.trumpOffset || 33;
 
-	skin.glowPath = options.glowPath || 'assets/glow.png';
+	skin.glowPath = options.name && 'assets/skins/' + options.name + '/glow.png' || 'assets/default/glow.png';
 	skin.glowSheetName = options.name + 'Glow';
 	skin.glowRealWidth = options.glowWidth || 170;
 	skin.glowRealHeight = options.glowHeight || 220;
@@ -48,7 +48,7 @@ SkinManager.prototype.addSkin = function(options){
 
 	skin.trailWidth = options.trailWidth || 35;
 	skin.trailHeight = options.trailHeight || 35;
-	skin.trailPath = options.trailPath || 'assets/particles/trails.png';
+	skin.trailPath = options.name && 'assets/skins/' + options.name + '/trails.png' || 'assets/skins/default/trails.png';
 	skin.trailName = options.trailName || options.name + 'Trail';
 
 	app.load.spritesheet(
