@@ -1,5 +1,8 @@
 # Cardgame2017
 
+Развернул тестовую версию на хостинге - https://durak.herokuapp.com/
+
+## Установка
 1. Зарегистрироваться на сайте и скинуть мне название аккаунта     
 1. Установить GitHub Desktop https://desktop.github.com/  
 2. Авторизоваться в нем
@@ -18,19 +21,25 @@
 И если нажать F12:  
 ![DevConsole](https://i.imgur.com/HyQXwbl.png "F12 Developer Console")  
   
-Полезные команды в консоли:  
+## Полезные команды в консоли:  
 * isInDebugMode = true - включает лог сообщений от сервера (см. картинку выше)  
-* controller.toggleDebugMode() - включает дебаг при перетаскивании карт  
+* controller.toggleDebugMode() - переключает дебаг при перетаскивании карт  
 * spotManager.toggleDebugMode() - переключает дебаг полей карт
+* Средний клик на карте, потом в консоли Chrome правый клик на появившейся строчке -> Store as global var, чтобы получить прямой доступ к карте
 
-Что сделано clientside:  
+## Скины:  
+* skinManager.setSkin('modern') - по дефолту
+* skinManager.setSkin('classic') - "классический" скин
+* skinManager.setSkin('familiar') - лучше даже не пробовать
+
+## Что сделано clientside:  
 * Конструктор карт (Card)  
 * Конструктор полей карт (Spot)  
 * Частично контроллер (Controller)
 * Частично менеджер полей (SpotManager)  
 * Частично менеджер скинов (SkinManager)  
 
-Что нужно сделать clientside:  
+## Что нужно сделать clientside:  
 * AppManager  
 * ConnectionManager
 * LobbyManager  
@@ -38,10 +47,10 @@
 * UI  
 * Chat  
 
-Что сделано serverside:  
+## Что сделано serverside:  
 * Конструктор игры (Game)  
 
-Что нужно сделать srverside:
+## Что нужно сделать serverside:
 * Конструктор лобби (Lobby)  
 * Менеджер лобби (LobbyManager\LobbyBrowser)  
 * Менеджер сервера и соединения с игроками (Server)  
