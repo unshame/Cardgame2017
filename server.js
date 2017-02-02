@@ -13,7 +13,6 @@ var LobbyManager = require('./serverjs/lobbyManager').LobbyManager,
 	Game = require('./serverjs/gamelogic').Game,
 	Bot = require('./serverjs/bots').Bot,
 	Player = require('./serverjs/players').Player;
-	
 
 //Приложение и http сервер
 var app = express(app),
@@ -21,6 +20,10 @@ var app = express(app),
 
 //Открываем клиентам доступ к файлам 
 app.use(express.static(__dirname + '/public'));
+
+app.get('/', function(request, response) {
+  response.render('pages/index');
+});
 
 //Устанавливаем порт
 app.set('port', (process.env.PORT || 5000));
