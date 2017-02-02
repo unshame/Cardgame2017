@@ -222,6 +222,7 @@ SpotManager.prototype.createSpotNetwork = function(players){
 			texture: 'spot',
 			sorting:false,
 			focusable:false,
+			flipped: true,
 			type: 'HAND',
 			id: p.id
 		});

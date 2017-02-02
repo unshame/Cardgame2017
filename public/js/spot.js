@@ -55,6 +55,8 @@ var Spot = function(options){
 	if(!~['top', 'middle', 'bottom'].indexOf(this.verticalAlign))
 		this.verticalAlign = this.getDefaultOptions().verticalAlign;
 
+	this.flipped = this.options.flipped;
+
 	this.margin = this.options.margin;
 	this.padding = this.options.padding;
 
@@ -127,11 +129,12 @@ Spot.prototype.getDefaultOptions = function(){
 		//не влияет на width и height
 		alignment: 'horizontal', 
 		direction: 'forward',	 //Направление поля
+		flipped: false,
 
 		texture: null,
 		alpha: 0.35,
 
-		debug: true
+		debug: false
 	}
 	return options
 }
@@ -197,6 +200,7 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 }
 
 Spot.prototype.setHighlight = function(on){
+	this.area.visible = on ? true : false;
 	this.area.tint = on ? 0xFF8300 : 0xFFFFFF;
 	this.area.alpha = on ? 1 : 0.35;
 	this.isHighlighted = on;
@@ -276,7 +280,7 @@ Spot.prototype.queueCards = function(newCards, delay){
 		delay += this.delayTime;
 	}
 
-	//Запоминаем задержку для noFocusTimer
+	//Запоминаем задержку для uninteractibleTimer
 	this.expectedDelay = delay;
 	return delay
 }
@@ -295,7 +299,7 @@ Spot.prototype.placeQueuedCards = function(){
 	var bringUpOn = (this.type == 'DECK') ? 'init' : 'start';
 	this.sortCards();
 	this.placeCards(null, bringUpOn);
-	this.setNoFocusTimer(this.expectedDelay);
+	this.setUninteractibleTimer(this.expectedDelay);
 	this.queuedCards = [];
 	this.delays = {};
 	this.expectedDelay = 0;
@@ -359,7 +363,11 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	//Размеры и угол поля
 	var areaWidth = (this.alignment == 'vertical') ?  this.area.height : this.area.width;
 	var areaHeight = (this.alignment == 'vertical') ? this.area.width : this.area.height;
-	var angle = (this.alignment == 'vertical') ? 90 : 0;
+	var angle = 0;
+	if(this.alignment == 'vertical')
+		angle += 90;
+	if(this.flipped)
+		angle += 180;
 
 	//Размеры карт, ширина включает отступ между картами
 	var cardWidth = skinManager.skin.width + this.padding*2;
@@ -593,6 +601,13 @@ Spot.prototype.moveCard = function(
 		card.setBase(x, y);
 	}
 
+	//Проверяем перетаскиваемость карты для тех случаев, когда карта была перемещена
+	//без использования presetSpot метода
+	if(this.type == 'HAND' && this.id == appManager.pid && !card.draggable)
+		card.setDraggability(true)
+	else if(card.draggable)
+		card.setDraggability(false);
+
 	//Добавляем задержку передвижения, если указаны новые карты или
 	//если необходимо задерживать смещенные карты
 	if(increaseDelayIndex)
@@ -661,17 +676,17 @@ Spot.prototype.cardIsInside = function(card, cardSpacing){
 //ВЫДЕЛЕНИЕ КАРТ КУРСОРОМ
 
 //Запускает таймер, во время которого карты не реагируют на курсор
-Spot.prototype.setNoFocusTimer = function(time){
+Spot.prototype.setUninteractibleTimer = function(time){
 
 	if(!time || typeof time != 'number')
 		return;
 
-	if(this.noFocusTimer)
-		app.time.events.remove(this.noFocusTimer);
+	if(this.uninteractibleTimer)
+		app.time.events.remove(this.uninteractibleTimer);
 
-	this.noFocusTimer = app.time.events.add(time, function(){
+	this.uninteractibleTimer = app.time.events.add(time, function(){
 		this.placeCards();
-		this.noFocusTimer = null;
+		this.uninteractibleTimer = null;
 	}, this);
 }
 
@@ -681,7 +696,7 @@ Spot.prototype.focusOnCard = function(card, pointer){
 		return;
 
 	this.focusedCard = card;
-	if(!this.noFocusTimer)
+	if(!this.uninteractibleTimer)
 		this.placeCards();
 }
 
@@ -691,7 +706,7 @@ Spot.prototype.focusOffCard = function(card){
 		return;
 
 	this.focusedCard = null;
-	if(!this.noFocusTimer)
+	if(!this.uninteractibleTimer)
 		this.placeCards();
 }
 
