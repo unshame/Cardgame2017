@@ -2,8 +2,6 @@
  * Запускает сервер
  */
  
-process.env.PWD = process.cwd()
-
 //Node moduls
 var express = require('express'),
 	http = require('http'),
@@ -21,8 +19,7 @@ var app = express(app),
 	httpServer = http.createServer(app);
 
 //Открываем клиентам доступ к файлам 
-console.log(__dirname, process.env.PWD);
-app.use(express.static(process.env.PWD+'/public'));
+app.use(express.static(__dirname+'/public'));
 
 //Устанавливаем порт
 app.set('port', (process.env.PORT || 5000));
