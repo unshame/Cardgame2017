@@ -200,7 +200,7 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 }
 
 Spot.prototype.setHighlight = function(on){
-	this.area.visible = on ? true : false;
+	this.area.visible = on || this.isInDebugMode ? true : false;
 	this.area.tint = on ? 0xFF8300 : 0xFFFFFF;
 	this.area.alpha = on ? 1 : 0.35;
 	this.isHighlighted = on;

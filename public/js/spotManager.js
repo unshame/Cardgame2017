@@ -85,8 +85,8 @@ SpotManager.prototype.calculateSizes = function(){
 	}
 
 	//Field
-	var width = (appManager.screenWidth - 130) / 7 - 50;
-	for(var i = 0; i <= 6; i++){
+	var width = (appManager.screenWidth - 130) / 6 - 50;
+	for(var i = 0; i < 6; i++){
 		id = 'FIELD' + i;
 		x = this.positions.firstField.x + (width + 50)*i;
 		y = this.positions.firstField.y;
@@ -179,7 +179,7 @@ SpotManager.prototype.createSpotNetwork = function(players){
 	this.cardsToRemove['DISCARD_PILE'] = [];
 
 	//Field
-	for(var i = 0; i <= 6; i++){
+	for(var i = 0; i < 6; i++){
 		id = 'FIELD' + i;
 		this.spots[id] = new Spot({
 			x: this.positions[id].x,
