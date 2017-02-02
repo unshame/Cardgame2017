@@ -19,10 +19,6 @@ app.set('port', (process.env.PORT || 5000));
 // Открываем клиентам доступ к файлам 
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', function(request, response) {
-  response.render('pages/index');
-});
-
 //Тут будет информация о клиентах
 var clients = {};
 
