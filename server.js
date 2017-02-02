@@ -1,32 +1,30 @@
+/*
+ * Запускает сервер
+ */
 
+//Node moduls
 var express = require('express'),
-	app = express(app),
-	http = require('http');
-	
+	http = require('http'),
+	Eureca = require('eureca.io');
 
+//Игровые модули
 var LobbyManager = require('./serverjs/lobbyManager').LobbyManager,
 	Lobby = require('./serverjs/lobby').Lobby,
 	Game = require('./serverjs/gamelogic').Game,
 	Bot = require('./serverjs/bots').Bot,
 	Player = require('./serverjs/players').Player;
 
-var httpServer = http.createServer(app);
+//Приложение и http сервер
+var app = express(app),
+	httpServer = http.createServer(app);
 
-var games = [];
-var players = [];
-
-app.set('port', (process.env.PORT || 5000));
-
-// Открываем клиентам доступ к файлам 
+//Открываем клиентам доступ к файлам 
 app.use(express.static(__dirname + '/public'));
 
-//Тут будет информация о клиентах
-var clients = {};
+//Устанавливаем порт
+app.set('port', (process.env.PORT || 5000));
 
-//Загружаем серверную библиотеку
-var Eureca = require('eureca.io');
-
-//Создаем сервер и добавляем разрешенные клиентские функции
+//Создаем eureca сервер и добавляем разрешенные клиентские функции
 var server = new Eureca.Server({allow:[
 	'setId',
 	'meetOpponents',
@@ -37,8 +35,12 @@ var server = new Eureca.Server({allow:[
 ]
 });
 
-//Подключаем eureca к нашему http серверу
+//Прикрепляем http сервер к eureca серверу
 server.attach(httpServer);
+
+var clients = {};
+var games = [];
+var players = [];
 
 //Клиент подключился
 server.onConnect(function (conn) {
@@ -50,17 +52,18 @@ server.onConnect(function (conn) {
 	//Запоминаем информацию о клиенте
 	clients[conn.id] = {id:conn.id, remote:remote};
 
+	//Подключаем клиента к экземпляру игрока
+	var newPlayers = [];
+	var p = new Player(remote, conn.id);
+	
 	//Запускаем игру с ботами и игроком
-		//Подключаем клиента к экземпляру игрока
-		var newPlayers = [];
-		var p = new Player(remote, conn.id);
-		newPlayers.push(p);
-		players.push(p);
-		for (var n = 0; n < Math.floor(Math.random()*3) + 1; n++) {
-			var bot = new Bot();
-			newPlayers.push(bot);
-		}
-		games.push(new Game(newPlayers));
+	newPlayers.push(p);
+	players.push(p);
+	for (var n = 0; n < Math.floor(Math.random()*3) + 1; n++) {
+		var bot = new Bot();
+		newPlayers.push(bot);
+	}
+	games.push(new Game(newPlayers));
 });
 
 //Клиент отключился
@@ -101,6 +104,7 @@ server.exports.recieveAction = function(action){
 	localAction && player.sendResponse(localAction);
 }
 
+//Подключаем сервер к порту
 httpServer.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
