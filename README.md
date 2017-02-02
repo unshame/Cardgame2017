@@ -12,12 +12,7 @@
   * npm install eureca.io  
 5. Запустуть сервер через Node.js command prompt: 
   * node server.js  
-6. Узнать локальный ip адрес
-  * WinKey + R  
-  * cmd  
-  * ipconfig  
-  * Запомнить IP4-адрес  
-7. В браузере открыть IP4-адрес:8000 
+7. В браузере открыть localhost:5000
 8. Должно быть так:   
 ![Test](https://i.imgur.com/0Bx0esu.png  "Test")  
 И если нажать F12:  

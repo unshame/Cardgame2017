@@ -537,6 +537,11 @@ Game.prototype.waitForResponse = function(time, players){
 
 	for(var pi = 0; pi < players.length; pi++){
 		var player = players[pi];
+
+		//Если игрок отключился, заканчиваем игру, остановив таймер
+		if(!player.connected)
+			return;
+		
 		this.playersActing.push(player.id);
 	}
 

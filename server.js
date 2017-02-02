@@ -11,15 +11,17 @@ var LobbyManager = require('./serverjs/lobbyManager').LobbyManager,
 	Player = require('./serverjs/players').Player;
 
 //Добавляем ботов
-var players = [];
 var games = [];
-for (var n = 0; n < 2; n++) {
-	var bot = new Bot();
-	players.push(bot);
-}
+var players = [];
+
+app.set('port', (process.env.PORT || 5000));
 
 // Открываем клиентам доступ к файлам 
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
+
+app.get('/', function(request, response) {
+  response.render('pages/index');
+});
 
 //Тут будет информация о клиентах
 var clients = {};
@@ -52,26 +54,16 @@ server.onConnect(function (conn) {
 	clients[conn.id] = {id:conn.id, remote:remote};
 
 	//Запускаем игру с ботами и игроком
-	if(!games.length){
-
 		//Подключаем клиента к экземпляру игрока
+		var newPlayers = [];
 		var p = new Player(remote, conn.id);
-
+		newPlayers.push(p);
 		players.push(p);
-		games.push(new Game(players));
-	}
-	else{
-		var game = games[0];
-		if(game.disconnectedPlayers.length){
-			var p = game.playersById[game.disconnectedPlayers[0]];
-			p.remote = remote;
-			p.connId = conn.id;
-			p.connected = true;
-			remote.setId(p.id);
-			game.gameStateNotify(p);
-			game.disconnectedPlayers.shift();
+		for (var n = 0; n < Math.floor(Math.random()*3) + 1; n++) {
+			var bot = new Bot();
+			newPlayers.push(bot);
 		}
-	}
+		games.push(new Game(newPlayers));
 });
 
 //Клиент отключился
@@ -112,4 +104,6 @@ server.exports.recieveAction = function(action){
 	localAction && player.sendResponse(localAction);
 }
 
-Server.listen(8000, '0.0.0.0');
+Server.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
