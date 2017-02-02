@@ -18,8 +18,14 @@ for (var n = 0; n < 2; n++) {
 	players.push(bot);
 }
 
+app.set('port', (process.env.PORT || 5000));
+
 // Открываем клиентам доступ к файлам 
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
+
+app.get('/', function(request, response) {
+  response.render('pages/index');
+});
 
 //Тут будет информация о клиентах
 var clients = {};
@@ -112,4 +118,6 @@ server.exports.recieveAction = function(action){
 	localAction && player.sendResponse(localAction);
 }
 
-Server.listen(8000, '0.0.0.0');
+Server.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
