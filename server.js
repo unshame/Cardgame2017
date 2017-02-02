@@ -55,7 +55,7 @@ server.onConnect(function (conn) {
 	//Подключаем клиента к экземпляру игрока
 	var newPlayers = [];
 	var p = new Player(remote, conn.id);
-	
+
 	//Запускаем игру с ботами и игроком
 	newPlayers.push(p);
 	players.push(p);
@@ -105,6 +105,6 @@ server.exports.recieveAction = function(action){
 }
 
 //Подключаем сервер к порту
-httpServer.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+httpServer.listen(app.get('port'), () => {
+	console.log('Node app is running on port', app.get('port'));
 });
