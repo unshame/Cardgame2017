@@ -1,0 +1,34 @@
+Game started game_aWDRzxC 0
+Players timed out:  player_oAaH0KA 
+3 7 : DEAL DECK => player_oAaH0KA
+3 6 : DEAL DECK => Shavonne
+1 8 : DEAL DECK => Shanita
+0 9 : DEAL DECK => player_oAaH0KA
+0 12 : DEAL DECK => Shavonne
+1 14 : DEAL DECK => Shanita
+2 14 : DEAL DECK => player_oAaH0KA
+0 11 : DEAL DECK => Shavonne
+3 13 : DEAL DECK => Shanita
+1 9 : DEAL DECK => player_oAaH0KA
+3 12 : DEAL DECK => Shavonne
+0 7 : DEAL DECK => Shanita
+1 6 : DEAL DECK => player_oAaH0KA
+2 7 : DEAL DECK => Shavonne
+3 11 : DEAL DECK => Shanita
+1 12 : DEAL DECK => player_oAaH0KA
+2 11 : DEAL DECK => Shavonne
+2 6 : DEAL DECK => Shanita
+Players timed out:  player_oAaH0KA 
+Player to go first:  player_oAaH0KA
+Players timed out:  player_oAaH0KA 
+
+Turn 1 player_oAaH0KA Shavonne Shanita 
+Cards in deck: 18
+player_oAaH0KA 6
+Shavonne 6
+Shanita 6
+player_oAaH0KA attacks
+1 9 : ATTACK player_oAaH0KA => FIELD0
+Players timed out:  player_oAaH0KA 
+Shavonne takes
+Players timed out:  player_oAaH0KA 
