@@ -10,7 +10,6 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "ejs": "2.4.1",
     "engine.io": "2.0.1",
     "eureca.io": "0.6.42",
     "express": "4.13.3"
