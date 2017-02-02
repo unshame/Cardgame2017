@@ -537,8 +537,11 @@ Game.prototype.waitForResponse = function(time, players){
 
 	for(var pi = 0; pi < players.length; pi++){
 		var player = players[pi];
+
+		//Если игрок отключился, заканчиваем игру, остановив таймер
 		if(!player.connected)
 			return;
+
 		this.playersActing.push(player.id);
 	}
 
@@ -886,7 +889,10 @@ Game.prototype.findPlayerToGoFirst = function(){
 	else{
 		this.attacker = this.players[0].id;
 		this.defender = this.players[1].id;
-		this.ally = this.players[2].id; 
+		if(this.player.length > 2)
+			this.ally = this.players[2].id
+		else
+			this.ally = null;
 		this.continueGame();
 	}
 }
