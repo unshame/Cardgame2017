@@ -524,7 +524,7 @@ Spot.prototype.placeCard = function(card){
 	var i = this.cards.indexOf(card);
 	if(!~i)
 		return;
-	return this.placeCards([card], 'init');
+	return this.placeCards([card], 'end');
 }
 
 /*
@@ -692,7 +692,7 @@ Spot.prototype.setUninteractibleTimer = function(time){
 		app.time.events.remove(this.uninteractibleTimer);
 
 	this.uninteractibleTimer = app.time.events.add(time, function(){
-		this.placeCards();
+		this.placeCards(null, 'end');
 		this.uninteractibleTimer = null;
 	}, this);
 }
@@ -704,7 +704,7 @@ Spot.prototype.focusOnCard = function(card, pointer){
 
 	this.focusedCard = card;
 	if(!this.uninteractibleTimer)
-		this.placeCards();
+		this.placeCards(null, 'end');
 }
 
 //Обнуляет запомненную карту, когда курсор с нее ушел
