@@ -3,7 +3,8 @@
   "version": "0.2.5",
   "description": "A sample Node.js app using Express 4",
   "engines": {
-    "node": "5.9.1"
+    "node": "5.9.1",
+    "npm": "2.15.0"
   },
   "main": "index.js",
   "scripts": {

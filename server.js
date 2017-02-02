@@ -21,10 +21,6 @@ var app = express(app),
 //Открываем клиентам доступ к файлам 
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', function(request, response) {
-  response.render('pages/index');
-});
-
 //Устанавливаем порт
 app.set('port', (process.env.PORT || 5000));
 
