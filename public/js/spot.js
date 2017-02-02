@@ -568,7 +568,7 @@ Spot.prototype.moveCard = function(
 	}
 
 	//Устанавливаем сдвиг для козыря в колоде
-	if(card.spotId == 'BOTTOM'){
+	if(card.spotId == 'BOTTOM' && this.cards.length > 1){
 		leftMargin += skinManager.skin.trumpOffset;
 	}
 
