@@ -28,7 +28,7 @@ Controller.prototype.cardClick = function(card, pointer){
 	if(pointer.button == 1 || pointer.button == 4)
 		console.log(card);
 
-	if(!card.isDraggable || this.card && this.card != card)
+	if(!card.isDraggable || this.card && this.card != card || !this.card && card.spot && card.spot.uninteractibleTimer)
 		return;
 
 	if(this.isInDebugMode)
