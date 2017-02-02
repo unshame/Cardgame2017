@@ -53,7 +53,7 @@ function create ()
 	app.onBlur.add(function(){console.log('blured')});
 	app.onFocus.add(function(){console.log('focused')});
 
-	console.log('This is a test of merging!')
+	console.log('This is a test of merging')
 }
 
 
