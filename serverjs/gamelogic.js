@@ -876,7 +876,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 			else
 				if(defender)
 					this.ally = this.players[0].id
-				else
+				else if(this.players.length > 2)
 					this.ally = this.players[1].id;
 		}
 		
@@ -893,7 +893,7 @@ Game.prototype.findPlayerToGoFirst = function(){
 	else{
 		this.attacker = this.players[0].id;
 		this.defender = this.players[1].id;
-		if(this.player.length > 2)
+		if(this.players.length > 2)
 			this.ally = this.players[2].id
 		else
 			this.ally = null;
