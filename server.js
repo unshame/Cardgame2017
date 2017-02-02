@@ -21,7 +21,7 @@ var app = express(app),
 	httpServer = http.createServer(app);
 
 //Открываем клиентам доступ к файлам 
-console.log(__dirname);
+console.log(__dirname, process.env.PWD);
 app.use(express.static(process.env.PWD+'/public'));
 
 //Устанавливаем порт
