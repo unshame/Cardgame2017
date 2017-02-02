@@ -546,7 +546,7 @@ SpotManager.prototype.resizeSpots = function(){
 //Применяет текущий скин к полям. На данный момент меняет только высоту поля 
 SpotManager.prototype.applySkin = function(){
 	this.forEachSpot(function(spot, si){
-		spot.resize(null, skinManager.skin.height, true);
+		spot.resize(null, null, true);
 	})
 }
 
