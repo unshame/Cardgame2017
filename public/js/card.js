@@ -190,6 +190,12 @@ Card.prototype.setPlayability = function(playable){
 
 //Устанавливает абсолютную позицию карты
 Card.prototype.setPosition = function(x, y){
+
+	if(this.mover){
+		this.mover.stop();
+		this.mover = null;
+	}
+
 	this.sprite.x = x - this.base.x;
 	this.sprite.y = y - this.base.y;
 	this.update();
@@ -197,6 +203,12 @@ Card.prototype.setPosition = function(x, y){
 
 //Устанавливает положение карты по отношению к базе карты
 Card.prototype.setRelativePosition = function(x, y){
+
+	if(this.mover){
+		this.mover.stop();
+		this.mover = null;
+	}
+
 	this.sprite.x = x;
 	this.sprite.y = y;
 	this.update();
@@ -204,6 +216,12 @@ Card.prototype.setRelativePosition = function(x, y){
 
 //Устанавливает позицию базы карты
 Card.prototype.setBase = function(x, y){
+
+	if(this.mover){
+		this.mover.stop();
+		this.mover = null;
+	}
+
 	this.sprite.x += this.base.x - x;
 	this.sprite.y += this.base.y - y;
 	this.base.x = x;
@@ -211,9 +229,11 @@ Card.prototype.setBase = function(x, y){
 	this.update();
 }
 
+//Запоминает id поля, в которое будет перемещена карта
+//Устанавливает перетаскиваемость
 Card.prototype.presetSpot = function(spotId){
 	this.spotId = spotId;
-	 if(spotId.match('player')){
+	 if(spotId == appManager.pid){
 		this.setDraggability(true);
 	}
 	else{
@@ -222,6 +242,11 @@ Card.prototype.presetSpot = function(spotId){
 }
 
 Card.prototype.setAngle = function(angle){
+	if(this.rotator){
+		this.rotator.stop();
+		this.rotator = null;
+	}
+
 	this.sprite.angle = angle;
 	this.update();
 }
@@ -352,8 +377,26 @@ Card.prototype.rotateTo = function(angle, time, delay){
 		this.rotator.stop();
 		this.rotator = null;
 	}
+	var offset = angle < 0 ? 360 : 0,
 
-	if(angle == this.sprite.angle)
+		angleAbs = Math.abs(angle),
+		angleDiv = Math.floor(angleAbs / 360),
+
+		oldAngle = this.sprite.angle,
+		oldAngleAbs, oldAngleDiv, oldAnglePos;
+
+	angle = Math.abs( offset - (angleAbs - angleDiv*360) );
+	
+	if(oldAngle > 0){
+		oldAnglePos = oldAngle;
+	}
+	else{
+		oldAngleAbs = Math.abs(oldAngle);
+		oldAngleDiv = Math.floor(oldAngleAbs / 360);
+		oldAnglePos = 360 - (oldAngleAbs - oldAngleDiv*360);
+	}	
+
+	if(angle == oldAnglePos)
 		return;
 
 	//Создаем и запускаем твин или поворачиваем карту если игра остановлена
@@ -570,7 +613,7 @@ ThrowCards.prototype.stop = function(){
 //Если не указать num, возвратит все карты
 function getCards(num, except){
 	if(!num)
-		num = Number.MAX_VALUE;
+		num = Infinity;
 	var crds = [];
 	for(var ci in gameManager.cards){
 		if(!gameManager.cards.hasOwnProperty(ci) || except && except.length && ~except.indexOf(gameManager.cards[ci]))
