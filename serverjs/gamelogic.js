@@ -17,6 +17,10 @@ var Game = function(players){
 
 	//Сохраняем ссылки на игроков локально
 	this.players = players.slice();	
+	if(this.players.length < 2){
+		this.players.push(new Bot());
+		utils.log('WARNING: Only one player at the start of the game, adding a bot');
+	}
 	this.players = utils.shuffleArray(this.players);
 
 	//Счет побед и проигрышей игроков (объекты по id игроков)
@@ -541,7 +545,7 @@ Game.prototype.waitForResponse = function(time, players){
 		//Если игрок отключился, заканчиваем игру, остановив таймер
 		if(!player.connected)
 			return;
-		
+
 		this.playersActing.push(player.id);
 	}
 
@@ -889,7 +893,10 @@ Game.prototype.findPlayerToGoFirst = function(){
 	else{
 		this.attacker = this.players[0].id;
 		this.defender = this.players[1].id;
-		this.ally = this.players[2].id; 
+		if(this.player.length > 2)
+			this.ally = this.players[2].id
+		else
+			this.ally = null;
 		this.continueGame();
 	}
 }

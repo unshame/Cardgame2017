@@ -48,6 +48,10 @@ function create ()
 		controller = new Controller(false);
 
 	app.canvas.oncontextmenu = function (e) { e.preventDefault(); }
+	app.onPause.add(function(){console.log('paused')});
+	app.onResume.add(function(){console.log('unpaused')});
+	app.onBlur.add(function(){console.log('blured')});
+	app.onFocus.add(function(){console.log('focused')});
 }
 
 
