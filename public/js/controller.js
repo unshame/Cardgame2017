@@ -212,7 +212,7 @@ Controller.prototype.cardClickedInbound = function(){
 //Проверка корректности позиции карты
 Controller.prototype.cardOnValidSpot = function(){
 	var spots = spotManager.forEachSpot(function(spot, si){
-		if(spot.isHighlighted && spot.cardIsInside(this.card)){
+		if(spot.isHighlighted && spot.cardIsInside(this.card, false)){
 			return spot
 		}
 	}, this)

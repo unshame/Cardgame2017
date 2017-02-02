@@ -111,7 +111,7 @@ Spot.prototype.getDefaultOptions = function(){
 		padding:10,
 		minActiveSpace: 10,	//Минимальная ширина\высота для расположения карт
 
-		moveTime: 200,
+		moveTime: 300,
 		delayTime: 100,
 		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать
 		//заданное значение
@@ -447,6 +447,8 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	if(this.forcedSpace)
 		cardSpacing = Math.min(cardSpacing, this.forcedSpace);
 
+	this.cardSpacing = cardSpacing;
+
 	//Проверка выделенной карты
 	if(
 		controller.card && 
@@ -656,10 +658,15 @@ Spot.prototype.reset = function(){
 //БУЛЕВЫ ФУНКЦИИ
 
 //Проверяет нахождение карты внутри поля (по координатам)
-Spot.prototype.cardIsInside = function(card, cardSpacing){
-	if(cardSpacing === null || cardSpacing === undefined)
-		cardSpacing = skinManager.skin.width;
-	var shift = skinManager.skin.width - cardSpacing;
+Spot.prototype.cardIsInside = function(card, includeShift){
+
+	if(includeShift === undefined)
+		includeShift = true;
+
+	var shift = 0;
+	if(includeShift)
+		shift = skinManager.skin.width - this.cardSpacing;
+
 	if(
 		!card ||
 		card.base.x + card.sprite.x < this.base.x + this.margin - shift ||
@@ -702,7 +709,12 @@ Spot.prototype.focusOnCard = function(card, pointer){
 
 //Обнуляет запомненную карту, когда курсор с нее ушел
 Spot.prototype.focusOffCard = function(card){
-	if(!this.focusedCard || !this.focusable || !this.cardIsInside(this.focusedCard) || card != this.focusedCard)
+	if(
+		!this.focusedCard ||
+		!this.focusable ||
+		!this.cardIsInside(this.focusedCard, false) ||
+		card != this.focusedCard
+	)
 		return;
 
 	this.focusedCard = null;
