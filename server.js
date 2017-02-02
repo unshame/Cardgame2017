@@ -11,12 +11,8 @@ var LobbyManager = require('./serverjs/lobbyManager').LobbyManager,
 	Player = require('./serverjs/players').Player;
 
 //Добавляем ботов
-var players = [];
 var games = [];
-for (var n = 0; n < 2; n++) {
-	var bot = new Bot();
-	players.push(bot);
-}
+
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -58,26 +54,15 @@ server.onConnect(function (conn) {
 	clients[conn.id] = {id:conn.id, remote:remote};
 
 	//Запускаем игру с ботами и игроком
-	if(!games.length){
-
 		//Подключаем клиента к экземпляру игрока
+		var players = [];
 		var p = new Player(remote, conn.id);
-
 		players.push(p);
-		games.push(new Game(players));
-	}
-	else{
-		var game = games[0];
-		if(game.disconnectedPlayers.length){
-			var p = game.playersById[game.disconnectedPlayers[0]];
-			p.remote = remote;
-			p.connId = conn.id;
-			p.connected = true;
-			remote.setId(p.id);
-			game.gameStateNotify(p);
-			game.disconnectedPlayers.shift();
+		for (var n = 0; n < Math.floor(Math.random())*3 + 1; n++) {
+			var bot = new Bot();
+			players.push(bot);
 		}
-	}
+		games.push(new Game(players));
 });
 
 //Клиент отключился
