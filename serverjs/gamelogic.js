@@ -17,10 +17,6 @@ var Game = function(players){
 
 	//Сохраняем ссылки на игроков локально
 	this.players = players.slice();	
-	if(this.players.length < 2){
-		this.players.push(new Bot());
-		utils.log('WARNING: Only one player at the start of the game, adding a bot');
-	}
 	this.players = utils.shuffleArray(this.players);
 
 	//Счет побед и проигрышей игроков (объекты по id игроков)

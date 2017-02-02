@@ -23,6 +23,7 @@ var EurecaClientSetup = function() {
 	
 	client.exports.setId = function(pid) 
 	{
+		//appManager.connId = connId;
 		appManager.pid = pid;
 	}	
 	client.exports.meetOpponents = function(opponents){

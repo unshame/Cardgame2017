@@ -1,57 +1,39 @@
-# Cardgame2017
+# node-js-getting-started
 
-Развернул тестовую версию на хостинге - https://durak.herokuapp.com/
+A barebones Node.js app using [Express 4](http://expressjs.com/).
 
-## Установка
-1. Зарегистрироваться на сайте и скинуть мне название аккаунта     
-1. Установить GitHub Desktop https://desktop.github.com/  
-2. Авторизоваться в нем
-2. Клонировать репозиторий в GitShell (идет с GitHub Desktop): git clone https://github.com/unshame/Cardgame2017.git  
-3. Установить node.js https://nodejs.org/en/  
-4. Установить необходимые библиотеки через Node.js command prompt в папку с репозиторием:  
-  * cd директорияУстановки  
-  * npm install express  
-  * npm install engine.io  
-  * npm install eureca.io  
-5. Запустуть сервер через Node.js command prompt: 
-  * node server.js  
-7. В браузере открыть localhost:5000
-8. Должно быть так:   
-![Test](https://i.imgur.com/0Bx0esu.png  "Test")  
-И если нажать F12:  
-![DevConsole](https://i.imgur.com/HyQXwbl.png "F12 Developer Console")  
-  
-## Полезные команды в консоли:  
-* isInDebugMode = true - включает лог сообщений от сервера (см. картинку выше)  
-* controller.toggleDebugMode() - переключает дебаг при перетаскивании карт  
-* spotManager.toggleDebugMode() - переключает дебаг полей карт
-* Средний клик на карте, потом в консоли Chrome правый клик на появившейся строчке -> Store as global var, чтобы получить прямой доступ к карте
+This application supports the [Getting Started with Node on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
 
-## Скины:  
-* skinManager.setSkin('modern') - по дефолту
-* skinManager.setSkin('classic') - "классический" скин
-* skinManager.setSkin('familiar') - лучше даже не пробовать
+## Running Locally
 
-## Что сделано clientside:  
-* Конструктор карт (Card)  
-* Конструктор полей карт (Spot)  
-* Частично контроллер (Controller)
-* Частично менеджер полей (SpotManager)  
-* Частично менеджер скинов (SkinManager)  
+Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.
 
-## Что нужно сделать clientside:  
-* AppManager  
-* ConnectionManager
-* LobbyManager  
-* GameManager  
-* UI  
-* Chat  
+```sh
+$ git clone git@github.com:heroku/node-js-getting-started.git # or clone your own fork
+$ cd node-js-getting-started
+$ npm install
+$ npm start
+```
 
-## Что сделано serverside:  
-* Конструктор игры (Game)  
+Your app should now be running on [localhost:5000](http://localhost:5000/).
 
-## Что нужно сделать serverside:
-* Конструктор лобби (Lobby)  
-* Менеджер лобби (LobbyManager\LobbyBrowser)  
-* Менеджер сервера и соединения с игроками (Server)  
-* Конструктор чата (Chat)  
+## Deploying to Heroku
+
+```
+$ heroku create
+$ git push heroku master
+$ heroku open
+```
+or
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+## Documentation
+
+For more information about using Node.js on Heroku, see these Dev Center articles:
+
+- [Getting Started with Node.js on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
+- [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
+- [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
+- [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
+- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
