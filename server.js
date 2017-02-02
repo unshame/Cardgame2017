@@ -1,8 +1,8 @@
 
-var express = require('express')
-  , app = express(app)
-  , Server = require('http').createServer(app);
-//var path = require('path');
+var express = require('express'),
+	app = express(app),
+	http = require('http');
+	
 
 var LobbyManager = require('./serverjs/lobbyManager').LobbyManager,
 	Lobby = require('./serverjs/lobby').Lobby,
@@ -10,7 +10,8 @@ var LobbyManager = require('./serverjs/lobbyManager').LobbyManager,
 	Bot = require('./serverjs/bots').Bot,
 	Player = require('./serverjs/players').Player;
 
-//Добавляем ботов
+var httpServer = http.createServer(app);
+
 var games = [];
 var players = [];
 
@@ -37,7 +38,7 @@ var server = new Eureca.Server({allow:[
 });
 
 //Подключаем eureca к нашему http серверу
-server.attach(Server);
+server.attach(httpServer);
 
 //Клиент подключился
 server.onConnect(function (conn) {
@@ -100,6 +101,6 @@ server.exports.recieveAction = function(action){
 	localAction && player.sendResponse(localAction);
 }
 
-Server.listen(app.get('port'), function() {
+httpServer.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
