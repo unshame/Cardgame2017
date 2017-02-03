@@ -416,32 +416,32 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 	//По умолчанию отступ слева уже указан
 	if(requiredActiveWidth != areaActiveWidth){
 		switch(this.align){
-			case 'center':
-				leftMargin = (areaWidth - requiredActiveWidth)/2;
-				break;
-			case 'right':
-				leftMargin = areaWidth - requiredActiveWidth - cardWidth/2 - this.margin;
-				break;
+		case 'center':
+			leftMargin = (areaWidth - requiredActiveWidth)/2;
+			break;
+		case 'right':
+			leftMargin = areaWidth - requiredActiveWidth - cardWidth/2 - this.margin;
+			break;
 		}
 	}
 
 	//Отступ сверху
 	switch(this.verticalAlign){
 
-		//Выравнивание по верхнему краю
-		case 'top':
-			topMargin = this.margin + cardHeight/2;
-			break;
+	//Выравнивание по верхнему краю
+	case 'top':
+		topMargin = this.margin + cardHeight/2;
+		break;
 
-		//Выравнивание по нижнему краю
-		case 'bottom':
-			topMargin = areaHeight - this.margin - cardHeight/2;
-			break;
+	//Выравнивание по нижнему краю
+	case 'bottom':
+		topMargin = areaHeight - this.margin - cardHeight/2;
+		break;
 
-		//Выравнивание по центру
-		default:
-			topMargin = areaHeight/2;
-			break;
+	//Выравнивание по центру
+	default:
+		topMargin = areaHeight/2;
+		break;
 	}
 
 	//Отступ между картами
