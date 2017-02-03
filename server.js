@@ -59,7 +59,7 @@ server.onConnect(function (conn) {
 	//Запускаем игру с ботами и игроком
 	newPlayers.push(p);
 	players.push(p);
-	for (var n = 0; n < Math.floor(Math.random()*3) + 1; n++) {
+	for (var n = 0; n < Math.floor(Math.random()*4) + 2; n++) {
 		var bot = new Bot();
 		newPlayers.push(bot);
 	}
