@@ -85,7 +85,7 @@ var Spot = function(options){
 	pixel.drawRect(0, 0, 1, 1);
 	pixel.endFill();
 
-	this.area = app.add.tileSprite(0, 0, 0, 0, pixel.generateTexture());
+	this.area = app.add.sprite(0, 0, pixel.generateTexture());
 	this.area.alpha = 0.35;
 	this.area.visible = this.isInDebugMode;
 	this.base.add(this.area);
@@ -136,7 +136,7 @@ Spot.prototype.getDefaultOptions = function(){
 		texture: null,
 		alpha: 0.35,
 
-		debug: true,
+		debug: false,
 		specialId: null
 	}
 	return options
@@ -255,7 +255,7 @@ Spot.prototype.queueCards = function(newCards, delay){
 		return;
 
 	//Если задержка не указана, используем задержку последней карты в очереди
-	if(typeof delay != 'number'){
+	if(typeof delay != 'number' || isNaN(delay)){
 		var lastQueuedCard = this.queuedCards[this.queuedCards.length - 1];
 		if(lastQueuedCard)
 			delay = this.delays[lastQueuedCard.id] || 0
@@ -695,16 +695,21 @@ Spot.prototype.cardIsInside = function(card, includeShift){
 //Запускает таймер, во время которого карты не реагируют на курсор
 Spot.prototype.setUninteractibleTimer = function(time){
 
-	if(!time || typeof time != 'number')
+	if(!time || typeof time != 'number' || isNaN(time))
 		return;
 
-	if(this.uninteractibleTimer)
-		app.time.events.remove(this.uninteractibleTimer);
-
-	this.uninteractibleTimer = app.time.events.add(time, function(){
-		this.placeCards(null, 'end');
+	if(this.uninteractibleTimer){
+		clearTimeout(this.uninteractibleTimer);
 		this.uninteractibleTimer = null;
-	}, this);
+	}
+
+	if(app.paused)
+		return;
+
+	this.uninteractibleTimer = setTimeout(function(spot){
+		spot.placeCards(null, 'end');
+		spot.uninteractibleTimer = null;
+	}, time, this);
 }
 
 //Запоминает карту, над которой находится курсор
