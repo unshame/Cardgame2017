@@ -14,6 +14,7 @@ var LobbyManager = require('./serverjs/lobbyManager').LobbyManager,
 	Bot = require('./serverjs/bots').Bot,
 	Player = require('./serverjs/players').Player;
 
+
 //Приложение и http сервер
 var app = express(app),
 	httpServer = http.createServer(app);
@@ -41,6 +42,7 @@ server.attach(httpServer);
 var clients = {};
 var games = [];
 var players = [];
+var randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavonne','Leola','Arlena','Marilynn','Shawnna','Alanna','Armando','Julieann','Alyson','Rutha','Wilber','Marty','Tyrone','Mammie','Shalon','Faith','Mi','Denese','Flora','Josphine','Christa','Sharonda','Sofia','Collene','Marlyn','Herma','Mac','Marybelle','Casimira','Nicholle','Ervin','Evia','Noriko','Yung','Devona','Kenny','Aliza','Stacey','Toni','Brigette','Lorri','Bernetta','Sonja','Margaretta'];
 
 //Клиент подключился
 server.onConnect(function (conn) {
@@ -59,8 +61,9 @@ server.onConnect(function (conn) {
 	//Запускаем игру с ботами и игроком
 	newPlayers.push(p);
 	players.push(p);
+	var randomNamesCopy = randomNames.slice();
 	for (var n = 0; n < Math.floor(Math.random()*4) + 2; n++) {
-		var bot = new Bot();
+		var bot = new Bot(randomNamesCopy);
 		newPlayers.push(bot);
 	}
 	games.push(new Game(newPlayers));
@@ -93,7 +96,13 @@ server.exports.recieveAction = function(action){
 	var connId = this.connection.id;
 	var pi = players.map((p) => {return p.connId;}).indexOf(connId);
 	var player = players[pi];
-	action && player.sendResponse(action);
+	player && player.sendResponse(action);
+}
+server.exports.recieveResponse = function(){
+	var connId = this.connection.id;
+	var pi = players.map((p) => {return p.connId;}).indexOf(connId);
+	var player = players[pi];
+	player && player.sendResponse();
 }
 
 //Подключаем сервер к порту

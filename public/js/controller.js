@@ -299,6 +299,13 @@ Controller.prototype.resetCardClickTimer = function(){
 
 //Обновляет курсор
 Controller.prototype.updateCursor = function(){
+	if(
+		gameManager.skipButton && gameManager.skipButton.input.pointerOver() ||
+		gameManager.takeButton && gameManager.takeButton.input.pointerOver()
+	){
+		app.canvas.style.cursor = "pointer";
+		return;
+	}
 	for(var ci in gameManager.cards){
 		if(!gameManager.cards.hasOwnProperty(ci))
 			continue;

@@ -66,15 +66,15 @@ var Game = function(players){
 
 	//Время ожидания сервера
 	this.timeouts = {
-		gameStart: 5,
-		gameEnd: 5,
-		trumpCards: 5,
-		deal: 3,
-		discard: 2,
-		take: 3,
-		actionComplete: 1,
-		actionAttack: 10,
-		actionDefend: 10
+		gameStart: 20,
+		gameEnd: 20,
+		trumpCards: 20,
+		deal: 20,
+		discard: 20,
+		take: 20,
+		actionComplete: 20,
+		actionAttack: 15,
+		actionDefend: 15
 	}
 
 	//Запускаем игру
@@ -634,6 +634,10 @@ Game.prototype.setResponseTimer = function(time){
 			var player = this.playersById[this.playersActing[0]];	
 
 			var outgoingAction = this.processAction(player, this.validActions[actionIndex]);
+
+			//Убираем игрока из списка действующих
+			this.playersActing = [];
+
 			this.waitForResponse(this.timeouts.actionComplete, this.players);
 			//Отправляем оповещение о том, что время хода вышло
 			try{
@@ -647,9 +651,6 @@ Game.prototype.setResponseTimer = function(time){
 				console.log(e);
 				utils.log('ERROR: Couldn\'t notify');
 			}
-
-			//Убираем игрока из списка действующих
-			this.playersActing = [];
 		}
 
 		//Иначе, обнуляем действующих игроков, возможные действия и продолжаем ход
@@ -747,7 +748,7 @@ Game.prototype.processAction = function(player, incomingAction){
 
 	//Проверка действия
 	if( !~ai ){
-		utils.log('ERROR: Invalid action', player.id, action && action.type, action);
+		utils.log('ERROR: Invalid action', player.id, incomingAction && incomingAction.type, incomingAction, this.validActions);
 		return null;
 	}
 
@@ -1296,7 +1297,7 @@ Game.prototype.letAttack = function(pid){
 	this.validActions = actions;
 	this.waitForResponse(this.timeouts.actionAttack, [player])
 	try{
-		player.recieveValidActions(actions.slice());	
+		player.recieveValidActions(actions.slice(), this.timeouts.actionAttack);	
 	}
 	catch(e){
 		console.log(e);
@@ -1392,7 +1393,7 @@ Game.prototype.letDefend = function(pid){
 
 	this.waitForResponse(this.timeouts.actionDefend, [player]);
 	try{
-		player.recieveValidActions(actions);	
+		player.recieveValidActions(actions.slice(), this.timeouts.actionDefend);	
 	}
 	catch(e){
 		console.log(e);

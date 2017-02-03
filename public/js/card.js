@@ -595,7 +595,7 @@ var ThrowCards = function(){
 	for(var i = 0; i < 52; i++){
 		frames.push(i)
 	}
-	this.emitter.makeParticles('cardsModern', frames);
+	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
 
 	this.emitter.start(false, 5000, 20);
 	this.emitter.width = appManager.screenWidth;

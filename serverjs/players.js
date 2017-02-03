@@ -59,14 +59,14 @@ Player.prototype.recieveMinTrumpCards = function(cards, winner){
 		this.remote.recieveAction(action);
 }
 
-Player.prototype.recieveValidActions = function(actions){
+Player.prototype.recieveValidActions = function(actions, time){
 	if(this.remote)
-		this.remote.recievePossibleActions(actions);
+		this.remote.recievePossibleActions(actions, time);
 	var randomIndex
-	if(actions.length == 1 && (actions[0].type == 'TAKE' || actions[0].type == 'SKIP')){
+/*	if(actions.length == 1 && (actions[0].type == 'TAKE' || actions[0].type == 'SKIP')){
 		var action = actions[0];
 		setTimeout(() => {this.sendResponse(action)},1000)	
-	}
+	}*/
 	/*	var randomIndex
 		if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'SKIP'))
 			randomIndex = Math.floor(Math.random()*(actions.length-1))
