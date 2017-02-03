@@ -327,7 +327,6 @@ SpotManager.prototype.executeAction = function(action){
 	switch(action.type){
 
 	case 'TRUMP_CARDS':
-		console.log(action);
 		break;
 
 	case 'CARDS':
