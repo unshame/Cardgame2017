@@ -64,6 +64,19 @@ var Game = function(players){
 
 	this.gameNumber = -1;
 
+	//Время ожидания сервера
+	this.timeouts = {
+		gameStart: 5,
+		gameEnd: 5,
+		trumpCards: 5,
+		deal: 3,
+		discard: 2,
+		take: 3,
+		actionComplete: 1,
+		actionAttack: 10,
+		actionDefend: 10
+	}
+
 	//Запускаем игру
 	this.reset();
 	this.gameState = 'SHOULD_START';
@@ -203,8 +216,8 @@ Game.prototype.make = function(){
 	this.cards[lastcid].spot = 'BOTTOM';
 	this.trumpSuit = this.cards[lastcid].suit;
 
-	//Сообщаем игрокам о составе колоды и запускаем игру
-	this.waitForResponse(5, this.players);
+	//Сообщаем игрокам о колоде и друг друге и запускаем игру
+	this.waitForResponse(this.timeouts.gameStart, this.players);
 	this.gameStartNotify();	// --> continueGame()
 }
 
@@ -381,7 +394,7 @@ Game.prototype.deal = function(dealsIn){
 		}
 	}
 	if(dealsOut.length){
-		this.waitForResponse(3, this.players);
+		this.waitForResponse(this.timeouts.deal, this.players);
 		this.dealNotify(dealsOut);
 	}
 	else{
@@ -517,7 +530,7 @@ Game.prototype.discard = function(){
 			utils.log('First discard, field expanded to', this.fullField);
 		}
 
-		this.waitForResponse(2, this.players);
+		this.waitForResponse(this.timeouts.discard, this.players);
 		for (var pi = 0; pi < this.players.length; pi++) {
 			var player = this.players[pi];
 			try{
@@ -538,7 +551,6 @@ Game.prototype.discard = function(){
 
 //Отправляет сообщение игрокам с опциональными действиями
 Game.prototype.notify = function(players, note, actions){
-
 	for(var pi = 0; pi < players.length; pi++){
 
 		var player = players[pi];
@@ -620,15 +632,20 @@ Game.prototype.setResponseTimer = function(time){
 
 			//У нас поддерживается только одно действие от одного игрока за раз
 			var player = this.playersById[this.playersActing[0]];	
-			this.processAction(player, this.validActions[actionIndex]);
 
+			var outgoingAction = this.processAction(player, this.validActions[actionIndex]);
+			this.waitForResponse(this.timeouts.actionComplete, this.players);
 			//Отправляем оповещение о том, что время хода вышло
 			try{
 				player.handleLateness();
+				for(var pi = 0; pi < this.players.length; pi++){
+					var p = this.players[pi];
+					p.recieveAction(outgoingAction)
+				}				
 			}
 			catch(e){
 				console.log(e);
-				utils.log('ERROR: Couldn\'t notify', player, 'about lateness');
+				utils.log('ERROR: Couldn\'t notify');
 			}
 
 			//Убираем игрока из списка действующих
@@ -661,50 +678,76 @@ Game.prototype.recieveResponse = function(player, action){
 
 	//utils.log('Response from', player.id, action ? action : '');
 
-	//Выполняем действие
+	//Выполняем или сохраняем действие
 	if(action){
 		var outgoingAction;
-		if(this.gameState == 'STARTED')
-			outgoingAction = this.processAction(player, action)
-		else
-			outgoingAction = this.storeAction(player, action);
 
-		//Сообщаем игрокам о действии
-		if(outgoingAction){
-			this.waitForResponse(1, this.players);
-			for(var pi = 0; pi < this.players.length; pi++){
-				var p = this.players[pi];
-				p.recieveAction(action)
+		//Во время игры один игрок действует за раз
+		if(this.gameState == 'STARTED'){
+
+			outgoingAction = this.processAction(player, action);
+
+			//Если действие легально
+			if(outgoingAction){
+
+				//Убираем игрока из списка действующих (он там один)
+				this.playersActing = [];
+				
+				//Сообщаем игрокам о действии
+				this.waitForResponse(this.timeouts.actionComplete, this.players);
+				for(var pi = 0; pi < this.players.length; pi++){
+					var p = this.players[pi];
+					p.recieveAction(outgoingAction)
+				}
+				
 			}
-		}
-		else{
-			this.notify(player, {
-				message: 'INVALID_ACTION',
-				action: action
-			})
-		}
-	}
-	else{
-		this.playersActing.splice(pi, 1);
 
-		//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
-		if(!this.playersActing.length){
-			clearTimeout(this.timer);
-			this.continueGame();
+			//Сообщаем игроку, что действие нелегально
+			else{
+				this.notify([player], {
+					message: 'INVALID_ACTION',
+					action: action
+				})
+			}
+			return;			
 		}
+
+		//Если игра закончена, действовать могут все
+		else
+			this.storeAction(player, action);
 	}
 
 	//Убираем игрока из списка действующих
+	this.playersActing.splice(pi, 1);	
+
+	//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
+	if(!this.playersActing.length){
+		clearTimeout(this.timer);
+		this.continueGame();
+	}
+
 }
 
 //Обрабатывает полученное от игрока действие и пересылает его остальным игрокам
-Game.prototype.processAction = function(player, action){
+Game.prototype.processAction = function(player, incomingAction){
 
+	var action;
+	for(var ai = 0; ai < this.validActions.length; ai++){
+		var validAction = this.validActions[ai];
+		if(
+			incomingAction.type == validAction.type &&
+			(!validAction.cid || incomingAction.cid == validAction.cid) &&
+			(!validAction.spot || incomingAction.spot == validAction.spot)
+		){
+			action = validAction;
+			break;
+		}
+	}
 	var ai = this.validActions.indexOf(action);
 
 	//Проверка действия
 	if( !~ai ){
-		utils.log('ERROR: Invalid action', player.id, action.type, action);
+		utils.log('ERROR: Invalid action', player.id, action && action.type, action);
 		return null;
 	}
 
@@ -838,7 +881,6 @@ Game.prototype.storeAction = function(player, action){
 
 	//Проверка действия
 	if( !~ai ){
-		clearTimeout(this.timer);
 		utils.log('ERROR: Invalid action', player.id, action.type, action);
 		return;
 	}
@@ -953,7 +995,7 @@ Game.prototype.endGame = function(){
 	this.validActions.push(actionAccept);
 	this.validActions.push(actionDecline);
 
-	this.waitForResponse(5, this.players);
+	this.waitForResponse(this.timeouts.gameEnd, this.players);
 	this.notify(this.players, note, this.validActions.slice());
 }
 
@@ -1126,7 +1168,7 @@ Game.prototype.findFirstPlayer = function(){
 		utils.log('Player to go first: ', this.playersById[this.attacker].name)
 
 		//Сообщаем игрокам о минимальных козырях
-		this.waitForResponse(5, this.players);
+		this.waitForResponse(this.timeouts.trumpCards, this.players);
 		for(var pi = 0; pi < this.players.length; pi++){
 			this.players[pi].recieveMinTrumpCards(minTCards, minTCard.pid)
 		}		
@@ -1240,7 +1282,7 @@ Game.prototype.letAttack = function(pid){
 	this.setTurnStage('DEFENSE');
 
 	this.validActions = actions;
-	this.waitForResponse(10, [player])
+	this.waitForResponse(this.timeouts.actionAttack, [player])
 	try{
 		player.recieveValidActions(actions.slice());	
 	}
@@ -1335,7 +1377,7 @@ Game.prototype.letDefend = function(pid){
 			break;
 	}
 
-	this.waitForResponse(10, [player]);
+	this.waitForResponse(this.timeouts.actionDefend, [player]);
 	try{
 		player.recieveValidActions(actions);	
 	}
@@ -1401,7 +1443,7 @@ Game.prototype.letTake = function(pid){
 
 	action.pid = player.id;
 
-	this.waitForResponse(1, this.players);
+	this.waitForResponse(this.timeouts.take, this.players);
 	for(var pi = 0; pi < this.players.length; pi++){
 
 		var newAction = {
