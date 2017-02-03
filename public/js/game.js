@@ -3,7 +3,8 @@
 
 window.gameManager = {
 	cards: {},
-	cardsGroup: null
+	cardsGroup: null,
+	rope: null
 };
 window.controller = null;
 window.spotManager = new SpotManager();
@@ -25,6 +26,7 @@ var onScreenChange = function() {
 	appManager.background.width = appManager.screenWidth;
 	appManager.background.height =  appManager.screenHeight;
 	spotManager.resizeSpots();
+	gameManager.rope.maxHeight = gameManager.rope.sprite.y = appManager.screenHeight;
 
 }
 window.addEventListener('resize',onScreenChange);
@@ -32,26 +34,32 @@ window.addEventListener('orientationchange',onScreenChange);
 
 function create () 
 {
-	if(!app.created){
-		app.world.setBounds(0, 0, appManager.screenWidth, appManager.screenHeight);
-		//app.stage.disableVisibilityChange  = true;
-		app.created = true;
-	}
+	if(app.created)
+		return;
+
+	app.world.setBounds(0, 0, appManager.screenWidth, appManager.screenHeight);
+	//app.stage.disableVisibilityChange  = true;
+	app.created = true;
 	
-	if(!appManager.background)
-		appManager.background = app.add.tileSprite(0, 0, appManager.screenWidth, appManager.screenHeight, 'assault');
 
-	if(!gameManager.cardsGroup)
-		gameManager.cardsGroup = app.add.group();
+	appManager.background = app.add.tileSprite(0, 0, appManager.screenWidth, appManager.screenHeight, 'assault');
 
-	if(!controller)
-		controller = new Controller(false);
+
+	gameManager.cardsGroup = app.add.group();
+
+
+	controller = new Controller(false);
+
+	gameManager.rope = new Rope();
+
+	gameManager.skipButton = new Button(appManager.screenWidth - skinManager.skin.width - 120, appManager.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('SKIP')}, 'Skip');
+	gameManager.takeButton = new Button(appManager.screenWidth - skinManager.skin.width - 120, appManager.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('TAKE')}, 'Take');
 
 	app.canvas.oncontextmenu = function (e) { e.preventDefault(); }
-	app.onPause.add(function(){console.log('paused')});
+	/*app.onPause.add(function(){console.log('paused')});
 	app.onResume.add(function(){console.log('unpaused')});
 	app.onBlur.add(function(){console.log('blured')});
-	app.onFocus.add(function(){console.log('focused')});
+	app.onFocus.add(function(){console.log('focused')});*/
 }
 
 
@@ -61,6 +69,9 @@ function update () {
 
 	if(controller)
 		controller.update();
+
+	if(gameManager.rope)
+		gameManager.rope.update();
 
 	for(var ci in gameManager.cards){
 		if(!gameManager.cards.hasOwnProperty(ci))
