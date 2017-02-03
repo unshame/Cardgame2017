@@ -17,7 +17,7 @@
   * node server.js  
 7. В браузере открыть localhost:5000
 8. Должно быть так:   
-![Test](https://i.imgur.com/0Bx0esu.png  "Test")  
+![Test](https://i.imgur.com/4BWuHQ5.png  "Test")  
 И если нажать F12:  
 ![DevConsole](https://i.imgur.com/HyQXwbl.png "F12 Developer Console")  
   
