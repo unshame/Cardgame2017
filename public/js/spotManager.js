@@ -193,7 +193,8 @@ SpotManager.prototype.createSpotNetwork = function(players){
 			focusable:false,
 			sorting:false,
 			type: 'FIELD',
-			id: 'FIELD' + i
+			id: 'FIELD' + i,
+			specialId: i + 1
 		});
 		this.cardsToRemove[id] = [];
 	}
@@ -205,7 +206,8 @@ SpotManager.prototype.createSpotNetwork = function(players){
 		width:this.dimensions.playerHand.width,
 		texture: 'spot',
 		type: 'HAND',
-		id: this.pid
+		id: this.pid,
+		specialId: this.pi + 1
 	});
 	this.cardsToRemove[this.pid] = [];
 
@@ -225,7 +227,9 @@ SpotManager.prototype.createSpotNetwork = function(players){
 			focusable:false,
 			flipped: true,
 			type: 'HAND',
-			id: p.id
+			id: p.id,
+			name: p.name,
+			specialId: i + 1
 		});
 		this.cardsToRemove[p.id] = [];
 		oi++;
@@ -299,6 +303,11 @@ SpotManager.prototype.addSpot = function(options){
  * 		.pid
  */
 SpotManager.prototype.executeAction = function(action){
+	if(action.type == 'GAME_INFO' && action.players.length){
+		spotManager.resetNetwork();
+		spotManager.createSpotNetwork(action.players);
+		action.type = 'CARDS';
+	}
 
 	if(!this.networkCreated)
 		return;
@@ -559,6 +568,13 @@ SpotManager.prototype.resetSpots = function(){
 	})
 }
 
+//Убирает поля
+SpotManager.prototype.resetNetwork = function(){
+	this.forEachSpot(function(spot, si){
+		spot.destroy();
+	})
+	this.spots = {};
+}
 
 //ДЕБАГ
 

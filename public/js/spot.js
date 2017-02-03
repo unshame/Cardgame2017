@@ -29,8 +29,6 @@ var Spot = function(options){
 		}
 	}
 
-	this.isInDebugMode = this.options.debug;
-
 	this.cards = [];
 	this.delays = {};
 	this.queuedCards = [];
@@ -38,6 +36,7 @@ var Spot = function(options){
 
 	this.type = this.options.type;
 	this.id = this.options.id;
+	this.name = this.options.name;
 
 	this.alignment = this.options.alignment;
 	if(!~['vertical', 'horizontal'].indexOf(this.alignment))
@@ -98,6 +97,8 @@ var Spot = function(options){
 	app.world.setChildIndex(this.base, 1);	
 
 	this.debugActiveSpace = new Phaser.Rectangle();
+	this.isInDebugMode = this.options.debug;
+	this.specialId = this.options.specialId;
 }
 
 //Возвращает опции по умолчанию
@@ -122,6 +123,7 @@ Spot.prototype.getDefaultOptions = function(){
 		
 		id:null,
 		type:'GENERIC',
+		name: null,
 
 		align:'center',			 //Выравнивание по горизонтали
 		verticalAlign:'middle',
@@ -134,7 +136,8 @@ Spot.prototype.getDefaultOptions = function(){
 		texture: null,
 		alpha: 0.35,
 
-		debug: false
+		debug: true,
+		specialId: null
 	}
 	return options
 }
@@ -654,6 +657,13 @@ Spot.prototype.reset = function(){
 	this.removeAllCards();
 }
 
+Spot.prototype.destroy = function(){
+	this.removeAllCards();
+	this.area.kill();
+	this.base.removeAll(true);
+	app.world.removeChild(this.base);
+}
+
 
 //БУЛЕВЫ ФУНКЦИИ
 
@@ -737,7 +747,11 @@ Spot.prototype.updateDebug = function(){
 		str = this.type
 	else
 		str = this.type + ' ' + this.id;
-	str += ' ' + this.cards.length
+	if(this.name !== null && this.name !== undefined)
+		str += ' ' + this.name;
+	if(this.specialId !== null && this.specialId !== undefined)
+		str += ' #' + this.specialId;
+	str += ' ' + this.cards.length;
 	app.debug.text(str, x, y );
 
 	app.debug.geom( this.debugActiveSpace, 'rgba(0,127,127,0.3)' ) ;
