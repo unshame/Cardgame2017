@@ -26,8 +26,6 @@ var EurecaClientSetup = function() {
 		appManager.pid = pid;
 	}	
 	client.exports.meetOpponents = function(opponents){
-		spotManager.createSpotNetwork(opponents);
-
 		if(isInDebugMode)
 			console.log(opponents);
 	}
