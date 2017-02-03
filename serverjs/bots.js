@@ -21,7 +21,7 @@ var Bot = function(){
 Bot.prototype.meetOpponents = function(opponents){
 }
 
-Bot.prototype.recieveCards = function(cards){
+Bot.prototype.recieveGameInfo = function(cards){
 	setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
 }
 
