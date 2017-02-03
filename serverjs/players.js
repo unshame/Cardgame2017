@@ -22,20 +22,17 @@ Player.prototype.meetOpponents = function(opponents){
 		this.remote.meetOpponents(opponents);
 }
 
-Player.prototype.recieveCards = function(cards, trumpSuit, numDiscarded){
+Player.prototype.recieveGameInfo = function(cards, players, trumpSuit, numDiscarded){
 	var action = {
-		type: 'CARDS',
-		cards: []
+		type: 'GAME_INFO',
+		cards: cards || [],
+		players: players || []
 	}
 	if(trumpSuit || trumpSuit === 0)
 		action.trumpSuit = trumpSuit;
 
 	if(numDiscarded || numDiscarded === 0)
 		action.numDiscarded = numDiscarded;	
-
-	for(var ci = 0; ci < cards.length; ci++){
-		action.cards.push(cards[ci])
-	}
 	if(this.remote)
 		this.remote.recieveAction(action);
 }

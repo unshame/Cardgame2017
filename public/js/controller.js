@@ -211,6 +211,9 @@ Controller.prototype.cardClickedInbound = function(){
 
 //Проверка корректности позиции карты
 Controller.prototype.cardOnValidSpot = function(){
+	if(!this.card.isPlayable)
+		return false;
+
 	var spots = spotManager.forEachSpot(function(spot, si){
 		if(spot.isHighlighted && spot.cardIsInside(this.card, false)){
 			return spot
