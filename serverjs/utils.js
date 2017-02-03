@@ -1,4 +1,4 @@
-var isInDebugMode = false;
+var isInDebugMode = true;
 
 var fs = require('fs');
 var crypto = require('crypto');

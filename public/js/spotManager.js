@@ -326,90 +326,89 @@ SpotManager.prototype.executeAction = function(action){
 
 	switch(action.type){
 
-		case 'TRUMP_CARDS':
-			console.log(action);
-			break;
+	case 'TRUMP_CARDS':
+		break;
 
-		case 'CARDS':
-			this.resetSpots();
-			controller.reset();
+	case 'CARDS':
+		this.resetSpots();
+		controller.reset();
 
-			for(var cid in gameManager.cards){
-				if(gameManager.cards.hasOwnProperty(cid)){
-					gameManager.cards[cid].base.removeAll(true);
+		for(var cid in gameManager.cards){
+			if(gameManager.cards.hasOwnProperty(cid)){
+				gameManager.cards[cid].base.removeAll(true);
+			}
+		}
+		gameManager.cards = {};
+		gameManager.cardsGroup.removeAll(true);
+		delay = this.queueCards(action.cards);
+		this.removeMarkedCards();
+		this.placeQueuedCards();
+		if(action.numDiscarded){
+			var discardCards = [];
+			for (var i = 0; i < action.numDiscarded; i++) {
+				var id = 'discarded_'+i;
+				var options = {
+					id: id
 				}
+				gameManager.cards[id] = new Card(options);
+				discardCards.push(gameManager.cards[id])
 			}
-			gameManager.cards = {};
-			gameManager.cardsGroup.removeAll(true);
-			delay = this.queueCards(action.cards);
-			this.removeMarkedCards();
-			this.placeQueuedCards();
-			if(action.numDiscarded){
-				var discardCards = [];
-				for (var i = 0; i < action.numDiscarded; i++) {
-					var id = 'discarded_'+i;
-					var options = {
-						id: id
-					}
-					gameManager.cards[id] = new Card(options);
-					discardCards.push(gameManager.cards[id])
-				}
-				this.spots['DISCARD_PILE'].addCards(discardCards);
-			}
-			break;
+			this.spots['DISCARD_PILE'].addCards(discardCards);
+		}
+		break;
 
-		case 'DRAW':
-			delay = this.queueCards(action.cards);
-			this.removeMarkedCards();
-			this.placeQueuedCards();
-			break;
+	case 'DRAW':
+		delay = this.queueCards(action.cards);
+		this.removeMarkedCards();
+		this.placeQueuedCards();
+		break;
 
-		case 'TAKE':
-			if(!action.cards)
-				break;
-			cards = [];
-			for(var i = 0; i < action.cards.length; i++){
-				cards.push({
-					cid: action.cards[i].cid,
-					suit: action.cards[i].suit,
-					value: action.cards[i].value
-				})
-			}
-			spot = this.spots[action.pid];
-			delay = this.placeCards(spot, cards);
+	case 'TAKE':
+		if(!action.cards)
 			break;
-			
-		case 'ATTACK':
-			//Fall-through
+		cards = [];
+		for(var i = 0; i < action.cards.length; i++){
+			cards.push({
+				cid: action.cards[i].cid,
+				suit: action.cards[i].suit,
+				value: action.cards[i].value
+			})
+		}
+		spot = this.spots[action.pid];
+		delay = this.placeCards(spot, cards);
+		break;
+		
+	case 'ATTACK':
+		//Fall-through
 
-		case 'DEFENSE':
-			card = {
-				cid: action.cid,
-				suit: action.suit,
-				value: action.value
-			}
-			spot = this.spots[action.spot];
-			delay = this.placeCards(spot, [card]);
-			break;
+	case 'DEFENSE':
+		card = {
+			cid: action.cid,
+			suit: action.suit,
+			value: action.value
+		}
+		spot = this.spots[action.spot];
+		delay = this.placeCards(spot, [card]);
+		break;
 
-		case 'DISCARD':
-			cards = [];
-			for(var i = 0; i < action.ids.length; i++){
-				cards.push({
-					cid: action.ids[i],
-					suit: null,
-					value: 0
-				})
-			}
-			spot = this.spots['DISCARD_PILE'];
-			delay = this.placeCards(spot, cards);
-			break;
+	case 'DISCARD':
+		cards = [];
+		for(var i = 0; i < action.ids.length; i++){
+			cards.push({
+				cid: action.ids[i],
+				suit: null,
+				value: 0
+			})
+		}
+		spot = this.spots['DISCARD_PILE'];
+		delay = this.placeCards(spot, cards);
+		break;
 
-		case 'SKIP':
-			break;
+	case 'SKIP':
+		break;
 
-		default:
-			console.warn('Spot manager: Unknown action type', action.type, action)
+	default:
+		console.warn('Spot manager: Unknown action type', action.type, action)
 	}
 	return delay
 }
