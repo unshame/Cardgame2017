@@ -88,20 +88,12 @@ server.onDisconnect(function (conn) {
 });
 
 server.exports.recieveAction = function(action){
+	if(!action)
+		return;
 	var connId = this.connection.id;
 	var pi = players.map((p) => {return p.connId;}).indexOf(connId);
 	var player = players[pi];
-	var game = player.game;
-	var localAction;
-	console.log(game.validActions)
-	for(var ai = 0; ai < game.validActions.length; ai++){
-		var validAction = game.validActions[ai];
-		if(validAction.cid == action.cid && validAction.spot == action.spot){
-			localAction = validAction;
-			break;
-		}
-	}
-	localAction && player.sendResponse(localAction);
+	action && player.sendResponse(action);
 }
 
 //Подключаем сервер к порту
