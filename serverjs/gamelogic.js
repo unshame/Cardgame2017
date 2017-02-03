@@ -1236,19 +1236,25 @@ Game.prototype.setTurnStage = function(stage){
 Game.prototype.letAttack = function(pid){
 
 	var player = this.playersById[pid];
+	var hand = this.hands[pid];
+	var defHand = this.hands[this.defender];
 
 	if(
 		this.fieldUsedSpots >= this.fullField || 
-		this.turnStage != 'FOLLOWUP' && !this.hands[this.defender].length
+		!hand.length ||
+		this.turnStage != 'FOLLOWUP' && !defHand.length
 	){
-		utils.log('Field is full or defender has no cards');
+		utils.log(
+			this.fieldUsedSpots >= this.fullField && 'Field is full' ||
+			!this.hands[pid].length && 'Attacker has no cards' ||
+			this.turnStage != 'FOLLOWUP' && !defHand.length && 'Defender has no cards'
+		);
 		this.setTurnStage('DEFENSE');
 		this.continueGame();
 		return;
 	}
 
-	var actions = [];
-	var hand = this.hands[pid];
+	var actions = [];	
 
 	//Находим значения карт, которые можно подбрасывать
 	var validValues = [];
