@@ -7,7 +7,7 @@
  * getCard(except) - выбирает одну карту из cards, пропускает карты из except
  */
 
-Card = function (options) {
+var Card = function (options) {
 
 	//Options
 	this.options = this.getDefaultOptions();

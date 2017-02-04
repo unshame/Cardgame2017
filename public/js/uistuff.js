@@ -73,3 +73,10 @@ Button.prototype.show = function(){
 	this.visible = true;
 	this.text.visible = true;
 }
+
+Button.prototype.reposition = function(x, y){
+	this.x = x;
+	this.y = y;
+	this.text.x = this.centerX;
+	this.text.y = this.centerY;
+}

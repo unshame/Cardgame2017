@@ -28,8 +28,8 @@ var onScreenChange = function() {
 		appManager.background.height =  appManager.screenHeight;
 		spotManager.resizeSpots();
 		gameManager.rope.maxHeight = gameManager.rope.sprite.y = appManager.screenHeight;
-		gameManager.skipButton.x = gameManager.takeButton.x = appManager.screenWidth - skinManager.skin.width - 120;
-		gameManager.skipButton.y = gameManager.takeButton.y = appManager.screenHeight - skinManager.skin.height - 120;
+		gameManager.skipButton.reposition(appManager.screenWidth - skinManager.skin.width - 120, appManager.screenHeight - skinManager.skin.height - 120);
+		gameManager.takeButton.reposition(appManager.screenWidth - skinManager.skin.width - 120, appManager.screenHeight - skinManager.skin.height - 120);
 	}
 }
 window.addEventListener('resize',onScreenChange);
@@ -45,7 +45,7 @@ function create ()
 	//app.stage.disableVisibilityChange  = true;
 	
 
-	appManager.background = app.add.tileSprite(0, 0, appManager.screenWidth, appManager.screenHeight, 'assault');
+	appManager.background = app.add.tileSprite(0, 0, appManager.screenWidth, appManager.screenHeight, 'blue');
 
 
 	gameManager.cardsGroup = app.add.group();
@@ -57,7 +57,8 @@ function create ()
 
 	gameManager.skipButton = new Button(appManager.screenWidth - skinManager.skin.width - 120, appManager.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('SKIP')}, 'Skip');
 	gameManager.takeButton = new Button(appManager.screenWidth - skinManager.skin.width - 120, appManager.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('TAKE')}, 'Take');
-
+	gameManager.skipButton.hide();
+	gameManager.takeButton.hide();
 	app.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 	/*app.onPause.add(function(){console.log('paused')});
 	app.onResume.add(function(){console.log('unpaused')});

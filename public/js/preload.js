@@ -10,9 +10,12 @@ function preload () {
 
 	//Фон
 	app.load.image('wood_light', 'assets/backgrounds/wood_light.png');
+	app.load.image('wood_dark', 'assets/backgrounds/wood_dark.png');
 	app.load.image('green', 'assets/backgrounds/green.png');
 	app.load.image('black', 'assets/backgrounds/black.png');
 	app.load.image('assault', 'assets/backgrounds/assault.png');
+	app.load.image('brown', 'assets/backgrounds/brown.png');
+	app.load.image('blue', 'assets/backgrounds/blue.png');
 
 	//Для тестов
 	app.load.image('testParticle', 'assets/test_particle.png');
