@@ -22,12 +22,15 @@ var debugSpotValidity = false;
 var onScreenChange = function() {
 	appManager.screenWidth = window.innerWidth;
 	appManager.screenHeight = window.innerHeight;
-	app.scale.setGameSize(appManager.screenWidth, appManager.screenHeight)
-	appManager.background.width = appManager.screenWidth;
-	appManager.background.height =  appManager.screenHeight;
-	spotManager.resizeSpots();
-	gameManager.rope.maxHeight = gameManager.rope.sprite.y = appManager.screenHeight;
-
+	if(app.created){
+		app.scale.setGameSize(appManager.screenWidth, appManager.screenHeight)
+		appManager.background.width = appManager.screenWidth;
+		appManager.background.height =  appManager.screenHeight;
+		spotManager.resizeSpots();
+		gameManager.rope.maxHeight = gameManager.rope.sprite.y = appManager.screenHeight;
+		gameManager.skipButton.x = gameManager.takeButton.x = appManager.screenWidth - skinManager.skin.width - 120;
+		gameManager.skipButton.y = gameManager.takeButton.y = appManager.screenHeight - skinManager.skin.height - 120;
+	}
 }
 window.addEventListener('resize',onScreenChange);
 window.addEventListener('orientationchange',onScreenChange);
@@ -37,9 +40,9 @@ function create ()
 	if(app.created)
 		return;
 
+	app.created = true;
 	app.world.setBounds(0, 0, appManager.screenWidth, appManager.screenHeight);
 	//app.stage.disableVisibilityChange  = true;
-	app.created = true;
 	
 
 	appManager.background = app.add.tileSprite(0, 0, appManager.screenWidth, appManager.screenHeight, 'assault');
