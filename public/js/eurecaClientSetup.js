@@ -39,7 +39,7 @@ var EurecaClientSetup = function() {
 		if(~actionTypes.indexOf('TAKE'))
 			gameManager.takeButton.show();
 
-		gameManager.rope.start(10000);
+		gameManager.rope.start(time * 1000);
 		spotManager.highlightPossibleActions(newActions);
 		if(isInDebugMode)
 			console.log(newActions)
