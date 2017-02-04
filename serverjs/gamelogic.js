@@ -8,9 +8,15 @@
 * автоматически продолжает игру (continueGame)
 */
 
-var utils = require('./utils')
+var utils = require('./utils'),
+	Bot = require('./bots').Bot;
 
 var Game = function(players){
+
+	if(!players || !players.length){
+		utils.log('ERROR: Can\'t start a game without players');
+	}
+
 
 	//Генерируем айди игры
 	this.id = 'game_' + utils.generateId();
@@ -18,7 +24,7 @@ var Game = function(players){
 	//Сохраняем ссылки на игроков локально
 	this.players = players.slice();	
 	if(this.players.length < 2){
-		this.players.push(new Bot());
+		this.players.push(new Bot(['addedBot']));
 		utils.log('WARNING: Only one player at the start of the game, adding a bot');
 	}
 
