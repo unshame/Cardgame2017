@@ -1,7 +1,7 @@
 window.playState = new Phaser.State();
 
 playState.preload = function(){
-	console.log('preloading')
+	var app = this.game;
 	//Фон
 	app.load.image('wood_light', 'assets/backgrounds/wood_light.png');
 	app.load.image('wood_dark', 'assets/backgrounds/wood_dark.png');
@@ -50,12 +50,12 @@ playState.preload = function(){
 }
 
 playState.create = function(){
-	console.log('setting up')
+	var app = this.game;
 	app.client = EurecaClientSetup(this.createApp, this);
 }
 
 playState.createApp = function(){
-	console.log('creating')
+	var app = this.game;
 	if(app.created)
 		return;
 
@@ -89,6 +89,7 @@ playState.createApp = function(){
 
 
 playState.update = function(){
+	var app = this.game;
 	if(!app.created)
 		return;
 
@@ -107,6 +108,7 @@ playState.update = function(){
 
 
 playState.render = function(){
+	var app = this.game;
 	if(!app.created)
 		return;
 
@@ -121,7 +123,7 @@ playState.render = function(){
 }
 
 playState.loadUpdate = function(){
-	console.log('updating')
+	var app = this.game;
 }
 
 app.state.add('Play', playState, true)
