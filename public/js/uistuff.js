@@ -1,8 +1,5 @@
 var Rope = function(){
-	var pixel = app.make.graphics(0, 0);
-	pixel.beginFill(0xFFFFFF);
-	pixel.drawRect(0, 0, 1, 1);
-	pixel.endFill();
+	var pixel = app.newPixel();
 
 	this.sprite = app.add.sprite(0, 0, pixel.generateTexture());
 	this.sprite.tint = '0xFF8300';

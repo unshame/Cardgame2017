@@ -80,10 +80,7 @@ var Spot = function(options){
 	this.minActiveSpace = this.options.minActiveSpace;
 
 	//Текстура для дебага и область поля
-	var pixel = app.make.graphics(0, 0);
-	pixel.beginFill(0xffffff);
-	pixel.drawRect(0, 0, 1, 1);
-	pixel.endFill();
+	var pixel = app.newPixel();
 
 	this.area = app.add.sprite(0, 0, pixel.generateTexture());
 	this.area.alpha = 0.35;

@@ -51,8 +51,42 @@ playState.preload = function(){
 
 playState.create = function(){
 	console.log('setting up')
-	app.client = EurecaClientSetup(app);
+	app.client = EurecaClientSetup(this);
 }
+
+playState.createApp = function(){
+	console.log('creating')
+	if(app.created)
+		return;
+
+	$('#loading').animate({opacity: 0}, 2000, function(){
+		$('#loading').hide();
+	})
+
+	app.created = true;
+	//app.world.setBounds(0, 0, app.screenWidth, app.screenHeight);
+	//app.stage.disableVisibilityChange  = true;
+	
+
+	app.background = app.add.tileSprite(0, 0, app.screenWidth, app.screenHeight, 'blue');
+
+	game.cardsGroup = app.add.group();
+
+	controller = new Controller(false);
+
+	game.rope = new Rope();
+
+	game.skipButton = new Button(app.screenWidth - skinManager.skin.width - 120, app.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('SKIP')}, 'Skip');
+	game.takeButton = new Button(app.screenWidth - skinManager.skin.width - 120, app.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('TAKE')}, 'Take');
+	game.skipButton.hide();
+	game.takeButton.hide();
+	app.canvas.oncontextmenu = function (e) { e.preventDefault(); }
+	/*app.onPause.add(function(){console.log('paused')});
+	app.onResume.add(function(){console.log('unpaused')});
+	app.onBlur.add(function(){console.log('blured')});
+	app.onFocus.add(function(){console.log('focused')});*/
+}
+
 
 playState.update = function(){
 	if(!app.created)

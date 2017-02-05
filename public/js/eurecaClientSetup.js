@@ -16,7 +16,7 @@ var EurecaClientSetup = function(state) {
 	
 	client.ready(function (proxy) {		
 		server = proxy;
-		app.createApp();
+		state.createApp();
 	});
 	
 	
