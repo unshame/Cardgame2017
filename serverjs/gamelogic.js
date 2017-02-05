@@ -161,6 +161,9 @@ Game.prototype.reset = function(){
 	this.attacker = null;
 	this.defender = null;
 	this.ally = null;
+
+	//Запоминаем атакующих при переводе
+	this.originalAttackers = [];
 }
 
 //Подготовка к игре
@@ -448,15 +451,23 @@ Game.prototype.dealNotify = function(deals){
 Game.prototype.dealTillFullHand = function(){
 	var deals = [];
 
-	var handsLeft = this.players.length;
+	var sequence = [];
+	for(var oi = 0; oi < this.originalAttackers.length; oi++){
+		var pid = this.originalAttackers[oi];
+		if(!~sequence.indexOf(pid))
+			sequence.push(pid);
+	}
+	if(!~sequence.indexOf(this.attacker))
+		sequence.push(this.attacker);
 
-	var currentHand = this.players.indexOf(this.playersById[this.attacker]);
+	if(this.ally && !~sequence.indexOf(this.ally))
+		sequence.push(this.ally);
 
-	while(handsLeft){		
-		if(!this.players[currentHand]){
-			currentHand = 0;
-		}
-		var player = this.players[currentHand];
+	if(!~sequence.indexOf(this.defender))
+		sequence.push(this.defender);
+
+	for(var si = 0; si < sequence.length; si++){
+		var player = this.playersById[sequence[si]];
 		var cardsInHand = this.hands[player.id].length;
 		if(cardsInHand < this.normalHandSize){
 			var dealInfo = {
@@ -465,9 +476,12 @@ Game.prototype.dealTillFullHand = function(){
 			}
 			deals.push(dealInfo);
 		}
-		handsLeft--;
-		currentHand++;
 	}
+
+	//Если защищающийся брал, сдвигаем айди, по которому будет искаться атакующий
+	if(this.playerTaken)
+		this.attacker = this.defender;
+
 	if(deals.length){
 		this.deal(deals);
 	}
@@ -799,6 +813,7 @@ Game.prototype.processAction = function(player, incomingAction){
 		}
 		else if(this.lastTurnStage == 'DEFENSE'){
 
+			this.originalAttackers.push(this.attacker);
 			var currentAttackerIndex = this.findInactivePlayers();
 			if(this.checkGameEnded()){
 				this.gameState = 'ENDED';
@@ -996,6 +1011,8 @@ Game.prototype.resetTurn = function(){
 	this.skipCounter = 0;
 	this.lastTurnStage = null;
 	this.turnStage = null;	
+	this.playerTaken = false;
+	this.originalAttackers = [];
 }
 
 //Начинает ход
@@ -1525,7 +1542,7 @@ Game.prototype.letTake = function(pid){
 
 	}
 
-	this.attacker = player.id;
+	this.playerTaken = true;
 	this.setTurnStage('END');
 
 	action.pid = player.id;
