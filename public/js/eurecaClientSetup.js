@@ -9,14 +9,14 @@ var isInDebugMode = false;
 var actions = null;
 var timeout = null;
 
-var EurecaClientSetup = function(state) {
+var EurecaClientSetup = function(callback, context) {
 	//создаем eureca.io клиент
 
 	var client = new Eureca.Client();
 	
 	client.ready(function (proxy) {		
 		server = proxy;
-		state.createApp();
+		callback.call(context);
 	});
 	
 	

@@ -51,7 +51,7 @@ playState.preload = function(){
 
 playState.create = function(){
 	console.log('setting up')
-	app.client = EurecaClientSetup(this);
+	app.client = EurecaClientSetup(this.createApp, this);
 }
 
 playState.createApp = function(){
