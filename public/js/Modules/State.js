@@ -126,4 +126,3 @@ playState.loadUpdate = function(){
 	var app = this.game;
 }
 
-app.state.add('Play', playState, true)

@@ -48,5 +48,3 @@ App.prototype.newPixel = function(){
 	pixel.endFill();
 	return pixel
 }
-
-window.app = new App();
