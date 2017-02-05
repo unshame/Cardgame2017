@@ -6,6 +6,10 @@ var crypto = require('crypto');
 fs.writeFile('./logs/log.txt','');
 var logStream = fs.createWriteStream('./logs/log.txt', {'flags': 'a'});
 
+var stats = {
+	line: 0
+}
+
 exports.generateId = function(){
 	var chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 	var howMany = 7;
@@ -42,6 +46,7 @@ exports.log = function(){
 	}
 	logLine += "\n";
 	logStream.write(logLine)
+	stats.line++;
 }
 
 exports.shuffleArray = function(array) {
@@ -62,3 +67,5 @@ exports.shuffleArray = function(array) {
 
   return array;
 }
+
+exports.stats = stats;

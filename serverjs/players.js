@@ -99,4 +99,4 @@ Player.prototype.sendResponse = function(action){
 	this.game.recieveResponse(this, action ? action : null);
 }
 
-exports.Player = Player;
+module.exports = Player;

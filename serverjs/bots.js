@@ -63,4 +63,4 @@ Bot.prototype.sendResponse = function(action){
 	this.game.recieveResponse(this, action ? action : null);
 }
 
-exports.Bot = Bot;
+module.exports = Bot;

@@ -9,7 +9,7 @@
 */
 
 var utils = require('./utils'),
-	Bot = require('./bots').Bot;
+	Bot = require('./bots');
 
 var Game = function(players, canTransfer){
 
@@ -478,10 +478,6 @@ Game.prototype.dealTillFullHand = function(){
 		}
 	}
 
-	//Если защищающийся брал, сдвигаем айди, по которому будет искаться атакующий
-	if(this.playerTaken)
-		this.attacker = this.defender;
-
 	if(deals.length){
 		this.deal(deals);
 	}
@@ -814,11 +810,11 @@ Game.prototype.processAction = function(player, incomingAction){
 		else if(this.lastTurnStage == 'DEFENSE'){
 
 			this.originalAttackers.push(this.attacker);
-			var currentAttackerIndex = this.findInactivePlayers();
 			if(this.checkGameEnded()){
 				this.gameState = 'ENDED';
 			}
 			else{
+				var currentAttackerIndex = this.activePlayers.indexOf(this.attacker);
 				this.findNextPlayer(currentAttackerIndex);
 				this.setTurnStage('DEFENSE');
 			}			
@@ -1025,6 +1021,7 @@ Game.prototype.startTurn = function(){
 		this.ally ? this.playersById[this.ally].name : null,
 		'\nCards in deck:', this.deck.length
 	);
+	utils.stats.line += 2;
 	
 	for(var pi = 0; pi < this.players.length; pi++){
 		var pid = this.players[pi].id;
@@ -1042,6 +1039,7 @@ Game.prototype.startTurn = function(){
 Game.prototype.endGame = function(){
 
 	utils.log('Game ended', this.id, '\n\n');
+	utils.stats.line += 2;
 	
 	var note = {
 		message: 'GAME_ENDED',
@@ -1696,6 +1694,11 @@ Game.prototype.doTurn = function(){
 	//Конец конца хода
 	//находим следующего игрока, ресетим ход и проверяем, закончилась ли игра
 	case 'ENDED':
+
+		//Если защищающийся брал, сдвигаем айди, по которому будет искаться атакующий
+		if(this.playerTaken)
+			this.attacker = this.defender;
+
 		var currentAttackerIndex = this.findInactivePlayers();
 		this.resetTurn();
 		//Turn stage: null
@@ -1727,4 +1730,4 @@ Game.prototype.logAction = function(card, actionType, from, to){
 	);
 }
 
-exports.Game = Game
+module.exports = Game

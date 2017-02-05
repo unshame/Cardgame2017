@@ -8,12 +8,12 @@ var express = require('express'),
 	Eureca = require('eureca.io');
 
 //Игровые модули
-var LobbyManager = require('./serverjs/lobbyManager').LobbyManager,
-	Lobby = require('./serverjs/lobby').Lobby,
-	Game = require('./serverjs/gamelogic').Game,
-	Bot = require('./serverjs/bots').Bot,
-	Player = require('./serverjs/players').Player;
-
+var LobbyManager = require('./serverjs/lobbyManager'),
+	Lobby = require('./serverjs/lobby'),
+	Game = require('./serverjs/gamelogic'),
+	Bot = require('./serverjs/bots'),
+	Player = require('./serverjs/players');
+	Tests = require('./serverjs/Tests/GameTest');
 
 //Приложение и http сервер
 var app = express(app),
@@ -49,7 +49,8 @@ var botsAdded = 0;
 var numBots = Number(process.env.BOTS);
 var numPlayers = Number(process.env.PLAYERS);
 var rndBots = Number(process.env.RND);
-var transfer = Number(process.env.TRANSFER)
+var transfer = Number(process.env.TRANSFER);
+var testing = Number(process.env.TEST);
 
 if(isNaN(numBots))
 	numBots = 3;
@@ -59,15 +60,22 @@ if(isNaN(rndBots))
 	rndBots = true;
 if(isNaN(transfer))
 	transfer = true;
+if(isNaN(testing))
+	testing = false;
 
 if(rndBots && numBots)
 	numBots = Math.floor(Math.random()*numBots) + 1;
 
-console.log('Bots added:', numBots);
-console.log('Waiting for players:', numPlayers);
+if(!testing){
+	console.log('Bots added:', numBots);
+	console.log('Waiting for players:', numPlayers);
+}
 
 //Клиент подключился
 server.onConnect(function (conn) {
+
+	if(testing)
+		return;
 
 	//getClient позволяет нам получить доступ к функциям на стороне клиента
 	var remote = server.getClient(conn.id);
@@ -104,6 +112,10 @@ server.onConnect(function (conn) {
 
 //Клиент отключился
 server.onDisconnect(function (conn) {
+
+	if(testing)
+		return;
+
 	console.log('Client disconnected ', conn.id);
 
 	var removeId = clients[conn.id].id;
@@ -148,4 +160,7 @@ server.exports.recieveResponse = function(){
 //Подключаем сервер к порту
 httpServer.listen(app.get('port'), () => {
 	console.log('Node app is running on port', app.get('port'));
+	if(testing)
+		Tests.runTest();
 });
+
