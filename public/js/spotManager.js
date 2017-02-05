@@ -1,6 +1,6 @@
 /*
  * Модуль, создающий и управляющий полями (Spot)
- * Также создает карты. Этот функционал нужно будет переместить в gameManager
+ * Также создает карты. Этот функционал нужно будет переместить в game
  * TODO:
  *  Расположения полей
  * 	Выделение полей в соотвествии с возможными действиями
@@ -36,17 +36,17 @@ SpotManager.prototype.calculateSizes = function(){
 	this.positions = {
 		DECK: {
 			x: 100,
-			y: appManager.screenHeight - 250
+			y: app.screenHeight - 250
 		},
 		DISCARD_PILE: {
-			x:appManager.screenWidth - 250,
-			y:appManager.screenHeight - 250
+			x:app.screenWidth - 250,
+			y:app.screenHeight - 250
 		},
 
 		//Поле игрока пока не известен id игрока
 		playerHand: {
 			x:390,
-			y:appManager.screenHeight - 250
+			y:app.screenHeight - 250
 		},
 
 		//Позиция первого поля на столе
@@ -73,7 +73,7 @@ SpotManager.prototype.calculateSizes = function(){
 
 		//Поле игрока пока не известен id игрока
 		playerHand: {
-			width:appManager.screenWidth - 700,
+			width:app.screenWidth - 700,
 			//height: 
 		},
 
@@ -85,7 +85,7 @@ SpotManager.prototype.calculateSizes = function(){
 	}
 
 	//Field
-	var width = (appManager.screenWidth - 130) / 6 - 50;
+	var width = (app.screenWidth - 130) / 6 - 50;
 	for(var i = 0; i < 6; i++){
 		id = 'FIELD' + i;
 		x = this.positions.firstField.x + (width + 50)*i;
@@ -104,7 +104,7 @@ SpotManager.prototype.calculateSizes = function(){
 	};
 
 	//Opponents
-	width = (appManager.screenWidth - 130) / (this.players.length - 1) - 50;
+	width = (app.screenWidth - 130) / (this.players.length - 1) - 50;
 	var i = this.pi + 1;
 	var oi = 0;
 	if(i >= this.players.length)
@@ -130,7 +130,7 @@ SpotManager.prototype.calculateSizes = function(){
 //Создает поля
 SpotManager.prototype.createSpotNetwork = function(players){
 
-	this.pid = appManager.pid;
+	this.pid = app.pid;
 	this.players = players;
 	var numOfCards = players.length > 4 ? 52 : 36;
 	var id;
@@ -333,13 +333,13 @@ SpotManager.prototype.executeAction = function(action){
 		this.resetSpots();
 		controller.reset();
 
-		for(var cid in gameManager.cards){
-			if(gameManager.cards.hasOwnProperty(cid)){
-				gameManager.cards[cid].base.removeAll(true);
+		for(var cid in game.cards){
+			if(game.cards.hasOwnProperty(cid)){
+				game.cards[cid].base.removeAll(true);
 			}
 		}
-		gameManager.cards = {};
-		gameManager.cardsGroup.removeAll(true);
+		game.cards = {};
+		game.cardsGroup.removeAll(true);
 		delay = this.queueCards(action.cards);
 		this.removeMarkedCards();
 		this.placeQueuedCards();
@@ -350,8 +350,8 @@ SpotManager.prototype.executeAction = function(action){
 				var options = {
 					id: id
 				}
-				gameManager.cards[id] = new Card(options);
-				discardCards.push(gameManager.cards[id])
+				game.cards[id] = new Card(options);
+				discardCards.push(game.cards[id])
 			}
 			this.spots['DISCARD_PILE'].addCards(discardCards);
 		}
@@ -427,8 +427,8 @@ SpotManager.prototype.highlightPossibleActions = function(actions){
 	}
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
-		if(action.cid && gameManager.cards[action.cid]){
-			gameManager.cards[action.cid].setPlayability(true);
+		if(action.cid && game.cards[action.cid]){
+			game.cards[action.cid].setPlayability(true);
 			this.spots[action.spot].setHighlight(true);
 		}
 	}
@@ -451,7 +451,7 @@ SpotManager.prototype.queueCards = function(newCards){
 	var delay = 0;
 	for(var ci = 0; ci < newCards.length; ci++){
 		var c = newCards[ci];
-		var card = gameManager.cards[c.cid];
+		var card = game.cards[c.cid];
 		if(card){
 			card.presetValue(c.suit, c.value);		
 			card.presetSpot(c.spot || c.pid);
@@ -463,8 +463,8 @@ SpotManager.prototype.queueCards = function(newCards){
 				value: c.value,
 				spotId: c.spot || c.pid
 			}
-			gameManager.cards[c.cid] = new Card(options);
-			card = gameManager.cards[c.cid];
+			game.cards[c.cid] = new Card(options);
+			card = game.cards[c.cid];
 		}
 		card.spot && this.cardsToRemove[card.spot.id].push(card);
 		var spotId = card.spotId;
@@ -494,7 +494,7 @@ SpotManager.prototype.placeCards = function(spot, newCards){
 		var cid = newCards[i].cid,
 			suit = newCards[i].suit,
 			value = newCards[i].value, 
-			card = gameManager.cards[cid];
+			card = game.cards[cid];
 		
 		if(card){
 			card.presetValue(suit, value);

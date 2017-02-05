@@ -1,13 +1,7 @@
-window.appManager = {
-	background: null,
-	screenWidth: window.innerWidth,
-	screenHeight: window.innerHeight
-};
+window.playState = new Phaser.State();
 
-
-//Assets
-function preload () {
-
+playState.preload = function(){
+	console.log('preloading')
 	//Фон
 	app.load.image('wood_light', 'assets/backgrounds/wood_light.png');
 	app.load.image('wood_dark', 'assets/backgrounds/wood_dark.png');
@@ -54,3 +48,46 @@ function preload () {
 	}
 	skinManager.addSkin(options);
 }
+
+playState.create = function(){
+	console.log('setting up')
+	app.client = EurecaClientSetup(app);
+}
+
+playState.update = function(){
+	if(!app.created)
+		return;
+
+	if(controller)
+		controller.update();
+
+	if(game.rope)
+		game.rope.update();
+
+	for(var ci in game.cards){
+		if(!game.cards.hasOwnProperty(ci))
+			continue;
+		game.cards[ci].update();
+	}
+}
+
+
+playState.render = function(){
+	if(!app.created)
+		return;
+
+	controller && controller.updateDebug();
+	spotManager && spotManager.updateDebug();
+
+	for(var ci in game.cards){
+		if(!game.cards.hasOwnProperty(ci))
+			continue;
+		game.cards[ci].updateDebug();
+	}
+}
+
+playState.loadUpdate = function(){
+	console.log('updating')
+}
+
+app.state.add('Play', playState, true)

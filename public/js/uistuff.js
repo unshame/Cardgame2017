@@ -7,12 +7,12 @@ var Rope = function(){
 	this.sprite = app.add.sprite(0, 0, pixel.generateTexture());
 	this.sprite.width = 30;
 	this.sprite.height = 0;
-	this.sprite.y = appManager.screenHeight;
+	this.sprite.y = app.screenHeight;
 	this.sprite.anchor.setTo(0, 1);
 	this.startTime = 0;
 	this.duration = 0;
 	this.isBurning = false;
-	this.maxHeight = appManager.screenHeight;
+	this.maxHeight = app.screenHeight;
 }
 
 Rope.prototype.update = function(){
