@@ -11,7 +11,7 @@
 var utils = require('./utils'),
 	Bot = require('./bots').Bot;
 
-var Game = function(players){
+var Game = function(players, canTransfer){
 
 	if(!players || !players.length){
 		utils.log('ERROR: Can\'t start a game without players');
@@ -27,6 +27,9 @@ var Game = function(players){
 		this.players.push(new Bot(['addedBot']));
 		utils.log('WARNING: Only one player at the start of the game, adding a bot');
 	}
+
+	//Можно ли переводить карты
+	this.canTransfer = canTransfer;
 
 	//Счет побед и проигрышей игроков (объекты по id игроков)
 	this.scores = {};
@@ -172,7 +175,7 @@ Game.prototype.make = function(){
 	this.activePlayers = this.players.map((p) => p.id);
 
 	//Задаем количество карт и минимальное значение карты
-	if(this.players.length > 4){
+	if(this.players.length > 3){
 		this.lowestCardValue = 2;
 		this.numOfCards = 52
 	}
@@ -763,7 +766,15 @@ Game.prototype.processAction = function(player, incomingAction){
 	//Игрок походил
 	case 'ATTACK':
 
-		utils.log(player.name, this.lastTurnStage == 'FOLLOWUP' ? 'follows up' : 'attacks')
+		var str;
+		if(this.lastTurnStage == 'FOLLOWUP')
+			str = 'follows up'
+		else if(this.lastTurnStage == 'DEFENSE')
+			str = 'transfers'
+		else
+			str = 'attacks';
+
+		utils.log(player.name,  str)
 
 		var ci = this.hands[player.id].indexOf(action.cid);
 		var card = this.cards[action.cid];
@@ -783,10 +794,23 @@ Game.prototype.processAction = function(player, incomingAction){
 		this.fieldUsedSpots++;
 
 		//Если игрок клал карту в догонку, даем ему воможность положить еще карту
-		if(this.lastTurnStage == 'FOLLOWUP')
-			this.setTurnStage('FOLLOWUP')
-		else
+		if(this.lastTurnStage == 'FOLLOWUP'){
+			this.setTurnStage('FOLLOWUP');
+		}
+		else if(this.lastTurnStage == 'DEFENSE'){
+
+			var currentAttackerIndex = this.findInactivePlayers();
+			if(this.checkGameEnded()){
+				this.gameState = 'ENDED';
+			}
+			else{
+				this.findNextPlayer(currentAttackerIndex);
+				this.setTurnStage('DEFENSE');
+			}			
+		}
+		else{
 			this.skipCounter = 0;//Если же это просто ход, сбрасываем счетчик пропущенных ходов
+		}
 
 		break;
 
@@ -808,6 +832,14 @@ Game.prototype.processAction = function(player, incomingAction){
 		//Добавляем информацию о карте в действие
 		action.value = card.value;
 		action.suit = card.suit;
+
+		for(var di = 0; di < this.field.length; di++){
+			var fieldSpot = this.field[di];
+			if(fieldSpot.attack && !fieldSpot.defense){
+				this.setTurnStage('DEFENSE');
+				break;
+			}
+		}
 
 		break;
 
@@ -1323,21 +1355,24 @@ Game.prototype.letDefend = function(pid){
 
 	var player = this.playersById[pid];
 
-	var defenseSpot = null;
+	var defenseSpots = [];
+	var offenseIndex = 0;
 
 	//Находим карту, которую нужно отбивать
 	for(var fi = 0; fi < this.field.length; fi++){
 		var fieldSpot = this.field[fi];
 
+		if(fieldSpot.attack)
+			offenseIndex++;
+
 		if(fieldSpot.attack && !fieldSpot.defense){
-			defenseSpot = fieldSpot;
-			break
+			defenseSpots.push(fieldSpot);
 		} 
 
 	}
 
 	//Если ни одной карты не найдено, значит игрок успешно отбился, можно завершать ход
-	if(!defenseSpot){
+	if(!defenseSpots.length){
 		utils.log(this.playersById[pid].name, 'successfully defended');
 
 		this.setTurnStage('END');
@@ -1345,28 +1380,54 @@ Game.prototype.letDefend = function(pid){
 		return
 	}
 
+	//Узнаем, можно ли переводить
+	var canTransfer = this.canTransfer && this.hands[this.ally || this.attacker].length >= offenseIndex;
+	var attackSpot = this.field[offenseIndex];
+	if(canTransfer){
+		for(var fi = 0; fi < this.field.length; fi++){
+			var fieldSpot = this.field[fi];
+			if(fieldSpot.defense){
+				canTransfer = false;
+				break;
+			}
+		}
+	}
+
 	var actions = [];
 	var hand = this.hands[pid];
-	var spot = defenseSpot.id;
+	
 
 	//Создаем список возможных действий защищающегося
-	for(var ci = 0; ci < hand.length; ci++){
-		var cid = hand[ci];
-		var card = this.cards[cid];
-		var otherCard = this.cards[defenseSpot.attack];
+	for(var di = 0; di < defenseSpots.length; di++){
+		var spot = defenseSpots[di].id;
+		for(var ci = 0; ci < hand.length; ci++){
+			var cid = hand[ci];
+			var card = this.cards[cid];
+			var otherCard = this.cards[defenseSpots[di].attack];
 
-		//Карты той же масти и большего значения, либо козыри, если битая карта не козырь,
-		//иначе - козырь большего значения
-		if(
-			card.suit == this.trumpSuit && otherCard.suit != this.trumpSuit ||
-			card.suit == otherCard.suit && card.value > otherCard.value
-		){			
-			var action = {
-				type: 'DEFENSE',
-				cid: cid,
-				spot: spot
+			//Карты той же масти и большего значения, либо козыри, если битая карта не козырь,
+			//иначе - козырь большего значения
+			if(
+				card.suit == this.trumpSuit && otherCard.suit != this.trumpSuit ||
+				card.suit == otherCard.suit && card.value > otherCard.value
+			){			
+				var action = {
+					type: 'DEFENSE',
+					cid: cid,
+					spot: spot
+				}
+				actions.push(action);
 			}
-			actions.push(action);
+
+			//Возожность перевода
+			if(canTransfer && attackSpot && card.value == otherCard.value){
+				var action = {
+					type: 'ATTACK',
+					cid: cid,
+					spot: attackSpot.id
+				}
+				actions.push(action);
+			}
 		}
 	}
 

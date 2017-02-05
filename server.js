@@ -49,6 +49,7 @@ var botsAdded = 0;
 var numBots = Number(process.env.BOTS);
 var numPlayers = Number(process.env.PLAYERS);
 var rndBots = Number(process.env.RND);
+var transfer = Number(process.env.TRANSFER)
 
 if(isNaN(numBots))
 	numBots = 3;
@@ -56,6 +57,8 @@ if(isNaN(numPlayers) || !numPlayers)
 	numPlayers = 1;
 if(isNaN(rndBots))
 	rndBots = true;
+if(isNaN(transfer))
+	transfer = true;
 
 if(rndBots && numBots)
 	numBots = Math.floor(Math.random()*numBots) + 1;
@@ -90,7 +93,7 @@ server.onConnect(function (conn) {
 	players.push(p);
 
 	if(newPlayers.length >= numPlayers + numBots){	
-		games.push(new Game(newPlayers));
+		games.push(new Game(newPlayers, transfer));
 		newPlayers = [];
 		botsAdded = 0;
 	}

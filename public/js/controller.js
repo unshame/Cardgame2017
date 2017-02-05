@@ -131,6 +131,13 @@ Controller.prototype.cardRebaseAtPointer = function(newSpot){
 		return
 	}
 
+	var success = sendAction(newSpot, this.card);
+
+	if(!success){
+		this.cardReturn();
+		return;
+	}
+
 	this.trail.position.x -= this.card.sprite.x; 
 	this.trail.position.y -= this.card.sprite.y; 
 
@@ -155,11 +162,10 @@ Controller.prototype.cardRebaseAtPointer = function(newSpot){
 			this.card.spot.cards[ci].setPlayability(false);
 		}
 	}
-
-	sendAction(newSpot, this.card);
-
+			
 	this.card = null;
 	this.pointer = null;
+
 }
 
 //Возвращает карту на базу

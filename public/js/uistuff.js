@@ -1,10 +1,11 @@
 var Rope = function(){
 	var pixel = app.make.graphics(0, 0);
-	pixel.beginFill(0xFF8300);
+	pixel.beginFill(0xFFFFFF);
 	pixel.drawRect(0, 0, 1, 1);
 	pixel.endFill();
 
 	this.sprite = app.add.sprite(0, 0, pixel.generateTexture());
+	this.sprite.tint = '0xFF8300';
 	this.sprite.width = 30;
 	this.sprite.height = 0;
 	this.sprite.y = app.screenHeight;
@@ -28,7 +29,10 @@ Rope.prototype.update = function(){
 		this.stop();
 	}
 	else{
+		var percentage = left/this.duration;
 		this.sprite.height = left/this.duration * this.maxHeight;
+		if(percentage < 0.25 && this.sprite.tint != '0xC93F3F')
+			this.sprite.tint = '0xC93F3F';
 	}
 }
 
@@ -51,6 +55,7 @@ Rope.prototype.stop = function(){
 	this.sprite.height = 0;
 	this.startTime = 0;
 	this.duration = 0;
+	this.sprite.tint = '0xFF8300';
 }
 
 var Button = function(x, y, action, text){
