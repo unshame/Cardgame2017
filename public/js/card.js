@@ -7,7 +7,7 @@
  * getCard(except) - выбирает одну карту из cards, пропускает карты из except
  */
 
-Card = function (options) {
+var Card = function (options) {
 
 	//Options
 	this.options = this.getDefaultOptions();
@@ -45,7 +45,7 @@ Card = function (options) {
 	this.base.y = this.options.y;
 	this.base.add(this.glow);
 	this.base.add(this.sprite);
-	gameManager.cardsGroup.add(this.base);  
+	game.cardsGroup.add(this.base);  
 
 	//Tweens
 	this.mover = null;
@@ -69,8 +69,8 @@ Card = function (options) {
 Card.prototype.getDefaultOptions = function(){
 	var options = {
 		id:null,
-		x: appManager.screenWidth / 2,
-		y: appManager.screenHeight + 300,
+		x: app.screenWidth / 2,
+		y: app.screenHeight + 300,
 		value:0,
 		suit:null,
 		flipTime: 150,
@@ -233,7 +233,7 @@ Card.prototype.setBase = function(x, y){
 //Устанавливает перетаскиваемость
 Card.prototype.presetSpot = function(spotId){
 	this.spotId = spotId;
-	 if(spotId == appManager.pid){
+	 if(spotId == app.pid){
 		this.setDraggability(true);
 	}
 	else{
@@ -277,9 +277,9 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		this.updateValue();
 
 	if(bringToTopOn == 'init' || app.paused && bringToTopOn != 'never'){
-		gameManager.cardsGroup.bringToTop(this.base);
+		game.cardsGroup.bringToTop(this.base);
 		if(controller.card)
-			gameManager.cardsGroup.bringToTop(controller.card.base);
+			game.cardsGroup.bringToTop(controller.card.base);
 	}
 
 	//Останавливаем твин, если он есть
@@ -296,7 +296,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	var newBaseY = relativeToBase ? y + this.base.y : y;
 
 	//Предупреждаем о том, что карта вышла за пределы экрана
-	if(newBaseX < 0 || newBaseX > appManager.screenWidth || newBaseY < 0 || newBaseY > appManager.screenHeight)
+	if(newBaseX < 0 || newBaseX > app.screenWidth || newBaseY < 0 || newBaseY > app.screenHeight)
 		console.warn(
 			'Moving card', this.id, 'out of the screen (' + newBaseX + ', ' + newBaseY + ')\n',
 			this
@@ -347,17 +347,17 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		this.mover.onStart.addOnce(function(){
 			this.updateValue();
 			if(bringToTopOn == 'start'){
-				gameManager.cardsGroup.bringToTop(this.base);
+				game.cardsGroup.bringToTop(this.base);
 				if(controller.card)
-					gameManager.cardsGroup.bringToTop(controller.card.base);
+					game.cardsGroup.bringToTop(controller.card.base);
 			}
 		}, this);
 		//Ресет твина по окончанию
 		this.mover.onComplete.addOnce(function(){
 			if(bringToTopOn == 'end'){
-				gameManager.cardsGroup.bringToTop(this.base);
+				game.cardsGroup.bringToTop(this.base);
 				if(controller.card)
-					gameManager.cardsGroup.bringToTop(controller.card.base);
+					game.cardsGroup.bringToTop(controller.card.base);
 			}
 			this.mover = null;
 		}, this);
@@ -598,8 +598,8 @@ var ThrowCards = function(){
 	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
 
 	this.emitter.start(false, 5000, 20);
-	this.emitter.width = appManager.screenWidth;
-	this.emitter.height = appManager.screenHeight;
+	this.emitter.width = app.screenWidth;
+	this.emitter.height = app.screenHeight;
 
 	app.world.bringToTop(this.emitter)
 }
@@ -615,12 +615,12 @@ function getCards(num, except){
 	if(!num)
 		num = Infinity;
 	var crds = [];
-	for(var ci in gameManager.cards){
-		if(!gameManager.cards.hasOwnProperty(ci) || except && except.length && ~except.indexOf(gameManager.cards[ci]))
+	for(var ci in game.cards){
+		if(!game.cards.hasOwnProperty(ci) || except && except.length && ~except.indexOf(game.cards[ci]))
 			continue;
 		if(num-- <= 0)
 			break
-		crds.push(gameManager.cards[ci]);
+		crds.push(game.cards[ci]);
 	}
 	return crds
 }

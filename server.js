@@ -43,10 +43,28 @@ var clients = {};
 var games = [];
 var players = [];
 var randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavonne','Leola','Arlena','Marilynn','Shawnna','Alanna','Armando','Julieann','Alyson','Rutha','Wilber','Marty','Tyrone','Mammie','Shalon','Faith','Mi','Denese','Flora','Josphine','Christa','Sharonda','Sofia','Collene','Marlyn','Herma','Mac','Marybelle','Casimira','Nicholle','Ervin','Evia','Noriko','Yung','Devona','Kenny','Aliza','Stacey','Toni','Brigette','Lorri','Bernetta','Sonja','Margaretta'];
+var newPlayers = [];
+var botsAdded = 0;
+
+var numBots = Number(process.env.BOTS);
+var numPlayers = Number(process.env.PLAYERS);
+var rndBots = Number(process.env.RND);
+
+if(isNaN(numBots))
+	numBots = 3;
+if(isNaN(numPlayers) || !numPlayers)
+	numPlayers = 1;
+if(isNaN(rndBots))
+	rndBots = true;
+
+if(rndBots && numBots)
+	numBots = Math.floor(Math.random()*numBots) + 1;
+
+console.log('Bots added:', numBots);
+console.log('Waiting for players:', numPlayers);
 
 //Клиент подключился
 server.onConnect(function (conn) {
-	console.log('New Client id=%s ', conn.id, conn.remoteAddress);
 
 	//getClient позволяет нам получить доступ к функциям на стороне клиента
 	var remote = server.getClient(conn.id);
@@ -54,19 +72,31 @@ server.onConnect(function (conn) {
 	//Запоминаем информацию о клиенте
 	clients[conn.id] = {id:conn.id, remote:remote};
 
-	//Подключаем клиента к экземпляру игрока
-	var newPlayers = [];
+	if(!newPlayers.length && numBots){
+		var randomNamesCopy = randomNames.slice();
+		for (var n = 0; n < numBots; n++) {
+			var bot = new Bot(randomNamesCopy);
+			newPlayers.push(bot);
+		}
+	}
+
+	//Подключаем клиента к экземпляру игрока	
 	var p = new Player(remote, conn.id);
+
+	console.log('New client %s (%s)\n', p.id, conn.id, conn.remoteAddress);
 
 	//Запускаем игру с ботами и игроком
 	newPlayers.push(p);
 	players.push(p);
-	var randomNamesCopy = randomNames.slice();
-	for (var n = 0; n < Math.floor(Math.random()*4) + 2; n++) {
-		var bot = new Bot(randomNamesCopy);
-		newPlayers.push(bot);
+
+	if(newPlayers.length >= numPlayers + numBots){	
+		games.push(new Game(newPlayers));
+		newPlayers = [];
+		botsAdded = 0;
 	}
-	games.push(new Game(newPlayers));
+	else{
+		console.log('Waiting for players:', numPlayers - newPlayers.length + numBots);
+	}
 });
 
 //Клиент отключился
@@ -75,11 +105,18 @@ server.onDisconnect(function (conn) {
 
 	var removeId = clients[conn.id].id;
 
-	for(var pi = 0; pi < players.length; pi++){
+	for(var pi = players.length - 1; pi >= 0; pi--){
 		var p = players[pi];
 		if(p.connId == removeId){
+			var pi = newPlayers.indexOf(p);
+			if(~pi){
+				newPlayers.splice(pi, 1);
+			}
+
 			if(!p.game){
-				delete p;
+				var pi = players.indexOf(p);
+				if(~pi)
+					players.splice(pi, 1)
 			}
 			else{
 				p.connected = false;

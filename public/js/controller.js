@@ -85,7 +85,7 @@ Controller.prototype.cardPickup = function(card, pointer){
 	this.trail.makeParticles(this.card.skin.trailName, this.card.suit);
 
 	this.cardSetPathToCursor();
-	gameManager.cardsGroup.bringToTop(this.card.base);
+	game.cardsGroup.bringToTop(this.card.base);
 }
 
 //Устанавливает путь и время смещения карты к курсору
@@ -300,16 +300,16 @@ Controller.prototype.resetCardClickTimer = function(){
 //Обновляет курсор
 Controller.prototype.updateCursor = function(){
 	if(
-		gameManager.skipButton && gameManager.skipButton.input.pointerOver() ||
-		gameManager.takeButton && gameManager.takeButton.input.pointerOver()
+		game.skipButton && game.skipButton.input.pointerOver() ||
+		game.takeButton && game.takeButton.input.pointerOver()
 	){
 		app.canvas.style.cursor = "pointer";
 		return;
 	}
-	for(var ci in gameManager.cards){
-		if(!gameManager.cards.hasOwnProperty(ci))
+	for(var ci in game.cards){
+		if(!game.cards.hasOwnProperty(ci))
 			continue;
-		var card = gameManager.cards[ci];
+		var card = game.cards[ci];
 		if(card.mouseIsOver() && card.isDraggable){
 			app.canvas.style.cursor = "pointer";
 			return;

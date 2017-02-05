@@ -9,14 +9,14 @@ var isInDebugMode = false;
 var actions = null;
 var timeout = null;
 
-var EurecaClientSetup = function() {
+var EurecaClientSetup = function(state) {
 	//создаем eureca.io клиент
 
 	var client = new Eureca.Client();
 	
 	client.ready(function (proxy) {		
 		server = proxy;
-		create();
+		app.createApp();
 	});
 	
 	
@@ -24,7 +24,7 @@ var EurecaClientSetup = function() {
 	
 	client.exports.setId = function(pid) 
 	{
-		appManager.pid = pid;
+		app.pid = pid;
 	}	
 	client.exports.meetOpponents = function(opponents){
 		if(isInDebugMode)
@@ -35,22 +35,22 @@ var EurecaClientSetup = function() {
 		var actionTypes = actions.map(function(a){return a.type});
 		var action;
 		if(~actionTypes.indexOf('SKIP'))
-			gameManager.skipButton.show();
+			game.skipButton.show();
 		if(~actionTypes.indexOf('TAKE'))
-			gameManager.takeButton.show();
+			game.takeButton.show();
 
-		gameManager.rope.start(10000);
+		game.rope.start(time * 1000);
 		spotManager.highlightPossibleActions(newActions);
 		if(isInDebugMode)
 			console.log(newActions)
 	}
 	client.exports.recieveAction = function(action){
-		if(gameManager.celebration){
-			gameManager.celebration.stop();
-			gameManager.celebration = null;
+		if(game.celebration){
+			game.celebration.stop();
+			game.celebration = null;
 		}
-		gameManager.skipButton.hide();
-		gameManager.takeButton.hide();
+		game.skipButton.hide();
+		game.takeButton.hide();
 		if(timeout){
 			clearTimeout(timer);
 			timer = null;
@@ -67,8 +67,8 @@ var EurecaClientSetup = function() {
 	}
 	client.exports.recieveNotification = function(note, actions){
 		console.log(note)
-		if(note && note.results && note.results.winners && ~note.results.winners.indexOf(appManager.pid))
-			gameManager.celebration = new ThrowCards();
+		if(note && note.results && note.results.winners && ~note.results.winners.indexOf(app.pid))
+			game.celebration = new ThrowCards();
 
 		if(isInDebugMode)
 			console.log(note, actions)
@@ -83,7 +83,7 @@ var EurecaClientSetup = function() {
 function sendAction(spot, card){
 	if(!actions)
 		return;
-	gameManager.rope.stop();
+	game.rope.stop();
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
 		if(action.cid == card.id && spot.id == action.spot){
@@ -94,8 +94,8 @@ function sendAction(spot, card){
 }
 
 function sendRealAction(type){
-	gameManager.skipButton.hide();
-	gameManager.takeButton.hide();
+	game.skipButton.hide();
+	game.takeButton.hide();
 
 	if(!actions || !actions.length)
 		return;
@@ -107,6 +107,6 @@ function sendRealAction(type){
 }
 
 function sendResponse(){
-	gameManager.rope.stop();
+	game.rope.stop();
 	server.recieveResponse();
 }

@@ -496,7 +496,7 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 
 	//Поднимаем карту контроллера наверх
 	if(controller.card)
-		gameManager.cardsGroup.bringToTop(controller.card.base);
+		game.cardsGroup.bringToTop(controller.card.base);
 
 
 	//Дебаг отображение активно используемого пространства
@@ -608,7 +608,7 @@ Spot.prototype.moveCard = function(
 
 	//Проверяем перетаскиваемость карты для тех случаев, когда карта была перемещена
 	//без использования presetSpot метода
-	if(this.type == 'HAND' && this.id == appManager.pid && !card.draggable)
+	if(this.type == 'HAND' && this.id == app.pid && !card.draggable)
 		card.setDraggability(true)
 	else if(card.draggable)
 		card.setDraggability(false);
