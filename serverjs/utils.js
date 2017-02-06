@@ -34,19 +34,28 @@ exports.copyObject = function(obj){
 }
 
 exports.log = function(){
-	if(isInDebugMode)
-		console.log.apply(this, arguments);
-	
-	var logLine = "";
+	stats.line++;
+
+	var logLine = '',
+		logSLine = '';
 	for(var i = 0; i < arguments.length; i++){
 		var arg = arguments[i];
 		if(logLine.length)
-			logLine += " ";
+			logLine += ' ';
 		logLine += String(arg);
+		if(isInDebugMode){
+			if(logSLine.length)
+				logSLine += ' ';
+			logSLine += '%s';
+		}
 	}
 	logLine += "\n";
 	logStream.write(logLine)
-	stats.line++;
+	if(isInDebugMode){
+		var args = Array.prototype.slice.call(arguments);
+		args.unshift(logSLine);
+		console.log.apply(this, args);	
+	}
 }
 
 exports.shuffleArray = function(array) {
