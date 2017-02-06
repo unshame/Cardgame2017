@@ -154,8 +154,8 @@ Game.prototype.reset = function(){
 
 	//Свойства хода
 	this.turnNumber = 1;
+	this.nextTurnStage = null;
 	this.turnStage = null;
-	this.lastTurnStage = null;
 
 	//Учавствующие в ходе игроки (id игроков)
 	this.attacker = null;
@@ -777,9 +777,9 @@ Game.prototype.processAction = function(player, incomingAction){
 	case 'ATTACK':
 
 		var str;
-		if(this.lastTurnStage == 'FOLLOWUP')
+		if(this.turnStage == 'FOLLOWUP')
 			str = 'follows up'
-		else if(this.lastTurnStage == 'DEFENSE')
+		else if(this.turnStage == 'DEFENSE')
 			str = 'transfers'
 		else
 			str = 'attacks';
@@ -804,10 +804,10 @@ Game.prototype.processAction = function(player, incomingAction){
 		this.fieldUsedSpots++;
 
 		//Если игрок клал карту в догонку, даем ему воможность положить еще карту
-		if(this.lastTurnStage == 'FOLLOWUP'){
-			this.setTurnStage('FOLLOWUP');
+		if(this.turnStage == 'FOLLOWUP'){
+			this.setNextTurnStage('FOLLOWUP');
 		}
-		else if(this.lastTurnStage == 'DEFENSE'){
+		else if(this.turnStage == 'DEFENSE'){
 
 			this.originalAttackers.push(this.attacker);
 			if(this.checkGameEnded()){
@@ -816,7 +816,7 @@ Game.prototype.processAction = function(player, incomingAction){
 			else{
 				var currentAttackerIndex = this.activePlayers.indexOf(this.attacker);
 				this.findNextPlayer(currentAttackerIndex);
-				this.setTurnStage('DEFENSE');
+				this.setNextTurnStage('DEFENSE');
 			}			
 		}
 		else{
@@ -847,7 +847,7 @@ Game.prototype.processAction = function(player, incomingAction){
 		for(var di = 0; di < this.field.length; di++){
 			var fieldSpot = this.field[di];
 			if(fieldSpot.attack && !fieldSpot.defense){
-				this.setTurnStage('DEFENSE');
+				this.setNextTurnStage('DEFENSE');
 				break;
 			}
 		}
@@ -866,21 +866,21 @@ Game.prototype.processAction = function(player, incomingAction){
 
 		//Если есть помогающий игрок
 		if(this.ally){
-			switch(this.lastTurnStage){
+			switch(this.turnStage){
 
 				//Если игра в режиме докладывания карт в догонку и только ходящий игрок походил,
 				//даем возможность другому игроку доложить карты
 				case 'FOLLOWUP':
 					if(!this.skipCounter){
 						this.skipCounter++;
-						this.setTurnStage('FOLLOWUP');
+						this.setNextTurnStage('FOLLOWUP');
 					}
 					break;
 
 				//Атакующий не доложил карту, переходим к помогающему
 				case 'REPEATING_ATTACK':
 					this.skipCounter++;
-					this.setTurnStage('SUPPORT');
+					this.setNextTurnStage('SUPPORT');
 					break;
 
 				default:
@@ -888,11 +888,11 @@ Game.prototype.processAction = function(player, incomingAction){
 					this.skipCounter++;
 					if(this.skipCounter < 2){
 
-						if(this.lastTurnStage == 'SUPPORT')
-							this.setTurnStage('ATTACK')
+						if(this.turnStage == 'SUPPORT')
+							this.setNextTurnStage('ATTACK')
 
-						else if(this.lastTurnStage == 'ATTACK')
-							this.setTurnStage('SUPPORT')
+						else if(this.turnStage == 'ATTACK')
+							this.setNextTurnStage('SUPPORT')
 
 						//Debug
 						else
@@ -908,7 +908,7 @@ Game.prototype.processAction = function(player, incomingAction){
 	case 'TAKE':
 		utils.log(player.name, "takes")
 		this.skipCounter = 0;
-		this.setTurnStage('FOLLOWUP');
+		this.setNextTurnStage('FOLLOWUP');
 		break;
 
 	default:
@@ -1005,8 +1005,8 @@ Game.prototype.resetTurn = function(){
 	
 	this.fieldUsedSpots = 0;
 	this.skipCounter = 0;
-	this.lastTurnStage = null;
-	this.turnStage = null;	
+	this.turnStage = null;
+	this.nextTurnStage = null;	
 	this.playerTaken = false;
 	this.originalAttackers = [];
 }
@@ -1031,7 +1031,7 @@ Game.prototype.startTurn = function(){
 	//Увеличиваем счетчик ходов, меняем стадию игры на первую атаку и продолжаем ход
 	this.turnNumber++;	
 
-	this.setTurnStage('INITIAL_ATTACK');	
+	this.setNextTurnStage('INITIAL_ATTACK');	
 	this.continueGame();
 }
 
@@ -1280,13 +1280,18 @@ Game.prototype.findNextPlayer = function(currentAttackerIndex){
 //Устанавливает текущую фазу хода и запоминает предыдущую
 //INITIAL_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> ... ->
 //SUPPORT -> DEFENSE -> ATTACK -> DEFENSE ->...-> FOLLOWUP -> DEFENSE -> END -> [END_DEAL] -> ENDED
-Game.prototype.setTurnStage = function(stage){
-	this.lastTurnStage = this.turnStage;
-	this.turnStage = stage;
+Game.prototype.setNextTurnStage = function(stage){
+	this.turnStage = this.nextTurnStage;
+	this.nextTurnStage = stage;
 }
 
 //Отправляет атакующему возможные ходы
 Game.prototype.letAttack = function(pid){
+
+	//В данный момент происходит переход между стадиями хода
+	//Откомментировать по необходимости
+	var turnStage = this.nextTurnStage;
+	//var lastTurnStage = this.turnStage;
 
 	var player = this.playersById[pid];
 	var hand = this.hands[pid];
@@ -1295,14 +1300,14 @@ Game.prototype.letAttack = function(pid){
 	if(
 		this.fieldUsedSpots >= this.fullField || 
 		!hand.length ||
-		this.turnStage != 'FOLLOWUP' && !defHand.length
+		turnStage != 'FOLLOWUP' && !defHand.length
 	){
 		utils.log(
 			this.fieldUsedSpots >= this.fullField && 'Field is full' ||
 			!this.hands[pid].length && 'Attacker has no cards' ||
-			this.turnStage != 'FOLLOWUP' && !defHand.length && 'Defender has no cards'
+			turnStage != 'FOLLOWUP' && !defHand.length && 'Defender has no cards'
 		);
-		this.setTurnStage('DEFENSE');
+		this.setNextTurnStage('DEFENSE');
 		this.continueGame();
 		return;
 	}
@@ -1343,7 +1348,7 @@ Game.prototype.letAttack = function(pid){
 	}
 
 	//Добавляем возможность пропустить ход, если это не атака в начале хода
-	if(this.turnStage != 'INITIAL_ATTACK'){
+	if(turnStage != 'INITIAL_ATTACK'){
 		var action = {
 			type: 'SKIP'
 		}
@@ -1351,7 +1356,7 @@ Game.prototype.letAttack = function(pid){
 	}
 	
 	//Меняем стадию на стадию защиты
-	this.setTurnStage('DEFENSE');
+	this.setNextTurnStage('DEFENSE');
 
 	this.validActions = actions;
 	this.waitForResponse(this.timeouts.actionAttack, [player])
@@ -1368,17 +1373,18 @@ Game.prototype.letAttack = function(pid){
 //Отправляет защищающемуся возможные ходы
 Game.prototype.letDefend = function(pid){
 
+	//В данный момент происходит переход между стадиями хода
+	//Откомментировать по необходимости
+	//var turnStage = this.nextTurnStage;
+	var lastTurnStage = this.turnStage;
+
 	var player = this.playersById[pid];
 
 	var defenseSpots = [];
-	var offenseIndex = 0;
 
 	//Находим карту, которую нужно отбивать
 	for(var fi = 0; fi < this.field.length; fi++){
 		var fieldSpot = this.field[fi];
-
-		if(fieldSpot.attack)
-			offenseIndex++;
 
 		if(fieldSpot.attack && !fieldSpot.defense){
 			defenseSpots.push(fieldSpot);
@@ -1390,14 +1396,14 @@ Game.prototype.letDefend = function(pid){
 	if(!defenseSpots.length){
 		utils.log(this.playersById[pid].name, 'successfully defended');
 
-		this.setTurnStage('END');
+		this.setNextTurnStage('END');
 		this.continueGame();
 		return
 	}
 
 	//Узнаем, можно ли переводить
-	var canTransfer = this.canTransfer && this.hands[this.ally || this.attacker].length >= offenseIndex;
-	var attackSpot = this.field[offenseIndex];
+	var canTransfer = this.canTransfer && this.hands[this.ally || this.attacker].length > this.fieldUsedSpots;
+	var attackSpot = this.field[this.fieldUsedSpots];
 	if(canTransfer){
 		for(var fi = 0; fi < this.field.length; fi++){
 			var fieldSpot = this.field[fi];
@@ -1455,27 +1461,27 @@ Game.prototype.letDefend = function(pid){
 	this.validActions = actions;
 
 	//Выставляем новую стадию хода в зависимости от предыдущей
-	switch(this.lastTurnStage){
+	switch(lastTurnStage){
 
 	case 'INITIAL_ATTACK':
-		this.setTurnStage('REPEATING_ATTACK');
+		this.setNextTurnStage('REPEATING_ATTACK');
 		break;
 
 	case 'REPEATING_ATTACK':
-		this.setTurnStage('REPEATING_ATTACK');
+		this.setNextTurnStage('REPEATING_ATTACK');
 		break;
 
 	case 'SUPPORT':
-		this.setTurnStage('ATTACK');
+		this.setNextTurnStage('ATTACK');
 		break;
 
 	case 'ATTACK':
-		this.setTurnStage('SUPPORT');
+		this.setNextTurnStage('SUPPORT');
 		break;		
 
 	//Debug
 	default:
-		utils.log('ERROR: Invalid lastTurnStage', this.lastTurnStage);
+		utils.log('ERROR: Invalid turnStage', lastTurnStage);
 		break;
 	}
 
@@ -1492,6 +1498,11 @@ Game.prototype.letDefend = function(pid){
 
 //Игрок берет карты со стола
 Game.prototype.letTake = function(pid){
+
+	//В данный момент происходит переход между стадиями хода
+	//Откомментировать по необходимости
+	//var turnStage = this.nextTurnStage;
+	//var lastTurnStage = this.turnStage;
 
 	var player = this.playersById[pid];
 
@@ -1541,7 +1552,7 @@ Game.prototype.letTake = function(pid){
 	}
 
 	this.playerTaken = true;
-	this.setTurnStage('END');
+	this.setNextTurnStage('END');
 
 	action.pid = player.id;
 
@@ -1579,7 +1590,7 @@ Game.prototype.continueGame = function(){
 
 	/*this.notify({
 		gameState: this.gameState,
-		turnStage: this.turnStage
+		nextTurnStage: this.nextTurnStage
 	})*/
 
 	switch(this.gameState){
@@ -1614,7 +1625,7 @@ Game.prototype.continueGame = function(){
 		break;
 
 	default:
-		utils.log('ERROR: Invalid turn stage', this.turnStage);
+		utils.log('ERROR: Invalid game state', this.gameState);
 		break;
 	}
 }
@@ -1623,7 +1634,7 @@ Game.prototype.continueGame = function(){
 Game.prototype.doTurn = function(){
 
 	//Стадии хода
-	switch(this.turnStage){
+	switch(this.nextTurnStage){
 
 	//Начинаем ход
 	case null:
@@ -1671,7 +1682,7 @@ Game.prototype.doTurn = function(){
 
 		//Если мы были в стадии подкидывания в догонку, передаем все карты со стола
 		//защищающемуся и сообщаем всем игрокам об этом
-		if(this.lastTurnStage == 'FOLLOWUP')
+		if(this.turnStage == 'FOLLOWUP')
 			this.letTake(this.defender);
 		//Иначе даем защищаться
 		else
@@ -1681,13 +1692,13 @@ Game.prototype.doTurn = function(){
 
 	//Начало конца хода, убираем карты со стола
 	case 'END':
-		this.setTurnStage('END_DEAL');
+		this.setNextTurnStage('END_DEAL');
 		this.discard();
 		break;
 
 	//Раздаем карты после окончания хода
 	case 'END_DEAL':
-		this.setTurnStage('ENDED');
+		this.setNextTurnStage('ENDED');
 		this.dealTillFullHand();
 		break;
 
@@ -1714,7 +1725,7 @@ Game.prototype.doTurn = function(){
 
 	//Debug
 	default:
-		utils.log('ERROR: Invalid turn stage', this.turnStage);
+		utils.log('ERROR: Invalid turn stage', this.nextTurnStage);
 		break;
 	}
 }

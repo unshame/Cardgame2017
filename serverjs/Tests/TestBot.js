@@ -12,15 +12,54 @@ TestBot.prototype = Object.create(Bot.prototype);
 TestBot.prototype.constructor = TestBot;
 
 TestBot.prototype.recieveValidActions = function(actions){
-	//console.log('Here we\'ll send info to tester', this.name, this.game.id)
-	this.tests++;
+	//console.log('Here we\'ll send info to tester', this.name, this.game.id)	
 	var game = this.game;
 	var types = actions.map(a => a.type),
 		attackIndex = types.indexOf('ATTACK'),
 		defenseIndex = types.indexOf('DEFENSE');
-	if(~attackIndex && ~defenseIndex && this.tester.running){
-		var lineNum = utils.stats.line;
+	var lineNum = utils.stats.line;
+
+	if(this.tester.running && game.turnStage != 'FOLLOWUP' && game.nextTurnStage == 'DEFENSE' && ~attackIndex && !~defenseIndex){
+		console.log(game.turnStage)
+		var defenseSpots = 0;
+		this.tests++;
+		for(var fi = 0; fi < game.field.length; fi++){
+			var fieldSpot = game.field[fi];
+
+			if(fieldSpot.attack && !fieldSpot.defense){
+				defenseSpots++;
+			} 
+
+		}
+		var handSize = game.hands[game.defender].length;
+		if(handSize <= defenseSpots){
+			console.log('Test %s (attack) failed on %s', this.tests, this.name);
+			console.log('%s cards to beat but %s cards in hand', defenseSpots + 1, handSize);
+			console.log('See line %s in log.txt for context', lineNum + 1);
+			console.log('----------------\n');
+			this.failedTests++;
+		}
+	}
+
+	//Тесты перевода
+	if(this.tester.running && game.turnStage == 'DEFENSE' && ~attackIndex){		
 		var action = actions[attackIndex];
+
+		//Тест перевода игроку, у которого нет достаточного кол-ва карт, чтобы отбиться
+		this.tests++;
+		var usedSpots = game.fieldUsedSpots;
+		var handSize = game.hands[game.ally || game.attacker].length;
+		if(handSize <= usedSpots){
+			console.log('Test %s (transfer) failed on %s', this.tests, this.name);
+			console.log('%s cards to beat but %s cards in hand', usedSpots + 1, handSize);
+			console.log('See line %s in log.txt for context', lineNum + 1);
+			console.log('----------------\n');
+			this.failedTests++;
+		}
+
+
+		//Тест смены ролей игроков при переводе
+		this.tests++;
 		var before = [
 			game.playersById[game.attacker].name,
 			game.playersById[game.defender].name
@@ -37,7 +76,9 @@ TestBot.prototype.recieveValidActions = function(actions){
 			expected.push(game.playersById[game.activePlayers[ai]].name);
 		}
 		var active = game.activePlayers.slice();
+
 		this.sendResponse(action);
+
 		var result = [
 			game.playersById[game.attacker].name,
 			game.playersById[game.defender].name
