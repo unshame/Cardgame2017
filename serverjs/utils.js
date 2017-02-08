@@ -1,7 +1,10 @@
+'use strict';
+
 var isInDebugMode = true;
 
-var fs = require('fs');
-var crypto = require('crypto');
+const 
+	fs = require('fs'),
+	crypto = require('crypto');
 
 fs.writeFile('./logs/log.txt','');
 var logStream = fs.createWriteStream('./logs/log.txt', {'flags': 'a'});
@@ -11,13 +14,13 @@ var stats = {
 }
 
 exports.generateId = function(){
-	var chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
-	var howMany = 7;
-	var rnd = crypto.randomBytes(howMany),
+	let chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+	let howMany = 7;
+	let rnd = crypto.randomBytes(howMany),
 		value = new Array(howMany),
 		len = chars.length;
 
-	for (var i = 0; i < howMany; i++) {
+	for (let i = 0; i < howMany; i++) {
 	    value[i] = chars[rnd[i] % len]
 	};
 
@@ -25,8 +28,8 @@ exports.generateId = function(){
 }
 
 exports.copyObject = function(obj){
-	var newObj = {};
-	for(var key in obj){
+	let newObj = {};
+	for(let key in obj){
 		if(obj.hasOwnProperty(key))
 			newObj[key] = obj[key];
 	}
@@ -36,10 +39,10 @@ exports.copyObject = function(obj){
 exports.log = function(){
 	stats.line++;
 
-	var logLine = '',
+	let logLine = '',
 		logSLine = '';
-	for(var i = 0; i < arguments.length; i++){
-		var arg = arguments[i];
+	for(let i = 0; i < arguments.length; i++){
+		let arg = arguments[i];
 		if(logLine.length)
 			logLine += ' ';
 		logLine += String(arg);
@@ -52,14 +55,14 @@ exports.log = function(){
 	logLine += "\n";
 	logStream.write(logLine)
 	if(isInDebugMode){
-		var args = Array.prototype.slice.call(arguments);
+		let args = Array.prototype.slice.call(arguments);
 		args.unshift(logSLine);
 		console.log.apply(this, args);	
 	}
 }
 
 exports.shuffleArray = function(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
+  let currentIndex = array.length, temporaryValue, randomIndex;
 
   // While there remain elements to shuffle...
   while (0 !== currentIndex) {

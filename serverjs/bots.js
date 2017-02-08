@@ -2,7 +2,9 @@
 	Серверные боты
 */
 
-var utils = require('./utils')
+'use strict';
+
+const utils = require('./utils')
 var fakeDescisionTimer = 1;
 
 var Bot = function(randomNames){
@@ -10,7 +12,7 @@ var Bot = function(randomNames){
 	this.type = 'bot';
 	this.connected = true;
 
-	var nameIndex = Math.floor(Math.random()*randomNames.length);
+	let nameIndex = Math.floor(Math.random()*randomNames.length);
 	this.name = randomNames[nameIndex];
 	randomNames.splice(nameIndex,1);
 
@@ -33,12 +35,12 @@ Bot.prototype.recieveMinTrumpCards = function(cards, winner){
 }
 
 Bot.prototype.recieveValidActions = function(actions){
-	var randomIndex
+	let randomIndex
 	if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'SKIP'))
 		randomIndex = Math.floor(Math.random()*(actions.length-1))
 	else
 		randomIndex = Math.floor(Math.random()*actions.length);
-	var action = actions[randomIndex];
+	let action = actions[randomIndex];
 	this.sendResponse(action);
 }
 

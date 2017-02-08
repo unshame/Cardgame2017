@@ -1,4 +1,6 @@
-var utils = require('./utils')
+'use strict';
+
+const utils = require('./utils')
 
 var Player = function(remote, connId, name){
 	this.id = 'player_' + utils.generateId();
@@ -23,7 +25,7 @@ Player.prototype.meetOpponents = function(opponents){
 }
 
 Player.prototype.recieveGameInfo = function(cards, players, trumpSuit, numDiscarded){
-	var action = {
+	let action = {
 		type: 'GAME_INFO',
 		cards: cards || [],
 		players: players || []
@@ -38,11 +40,11 @@ Player.prototype.recieveGameInfo = function(cards, players, trumpSuit, numDiscar
 }
 
 Player.prototype.recieveDeals = function(deals){
-	var action = {
+	let action = {
 		type: 'DRAW',
 		cards: []
 	}
-	for(var ci = 0; ci < deals.length; ci++){
+	for(let ci = 0; ci < deals.length; ci++){
 		action.cards.push(deals[ci])
 	}
 	if(this.remote)
@@ -50,7 +52,7 @@ Player.prototype.recieveDeals = function(deals){
 }
 
 Player.prototype.recieveMinTrumpCards = function(cards, winner){
-	var action = {
+	let action = {
 		type: 'TRUMP_CARDS',
 		cards: cards,
 		pid: winner
@@ -62,17 +64,17 @@ Player.prototype.recieveMinTrumpCards = function(cards, winner){
 Player.prototype.recieveValidActions = function(actions, time){
 	if(this.remote)
 		this.remote.recievePossibleActions(actions, time);
-	var randomIndex
+	let randomIndex
 /*	if(actions.length == 1 && (actions[0].type == 'TAKE' || actions[0].type == 'SKIP')){
-		var action = actions[0];
+		let action = actions[0];
 		setTimeout(() => {this.sendResponse(action)},1000)	
 	}*/
-	/*	var randomIndex
+	/*	let randomIndex
 		if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'SKIP'))
 			randomIndex = Math.floor(Math.random()*(actions.length-1))
 		else
 			randomIndex = Math.floor(Math.random()*actions.length);
-		var action = actions[randomIndex];
+		let action = actions[randomIndex];
 		setTimeout(() => {this.sendResponse(action)},4000)	*/
 }
 
