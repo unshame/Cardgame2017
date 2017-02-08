@@ -1,13 +1,13 @@
 {
-  "name": "node-js-getting-started",
-  "version": "0.2.5",
-  "description": "A sample Node.js app using Express 4",
+  "name": "durak",
+  "version": "0.0.1",
+  "description": "A cardgame",
   "engines": {
-    "node": "5.9.1"
+    "node": "6.3.1"
   },
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js"
+    "server": "node server.js"
   },
   "dependencies": {
     "engine.io": "2.0.1",
@@ -16,12 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/unshame/Cardgame2017"
+    "url": "git+https://github.com/unshame/Cardgame2017.git"
   },
-  "keywords": [
-    "node",
-    "heroku",
-    "express"
-  ],
-  "license": "MIT"
+  "keywords": [],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/unshame/Cardgame2017/issues"
+  },
+  "homepage": "https://github.com/unshame/Cardgame2017#readme",
+  "devDependencies": {},
+  "author": "UnShame"
 }
