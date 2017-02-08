@@ -17,7 +17,6 @@ var Game = function(players, canTransfer){
 		utils.log('ERROR: Can\'t start a game without players');
 	}
 
-
 	//Генерируем айди игры
 	this.id = 'game_' + utils.generateId();
 
@@ -1212,22 +1211,21 @@ Game.prototype.findFirstPlayer = function(){
 
 		//Находим игроков, учавствующих в первом ходе
 		var pid = minTCard.pid;
-		var pi = this.players.indexOf(this.playersById[pid]);
-		var defender = this.players[pi + 1];
-		var ally = this.players[pi + 2];
+		var pi = this.activePlayers.indexOf(pid);
 
-		this.attacker = minTCard.pid;
-		this.defender = defender && defender.id || this.players[0].id;
-		if(this.activePlayers.length > 2){
-			if(ally)
-				this.ally = ally.id
-			else
-				if(defender)
-					this.ally = this.players[0].id
-				else if(this.players.length > 2)
-					this.ally = this.players[1].id;
+		var numInvolved = Math.min(this.activePlayers.length, 3);
+		var involved = [];
+		var i = pi;
+		while(numInvolved--){
+			if(i >= this.activePlayers.length)
+				i = 0;
+			involved.push(this.activePlayers[i]);
+			i++;
 		}
-		
+		this.attacker = involved[0];
+		this.defender = involved[1];
+		this.ally = involved[2] || null;
+				
 		utils.log('Player to go first: ', this.playersById[this.attacker].name)
 
 		//Сообщаем игрокам о минимальных козырях
@@ -1254,27 +1252,18 @@ Game.prototype.findFirstPlayer = function(){
 Game.prototype.findNextPlayer = function(currentAttackerIndex){	
 
 	//Находим участников нового хода
-	var attacker = this.activePlayers[currentAttackerIndex + 1];
-	var defender = this.activePlayers[currentAttackerIndex + 2];
-	var ally = this.activePlayers[currentAttackerIndex + 3];
-
-	this.attacker = attacker ? attacker : this.activePlayers[0];
-	this.defender = defender ? defender : attacker ? this.activePlayers[0] : this.activePlayers[1];
-
-	//Помогающий есть только когда в игре осталось более двух игроков
-	if(this.activePlayers.length > 2){
-		if(ally)
-			this.ally = ally
-		else if(defender)
-			this.ally = this.activePlayers[0]
-		else if(attacker)
-			this.ally = this.activePlayers[1]
-		else
-			this.ally = this.activePlayers[2];		
-
+	var numInvolved = Math.min(this.activePlayers.length, 3);
+	var involved = [];
+	var i = currentAttackerIndex + 1;
+	while(numInvolved--){
+		if(i >= this.activePlayers.length)
+			i = 0;
+		involved.push(this.activePlayers[i]);
+		i++
 	}
-	else
-		this.ally = null;
+	this.attacker = involved[0];
+	this.defender = involved[1];
+	this.ally = involved[2] || null;
 }
 
 //Устанавливает текущую фазу хода и запоминает предыдущую
@@ -1616,7 +1605,7 @@ Game.prototype.continueGame = function(){
 		this.dealStartingHands();
 		break;
 
-	//Находим игрока, делающего первый ход в игре
+	//Находим игрока, делающего первый ход в игре или продолжаем ход
 	case 'STARTED':
 		if(!this.attacker)
 			this.findFirstPlayer();	
