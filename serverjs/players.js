@@ -44,6 +44,7 @@ Player.prototype.recieveDeals = function(deals){
 		type: 'DRAW',
 		cards: []
 	}
+	console.log(deals)
 	for(let ci = 0; ci < deals.length; ci++){
 		action.cards.push(deals[ci])
 	}
