@@ -20,7 +20,6 @@ TestBot.prototype.recieveValidActions = function(actions){
 	var lineNum = utils.stats.line;
 
 	if(this.tester.running && game.turnStage != 'FOLLOWUP' && game.nextTurnStage == 'DEFENSE' && ~attackIndex && !~defenseIndex){
-		console.log(game.turnStage)
 		var defenseSpots = 0;
 		this.tests++;
 		for(var fi = 0; fi < game.field.length; fi++){
@@ -31,7 +30,7 @@ TestBot.prototype.recieveValidActions = function(actions){
 			} 
 
 		}
-		var handSize = game.hands[game.defender].length;
+		var handSize = game.hands[game.players.defender.id].length;
 		if(handSize <= defenseSpots){
 			console.log('Test %s (attack) failed on %s', this.tests, this.name);
 			console.log('%s cards to beat but %s cards in hand', defenseSpots + 1, handSize);
@@ -48,7 +47,7 @@ TestBot.prototype.recieveValidActions = function(actions){
 		//Тест перевода игроку, у которого нет достаточного кол-ва карт, чтобы отбиться
 		this.tests++;
 		var usedSpots = game.fieldUsedSpots;
-		var handSize = game.hands[game.ally || game.attacker].length;
+		var handSize = game.hands[game.players.ally && game.players.ally.id || game.players.attacker.id].length;
 		if(handSize <= usedSpots){
 			console.log('Test %s (transfer) failed on %s', this.tests, this.name);
 			console.log('%s cards to beat but %s cards in hand', usedSpots + 1, handSize);
@@ -61,30 +60,31 @@ TestBot.prototype.recieveValidActions = function(actions){
 		//Тест смены ролей игроков при переводе
 		this.tests++;
 		var before = [
-			game.playersById[game.attacker].name,
-			game.playersById[game.defender].name
+			game.players.attacker.name,
+			game.players.defender.name
 		];
-		if(game.playersById[game.ally])
-			before.push(game.playersById[game.ally].name);
+		if(game.players.ally)
+			before.push(game.players.ally.name);
 		var expected = [];
-		var parties = game.activePlayers.length > 2 ? 3 : 2;
-		var ai = game.activePlayers.indexOf(game.attacker);
+		var activePlayers = game.players.active;
+		var parties = activePlayers.length > 2 ? 3 : 2;
+		var ai = activePlayers.indexOf(game.players.attacker);
 		for(var i = 0; i < parties; i++){
 			ai++;
-			if(ai >= game.activePlayers.length)
+			if(ai >= activePlayers.length)
 				ai = 0;
-			expected.push(game.playersById[game.activePlayers[ai]].name);
+			expected.push(activePlayers[ai].name);
 		}
-		var active = game.activePlayers.slice();
+		var active = activePlayers.slice();
 
 		this.sendResponse(action);
 
 		var result = [
-			game.playersById[game.attacker].name,
-			game.playersById[game.defender].name
+			game.players.attacker.name,
+			game.players.defender.name
 		];
-		if(game.playersById[game.ally])
-			result.push(game.playersById[game.ally].name);
+		if(game.players.ally)
+			result.push(game.players.ally.name);
 		if(result.join() != expected.join()){
 			console.log('Test %s failed on %s', this.tests, this.name);
 			console.log('Before:  ', before);
@@ -92,11 +92,11 @@ TestBot.prototype.recieveValidActions = function(actions){
 			console.log('After:   ', result);
 			console.log('Active:  ',
 				active.map((p) => {
-					return game.playersById[p].name
+					return p.name
 				}),
 				'=>',
 				game.activePlayers.map((p) => {
-					return game.playersById[p].name
+					return p.name
 				})
 			);
 			console.log('See line %s in log.txt for context', lineNum + 1)

@@ -350,7 +350,6 @@ Game.prototype.deal = function(dealsIn){
 Game.prototype.dealTillFullHand = function(){
 	let deals = [];
 	let origAttackers = this.players.origAttackers;
-	console.log(origAttackers)
 
 	let sequence = [];
 	for(let oi = 0; oi < origAttackers.length; oi++){
@@ -683,7 +682,6 @@ Game.prototype.processAction = function(player, incomingAction){
 			this.setNextTurnStage('FOLLOWUP');
 		}
 		else if(this.turnStage == 'DEFENSE'){
-
 			this.players.setOrigAttackers([this.players.attacker]);
 			if(this.checkGameEnded()){
 				this.gameState = 'ENDED';
@@ -886,6 +884,8 @@ Game.prototype.resetTurn = function(){
 	this.turnStage = null;
 	this.nextTurnStage = null;	
 	this.playerTaken = false;
+
+	this.players.resetTurn();
 }
 
 //Начинает ход
@@ -931,13 +931,14 @@ Game.prototype.endGame = function(){
 		type: 'DECLINE'
 	}
 
+	this.players.resetGame();
 	this.reset();
 	
 	this.validActions.push(actionAccept);
 	this.validActions.push(actionDecline);
 
 	this.waitForResponse(this.timeouts.gameEnd, this.players);
-	this.notify(note, this.validActions.slice());
+	this.players.notify(note, this.validActions.slice());
 }
 
 //Перезапускает игру 
@@ -946,7 +947,7 @@ Game.prototype.rematchGame = function(voteResults){
 
 	//Оповещаем игроков о результате голосования
 	
-	this.notify(voteResults);
+	this.players.notify(voteResults);
 
 	this.validActions = [];
 	this.storedActions = [];
@@ -958,7 +959,7 @@ Game.prototype.rematchGame = function(voteResults){
 //Возвращает игру в лобби
 Game.prototype.backToLobby = function(voteResults){
 	//Оповещаем игроков о результате голосования
-	this.notify(voteResults);
+	this.players.notify(voteResults);
 
 	utils.log('No rematch');
 
@@ -1276,7 +1277,7 @@ Game.prototype.letTake = function(player){
 //Выбирает следующую стадию игры
 Game.prototype.continueGame = function(){
 
-	/*this.notify({
+	/*this.players.notify({
 		gameState: this.gameState,
 		nextTurnStage: this.nextTurnStage
 	})*/

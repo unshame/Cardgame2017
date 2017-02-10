@@ -46,21 +46,21 @@ class GamePlayers extends BetterArray{
 
 	push(p){
 		p.game = this.game;
-		this.setDefaultStatus(p);
+		this.setGameStartStatus(p);
 		p.score = {
 			wins: 0,
 			losses: 0,
 			cardsWhenLost: 0
 		}
 		p.working = false;
+		p.active = true;
 		super.push(p);
 	}
 
 
 	//Возвращает статус по умолчанию
-	setDefaultStatus(p){
+	setTurnStartStatus(p){
 		var obj = {
-			active: true,
 			role: null,
 			origAttacker: false
 		};
@@ -70,11 +70,32 @@ class GamePlayers extends BetterArray{
 		}
 	}
 
+	//Возвращает статус по умолчанию
+	setGameStartStatus(p){
+		var obj = {
+			role: null,
+			origAttacker: false,
+			active: true
+		};
+		for(var key in obj){
+			if(obj.hasOwnProperty(key))
+				p[key] = obj[key];
+		}
+	}
+
 	//Ставит статусы по умолчанию
-	reset(){
+	resetTurn(){
 		for(var i = 0; i < this.length; i++){
 			let p = this[i];
-			this.setDefaultStatus(p);
+			this.setTurnStartStatus(p);
+		}
+	}
+
+	//Ставит статусы по умолчанию
+	resetGame(){
+		for(var i = 0; i < this.length; i++){
+			let p = this[i];
+			this.setGameStartStatus(p);
 		}
 	}
 
@@ -194,23 +215,24 @@ class GamePlayers extends BetterArray{
 	}
 
 	get origAttackers(){
-		var players;
+		var players = [];
 		for(var pi = 0; pi < this.length; pi++){
 			let p = this[pi];
 			if(p.origAttacker)
 				players.push(p);
 		}
-
-		players.sort(
-			(a, b) => {
-				if(a == b)
-					return 0
-				else if(a > b)
-					return 1
-				else
-					return -1;
-			}
-		)
+		if(players.length){
+			players.sort(
+				(a, b) => {
+					if(a == b)
+						return 0
+					else if(a > b)
+						return 1
+					else
+						return -1;
+				}
+			)
+		}
 		return players;
 	}
 
@@ -220,10 +242,17 @@ class GamePlayers extends BetterArray{
 	}
 
 	setOrigAttackers(players){
+		var last = 1;
+		for(let pi = 0; pi < this.length; pi++){
+			let p = this[pi];
+			if(p.origAttacker)
+				last++;
+		}
 		if(players.length){
-			for(var pi = 1; pi <= players.length; pi++){
+			for(var pi = 0; pi < players.length; pi++){
 				let p = players[pi];
-				this.set('origAttacker', pi, [p]);
+				this.set('origAttacker', last, [p]);
+				last++;
 			}
 		}
 	}
@@ -286,7 +315,6 @@ class GamePlayers extends BetterArray{
 
 	//Оповещает игроков о раздаче карт
 	dealNotify(deals){
-		console.log(deals)
 		try{
 			for(let pi = 0; pi < this.length; pi++) {
 
@@ -308,7 +336,6 @@ class GamePlayers extends BetterArray{
 						dealsToSend[di].suit = this.game.cards[deal.cid].suit;
 					}
 				}				
-				console.log(dealsToSend)
 				p.recieveDeals(dealsToSend.slice());
 
 			}
