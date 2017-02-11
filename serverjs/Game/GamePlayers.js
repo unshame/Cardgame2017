@@ -201,6 +201,7 @@ class GamePlayers extends BetterArray{
 		if(players.length)
 			this.set('active', false, players);
 	}
+
 	setInactive(players){
 		this.set('active', false, players)
 	}
@@ -259,9 +260,6 @@ class GamePlayers extends BetterArray{
 
 
 	//РОЛИ
-	isValidRole(role){
-		return Boolean(~this.roles.indexOf(role));
-	}
 
 	getWithRole(role){
 		return this.getWithFirst('role', role)
@@ -311,7 +309,10 @@ class GamePlayers extends BetterArray{
 		let cardsToSend = [];
 		let playersToSend = [];
 
+		//Карты
 		if(send.cards){
+
+			//Колода
 			for(let ci = 0; ci < game.deck.length; ci++){
 
 				let cid = game.deck[ci];
@@ -327,6 +328,8 @@ class GamePlayers extends BetterArray{
 				cardsToSend.push(newCard);
 			}
 
+
+			//Руки
 			for(let pi = 0; pi < this.length; pi++){
 
 				let p = this[pi];
@@ -349,6 +352,7 @@ class GamePlayers extends BetterArray{
 				}
 			}
 
+			//В игре
 			for(let fi = 0; fi < game.field.length; fi++){
 
 				let fieldSpot = game.field[fi];
@@ -370,10 +374,12 @@ class GamePlayers extends BetterArray{
 			}
 		}
 
+		//Игроки
 		if(send.players){
 			playersToSend = this.info;
 		}
 
+		//Пересылка
 		try{
 			for (let pi = 0; pi < players.length; pi++) {		
 				players[pi].recieveGameInfo(
@@ -385,11 +391,9 @@ class GamePlayers extends BetterArray{
 			}	
 		}
 		catch(e){
-			console.log(e);
-			utils.log('ERROR: Couldn\'t send game info');
+			utils.log('ERROR: Couldn\'t send game info', e);
 		}
 	}
-
 
 	//Оповещает игроков об оппонентах
 	meetOpponents(){
@@ -406,7 +410,6 @@ class GamePlayers extends BetterArray{
 			utils.log('ERROR: Couldn\' notify about opponents', e)
 		}
 	}
-
 
 	//Оповещает игроков о раздаче карт
 	dealNotify(deals){
@@ -440,13 +443,12 @@ class GamePlayers extends BetterArray{
 		}	
 	}
 
-
 	//Оповещает игроков о совершенном действии
-	recieveCompleteAction(action){
+	completeActionNotify(action){
 		try{
 			for(let pi = 0; pi < this.length; pi++) {
 				let p = this[pi];				
-				p.recieveAction(utils.copyObject(action));
+				p.recieveCompleteAction(utils.copyObject(action));
 			}
 		}
 		catch(e){
@@ -454,6 +456,42 @@ class GamePlayers extends BetterArray{
 		}
 	}
 
+	//Оповещает игроков о минимальных козырях
+	minTrumpCardsNotify(cards, minCardPid){
+		for(let pi = 0; pi < this.length; pi++){
+			this[pi].recieveMinTrumpCards(cards, minCardPid)
+		}	
+	}
+
+	//Оповещает игроков о том, что один из игроков взял карты
+	takeNotify(action){
+		for(let pi = 0; pi < this.length; pi++){
+
+			let newAction = {
+				type: 'TAKE'
+			};
+			let p = this[pi];
+
+			if(p.id != action.pid){
+
+				newAction.pid = action.pid;
+				newAction.cards = [];
+
+				for(let ci = 0; ci < action.cards.length; ci++){
+					
+					let card = utils.copyObject(action.cards[ci]);
+					delete card.value;
+					delete card.suit;
+					
+					newAction.cards.push(card);
+				}
+			}
+			else{
+				newAction = action;
+			}
+			p.recieveCompleteAction(newAction)
+		}
+	}
 
 	//Отправляет сообщение игрокам с опциональными действиями
 	notify(note, actions, players){
@@ -468,15 +506,15 @@ class GamePlayers extends BetterArray{
 			}
 		}
 		catch(e){
-			console.log(e);
-			utils.log('ERROR: Couldn\'t notify', note && ('of ' + note.message) || '');
+			utils.log('ERROR: Couldn\'t notify', note && ('of ' + note.message) || '', e);
 		}
 	}
 
 
 	//УПРАВЛЕНИЕ ИГРОКАМИ
 
-	//Устанавливает игроков, вышедших из игры, возвращает индекс текущего игрока
+	//Устанавливает игроков, вышедших из игры
+	//Возвращает индекс текущего игрока
 	findInactive(){
 
 		const game = this.game;
@@ -559,13 +597,14 @@ class GamePlayers extends BetterArray{
 	}
 
 	//Находит игрока, начинающего игру, по минимальному козырю в руке
-	//Отправляет информацию о козырях игрокам
+	//Возвращает козыри в руках игроков и минимальный козырь
 	findToGoFirst(){
 
 		const game = this.game;
 		let activePlayers = this.active;
 
-		let minTCards = [];
+		let minTCards = [],
+			minTCard = null;
 
 		//Находим минимальный козырь в каждой руке
 		for(let hid in game.hands){
@@ -595,7 +634,7 @@ class GamePlayers extends BetterArray{
 
 		//Если есть хотя бы один козырь
 		if(minTCards.length){
-			let minTCard = {
+			minTCard = {
 				pid: null,
 				cid: null,
 				value: game.maxCardValue + 1,
@@ -627,12 +666,7 @@ class GamePlayers extends BetterArray{
 			this.ally = involved[2] || null;
 					
 			utils.log('Player to go first: ', this.attacker.name)
-
-			//Сообщаем игрокам о минимальных козырях
-			game.waitForResponse(game.timeouts.trumpCards, this);
-			for(let pi = 0; pi < this.length; pi++){
-				this[pi].recieveMinTrumpCards(minTCards, minTCard.pid)
-			}		
+	
 		}
 
 		//В противном случае, берем первого попавшегося игрока и начинаем ход
@@ -643,8 +677,8 @@ class GamePlayers extends BetterArray{
 				this.ally = this.players[2].id
 			else
 				this.ally = null;
-			this.continueGame();
 		}
+		return [minTCards, minTCard];
 	}
 
 	//Находит участников нового хода
@@ -664,6 +698,35 @@ class GamePlayers extends BetterArray{
 		this.attacker = involved[0];
 		this.defender = involved[1];
 		this.ally = involved[2] || null;
+	}
+
+	//Проверяет, остались ли игроки в игре и устанавливает проигравшего
+	notEnoughActive(){
+
+		let activePlayers = this.active;
+
+		//Если осталось меньше двух игроков, завершаем игру
+		if(activePlayers.length < 2){		
+
+			//Находим проигравшего
+			if(activePlayers.length == 1){
+
+				let p = activePlayers[0];
+				let pid = p.id;
+
+				this.game.gameResult.loser = pid;
+				p.score.losses++;
+				p.score.cardsWhenLost += this.hands[pid].length;
+
+				utils.log(p.name, 'is the loser');
+			}
+			else{
+				utils.log('Draw');
+			}
+
+			return true;
+		}
+		return false
 	}
 
 }

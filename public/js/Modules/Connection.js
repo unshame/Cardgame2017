@@ -44,7 +44,7 @@ var EurecaClientSetup = function(callback, context) {
 		if(isInDebugMode)
 			console.log(newActions)
 	}
-	client.exports.recieveAction = function(action){
+	client.exports.recieveCompleteAction = function(action){
 		game.rope.stop();
 		if(game.celebration){
 			game.celebration.stop();
@@ -89,7 +89,7 @@ function sendAction(spot, card){
 		var action = actions[ai];
 		if(action.cid == card.id && spot.id == action.spot){
 			game.rope.stop();
-			server.recieveAction(action);
+			server.recieveCompleteAction(action);
 			return true;
 		}
 	}
@@ -106,7 +106,7 @@ function sendRealAction(type){
 	var action;
 	if(~actionTypes.indexOf(type))
 		action = {type: type};
-	server.recieveAction(action);
+	server.recieveCompleteAction(action);
 }
 
 function sendResponse(){

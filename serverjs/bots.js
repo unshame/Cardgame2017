@@ -44,7 +44,7 @@ Bot.prototype.recieveValidActions = function(actions){
 	this.sendResponse(action);
 }
 
-Bot.prototype.recieveAction = function(action){
+Bot.prototype.recieveCompleteAction = function(action){
 	setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
 }
 

@@ -30,7 +30,7 @@ var server = new Eureca.Server({allow:[
 	'setId',
 	'meetOpponents',
 	'recievePossibleActions',
-	'recieveAction',
+	'recieveCompleteAction',
 	'recieveNotification',
 	'handleLateness'
 ]
@@ -142,7 +142,7 @@ server.onDisconnect(function (conn) {
 	delete clients[removeId];
 });
 
-server.exports.recieveAction = function(action){
+server.exports.recieveCompleteAction = function(action){
 	if(!action)
 		return;
 	var connId = this.connection.id;

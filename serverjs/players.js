@@ -36,7 +36,7 @@ Player.prototype.recieveGameInfo = function(cards, players, trumpSuit, numDiscar
 	if(numDiscarded || numDiscarded === 0)
 		action.numDiscarded = numDiscarded;	
 	if(this.remote)
-		this.remote.recieveAction(action);
+		this.remote.recieveCompleteAction(action);
 }
 
 Player.prototype.recieveDeals = function(deals){
@@ -48,7 +48,7 @@ Player.prototype.recieveDeals = function(deals){
 		action.cards.push(deals[ci])
 	}
 	if(this.remote)
-		this.remote.recieveAction(action);
+		this.remote.recieveCompleteAction(action);
 }
 
 Player.prototype.recieveMinTrumpCards = function(cards, winner){
@@ -58,7 +58,7 @@ Player.prototype.recieveMinTrumpCards = function(cards, winner){
 		pid: winner
 	}
 	if(this.remote)
-		this.remote.recieveAction(action);
+		this.remote.recieveCompleteAction(action);
 }
 
 Player.prototype.recieveValidActions = function(actions, time){
@@ -78,9 +78,9 @@ Player.prototype.recieveValidActions = function(actions, time){
 		setTimeout(() => {this.sendResponse(action)},1)	*/
 }
 
-Player.prototype.recieveAction = function(action){
+Player.prototype.recieveCompleteAction = function(action){
 	if(this.remote)
-		this.remote.recieveAction(action);
+		this.remote.recieveCompleteAction(action);
 }
 
 Player.prototype.recieveNotification = function(note, actions){
