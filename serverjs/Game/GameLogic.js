@@ -2,7 +2,7 @@
  * Конструктор игры
  * Раздает карты и управляет правилами игры
  *
- * Отправляет информацию игрокам через экземпляры игроков (Player)
+ * Отправляет информацию игрокам через экземпляры игроков (Player) и группу игроков (GamePlayers)
  * После каждого отправления ожидает ответа от игроков (waitForResponse)
  * После ответа игроков (recieveResponse) или по истечении времени (setResponseTimer)
  * автоматически продолжает игру (continueGame)
@@ -267,6 +267,7 @@ Game.prototype.backToLobby = function(voteResults){
 }
 
 
+//Методы выбора статуса игры и стадии хода
 
 //Устанавливает следующую фазу хода и запоминает текущую
 //INITIAL_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> ... ->
@@ -436,6 +437,7 @@ Game.prototype.doTurn = function(){
 }
 
 
+
 //MOVE
 //Раздает карты
 Game.prototype.deal = function(dealsIn){
@@ -596,6 +598,7 @@ Game.prototype.discard = function(){
 }
 
 
+//Методы передачи и обработки действий, установки таймера действий
 
 //Ждет ответа от игроков
 Game.prototype.waitForResponse = function(time, players){

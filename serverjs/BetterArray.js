@@ -37,7 +37,7 @@ class BetterArray extends Array{
 			let v = this[i];
 			if(!v || typeof v != 'object' || !v[key])
 				continue;
-			obj[v[key]] = v;	
+			obj[key] = v;	
 		}
 		return obj;
 	}
