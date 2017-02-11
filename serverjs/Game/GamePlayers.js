@@ -180,13 +180,11 @@ class GamePlayers extends BetterArray{
 	get active(){
 		return this.getWith('active', true);
 	}
-
 	set active(players){
 		this.set('active', false);
 		if(players.length)
 			this.set('active', true, players);
 	}
-
 	setActive(players){
 		this.set('active', true, players)
 	}
@@ -195,13 +193,11 @@ class GamePlayers extends BetterArray{
 	get inactive(){
 		return this.getWith('active', false);
 	}
-
 	set inactive(players){
 		this.set('active', true);
 		if(players.length)
 			this.set('active', false, players);
 	}
-
 	setInactive(players){
 		this.set('active', false, players)
 	}
@@ -211,28 +207,23 @@ class GamePlayers extends BetterArray{
 	get working(){
 		return this.getWith('working', true);
 	}
-
 	set working(players){
 		this.set('working', false);
 		if(players.length)
 			this.set('working', true, players);
 	}
-
 	setWorking(players){
 		this.set('working', true, players)
 	}
-
 
 	//Атакующие до перевода
 	get origAttackers(){
 		return this.getWith('origAttacker', true, true);
 	}
-
 	set origAttackers(players){
 		this.set('origAttacker', false);
 		this.setOrigAttackers(players);
 	}
-
 	setOrigAttackers(players){
 		let last = 1;
 		for(let pi = 0; pi < this.length; pi++){
@@ -249,6 +240,7 @@ class GamePlayers extends BetterArray{
 		}
 	}
 
+	//Счеты
 	get scores(){
 		let scores = {};
 		for(let pi = 0; pi < this.length; pi++){
@@ -297,7 +289,7 @@ class GamePlayers extends BetterArray{
 
 	//ОПОВЕЩЕНИЕ ИГРОКОВ
 
-	//Оповещает игрокам о состоянии игры
+	//Оповещает игроков о состоянии игры
 	gameStateNotify(players, send){
 
 		const game = this.game;
@@ -396,7 +388,7 @@ class GamePlayers extends BetterArray{
 	}
 
 	//Оповещает игроков об оппонентах
-	meetOpponents(){
+	opponentsNotify(){
 		let info = this.info;
 		if(!info.length)
 			return;
