@@ -6,9 +6,8 @@
  */
 'use strict';
 
-var utils = require('../utils');
-
-var BetterArray = utils.BetterArray;
+var utils = require('../utils'),
+	BetterArray = require('../BetterArray.js');
 
 class GamePlayers extends BetterArray{
 
@@ -78,17 +77,6 @@ class GamePlayers extends BetterArray{
 			let p = this[i];
 			this.setGameStartStatus(p);
 		}
-	}
-
-
-	//Игроки по id
-	get byId(){
-		let obj = {};
-		for(let i = 0; i < this.length; i++){
-			let p = this[i];
-			obj[p.id] = p;	
-		}
-		return obj;
 	}
 
 	//Возвращает id и имена игроков

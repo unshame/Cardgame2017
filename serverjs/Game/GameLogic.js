@@ -25,6 +25,16 @@ var Game = function(players, canTransfer){
 	//Генерируем айди игры
 	this.id = 'game_' + utils.generateId();
 
+	//Сохраняем ссылки на игроков локально
+	if(players.length < 2){
+		players.push(new Bot(['addedBot']));
+		utils.log('WARNING: Only one player at the start of the game, adding a bot');
+	}
+	this.players = new GamePlayers(this, players.slice());
+
+	//Сообщаем игрокам о соперниках
+	this.players.opponentsNotify();
+
 	//Карты
 	this.cards = new GameCards(this);
 
@@ -40,18 +50,8 @@ var Game = function(players, canTransfer){
 	//Руки
 	this.hands = this.cards.hands;
 
-	//Сохраняем ссылки на игроков локально
-	if(players.length < 2){
-		players.push(new Bot(['addedBot']));
-		utils.log('WARNING: Only one player at the start of the game, adding a bot');
-	}
-	this.players = new GamePlayers(this, players.slice());
-
 	//Можно ли переводить карты
 	this.canTransfer = canTransfer;
-
-	//Сообщаем игрокам о соперниках
-	this.players.opponentsNotify();
 
 	this.gameNumber = -1;
 
@@ -85,32 +85,8 @@ Game.prototype.reset = function(){
 		loser: null
 	}
 
-	//Свойства карт
-	this.cardValues = [];
-	this.numOfSuits = 4;
-	this.maxCardValue = 14;
-
 	//Ресет карт
 	this.cards.reset();
-
-
-	this.fieldSpots = {};
-	this.fieldSize = 6;
-	this.fieldUsedSpots = 0;
-	this.fullField = this.zeroDiscardFieldSize = this.fieldSize - 1;
-	for(let i = 0; i < this.fieldSize; i++) {
-		let id = 'FIELD'+i;
-		let fieldSpot = {
-			attack: null,
-			defense: null,
-			id: id
-		}
-		this.field.push(fieldSpot);
-		this.fieldSpots[id] = fieldSpot;
-	}
-
-	//Руки (объекты по id игроков, содержащие id карт)
-	this.normalHandSize = 6;
 
 	//Счетчик пропущенных ходов
 	this.skipCounter = 0;
@@ -292,7 +268,7 @@ Game.prototype.backToLobby = function(voteResults){
 
 
 
-//Устанавливает текущую фазу хода и запоминает предыдущую
+//Устанавливает следующую фазу хода и запоминает текущую
 //INITIAL_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> ... ->
 //SUPPORT -> DEFENSE -> ATTACK -> DEFENSE -> ... -> FOLLOWUP -> DEFENSE -> END -> END_DEAL -> ENDED
 Game.prototype.setNextTurnStage = function(stage){
@@ -968,6 +944,8 @@ Game.prototype.checkStoredActions = function(){
 }
 
 
+//Методы, позволяющие игрокам выполнить действия
+//Во время их выполнения происходит переход между стадиями хода
 
 //Отправляет атакующему возможные ходы
 Game.prototype.letAttack = function(player){
@@ -976,6 +954,7 @@ Game.prototype.letAttack = function(player){
 	//Откомментировать по необходимости
 	let turnStage = this.nextTurnStage;
 	//let lastTurnStage = this.turnStage;
+	
 	let pid = player.id;
 	let hand = this.hands[pid];
 	let defHand = this.hands[this.players.defender.id];
