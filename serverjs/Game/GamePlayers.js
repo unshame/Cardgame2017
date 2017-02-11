@@ -40,7 +40,7 @@ class GamePlayers extends BetterArray{
 	//Добавление игроков в массив
 	push(p){
 		p.game = this.game;
-		this.setGameStartStatus(p);
+		this.setStatuses(p, this.gameStartStatus);
 		p.score = {
 			wins: 0,
 			losses: 0,

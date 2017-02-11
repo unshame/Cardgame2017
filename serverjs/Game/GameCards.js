@@ -9,7 +9,6 @@ var utils = require('../utils'),
 class GameCards{
 
 	constructor(game){
-		super();
 		this.game = game;
 
 		//Свойства карт
@@ -42,3 +41,5 @@ class GameCards{
 	}
 	static get [Symbol.species]() { return Array; }
 }
+
+module.exports = GameCards;

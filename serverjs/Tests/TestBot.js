@@ -1,5 +1,5 @@
 var utils = require('../utils'),
-	Bot = require('../bots.js');
+	Bot = require('../Players/Bot');
 
 var TestBot = function(tester, randomNames){
 	Bot.call(this, randomNames);
