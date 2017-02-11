@@ -5,6 +5,7 @@ class BetterArray extends Array{
 
 	static get [Symbol.species]() { return Array; }
 
+	//Перемешивает массив
 	shuffle(){
 		let currentIndex = this.length,
 			temporaryValue,
@@ -24,13 +25,15 @@ class BetterArray extends Array{
 		}
 	}
 
-	byId(){
+	//Возвращает объект по значениям переданного ключа
+	//Пропускает элементы без заданных ключей и пустыми ключами
+	byKey(key){
 		let obj = {};
 		for(let i = 0; i < this.length; i++){
 			let v = this[i];
-			if(!v || typeof v != 'object' || !v.id)
+			if(!v || typeof v != 'object' || !v[key])
 				continue;
-			obj[v.id] = v;	
+			obj[v[key]] = v;	
 		}
 		return obj;
 	}

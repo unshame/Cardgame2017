@@ -15,6 +15,15 @@ class GamePlayers extends BetterArray{
 		super();
 		this.game = game;
 		this.roles = ['attacker', 'defender','ally'];
+		this.turnStartStatus = {
+			role: null,
+			origAttacker: false
+		};
+		this.gameStartStatus = {
+			role: null,
+			origAttacker: false,
+			active: true
+		};
 		for(let i = 0; i < players.length; i++){
 			let p = players[i];
 			this.push(p);				
@@ -39,27 +48,10 @@ class GamePlayers extends BetterArray{
 
 
 	//Возвращает статус по умолчанию
-	setTurnStartStatus(p){
-		let obj = {
-			role: null,
-			origAttacker: false
-		};
-		for(let key in obj){
-			if(obj.hasOwnProperty(key))
-				p[key] = obj[key];
-		}
-	}
-
-	//Возвращает статус по умолчанию
-	setGameStartStatus(p){
-		let obj = {
-			role: null,
-			origAttacker: false,
-			active: true
-		};
-		for(let key in obj){
-			if(obj.hasOwnProperty(key))
-				p[key] = obj[key];
+	setStatus(p, status){
+		for(let key in status){
+			if(status.hasOwnProperty(key))
+				p[key] = status[key];
 		}
 	}
 
@@ -67,7 +59,7 @@ class GamePlayers extends BetterArray{
 	resetTurn(){
 		for(let i = 0; i < this.length; i++){
 			let p = this[i];
-			this.setTurnStartStatus(p);
+			this.setStatus(p, this.turnStartStatus);
 		}
 	}
 
@@ -75,8 +67,14 @@ class GamePlayers extends BetterArray{
 	resetGame(){
 		for(let i = 0; i < this.length; i++){
 			let p = this[i];
-			this.setGameStartStatus(p);
+			this.setStatus(p, this.gameStartStatus);
 		}
+	}
+
+
+	//Игроки по id
+	get byId(){
+		return this.byKey('id');
 	}
 
 	//Возвращает id и имена игроков
@@ -588,27 +586,31 @@ class GamePlayers extends BetterArray{
 
 		//Находим минимальный козырь в каждой руке
 		for(let hid in game.hands){
-			if(game.hands.hasOwnProperty(hid)){
-				let hand = game.hands[hid];
-				let minTCard = {
-					pid: hid,
-					cid: null,
-					value: game.maxCardValue + 1,
-					suit: game.trumpSuit
-				};
-				for(let ci = 0; ci < hand.length; ci++){
-					let cid = hand[ci];
-					let card = game.cards[cid];
-					if(card.suit == game.trumpSuit && card.value < minTCard.value){
-						minTCard.pid = card.spot;
-						minTCard.cid = card.id;
-						minTCard.value = card.value;
-					}
+
+			if(!game.hands.hasOwnProperty(hid))
+				continue;
+
+			let hand = game.hands[hid];
+			let minTCard = {
+				pid: hid,
+				cid: null,
+				value: game.maxCardValue + 1,
+				suit: game.trumpSuit
+			};
+
+			for(let ci = 0; ci < hand.length; ci++){
+				let cid = hand[ci];
+				let card = game.cards[cid];
+				if(card.suit == game.trumpSuit && card.value < minTCard.value){
+					minTCard.pid = card.spot;
+					minTCard.cid = card.id;
+					minTCard.value = card.value;
 				}
-				//Если в руке есть козырь
-				if(minTCard.value <= game.maxCardValue){
-					minTCards.push(minTCard);
-				}
+			}
+
+			//Если в руке есть козырь
+			if(minTCard.value <= game.maxCardValue){
+				minTCards.push(minTCard);
 			}
 		}
 
@@ -632,21 +634,9 @@ class GamePlayers extends BetterArray{
 			let pid = minTCard.pid;
 			let pi = activePlayers.map(p => p.id).indexOf(pid);
 
-			let numInvolved = Math.min(activePlayers.length, 3);
-			let involved = [];
-			let i = pi;
-			while(numInvolved--){
-				if(i >= activePlayers.length)
-					i = 0;
-				involved.push(activePlayers[i]);
-				i++;
-			}
-			this.attacker = involved[0];
-			this.defender = involved[1];
-			this.ally = involved[2] || null;
+			this.findToGoNext(pi - 1);
 					
-			utils.log('Player to go first: ', this.attacker.name)
-	
+			utils.log('Player to go first: ', this.attacker.name)	
 		}
 
 		//В противном случае, берем первого попавшегося игрока и начинаем ход
