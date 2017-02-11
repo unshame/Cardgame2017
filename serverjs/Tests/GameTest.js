@@ -1,4 +1,4 @@
-var Game = require('../gamelogic'),
+var Game = require('../Game/GameLogic'),
 	TestBot = require('./TestBot');
 
 function runTest(){

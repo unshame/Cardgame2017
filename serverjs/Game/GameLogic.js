@@ -1,18 +1,19 @@
 /*
-* Конструктор игры
-* Раздает карты и управляет правилами игры
-*
-* Отправляет информацию игрокам через экземпляры игроков (Player)
-* После каждого отправления ожидает ответа от игроков (waitForResponse)
-* После ответа игроков (recieveResponse) или по истечении времени (setResponseTimer)
-* автоматически продолжает игру (continueGame)
-*/
+ * Конструктор игры
+ * Раздает карты и управляет правилами игры
+ *
+ * Отправляет информацию игрокам через экземпляры игроков (Player)
+ * После каждого отправления ожидает ответа от игроков (waitForResponse)
+ * После ответа игроков (recieveResponse) или по истечении времени (setResponseTimer)
+ * автоматически продолжает игру (continueGame)
+ */
 
 'use strict';
 
 const 
-	utils = require('./utils'),
-	Bot = require('./bots'),
+	utils = require('../utils'),
+	Bot = require('../bots'),
+	GameCards = require('./GameCards'),
 	GamePlayers = require('./GamePlayers');
 
 var Game = function(players, canTransfer){
@@ -23,6 +24,21 @@ var Game = function(players, canTransfer){
 
 	//Генерируем айди игры
 	this.id = 'game_' + utils.generateId();
+
+	//Карты
+	this.cards = new GameCards(this);
+
+	//Колода
+	this.deck = this.cards.deck;
+
+	//Сброс 
+	this.discardPile = this.cards.discardPile;
+
+	//Карты на столе (в игре)
+	this.field = this.cards.field;
+
+	//Руки
+	this.hands = this.cards.hands;
 
 	//Сохраняем ссылки на игроков локально
 	if(players.length < 2){
@@ -74,17 +90,10 @@ Game.prototype.reset = function(){
 	this.numOfSuits = 4;
 	this.maxCardValue = 14;
 
-	//Карты (объекты)
-	this.cards = [];
+	//Ресет карт
+	this.cards.reset();
 
-	//Перемешанная колода (id карт)
-	this.deck = [];
 
-	//Сброс (id карт)
-	this.discardPile = [];
-
-	//Карты на столе (в игре) (объекты, содержащие id карт)
-	this.field = [];
 	this.fieldSpots = {};
 	this.fieldSize = 6;
 	this.fieldUsedSpots = 0;
@@ -101,7 +110,6 @@ Game.prototype.reset = function(){
 	}
 
 	//Руки (объекты по id игроков, содержащие id карт)
-	this.hands = {};
 	this.normalHandSize = 6;
 
 	//Счетчик пропущенных ходов
@@ -156,7 +164,7 @@ Game.prototype.make = function(){
 		}		
 	}
 
-	this.shuffleDeck();
+	this.deck.shuffle();
 
 	//Находим первый попавшийся не туз и кладем его на дно колоды, это наш козырь
 	for(let ci = 0; ci < this.deck.length; ci++){
@@ -178,131 +186,16 @@ Game.prototype.make = function(){
 
 	//Сообщаем игрокам о колоде и друг друге и запускаем игру
 	this.waitForResponse(this.timeouts.gameStart, this.players);
-	this.gameStartNotify();	// --> continueGame()
-}
-
-//Оповещает игроков о колоде
-Game.prototype.gameStartNotify = function(){
-
-	let deckToSend = [];
-	let playersToSend = [];
-
-	for(let ci = 0; ci < this.deck.length; ci++){
-
-		let cid = this.deck[ci];
-		let card = this.cards[cid];
-
-		deckToSend[ci] = utils.copyObject(card);
-
-		deckToSend[ci].cid = deckToSend[ci].id;
-		delete deckToSend[ci].id;
-
-		//Игроки знают только о значении карты на дне колоды
-		if(card.spot != 'BOTTOM'){
-			deckToSend[ci].value = null;
-			deckToSend[ci].suit = null;			
-		} 
-	}
-
-	for(let pi = 0; pi < this.players.length; pi++){
-		let player = this.players[pi];
-		playersToSend.push({
-			id: player.id,
-			name: player.name
-		});
-	}
-
-	this.gameStateNotify(this.players, true, true, false, false);
-}
-
-//Оповещает игрокам о состоянии игры
-Game.prototype.gameStateNotify = function(players, sendCards, sendPlayers, sendSuit, sendDiscard){
-
-	let cardsToSend = [];
-	let playersToSend = [];
-
-	if(sendCards){
-		for(let ci = 0; ci < this.deck.length; ci++){
-
-			let cid = this.deck[ci];
-			let card = this.cards[cid];
-			let newCard = utils.copyObject(card);
-
-			//Игроки знают только о значении карты на дне колоды
-			if(card.spot != 'BOTTOM'){
-				newCard.value = null;
-				newCard.suit = null;			
-			} 
-
-			cardsToSend.push(newCard);
+	this.players.gameStateNotify(
+		this.players,
+		{
+			cards: true,
+			players: true,
+			suit: false,
+			discard: false
 		}
-
-		for(let pi = 0; pi < this.players.length; pi++){
-
-			let p = this.players[pi];
-			let pid = p.id;
-			let hand = this.hands[pid];
-			if(!hand)
-				continue;
-			for(let ci = 0; ci < hand.length; ci++){
-
-				let cid = hand[ci];
-				let card = this.cards[cid];
-				let newCard = utils.copyObject(card);
-
-				if(card.spot != player.id){
-					newCard.value = null;
-					newCard.suit = null;			
-				} 
-
-				cardsToSend.push(newCard);
-			}
-		}
-
-		for(let fi = 0; fi < this.field.length; fi++){
-
-			let fieldSpot = this.field[fi];
-			if(fieldSpot.attack){
-				let card = this.cards[fieldSpot.attack];
-				let newCard = utils.copyObject(card);
-				cardsToSend.push(newCard);
-			}
-			if(fieldSpot.defense){
-				let card = this.cards[fieldSpot.defense];
-				let newCard = utils.copyObject(card);
-				cardsToSend.push(newCard);
-			}		
-		}
-		for(let ci = 0; ci < cardsToSend.length; ci++){
-			let card = cardsToSend[ci];
-			card.cid = card.id;
-			delete card.id;
-		}
-	}
-
-	if(sendPlayers){
-		playersToSend = this.players.info;
-	}
-
-	try{
-		for (let pi = 0; pi < players.length; pi++) {		
-			players[pi].recieveGameInfo(
-				sendCards && cardsToSend,
-				sendPlayers && playersToSend,
-				sendSuit && this.trumpSuit,
-				sendDiscard && this.discardPile.length
-			);
-		}	
-	}
-	catch(e){
-		console.log(e);
-		utils.log('ERROR: Couldn\'t send game info');
-	}
-}
-
-//Размешивает колоду
-Game.prototype.shuffleDeck = function(){
-	this.deck = utils.shuffleArray(this.deck);
+	);
+	// --> continueGame()
 }
 
 //Раздает карты
@@ -921,7 +814,7 @@ Game.prototype.endGame = function(){
 	
 	let note = {
 		message: 'GAME_ENDED',
-		scores: utils.copyObject(this.scores),
+		scores: this.players.scores,
 		results: utils.copyObject(this.gameResult)				 
 	};
 	let actionAccept = {

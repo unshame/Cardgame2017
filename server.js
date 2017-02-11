@@ -10,7 +10,7 @@ var express = require('express'),
 //Игровые модули
 var LobbyManager = require('./serverjs/lobbyManager'),
 	Lobby = require('./serverjs/lobby'),
-	Game = require('./serverjs/gamelogic'),
+	Game = require('./serverjs/Game/GameLogic'),
 	Bot = require('./serverjs/bots'),
 	Player = require('./serverjs/players');
 	Tests = require('./serverjs/Tests/GameTest');

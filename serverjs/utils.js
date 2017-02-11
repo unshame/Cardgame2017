@@ -13,6 +13,8 @@ var stats = {
 	line: 0
 }
 
+exports.stats = stats;
+
 exports.generateId = function(){
 	let chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 	let howMany = 7;
@@ -80,4 +82,32 @@ exports.shuffleArray = function(array) {
   return array;
 }
 
-exports.stats = stats;
+class BetterArray extends Array{
+	constructor(...arg){
+		super(...arg);
+	}
+
+	static get [Symbol.species]() { return Array; }
+
+	shuffle(){
+		let currentIndex = this.length,
+			temporaryValue,
+			randomIndex;
+
+		// While there remain elements to shuffle...
+		while (0 !== currentIndex) {
+
+			// Pick a remaining element...
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex -= 1;
+
+			// And swap it with the current element.
+			temporaryValue = this[currentIndex];
+			this[currentIndex] = this[randomIndex];
+			this[randomIndex] = temporaryValue;
+		}
+	}
+
+}
+
+exports.BetterArray = BetterArray;

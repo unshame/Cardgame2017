@@ -1,34 +1,14 @@
-"use strict";
+/*
+ * Класс, хранящий ссылки на игроков, участвующих в игре.
+ * Предоставляет методы для получения игроков с определенными статусами и установки статусов.
+ * Также предоставляет методы оповещения игроков о статусе игры и нахождения игроков,
+ * вышедших из игры и идущих следующими.
+ */
+'use strict';
 
-var utils = require('./utils')
+var utils = require('../utils');
 
-class BetterArray extends Array{
-	constructor(...arg){
-		super(...arg);
-	}
-
-	static get [Symbol.species]() { return Array; }
-
-	shuffle(){
-		var currentIndex = this.length,
-			temporaryValue,
-			randomIndex;
-
-		// While there remain elements to shuffle...
-		while (0 !== currentIndex) {
-
-			// Pick a remaining element...
-			randomIndex = Math.floor(Math.random() * currentIndex);
-			currentIndex -= 1;
-
-			// And swap it with the current element.
-			temporaryValue = this[currentIndex];
-			this[currentIndex] = this[randomIndex];
-			this[randomIndex] = temporaryValue;
-		}
-	}
-
-}
+var BetterArray = utils.BetterArray;
 
 class GamePlayers extends BetterArray{
 
@@ -44,6 +24,7 @@ class GamePlayers extends BetterArray{
 
 	static get [Symbol.species]() { return Array; }
 
+	//Добавление игроков в массив
 	push(p){
 		p.game = this.game;
 		this.setGameStartStatus(p);
@@ -60,11 +41,11 @@ class GamePlayers extends BetterArray{
 
 	//Возвращает статус по умолчанию
 	setTurnStartStatus(p){
-		var obj = {
+		let obj = {
 			role: null,
 			origAttacker: false
 		};
-		for(var key in obj){
+		for(let key in obj){
 			if(obj.hasOwnProperty(key))
 				p[key] = obj[key];
 		}
@@ -72,12 +53,12 @@ class GamePlayers extends BetterArray{
 
 	//Возвращает статус по умолчанию
 	setGameStartStatus(p){
-		var obj = {
+		let obj = {
 			role: null,
 			origAttacker: false,
 			active: true
 		};
-		for(var key in obj){
+		for(let key in obj){
 			if(obj.hasOwnProperty(key))
 				p[key] = obj[key];
 		}
@@ -85,7 +66,7 @@ class GamePlayers extends BetterArray{
 
 	//Ставит статусы по умолчанию
 	resetTurn(){
-		for(var i = 0; i < this.length; i++){
+		for(let i = 0; i < this.length; i++){
 			let p = this[i];
 			this.setTurnStartStatus(p);
 		}
@@ -93,7 +74,7 @@ class GamePlayers extends BetterArray{
 
 	//Ставит статусы по умолчанию
 	resetGame(){
-		for(var i = 0; i < this.length; i++){
+		for(let i = 0; i < this.length; i++){
 			let p = this[i];
 			this.setGameStartStatus(p);
 		}
@@ -125,7 +106,15 @@ class GamePlayers extends BetterArray{
 	}
 
 
-	//Статусы	
+	//СТАТУСЫ	
+	
+	/*
+	 * Меняет статус игроков
+	 * @status String - какой статус менять
+	 * @value * - на что менять статус
+	 * @players Player - у каких игроков менять статус
+	 * Сравнение через ==, так что можно передавать true и любое трушное значение подойдет
+	 */
 	set(status, value, players){
 
 		if(!players || !players.length)
@@ -143,7 +132,14 @@ class GamePlayers extends BetterArray{
 		}
 	}
 
-	getWith(status, value){
+	/*
+	 * Возвращает массив с игроками с определенным статусом
+	 * @status String - какой статус сравнивать
+	 * @value * - с чем сравнивать статус
+	 * @sort Boolean - нужно ли сортировать игроков по значению статуса
+	 * Сравнение через ==, так что можно передавать true и любое трушное значение подойдет
+	 */
+	getWith(status, value, sort){
 		let results = [];
 
 		for(let i = 0; i < this.length; i++){
@@ -152,9 +148,22 @@ class GamePlayers extends BetterArray{
 				results.push(p);
 			}
 		}
+		if(results.length && sort){
+			results.sort(
+				(a, b) => {
+					if(a[status] == b[status])
+						return 0
+					else if(a[status] > b[status])
+						return 1
+					else
+						return -1;
+				}
+			)
+		}
 		return results;
 	}
 
+	//Тоже, что и getWith, только возвращается первый результат
 	getWithFirst(status, value){
 		let result = null;
 
@@ -166,7 +175,6 @@ class GamePlayers extends BetterArray{
 		}
 		return result;
 	}
-
 
 	//Активные
 	get active(){
@@ -182,7 +190,6 @@ class GamePlayers extends BetterArray{
 	setActive(players){
 		this.set('active', true, players)
 	}
-
 
 	//Неактивные
 	get inactive(){
@@ -214,26 +221,10 @@ class GamePlayers extends BetterArray{
 		this.set('working', true, players)
 	}
 
+
+	//Атакующие до перевода
 	get origAttackers(){
-		var players = [];
-		for(var pi = 0; pi < this.length; pi++){
-			let p = this[pi];
-			if(p.origAttacker)
-				players.push(p);
-		}
-		if(players.length){
-			players.sort(
-				(a, b) => {
-					if(a == b)
-						return 0
-					else if(a > b)
-						return 1
-					else
-						return -1;
-				}
-			)
-		}
-		return players;
+		return this.getWith('origAttacker', true, true);
 	}
 
 	set origAttackers(players){
@@ -242,14 +233,14 @@ class GamePlayers extends BetterArray{
 	}
 
 	setOrigAttackers(players){
-		var last = 1;
+		let last = 1;
 		for(let pi = 0; pi < this.length; pi++){
 			let p = this[pi];
 			if(p.origAttacker)
 				last++;
 		}
 		if(players.length){
-			for(var pi = 0; pi < players.length; pi++){
+			for(let pi = 0; pi < players.length; pi++){
 				let p = players[pi];
 				this.set('origAttacker', last, [p]);
 				last++;
@@ -257,7 +248,17 @@ class GamePlayers extends BetterArray{
 		}
 	}
 
-	//Роли
+	get scores(){
+		let scores = {};
+		for(let pi = 0; pi < this.length; pi++){
+			let p = this[pi];
+			scores[p.id] = p.score;
+		}
+		return scores;
+	}
+
+
+	//РОЛИ
 	isValidRole(role){
 		return Boolean(~this.roles.indexOf(role));
 	}
@@ -296,9 +297,103 @@ class GamePlayers extends BetterArray{
 	}
 
 
+	//ОПОВЕЩЕНИЕ ИГРОКОВ
+
+	//Оповещает игрокам о состоянии игры
+	gameStateNotify(players, send){
+
+		const game = this.game;
+
+		if(!send){
+			send = {};
+		}
+
+		let cardsToSend = [];
+		let playersToSend = [];
+
+		if(send.cards){
+			for(let ci = 0; ci < game.deck.length; ci++){
+
+				let cid = game.deck[ci];
+				let card = game.cards[cid];
+				let newCard = utils.copyObject(card);
+
+				//Игроки знают только о значении карты на дне колоды
+				if(card.spot != 'BOTTOM'){
+					newCard.value = null;
+					newCard.suit = null;			
+				} 
+
+				cardsToSend.push(newCard);
+			}
+
+			for(let pi = 0; pi < this.length; pi++){
+
+				let p = this[pi];
+				let pid = p.id;
+				let hand = game.hands[pid];
+				if(!hand)
+					continue;
+				for(let ci = 0; ci < hand.length; ci++){
+
+					let cid = hand[ci];
+					let card = game.cards[cid];
+					let newCard = utils.copyObject(card);
+
+					if(card.spot != player.id){
+						newCard.value = null;
+						newCard.suit = null;			
+					} 
+
+					cardsToSend.push(newCard);
+				}
+			}
+
+			for(let fi = 0; fi < game.field.length; fi++){
+
+				let fieldSpot = game.field[fi];
+				if(fieldSpot.attack){
+					let card = game.cards[fieldSpot.attack];
+					let newCard = utils.copyObject(card);
+					cardsToSend.push(newCard);
+				}
+				if(fieldSpot.defense){
+					let card = game.cards[fieldSpot.defense];
+					let newCard = utils.copyObject(card);
+					cardsToSend.push(newCard);
+				}		
+			}
+			for(let ci = 0; ci < cardsToSend.length; ci++){
+				let card = cardsToSend[ci];
+				card.cid = card.id;
+				delete card.id;
+			}
+		}
+
+		if(send.players){
+			playersToSend = this.info;
+		}
+
+		try{
+			for (let pi = 0; pi < players.length; pi++) {		
+				players[pi].recieveGameInfo(
+					send.cards && cardsToSend,
+					send.players && playersToSend,
+					send.suit && game.trumpSuit,
+					send.discard && game.discardPile.length
+				);
+			}	
+		}
+		catch(e){
+			console.log(e);
+			utils.log('ERROR: Couldn\'t send game info');
+		}
+	}
+
+
 	//Оповещает игроков об оппонентах
 	meetOpponents(){
-		var info = this.info;
+		let info = this.info;
 		if(!info.length)
 			return;
 		try{
@@ -379,6 +474,8 @@ class GamePlayers extends BetterArray{
 	}
 
 
+	//УПРАВЛЕНИЕ ИГРОКАМИ
+
 	//Устанавливает игроков, вышедших из игры, возвращает индекс текущего игрока
 	findInactive(){
 
@@ -448,7 +545,7 @@ class GamePlayers extends BetterArray{
 					let p = newInactivePlayers[i];
 
 					p.score.wins++;
-					game.gameResult.winners.push(p);
+					game.gameResult.winners.push(p.id);
 
 					utils.log(p.name, 'is a winner');
 				}
@@ -569,14 +666,6 @@ class GamePlayers extends BetterArray{
 		this.ally = involved[2] || null;
 	}
 
-}
-
-class GameCards extends BetterArray{
-
-	constructor(...arg){
-		super(...arg);
-	}
-	static get [Symbol.species]() { return Array; }
 }
 
 module.exports = GamePlayers
