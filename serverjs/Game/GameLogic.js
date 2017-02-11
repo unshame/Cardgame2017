@@ -1226,12 +1226,13 @@ Game.prototype.letTake = function(player){
 
 //Записывает действие над картой в лог
 Game.prototype.logAction = function(card, actionType, from, to){
+	let playersById = this.players.byId;
 	utils.log(
 		card.suit, card.value, ':', 
 		actionType,
-		this.players.byId[from] ? this.players.byId[from].name : from,
+		playersById[from] ? playersById[from].name : from,
 		'=>',
-		this.players.byId[to] ? this.players.byId[to].name : to
+		playersById[to] ? playersById[to].name : to
 	);
 }
 

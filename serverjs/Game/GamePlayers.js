@@ -2,8 +2,13 @@
  * Класс, хранящий ссылки на игроков, участвующих в игре.
  * Предоставляет методы для получения игроков с определенными статусами и установки статусов.
  * Также предоставляет методы оповещения игроков о статусе игры и нахождения игроков,
- * вышедших из игры и идущих следующими.
+ * вышедших из игры и идущих следующими. Также есть метод проверки конца игры.
+ * 
+ * Так как класс не хранит массивы с игроками, а составляет их по запросу, для повышения
+ * производительности полученные массивы лучше сохранять в переменной и пользоваться ей.
+ * На прямую нужно обращаться только к игрокам по индексу (GamePlayers[index]).
  */
+
 'use strict';
 
 var utils = require('../utils'),
@@ -48,7 +53,7 @@ class GamePlayers extends BetterArray{
 
 
 	//Возвращает статус по умолчанию
-	setStatus(p, status){
+	setStatuses(p, status){
 		for(let key in status){
 			if(status.hasOwnProperty(key))
 				p[key] = status[key];
@@ -59,7 +64,7 @@ class GamePlayers extends BetterArray{
 	resetTurn(){
 		for(let i = 0; i < this.length; i++){
 			let p = this[i];
-			this.setStatus(p, this.turnStartStatus);
+			this.setStatuses(p, this.turnStartStatus);
 		}
 	}
 
@@ -67,7 +72,7 @@ class GamePlayers extends BetterArray{
 	resetGame(){
 		for(let i = 0; i < this.length; i++){
 			let p = this[i];
-			this.setStatus(p, this.gameStartStatus);
+			this.setStatuses(p, this.gameStartStatus);
 		}
 	}
 

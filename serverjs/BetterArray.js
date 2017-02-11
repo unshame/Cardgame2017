@@ -1,3 +1,7 @@
+/*
+ * Массив с дополнительными методами
+ */
+
 class BetterArray extends Array{
 	constructor(...arg){
 		super(...arg);
@@ -26,7 +30,7 @@ class BetterArray extends Array{
 	}
 
 	//Возвращает объект по значениям переданного ключа
-	//Пропускает элементы без заданных ключей и пустыми ключами
+	//Пропускает элементы без заданных ключей и с пустыми ключами
 	byKey(key){
 		let obj = {};
 		for(let i = 0; i < this.length; i++){
