@@ -8,11 +8,9 @@ var express = require('express'),
 	Eureca = require('eureca.io');
 
 //Игровые модули
-var LobbyManager = require('./serverjs/lobbyManager'),
-	Lobby = require('./serverjs/lobby'),
-	Game = require('./serverjs/Game/GameLogic'),
-	Bot = require('./serverjs/bots'),
-	Player = require('./serverjs/players');
+var Game = require('./serverjs/Game/GameLogic'),
+	Bot = require('./serverjs/Players/Bot'),
+	Player = require('./serverjs/Players/Player');
 	Tests = require('./serverjs/Tests/GameTest');
 
 //Приложение и http сервер

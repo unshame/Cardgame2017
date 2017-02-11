@@ -1,6 +1,6 @@
 'use strict';
 
-const utils = require('./utils')
+const utils = require('../utils')
 
 var Player = function(remote, connId, name){
 	this.id = 'player_' + utils.generateId();

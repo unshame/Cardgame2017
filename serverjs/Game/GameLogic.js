@@ -12,7 +12,7 @@
 
 const 
 	utils = require('../utils'),
-	Bot = require('../bots'),
+	Bot = require('../Players/Bot'),
 	GameCards = require('./GameCards'),
 	GamePlayers = require('./GamePlayers');
 

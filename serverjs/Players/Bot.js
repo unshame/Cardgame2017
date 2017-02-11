@@ -4,7 +4,7 @@
 
 'use strict';
 
-const utils = require('./utils')
+const utils = require('../utils')
 var fakeDescisionTimer = 1;
 
 var Bot = function(randomNames){
