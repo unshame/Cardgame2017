@@ -40,6 +40,7 @@ var Game = function(players, canTransfer){
 	//Можно ли переводить карты
 	this.canTransfer = canTransfer;
 
+	//Номер игры
 	this.gameNumber = -1;
 
 	//Время ожидания сервера
@@ -96,6 +97,7 @@ Game.prototype.make = function(){
 	//Перемешиваем игроков
 	this.players.shuffle();
 
+	//Создаем карты, поля и колоду
 	this.cards.make();
 
 	//Сообщаем игрокам о колоде и друг друге и запускаем игру
@@ -444,10 +446,10 @@ Game.prototype.dealTillFullHand = function(){
 		let player = sequence[si];
 		let pid = player.id;
 		let cardsInHand = this.hands[pid].length;
-		if(cardsInHand < this.hands.normalSize){
+		if(cardsInHand < this.cards.normalHandSize){
 			let dealInfo = {
 				pid: pid,
-				numOfCards: this.hands.normalSize - cardsInHand
+				numOfCards: this.cards.normalHandSize - cardsInHand
 			}
 			deals.push(dealInfo);
 		}
@@ -464,12 +466,9 @@ Game.prototype.dealTillFullHand = function(){
 //MOVE
 //Раздает начальные руки
 Game.prototype.dealStartingHands = function(){
-	for (let pi = 0; pi < this.players.length; pi++) {
-		this.hands[this.players[pi].id] = [];
-	}
 	let deals = [];
 
-	for (let cardN = 0; cardN < this.hands.normalSize; cardN++) {
+	for (let cardN = 0; cardN < this.cards.normalHandSize; cardN++) {
 		for(let pi = 0; pi < this.players.length; pi++){
 			let dealInfo = {
 				pid: this.players[pi].id,
