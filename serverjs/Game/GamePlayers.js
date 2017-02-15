@@ -6,7 +6,7 @@
  * 
  * Так как класс не хранит массивы с игроками, а составляет их по запросу, для повышения
  * производительности полученные массивы лучше сохранять в переменной и пользоваться ей.
- * На прямую нужно обращаться только к игрокам по индексу (GamePlayers[index]).
+ * Напрямую нужно обращаться только к игрокам по индексу (GamePlayers[index]).
  */
 
 'use strict';
@@ -295,11 +295,13 @@ class GamePlayers extends BetterArray{
 		//Карты
 		if(send.cards){
 
+			let cardsById = game.cards.byId;
+
 			//Колода
 			for(let ci = 0; ci < game.deck.length; ci++){
 
 				let cid = game.deck[ci];
-				let card = game.cards[cid];
+				let card = cardsById[cid];
 				let newCard = utils.copyObject(card);
 
 				//Игроки знают только о значении карты на дне колоды
@@ -323,10 +325,10 @@ class GamePlayers extends BetterArray{
 				for(let ci = 0; ci < hand.length; ci++){
 
 					let cid = hand[ci];
-					let card = game.cards[cid];
+					let card = cardsById[cid];
 					let newCard = utils.copyObject(card);
 
-					if(card.spot != player.id){
+					if(card.spot != pid){
 						newCard.value = null;
 						newCard.suit = null;			
 					} 
@@ -340,12 +342,12 @@ class GamePlayers extends BetterArray{
 
 				let fieldSpot = game.field[fi];
 				if(fieldSpot.attack){
-					let card = game.cards[fieldSpot.attack];
+					let card = cardsById[fieldSpot.attack];
 					let newCard = utils.copyObject(card);
 					cardsToSend.push(newCard);
 				}
 				if(fieldSpot.defense){
-					let card = game.cards[fieldSpot.defense];
+					let card = cardsById[fieldSpot.defense];
 					let newCard = utils.copyObject(card);
 					cardsToSend.push(newCard);
 				}		
@@ -368,7 +370,7 @@ class GamePlayers extends BetterArray{
 				players[pi].recieveGameInfo(
 					send.cards && cardsToSend,
 					send.players && playersToSend,
-					send.suit && game.trumpSuit,
+					send.suit && game.cards.trumpSuit,
 					send.discard && game.discardPile.length
 				);
 			}	
@@ -396,6 +398,7 @@ class GamePlayers extends BetterArray{
 
 	//Оповещает игроков о раздаче карт
 	dealNotify(deals){
+		let cardsById = this.game.cards.byId;
 		try{
 			for(let pi = 0; pi < this.length; pi++) {
 
@@ -413,8 +416,8 @@ class GamePlayers extends BetterArray{
 
 					//Игроки знают только о значении своих карт
 					if(deal.pid == p.id){
-						dealsToSend[di].value = this.game.cards[deal.cid].value;
-						dealsToSend[di].suit = this.game.cards[deal.cid].suit;
+						dealsToSend[di].value = cardsById[deal.cid].value;
+						dealsToSend[di].suit = cardsById[deal.cid].suit;
 					}
 				}				
 				p.recieveDeals(dealsToSend.slice());
@@ -584,29 +587,31 @@ class GamePlayers extends BetterArray{
 	findToGoFirst(){
 
 		const game = this.game;
+		let cardsById = game.cards.byId;
 		let activePlayers = this.active;
 
 		let minTCards = [],
 			minTCard = null;
 
 		//Находим минимальный козырь в каждой руке
-		for(let hid in game.hands){
-
-			if(!game.hands.hasOwnProperty(hid))
+		for(let pi in this){
+			debugger;
+			let pid = this[pi].id;
+			if(!game.hands.hasOwnProperty(pid))
 				continue;
 
-			let hand = game.hands[hid];
+			let hand = game.hands[pid];
 			let minTCard = {
-				pid: hid,
+				pid: pid,
 				cid: null,
-				value: game.maxCardValue + 1,
-				suit: game.trumpSuit
+				value: game.cards.maxValue + 1,
+				suit: game.cards.trumpSuit
 			};
 
 			for(let ci = 0; ci < hand.length; ci++){
 				let cid = hand[ci];
-				let card = game.cards[cid];
-				if(card.suit == game.trumpSuit && card.value < minTCard.value){
+				let card = cardsById[cid];
+				if(card.suit == game.cards.trumpSuit && card.value < minTCard.value){
 					minTCard.pid = card.spot;
 					minTCard.cid = card.id;
 					minTCard.value = card.value;
@@ -614,7 +619,7 @@ class GamePlayers extends BetterArray{
 			}
 
 			//Если в руке есть козырь
-			if(minTCard.value <= game.maxCardValue){
+			if(minTCard.value <= game.cards.maxValue){
 				minTCards.push(minTCard);
 			}
 		}
@@ -624,8 +629,8 @@ class GamePlayers extends BetterArray{
 			minTCard = {
 				pid: null,
 				cid: null,
-				value: game.maxCardValue + 1,
-				suit: game.trumpSuit
+				value: game.cards.maxValue + 1,
+				suit: game.cards.trumpSuit
 			};
 
 			//Находим минимальный из них
@@ -646,10 +651,10 @@ class GamePlayers extends BetterArray{
 
 		//В противном случае, берем первого попавшегося игрока и начинаем ход
 		else{
-			this.attacker = this.players[0].id;
-			this.defender = this.players[1].id;
+			this.attacker = this[0];
+			this.defender = this[1];
 			if(this.length > 2)
-				this.ally = this.players[2].id
+				this.ally = this[2]
 			else
 				this.ally = null;
 		}
@@ -691,7 +696,7 @@ class GamePlayers extends BetterArray{
 
 				this.game.gameResult.loser = pid;
 				p.score.losses++;
-				p.score.cardsWhenLost += this.hands[pid].length;
+				p.score.cardsWhenLost += this.game.hands[pid].length;
 
 				utils.log(p.name, 'is the loser');
 			}
