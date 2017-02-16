@@ -532,7 +532,7 @@ class GamePlayers extends BetterArray{
 
 		//Находим минимальный козырь в каждой руке
 		for(let pi in this){
-			debugger;
+
 			let pid = this[pi].id;
 			if(!game.hands.hasOwnProperty(pid))
 				continue;
