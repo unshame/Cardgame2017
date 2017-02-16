@@ -21,10 +21,76 @@ class GameCards extends BetterArray{
 		this.field.maxLength = 6;
 		this.field.zeroDiscardLength = this.field.maxLength - 1;
 	}
+	static get [Symbol.species]() { return Array; }
 
 	//Карты по id
 	get byId(){
 		return this.byKey('id');
+	}
+
+	getInfo(players){
+
+		let cardsToSend = {};
+
+		for(let pi = 0; pi < players.length; pi++){
+
+			let p = players[pi];
+			let pid = p.id;
+			let hand = this.hands[pid];
+			cardsToSend[pid] = [];
+
+			//Колода
+			for(let ci = 0; ci < this.deck.length; ci++){
+
+				let card = this.deck[ci];
+				let newCard = utils.copyObject(card);
+
+				//Игроки знают только о значении карты на дне колоды
+				if(card.spot != 'BOTTOM'){
+					newCard.value = null;
+					newCard.suit = null;			
+				} 
+
+				cardsToSend[pid].push(newCard);
+			}
+
+			//Руки
+			for(let ci = 0; ci < hand.length; ci++){
+
+				let card = hand[ci];
+				let newCard = utils.copyObject(card);
+
+				if(card.spot != pid){
+					newCard.value = null;
+					newCard.suit = null;			
+				} 
+
+				cardsToSend[pid].push(newCard);
+			}			
+
+			//В игре
+			for(let fi = 0; fi < this.field.length; fi++){
+
+				let fieldSpot = this.field[fi];
+				if(fieldSpot.attack){
+					let card = fieldSpot.attack;
+					let newCard = utils.copyObject(card);
+					cardsToSend[pid].push(newCard);
+				}
+				if(fieldSpot.defense){
+					let card = fieldSpot.defense;
+					let newCard = utils.copyObject(card);
+					cardsToSend[pid].push(newCard);
+				}		
+			}
+			for(let ci = 0; ci < cardsToSend[pid].length; ci++){
+				let card = cardsToSend[pid][ci];
+				card.cid = card.id;
+				delete card.id;
+			}
+		}
+
+		return cardsToSend;
 	}
 
 	//Обнуляет карты
@@ -109,34 +175,182 @@ class GameCards extends BetterArray{
 					spot: 'DECK'
 				}
 				this.push(card);
-				this.deck.push(card.id);
+				this.deck.push(card);
 			}		
 		}
 
 		//Перемешиваем колоду
 		this.deck.shuffle();
-
-		let cardsById = this.byId;
 		
 		//Находим первый попавшийся не туз и кладем его на дно колоды, это наш козырь
 		for(let ci = 0; ci < this.deck.length; ci++){
 
-			let thiscid = this.deck[ci];
-			let othercid = this.deck[this.deck.length - 1];
-			if(cardsById[thiscid].value != this.maxCardValue){
-				this.deck[this.deck.length - 1] = thiscid;
-				this.deck[ci] = othercid;
+			let thisCard = this.deck[ci];
+			let otherCard = this.deck[this.deck.length - 1];
+			if(thisCard.value != this.maxCardValue){
+				this.deck[this.deck.length - 1] = thisCard;
+				this.deck[ci] = otherCard;
 				break;
 			}
 		}	
 
 		//Запоминаем козырь
-		let lastcid = this.deck[this.deck.length - 1];
-		let lastcard = this.byId[lastcid];
-		lastcard.spot = 'BOTTOM';
-		this.trumpSuit = lastcard.suit;
+		let lastCard = this.deck[this.deck.length - 1];
+		lastCard.spot = 'BOTTOM';
+		this.trumpSuit = lastCard.suit;
 	}
-	static get [Symbol.species]() { return Array; }
+
+	//Раздает карты, возвращает карты для отправки клиентам
+	deal(dealsIn){
+
+		let dealsOut = [];
+
+		for (let di = 0; di < dealsIn.length; di++) {
+
+			let dealInfo = dealsIn[di];
+			let numOfCards = dealInfo.numOfCards;
+			while (numOfCards--) {
+				if(!this.deck.length)
+					break;
+
+				let card = this.deck[0];
+
+				this.game.logAction(card, 'DEAL', card.spot, dealInfo.pid);
+
+				this.hands[dealInfo.pid].push(card);
+				card.spot = dealInfo.pid;
+
+				let dealFullInfo = {
+					pid: dealInfo.pid,
+					cardPosition: card.spot,
+					cid: card.id
+				}
+
+				dealsOut.push(dealFullInfo);
+				 
+				this.deck.shift();
+			}
+		}
+		return dealsOut;
+	}
+
+	//Раздает карты пока у всех не по 6 карт или пока колода не закончится,
+	//возвращает карты для отправки клиентам
+	dealTillFullHand(){
+		const game = this.game;
+		const players = game.players;
+		let originalAttackers = players.originalAttackers;
+		let attacker = players.attacker;
+		let defender = players.defender;
+		let ally = players.ally;
+		let deals = [];
+
+		let sequence = [];
+		for(let oi = 0; oi < originalAttackers.length; oi++){
+			let p = originalAttackers[oi];
+			if(!~sequence.indexOf(p))
+				sequence.push(p);
+		}
+		if(!~sequence.indexOf(attacker))
+			sequence.push(attacker);
+
+		if(ally && !~sequence.indexOf(ally))
+			sequence.push(ally);
+
+		if(!~sequence.indexOf(defender))
+			sequence.push(defender);
+
+		for(let si = 0; si < sequence.length; si++){
+			let player = sequence[si];
+			let pid = player.id;
+			let cardsInHand = this.hands[pid].length;
+			if(cardsInHand < this.normalHandSize){
+				let dealInfo = {
+					pid: pid,
+					numOfCards: this.normalHandSize - cardsInHand
+				}
+				deals.push(dealInfo);
+			}
+		}
+
+		if(deals.length){
+			return this.deal(deals);
+		}
+		else{
+			return [];
+		}
+	}
+
+	//Раздает начальные руки, возвращает карты для отправки клиентам
+	dealStartingHands(){
+		const game = this.game;
+		let deals = [];
+
+		for (let cardN = 0; cardN < this.normalHandSize; cardN++) {
+			for(let pi = 0; pi < game.players.length; pi++){
+				let dealInfo = {
+					pid: game.players[pi].id,
+					numOfCards: 1
+				}
+				deals.push(dealInfo);
+			}
+		}
+		return this.deal(deals);
+	}
+
+	//Сбрасывает карты, возвращает карты для отправки клиентам
+	discard(){
+
+		let action = {
+			type: 'DISCARD',
+			ids: []
+		};
+
+		//Убираем карты со всех позиций на столе
+		for(let fi = 0; fi < this.field.length; fi++){
+
+			let fieldSpot = this.field[fi];
+
+			if(fieldSpot.attack){
+				let card = fieldSpot.attack;
+				this.game.logAction(card, 'DISCARD', card.spot, 'DISCARD_PILE');
+				card.spot = 'DISCARD_PILE';
+
+				action.ids.push(fieldSpot.attack.id);
+				this.discardPile.push(fieldSpot.attack);
+				fieldSpot.attack = null;
+			}
+
+			if(fieldSpot.defense){
+				let card = fieldSpot.defense;
+				this.game.logAction(card, 'DISCARD', card.spot, 'DISCARD_PILE');
+				card.spot = 'DISCARD_PILE';
+
+				action.ids.push(fieldSpot.defense.id);
+				this.discardPile.push(fieldSpot.defense);
+				fieldSpot.defense = null;
+			}
+
+		}
+
+		//Если карты были убраны, оповещаем игроков и переходим в фазу раздачи карт игрокам
+		if(action.ids.length){
+
+			//После первого сброса на стол можно класть больше карт
+			if(this.field.fullLength <= this.field.zeroDiscardLength){
+				this.field.fullLength++;
+				utils.log('First discard, field expanded to', this.field.fullLength);
+			}
+
+			return action;
+		}
+
+		//Иначе раздаем карты и переходим в фазу конца хода
+		else{
+			return null;
+		}
+	}
+
 }
 
 module.exports = GameCards;

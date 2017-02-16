@@ -208,15 +208,15 @@ class GamePlayers extends BetterArray{
 	}
 
 	//Атакующие до перевода
-	get origAttackers(){
+	get originalAttackers(){
 		return this.getWith('origAttacker', true, true);
 	}
-	set origAttackers(players){
+	set originalAttackers(players){
 		this.set('origAttacker', false);
 		this.setOrigAttackers(players);
 	}
 	setOrigAttackers(players){
-		let last = 1;
+		let last = this.originalAttackers.length + 1;
 		for(let pi = 0; pi < this.length; pi++){
 			let p = this[pi];
 			if(p.origAttacker)
@@ -284,91 +284,28 @@ class GamePlayers extends BetterArray{
 	gameStateNotify(players, send){
 
 		const game = this.game;
+		let playersToSend = null;
+		let cardsToSend = null;
 
 		if(!send){
 			send = {};
-		}
-
-		let cardsToSend = [];
-		let playersToSend = [];
+		}		
 
 		//Карты
-		if(send.cards){
-
-			let cardsById = game.cards.byId;
-
-			//Колода
-			for(let ci = 0; ci < game.deck.length; ci++){
-
-				let cid = game.deck[ci];
-				let card = cardsById[cid];
-				let newCard = utils.copyObject(card);
-
-				//Игроки знают только о значении карты на дне колоды
-				if(card.spot != 'BOTTOM'){
-					newCard.value = null;
-					newCard.suit = null;			
-				} 
-
-				cardsToSend.push(newCard);
-			}
-
-
-			//Руки
-			for(let pi = 0; pi < this.length; pi++){
-
-				let p = this[pi];
-				let pid = p.id;
-				let hand = game.hands[pid];
-				if(!hand)
-					continue;
-				for(let ci = 0; ci < hand.length; ci++){
-
-					let cid = hand[ci];
-					let card = cardsById[cid];
-					let newCard = utils.copyObject(card);
-
-					if(card.spot != pid){
-						newCard.value = null;
-						newCard.suit = null;			
-					} 
-
-					cardsToSend.push(newCard);
-				}
-			}
-
-			//В игре
-			for(let fi = 0; fi < game.field.length; fi++){
-
-				let fieldSpot = game.field[fi];
-				if(fieldSpot.attack){
-					let card = cardsById[fieldSpot.attack];
-					let newCard = utils.copyObject(card);
-					cardsToSend.push(newCard);
-				}
-				if(fieldSpot.defense){
-					let card = cardsById[fieldSpot.defense];
-					let newCard = utils.copyObject(card);
-					cardsToSend.push(newCard);
-				}		
-			}
-			for(let ci = 0; ci < cardsToSend.length; ci++){
-				let card = cardsToSend[ci];
-				card.cid = card.id;
-				delete card.id;
-			}
-		}
+		if(send.cards)
+			cardsToSend = game.cards.getInfo(players);
 
 		//Игроки
-		if(send.players){
+		if(send.players)
 			playersToSend = this.info;
-		}
 
 		//Пересылка
 		try{
-			for (let pi = 0; pi < players.length; pi++) {		
-				players[pi].recieveGameInfo(
-					send.cards && cardsToSend,
+			for (let pi = 0; pi < players.length; pi++) {
+				let p = players[pi];
+				let pid = p.id;
+				p.recieveGameInfo(
+					send.cards && cardsToSend[pid],
 					send.players && playersToSend,
 					send.suit && game.cards.trumpSuit,
 					send.discard && game.discardPile.length
@@ -609,8 +546,7 @@ class GamePlayers extends BetterArray{
 			};
 
 			for(let ci = 0; ci < hand.length; ci++){
-				let cid = hand[ci];
-				let card = cardsById[cid];
+				let card = hand[ci];
 				if(card.suit == game.cards.trumpSuit && card.value < minTCard.value){
 					minTCard.pid = card.spot;
 					minTCard.cid = card.id;

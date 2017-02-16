@@ -245,7 +245,14 @@ Game.prototype.continueGame = function(){
 	//Раздаем карты в начале игры
 	case 'SHOULD_START':
 		this.gameState = 'STARTED';
-		this.dealStartingHands();
+		let dealsOut = this.cards.dealStartingHands();
+		if(dealsOut.length){
+			this.waitForResponse(this.timeouts.deal, this.players);
+			this.players.dealNotify(dealsOut);
+		}
+		else{
+			this.continueGame();
+		}
 		break;
 
 	//Находим игрока, делающего первый ход в игре или продолжаем ход
@@ -339,13 +346,27 @@ Game.prototype.doTurn = function(){
 	//Начало конца хода, убираем карты со стола
 	case 'END':
 		this.setNextTurnStage('END_DEAL');
-		this.discard();
+		let discarded = this.cards.discard();
+		if(discarded){
+			this.waitForResponse(this.timeouts.discard, this.players);
+			this.players.completeActionNotify(discarded);
+		}
+		else{
+			this.continueGame();
+		}
 		break;
 
 	//Раздаем карты после окончания хода
 	case 'END_DEAL':
 		this.setNextTurnStage('ENDED');
-		this.dealTillFullHand();
+		let dealsOut = this.cards.dealTillFullHand();
+		if(dealsOut.length){
+			this.waitForResponse(this.timeouts.deal, this.players);
+			this.players.dealNotify(dealsOut);
+		}
+		else{
+			this.continueGame();
+		}
 		break;
 
 	//Конец конца хода
@@ -373,166 +394,6 @@ Game.prototype.doTurn = function(){
 	default:
 		utils.log('ERROR: Invalid turn stage', this.nextTurnStage);
 		break;
-	}
-}
-
-
-
-//MOVE
-//Раздает карты
-Game.prototype.deal = function(dealsIn){
-
-	let dealsOut = [];
-	let cardsById = this.cards.byId;
-
-	for (let di = 0; di < dealsIn.length; di++) {
-
-		let dealInfo = dealsIn[di];
-		let numOfCards = dealInfo.numOfCards;
-		while (numOfCards--) {
-			if(!this.deck.length)
-				break;
-
-			let card = cardsById[this.deck[0]];
-
-			//utils.log(card.id, ':', 'DEAL', card.spot, '=>', dealInfo.pid);
-			this.logAction(card, 'DEAL', card.spot, dealInfo.pid);
-
-			this.hands[dealInfo.pid].push(card.id);
-			card.spot = dealInfo.pid;
-
-			let dealFullInfo = {
-				pid: dealInfo.pid,
-				cardPosition: card.spot,
-				cid: card.id
-			}
-
-			dealsOut.push(dealFullInfo);
-			 
-			this.deck.shift();
-		}
-	}
-	if(dealsOut.length){
-		this.waitForResponse(this.timeouts.deal, this.players);
-		this.players.dealNotify(dealsOut);
-	}
-	else{
-		this.continueGame();
-	}
-}
-
-//MOVE
-//Раздает карты пока у всех не по 6 карт или пока колода не закончится
-Game.prototype.dealTillFullHand = function(){
-	let deals = [];
-	let origAttackers = this.players.origAttackers;
-
-	let sequence = [];
-	for(let oi = 0; oi < origAttackers.length; oi++){
-		let p = origAttackers[oi];
-		if(!~sequence.indexOf(p))
-			sequence.push(p);
-	}
-	if(!~sequence.indexOf(this.players.attacker))
-		sequence.push(this.players.attacker);
-
-	if(this.players.ally && !~sequence.indexOf(this.players.ally))
-		sequence.push(this.players.ally);
-
-	if(!~sequence.indexOf(this.players.defender))
-		sequence.push(this.players.defender);
-
-	for(let si = 0; si < sequence.length; si++){
-		let player = sequence[si];
-		let pid = player.id;
-		let cardsInHand = this.hands[pid].length;
-		if(cardsInHand < this.cards.normalHandSize){
-			let dealInfo = {
-				pid: pid,
-				numOfCards: this.cards.normalHandSize - cardsInHand
-			}
-			deals.push(dealInfo);
-		}
-	}
-
-	if(deals.length){
-		this.deal(deals);
-	}
-	else{
-		this.continueGame();
-	}
-}
-
-//MOVE
-//Раздает начальные руки
-Game.prototype.dealStartingHands = function(){
-	let deals = [];
-
-	for (let cardN = 0; cardN < this.cards.normalHandSize; cardN++) {
-		for(let pi = 0; pi < this.players.length; pi++){
-			let dealInfo = {
-				pid: this.players[pi].id,
-				numOfCards: 1
-			}
-			deals.push(dealInfo);
-		}
-	}
-	this.deal(deals);
-}
-
-//MOVE
-//Сбрасывает карты и оповещает игроков
-Game.prototype.discard = function(){
-
-	let cardsById = this.cards.byId;
-	let action = {
-		type: 'DISCARD',
-		ids: []
-	};
-
-	//Убираем карты со всех позиций на столе
-	for(let fi = 0; fi < this.field.length; fi++){
-
-		let fieldSpot = this.field[fi];
-
-		if(fieldSpot.attack){
-			let card = cardsById[fieldSpot.attack];
-			this.logAction(card, 'DISCARD', card.spot, 'DISCARD_PILE');
-			card.spot = 'DISCARD_PILE';
-
-			action.ids.push(fieldSpot.attack);
-			this.discardPile.push(fieldSpot.attack);
-			fieldSpot.attack = null;
-		}
-
-		if(fieldSpot.defense){
-			let card = cardsById[fieldSpot.defense];
-			this.logAction(card, 'DISCARD', card.spot, 'DISCARD_PILE');
-			card.spot = 'DISCARD_PILE';
-
-			action.ids.push(fieldSpot.defense);
-			this.discardPile.push(fieldSpot.defense);
-			fieldSpot.defense = null;
-		}
-
-	}
-
-	//Если карты были убраны, оповещаем игроков и переходим в фазу раздачи карт игрокам
-	if(action.ids.length){
-
-		//После первого сброса на стол можно класть больше карт
-		if(this.field.fullLength <= this.field.zeroDiscardLength){
-			this.field.fullLength++;
-			utils.log('First discard, field expanded to', this.field.fullLength);
-		}
-
-		this.waitForResponse(this.timeouts.discard, this.players);
-		this.players.completeActionNotify(action);
-	}
-
-	//Иначе раздаем карты и переходим в фазу конца хода
-	else{
-		this.continueGame();
 	}
 }
 
@@ -661,6 +522,12 @@ Game.prototype.recieveResponse = function(player, action){
 	//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
 	if(!playersWorking.length){
 		clearTimeout(this.timer);
+
+		//Останавливаем игру, если игрок отключился
+		if(this.players.getWithFirst('connected',false)){
+			return
+		}
+
 		this.continueGame();
 	}
 }
@@ -708,15 +575,15 @@ Game.prototype.processAction = function(player, incomingAction){
 
 		utils.log(player.name,  str)
 
-		ci = this.hands[player.id].indexOf(action.cid);
 		card = cardsById[action.cid];
+		ci = this.hands[player.id].indexOf(card);
 
 		this.logAction(card, action.type, card.spot, action.spot );
 
 		//Перемещаем карту на стол и убираем карту из руки
 		card.spot = action.spot;
 		this.hands[player.id].splice(ci, 1);
-		fieldSpots[action.spot].attack = action.cid;
+		fieldSpots[action.spot].attack = card;
 
 		//Добавляем информацию о карте в действие
 		action.value = card.value;
@@ -746,15 +613,15 @@ Game.prototype.processAction = function(player, incomingAction){
 
 		utils.log(player.name, 'defends')
 
-		ci = this.hands[player.id].indexOf(action.cid);
 		card = cardsById[action.cid];
+		ci = this.hands[player.id].indexOf(card);
 
 		this.logAction(card, action.type, card.spot, action.spot );
 
 		//Перемещаем карту на стол и убираем карту из руки
 		card.spot = action.spot;
 		this.hands[player.id].splice(ci, 1);
-		fieldSpots[action.spot].defense = action.cid;
+		fieldSpots[action.spot].defense = card;
 
 		//Добавляем информацию о карте в действие
 		action.value = card.value;
@@ -918,19 +785,18 @@ Game.prototype.letAttack = function(player){
 		return;
 	}
 
-	let actions = [];	
-	let cardsById = this.cards.byId;
+	let actions = [];
 
 	//Находим значения карт, которые можно подбрасывать
 	let validValues = [];
 	for(let fi = 0; fi < this.field.length; fi++){
 		let fieldSpot = this.field[fi];
 		if(fieldSpot.attack){
-			let card = cardsById[fieldSpot.attack];
+			let card = fieldSpot.attack;
 			validValues.push(card.value)
 		}
 		if(fieldSpot.defense){
-			let card = cardsById[fieldSpot.defense];
+			let card = fieldSpot.defense;
 			validValues.push(card.value)
 		}
 	}
@@ -942,8 +808,8 @@ Game.prototype.letAttack = function(player){
 
 	//Выбираем подходящие карты из руки атакующего и собираем из них возможные действия
 	for(let ci = 0; ci < hand.length; ci++){
-		let cid = hand[ci];
-		let card = cardsById[cid];
+		let card = hand[ci];
+		let cid = card.id;
 		if(!validValues || ~validValues.indexOf(card.value)){			
 			let action = {
 				type: 'ATTACK',
@@ -1009,8 +875,14 @@ Game.prototype.letDefend = function(player){
 	}
 
 	//Узнаем, можно ли переводить
-	let canTransfer = this.canTransfer && this.hands[this.players.ally && this.players.ally.id || this.players.attacker.id].length > this.field.usedSpots;
+	let canTransfer = 
+		this.canTransfer && 
+		this.hands[
+			this.players.ally && this.players.ally.id || this.players.attacker.id
+		].length > this.field.usedSpots;
+
 	let attackSpot = this.field[this.field.usedSpots];
+
 	if(canTransfer){
 		for(let fi = 0; fi < this.field.length; fi++){
 			let fieldSpot = this.field[fi];
@@ -1022,16 +894,15 @@ Game.prototype.letDefend = function(player){
 	}
 
 	let actions = [];
-	let hand = this.hands[pid];
-	let cardsById = this.cards.byId;	
+	let hand = this.hands[pid];	
 
 	//Создаем список возможных действий защищающегося
 	for(let di = 0; di < defenseSpots.length; di++){
 		let spot = defenseSpots[di].id;
 		for(let ci = 0; ci < hand.length; ci++){
-			let cid = hand[ci];
-			let card = cardsById[cid];
-			let otherCard = cardsById[defenseSpots[di].attack];
+			let card = hand[ci];
+			let cid = card.id;
+			let otherCard = defenseSpots[di].attack;
 
 			//Карты той же масти и большего значения, либо козыри, если битая карта не козырь,
 			//иначе - козырь большего значения
@@ -1112,7 +983,6 @@ Game.prototype.letTake = function(player){
 	//let lastTurnStage = this.turnStage;
 
 	let pid = player.id;
-	let cardsById = this.cards.byId;
 
 	let action = {
 		type: 'TAKE',
@@ -1123,7 +993,7 @@ Game.prototype.letTake = function(player){
 
 		if(fieldSpot.attack){
 
-			let card = cardsById[fieldSpot.attack];
+			let card = fieldSpot.attack;
 			this.logAction(card, action.type, card.spot, pid);
 			card.spot = pid;
 
@@ -1141,7 +1011,7 @@ Game.prototype.letTake = function(player){
 
 		if(fieldSpot.defense){
 
-			let card = cardsById[fieldSpot.defense];
+			let card = fieldSpot.defense;
 			this.logAction(card, action.type, card.spot, pid);
 			card.spot = pid;
 
