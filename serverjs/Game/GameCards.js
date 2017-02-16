@@ -4,7 +4,8 @@
 'use strict';
 
 var utils = require('../utils'),
-	BetterArray = require('../BetterArray.js');
+	BetterArray = require('../BetterArray'),
+	Card = require('./Card');
 
 class GameCards extends BetterArray{
 
@@ -43,14 +44,13 @@ class GameCards extends BetterArray{
 			for(let ci = 0; ci < this.deck.length; ci++){
 
 				let card = this.deck[ci];
-				let newCard = utils.copyObject(card);
+				let newCard = card.info;
 
 				//Игроки знают только о значении карты на дне колоды
 				if(card.spot != 'BOTTOM'){
 					newCard.value = null;
 					newCard.suit = null;			
 				} 
-
 				cardsToSend[pid].push(newCard);
 			}
 
@@ -58,7 +58,7 @@ class GameCards extends BetterArray{
 			for(let ci = 0; ci < hand.length; ci++){
 
 				let card = hand[ci];
-				let newCard = utils.copyObject(card);
+				let newCard = card.info;
 
 				if(card.spot != pid){
 					newCard.value = null;
@@ -74,19 +74,14 @@ class GameCards extends BetterArray{
 				let fieldSpot = this.field[fi];
 				if(fieldSpot.attack){
 					let card = fieldSpot.attack;
-					let newCard = utils.copyObject(card);
+					let newCard = card.info;
 					cardsToSend[pid].push(newCard);
 				}
 				if(fieldSpot.defense){
 					let card = fieldSpot.defense;
-					let newCard = utils.copyObject(card);
+					let newCard = card.info;
 					cardsToSend[pid].push(newCard);
 				}		
-			}
-			for(let ci = 0; ci < cardsToSend[pid].length; ci++){
-				let card = cardsToSend[pid][ci];
-				card.cid = card.id;
-				delete card.id;
 			}
 		}
 
@@ -167,13 +162,7 @@ class GameCards extends BetterArray{
 		for(let vi = 0; vi < this.values.length; vi++){
 
 			for(let si = 0; si < this.numOfSuits; si++){
-				let id = 'card_' + utils.generateId();
-				let card = {
-					id: id,
-					value: this.values[vi],
-					suit: si,
-					spot: 'DECK'
-				}
+				let card = new Card(si, this.values[vi], 'DECK');
 				this.push(card);
 				this.deck.push(card);
 			}		
