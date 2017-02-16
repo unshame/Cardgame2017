@@ -74,9 +74,9 @@ SkinManager.prototype.setSkin = function(skinName){
 	if(!this.skins[skinName])
 		return;
 	this.skin = this.skins[skinName];
-	for(var ci in gameManager.cards){
-		if(gameManager.cards.hasOwnProperty(ci)){
-			var card = gameManager.cards[ci]; 
+	for(var ci in game.cards){
+		if(game.cards.hasOwnProperty(ci)){
+			var card = game.cards[ci]; 
 			card.skin = this.skin;
 			card.applySkin();
 		}
@@ -102,8 +102,8 @@ SkinManager.prototype.setCardback = function(i){
 		return;
 	}
 	this.skin.cardbackFrame = this.skin.cardbackPossibleFrames[i];
-	for(var ci in gameManager.cards){
-		if(gameManager.cards.hasOwnProperty(ci))
-			gameManager.cards[ci].applyCardback();
+	for(var ci in game.cards){
+		if(game.cards.hasOwnProperty(ci))
+			game.cards[ci].applyCardback();
 	}
 }
