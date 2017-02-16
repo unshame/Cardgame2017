@@ -553,7 +553,13 @@ Game.prototype.processAction = function(player, incomingAction){
 
 	//Проверка действия
 	if( !~ai ){
-		utils.log('ERROR: Invalid action', player.id, incomingAction && incomingAction.type, incomingAction, this.validActions);
+		utils.log(
+			'ERROR: Invalid action',
+			player.id,
+			incomingAction && incomingAction.type,
+			incomingAction,
+			this.validActions
+		);
 		return null;
 	}
 

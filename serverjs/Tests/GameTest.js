@@ -1,4 +1,5 @@
-var Game = require('../Game/GameLogic'),
+const
+	Game = require('../Game/GameLogic'),
 	TestBot = require('./TestBot');
 
 function runTest(){

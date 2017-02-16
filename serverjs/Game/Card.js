@@ -1,4 +1,4 @@
-var utils = require('../utils');
+const utils = require('../utils');
 
 class Card{
 	constructor(suit, value, spot){

@@ -11,7 +11,8 @@
 
 'use strict';
 
-var utils = require('../utils'),
+const
+	utils = require('../utils'),
 	BetterArray = require('../BetterArray.js');
 
 class GamePlayers extends BetterArray{

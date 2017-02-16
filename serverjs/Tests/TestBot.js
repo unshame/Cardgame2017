@@ -1,4 +1,5 @@
-var utils = require('../utils'),
+const
+	utils = require('../utils'),
 	Bot = require('../Players/Bot');
 
 var TestBot = function(tester, randomNames){
