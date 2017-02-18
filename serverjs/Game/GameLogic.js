@@ -1044,8 +1044,7 @@ class Game{
 		this.waitForResponse(this.timeouts.take, this.players);
 		this.players.takeNotify(action);
 	}
-
-
+	
 
 	//Записывает действие над картой в лог
 	logAction(card, actionType, from, to){

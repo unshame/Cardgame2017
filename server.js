@@ -2,7 +2,7 @@
  * Запускает сервер
  */
 
-//Node moduls
+//Node modules
 var express = require('express'),
 	http = require('http'),
 	Eureca = require('eureca.io');
