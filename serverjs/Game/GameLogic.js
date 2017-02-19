@@ -173,7 +173,7 @@ class Game{
 		this.skipCounter = 0;
 		this.turnStage = null;
 		this.nextTurnStage = null;	
-		this.playerTaken = false;
+		this.playerTook = false;
 
 		this.players.resetTurn();
 	}
@@ -386,7 +386,7 @@ class Game{
 		case 'ENDED':
 
 			//Если защищающийся брал, сдвигаем айди, по которому будет искаться атакующий
-			if(this.playerTaken)
+			if(this.playerTook)
 				this.players.attacker = this.players.defender;
 
 			let currentAttackerIndex = this.players.findInactive();
@@ -1047,7 +1047,7 @@ class Game{
 
 		}
 
-		this.playerTaken = true;
+		this.playerTook = true;
 		this.setNextTurnStage('END');
 
 		action.pid = pid;
