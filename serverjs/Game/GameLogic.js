@@ -58,12 +58,15 @@ class Game{
 		}
 
 		//Запускаем игру
-		this.reset();
-		this.make();
+		this.resetGame();
+		this.startGame();
 	}
 
+
+	//Методы игры
+
 	//Ресет игры
-	reset(){
+	resetGame(){
 
 		//Свойства игры
 		this.gameNumber++;
@@ -90,7 +93,7 @@ class Game{
 	}
 
 	//Подготовка к игре
-	make(){
+	startGame(){
 
 		utils.log('Game started', this.id, this.gameNumber);
 
@@ -104,8 +107,62 @@ class Game{
 
 		//Начинаем игру
 		this.continueGame();
-
 	}
+
+	//Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч
+	endGame(){
+
+		utils.log('Game ended', this.id, '\n\n');
+		utils.stats.line += 2;
+		
+		let note = {
+			message: 'GAME_ENDED',
+			scores: this.players.scores,
+			results: utils.copyObject(this.gameResult)				 
+		};
+		let actionAccept = {
+			type: 'ACCEPT'
+		}
+		let actionDecline = {
+			type: 'DECLINE'
+		}
+
+		this.players.resetGame();
+		this.resetGame();
+		
+		this.validActions.push(actionAccept);
+		this.validActions.push(actionDecline);
+
+		this.waitForResponse(this.timeouts.gameEnd, this.players);
+		this.players.notify(note, this.validActions.slice());
+	}
+
+	//Перезапускает игру 
+	rematchGame(voteResults){
+		utils.log('Rematch');
+
+		//Оповещаем игроков о результате голосования
+		
+		this.players.notify(voteResults);
+
+		this.validActions = [];
+		this.storedActions = [];
+
+		this.startGame();
+	}
+
+	//Возвращает игру в лобби
+	backToLobby(voteResults){
+		//Оповещаем игроков о результате голосования
+		this.players.notify(voteResults);
+
+		utils.log('No rematch');
+
+		//TODO: оповестить лобби
+	}
+
+
+	//Методы хода
 
 	//Сбрасываем счетчики и стадию игры
 	resetTurn(){
@@ -144,58 +201,6 @@ class Game{
 
 		this.setNextTurnStage('INITIAL_ATTACK');	
 		this.continueGame();
-	}
-
-	//Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч
-	endGame(){
-
-		utils.log('Game ended', this.id, '\n\n');
-		utils.stats.line += 2;
-		
-		let note = {
-			message: 'GAME_ENDED',
-			scores: this.players.scores,
-			results: utils.copyObject(this.gameResult)				 
-		};
-		let actionAccept = {
-			type: 'ACCEPT'
-		}
-		let actionDecline = {
-			type: 'DECLINE'
-		}
-
-		this.players.resetGame();
-		this.reset();
-		
-		this.validActions.push(actionAccept);
-		this.validActions.push(actionDecline);
-
-		this.waitForResponse(this.timeouts.gameEnd, this.players);
-		this.players.notify(note, this.validActions.slice());
-	}
-
-	//Перезапускает игру 
-	rematchGame(voteResults){
-		utils.log('Rematch');
-
-		//Оповещаем игроков о результате голосования
-		
-		this.players.notify(voteResults);
-
-		this.validActions = [];
-		this.storedActions = [];
-
-		this.make();
-	}
-
-	//Возвращает игру в лобби
-	backToLobby(voteResults){
-		//Оповещаем игроков о результате голосования
-		this.players.notify(voteResults);
-
-		utils.log('No rematch');
-
-		//TODO: оповестить лобби
 	}
 
 
