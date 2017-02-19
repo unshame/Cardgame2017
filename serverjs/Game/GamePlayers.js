@@ -376,7 +376,7 @@ class GamePlayers extends BetterArray{
 			}
 		}
 		catch(e){
-			utils.log('ERROR: Couldn\'t send action to', e);
+			utils.log('ERROR: Couldn\'t send action', e);
 		}
 	}
 
