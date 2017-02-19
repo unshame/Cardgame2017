@@ -76,6 +76,9 @@ class Game{
 			loser: null
 		}
 
+		//Ресет игроков
+		this.players.resetGame();
+
 		//Ресет карт
 		this.cards.reset();
 
@@ -127,7 +130,6 @@ class Game{
 			type: 'DECLINE'
 		}
 
-		this.players.resetGame();
 		this.resetGame();
 		
 		this.validActions.push(actionAccept);
@@ -258,13 +260,14 @@ class Game{
 		case 'STARTING':
 			this.gameState = 'STARTED';
 			let dealsOut = this.cards.dealStartingHands();
-			if(dealsOut.length){
+
+			if(dealsOut && dealsOut.length){
 				this.waitForResponse(this.timeouts.deal, this.players);
 				this.players.dealNotify(dealsOut);
 			}
-			else{
-				this.continueGame();
-			}
+			else
+				utils.log('ERROR: Couldn\'t deal at the start of the game');
+
 			break;
 
 		//Находим игрока, делающего первый ход в игре или продолжаем ход
@@ -279,9 +282,12 @@ class Game{
 					this.players.minTrumpCardsNotify(minTCards, minTCard.pid);
 				}
 
-				//Иначе продолжаем игру
+				//Иначе сообщаем об отсутствии козырей в руках
 				else{
-					this.continueGame();
+					this.waitForResponse(this.timeouts.trumpCards, this.players);
+					this.players.notify({
+						message: 'NO_TRUMP_CARDS'
+					});
 				}
 			}
 			else{
@@ -516,6 +522,7 @@ class Game{
 							message: 'INVALID_ACTION',
 							action: action
 						},
+						null,
 						[player]
 					)
 				}
