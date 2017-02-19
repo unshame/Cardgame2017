@@ -858,7 +858,6 @@ class Game{
 			console.log(e);
 			utils.log('ERROR: Couldn\'t send possible actions to', player);
 		}
-		return
 	}
 
 	//Отправляет защищающемуся возможные ходы
