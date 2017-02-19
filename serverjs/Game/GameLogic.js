@@ -281,7 +281,6 @@ class Game{
 					this.waitForResponse(this.timeouts.trumpCards, this.players);
 					this.players.minTrumpCardsNotify(minTCards, minTCard.pid);
 				}
-
 				//Иначе сообщаем об отсутствии козырей в руках
 				else{
 					this.waitForResponse(this.timeouts.trumpCards, this.players);
@@ -290,9 +289,8 @@ class Game{
 					});
 				}
 			}
-			else{
+			else
 				this.doTurn();	
-			}
 			break;
 
 		default:
