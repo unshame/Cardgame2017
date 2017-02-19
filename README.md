@@ -9,10 +9,8 @@
 2. Клонировать репозиторий в GitShell (идет с GitHub Desktop): git clone https://github.com/unshame/Cardgame2017.git  
 3. Установить node.js https://nodejs.org/en/  
 4. Установить необходимые библиотеки через Node.js command prompt в папку с репозиторием:  
-  * cd директорияУстановки  
-  * npm install express  
-  * npm install engine.io  
-  * npm install eureca.io  
+  * cd директорияУстановкиРепозитория  
+  * npm i
 5. Запустуть сервер через Node.js command prompt: 
   * node server.js  
 7. В браузере открыть localhost:5000
