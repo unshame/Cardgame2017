@@ -59,7 +59,6 @@ class Game{
 
 		//Запускаем игру
 		this.reset();
-		this.gameState = 'SHOULD_START';
 		this.make();
 	}
 
@@ -93,7 +92,9 @@ class Game{
 	//Подготовка к игре
 	make(){
 
-		utils.log('Game started', this.id, this.gameNumber)
+		utils.log('Game started', this.id, this.gameNumber);
+
+		this.gameState = 'SHOULD_START';
 
 		//Перемешиваем игроков
 		this.players.shuffle();
@@ -101,18 +102,9 @@ class Game{
 		//Создаем карты, поля и колоду
 		this.cards.make();
 
-		//Сообщаем игрокам о колоде и друг друге и запускаем игру
-		this.waitForResponse(this.timeouts.gameStart, this.players);
-		this.players.gameStateNotify(
-			this.players,
-			{
-				cards: true,
-				players: true,
-				suit: false,
-				discard: false
-			}
-		);
-		// --> continueGame()
+		//Начинаем игру
+		this.continueGame();
+
 	}
 
 	//Сбрасываем счетчики и стадию игры
@@ -192,7 +184,6 @@ class Game{
 
 		this.validActions = [];
 		this.storedActions = [];
-		this.gameState = 'SHOULD_START';
 
 		this.make();
 	}
@@ -243,8 +234,23 @@ class Game{
 
 			break;
 
+		//Сообщаем игрокам о колоде и друг друге
+		case 'SHOULD_START':		
+			this.gameState = 'STARTING';
+			this.waitForResponse(this.timeouts.gameStart, this.players);
+			this.players.gameStateNotify(
+				this.players,
+				{
+					cards: true,
+					players: true,
+					suit: false,
+					discard: false
+				}
+			);
+			break;
+
 		//Раздаем карты в начале игры
-		case 'SHOULD_START':
+		case 'STARTING':
 			this.gameState = 'STARTED';
 			let dealsOut = this.cards.dealStartingHands();
 			if(dealsOut.length){
@@ -1044,7 +1050,7 @@ class Game{
 		this.waitForResponse(this.timeouts.take, this.players);
 		this.players.takeNotify(action);
 	}
-	
+
 
 	//Записывает действие над картой в лог
 	logAction(card, actionType, from, to){
