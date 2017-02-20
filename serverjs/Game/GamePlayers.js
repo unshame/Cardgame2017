@@ -130,12 +130,16 @@ class GamePlayers extends BetterArray{
 	 * @value * - с чем сравнивать статус
 	 * @sort Boolean - нужно ли сортировать игроков по значению статуса
 	 * Сравнение через ==, так что можно передавать true и любое трушное значение подойдет
+	 * @players - опционально можно указать среди каких игроков выбирать
 	 */
-	getWith(status, value, sort){
+	getWith(status, value, sort, players){
+		if(!players)
+			players = this;
+
 		let results = [];
 
-		for(let i = 0; i < this.length; i++){
-			let p = this[i];
+		for(let i = 0; i < players.length; i++){
+			let p = players[i];
 			if(p[status] == value){
 				results.push(p);
 			}
@@ -156,11 +160,14 @@ class GamePlayers extends BetterArray{
 	}
 
 	//Тоже, что и getWith, только возвращается первый результат
-	getWithFirst(status, value){
+	getWithFirst(status, value, players){
+		if(!players)
+			players = this;
+
 		let result = null;
 
-		for(let i = 0; i < this.length; i++){
-			let p = this[i];
+		for(let i = 0; i < players.length; i++){
+			let p = players[i];
 			if(p[status] == value){
 				result = p;
 			}
@@ -621,6 +628,7 @@ class GamePlayers extends BetterArray{
 	notEnoughActive(){
 
 		let activePlayers = this.active;
+		let humanActivePlayer = this.getWithFirst('type', 'player', activePlayers);
 
 		//Если осталось меньше двух игроков, завершаем игру
 		if(activePlayers.length < 2){		
@@ -641,6 +649,10 @@ class GamePlayers extends BetterArray{
 				utils.log('Draw');
 			}
 
+			return true;
+		}
+		else if(!humanActivePlayer && !this.game.test){
+			utils.log('All players are out');
 			return true;
 		}
 		return false
