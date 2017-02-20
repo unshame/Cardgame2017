@@ -68,7 +68,7 @@ playState.createApp = function(){
 	//app.stage.disableVisibilityChange  = true;
 	
 
-	app.background = app.add.tileSprite(0, 0, app.screenWidth, app.screenHeight, 'assault');
+	app.background = app.add.tileSprite(0, 0, app.screenWidth, app.screenHeight, 'blue');
 
 	game.cardsGroup = app.add.group();
 
