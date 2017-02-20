@@ -17,10 +17,12 @@ const
 	GamePlayers = require('./GamePlayers');
 
 class Game{
-	constructor(players, canTransfer){
+	constructor(players, canTransfer, isTest){
 		if(!players || !players.length){
 			utils.log('ERROR: Can\'t start a game without players');
 		}
+
+		this.test = isTest || false;
 
 		//Генерируем айди игры
 		this.id = 'game_' + utils.generateId();

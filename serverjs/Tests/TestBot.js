@@ -95,7 +95,7 @@ class TestBot extends Bot{
 						return p.name
 					}),
 					'=>',
-					game.activePlayers.map((p) => {
+					activePlayers.map((p) => {
 						return p.name
 					})
 				);
@@ -117,6 +117,6 @@ class TestBot extends Bot{
 		}
 		super.recieveNotification(note, actions);
 	}
-	
+
 }
 module.exports = TestBot;

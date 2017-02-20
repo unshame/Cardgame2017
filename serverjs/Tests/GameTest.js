@@ -3,7 +3,7 @@ const
 	TestBot = require('./TestBot');
 
 function runTest(){
-	console.log('Testing transfering...');
+	console.log('Testing...');
 	var bots = [];
 	var randomNames = ['bot1', 'bot2', 'bot3', 'bot4', 'bot5'];
 	var tester = {
@@ -12,7 +12,7 @@ function runTest(){
 	for(var i = 0; i < 5; i++){
 		bots.push(new TestBot(tester,randomNames))
 	}
-	var game = new Game(bots, true);
+	var game = new Game(bots, true, true);
 	setTimeout(() => {
 		console.log('Tests finished...');
 		tester.running = false;
