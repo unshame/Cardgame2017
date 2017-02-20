@@ -7,6 +7,7 @@ class TestBot extends Bot{
 	constructor(tester, randomNames){
 		super(randomNames);
 		this.tester = tester;
+		this.tester.transfers = 0;
 		this.tests = 0;
 		this.failedTests = 0;
 	}
@@ -79,6 +80,19 @@ class TestBot extends Bot{
 
 			this.sendResponse(action);
 
+			//Тест сохранения исходных атакующих
+			this.tester.transfers++;
+			let numOfTransfers = this.tester.transfers;
+			let numOfOriginalAttackers = this.game.players.originalAttackers.length;
+			if(numOfTransfers != numOfOriginalAttackers){
+				console.log('Test %s (transfer attacker saving) failed on %s', this.tests, this.name);
+				console.log('Transfers: %d but saved attackers: %d', numOfTransfers, numOfOriginalAttackers)
+				console.log('See line %s in log.txt for context', lineNum + 1);
+				console.log('----------------\n');
+				this.failedTests++;
+			}
+
+			//Тест смены ролей игроков при переводе (продолжение)
 			var result = [
 				game.players.attacker.name,
 				game.players.defender.name
@@ -110,10 +124,16 @@ class TestBot extends Bot{
 	}
 
 	recieveNotification(note, actions){
-		if(note.message == 'GAME_ENDED'){
+		switch(note.message){
+
+		case 'GAME_ENDED':
 			//console.log(note.message);
 			this.tester.bots = this.game.players;
-			//console.log(this.tester.bots.map(b => b.name))		
+			//console.log(this.tester.bots.map(b => b.name))
+			break;
+
+		case 'TURN_ENDED':
+			this.tester.transfers = 0;
 		}
 		super.recieveNotification(note, actions);
 	}
