@@ -53,7 +53,7 @@ class GamePlayers extends BetterArray{
 	}
 
 
-	//Возвращает статус по умолчанию
+	//Устанавливает статус по умолчанию игроку
 	setStatuses(p, status){
 		for(let key in status){
 			if(status.hasOwnProperty(key))

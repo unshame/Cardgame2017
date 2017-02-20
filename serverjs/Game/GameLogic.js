@@ -180,6 +180,7 @@ class Game{
 		this.playerTook = false;
 
 		this.players.resetTurn();
+		this.players.notify({message: 'TURN_ENDED'});
 	}
 
 	//Начинает ход
