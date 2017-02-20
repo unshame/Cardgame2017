@@ -51,7 +51,7 @@ class Game{
 		this.canTransfer = canTransfer;
 
 		//Номер игры
-		this.gameNumber = -1;
+		this.index = -1;
 
 		//Время ожидания сервера
 		this.timeouts = {
@@ -78,9 +78,9 @@ class Game{
 	reset(){
 
 		//Свойства игры
-		this.gameNumber++;
+		this.index++;
 		this.states.current = 'NOT_STARTED';
-		this.gameResult = {
+		this.result = {
 			winners: [],
 			loser: null
 		};
@@ -106,7 +106,7 @@ class Game{
 	//Подготовка к игре
 	start(){
 
-		utils.log('Game started', this.id, this.gameNumber);
+		utils.log('Game started', this.id, this.index);
 
 		this.states.current = 'SHOULD_START';
 
@@ -129,7 +129,7 @@ class Game{
 		let note = {
 			message: 'GAME_ENDED',
 			scores: this.players.scores,
-			results: utils.copyObject(this.gameResult)				 
+			results: utils.copyObject(this.result)				 
 		};
 		let actionAccept = {
 			type: 'ACCEPT'

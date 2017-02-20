@@ -504,7 +504,7 @@ class GamePlayers extends BetterArray{
 					let p = newInactivePlayers[i];
 
 					p.score.wins++;
-					game.gameResult.winners.push(p.id);
+					game.result.winners.push(p.id);
 
 					utils.log(p.name, 'is a winner');
 				}
@@ -628,7 +628,7 @@ class GamePlayers extends BetterArray{
 				let p = activePlayers[0];
 				let pid = p.id;
 
-				this.game.gameResult.loser = pid;
+				this.game.result.loser = pid;
 				p.score.losses++;
 				p.score.cardsWhenLost += this.game.hands[pid].length;
 
