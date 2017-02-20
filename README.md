@@ -45,6 +45,9 @@
 * UI  
 * Chat  
 
+## Диаграма устройства сервера
+![Server UML](https://rawgit.com/unshame/Cardgame2017/c6ab2fde39a4976129a52fbc281bee1fbc5ce87e/docs/ServerUML.svg)
+
 ## Что сделано serverside:  
 * Конструктор игры (Game)  
 
