@@ -98,13 +98,13 @@ class GameCards extends BetterArray{
 		//Колода (id карт)
 		this.deck = new BetterArray();
 		
-		//Стопка сброса (id карт)
+		//Стопка сброса 
 		this.discardPile = [];
 		
-		//Руки игроков (объекты с id карт по id игроков)		
+		//Руки игроков 
 		this.hands = {};			
 
-		//Поля (стол) (объекты с id карт)
+		//Поля (стол) 
 		this.field.length = 0;
 		this.field.length = this.field.maxLength;		
 		this.field.fullLength = this.field.zeroDiscardLength;
