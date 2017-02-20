@@ -20,7 +20,7 @@ class TestBot extends Bot{
 			defenseIndex = types.indexOf('DEFENSE');
 		var lineNum = utils.stats.line;
 
-		if(this.tester.running && game.turnStage != 'FOLLOWUP' && game.nextTurnStage == 'DEFENSE' && ~attackIndex && !~defenseIndex){
+		if(this.tester.running && game.turnStages.current != 'FOLLOWUP' && game.turnStages.next == 'DEFENSE' && ~attackIndex && !~defenseIndex){
 			var defenseSpots = 0;
 			this.tests++;
 			for(var fi = 0; fi < game.field.length; fi++){
@@ -42,7 +42,7 @@ class TestBot extends Bot{
 		}
 
 		//Тесты перевода
-		if(this.tester.running && game.turnStage == 'DEFENSE' && ~attackIndex){		
+		if(this.tester.running && game.turnStages.current == 'DEFENSE' && ~attackIndex){		
 			var action = actions[attackIndex];
 
 			//Тест перевода игроку, у которого нет достаточного кол-ва карт, чтобы отбиться

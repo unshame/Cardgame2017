@@ -46,7 +46,7 @@ class GamePlayers extends BetterArray{
 			wins: 0,
 			losses: 0,
 			cardsWhenLost: 0
-		}
+		};
 		p.working = false;
 		p.active = true;
 		super.push(p);
@@ -154,13 +154,13 @@ class GamePlayers extends BetterArray{
 			results.sort(
 				(a, b) => {
 					if(a[status] == b[status])
-						return 0
+						return 0;
 					else if(a[status] > b[status])
-						return 1
+						return 1;
 					else
 						return -1;
 				}
-			)
+			);
 		}
 		return results;
 	}
@@ -180,7 +180,7 @@ class GamePlayers extends BetterArray{
 			this.set('active', true, players);
 	}
 	setActive(players){
-		this.set('active', true, players)
+		this.set('active', true, players);
 	}
 
 	//Неактивные
@@ -193,7 +193,7 @@ class GamePlayers extends BetterArray{
 			this.set('active', false, players);
 	}
 	setInactive(players){
-		this.set('active', false, players)
+		this.set('active', false, players);
 	}
 
 
@@ -207,7 +207,7 @@ class GamePlayers extends BetterArray{
 			this.set('working', true, players);
 	}
 	setWorking(players){
-		this.set('working', true, players)
+		this.set('working', true, players);
 	}
 
 	//Атакующие до перевода
@@ -243,7 +243,7 @@ class GamePlayers extends BetterArray{
 	//РОЛИ
 
 	getWithRole(role){
-		return this.getWithFirst('role', role)
+		return this.getWithFirst('role', role);
 	}
 
 	setRole(player, role){
@@ -327,7 +327,7 @@ class GamePlayers extends BetterArray{
 			}
 		}
 		catch(e){
-			utils.log('ERROR: Couldn\' notify about opponents', e)
+			utils.log('ERROR: Couldn\' notify about opponents', e);
 		}
 	}
 
@@ -347,7 +347,7 @@ class GamePlayers extends BetterArray{
 					dealsToSend[di] = {
 						pid: deal.pid,
 						cid: deal.cid
-					}
+					};
 
 					//Игроки знают только о значении своих карт
 					if(deal.pid == p.id){
@@ -380,7 +380,7 @@ class GamePlayers extends BetterArray{
 	//Оповещает игроков о минимальных козырях
 	minTrumpCardsNotify(cards, minCardPid){
 		for(let pi = 0; pi < this.length; pi++){
-			this[pi].recieveMinTrumpCards(cards, minCardPid)
+			this[pi].recieveMinTrumpCards(cards, minCardPid);
 		}	
 	}
 
@@ -410,7 +410,7 @@ class GamePlayers extends BetterArray{
 			else{
 				newAction = action;
 			}
-			p.recieveCompleteAction(newAction)
+			p.recieveCompleteAction(newAction);
 		}
 	}
 
@@ -466,12 +466,12 @@ class GamePlayers extends BetterArray{
 
 					//Если предыдущий ходящий был сдвинут, переставляем индекс на его новую позицию				
 					if(~newai)
-						ai = newai
+						ai = newai;
 
 					//Если предыдущий ходящий вышел из игры и он был последним в списке,
 					//переставляем индекс предыдущего ходящего в конец измененного списка
 					else if(!activePlayers[ai])
-						ai = activePlayers.length - 1
+						ai = activePlayers.length - 1;
 					else
 						ai--;
 				}
@@ -522,14 +522,13 @@ class GamePlayers extends BetterArray{
 	findToGoFirst(){
 
 		const game = this.game;
-		let cardsById = game.cards.byId;
 		let activePlayers = this.active;
 
 		let minTCards = [],
 			minTCard = null;
 
 		//Находим минимальный козырь в каждой руке
-		for(let pi in this){
+		for(let pi = 0; pi < this.length; pi++){
 
 			let pid = this[pi].id;
 			if(!game.hands.hasOwnProperty(pid))
@@ -580,7 +579,7 @@ class GamePlayers extends BetterArray{
 
 			this.findToGoNext(pi - 1);
 					
-			utils.log('Player to go first: ', this.attacker.name)	
+			utils.log('Player to go first: ', this.attacker.name);
 		}
 
 		//В противном случае, берем первого попавшегося игрока и начинаем ход
@@ -588,7 +587,7 @@ class GamePlayers extends BetterArray{
 			this.attacker = this[0];
 			this.defender = this[1];
 			if(this.length > 2)
-				this.ally = this[2]
+				this.ally = this[2];
 			else
 				this.ally = null;
 		}
@@ -607,7 +606,7 @@ class GamePlayers extends BetterArray{
 			if(i >= activePlayers.length)
 				i = 0;
 			involved.push(activePlayers[i]);
-			i++
+			i++;
 		}
 		this.attacker = involved[0];
 		this.defender = involved[1];
@@ -645,9 +644,9 @@ class GamePlayers extends BetterArray{
 			utils.log('All players are out');
 			return true;
 		}
-		return false
+		return false;
 	}
 
 }
 
-module.exports = GamePlayers
+module.exports = GamePlayers;

@@ -5,7 +5,7 @@
  * Отправляет информацию игрокам через экземпляры игроков (Player) и группу игроков (GamePlayers)
  * После каждого отправления ожидает ответа от игроков (waitForResponse)
  * После ответа игроков (recieveResponse) или по истечении времени (setResponseTimer)
- * автоматически продолжает игру (continueGame)
+ * автоматически продолжает игру (continue)
  */
 
 'use strict';
@@ -14,7 +14,10 @@ const
 	utils = require('../utils'),
 	Bot = require('../Players/Bot'),
 	GameCards = require('./GameCards'),
-	GamePlayers = require('./GamePlayers');
+	GamePlayers = require('./GamePlayers'),
+	GameStates = require('./GameStates'),
+	GameTurnStages = require('./GameTurnStages'),
+	GameReactions = require('./GameReactions');
 
 class Game{
 	constructor(players, canTransfer, isTest){
@@ -26,6 +29,10 @@ class Game{
 
 		//Генерируем айди игры
 		this.id = 'game_' + utils.generateId();
+
+		this.states = new GameStates(this);
+		this.turnStages = new GameTurnStages(this);
+		this.reactions = new GameReactions();
 
 		//Сохраняем ссылки на игроков локально
 		if(players.length < 2){
@@ -57,26 +64,26 @@ class Game{
 			actionComplete: 20,
 			actionAttack: 15,
 			actionDefend: 15
-		}
+		};
 
 		//Запускаем игру
-		this.resetGame();
-		this.startGame();
+		this.reset();
+		this.start();
 	}
 
 
 	//Методы игры
 
 	//Ресет игры
-	resetGame(){
+	reset(){
 
 		//Свойства игры
 		this.gameNumber++;
-		this.gameState = 'NOT_STARTED';
+		this.states.current = 'NOT_STARTED';
 		this.gameResult = {
 			winners: [],
 			loser: null
-		}
+		};
 
 		//Ресет игроков
 		this.players.resetGame();
@@ -93,16 +100,15 @@ class Game{
 
 		//Свойства хода
 		this.turnNumber = 1;
-		this.nextTurnStage = null;
-		this.turnStage = null;
+		this.turnStages.next = 'DEFAULT';
 	}
 
 	//Подготовка к игре
-	startGame(){
+	start(){
 
 		utils.log('Game started', this.id, this.gameNumber);
 
-		this.gameState = 'SHOULD_START';
+		this.states.current = 'SHOULD_START';
 
 		//Перемешиваем игроков
 		this.players.shuffle();
@@ -111,11 +117,11 @@ class Game{
 		this.cards.make();
 
 		//Начинаем игру
-		this.continueGame();
+		this.continue();
 	}
 
 	//Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч
-	endGame(){
+	end(){
 
 		utils.log('Game ended', this.id, '\n\n');
 		utils.stats.line += 2;
@@ -127,12 +133,12 @@ class Game{
 		};
 		let actionAccept = {
 			type: 'ACCEPT'
-		}
+		};
 		let actionDecline = {
 			type: 'DECLINE'
-		}
+		};
 
-		this.resetGame();
+		this.reset();
 		
 		this.validActions.push(actionAccept);
 		this.validActions.push(actionDecline);
@@ -142,7 +148,7 @@ class Game{
 	}
 
 	//Перезапускает игру 
-	rematchGame(voteResults){
+	rematch(voteResults){
 		utils.log('Rematch');
 
 		//Оповещаем игроков о результате голосования
@@ -152,7 +158,7 @@ class Game{
 		this.validActions = [];
 		this.storedActions = [];
 
-		this.startGame();
+		this.start();
 	}
 
 	//Возвращает игру в лобби
@@ -175,8 +181,8 @@ class Game{
 		
 		this.field.usedSpots = 0;
 		this.skipCounter = 0;
-		this.turnStage = null;
-		this.nextTurnStage = null;	
+		this.turnStages.current = null;
+		this.turnStages.next = 'DEFAULT';	
 		this.playerTook = false;
 
 		this.players.resetTurn();
@@ -205,7 +211,7 @@ class Game{
 		this.turnNumber++;	
 
 		this.setNextTurnStage('INITIAL_ATTACK');	
-		this.continueGame();
+		this.continue();
 	}
 
 
@@ -215,205 +221,36 @@ class Game{
 	//INITIAL_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> ... ->
 	//SUPPORT -> DEFENSE -> ATTACK -> DEFENSE -> ... -> FOLLOWUP -> DEFENSE -> END -> END_DEAL -> ENDED
 	setNextTurnStage(stage){
-		this.turnStage = this.nextTurnStage;
-		this.nextTurnStage = stage;
+		this.turnStages.current = this.turnStages.next;
+		this.turnStages.next = stage;
 	}
 
 	//Выбирает следующую стадию игры
-	continueGame(){
+	continue(){
 
 		/*this.players.notify({
-			gameState: this.gameState,
-			nextTurnStage: this.nextTurnStage
+			states.current: this.states.current,
+			turnStages.next: this.turnStages.next
 		})*/
 
-		switch(this.gameState){
-
-		//Проверяем, нужно ли перезапускать игру
-		case 'NOT_STARTED':
-			//Проверяем результаты голосования
-			let voteResults = this.checkStoredActions();
-
-			//Если голосов хватает, запускаем игру
-			if(voteResults.successful)
-				this.rematchGame(voteResults)
-
-			//Иначе, не запускаем игру
-			else
-				this.backToLobby(voteResults);	
-
-			break;
-
-		//Сообщаем игрокам о колоде и друг друге
-		case 'SHOULD_START':		
-			this.gameState = 'STARTING';
-			this.waitForResponse(this.timeouts.gameStart, this.players);
-			this.players.gameStateNotify(
-				this.players,
-				{
-					cards: true,
-					players: true,
-					suit: false,
-					discard: false
-				}
-			);
-			break;
-
-		//Раздаем карты в начале игры
-		case 'STARTING':
-			this.gameState = 'STARTED';
-			let dealsOut = this.cards.dealStartingHands();
-
-			if(dealsOut && dealsOut.length){
-				this.waitForResponse(this.timeouts.deal, this.players);
-				this.players.dealNotify(dealsOut);
-			}
-			else
-				utils.log('ERROR: Couldn\'t deal at the start of the game');
-
-			break;
-
-		//Находим игрока, делающего первый ход в игре или продолжаем ход
-		case 'STARTED':
-			if(!this.players.attacker){
-
-				let [minTCards, minTCard] = this.players.findToGoFirst();	
-
-				//Сообщаем игрокам о минимальных козырях
-				if(minTCard){				
-					this.waitForResponse(this.timeouts.trumpCards, this.players);
-					this.players.minTrumpCardsNotify(minTCards, minTCard.pid);
-				}
-				//Иначе сообщаем об отсутствии козырей в руках
-				else{
-					this.waitForResponse(this.timeouts.trumpCards, this.players);
-					this.players.notify({
-						message: 'NO_TRUMP_CARDS'
-					});
-				}
-			}
-			else
-				this.doTurn();	
-			break;
-
-		default:
-			utils.log('ERROR: Invalid game state', this.gameState);
-			break;
+		let state = this.states[this.states.current];
+		if(!state){
+			utils.log('ERROR: invalid game state', this.states.current);
+			return;
 		}
+		state.call(this);
 	}
 
 	//Выбирает следующую стадию хода
 	doTurn(){
 
 		//Стадии хода
-		switch(this.nextTurnStage){
-
-		//Начинаем ход
-		case null:
-			this.startTurn();
-			//Turn stage: INITIAL_ATTACK
-			break;
-
-		//Первая атака
-		case 'INITIAL_ATTACK': 
-			this.letAttack(this.players.attacker);
-			//Turn stage: DEFENSE
-			break;
-
-		//Атакующий игрок атакует повторно
-		case 'REPEATING_ATTACK':
-			this.letAttack(this.players.attacker);
-			//Turn stage: DEFENSE
-			break;
-
-		//Атакующий игрок атакует после помогающего игрока
-		case 'ATTACK':
-			this.letAttack(this.players.attacker);
-			//Turn stage: DEFENSE
-			break;
-
-		//Помогающий игрок атакует
-		case 'SUPPORT':
-
-			//Debug
-			if(!this.players.ally)
-				utils.log('ERROR: No ally assigned, but turn stage is SUPPORT');
-
-			this.letAttack(this.players.ally || this.players.attacker);
-			//Turn stage: DEFENSE
-			break;
-
-		//Подкладывание карт в догонку
-		case 'FOLLOWUP':
-			this.letAttack(!this.skipCounter ? this.players.attacker : (this.players.ally || this.players.attacker));
-			//Turn stage: DEFENSE
-			break;
-
-		//Защищающийся игрок ходит
-		case 'DEFENSE':
-
-			//Если мы были в стадии подкидывания в догонку, передаем все карты со стола
-			//защищающемуся и сообщаем всем игрокам об этом
-			if(this.turnStage == 'FOLLOWUP')
-				this.letTake(this.players.defender);
-			//Иначе даем защищаться
-			else
-				this.letDefend(this.players.defender);
-			//Turn stage: REPEATING_ATTACK, ATTACK, SUPPORT, END
-			break;
-
-		//Начало конца хода, убираем карты со стола
-		case 'END':
-			this.setNextTurnStage('END_DEAL');
-			let discarded = this.cards.discard();
-			if(discarded){
-				this.waitForResponse(this.timeouts.discard, this.players);
-				this.players.completeActionNotify(discarded);
-			}
-			else{
-				this.continueGame();
-			}
-			break;
-
-		//Раздаем карты после окончания хода
-		case 'END_DEAL':
-			this.setNextTurnStage('ENDED');
-			let dealsOut = this.cards.dealTillFullHand();
-			if(dealsOut.length){
-				this.waitForResponse(this.timeouts.deal, this.players);
-				this.players.dealNotify(dealsOut);
-			}
-			else{
-				this.continueGame();
-			}
-			break;
-
-		//Конец конца хода
-		//находим следующего игрока, ресетим ход и проверяем, закончилась ли игра
-		case 'ENDED':
-
-			//Если защищающийся брал, сдвигаем айди, по которому будет искаться атакующий
-			if(this.playerTook)
-				this.players.attacker = this.players.defender;
-
-			let currentAttackerIndex = this.players.findInactive();
-			this.resetTurn();
-			//Turn stage: null
-
-			if(!this.deck.length && this.players.notEnoughActive()){
-				this.endGame();
-				return
-			}
-
-			this.players.findToGoNext(currentAttackerIndex);
-			this.continueGame();
-			break;
-
-		//Debug
-		default:
-			utils.log('ERROR: Invalid turn stage', this.nextTurnStage);
-			break;
+		let turnStage = this.turnStages[this.turnStages.next];
+		if(!turnStage){
+			utils.log('ERROR: Invalid turn stage', this.turnStages.next);
+			return;
 		}
+		turnStage.call(this);
 	}
 
 
@@ -423,7 +260,7 @@ class Game{
 	waitForResponse(time, players){
 
 		this.players.working = players;
-		this.setResponseTimer(time)
+		this.setResponseTimer(time);
 	}
 
 	//Таймер ожидания ответа игроков 
@@ -444,13 +281,13 @@ class Game{
 
 
 			//Если есть действия, выполняем первое попавшееся действие
-			if(this.validActions.length && this.gameState == 'STARTED'){
+			if(this.validActions.length && this.states.current == 'STARTED'){
 				let actionIndex = 0;
 				for(let ai = 0; ai < this.validActions.length; ai++){
 					let action = this.validActions[ai];
 					if(action.type == 'SKIP' || action.type == 'TAKE'){
 						actionIndex = ai;
-						break
+						break;
 					}
 				}
 
@@ -472,10 +309,10 @@ class Game{
 			else{
 				this.players.working = [];
 				this.validActions = [];
-				this.continueGame();
-			}		
+				this.continue();
+			}	
 
-		}, time * 1000) //TODO: заменить на 1000 в финальной версии
+		}, time * 1000); //TODO: заменить на 1000 в финальной версии
 	}
 
 	//Получает ответ от игрока
@@ -486,10 +323,10 @@ class Game{
 		let pi = playersWorking.indexOf(player);
 		if(!~pi){
 			utils.log('ERROR:', player.name, 'Late or uncalled response');
-			return
+			return;
 		}
 		if(this.validActions.length && !action){
-			utils.log('ERROR: Wating for action but no action recieved')
+			utils.log('ERROR: Wating for action but no action recieved');
 			return;
 		}
 
@@ -500,7 +337,7 @@ class Game{
 			let outgoingAction;
 
 			//Во время игры один игрок действует за раз
-			if(this.gameState == 'STARTED'){
+			if(this.states.current == 'STARTED'){
 
 				outgoingAction = this.processAction(player, action);
 
@@ -525,7 +362,7 @@ class Game{
 						},
 						null,
 						[player]
-					)
+					);
 				}
 				return;			
 			}
@@ -545,17 +382,15 @@ class Game{
 
 			//Останавливаем игру, если игрок отключился
 			if(this.players.getWithFirst('connected',false)){
-				return
+				return;
 			}
 
-			this.continueGame();
+			this.continue();
 		}
 	}
 
 	//Обрабатывает полученное от игрока действие, возвращает исходящее действие
 	processAction(player, incomingAction){
-
-		let activePlayers = this.players.active;
 
 		let action;
 		for(let ai = 0; ai < this.validActions.length; ai++){
@@ -583,152 +418,17 @@ class Game{
 			return null;
 		}
 
-		let cardsById = this.cards.byId;
-		let fieldSpots = this.field.byKey('id');
-		let ci, card;
-		switch(action.type){	
-
-		//Игрок походил
-		case 'ATTACK':
-
-			let str;
-			if(this.turnStage == 'FOLLOWUP')
-				str = 'follows up'
-			else if(this.turnStage == 'DEFENSE')
-				str = 'transfers'
-			else
-				str = 'attacks';
-
-			utils.log(player.name,  str)
-
-			card = cardsById[action.cid];
-			ci = this.hands[player.id].indexOf(card);
-
-			this.logAction(card, action.type, card.spot, action.spot );
-
-			//Перемещаем карту на стол и убираем карту из руки
-			card.spot = action.spot;
-			this.hands[player.id].splice(ci, 1);
-			fieldSpots[action.spot].attack = card;
-
-			//Добавляем информацию о карте в действие
-			action.value = card.value;
-			action.suit = card.suit;
-
-			//Увеличиваем кол-во занятых мест на столе
-			this.field.usedSpots++;
-
-			//Если игрок клал карту в догонку, даем ему воможность положить еще карту
-			if(this.turnStage == 'FOLLOWUP'){
-				this.setNextTurnStage('FOLLOWUP');
-			}
-			else if(this.turnStage == 'DEFENSE'){
-				this.players.setOriginalAttackers([this.players.attacker]);
-					let currentAttackerIndex = activePlayers.indexOf(this.players.attacker);
-					this.players.findToGoNext(currentAttackerIndex);
-					this.setNextTurnStage('DEFENSE');	
-			}
-			else{
-				this.skipCounter = 0;//Если же это просто ход, сбрасываем счетчик пропущенных ходов
-			}
-
-			break;
-
-		//Игрок отбивается
-		case 'DEFENSE':
-
-			utils.log(player.name, 'defends')
-
-			card = cardsById[action.cid];
-			ci = this.hands[player.id].indexOf(card);
-
-			this.logAction(card, action.type, card.spot, action.spot );
-
-			//Перемещаем карту на стол и убираем карту из руки
-			card.spot = action.spot;
-			this.hands[player.id].splice(ci, 1);
-			fieldSpots[action.spot].defense = card;
-
-			//Добавляем информацию о карте в действие
-			action.value = card.value;
-			action.suit = card.suit;
-
-			for(let di = 0; di < this.field.length; di++){
-				let fieldSpot = this.field[di];
-				if(fieldSpot.attack && !fieldSpot.defense){
-					this.setNextTurnStage('DEFENSE');
-					break;
-				}
-			}
-
-			break;
-
-		//Ходящий игрок пропустил ход
-		case 'SKIP':
-
-			utils.log(player.name, 'skips turn');
-
-			//Debug
-			if(activePlayers.length > 2 && !this.players.ally){
-				utils.log('ERROR: More than 2 players but no ally assigned')
-			}
-
-			//Если есть помогающий игрок
-			if(this.players.ally){
-				switch(this.turnStage){
-
-					//Если игра в режиме докладывания карт в догонку и только ходящий игрок походил,
-					//даем возможность другому игроку доложить карты
-					case 'FOLLOWUP':
-						if(!this.skipCounter){
-							this.skipCounter++;
-							this.setNextTurnStage('FOLLOWUP');
-						}
-						break;
-
-					//Атакующий не доложил карту, переходим к помогающему
-					case 'REPEATING_ATTACK':
-						this.skipCounter++;
-						this.setNextTurnStage('SUPPORT');
-						break;
-
-					default:
-						//Если кто-то из игроков еще не походил, даем ему возможность 
-						this.skipCounter++;
-						if(this.skipCounter < 2){
-
-							if(this.turnStage == 'SUPPORT')
-								this.setNextTurnStage('ATTACK')
-
-							else if(this.turnStage == 'ATTACK')
-								this.setNextTurnStage('SUPPORT')
-
-							//Debug
-							else
-								utils.log('ERROR: Invalid action', action.type);
-
-						}
-						break;
-				}
-			}
-			break;
-
-		//Защищающийся берет карты
-		case 'TAKE':
-			utils.log(player.name, "takes")
-			this.skipCounter = 0;
-			this.setNextTurnStage('FOLLOWUP');
-			break;
-
-		default:
-			utils.log('ERROR: Unknown action', action.type)
-			break;
+		//Выполняем действие
+		let reaction = this.reactions[action.type];
+		if(!reaction){
+			utils.log('ERROR: Unknown action', action.type);
+			return;
 		}
+		action = reaction.call(this, player, action);
+		action.pid = player.id;
 
 		//Обнуляем возможные действия
-		this.validActions = [];
-
-		action.pid = player.id;
+		this.validActions = [];		
 
 		return action;
 	}
@@ -765,19 +465,19 @@ class Game{
 				numAccepted++;
 		}
 
-		utils.log(numAccepted, 'out of', this.players.length, 'voted for rematch')
+		utils.log(numAccepted, 'out of', this.players.length, 'voted for rematch');
 
 		let note = {
 			message: 'VOTE_RESULTS',
 			results: utils.copyObject(this.storedActions)
-		}
+		};
 
 		if(numAccepted >= minAcceptedNeeded)
-			note.successful = true
+			note.successful = true;
 		else
 			note.successful = false;
 
-		return note
+		return note;
 	}
 
 
@@ -789,8 +489,8 @@ class Game{
 
 		//В данный момент происходит переход между стадиями хода
 		//Откомментировать по необходимости
-		let turnStage = this.nextTurnStage;
-		//let lastTurnStage = this.turnStage;
+		let turnStage = this.turnStages.next;
+		//let lastTurnStage = this.turnStages.current;
 		
 		let pid = player.id;
 		let hand = this.hands[pid];
@@ -807,7 +507,7 @@ class Game{
 				turnStage != 'FOLLOWUP' && !defHand.length && 'Defender has no cards'
 			);
 			this.setNextTurnStage('DEFENSE');
-			this.continueGame();
+			this.continue();
 			return;
 		}
 
@@ -819,11 +519,11 @@ class Game{
 			let fieldSpot = this.field[fi];
 			if(fieldSpot.attack){
 				let card = fieldSpot.attack;
-				validValues.push(card.value)
+				validValues.push(card.value);
 			}
 			if(fieldSpot.defense){
 				let card = fieldSpot.defense;
-				validValues.push(card.value)
+				validValues.push(card.value);
 			}
 		}
 		if(!validValues.length)
@@ -841,7 +541,7 @@ class Game{
 					type: 'ATTACK',
 					cid: cid,
 					spot: spot
-				}
+				};
 				actions.push(action);
 			}
 		}
@@ -850,15 +550,15 @@ class Game{
 		if(turnStage != 'INITIAL_ATTACK'){
 			let action = {
 				type: 'SKIP'
-			}
-			actions.push(action)		
+			};
+			actions.push(action);	
 		}
 		
 		//Меняем стадию на стадию защиты
 		this.setNextTurnStage('DEFENSE');
 
 		this.validActions = actions;
-		this.waitForResponse(this.timeouts.actionAttack, [player])
+		this.waitForResponse(this.timeouts.actionAttack, [player]);
 		try{
 			player.recieveValidActions(actions.slice(), this.timeouts.actionAttack);	
 		}
@@ -873,8 +573,8 @@ class Game{
 
 		//В данный момент происходит переход между стадиями хода
 		//Откомментировать по необходимости
-		//let turnStage = this.nextTurnStage;
-		let lastTurnStage = this.turnStage;
+		//let turnStage = this.turnStages.next;
+		let lastTurnStage = this.turnStages.current;
 
 		let pid = player.id;
 
@@ -895,8 +595,8 @@ class Game{
 			utils.log(player.name, 'successfully defended');
 
 			this.setNextTurnStage('END');
-			this.continueGame();
-			return
+			this.continue();
+			return;
 		}
 
 		//Узнаем, можно ли переводить
@@ -939,7 +639,7 @@ class Game{
 						type: 'DEFENSE',
 						cid: cid,
 						spot: spot
-					}
+					};
 					actions.push(action);
 				}
 
@@ -949,7 +649,7 @@ class Game{
 						type: 'ATTACK',
 						cid: cid,
 						spot: attackSpot.id
-					}
+					};
 					actions.push(action);
 				}
 			}
@@ -958,8 +658,8 @@ class Game{
 		//Добавляем возможность взять карты
 		let action = {
 			type: 'TAKE'
-		}
-		actions.push(action)
+		};
+		actions.push(action);
 
 		this.validActions = actions;
 
@@ -1004,15 +704,15 @@ class Game{
 
 		//В данный момент происходит переход между стадиями хода
 		//Откомментировать по необходимости
-		//let turnStage = this.nextTurnStage;
-		//let lastTurnStage = this.turnStage;
+		//let turnStage = this.turnStages.next;
+		//let lastTurnStage = this.turnStages.current;
 
 		let pid = player.id;
 
 		let action = {
 			type: 'TAKE',
 			cards:[]
-		}
+		};
 		for(let fi = 0; fi < this.field.length; fi++){
 			let fieldSpot = this.field[fi];
 
@@ -1077,4 +777,4 @@ class Game{
 	}
 }
 
-module.exports = Game
+module.exports = Game;

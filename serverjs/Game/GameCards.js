@@ -98,13 +98,13 @@ class GameCards extends BetterArray{
 		//Колода (id карт)
 		this.deck = new BetterArray();
 		
-		//Стопка сброса 
+		//Стопка сброса (id карт)
 		this.discardPile = [];
 		
-		//Руки игроков 
+		//Руки игроков (объекты с id карт по id игроков)		
 		this.hands = {};			
 
-		//Поля (стол) 
+		//Поля (стол) (объекты с id карт)
 		this.field.length = 0;
 		this.field.length = this.field.maxLength;		
 		this.field.fullLength = this.field.zeroDiscardLength;
@@ -114,7 +114,7 @@ class GameCards extends BetterArray{
 				attack: null,
 				defense: null,
 				id: id
-			}
+			};
 			this.field[i] = fieldSpot;
 		}
 	}
@@ -129,7 +129,7 @@ class GameCards extends BetterArray{
 		//Задаем количество карт и минимальное значение карты
 		if(game.players.length > 3){
 			this.lowestValue = 2;
-			this.numOfCards = 52
+			this.numOfCards = 52;
 		}
 		else{
 			this.lowestValue = 6;
@@ -214,7 +214,7 @@ class GameCards extends BetterArray{
 					pid: dealInfo.pid,
 					cardPosition: card.spot,
 					cid: card.id
-				}
+				};
 
 				dealsOut.push(dealFullInfo);
 				 
@@ -258,7 +258,7 @@ class GameCards extends BetterArray{
 				let dealInfo = {
 					pid: pid,
 					numOfCards: this.normalHandSize - cardsInHand
-				}
+				};
 				deals.push(dealInfo);
 			}
 		}
@@ -281,7 +281,7 @@ class GameCards extends BetterArray{
 				let dealInfo = {
 					pid: game.players[pi].id,
 					numOfCards: 1
-				}
+				};
 				deals.push(dealInfo);
 			}
 		}

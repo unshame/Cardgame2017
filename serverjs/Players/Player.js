@@ -1,6 +1,6 @@
 'use strict';
 
-const utils = require('../utils')
+const utils = require('../utils');
 
 class Player{
 
@@ -31,7 +31,7 @@ class Player{
 			type: 'GAME_INFO',
 			cards: cards || [],
 			players: players || []
-		}
+		};
 		if(trumpSuit || trumpSuit === 0)
 			action.trumpSuit = trumpSuit;
 
@@ -45,9 +45,9 @@ class Player{
 		let action = {
 			type: 'DRAW',
 			cards: []
-		}
+		};
 		for(let ci = 0; ci < deals.length; ci++){
-			action.cards.push(deals[ci])
+			action.cards.push(deals[ci]);
 		}
 		if(this.remote)
 			this.remote.recieveCompleteAction(action);
@@ -58,7 +58,7 @@ class Player{
 			type: 'TRUMP_CARDS',
 			cards: cards,
 			pid: winner
-		}
+		};
 		if(this.remote)
 			this.remote.recieveCompleteAction(action);
 	}
@@ -91,7 +91,7 @@ class Player{
 	sendResponse(action){
 		if(!this.game){
 			utils.log(this.id, 'No game has been assigned');
-			return
+			return;
 		}
 		this.game.recieveResponse(this, action ? action : null);
 	}
@@ -99,18 +99,21 @@ class Player{
 	sendRandomAction(actions){
 		let randomIndex;
 		if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'SKIP'))
-			randomIndex = Math.floor(Math.random()*(actions.length-1))
+			randomIndex = Math.floor(Math.random()*(actions.length-1));
 		else
 			randomIndex = Math.floor(Math.random()*actions.length);
 		let action = actions[randomIndex];
-		setTimeout(() => {this.sendResponse(action)},1)	
+		setTimeout(() => {
+			this.sendResponse(action);
+		},1);
 	}
 
 	sendTakeOrSkipAction(actions){
-		let randomIndex
 		if(actions.length == 1 && (actions[0].type == 'TAKE' || actions[0].type == 'SKIP')){
 			let action = actions[0];
-			setTimeout(() => {this.sendResponse(action)},1000)	
+			setTimeout(() => {
+				this.sendResponse(action);
+			},1000);
 		}
 	}
 }
