@@ -23,11 +23,11 @@ class GamePlayers extends BetterArray{
 		this.roles = ['attacker', 'defender','ally'];
 		this.turnStartStatus = {
 			role: null,
-			origAttacker: false
+			originalAttacker: false
 		};
 		this.gameStartStatus = {
 			role: null,
-			origAttacker: false,
+			originalAttacker: false,
 			active: true
 		};
 		for(let i = 0; i < players.length; i++){
@@ -66,6 +66,7 @@ class GamePlayers extends BetterArray{
 		for(let i = 0; i < this.length; i++){
 			let p = this[i];
 			this.setStatuses(p, this.turnStartStatus);
+			this.notify({message: 'TURN_ENDED'});
 		}
 	}
 
@@ -127,20 +128,26 @@ class GamePlayers extends BetterArray{
 	/*
 	 * Возвращает массив с игроками с определенным статусом
 	 * @status String - какой статус сравнивать
-	 * @value * - с чем сравнивать статус
+	 * @compare function\* - как или с чем сравнивать статус
 	 * @sort Boolean - нужно ли сортировать игроков по значению статуса
-	 * Сравнение через ==, так что можно передавать true и любое трушное значение подойдет
 	 * @players - опционально можно указать среди каких игроков выбирать
 	 */
-	getWith(status, value, sort, players){
+	getWith(status, compare, sort, players){
 		if(!players)
 			players = this;
+
+		if(typeof compare != 'function'){
+			let newVal = compare;
+			compare = (value) => {
+				return value == newVal;
+			};
+		}
 
 		let results = [];
 
 		for(let i = 0; i < players.length; i++){
 			let p = players[i];
-			if(p[status] == value){
+			if(compare(p[status])){
 				results.push(p);
 			}
 		}
@@ -161,18 +168,7 @@ class GamePlayers extends BetterArray{
 
 	//Тоже, что и getWith, только возвращается первый результат
 	getWithFirst(status, value, players){
-		if(!players)
-			players = this;
-
-		let result = null;
-
-		for(let i = 0; i < players.length; i++){
-			let p = players[i];
-			if(p[status] == value){
-				result = p;
-			}
-		}
-		return result;
+		return this.getWith(status, value, false, players)[0];
 	}
 
 	//Активные
@@ -217,23 +213,18 @@ class GamePlayers extends BetterArray{
 
 	//Атакующие до перевода
 	get originalAttackers(){
-		return this.getWith('origAttacker', true, true);
+		return this.getWith('originalAttacker', (val) => !!val, true);
 	}
 	set originalAttackers(players){
-		this.set('origAttacker', false);
-		this.setOrigAttackers(players);
+		this.set('originalAttacker', false);
+		this.setOriginalAttackers(players);
 	}
-	setOrigAttackers(players){
+	setOriginalAttackers(players){
 		let last = this.originalAttackers.length + 1;
-		for(let pi = 0; pi < this.length; pi++){
-			let p = this[pi];
-			if(p.origAttacker)
-				last++;
-		}
 		if(players.length){
 			for(let pi = 0; pi < players.length; pi++){
 				let p = players[pi];
-				this.set('origAttacker', last, [p]);
+				this.set('originalAttacker', last, [p]);
 				last++;
 			}
 		}

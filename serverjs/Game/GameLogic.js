@@ -622,7 +622,7 @@ class Game{
 				this.setNextTurnStage('FOLLOWUP');
 			}
 			else if(this.turnStage == 'DEFENSE'){
-				this.players.setOrigAttackers([this.players.attacker]);
+				this.players.setOriginalAttackers([this.players.attacker]);
 					let currentAttackerIndex = activePlayers.indexOf(this.players.attacker);
 					this.players.findToGoNext(currentAttackerIndex);
 					this.setNextTurnStage('DEFENSE');	
