@@ -66,7 +66,6 @@ class GamePlayers extends BetterArray{
 		for(let i = 0; i < this.length; i++){
 			let p = this[i];
 			this.setStatuses(p, this.turnStartStatus);
-			this.notify({message: 'TURN_ENDED'});
 		}
 	}
 
