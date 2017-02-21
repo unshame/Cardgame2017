@@ -21,19 +21,19 @@ class GameTurnStages{
 
 	//Первая атака
 	INITIAL_ATTACK(){
-		this.letAttack(this.players.attacker);
+		this.let('ATTACK', this.players.attacker);
 		//Turn stage: DEFENSE
 	}
 
 	//Атакующий игрок атакует повторно
 	REPEATING_ATTACK(){
-		this.letAttack(this.players.attacker);
+		this.let('ATTACK', this.players.attacker);
 		//Turn stage: DEFENSE
 	}
 
 	//Атакующий игрок атакует после помогающего игрока
 	ATTACK(){
-		this.letAttack(this.players.attacker);
+		this.let('ATTACK', this.players.attacker);
 		//Turn stage: DEFENSE
 	}
 
@@ -44,13 +44,13 @@ class GameTurnStages{
 		if(!this.players.ally)
 			utils.log('ERROR: No ally assigned, but turn stage is SUPPORT');
 
-		this.letAttack(this.players.ally || this.players.attacker);
+		this.let('ATTACK', this.players.ally || this.players.attacker);
 		//Turn stage: DEFENSE
 	}
 
 	//Подкладывание карт в догонку
 	FOLLOWUP(){
-		this.letAttack(!this.skipCounter ? this.players.attacker : (this.players.ally || this.players.attacker));
+		this.let('ATTACK', !this.skipCounter ? this.players.attacker : (this.players.ally || this.players.attacker));
 		//Turn stage: DEFENSE
 	}
 
@@ -60,10 +60,10 @@ class GameTurnStages{
 		//Если мы были в стадии подкидывания в догонку, передаем все карты со стола
 		//защищающемуся и сообщаем всем игрокам об этом
 		if(this.turnStages.current == 'FOLLOWUP')
-			this.letTake(this.players.defender);
+			this.let('TAKE', this.players.defender);
 		//Иначе даем защищаться
 		else
-			this.letDefend(this.players.defender);
+			this.let('DEFEND', this.players.defender);
 		//Turn stage: REPEATING_ATTACK, ATTACK, SUPPORT, END
 	}
 
