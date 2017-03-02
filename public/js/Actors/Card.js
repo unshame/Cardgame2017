@@ -17,6 +17,8 @@ var Card = function (options) {
 	}
 
 	this.isInDebugMode = this.options.debug;
+	this.isDraggable = false;
+	this.isPlayable = false;
 
 	//Id
 	this.id = this.options.id;
@@ -62,7 +64,6 @@ var Card = function (options) {
 	//Skin
 	this.skin = this.options.skin;
 	this.applySkin();
-
 };
 
 //Возвращает опции по умолчанию
