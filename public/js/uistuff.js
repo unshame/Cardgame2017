@@ -55,30 +55,3 @@ Rope.prototype.stop = function(){
 	this.sprite.tint = '0xFF8300';
 }
 
-var Button = function(x, y, action, text){
-	Phaser.Button.call(this, app, x, y, 'button_grey_wide', action, this, 1, 0, 2, 0);
-	app.add.existing(this);
-	this.style = { font: '18px Verdana', fill: '#000', align: 'center' };
-	this.text = app.add.text(this.centerX, this.centerY, text, this.style);
-	this.text.anchor.set(0.5, 0.5)
-}
-
-Button.prototype = Object.create(Phaser.Button.prototype);
-Button.prototype.constructor = Button;
-
-Button.prototype.hide = function(){
-	this.visible = false;
-	this.text.visible = false;
-}
-
-Button.prototype.show = function(){
-	this.visible = true;
-	this.text.visible = true;
-}
-
-Button.prototype.reposition = function(x, y){
-	this.x = x;
-	this.y = y;
-	this.text.x = this.centerX;
-	this.text.y = this.centerY;
-}

@@ -75,7 +75,13 @@ playState.createApp = function(){
 	controller = new Controller(false);
 
 	game.rope = new Rope();
-
+	game.testButton = new Button(
+		50,
+		50, function(){
+			game.menu.toggle()
+		},
+		'Menu'
+	)
 	game.skipButton = new Button(app.screenWidth - skinManager.skin.width - 120, app.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('SKIP')}, 'Skip');
 	game.takeButton = new Button(app.screenWidth - skinManager.skin.width - 120, app.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('TAKE')}, 'Take');
 	game.skipButton.hide();
@@ -85,6 +91,11 @@ playState.createApp = function(){
 	app.onResume.add(function(){console.log('unpaused')});
 	app.onBlur.add(function(){console.log('blured')});
 	app.onFocus.add(function(){console.log('focused')});*/
+
+	game.menu = new Menu(app.screenWidth/2,app.screenHeight/2);
+	game.menu.addButton(function(){},'test');
+	game.menu.addButton(function(){},'test1');
+	game.menu.addButton(function(){},'test2');
 }
 
 

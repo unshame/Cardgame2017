@@ -38,6 +38,7 @@ App.prototype.updateAppDimensions = function(){
 		game.rope.maxHeight = game.rope.sprite.y = this.screenHeight;
 		game.skipButton.reposition(this.screenWidth - skinManager.skin.width - 120, this.screenHeight - skinManager.skin.height - 120);
 		game.takeButton.reposition(this.screenWidth - skinManager.skin.width - 120, this.screenHeight - skinManager.skin.height - 120);
+		game.menu.update();
 	}
 }
 
