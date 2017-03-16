@@ -11,6 +11,11 @@ playState.preload = function(){
 	app.load.image('brown', 'assets/backgrounds/brown.png');
 	app.load.image('blue', 'assets/backgrounds/blue.png');
 
+	// Для меню
+	app.load.image('menu','assets/backgrounds/menu.png');
+	app.load.image('menu_blue','assets/backgrounds/menu_blue.jpg');
+	app.load.image('menu_gray','assets/backgrounds/menu_gray.gif');
+
 	//Для тестов
 	app.load.image('testParticle', 'assets/test_particle.png');
 
@@ -69,33 +74,37 @@ playState.createApp = function(){
 	
 
 	app.background = app.add.tileSprite(0, 0, app.screenWidth, app.screenHeight, 'blue');
+	
 
+	
+	
 	game.cardsGroup = app.add.group();
-
 	controller = new Controller(false);
-
 	game.rope = new Rope();
-	game.testButton = new Button(
-		50,
-		50, function(){
-			game.menu.toggle()
-		},
-		'Menu'
-	)
 	game.skipButton = new Button(app.screenWidth - skinManager.skin.width - 120, app.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('SKIP')}, 'Skip');
 	game.takeButton = new Button(app.screenWidth - skinManager.skin.width - 120, app.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('TAKE')}, 'Take');
 	game.skipButton.hide();
 	game.takeButton.hide();
+	game.menu = new Menu(app.screenWidth/2,app.screenHeight/2);
+	game.menu.addButton(function(){	},'SinglePlayer');
+	game.menu.addButton(function(){console.log('sup');},'Multiplayer');
+	game.menu.addButton(function(){console.log('lel');},'Options');
 	app.canvas.oncontextmenu = function (e) { e.preventDefault(); }
+	game.menu.hideAndShow();
+	game.testButton = new Button(
+		50,
+		50, function(){
+			game.menu.hideAndShow();
+		},
+		'Menu'
+	)
+
+	
 	/*app.onPause.add(function(){console.log('paused')});
 	app.onResume.add(function(){console.log('unpaused')});
 	app.onBlur.add(function(){console.log('blured')});
 	app.onFocus.add(function(){console.log('focused')});*/
 
-	game.menu = new Menu(app.screenWidth/2,app.screenHeight/2);
-	game.menu.addButton(function(){},'test');
-	game.menu.addButton(function(){},'test1');
-	game.menu.addButton(function(){},'test2');
 }
 
 

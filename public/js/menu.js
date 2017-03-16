@@ -1,6 +1,5 @@
 
 var Menu = function(x,y){
-
 	var pixel = app.newPixel();
 	this.background = app.add.sprite(0, 0, pixel.generateTexture());
 	this.base = app.add.group();
@@ -23,8 +22,6 @@ Menu.prototype.addButton = function (action,text) {
 	this.base.add(button);
 	this.base.add(button.text);
 	this.update();
-	if(!this.opened)
-		this.hide();
 }
 
 Menu.prototype.resize = function(){
@@ -65,26 +62,40 @@ Menu.prototype.update = function(){
 
 Menu.prototype.hide = function(){
 	this.opened = false;
-	this.background.kill();
+	this.background.visible = false;
 	for (var i = 0; i < this.buttons.length; i++) {
-		this.buttons[i].kill();
+		this.buttons[i].visible = false;
+		this.buttons[i].text.visible = false;
 	}
 }
 
 Menu.prototype.reset = function(){
 	this.opened = true;
-	this.background.reset();
+	this.background.visible = true;
 	for (var i = 0; i < this.buttons.length; i++) {
-		this.buttons[i].reset();
+		this.buttons[i].visible = true;
+		this.buttons[i].text.visible = true;
 	}
-	this.update();
+}
+var flag =0;
+Menu.prototype.hideAndShow = function(){
+if(flag==0){
+	this.hide();
+	flag=1;
+}
+else{
+	this.reset();
+	flag=0;
 }
 
+
+
+}
 
 var Button = function(x, y, action, text){
 	Phaser.Button.call(this, app, x, y, 'button_grey_wide', action, this, 1, 0, 2, 0);
 	app.add.existing(this);
-	this.style = { font: '18px Verdana', fill: '#000', align: 'center' };
+	this.style = { font: '20px Verdana', fill: '#000', align: 'center' };
 	this.text = app.add.text(this.centerX, this.centerY, text, this.style);
 	this.text.anchor.set(0.5, 0.5)
 	
