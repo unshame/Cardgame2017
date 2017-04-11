@@ -77,19 +77,11 @@ Menu.prototype.reset = function(){
 		this.buttons[i].text.visible = true;
 	}
 }
-var flag =0;
-Menu.prototype.hideAndShow = function(){
-if(flag==0){
-	this.hide();
-	flag=1;
-}
-else{
-	this.reset();
-	flag=0;
-}
-
-
-
+Menu.prototype.toggle = function(){
+	if(this.opened)
+		this.hide()
+	else
+		this.reset()
 }
 
 var Button = function(x, y, action, text){
