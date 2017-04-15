@@ -67,11 +67,13 @@ playState.createApp = function(){
 
 	game.created = true;
 	//game.world.setBounds(0, 0, game.screenWidth, game.screenHeight);
-	//game.stage.disableVisibilityChange  = true;
+	//game.stage.disableVisibilityChange  = true;	
 	
-
-	game.background = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, 'blue');
-	game.drawGrid();
+	//Фон
+	game.background = game.add.group();
+	game.surface = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, 'blue');
+	game.background.add(game.surface); 
+	game.drawGrid();	
 	
 	game.cardsGroup = game.add.group();
 	controller = new Controller(false);

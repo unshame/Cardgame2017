@@ -3,7 +3,6 @@ var Game = function(){
 	this.isInDebugMode = true;
 
 	this.cards = {}
-	this.cardsGroup = null
 	this.rope = null
 	
 	window.fieldManager = new FieldManager();
@@ -14,7 +13,7 @@ var Game = function(){
 
 	this.screenWidth = window.innerWidth;
 	this.screenHeight = window.innerHeight;
-	this.background = null;
+	this.surface = null;
 
 	Phaser.Game.call(
 		this,
@@ -23,6 +22,9 @@ var Game = function(){
 		Phaser.Canvas, 
 		'cardgame'
 	);
+
+	this.gridDensity = 2;
+	this.gridThickness = 1;
 }
 
 Game.prototype = Object.create(Phaser.Game.prototype);
@@ -33,8 +35,8 @@ Game.prototype.updateAppDimensionsListener = function(){
 	this.screenHeight = window.innerHeight;
 	if(this.created){
 		this.scale.setGameSize(this.screenWidth, this.screenHeight)
-		this.background.width = this.screenWidth;
-		this.background.height =  this.screenHeight;
+		this.surface.width = this.screenWidth;
+		this.surface.height =  this.screenHeight;
 		this.drawGrid();
 		fieldManager.resizeSpots();
 		this.rope.maxHeight = this.rope.sprite.y = this.screenHeight;
@@ -76,33 +78,42 @@ Game.prototype.drawGrid = function(){
 	}
 	if(!this.isInDebugMode)
 		return;
+
 	var grid =  this.make.graphics(0, 0);
-	grid.lineStyle(2, 0xffffff, 1);
-	grid.drawRect(0, 0, skinManager.skin.width-2, skinManager.skin.height-2);
+	var thickness = this.gridThickness;
+	var density = this.gridDensity;
+	var width = Math.round(skinManager.skin.width/density);
+	var height = Math.round(skinManager.skin.height/density);
+
+	grid.lineStyle(thickness, 0xffffff, 1);
+	grid.drawRect(0, 0, width-thickness, height-thickness);
 	this.grid = this.add.tileSprite(0, 0, this.screenWidth, this.screenHeight, grid.generateTexture());
 	var offset = {
-		x: (this.screenWidth%skinManager.skin.width)/2,
-		y: (this.screenHeight%skinManager.skin.height)/2
+		x: (this.screenWidth%width)/2,
+		y: (this.screenHeight%height)/2
 	}
-	this.grid.tilePosition = offset
-	var x = Math.round(offset.x);
-	var y = Math.round(offset.y);
-	var border = this.border = this.add.graphics(0, 0);
+	this.grid.tilePosition = offset;
+
+	var x = offset.x;
+	var y = offset.y;
 	var color = 0xA50000;
+	
+	var border = this.border = this.add.graphics(0, 0);
 	border.lineStyle(y, color, 1);
-	border.moveTo(0, y/2 - 1);
-	border.lineTo(this.screenWidth, y/2 - 1);
+	border.moveTo(0, y/2 - thickness/2);
+	border.lineTo(this.screenWidth, y/2 - thickness/2);
 	border.lineStyle(x, color, 1);
-	border.moveTo(this.screenWidth - x/2 + 1, 0);
-	border.lineTo(this.screenWidth - x/2 + 1, this.screenHeight);
+	border.moveTo(this.screenWidth - x/2 + thickness/2, 0);
+	border.lineTo(this.screenWidth - x/2 + thickness/2, this.screenHeight);
 	border.lineStyle(y, color, 1);
-	border.moveTo(this.screenWidth, this.screenHeight - y/2 + 1);
-	border.lineTo(0,this.screenHeight - y/2 + 1);
+	border.moveTo(this.screenWidth, this.screenHeight - y/2 + thickness/2);
+	border.lineTo(0,this.screenHeight - y/2 + thickness/2);
 	border.lineStyle(x, color, 1);
-	border.moveTo(x/2 - 1, this.screenHeight);
-	border.lineTo(x/2 - 1,0);
-	this.world.setChildIndex(this.grid, 1);
-	this.world.setChildIndex(this.border, 2)
+	border.moveTo(x/2 - thickness/2, this.screenHeight);
+	border.lineTo(x/2 - thickness/2,0);
+
+	this.background.add(this.grid);
+	this.background.add(this.border);
 }
 
 Game.prototype.toggleDebugMode = function(){
