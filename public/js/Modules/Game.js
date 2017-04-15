@@ -39,12 +39,16 @@ Game.prototype.updateAppDimensionsListener = function(){
 		game.takeButton.reposition(this.screenWidth - skinManager.skin.width - 120, this.screenHeight - skinManager.skin.height - 120);
 		game.menu.update();
 	}
+	$('#loading').hide().css('opacity', 0);
 	this.dimensionsUpdateTimeout = null;
 }
 
 Game.prototype.updateAppDimensions = function(){
 	if(this.dimensionsUpdateTimeout){
 		clearTimeout(this.dimensionsUpdateTimeout);
+	}
+	else{
+		$('#loading').show().css('opacity', 1);
 	}
 	this.dimensionsUpdateTimeout = setTimeout(this.updateAppDimensionsListener.bind(this), 500)
 
