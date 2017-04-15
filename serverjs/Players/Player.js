@@ -64,8 +64,10 @@ class Player{
 	}
 
 	recieveValidActions(actions, time){
-		if(this.remote)
-			this.remote.recievePossibleActions(actions, time);
+		if(this.remote){
+			let current_time = Date.now();
+			this.remote.recievePossibleActions(actions, current_time + time*1000, current_time);
+		}
 
 		//Функции для дебага
 		//this.sendRandomAction(actions);

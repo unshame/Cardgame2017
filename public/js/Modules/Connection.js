@@ -30,7 +30,7 @@ var EurecaClientSetup = function(callback, context) {
 		if(isInDebugMode)
 			console.log(opponents);
 	}
-	client.exports.recievePossibleActions = function(newActions, time){		
+	client.exports.recievePossibleActions = function(newActions, time, time_sent){		
 		actions = newActions;
 		var actionTypes = actions.map(function(a){return a.type});
 		var action;
@@ -39,7 +39,11 @@ var EurecaClientSetup = function(callback, context) {
 		if(~actionTypes.indexOf('TAKE'))
 			game.takeButton.show();
 
-		game.rope.start(time * 1000);
+		var current_time = new Date;
+		time = time - current_time.getTime();
+		if(time)
+			game.rope.start(time - 1000);
+
 		fieldManager.highlightPossibleActions(newActions);
 		if(isInDebugMode)
 			console.log(newActions)
