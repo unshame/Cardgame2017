@@ -55,6 +55,8 @@ var Card = function (options) {
 	this.scaler = null;
 	this.flipper = null;
 
+	this.bringToTopOn = 'never';
+
 	//Value
 	this.suit = this.options.suit;
 	this.value = this.options.value;	
@@ -230,6 +232,15 @@ Card.prototype.setBase = function(x, y){
 	this.update();
 }
 
+//Поднимает карту наверх, опционально поднимает перетаскиваемую карту наверх
+Card.prototype.bringToTop = function(fixController){
+	if(fixController == undefined)
+		fixController = true;
+	game.cardsGroup.bringToTop(this.base);
+	if(fixController && controller.card)
+		game.cardsGroup.bringToTop(controller.card.base);
+}
+
 //Запоминает id поля, в которое будет перемещена карта
 //Устанавливает перетаскиваемость
 Card.prototype.presetSpot = function(spotId){
@@ -267,6 +278,7 @@ Card.prototype.setAngle = function(angle){
 */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn){
 
+
 	if(relativeToBase === undefined)
 		relativeToBase = false;
 	if(shouldRebase === undefined)
@@ -274,20 +286,13 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	if(bringToTopOn === undefined || !~['never', 'init', 'start', 'end'].indexOf(bringToTopOn))
 		bringToTopOn = 'init';
 
+	this.bringToTopOn = bringToTopOn;
+
 	if(app.paused)
 		this.updateValue();
 
-	if(bringToTopOn == 'init' || app.paused && bringToTopOn != 'never'){
-		game.cardsGroup.bringToTop(this.base);
-		if(controller.card)
-			game.cardsGroup.bringToTop(controller.card.base);
-	}
-
-	//Останавливаем твин, если он есть
-	if(this.mover){
-		this.mover.stop();
-		this.mover = null;
-	}
+	if(this.bringToTopOn == 'init' || app.paused && this.bringToTopOn != 'never')
+		this.bringToTop();
 
 	//Куда двигать карту
 	var moveX, moveY;
@@ -333,6 +338,14 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	if(app.paused){
 		this.setRelativePosition(moveX, moveY);
 	}
+	else if(this.mover && !delay){
+		this.mover.updateTweenData('x', moveX, -1);
+		this.mover.updateTweenData('y', moveY, -1);
+		this.mover.updateTweenData('duration', time, -1);
+		this.updateValue();
+		if(this.bringToTopOn == 'start')
+			this.bringToTop();
+	}
 	else{
 		this.mover = app.add.tween(this.sprite);
 		this.mover.to(
@@ -347,19 +360,13 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		);
 		this.mover.onStart.addOnce(function(){
 			this.updateValue();
-			if(bringToTopOn == 'start'){
-				game.cardsGroup.bringToTop(this.base);
-				if(controller.card)
-					game.cardsGroup.bringToTop(controller.card.base);
-			}
+			if(this.bringToTopOn == 'start')
+				this.bringToTop();
 		}, this);
 		//Ресет твина по окончанию
 		this.mover.onComplete.addOnce(function(){
-			if(bringToTopOn == 'end'){
-				game.cardsGroup.bringToTop(this.base);
-				if(controller.card)
-					game.cardsGroup.bringToTop(controller.card.base);
-			}
+			if(this.bringToTopOn == 'end')
+				this.bringToTop();
 			this.mover = null;
 		}, this);
 	}

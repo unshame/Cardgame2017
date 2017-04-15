@@ -243,6 +243,16 @@ Spot.prototype.comparator = function(a, b){
 		return -1;
 }
 
+Spot.prototype.zAlignCards = function(){
+	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
+	var iterator = this.direction == 'backward' ? -1 : 1;
+
+	for(; i >= 0 && i < this.cards.length; i += iterator){
+		this.cards[i].bringToTop(false);
+	}
+}
+
+
 
 //ОЧЕРЕДЬ
 
@@ -617,7 +627,6 @@ Spot.prototype.moveCard = function(
 	return delayIndex;
 }
 
-
 //УДАЛЕНИЕ КАРТ ИЗ ПОЛЯ
 
 //Удаляет карты из поля
@@ -704,7 +713,7 @@ Spot.prototype.setUninteractibleTimer = function(time){
 		return;
 
 	this.uninteractibleTimer = setTimeout(function(spot){
-		spot.placeCards(null, 'end');
+		spot.zAlignCards();
 		spot.uninteractibleTimer = null;
 	}, time, this);
 }
@@ -716,7 +725,7 @@ Spot.prototype.focusOnCard = function(card, pointer){
 
 	this.focusedCard = card;
 	if(!this.uninteractibleTimer)
-		this.placeCards(null, 'end');
+		this.placeCards(null, 'init');
 }
 
 //Обнуляет запомненную карту, когда курсор с нее ушел
@@ -731,7 +740,7 @@ Spot.prototype.focusOffCard = function(card){
 
 	this.focusedCard = null;
 	if(!this.uninteractibleTimer)
-		this.placeCards();
+		this.placeCards(null, 'init');
 }
 
 
