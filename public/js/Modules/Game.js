@@ -34,10 +34,10 @@ Game.prototype.updateAppDimensionsListener = function(){
 		this.background.width = this.screenWidth;
 		this.background.height =  this.screenHeight;
 		fieldManager.resizeSpots();
-		game.rope.maxHeight = game.rope.sprite.y = this.screenHeight;
-		game.skipButton.reposition(this.screenWidth - skinManager.skin.width - 120, this.screenHeight - skinManager.skin.height - 120);
-		game.takeButton.reposition(this.screenWidth - skinManager.skin.width - 120, this.screenHeight - skinManager.skin.height - 120);
-		game.menu.update();
+		this.rope.maxHeight = this.rope.sprite.y = this.screenHeight;
+		this.skipButton.reposition(this.screenWidth/2 - skinManager.skin.width/2, this.screenHeight - skinManager.skin.height - 120);
+		this.takeButton.reposition(this.screenWidth/2 - skinManager.skin.width/2, this.screenHeight - skinManager.skin.height - 120);
+		this.menu.update();
 	}
 	$('#loading').hide().css('opacity', 0);
 	this.dimensionsUpdateTimeout = null;

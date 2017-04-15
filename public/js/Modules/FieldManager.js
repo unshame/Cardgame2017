@@ -21,6 +21,8 @@ var FieldManager = function(){
 	this.pi = 0;
 
 	this.cardsToRemove = {};
+
+	this.tableOrder = [4, 2, 0, 1, 3, 5]
 }
 
 
@@ -92,7 +94,7 @@ FieldManager.prototype.calculateSizes = function(){
 	//Field
 	var width = this.dimensions.firstField.width;
 	for(var i = 0; i < 6; i++){
-		id = 'TABLE' + i;
+		id = 'TABLE' + this.tableOrder[i];
 		x = this.positions.firstField.x + (width + 50)*i;
 		y = this.positions.firstField.y;
 		this.positions[id] = {x: x, y: y};
