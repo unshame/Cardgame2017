@@ -1,5 +1,5 @@
 /*
- * Модуль, создающий и управляющий полями (Spot)
+ * Модуль, создающий и управляющий полями (Field)
  * Также создает карты. Этот функционал нужно будет переместить в game
  * TODO:
  *  Расположения полей
@@ -8,11 +8,11 @@
  * 	Поле стола должно центровать поля 
  */
 
-var SpotManager = function(){
+var FieldManager = function(){
 
 	this.networkCreated = false;
 
-	this.spots = {};
+	this.fields = {};
 	this.positions = {};
 	this.dimensions = {};
 
@@ -28,7 +28,7 @@ var SpotManager = function(){
 
 //Рассчитывает размеры полей
 //Нужно будет придумать, как распологать поля на экране
-SpotManager.prototype.calculateSizes = function(){
+FieldManager.prototype.calculateSizes = function(){
 
 	var id;
 
@@ -87,7 +87,7 @@ SpotManager.prototype.calculateSizes = function(){
 	//Field
 	var width = (game.screenWidth - 130) / 6 - 50;
 	for(var i = 0; i < 6; i++){
-		id = 'FIELD' + i;
+		id = 'TABLE' + i;
 		x = this.positions.firstField.x + (width + 50)*i;
 		y = this.positions.firstField.y;
 		this.positions[id] = {x: x, y: y};
@@ -128,7 +128,7 @@ SpotManager.prototype.calculateSizes = function(){
 }
 
 //Создает поля
-SpotManager.prototype.createSpotNetwork = function(players){
+FieldManager.prototype.createSpotNetwork = function(players){
 
 	this.pid = game.pid;
 	this.players = players;
@@ -144,7 +144,7 @@ SpotManager.prototype.createSpotNetwork = function(players){
 	this.calculateSizes();
 
 	//Deck
-	this.spots['DECK'] = new Spot({
+	this.fields['DECK'] = new Field({
 		x: this.positions['DECK'].x,
 		y: this.positions['DECK'].y,
 		minActiveSpace: numOfCards / 2,
@@ -153,7 +153,7 @@ SpotManager.prototype.createSpotNetwork = function(players){
 		margin: 22,
 		focusable:false,
 		forcedSpace: 0.5,
-		texture: 'spot',
+		texture: 'field',
 		sorting: false,
 		type: 'DECK',
 		id: 'DECK',
@@ -164,14 +164,14 @@ SpotManager.prototype.createSpotNetwork = function(players){
 	this.cardsToRemove['DECK'] = [];
 
 	//Discard pile
-	this.spots['DISCARD_PILE'] = new Spot({
+	this.fields['DISCARD_PILE'] = new Field({
 		x: this.positions['DISCARD_PILE'].x,
 		y: this.positions['DISCARD_PILE'].y,
 		minActiveSpace: numOfCards / 2,
 		padding:0,
 		focusable:false,
 		forcedSpace: 0.5,
-		texture: 'spot',
+		texture: 'field',
 		sorting: false,
 		type: 'DISCARD_PILE',
 		id: 'DISCARD_PILE'
@@ -180,8 +180,8 @@ SpotManager.prototype.createSpotNetwork = function(players){
 
 	//Field
 	for(var i = 0; i < 6; i++){
-		id = 'FIELD' + i;
-		this.spots[id] = new Spot({
+		id = 'TABLE' + i;
+		this.fields[id] = new Field({
 			x: this.positions[id].x,
 			y: this.positions[id].y,
 			width: this.dimensions[id].width,
@@ -189,22 +189,22 @@ SpotManager.prototype.createSpotNetwork = function(players){
 			minActiveSpace: skinManager.skin.trumpOffset,
 			forcedSpace: skinManager.skin.trumpOffset,
 			margin:0,
-			texture: 'spot',
+			texture: 'field',
 			focusable:false,
 			sorting:false,
-			type: 'FIELD',
-			id: 'FIELD' + i,
+			type: 'TABLE',
+			id: 'TABLE' + i,
 			specialId: i + 1
 		});
 		this.cardsToRemove[id] = [];
 	}
 
 	//Player hand
-	this.spots[this.pid] = new Spot({
+	this.fields[this.pid] = new Field({
 		x:this.positions[this.pid].x,
 		y:this.positions[this.pid].y,
 		width:this.dimensions.playerHand.width,
-		texture: 'spot',
+		texture: 'field',
 		type: 'HAND',
 		id: this.pid,
 		specialId: this.pi + 1
@@ -218,11 +218,11 @@ SpotManager.prototype.createSpotNetwork = function(players){
 		i = 0;
 	while(i != this.pi){
 		var p = players[i];
-		this.spots[p.id] = new Spot({
+		this.fields[p.id] = new Field({
 			x: this.positions[p.id].x,
 			y: this.positions[p.id].y,
 			width: this.dimensions[p.id].width,
-			texture: 'spot',
+			texture: 'field',
 			sorting:false,
 			focusable:false,
 			flipped: true,
@@ -241,11 +241,11 @@ SpotManager.prototype.createSpotNetwork = function(players){
 }
 
 //Добавляет поле
-SpotManager.prototype.addSpot = function(options){
+FieldManager.prototype.addSpot = function(options){
 	if(!options)
 		options = {};
 
-	this.spots[options.id] = new Spot(options);
+	this.fields[options.id] = new Field(options);
 }
 
 
@@ -266,7 +266,7 @@ SpotManager.prototype.addSpot = function(options){
  * 	CARDS - карты, присутствующие в игре
  * 		.cards Array of {
  * 			cid,
- * 			spot,
+ * 			field,
  * 			[suit,]
  * 			[value]
  * 		}
@@ -292,7 +292,7 @@ SpotManager.prototype.addSpot = function(options){
  * 	DEFENSE, ATTACK - игрок атакует/защищается
  * 		.cid String
  * 		.pid String
- * 		.spot String
+ * 		.field String
  * 		.suit Number
  * 		.value Number
  *
@@ -302,10 +302,10 @@ SpotManager.prototype.addSpot = function(options){
  * 	SKIP - игрок пропускает ход
  * 		.pid
  */
-SpotManager.prototype.executeAction = function(action){
+FieldManager.prototype.executeAction = function(action){
 	if(action.type == 'GAME_INFO' && action.players.length){
-		spotManager.resetNetwork();
-		spotManager.createSpotNetwork(action.players);
+		fieldManager.resetNetwork();
+		fieldManager.createSpotNetwork(action.players);
 		action.type = 'CARDS';
 	}
 
@@ -313,15 +313,15 @@ SpotManager.prototype.executeAction = function(action){
 		return;
 
 	var delay = 0,
-		cards, card, spot;
+		cards, card, field;
 
-	this.forEachSpot(function(spot, si){
-		spot.setHighlight(false);
+	this.forEachSpot(function(field, si){
+		field.setHighlight(false);
 	})
 
-	var spot = this.spots[this.pid];
-	for(var ci = 0; ci < spot.cards.length; ci++){
-		spot.cards[ci].setPlayability(false);
+	var field = this.fields[this.pid];
+	for(var ci = 0; ci < field.cards.length; ci++){
+		field.cards[ci].setPlayability(false);
 	}
 
 	switch(action.type){
@@ -353,7 +353,7 @@ SpotManager.prototype.executeAction = function(action){
 				game.cards[id] = new Card(options);
 				discardCards.push(game.cards[id])
 			}
-			this.spots['DISCARD_PILE'].addCards(discardCards);
+			this.fields['DISCARD_PILE'].addCards(discardCards);
 		}
 		break;
 
@@ -374,8 +374,8 @@ SpotManager.prototype.executeAction = function(action){
 				value: action.cards[i].value
 			})
 		}
-		spot = this.spots[action.pid];
-		delay = this.placeCards(spot, cards);
+		field = this.fields[action.pid];
+		delay = this.placeCards(field, cards);
 		break;
 		
 	case 'ATTACK':
@@ -387,8 +387,8 @@ SpotManager.prototype.executeAction = function(action){
 			suit: action.suit,
 			value: action.value
 		}
-		spot = this.spots[action.spot];
-		delay = this.placeCards(spot, [card]);
+		field = this.fields[action.field];
+		delay = this.placeCards(field, [card]);
 		break;
 
 	case 'DISCARD':
@@ -400,36 +400,36 @@ SpotManager.prototype.executeAction = function(action){
 				value: 0
 			})
 		}
-		spot = this.spots['DISCARD_PILE'];
-		delay = this.placeCards(spot, cards);
+		field = this.fields['DISCARD_PILE'];
+		delay = this.placeCards(field, cards);
 		break;
 
 	case 'SKIP':
 		break;
 
 	default:
-		console.warn('Spot manager: Unknown action type', action.type, action)
+		console.warn('Field manager: Unknown action type', action.type, action)
 	}
 	return delay
 }
 
 //Подсвечивает карты, которыми можно ходить
-SpotManager.prototype.highlightPossibleActions = function(actions){
+FieldManager.prototype.highlightPossibleActions = function(actions){
 	if(!this.networkCreated)
 		return;
 	
-	this.forEachSpot(function(spot, si){
-		spot.setHighlight(false);
+	this.forEachSpot(function(field, si){
+		field.setHighlight(false);
 	})
-	var spot = this.spots[this.pid];
-	for(var ci = 0; ci < spot.cards.length; ci++){
-		spot.cards[ci].setPlayability(false);
+	var field = this.fields[this.pid];
+	for(var ci = 0; ci < field.cards.length; ci++){
+		field.cards[ci].setPlayability(false);
 	}
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
 		if(action.cid && game.cards[action.cid]){
 			game.cards[action.cid].setPlayability(true);
-			this.spots[action.spot].setHighlight(true);
+			this.fields[action.field].setHighlight(true);
 		}
 	}
 }
@@ -441,12 +441,12 @@ SpotManager.prototype.highlightPossibleActions = function(actions){
  * Добавляет карты в очередь соответствующим полям
  * @newCards Array of {
  *		cid,
- *		pid || spot,
+ *		pid || field,
  *		[suit,]
  *		[value]	
  * }
  */
-SpotManager.prototype.queueCards = function(newCards){
+FieldManager.prototype.queueCards = function(newCards){
 
 	var delay = 0;
 	for(var ci = 0; ci < newCards.length; ci++){
@@ -454,38 +454,38 @@ SpotManager.prototype.queueCards = function(newCards){
 		var card = game.cards[c.cid];
 		if(card){
 			card.presetValue(c.suit, c.value);		
-			card.presetSpot(c.spot || c.pid);
+			card.presetSpot(c.field || c.pid);
 		}
 		else{
 			var options = {
 				id: c.cid,
 				suit: c.suit,
 				value: c.value,
-				spotId: c.spot || c.pid
+				fieldId: c.field || c.pid
 			}
 			game.cards[c.cid] = new Card(options);
 			card = game.cards[c.cid];
 		}
-		card.spot && this.cardsToRemove[card.spot.id].push(card);
-		var spotId = card.spotId;
-		if(spotId == 'BOTTOM')
-			spotId = 'DECK';
-		delay = this.spots[spotId].queueCards([card], delay);
+		card.field && this.cardsToRemove[card.field.id].push(card);
+		var fieldId = card.fieldId;
+		if(fieldId == 'BOTTOM')
+			fieldId = 'DECK';
+		delay = this.fields[fieldId].queueCards([card], delay);
 	}
 	return delay
 
 }
 
 /*
- * Добавляет карты в очередь в поле spot
- * @spot Spot - куда добавлять
+ * Добавляет карты в очередь в поле field
+ * @field Field - куда добавлять
  * @newCards Array of {
  * 		cid,
  * 		[suit,]
  * 		[value]
  * } 
  */
-SpotManager.prototype.placeCards = function(spot, newCards){
+FieldManager.prototype.placeCards = function(field, newCards){
 	if(!newCards.length)
 		return 0;
 
@@ -498,28 +498,28 @@ SpotManager.prototype.placeCards = function(spot, newCards){
 		
 		if(card){
 			card.presetValue(suit, value);
-			card.presetSpot(spot.id);
-			card.spot && card.spot.removeCard(card);
+			card.presetSpot(field.id);
+			card.field && card.field.removeCard(card);
 			cardsToPlace.push(card)
 		}
 		else{
-			console.error('Spot Manager: Card', card.cid, 'not found')
+			console.error('Field Manager: Card', card.cid, 'not found')
 		}
 	}
-	return spot.addCards(cardsToPlace);
+	return field.addCards(cardsToPlace);
 }
 
 
 //FOR EACH SPOT
 
-//Выполняет callback для каждого поля из this.spots
-SpotManager.prototype.forEachSpot = function(callback, context){
+//Выполняет callback для каждого поля из this.fields
+FieldManager.prototype.forEachSpot = function(callback, context){
 	var returnedValues = [];
-	for(var si in this.spots){
-		if(!this.spots.hasOwnProperty(si))
+	for(var si in this.fields){
+		if(!this.fields.hasOwnProperty(si))
 			return;
-		var spot = this.spots[si];
-		var returnValue = callback.call(context || this, spot, si);
+		var field = this.fields[si];
+		var returnValue = callback.call(context || this, field, si);
 		if(returnValue !== undefined)
 			returnedValues.push(returnValue);
 	}
@@ -527,66 +527,66 @@ SpotManager.prototype.forEachSpot = function(callback, context){
 }
 
 //Удаляет карты this.cardsToRemove из соответсвующих полей
-SpotManager.prototype.removeMarkedCards = function(){
-	this.forEachSpot(function(spot, si){
+FieldManager.prototype.removeMarkedCards = function(){
+	this.forEachSpot(function(field, si){
 		var cards = this.cardsToRemove[si];
 		if(cards.length){
-			spot.removeCards(cards);
+			field.removeCards(cards);
 			this.cardsToRemove[si] = [];
 		}
 	})
 }
 
 //Выполняет размещение очередей карт каждого поля
-SpotManager.prototype.placeQueuedCards = function(){
-	this.forEachSpot(function(spot, si){
-		spot.placeQueuedCards();
+FieldManager.prototype.placeQueuedCards = function(){
+	this.forEachSpot(function(field, si){
+		field.placeQueuedCards();
 	})
 }
 
 //Меняет размеры и устанавливает позицию полей в соотстветсвии с this.positions и this.dimensions
-SpotManager.prototype.resizeSpots = function(){
+FieldManager.prototype.resizeSpots = function(){
 	this.calculateSizes();
-	this.forEachSpot(function(spot, si){
-		spot.setBase(this.positions[si].x, this.positions[si].y);
-		spot.resize(this.dimensions[si].width, this.dimensions[si].height, true);
+	this.forEachSpot(function(field, si){
+		field.setBase(this.positions[si].x, this.positions[si].y);
+		field.resize(this.dimensions[si].width, this.dimensions[si].height, true);
 	})
 }
 
 //Применяет текущий скин к полям. На данный момент меняет только высоту поля 
-SpotManager.prototype.applySkin = function(){
-	this.forEachSpot(function(spot, si){
-		spot.resize(null, null, true);
+FieldManager.prototype.applySkin = function(){
+	this.forEachSpot(function(field, si){
+		field.resize(null, null, true);
 	})
 }
 
 //Ресетит поля
-SpotManager.prototype.resetSpots = function(){
-	this.forEachSpot(function(spot, si){
-		spot.reset();
+FieldManager.prototype.resetSpots = function(){
+	this.forEachSpot(function(field, si){
+		field.reset();
 	})
 }
 
 //Убирает поля
-SpotManager.prototype.resetNetwork = function(){
-	this.forEachSpot(function(spot, si){
-		spot.destroy();
+FieldManager.prototype.resetNetwork = function(){
+	this.forEachSpot(function(field, si){
+		field.destroy();
 	})
-	this.spots = {};
+	this.fields = {};
 }
 
 //ДЕБАГ
 
 //Обновляет дебаг каждого поля
-SpotManager.prototype.updateDebug = function(){
-	this.forEachSpot(function(spot, si){
-		spot.updateDebug();
+FieldManager.prototype.updateDebug = function(){
+	this.forEachSpot(function(field, si){
+		field.updateDebug();
 	})
 }
 
 //Переключает режим дебага в каждом поле
-SpotManager.prototype.toggleDebugMode = function(){
-	this.forEachSpot(function(spot, si){
-		spot.toggleDebugMode();
+FieldManager.prototype.toggleDebugMode = function(){
+	this.forEachSpot(function(field, si){
+		field.toggleDebugMode();
 	})
 }

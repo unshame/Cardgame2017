@@ -28,7 +28,7 @@ Controller.prototype.cardClick = function(card, pointer){
 	if(pointer.button == 1 || pointer.button == 4)
 		console.log(card);
 
-	if(!card.isDraggable || this.card && this.card != card || !this.card && card.spot && card.spot.uninteractibleTimer)
+	if(!card.isDraggable || this.card && this.card != card || !this.card && card.field && card.field.uninteractibleTimer)
 		return;
 
 	if(this.isInDebugMode)
@@ -113,10 +113,10 @@ Controller.prototype.cardPutDown = function(){
 	if(this.isInDebugMode)
 		console.log('Controller: Putting down', this.card.id);
 
-	var spot = this.cardOnValidSpot();
+	var field = this.cardOnValidSpot();
 
-	if(spot && !this.pointer.rightButton.isDown){
-		this.cardRebaseAtPointer(spot);
+	if(field && !this.pointer.rightButton.isDown){
+		this.cardRebaseAtPointer(field);
 	}
 	else{
 		this.cardReturn();
@@ -151,15 +151,15 @@ Controller.prototype.cardRebaseAtPointer = function(newSpot){
 	this.card.setRelativePosition(0, 0);
 	this.card.setDraggability(false);
 
-	spotManager.forEachSpot(function(spot, si){
-		spot.setHighlight(false);
+	fieldManager.forEachSpot(function(field, si){
+		field.setHighlight(false);
 	})
 
 
-	var spot = this.card.spot;
-	if(spot){
-		for(var ci = 0; ci < spot.cards.length; ci++){
-			this.card.spot.cards[ci].setPlayability(false);
+	var field = this.card.field;
+	if(field){
+		for(var ci = 0; ci < field.cards.length; ci++){
+			this.card.field.cards[ci].setPlayability(false);
 		}
 	}
 			
@@ -189,9 +189,9 @@ Controller.prototype.cardReturn = function(){
 
 	this.card = null;
 	this.pointer = null;
-	if(card.spot){
-		card.spot.focusedCard = null;
-		card.spot.placeCard(card);
+	if(card.field){
+		card.field.focusedCard = null;
+		card.field.placeCard(card);
 	}
 	else{
 		card.returnToBase(this.cardReturnTime, 0);
@@ -220,15 +220,15 @@ Controller.prototype.cardOnValidSpot = function(){
 	if(!this.card.isPlayable)
 		return false;
 
-	var spots = spotManager.forEachSpot(function(spot, si){
-		if(spot.isHighlighted && spot.cardIsInside(this.card, false)){
-			return spot
+	var fields = fieldManager.forEachSpot(function(field, si){
+		if(field.isHighlighted && field.cardIsInside(this.card, false)){
+			return field
 		}
 	}, this)
-	if(spots.length){
-		if(spots.length > 1)
-			console.warn('Controller: Card is over more than 1 valid spot')
-		return spots[0];
+	if(fields.length){
+		if(fields.length > 1)
+			console.warn('Controller: Card is over more than 1 valid field')
+		return fields[0];
 	}
 }
 

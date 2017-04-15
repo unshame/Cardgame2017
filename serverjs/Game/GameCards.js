@@ -19,7 +19,7 @@ class GameCards extends BetterArray{
 		this.normalHandSize = 6;	
 
 		this.field = new BetterArray();
-		this.field.usedSpots = 0;
+		this.field.usedFields = 0;
 		this.field.maxLength = 6;
 		this.field.zeroDiscardLength = this.field.maxLength - 1;
 	}
@@ -48,7 +48,7 @@ class GameCards extends BetterArray{
 				let newCard = card.info;
 
 				//Игроки знают только о значении карты на дне колоды
-				if(card.spot != 'BOTTOM'){
+				if(card.field != 'BOTTOM'){
 					newCard.value = null;
 					newCard.suit = null;			
 				} 
@@ -61,7 +61,7 @@ class GameCards extends BetterArray{
 				let card = hand[ci];
 				let newCard = card.info;
 
-				if(card.spot != pid){
+				if(card.field != pid){
 					newCard.value = null;
 					newCard.suit = null;			
 				} 
@@ -72,14 +72,14 @@ class GameCards extends BetterArray{
 			//В игре
 			for(let fi = 0; fi < this.field.length; fi++){
 
-				let fieldSpot = this.field[fi];
-				if(fieldSpot.attack){
-					let card = fieldSpot.attack;
+				let tableField = this.field[fi];
+				if(tableField.attack){
+					let card = tableField.attack;
 					let newCard = card.info;
 					cardsToSend[pid].push(newCard);
 				}
-				if(fieldSpot.defense){
-					let card = fieldSpot.defense;
+				if(tableField.defense){
+					let card = tableField.defense;
 					let newCard = card.info;
 					cardsToSend[pid].push(newCard);
 				}		
@@ -109,13 +109,13 @@ class GameCards extends BetterArray{
 		this.field.length = this.field.maxLength;		
 		this.field.fullLength = this.field.zeroDiscardLength;
 		for(let i = 0; i < this.field.length; i++) {
-			let id = 'FIELD'+i;
-			let fieldSpot = {
+			let id = 'TABLE'+i;
+			let tableField = {
 				attack: null,
 				defense: null,
 				id: id
 			};
-			this.field[i] = fieldSpot;
+			this.field[i] = tableField;
 		}
 	}
 
@@ -186,7 +186,7 @@ class GameCards extends BetterArray{
 
 		//Запоминаем козырь
 		let lastCard = this.deck[this.deck.length - 1];
-		lastCard.spot = 'BOTTOM';
+		lastCard.field = 'BOTTOM';
 		this.trumpSuit = lastCard.suit;
 	}
 
@@ -205,14 +205,14 @@ class GameCards extends BetterArray{
 
 				let card = this.deck[0];
 
-				this.game.logAction(card, 'DEAL', card.spot, dealInfo.pid);
+				this.game.logAction(card, 'DEAL', card.field, dealInfo.pid);
 
 				this.hands[dealInfo.pid].push(card);
-				card.spot = dealInfo.pid;
+				card.field = dealInfo.pid;
 
 				let dealFullInfo = {
 					pid: dealInfo.pid,
-					cardPosition: card.spot,
+					cardPosition: card.field,
 					cid: card.id
 				};
 
@@ -299,26 +299,26 @@ class GameCards extends BetterArray{
 		//Убираем карты со всех позиций на столе
 		for(let fi = 0; fi < this.field.length; fi++){
 
-			let fieldSpot = this.field[fi];
+			let tableField = this.field[fi];
 
-			if(fieldSpot.attack){
-				let card = fieldSpot.attack;
-				this.game.logAction(card, 'DISCARD', card.spot, 'DISCARD_PILE');
-				card.spot = 'DISCARD_PILE';
+			if(tableField.attack){
+				let card = tableField.attack;
+				this.game.logAction(card, 'DISCARD', card.field, 'DISCARD_PILE');
+				card.field = 'DISCARD_PILE';
 
-				action.ids.push(fieldSpot.attack.id);
-				this.discardPile.push(fieldSpot.attack);
-				fieldSpot.attack = null;
+				action.ids.push(tableField.attack.id);
+				this.discardPile.push(tableField.attack);
+				tableField.attack = null;
 			}
 
-			if(fieldSpot.defense){
-				let card = fieldSpot.defense;
-				this.game.logAction(card, 'DISCARD', card.spot, 'DISCARD_PILE');
-				card.spot = 'DISCARD_PILE';
+			if(tableField.defense){
+				let card = tableField.defense;
+				this.game.logAction(card, 'DISCARD', card.field, 'DISCARD_PILE');
+				card.field = 'DISCARD_PILE';
 
-				action.ids.push(fieldSpot.defense.id);
-				this.discardPile.push(fieldSpot.defense);
-				fieldSpot.defense = null;
+				action.ids.push(tableField.defense.id);
+				this.discardPile.push(tableField.defense);
+				tableField.defense = null;
 			}
 
 		}

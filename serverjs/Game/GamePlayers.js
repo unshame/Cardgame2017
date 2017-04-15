@@ -545,7 +545,7 @@ class GamePlayers extends BetterArray{
 			for(let ci = 0; ci < hand.length; ci++){
 				let card = hand[ci];
 				if(card.suit == game.cards.trumpSuit && card.value < minTCard.value){
-					minTCard.pid = card.spot;
+					minTCard.pid = card.field;
 					minTCard.cid = card.id;
 					minTCard.value = card.value;
 				}

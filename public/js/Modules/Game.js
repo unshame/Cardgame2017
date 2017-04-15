@@ -4,7 +4,7 @@ var Game = function(){
 	this.cardsGroup = null
 	this.rope = null
 	
-	window.spotManager = new SpotManager();
+	window.fieldManager = new FieldManager();
 	window.skinManager = null;
 	window.controller = null;
 	window.addEventListener('resize', this.updateAppDimensions.bind(this));
@@ -33,7 +33,7 @@ Game.prototype.updateAppDimensions = function(){
 		this.scale.setGameSize(this.screenWidth, this.screenHeight)
 		this.background.width = this.screenWidth;
 		this.background.height =  this.screenHeight;
-		spotManager.resizeSpots();
+		fieldManager.resizeSpots();
 		game.rope.maxHeight = game.rope.sprite.y = this.screenHeight;
 		game.skipButton.reposition(this.screenWidth - skinManager.skin.width - 120, this.screenHeight - skinManager.skin.height - 120);
 		game.takeButton.reposition(this.screenWidth - skinManager.skin.width - 120, this.screenHeight - skinManager.skin.height - 120);

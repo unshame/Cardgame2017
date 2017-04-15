@@ -19,7 +19,7 @@
  * Так делать не рекомендуется
  */
 
-var Spot = function(options){
+var Field = function(options){
 
 	var defaultOptions = this.options = this.getDefaultOptions();
 
@@ -69,7 +69,7 @@ var Spot = function(options){
 	if(this.focusable && this.alignment == 'vertical'){
 		this.focusable = false;
 		console.warn(
-			'Spot', this.type, this.id, 'set to focusable and ' + this.alignment,
+			'Field', this.type, this.id, 'set to focusable and ' + this.alignment,
 			'. This is not supported, focusable defaulted to false\n', this
 		)
 	}
@@ -99,7 +99,7 @@ var Spot = function(options){
 }
 
 //Возвращает опции по умолчанию
-Spot.prototype.getDefaultOptions = function(){
+Field.prototype.getDefaultOptions = function(){
 	var options = {
 		x:0,
 		y:0,
@@ -143,7 +143,7 @@ Spot.prototype.getDefaultOptions = function(){
 //ПОЗИЦИОНИРОВАНИЕ ПОЛЯ
 
 //Устанавливает позицию поля
-Spot.prototype.setBase = function(x, y, shouldPlace){
+Field.prototype.setBase = function(x, y, shouldPlace){
 	if(x === null || x === undefined)
 		x = this.options.x;
 	if(y === null || y === undefined)
@@ -159,7 +159,7 @@ Spot.prototype.setBase = function(x, y, shouldPlace){
 }
 
 //Изменяет размер поля
-Spot.prototype.resize = function(width, height, shouldPlace){
+Field.prototype.resize = function(width, height, shouldPlace){
 	if(width === null || width === undefined)
 		width = this.options.width
 	else
@@ -199,7 +199,7 @@ Spot.prototype.resize = function(width, height, shouldPlace){
 		this.placeCards();
 }
 
-Spot.prototype.setHighlight = function(on){
+Field.prototype.setHighlight = function(on){
 	this.area.visible = on || this.isInDebugMode ? true : false;
 	this.area.tint = on ? 0xFF8300 : 0xFFFFFF;
 	this.area.alpha = on ? 1 : 0.35;
@@ -210,13 +210,13 @@ Spot.prototype.setHighlight = function(on){
 //СОРТИРОВКА
 
 //Сортирует карты
-Spot.prototype.sortCards = function(){
+Field.prototype.sortCards = function(){
 	if(this.sorting)
 		this.cards.sort(this.comparator);
 }
 
 //Компаратор сортировки
-Spot.prototype.comparator = function(a, b){
+Field.prototype.comparator = function(a, b){
 	if(!a.suit && a.suit !== 0){
 		if(b.suit || b.suit === 0)
 			return -1
@@ -243,7 +243,7 @@ Spot.prototype.comparator = function(a, b){
 		return -1;
 }
 
-Spot.prototype.zAlignCards = function(){
+Field.prototype.zAlignCards = function(){
 	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
 	var iterator = this.direction == 'backward' ? -1 : 1;
 
@@ -257,7 +257,7 @@ Spot.prototype.zAlignCards = function(){
 //ОЧЕРЕДЬ
 
 //Добавляет карты в очередь на добавление, возвращает планируемое время добавления
-Spot.prototype.queueCards = function(newCards, delay){
+Field.prototype.queueCards = function(newCards, delay){
 	if(!newCards.length)
 		return;
 
@@ -282,7 +282,7 @@ Spot.prototype.queueCards = function(newCards, delay){
 
 		//Если карта переходит из поля, одну из карт которых перетаскивает игрок,
 		//возвращаем перетаскиваемую карту
-		if(controller.card && controller.card.spot && controller.card.spot == card.spot)
+		if(controller.card && controller.card.field && controller.card.field == card.field)
 			controller.cardReturn();
 
 		this.queuedCards.push(card);
@@ -296,13 +296,13 @@ Spot.prototype.queueCards = function(newCards, delay){
 }
 
 //Размещает карты из очереди
-Spot.prototype.placeQueuedCards = function(){
+Field.prototype.placeQueuedCards = function(){
 	if(!this.queuedCards.length)
 		return;
 	
 	for(var ci = 0; ci < this.queuedCards.length; ci++){
 		var card = this.queuedCards[ci];
-		card.spot = this;
+		card.field = this;
 		this.cards.push(card)
 	}
 
@@ -316,7 +316,7 @@ Spot.prototype.placeQueuedCards = function(){
 }
 
 //Очищает очередь на добавление
-Spot.prototype.resetQueue = function(){
+Field.prototype.resetQueue = function(){
 	this.queuedCards = [];
 	this.delays = {};
 	this.expectedDelay = 0;
@@ -326,7 +326,7 @@ Spot.prototype.resetQueue = function(){
 //ДОБАВЛЕНИЕ КАРТ
 
 //Добавляет карты в поле, возвращает время добавления
-Spot.prototype.addCards = function(newCards){
+Field.prototype.addCards = function(newCards){
 
 	if(!newCards.length)
 		return;
@@ -343,7 +343,7 @@ Spot.prototype.addCards = function(newCards){
 	else{
 		for(var ci = 0; ci < newCards.length; ci++){
 			var card = newCards[ci];
-			card.spot = this;
+			card.field = this;
 			this.cards.push(card);
 		}
 		this.sortCards();
@@ -352,7 +352,7 @@ Spot.prototype.addCards = function(newCards){
 }
 
 //Для добавления одной карты, возвращает время добавления
-Spot.prototype.addCard = function(card){
+Field.prototype.addCard = function(card){
 	return this.addCards([card]);
 }
 
@@ -365,7 +365,7 @@ Spot.prototype.addCard = function(card){
  * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
  * Возвращает задержку следующей карты
  */
-Spot.prototype.placeCards = function(newCards, bringUpOn){
+Field.prototype.placeCards = function(newCards, bringUpOn){
 
 	if(newCards === undefined)
 		newCards = null;
@@ -530,7 +530,7 @@ Spot.prototype.placeCards = function(newCards, bringUpOn){
 }
 
 //Для размещения одной карты
-Spot.prototype.placeCard = function(card){
+Field.prototype.placeCard = function(card){
 	var i = this.cards.indexOf(card);
 	if(!~i)
 		return;
@@ -553,7 +553,7 @@ Spot.prototype.placeCard = function(card){
  * @increaseDelayIndex Bool - нужно ли увеличивать индекс очереди в конце выполнения функции
  * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
  */
-Spot.prototype.moveCard = function(
+Field.prototype.moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
 	delayArray, delayIndex, increaseDelayIndex, bringUpOn
 ){
@@ -578,7 +578,7 @@ Spot.prototype.moveCard = function(
 	}
 
 	//Устанавливаем сдвиг для козыря в колоде
-	if(card.spotId == 'BOTTOM' && this.cards.length > 1){
+	if(card.fieldId == 'BOTTOM' && this.cards.length > 1){
 		leftMargin += skinManager.skin.trumpOffset;
 	}
 
@@ -600,7 +600,7 @@ Spot.prototype.moveCard = function(
 	}
 
 	//Устанавливаем поворот карты
-	if(card.spotId == 'BOTTOM')
+	if(card.fieldId == 'BOTTOM')
 		angle = Math.abs(angle - 90);
 	card.rotateTo(angle, this.moveTime, delay);
 
@@ -630,7 +630,7 @@ Spot.prototype.moveCard = function(
 //УДАЛЕНИЕ КАРТ ИЗ ПОЛЯ
 
 //Удаляет карты из поля
-Spot.prototype.removeCards = function(cardsToRemove){
+Field.prototype.removeCards = function(cardsToRemove){
 	for(var ci = cardsToRemove.length - 1; ci >= 0; ci--){
 		var card = cardsToRemove[ci];
 		var i = this.cards.indexOf(card);
@@ -638,7 +638,7 @@ Spot.prototype.removeCards = function(cardsToRemove){
 			if(this.focusedCard && this.focusedCard == card)
 				this.focusedCard = null;
 			this.cards.splice(i, 1);
-			card.spot = null;
+			card.field = null;
 		}
 	}
 	if(this.cards.length){
@@ -649,21 +649,21 @@ Spot.prototype.removeCards = function(cardsToRemove){
 }
 
 //Удаляет все карты из поля
-Spot.prototype.removeAllCards = function(){
+Field.prototype.removeAllCards = function(){
 	this.removeCards(this.cards)
 }
 
 //Для удаления одной карты
-Spot.prototype.removeCard = function(card){
+Field.prototype.removeCard = function(card){
 	this.removeCards([card])
 }
 
 //Ресет поля
-Spot.prototype.reset = function(){
+Field.prototype.reset = function(){
 	this.removeAllCards();
 }
 
-Spot.prototype.destroy = function(){
+Field.prototype.destroy = function(){
 	this.removeAllCards();
 	this.area.kill();
 	this.base.removeAll(true);
@@ -674,7 +674,7 @@ Spot.prototype.destroy = function(){
 //БУЛЕВЫ ФУНКЦИИ
 
 //Проверяет нахождение карты внутри поля (по координатам)
-Spot.prototype.cardIsInside = function(card, includeShift){
+Field.prototype.cardIsInside = function(card, includeShift){
 
 	if(includeShift === undefined)
 		includeShift = true;
@@ -699,7 +699,7 @@ Spot.prototype.cardIsInside = function(card, includeShift){
 //ВЫДЕЛЕНИЕ КАРТ КУРСОРОМ
 
 //Запускает таймер, во время которого карты не реагируют на курсор
-Spot.prototype.setUninteractibleTimer = function(time){
+Field.prototype.setUninteractibleTimer = function(time){
 
 	if(!time || typeof time != 'number' || isNaN(time))
 		return;
@@ -712,14 +712,14 @@ Spot.prototype.setUninteractibleTimer = function(time){
 	if(game.paused)
 		return;
 
-	this.uninteractibleTimer = setTimeout(function(spot){
-		spot.zAlignCards();
-		spot.uninteractibleTimer = null;
+	this.uninteractibleTimer = setTimeout(function(field){
+		field.zAlignCards();
+		field.uninteractibleTimer = null;
 	}, time, this);
 }
 
 //Запоминает карту, над которой находится курсор
-Spot.prototype.focusOnCard = function(card, pointer){
+Field.prototype.focusOnCard = function(card, pointer){
 	if(!card || !~this.cards.indexOf(card) || !this.focusable || !this.cardIsInside(card))
 		return;
 
@@ -729,7 +729,7 @@ Spot.prototype.focusOnCard = function(card, pointer){
 }
 
 //Обнуляет запомненную карту, когда курсор с нее ушел
-Spot.prototype.focusOffCard = function(card){
+Field.prototype.focusOffCard = function(card){
 	if(
 		!this.focusedCard ||
 		!this.focusable ||
@@ -747,7 +747,7 @@ Spot.prototype.focusOffCard = function(card){
 //ДЕБАГ
 
 //Обновляет дебаг
-Spot.prototype.updateDebug = function(){
+Field.prototype.updateDebug = function(){
 	if(!this.isInDebugMode)
 		return;
 	var x = this.base.x;
@@ -769,7 +769,7 @@ Spot.prototype.updateDebug = function(){
 }
 
 //Переключает режим дебага
-Spot.prototype.toggleDebugMode = function(){
+Field.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	this.area.visible = this.isInDebugMode;
 	if(!this.isInDebugMode)

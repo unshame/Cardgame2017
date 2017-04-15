@@ -23,9 +23,9 @@ var Card = function (options) {
 	//Id
 	this.id = this.options.id;
 
-	//Spot
-	this.presetSpot(this.options.spotId)
-	this.spot = null;
+	//Field
+	this.presetSpot(this.options.fieldId)
+	this.field = null;
 
 	//Sprite
 	this.sprite = game.add.sprite();
@@ -78,7 +78,7 @@ Card.prototype.getDefaultOptions = function(){
 		suit:null,
 		flipTime: 150,
 		skin:skinManager.skin,
-		spotId: 'DECK',
+		fieldId: 'DECK',
 		debug: false
 	}
 	return options
@@ -243,9 +243,9 @@ Card.prototype.bringToTop = function(fixController){
 
 //Запоминает id поля, в которое будет перемещена карта
 //Устанавливает перетаскиваемость
-Card.prototype.presetSpot = function(spotId){
-	this.spotId = spotId;
-	 if(spotId == game.pid){
+Card.prototype.presetSpot = function(fieldId){
+	this.fieldId = fieldId;
+	 if(fieldId == game.pid){
 		this.setDraggability(true);
 	}
 	else{
@@ -536,14 +536,14 @@ Card.prototype.mouseUp = function(sprite, pointer){
 
 //Вызывается при наведении на карту
 Card.prototype.mouseOver = function(sprite, pointer){
-	if(this.spot)
-		this.spot.focusOnCard(this, pointer);
+	if(this.field)
+		this.field.focusOnCard(this, pointer);
 }
 
 //Вызывается когда курсор покидает спрайт карты
 Card.prototype.mouseOut = function(sprite, pointer){
-	if(this.spot)
-		this.spot.focusOffCard(this);
+	if(this.field)
+		this.field.focusOffCard(this);
 }
 
 
@@ -559,8 +559,8 @@ Card.prototype.mouseIsOver = function(){
 Card.prototype.kill = function() {
 	this.glow.kill();
 	this.sprite.kill();  
-	if(this.spot){
-		this.spot.removeCard(this);
+	if(this.field){
+		this.field.removeCard(this);
 	}
 }
 

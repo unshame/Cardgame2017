@@ -15,7 +15,7 @@ class GameReactions{
 
 		let activePlayers = this.players.active;
 		let cardsById = this.cards.byId;
-		let fieldSpots = this.field.byKey('id');
+		let tableFields = this.field.byKey('id');
 		let ci, card;
 
 		let str;
@@ -31,19 +31,19 @@ class GameReactions{
 		card = cardsById[action.cid];
 		ci = this.hands[player.id].indexOf(card);
 
-		this.logAction(card, action.type, card.spot, action.spot );
+		this.logAction(card, action.type, card.field, action.field );
 
 		//Перемещаем карту на стол и убираем карту из руки
-		card.spot = action.spot;
+		card.field = action.field;
 		this.hands[player.id].splice(ci, 1);
-		fieldSpots[action.spot].attack = card;
+		tableFields[action.field].attack = card;
 
 		//Добавляем информацию о карте в действие
 		action.value = card.value;
 		action.suit = card.suit;
 
 		//Увеличиваем кол-во занятых мест на столе
-		this.field.usedSpots++;
+		this.field.usedFields++;
 
 		//Если игрок клал карту в догонку, даем ему воможность положить еще карту
 		if(this.turnStages.current == 'FOLLOWUP'){
@@ -67,7 +67,7 @@ class GameReactions{
 	DEFENSE(player, action){
 
 		let cardsById = this.cards.byId;
-		let fieldSpots = this.field.byKey('id');
+		let tableFields = this.field.byKey('id');
 		let ci, card;
 
 		utils.log(player.name, 'defends');
@@ -75,20 +75,20 @@ class GameReactions{
 		card = cardsById[action.cid];
 		ci = this.hands[player.id].indexOf(card);
 
-		this.logAction(card, action.type, card.spot, action.spot );
+		this.logAction(card, action.type, card.field, action.field );
 
 		//Перемещаем карту на стол и убираем карту из руки
-		card.spot = action.spot;
+		card.field = action.field;
 		this.hands[player.id].splice(ci, 1);
-		fieldSpots[action.spot].defense = card;
+		tableFields[action.field].defense = card;
 
 		//Добавляем информацию о карте в действие
 		action.value = card.value;
 		action.suit = card.suit;
 
 		for(let di = 0; di < this.field.length; di++){
-			let fieldSpot = this.field[di];
-			if(fieldSpot.attack && !fieldSpot.defense){
+			let tableField = this.field[di];
+			if(tableField.attack && !tableField.defense){
 				this.setNextTurnStage('DEFENSE');
 				break;
 			}

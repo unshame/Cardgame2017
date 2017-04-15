@@ -40,7 +40,7 @@ var EurecaClientSetup = function(callback, context) {
 			game.takeButton.show();
 
 		game.rope.start(time * 1000);
-		spotManager.highlightPossibleActions(newActions);
+		fieldManager.highlightPossibleActions(newActions);
 		if(isInDebugMode)
 			console.log(newActions)
 	}
@@ -56,7 +56,7 @@ var EurecaClientSetup = function(callback, context) {
 			clearTimeout(timer);
 			timer = null;
 		}
-		var delay = spotManager.executeAction(action);
+		var delay = fieldManager.executeAction(action);
 		setTimeout(
 			function(){
 				sendResponse();	
@@ -81,13 +81,13 @@ var EurecaClientSetup = function(callback, context) {
 	return client;
 }
 
-function sendAction(spot, card){
+function sendAction(field, card){
 	if(!actions)
 		return;
 	
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
-		if(action.cid == card.id && spot.id == action.spot){
+		if(action.cid == card.id && field.id == action.field){
 			game.rope.stop();
 			server.recieveCompleteAction(action);
 			return true;

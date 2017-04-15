@@ -181,7 +181,7 @@ class Game{
 
 		utils.log('Turn Ended');
 		
-		this.field.usedSpots = 0;
+		this.field.usedFields = 0;
 		this.skipCounter = 0;
 		this.turnStages.current = null;
 		this.turnStages.next = 'DEFAULT';	
@@ -410,7 +410,7 @@ class Game{
 			if(
 				incomingAction.type == validAction.type &&
 				(!validAction.cid || incomingAction.cid == validAction.cid) &&
-				(!validAction.spot || incomingAction.spot == validAction.spot)
+				(!validAction.field || incomingAction.field == validAction.field)
 			){
 				action = validAction;
 				break;

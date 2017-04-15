@@ -21,20 +21,20 @@ class TestBot extends Bot{
 		var lineNum = utils.stats.line;
 
 		if(this.tester.running && game.turnStages.current != 'FOLLOWUP' && game.turnStages.next == 'DEFENSE' && ~attackIndex && !~defenseIndex){
-			var defenseSpots = 0;
+			var defenseFields = 0;
 			this.tests++;
 			for(var fi = 0; fi < game.field.length; fi++){
-				var fieldSpot = game.field[fi];
+				var tableField = game.field[fi];
 
-				if(fieldSpot.attack && !fieldSpot.defense){
-					defenseSpots++;
+				if(tableField.attack && !tableField.defense){
+					defenseFields++;
 				} 
 
 			}
 			var handSize = game.hands[game.players.defender.id].length;
-			if(handSize <= defenseSpots){
+			if(handSize <= defenseFields){
 				console.log('Test %s (attack) failed on %s', this.tests, this.name);
-				console.log('%s cards to beat but %s cards in hand', defenseSpots + 1, handSize);
+				console.log('%s cards to beat but %s cards in hand', defenseFields + 1, handSize);
 				console.log('See line %s in log.txt for context', lineNum + 1);
 				console.log('----------------\n');
 				this.failedTests++;
@@ -47,11 +47,11 @@ class TestBot extends Bot{
 
 			//Тест перевода игроку, у которого нет достаточного кол-ва карт, чтобы отбиться
 			this.tests++;
-			var usedSpots = game.fieldUsedSpots;
+			var usedFields = game.fieldUsedFields;
 			var handSize = game.hands[game.players.ally && game.players.ally.id || game.players.attacker.id].length;
-			if(handSize <= usedSpots){
+			if(handSize <= usedFields){
 				console.log('Test %s (transfer) failed on %s', this.tests, this.name);
-				console.log('%s cards to beat but %s cards in hand', usedSpots + 1, handSize);
+				console.log('%s cards to beat but %s cards in hand', usedFields + 1, handSize);
 				console.log('See line %s in log.txt for context', lineNum + 1);
 				console.log('----------------\n');
 				this.failedTests++;

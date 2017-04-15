@@ -132,7 +132,7 @@ playState.render = function(){
 		return;
 
 	controller && controller.updateDebug();
-	spotManager && spotManager.updateDebug();
+	fieldManager && fieldManager.updateDebug();
 
 	for(var ci in game.cards){
 		if(!game.cards.hasOwnProperty(ci))

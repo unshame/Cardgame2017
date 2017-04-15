@@ -81,7 +81,7 @@ SkinManager.prototype.setSkin = function(skinName){
 			card.applySkin();
 		}
 	}
-	spotManager.applySkin();
+	fieldManager.applySkin();
 }
 
 //Устанавливает рубашку карт

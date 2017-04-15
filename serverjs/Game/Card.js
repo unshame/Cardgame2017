@@ -1,11 +1,11 @@
 const utils = require('../utils');
 
 class Card{
-	constructor(suit, value, spot){
+	constructor(suit, value, field){
 		this.id = 'card_' + utils.generateId();
 		this.suit = suit;
 		this.value = value;
-		this.spot = spot;
+		this.field = field;
 	}
 	get info(){
 		let obj = {};
