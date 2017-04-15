@@ -26,7 +26,7 @@ var Game = function(){
 Game.prototype = Object.create(Phaser.Game.prototype);
 Game.prototype.constructor = Game;
 
-Game.prototype.updateAppDimensions = function(){
+Game.prototype.updateAppDimensionsListener = function(){
 	this.screenWidth = window.innerWidth;
 	this.screenHeight = window.innerHeight;
 	if(this.created){
@@ -39,6 +39,15 @@ Game.prototype.updateAppDimensions = function(){
 		game.takeButton.reposition(this.screenWidth - skinManager.skin.width - 120, this.screenHeight - skinManager.skin.height - 120);
 		game.menu.update();
 	}
+	this.dimensionsUpdateTimeout = null;
+}
+
+Game.prototype.updateAppDimensions = function(){
+	if(this.dimensionsUpdateTimeout){
+		clearTimeout(this.dimensionsUpdateTimeout);
+	}
+	this.dimensionsUpdateTimeout = setTimeout(this.updateAppDimensionsListener.bind(this), 500)
+
 }
 
 Game.prototype.newPixel = function(){
