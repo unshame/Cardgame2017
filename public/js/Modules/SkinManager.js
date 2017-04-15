@@ -51,15 +51,15 @@ SkinManager.prototype.addSkin = function(options){
 	skin.trailPath = options.name && 'assets/skins/' + options.name + '/trails.png' || 'assets/skins/default/trails.png';
 	skin.trailName = options.trailName || options.name + 'Trail';
 
-	app.load.spritesheet(
+	game.load.spritesheet(
 		skin.sheetName, 
 		skin.sheetPath, 
 		skin.frameWidth, 
 		skin.frameHeight, 
 		skin.numOfFrames
 	);
-	app.load.image(skin.glowSheetName, skin.glowPath);
-	app.load.spritesheet(skin.trailName, skin.trailPath, skin.trailWidth, skin.trailHeight, 4);
+	game.load.image(skin.glowSheetName, skin.glowPath);
+	game.load.spritesheet(skin.trailName, skin.trailPath, skin.trailWidth, skin.trailHeight, 4);
 
 	this.skins[skin.name] = skin;
 	if(this.skinToSet == skin.name){

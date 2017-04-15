@@ -1,16 +1,16 @@
 var Rope = function(){
-	var pixel = app.newPixel();
+	var pixel = game.newPixel();
 
-	this.sprite = app.add.sprite(0, 0, pixel.generateTexture());
+	this.sprite = game.add.sprite(0, 0, pixel.generateTexture());
 	this.sprite.tint = '0xFF8300';
 	this.sprite.width = 30;
 	this.sprite.height = 0;
-	this.sprite.y = app.screenHeight;
+	this.sprite.y = game.screenHeight;
 	this.sprite.anchor.setTo(0, 1);
 	this.startTime = 0;
 	this.duration = 0;
 	this.isBurning = false;
-	this.maxHeight = app.screenHeight;
+	this.maxHeight = game.screenHeight;
 }
 
 Rope.prototype.update = function(){

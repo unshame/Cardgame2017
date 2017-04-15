@@ -36,17 +36,17 @@ SpotManager.prototype.calculateSizes = function(){
 	this.positions = {
 		DECK: {
 			x: 100,
-			y: app.screenHeight - 250
+			y: game.screenHeight - 250
 		},
 		DISCARD_PILE: {
-			x:app.screenWidth - 250,
-			y:app.screenHeight - 250
+			x:game.screenWidth - 250,
+			y:game.screenHeight - 250
 		},
 
 		//Поле игрока пока не известен id игрока
 		playerHand: {
 			x:390,
-			y:app.screenHeight - 250
+			y:game.screenHeight - 250
 		},
 
 		//Позиция первого поля на столе
@@ -73,7 +73,7 @@ SpotManager.prototype.calculateSizes = function(){
 
 		//Поле игрока пока не известен id игрока
 		playerHand: {
-			width:app.screenWidth - 700,
+			width:game.screenWidth - 700,
 			//height: 
 		},
 
@@ -85,7 +85,7 @@ SpotManager.prototype.calculateSizes = function(){
 	}
 
 	//Field
-	var width = (app.screenWidth - 130) / 6 - 50;
+	var width = (game.screenWidth - 130) / 6 - 50;
 	for(var i = 0; i < 6; i++){
 		id = 'FIELD' + i;
 		x = this.positions.firstField.x + (width + 50)*i;
@@ -104,7 +104,7 @@ SpotManager.prototype.calculateSizes = function(){
 	};
 
 	//Opponents
-	width = (app.screenWidth - 130) / (this.players.length - 1) - 50;
+	width = (game.screenWidth - 130) / (this.players.length - 1) - 50;
 	var i = this.pi + 1;
 	var oi = 0;
 	if(i >= this.players.length)
@@ -130,7 +130,7 @@ SpotManager.prototype.calculateSizes = function(){
 //Создает поля
 SpotManager.prototype.createSpotNetwork = function(players){
 
-	this.pid = app.pid;
+	this.pid = game.pid;
 	this.players = players;
 	var numOfCards = players.length > 4 ? 52 : 36;
 	var id;

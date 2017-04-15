@@ -1,8 +1,8 @@
 
 var Menu = function(x,y){
-	var pixel = app.newPixel();
-	this.background = app.add.sprite(0, 0, pixel.generateTexture());
-	this.base = app.add.group();
+	var pixel = game.newPixel();
+	this.background = game.add.sprite(0, 0, pixel.generateTexture());
+	this.base = game.add.group();
 	this.options = {};
 	this.options.x = x;
 	this.options.y = y;
@@ -87,10 +87,10 @@ Menu.prototype.toggle = function(){
 }
 
 var Button = function(x, y, action, text){
-	Phaser.Button.call(this, app, x, y, 'button_grey_wide', action, this, 1, 0, 2, 0);
-	app.add.existing(this);
+	Phaser.Button.call(this, game, x, y, 'button_grey_wide', action, this, 1, 0, 2, 0);
+	game.add.existing(this);
 	this.style = { font: '20px Verdana', fill: '#000', align: 'center' };
-	this.text = app.add.text(this.centerX, this.centerY, text, this.style);
+	this.text = game.add.text(this.centerX, this.centerY, text, this.style);
 	this.text.anchor.set(0.5, 0.5)
 	
 

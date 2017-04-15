@@ -28,7 +28,7 @@ var Card = function (options) {
 	this.spot = null;
 
 	//Sprite
-	this.sprite = app.add.sprite();
+	this.sprite = game.add.sprite();
 	this.sprite.inputEnabled = true;
 	this.sprite.events.onInputDown.add(this.mouseDown, this);
 	this.sprite.events.onInputUp.add(this.mouseUp, this);
@@ -37,12 +37,12 @@ var Card = function (options) {
 	this.sprite.anchor.set(0.5, 0.5);
 
 	//Glow
-	this.glow = app.add.sprite();
+	this.glow = game.add.sprite();
 	this.glow.anchor.set(0.5, 0.5);
 	this.glow.visible = false;
 
 	//Base
-	this.base = app.add.group();
+	this.base = game.add.group();
 	this.base.x = this.options.x;
 	this.base.y = this.options.y;
 	this.base.add(this.glow);
@@ -72,8 +72,8 @@ var Card = function (options) {
 Card.prototype.getDefaultOptions = function(){
 	var options = {
 		id:null,
-		x: app.screenWidth / 2,
-		y: app.screenHeight + 300,
+		x: game.screenWidth / 2,
+		y: game.screenHeight + 300,
 		value:0,
 		suit:null,
 		flipTime: 150,
@@ -121,12 +121,12 @@ Card.prototype.updateValue = function(){
 		this.flipper = null;
 	}
 
-	if(app.paused){
+	if(game.paused){
 		this.setValue(this.suit, this.value, false);
 		return;
 	}
 
-	this.flipper = app.add.tween(this.sprite.scale);
+	this.flipper = game.add.tween(this.sprite.scale);
 	this.flipper.to({x: 0}, this.flipTime/2);
 	this.flipper.to({x: this.skin.scale.x}, this.flipTime/2);
 
@@ -245,7 +245,7 @@ Card.prototype.bringToTop = function(fixController){
 //Устанавливает перетаскиваемость
 Card.prototype.presetSpot = function(spotId){
 	this.spotId = spotId;
-	 if(spotId == app.pid){
+	 if(spotId == game.pid){
 		this.setDraggability(true);
 	}
 	else{
@@ -288,10 +288,10 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	this.bringToTopOn = bringToTopOn;
 
-	if(app.paused)
+	if(game.paused)
 		this.updateValue();
 
-	if(this.bringToTopOn == 'init' || app.paused && this.bringToTopOn != 'never')
+	if(this.bringToTopOn == 'init' || game.paused && this.bringToTopOn != 'never')
 		this.bringToTop();
 
 	//Куда двигать карту
@@ -302,7 +302,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	var newBaseY = relativeToBase ? y + this.base.y : y;
 
 	//Предупреждаем о том, что карта вышла за пределы экрана
-	if(newBaseX < 0 || newBaseX > app.screenWidth || newBaseY < 0 || newBaseY > app.screenHeight)
+	if(newBaseX < 0 || newBaseX > game.screenWidth || newBaseY < 0 || newBaseY > game.screenHeight)
 		console.warn(
 			'Moving card', this.id, 'out of the screen (' + newBaseX + ', ' + newBaseY + ')\n',
 			this
@@ -335,7 +335,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	}
 
 	//Создаем и запускаем твин или перемещаем карту если игра остановлена
-	if(app.paused){
+	if(game.paused){
 		this.setRelativePosition(moveX, moveY);
 	}
 	else if(this.mover && !delay){
@@ -347,7 +347,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 			this.bringToTop();
 	}
 	else{
-		this.mover = app.add.tween(this.sprite);
+		this.mover = game.add.tween(this.sprite);
 		this.mover.to(
 			{
 				x: moveX,
@@ -408,11 +408,11 @@ Card.prototype.rotateTo = function(angle, time, delay){
 		return;
 
 	//Создаем и запускаем твин или поворачиваем карту если игра остановлена
-	if(app.paused){
+	if(game.paused){
 		this.setAngle(angle);
 	}
 	else{
-		this.rotator = app.add.tween(this.sprite);
+		this.rotator = game.add.tween(this.sprite);
 		this.rotator.to(
 			{
 				angle: angle
@@ -459,10 +459,10 @@ Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 
 	this.glow.tint = color || 0xFFFFFF;
 
-	if(app.paused)
+	if(game.paused)
 		return;
 
-	this.glowDecreaser = app.add.tween(this.glow);
+	this.glowDecreaser = game.add.tween(this.glow);
 	this.glowDecreaser.to(
 		{alpha: minGlow}, 
 		speed, 
@@ -471,7 +471,7 @@ Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 		Math.floor(Math.random()*(delayRange || 0))
 	);
 
-	this.glowIncreaser = app.add.tween(this.glow);
+	this.glowIncreaser = game.add.tween(this.glow);
 	this.glowIncreaser.to(
 		{alpha: maxGlow},
 		speed, 
@@ -584,7 +584,7 @@ Card.prototype.updateDebug = function(){
 	var x = this.base.x + this.sprite.x - this.skin.width/2;
 	var y = this.base.y + this.sprite.y + this.skin.height/2 + 12;
 	if(this.suit || this.suit === 0)
-		app.debug.text(
+		game.debug.text(
 			getSuitStrings('EN')[this.suit] + ' ' + cardValueToString(this.value, 'EN'),
 			x, 
 			y 
@@ -597,7 +597,7 @@ Card.prototype.updateDebug = function(){
 //Party time
 var ThrowCards = function(){
 
-	this.emitter = app.add.emitter(app.world.centerX, 200, 200);
+	this.emitter = game.add.emitter(game.world.centerX, 200, 200);
 
 	var frames = [];
 	for(var i = 0; i < 52; i++){
@@ -606,10 +606,10 @@ var ThrowCards = function(){
 	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
 
 	this.emitter.start(false, 5000, 20);
-	this.emitter.width = app.screenWidth;
-	this.emitter.height = app.screenHeight;
+	this.emitter.width = game.screenWidth;
+	this.emitter.height = game.screenHeight;
 
-	app.world.bringToTop(this.emitter)
+	game.world.bringToTop(this.emitter)
 }
 ThrowCards.prototype.stop = function(){
 	if(this.emitter.on){

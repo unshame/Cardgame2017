@@ -1,2 +1,2 @@
-window.app = new App();
-app.state.add('Play', playState, true);
+window.game = new Game();
+game.state.add('Play', playState, true);

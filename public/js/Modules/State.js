@@ -1,26 +1,26 @@
 window.playState = new Phaser.State();
 
 playState.preload = function(){
-	var app = this.game;
+	var game = this.game;
 	//Фон
-	app.load.image('wood_light', 'assets/backgrounds/wood_light.png');
-	app.load.image('wood_dark', 'assets/backgrounds/wood_dark.png');
-	app.load.image('green', 'assets/backgrounds/green.png');
-	app.load.image('black', 'assets/backgrounds/black.png');
-	app.load.image('assault', 'assets/backgrounds/assault.png');
-	app.load.image('brown', 'assets/backgrounds/brown.png');
-	app.load.image('blue', 'assets/backgrounds/blue.png');
+	game.load.image('wood_light', 'assets/backgrounds/wood_light.png');
+	game.load.image('wood_dark', 'assets/backgrounds/wood_dark.png');
+	game.load.image('green', 'assets/backgrounds/green.png');
+	game.load.image('black', 'assets/backgrounds/black.png');
+	game.load.image('assault', 'assets/backgrounds/assault.png');
+	game.load.image('brown', 'assets/backgrounds/brown.png');
+	game.load.image('blue', 'assets/backgrounds/blue.png');
 
 	// Для меню
-	app.load.image('menu','assets/backgrounds/menu.png');
-	app.load.image('menu_blue','assets/backgrounds/menu_blue.jpg');
-	app.load.image('menu_gray','assets/backgrounds/menu_gray.gif');
+	game.load.image('menu','assets/backgrounds/menu.png');
+	game.load.image('menu_blue','assets/backgrounds/menu_blue.jpg');
+	game.load.image('menu_gray','assets/backgrounds/menu_gray.gif');
 
 	//Для тестов
-	app.load.image('testParticle', 'assets/test_particle.png');
+	game.load.image('testParticle', 'assets/test_particle.png');
 
 	//Кнопки
-	app.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 3);
+	game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 3);
 
 	//Скины
 	window.skinManager = new SkinManager('modern');
@@ -55,41 +55,41 @@ playState.preload = function(){
 }
 
 playState.create = function(){
-	var app = this.game;
-	app.client = EurecaClientSetup(this.createApp, this);
+	var game = this.game;
+	game.client = EurecaClientSetup(this.createApp, this);
 }
 
 playState.createApp = function(){
-	var app = this.game;
-	if(app.created)
+	var game = this.game;
+	if(game.created)
 		return;
 
 	$('#loading').animate({opacity: 0}, 2000, function(){
 		$('#loading').hide();
 	})
 
-	app.created = true;
-	//app.world.setBounds(0, 0, app.screenWidth, app.screenHeight);
-	//app.stage.disableVisibilityChange  = true;
+	game.created = true;
+	//game.world.setBounds(0, 0, game.screenWidth, game.screenHeight);
+	//game.stage.disableVisibilityChange  = true;
 	
 
-	app.background = app.add.tileSprite(0, 0, app.screenWidth, app.screenHeight, 'blue');
+	game.background = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, 'blue');
 	
 
 	
 	
-	game.cardsGroup = app.add.group();
+	game.cardsGroup = game.add.group();
 	controller = new Controller(false);
 	game.rope = new Rope();
-	game.skipButton = new Button(app.screenWidth - skinManager.skin.width - 120, app.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('SKIP')}, 'Skip');
-	game.takeButton = new Button(app.screenWidth - skinManager.skin.width - 120, app.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('TAKE')}, 'Take');
+	game.skipButton = new Button(game.screenWidth - skinManager.skin.width - 120, game.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('SKIP')}, 'Skip');
+	game.takeButton = new Button(game.screenWidth - skinManager.skin.width - 120, game.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('TAKE')}, 'Take');
 	game.skipButton.hide();
 	game.takeButton.hide();
-	game.menu = new Menu(app.screenWidth/2,app.screenHeight/2);
+	game.menu = new Menu(game.screenWidth/2,game.screenHeight/2);
 	game.menu.addButton(function(){	},'SinglePlayer');
 	game.menu.addButton(function(){console.log('sup');},'Multiplayer');
 	game.menu.addButton(function(){console.log('lel');},'Options');
-	app.canvas.oncontextmenu = function (e) { e.preventDefault(); }
+	game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
 	game.testButton = new Button(
 		50,
 		50, function(){
@@ -99,17 +99,17 @@ playState.createApp = function(){
 	)
 
 	
-	/*app.onPause.add(function(){console.log('paused')});
-	app.onResume.add(function(){console.log('unpaused')});
-	app.onBlur.add(function(){console.log('blured')});
-	app.onFocus.add(function(){console.log('focused')});*/
+	/*game.onPause.add(function(){console.log('paused')});
+	game.onResume.add(function(){console.log('unpaused')});
+	game.onBlur.add(function(){console.log('blured')});
+	game.onFocus.add(function(){console.log('focused')});*/
 
 }
 
 
 playState.update = function(){
-	var app = this.game;
-	if(!app.created)
+	var game = this.game;
+	if(!game.created)
 		return;
 
 	if(controller)
@@ -127,8 +127,8 @@ playState.update = function(){
 
 
 playState.render = function(){
-	var app = this.game;
-	if(!app.created)
+	var game = this.game;
+	if(!game.created)
 		return;
 
 	controller && controller.updateDebug();
@@ -142,6 +142,6 @@ playState.render = function(){
 }
 
 playState.loadUpdate = function(){
-	var app = this.game;
+	var game = this.game;
 }
 

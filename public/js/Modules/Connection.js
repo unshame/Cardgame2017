@@ -24,7 +24,7 @@ var EurecaClientSetup = function(callback, context) {
 	
 	client.exports.setId = function(pid) 
 	{
-		app.pid = pid;
+		game.pid = pid;
 	}	
 	client.exports.meetOpponents = function(opponents){
 		if(isInDebugMode)
@@ -68,7 +68,7 @@ var EurecaClientSetup = function(callback, context) {
 	}
 	client.exports.recieveNotification = function(note, actions){
 		console.log(note)
-		if(note && note.results && note.results.winners && ~note.results.winners.indexOf(app.pid))
+		if(note && note.results && note.results.winners && ~note.results.winners.indexOf(game.pid))
 			game.celebration = new ThrowCards();
 
 		if(isInDebugMode)

@@ -1,10 +1,9 @@
-var App = function(){
+var Game = function(){
 
-	window.game = {
-		cards: {},
-		cardsGroup: null,
-		rope: null
-	};
+	this.cards = {}
+	this.cardsGroup = null
+	this.rope = null
+	
 	window.spotManager = new SpotManager();
 	window.skinManager = null;
 	window.controller = null;
@@ -24,10 +23,10 @@ var App = function(){
 	);
 }
 
-App.prototype = Object.create(Phaser.Game.prototype);
-App.prototype.constructor = App;
+Game.prototype = Object.create(Phaser.Game.prototype);
+Game.prototype.constructor = Game;
 
-App.prototype.updateAppDimensions = function(){
+Game.prototype.updateAppDimensions = function(){
 	this.screenWidth = window.innerWidth;
 	this.screenHeight = window.innerHeight;
 	if(this.created){
@@ -42,8 +41,8 @@ App.prototype.updateAppDimensions = function(){
 	}
 }
 
-App.prototype.newPixel = function(){
-	var pixel = app.make.graphics(0, 0);
+Game.prototype.newPixel = function(){
+	var pixel = game.make.graphics(0, 0);
 	pixel.beginFill(0xffffff);
 	pixel.drawRect(0, 0, 1, 1);
 	pixel.endFill();

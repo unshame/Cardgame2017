@@ -10,8 +10,8 @@ var Controller = function(isInDebugMode){
 	this.card = null;
 	this.pointer = null;
 
-	this.trail = app.add.emitter(0, 0);
-	this.trailDefaultBase = app.add.group();
+	this.trail = game.add.emitter(0, 0);
+	this.trailDefaultBase = game.add.group();
 	this.trailDefaultBase.add(this.trail);
 	this.trail.gravity = 0;
 	this.trail.lifespan = 600;
@@ -196,7 +196,7 @@ Controller.prototype.cardReturn = function(){
 	else{
 		card.returnToBase(this.cardReturnTime, 0);
 	}
-	app.canvas.style.cursor = "default";
+	game.canvas.style.cursor = "default";
 }
 
 
@@ -287,7 +287,7 @@ Controller.prototype.cardResetTrail = function(soft){
 Controller.prototype.setCardClickTimer = function(){
 	this.resetCardClickTimer();
 
-	this.cardClickTimer = app.time.events.add(this.cardClickMaxDelay, function(){
+	this.cardClickTimer = game.time.events.add(this.cardClickMaxDelay, function(){
 		this.resetCardClickTimer();
 	}, this);
 }
@@ -295,7 +295,7 @@ Controller.prototype.setCardClickTimer = function(){
 //Обнуляет таймер клика по карте
 Controller.prototype.resetCardClickTimer = function(){
 	if(this.cardClickTimer){
-		app.time.events.remove(this.cardClickTimer);
+		game.time.events.remove(this.cardClickTimer);
 		this.cardClickTimer = null;
 	}
 }
@@ -309,7 +309,7 @@ Controller.prototype.updateCursor = function(){
 		game.skipButton && game.skipButton.input.pointerOver() ||
 		game.takeButton && game.takeButton.input.pointerOver()
 	){
-		app.canvas.style.cursor = "pointer";
+		game.canvas.style.cursor = "pointer";
 		return;
 	}
 	for(var ci in game.cards){
@@ -317,11 +317,11 @@ Controller.prototype.updateCursor = function(){
 			continue;
 		var card = game.cards[ci];
 		if(card.mouseIsOver() && card.isDraggable){
-			app.canvas.style.cursor = "pointer";
+			game.canvas.style.cursor = "pointer";
 			return;
 		}
 	}
-	app.canvas.style.cursor = "default";
+	game.canvas.style.cursor = "default";
 }
 
 //Обновление позиции карты и хвоста
@@ -400,14 +400,14 @@ Controller.prototype.updateDebug = function(){
 	this.debugBase.y = y - height/2;
 	this.debugBase.width = width;
 	this.debugBase.height = height;
-	app.debug.geom( this.debugBase, 'rgba(255,0,0,0.6)' ) ;
+	game.debug.geom( this.debugBase, 'rgba(255,0,0,0.6)' ) ;
 
 	//Таймер клика
 	var time = (
 		this.cardClickTimer && 
 		this.cardClickTimer.timer.nextTick - new Date().getTime()
 	) || 0;
-	app.debug.text(time + 'sec', x, y );
+	game.debug.text(time + 'sec', x, y );
 
 	//Визуализация максимальной скорости хвоста
 	if(!this.debugSpeed){
@@ -415,7 +415,7 @@ Controller.prototype.updateDebug = function(){
 	}
 	width = this.trail.width || 5;
 	height = this.trail.height || 5;
-	var diameter = app.math.distance(
+	var diameter = game.math.distance(
 		0,
 		0,
 		this.trail.maxParticleSpeed.x,
@@ -424,7 +424,7 @@ Controller.prototype.updateDebug = function(){
 	this.debugSpeed.x = this.trail.parent.x + this.trail.position.x + this.trail.emitX;
 	this.debugSpeed.y = this.trail.parent.y + this.trail.position.y + this.trail.emitY;
 	this.debugSpeed.diameter = diameter + (width + height)/2;
-	app.debug.geom( this.debugSpeed, 'rgba(255,255,0,0.2)' ) ;
+	game.debug.geom( this.debugSpeed, 'rgba(255,255,0,0.2)' ) ;
 
 	//Позиция спавна последнего партикля хвоста
 	if(!this.debugSpawn){
@@ -434,10 +434,10 @@ Controller.prototype.updateDebug = function(){
 	this.debugSpawn.y = this.trail.parent.y + this.trail.position.y + this.trail.emitY - height/2;
 	this.debugSpawn.width = width;
 	this.debugSpawn.height = height;
-	app.debug.geom( this.debugSpawn, 'rgba(0,0,255,0.3)' ) ;
+	game.debug.geom( this.debugSpawn, 'rgba(0,0,255,0.3)' ) ;
 
 	if(this.pointer)
-		app.debug.pointer(this.pointer);
+		game.debug.pointer(this.pointer);
 }
 
 //Переключает дебаг
@@ -445,7 +445,7 @@ Controller.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	if(!this.isInDebugMode){
 		console.log('Controller: Debug mode OFF');
-		app.debug.reset();
+		game.debug.reset();
 	}
 	else{
 		console.log('Controller: Debug mode ON');

@@ -21,7 +21,7 @@
 
 var Spot = function(options){
 
-	this.options = this.getDefaultOptions();
+	var defaultOptions = this.options = this.getDefaultOptions();
 
 	for(o in options){
 		if(options.hasOwnProperty(o) && options[o] !== undefined){
@@ -40,19 +40,19 @@ var Spot = function(options){
 
 	this.alignment = this.options.alignment;
 	if(!~['vertical', 'horizontal'].indexOf(this.alignment))
-		this.alignment = this.getDefaultOptions().alignment;
+		this.alignment = defaultOptions.alignment;
 
 	this.direction = this.options.direction;
 	if(!~['forward', 'backward'].indexOf(this.direction))
-		this.direction = this.getDefaultOptions().direction;
+		this.direction = defaultOptions.direction;
 
 	this.align = this.options.align;
 	if(!~['left', 'center', 'right'].indexOf(this.align))
-		this.align = this.getDefaultOptions().align;
+		this.align = defaultOptions.align;
 
 	this.verticalAlign = this.options.verticalAlign;
 	if(!~['top', 'middle', 'bottom'].indexOf(this.verticalAlign))
-		this.verticalAlign = this.getDefaultOptions().verticalAlign;
+		this.verticalAlign = defaultOptions.verticalAlign;
 
 	this.flipped = this.options.flipped;
 
@@ -74,15 +74,15 @@ var Spot = function(options){
 		)
 	}
 
-	this.base = app.add.group();
+	this.base = game.add.group();
 	this.setBase(this.options.x, this.options.y);
 
 	this.minActiveSpace = this.options.minActiveSpace;
 
 	//Текстура для дебага и область поля
-	var pixel = app.newPixel();
+	var pixel = game.newPixel();
 
-	this.area = app.add.sprite(0, 0, pixel.generateTexture());
+	this.area = game.add.sprite(0, 0, pixel.generateTexture());
 	this.area.alpha = 0.35;
 	this.area.visible = this.isInDebugMode;
 	this.base.add(this.area);
@@ -91,7 +91,7 @@ var Spot = function(options){
 
 	this.resize(this.options.width, this.options.height)
 	
-	app.world.setChildIndex(this.base, 1);	
+	game.world.setChildIndex(this.base, 1);	
 
 	this.debugActiveSpace = new Phaser.Rectangle();
 	this.isInDebugMode = this.options.debug;
@@ -615,7 +615,7 @@ Spot.prototype.moveCard = function(
 
 	//Проверяем перетаскиваемость карты для тех случаев, когда карта была перемещена
 	//без использования presetSpot метода
-	if(this.type == 'HAND' && this.id == app.pid && !card.draggable)
+	if(this.type == 'HAND' && this.id == game.pid && !card.draggable)
 		card.setDraggability(true)
 	else if(card.draggable)
 		card.setDraggability(false);
@@ -667,7 +667,7 @@ Spot.prototype.destroy = function(){
 	this.removeAllCards();
 	this.area.kill();
 	this.base.removeAll(true);
-	app.world.removeChild(this.base);
+	game.world.removeChild(this.base);
 }
 
 
@@ -709,7 +709,7 @@ Spot.prototype.setUninteractibleTimer = function(time){
 		this.uninteractibleTimer = null;
 	}
 
-	if(app.paused)
+	if(game.paused)
 		return;
 
 	this.uninteractibleTimer = setTimeout(function(spot){
@@ -763,9 +763,9 @@ Spot.prototype.updateDebug = function(){
 	if(this.specialId !== null && this.specialId !== undefined)
 		str += ' #' + this.specialId;
 	str += ' ' + this.cards.length;
-	app.debug.text(str, x, y );
+	game.debug.text(str, x, y );
 
-	app.debug.geom( this.debugActiveSpace, 'rgba(0,127,127,0.3)' ) ;
+	game.debug.geom( this.debugActiveSpace, 'rgba(0,127,127,0.3)' ) ;
 }
 
 //Переключает режим дебага
@@ -773,5 +773,5 @@ Spot.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	this.area.visible = this.isInDebugMode;
 	if(!this.isInDebugMode)
-		app.debug.reset();
+		game.debug.reset();
 }
