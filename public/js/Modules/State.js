@@ -71,9 +71,7 @@ playState.createApp = function(){
 	
 
 	game.background = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, 'blue');
-	
-
-	
+	game.drawGrid();
 	
 	game.cardsGroup = game.add.group();
 	controller = new Controller(false);

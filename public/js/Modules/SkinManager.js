@@ -82,6 +82,8 @@ SkinManager.prototype.setSkin = function(skinName){
 		}
 	}
 	fieldManager.applySkin();
+	if(game.isInDebugMode)
+		game.drawGrid();
 }
 
 //Устанавливает рубашку карт
