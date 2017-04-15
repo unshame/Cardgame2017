@@ -737,7 +737,8 @@ Field.prototype.focusOffCard = function(card){
 		!this.focusedCard ||
 		!this.focusable ||
 		!this.cardIsInside(this.focusedCard, false) ||
-		card != this.focusedCard
+		card != this.focusedCard ||
+		~this.cards.indexOf(controller.card)
 	)
 		return;
 
