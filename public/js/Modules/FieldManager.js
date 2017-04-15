@@ -38,11 +38,11 @@ FieldManager.prototype.calculateSizes = function(){
 	this.positions = {
 		DECK: {
 			x: 50,
-			y: game.screenHeight/2 - skinManager.skin.height/2 - 25
+			y: game.screenHeight/2 - skinManager.skin.height/2 - 125
 		},
 		DISCARD_PILE: {
 			x:game.screenWidth - 250,
-			y:game.screenHeight/2 - skinManager.skin.height/2 - 25
+			y:game.screenHeight/2 - skinManager.skin.height/2 - 125
 		},
 
 		//Поле игрока пока не известен id игрока
@@ -53,8 +53,8 @@ FieldManager.prototype.calculateSizes = function(){
 
 		//Позиция первого поля на столе
 		firstField: {
-			x:390,
-			y:game.screenHeight/2 - skinManager.skin.height/2
+			x:340,
+			y:game.screenHeight/2 - skinManager.skin.height/2 - 100
 		},
 
 		//Позиция первого поля соперника
