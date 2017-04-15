@@ -132,7 +132,7 @@ FieldManager.prototype.createSpotNetwork = function(players){
 
 	this.pid = game.pid;
 	this.players = players;
-	var numOfCards = players.length > 4 ? 52 : 36;
+	var numOfCards = players.length > 3 ? 52 : 36;
 	var id;
 
 	this.pi = players.map(function(p){ return p.id }).indexOf(this.pid);

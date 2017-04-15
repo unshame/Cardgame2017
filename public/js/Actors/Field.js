@@ -454,8 +454,11 @@ Field.prototype.placeCards = function(newCards, bringUpOn){
 	//Отступ между картами
 	if(this.cards.length > 1)
 		cardSpacing = requiredActiveWidth/(this.cards.length-1);
-	if(this.forcedSpace)
+	if(this.forcedSpace){
+		if(cardSpacing < this.forcedSpace && this.cards.length > 1)
+			console.warn("Spot", this.id, "wants to space cards out by", this.forcedSpace + "px", "but only has", cardSpacing + "px", "available per card\n", this)
 		cardSpacing = Math.min(cardSpacing, this.forcedSpace);
+	}
 
 	this.cardSpacing = cardSpacing;
 
