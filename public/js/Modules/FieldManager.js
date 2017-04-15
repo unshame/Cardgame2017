@@ -35,30 +35,30 @@ FieldManager.prototype.calculateSizes = function(){
 	//Initial
 	this.positions = {
 		DECK: {
-			x: 100,
-			y: game.screenHeight - 250
+			x: 50,
+			y: game.screenHeight/2 - skinManager.skin.height/2 - 25
 		},
 		DISCARD_PILE: {
 			x:game.screenWidth - 250,
-			y:game.screenHeight - 250
+			y:game.screenHeight/2 - skinManager.skin.height/2 - 25
 		},
 
 		//Поле игрока пока не известен id игрока
 		playerHand: {
-			x:390,
+			x:100,
 			y:game.screenHeight - 250
 		},
 
 		//Позиция первого поля на столе
 		firstField: {
-			x:100,
-			y:400
+			x:390,
+			y:game.screenHeight/2 - skinManager.skin.height/2
 		},
 
 		//Позиция первого поля соперника
 		firstOpponent: {
 			x:100,
-			y:100
+			y:-100
 		} 
 	}
 	this.dimensions = {
@@ -73,19 +73,24 @@ FieldManager.prototype.calculateSizes = function(){
 
 		//Поле игрока пока не известен id игрока
 		playerHand: {
-			width:game.screenWidth - 700,
+			width:game.screenWidth - 200,
 			//height: 
+		},
+
+		firstField: {
+			width: (game.screenWidth - 700) / 6 - 50
+			//height:
 		},
 
 		//Размер первого поля соперника
 		firstOpponent: {
-			//width: ,
+			width: (game.screenWidth - 130) / (this.players.length - 1) - 50
 			//height: 
 		} 
 	}
 
 	//Field
-	var width = (game.screenWidth - 130) / 6 - 50;
+	var width = this.dimensions.firstField.width;
 	for(var i = 0; i < 6; i++){
 		id = 'TABLE' + i;
 		x = this.positions.firstField.x + (width + 50)*i;
@@ -104,7 +109,7 @@ FieldManager.prototype.calculateSizes = function(){
 	};
 
 	//Opponents
-	width = (game.screenWidth - 130) / (this.players.length - 1) - 50;
+	width = this.dimensions.firstOpponent.width;
 	var i = this.pi + 1;
 	var oi = 0;
 	if(i >= this.players.length)
@@ -157,7 +162,7 @@ FieldManager.prototype.createSpotNetwork = function(players){
 		sorting: false,
 		type: 'DECK',
 		id: 'DECK',
-		alignment: 'vertical',
+		alignment: 'horizontal',
 		direction: 'backward',
 		delayTime: 50
 	});

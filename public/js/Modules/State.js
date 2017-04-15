@@ -78,8 +78,8 @@ playState.createApp = function(){
 	game.cardsGroup = game.add.group();
 	controller = new Controller(false);
 	game.rope = new Rope();
-	game.skipButton = new Button(game.screenWidth - skinManager.skin.width - 120, game.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('SKIP')}, 'Skip');
-	game.takeButton = new Button(game.screenWidth - skinManager.skin.width - 120, game.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('TAKE')}, 'Take');
+	game.skipButton = new Button(game.screenWidth/2 - skinManager.skin.width/2, game.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('SKIP')}, 'Skip');
+	game.takeButton = new Button(game.screenWidth/2 - skinManager.skin.width/2, game.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('TAKE')}, 'Take');
 	game.skipButton.hide();
 	game.takeButton.hide();
 	game.menu = new Menu(game.screenWidth/2,game.screenHeight/2);
@@ -87,13 +87,13 @@ playState.createApp = function(){
 	game.menu.addButton(function(){console.log('sup');},'Multiplayer');
 	game.menu.addButton(function(){console.log('lel');},'Options');
 	game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
-	game.testButton = new Button(
+/*	game.testButton = new Button(
 		50,
 		50, function(){
 			game.menu.toggle();
 		},
 		'Menu'
-	)
+	)*/
 
 	
 	/*game.onPause.add(function(){console.log('paused')});
