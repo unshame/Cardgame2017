@@ -11,7 +11,7 @@ var Menu = function(x,y){
 
 	this.base.add(this.background);
 	this.buttons = [];
-
+	this.hide();
 
 }
 
@@ -58,6 +58,8 @@ Menu.prototype.reposition = function(){
 Menu.prototype.update = function(){
 	this.resize();
 	this.reposition();
+	if(!this.opened)
+		this.hide();
 }
 
 Menu.prototype.hide = function(){

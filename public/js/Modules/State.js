@@ -90,7 +90,6 @@ playState.createApp = function(){
 	game.menu.addButton(function(){console.log('sup');},'Multiplayer');
 	game.menu.addButton(function(){console.log('lel');},'Options');
 	app.canvas.oncontextmenu = function (e) { e.preventDefault(); }
-	game.menu.toggle();
 	game.testButton = new Button(
 		50,
 		50, function(){
