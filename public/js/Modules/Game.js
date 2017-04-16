@@ -23,7 +23,7 @@ var Game = function(){
 		'cardgame'
 	);
 
-	this.gridDensity = 2;
+	this.gridDensity = 4;
 	this.gridThickness = 1;
 }
 
@@ -84,7 +84,8 @@ Game.prototype.drawGrid = function(){
 	var density = this.gridDensity;
 	var width = Math.round(skinManager.skin.width/density);
 	var height = Math.round(skinManager.skin.height/density);
-
+	
+	//grid.lineStyle(thickness, 0x2BC41D, 1);
 	grid.lineStyle(thickness, 0xffffff, 1);
 	grid.drawRect(0, 0, width-thickness, height-thickness);
 	this.grid = this.add.tileSprite(0, 0, this.screenWidth, this.screenHeight, grid.generateTexture());
@@ -96,6 +97,7 @@ Game.prototype.drawGrid = function(){
 
 	var x = offset.x;
 	var y = offset.y;
+	//var color = 0xC10BAC;
 	var color = 0xA50000;
 	
 	var border = this.border = this.add.graphics(0, 0);
