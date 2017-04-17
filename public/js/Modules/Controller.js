@@ -69,7 +69,7 @@ Controller.prototype.cardPickup = function(card, pointer){
 	this.pointer = pointer;
 	
 	if(!this.cardClickedInbound() || (this.pointer.isMouse && !this.pointer.leftButton.isDown)){
-		this.reset();
+		this.reset('clicked out of bounds or wrong mouse button');
 		return;
 	}
 
@@ -191,7 +191,8 @@ Controller.prototype.cardReturn = function(){
 	this.pointer = null;
 	if(card.field){
 		card.field.focusedCard = null;
-		card.field.placeCard(card);
+		card.field.placeCard(card, 'end', true);
+		//card.field.setUninteractibleTimer(card.field.moveTime);
 	}
 	else{
 		card.returnToBase(this.cardReturnTime, 0);
@@ -273,7 +274,7 @@ Controller.prototype.cardResetTrail = function(soft){
 			p.alpha = 0
 		else{
 			p.kill();
-			p.reset();
+			p.reset('trail reset hard');
 		}
 	}, this)
 	this.trail.position = {x: 0, y: 0};
@@ -287,9 +288,7 @@ Controller.prototype.cardResetTrail = function(soft){
 Controller.prototype.setCardClickTimer = function(){
 	this.resetCardClickTimer();
 
-	this.cardClickTimer = game.time.events.add(this.cardClickMaxDelay, function(){
-		this.resetCardClickTimer();
-	}, this);
+	this.cardClickTimer = game.time.events.add(this.cardClickMaxDelay, this.resetCardClickTimer, this);
 }
 
 //Обнуляет таймер клика по карте
@@ -331,7 +330,7 @@ Controller.prototype.updateCard = function(){
 
 	//Ресетим контроллер, если карта была спрятана\удалена
 	if(!this.card.sprite.visible || this.card.mover){
-		this.reset();
+		this.reset('card hidden or moving');
 		return;
 	}
 
@@ -370,10 +369,10 @@ Controller.prototype.update = function(){
 }
 
 //Ресет модуля
-Controller.prototype.reset = function(){
+Controller.prototype.reset = function(reason){
 
 	if(this.isInDebugMode)
-		console.log('Controller: Reset');
+		console.log('Controller: Reset' + (reason ? ': ' + reason : ''));
 
 	this.cardResetTrail(true);
 	this.card = null;
