@@ -347,6 +347,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 			this.bringToTop();
 	}
 	else{
+		if(this.mover)
+			this.mover.stop();
 		this.mover = game.add.tween(this.sprite);
 		this.mover.to(
 			{

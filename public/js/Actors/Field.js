@@ -365,10 +365,12 @@ Field.prototype.addCard = function(card){
  * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
  * Возвращает задержку следующей карты
  */
-Field.prototype.placeCards = function(newCards, bringUpOn){
+Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 
 	if(newCards === undefined)
 		newCards = null;
+	if(noDelay === undefined)
+		noDelay = false;
 
 	//Размеры и угол поля
 	var areaWidth = (this.alignment == 'vertical') ?  this.area.height : this.area.width;
@@ -486,7 +488,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn){
 
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 
-		var localDelay = this.delays[this.cards[i].id]; 
+		var localDelay = noDelay ? 0 : this.delays[this.cards[i].id]; 
 
 		delayArray.push(localDelay)
 	}
@@ -533,11 +535,11 @@ Field.prototype.placeCards = function(newCards, bringUpOn){
 }
 
 //Для размещения одной карты
-Field.prototype.placeCard = function(card){
+Field.prototype.placeCard = function(card, bringUpOn, noDelay){
 	var i = this.cards.indexOf(card);
 	if(!~i)
 		return;
-	return this.placeCards([card], 'end');
+	return this.placeCards([card], bringUpOn, noDelay);
 }
 
 /*
