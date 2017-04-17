@@ -326,7 +326,7 @@ Field.prototype.resetQueue = function(){
 //ДОБАВЛЕНИЕ КАРТ
 
 //Добавляет карты в поле, возвращает время добавления
-Field.prototype.addCards = function(newCards){
+Field.prototype.addCards = function(newCards, noDelay){
 
 	if(!newCards.length)
 		return;
@@ -347,7 +347,7 @@ Field.prototype.addCards = function(newCards){
 			this.cards.push(card);
 		}
 		this.sortCards();
-		return this.placeCards(newCards, 'start');
+		return this.placeCards(newCards, 'start', noDelay);
 	}
 }
 
