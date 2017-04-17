@@ -76,7 +76,7 @@ Grid.prototype.draw = function(){
 	var x = offset.x,
 		y = offset.y,
 		//color = 0xC10BAC,
-		color = 0xA50000,
+		color = 0x000000,
 		alpha = 1;
 	
 	var border = this.border = game.add.graphics(0, 0);
