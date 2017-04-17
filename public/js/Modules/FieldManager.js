@@ -32,171 +32,6 @@ var FieldManager = function(isInDebugMode){
 
 //ПОЛЯ
 
-//Рассчитывает размеры полей
-FieldManager.prototype.calculateSizes = function(numOfCards){
-
-	var defaultFieldOptions = Field.prototype.getDefaultOptions();
-
-	/* ОБОБЩЕННЫЕ РАЗМЕРЫ */
-
-	//Отступы
-	this.offsets = {
-		DECK: 22,			//Колода		
-		DISCARD_PILE: 22,	//Стопка сброса		
-		playerHand: 10,		//Поле игрока пока не известен id игрока
-		firstTable: 4,		//Первое поле на столе		
-		firstOpponent: 10	//Первое поле соперника
-	}
-
-	//Минимальное место для расположения карт в поле
-	this.minActiveSpaces = {
-		DECK: numOfCards/2,
-		DISCARD_PILE: numOfCards/2,
-		playerHand: defaultFieldOptions.minActiveSpace,
-		firstTable: skinManager.skin.trumpOffset,
-		firstOpponent: defaultFieldOptions.minActiveSpace
-	}
-
-	//Позиции полей
-	this.positions = {
-		DECK: grid.at(
-			-2,
-			Math.floor(grid.numRows / 2) - 1,
-			-this.offsets['DECK'],
-			-this.offsets['DECK'],
-			'middle left'
-		),
-		DISCARD_PILE: grid.at(
-			grid.numCols - grid.density + 1,
-			Math.floor(grid.numRows / 2) - 1,
-			-this.offsets['DISCARD_PILE'],
-			-this.offsets['DISCARD_PILE'],
-			'middle left'
-		),
-		playerHand: grid.at(
-			1,
-			grid.numRows - grid.density - 1,
-			-this.offsets.playerHand,
-			-this.offsets.playerHand
-		),
-		firstTable: grid.at(
-			1 + grid.density,
-			Math.floor(grid.numRows / 2) - 1,
-			-this.offsets.firstTable,
-			-this.offsets.firstTable,
-			'middle left'
-		),
-		firstOpponent: grid.at(
-			1,
-			-Math.floor(grid.density / 2 - 1),
-			-this.offsets.firstOpponent,
-			-this.offsets.firstOpponent
-		)
-	}
-
-	//Кол-во колонок и отступы для рук противников и мест на столе
-	var tableCols = Math.round(grid.numCols - 4 - grid.density * 1.5),
-		tableOffset = this.offsets.firstTable * 2,
-		opponentsCols = Math.round(grid.numCols - 2),
-		opponentsOffset = (grid.cellWidth + this.offsets.firstOpponent * 2 ) ;
-	if(tableCols <= 0){
-		console.warn('Field manager: Negative amount of columns for field firstTable (', tableCols, '), defaulting to 0\n', this);
-		tableCols = 0;
-	}
-	if(opponentsCols <= 0){
-		console.warn('Field manager: Negative amount of columns for field firstOpponent (', opponentsCols, '), defaulting to 0\n', this);
-		opponentsCols = 0;
-	}
-
-	//Размеры полей
-	this.dimensions = {
-		DECK:{
-			//width: ,
-			//height: 
-		},
-		DISCARD_PILE: {
-			//width: ,
-			//height: 
-		},
-
-		//Поле игрока пока не известен id игрока
-		playerHand: {
-			width: (grid.numCols - 2)*grid.cellWidth,
-			//height: 
-		},
-
-		firstTable: {
-			width: (tableCols * grid.cellWidth - tableOffset * (this.tableOrder.length - 1)) / this.tableOrder.length
-			//height:
-		},
-
-		//Размер первого поля соперника
-		firstOpponent: {
-			width: (opponentsCols * grid.cellWidth - opponentsOffset * (this.players.length - 2)) / (this.players.length - 1)
-			//height: 
-		} 
-	}
-
-
-	/* РАЗМЕРЫ ДЛЯ КАЖДОГО ПОЛЯ */
-
-	//Выводит предупреждение в консоль, если ширина меньше ширины одной карты
-	function checkNotEnoughSpace(self, id, ref){
-		var width = self.dimensions[ref].width,
-			minActiveSpace = self.minActiveSpaces[ref],
-			requiredWidth = skinManager.skin.width + minActiveSpace;
-
-		if(width < requiredWidth)
-			console.warn('Field manager: Not enough space for field', id, '(', width, '<', requiredWidth, ')\n', self.fields[id])
-	}
-
-	//Table
-	var id,
-		width = this.dimensions.firstTable.width;
-	for(var i = 0; i < this.tableOrder.length; i++){
-		id = 'TABLE' + this.tableOrder[i];
-		x = this.positions.firstTable.x + (width + tableOffset)*i;
-		y = this.positions.firstTable.y;
-		this.positions[id] = {x: x, y: y};
-		this.dimensions[id] = {width: width};		
-		checkNotEnoughSpace(this, id, 'firstTable')
-	}
-
-	//Player
-	this.positions[this.pid] = {
-		x: this.positions.playerHand.x,
-		y: this.positions.playerHand.y
-	};
-	this.dimensions[this.pid] = {
-		width:this.dimensions.playerHand.width
-	};
-	checkNotEnoughSpace(this, this.pid, 'playerHand')
-
-	//Opponents
-	width = this.dimensions.firstOpponent.width;
-	var i = this.pi + 1;
-	var oi = 0;
-	if(i >= this.players.length)
-		i = 0;
-	while(i != this.pi){
-		var p = this.players[i];
-		x = this.positions.firstOpponent.x + (width + opponentsOffset)*oi;
-		y = this.positions.firstOpponent.y;
-		this.positions[p.id] = {
-			x: x,
-			y: y
-		};
-		this.dimensions[p.id] = {
-			width: width
-		};
-		checkNotEnoughSpace(this, p.id, 'firstOpponent')
-		oi++;
-		i++;
-		if(i >= this.players.length)
-			i = 0;
-	}
-}
-
 //Создает поля
 FieldManager.prototype.createFieldNetwork = function(players){
 
@@ -211,6 +46,7 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		return
 	}
 
+	this.opponentPlacement = this.calculateOpponentPlacement(this.players.length - 1);
 	this.calculateSizes(numOfCards);
 
 	//Deck
@@ -300,12 +136,14 @@ FieldManager.prototype.createFieldNetwork = function(players){
 			x: this.positions[p.id].x,
 			y: this.positions[p.id].y,
 			width: this.dimensions[p.id].width,
-			minActiveSpace: this.minActiveSpaces.firstOpponent,
-			margin:this.offsets.firstOpponent,
+			minActiveSpace: this.minActiveSpaces.firstOpponent[1],
+			margin:this.offsets.firstOpponent[1],
 			texture: 'field',
 			sorting:false,
 			focusable:false,
-			flipped: true,
+			alignment: this.dimensions[p.id].alignment,
+			direction: this.dimensions[p.id].direction,
+			flipped: this.dimensions[p.id].flipped,
 			type: 'HAND',
 			id: p.id,
 			name: p.name,
@@ -319,6 +157,264 @@ FieldManager.prototype.createFieldNetwork = function(players){
 			i = 0;
 	}
 	this.networkCreated = true;
+}
+
+//Рассчитывает размеры полей
+FieldManager.prototype.calculateSizes = function(numOfCards){
+	this.calculateGeneralSizes(numOfCards);
+	this.calculateSpecificSizes();
+}
+
+//Обобщенные размеры
+FieldManager.prototype.calculateGeneralSizes = function(numOfCards){
+
+	var defaultFieldOptions = Field.prototype.getDefaultOptions();
+
+	//Отступы
+	this.offsets = {
+		DECK: 22,					//Колода		
+		DISCARD_PILE: 22,			//Стопка сброса		
+		playerHand: 10,				//Поле игрока пока не известен id игрока
+		firstTable: 4,				//Первое поле на столе		
+		firstOpponent: [10, 10, 10]	//Первые поля соперника
+	}
+
+	//Минимальное место для расположения карт в поле
+	this.minActiveSpaces = {
+		DECK: numOfCards/2,
+		DISCARD_PILE: numOfCards/2,
+		playerHand: defaultFieldOptions.minActiveSpace,
+		firstTable: skinManager.skin.trumpOffset,
+		firstOpponent: [
+			defaultFieldOptions.minActiveSpace,
+			defaultFieldOptions.minActiveSpace,
+			defaultFieldOptions.minActiveSpace
+		]
+	}
+
+	//Позиции полей
+	this.positions = {
+		DECK: grid.at(
+			-2,
+			Math.floor(grid.numRows / 2) - 1,
+			-this.offsets['DECK'],
+			-this.offsets['DECK'],
+			'middle left'
+		),
+		DISCARD_PILE: grid.at(
+			grid.numCols - grid.density + 1,
+			Math.floor(grid.numRows / 2) - 1,
+			-this.offsets['DISCARD_PILE'],
+			-this.offsets['DISCARD_PILE'],
+			'middle left'
+		),
+		playerHand: grid.at(
+			1,
+			grid.numRows - grid.density - 1,
+			-this.offsets.playerHand,
+			-this.offsets.playerHand
+		),
+		firstTable: grid.at(
+			1 + grid.density,
+			Math.floor(grid.numRows / 2) - 1,
+			-this.offsets.firstTable,
+			-this.offsets.firstTable,
+			'middle left'
+		),
+		firstOpponent: [
+			grid.at(
+				1,
+				2,
+				-this.offsets.firstOpponent[0],
+				-this.offsets.firstOpponent[0]
+			),
+			grid.at(
+				1,
+				-Math.floor(grid.density / 2 - 1),
+				-this.offsets.firstOpponent[1],
+				-this.offsets.firstOpponent[1]
+			),
+			grid.at(
+				1,
+				8,
+				-this.offsets.firstOpponent[2],
+				-this.offsets.firstOpponent[2]
+			)
+		]
+	}
+
+	//Кол-во колонок и отступы для рук противников и мест на столе
+	var tableCols = this.tableCols = Math.round(grid.numCols - 4 - grid.density * 1.5),
+		tableOffset = this.tableOffset = this.offsets.firstTable * 2,
+		opponentsCols = this.opponentsCols = [
+			Math.round(grid.numCols - 2),
+			Math.round(grid.numCols - 2),
+			Math.round(grid.numCols - 2)
+		],
+		opponentsOffset = this.opponentsOffset = [
+			(grid.cellWidth + this.offsets.firstOpponent[0] * 2 ),
+			(grid.cellWidth + this.offsets.firstOpponent[1] * 2 ),
+			(grid.cellWidth + this.offsets.firstOpponent[2] * 2 )
+		];
+	if(tableCols <= 0){
+		console.warn('Field manager: Negative amount of columns for field firstTable (', tableCols, '), defaulting to 0\n', this);
+		tableCols = 0;
+	}
+	for(var i = 0; i < opponentsCols.length; i++){
+		if(opponentsCols[i] <= 0){
+			console.warn('Field manager: Negative amount of columns for field firstOpponent[', i, '] (', opponentsCols[i], '), defaulting to 0\n', this);
+			opponentsCols[i] = 0;
+		}
+	}
+
+	//Размеры полей
+	this.dimensions = {
+		DECK:{
+			//width: ,
+			//height: 
+		},
+		DISCARD_PILE: {
+			//width: ,
+			//height: 
+		},
+
+		//Поле игрока пока не известен id игрока
+		playerHand: {
+			width: (grid.numCols - 2)*grid.cellWidth,
+			//height: 
+		},
+
+		firstTable: {
+			width: (tableCols * grid.cellWidth - tableOffset * (this.tableOrder.length - 1)) / this.tableOrder.length
+			//height:
+		},
+
+		//Размер первого поля соперника
+		firstOpponent: [
+			{
+				width: (opponentsCols[0] * grid.cellWidth - opponentsOffset[0] * (this.opponentPlacement[0] - 1)) / this.opponentPlacement[0]
+				//height: 
+			},
+			{
+				width: (opponentsCols[1] * grid.cellWidth - opponentsOffset[1] * (this.opponentPlacement[1] - 1)) / this.opponentPlacement[1]
+				//height: 
+			},
+			{
+				width: (opponentsCols[2] * grid.cellWidth - opponentsOffset[2] * (this.opponentPlacement[2] - 1)) / this.opponentPlacement[2]
+				//height: 
+			}
+		]
+	}
+}
+
+//Размеры для каждого поля
+FieldManager.prototype.calculateSpecificSizes = function(){
+
+	var tableCols = this.tableCols,
+		tableOffset = this.tableOffset,
+		opponentsCols = this.opponentsCols,
+		opponentsOffset = this.opponentsOffset;
+
+	//Выводит предупреждение в консоль, если ширина меньше ширины одной карты
+	function notEnoughSpace(self, id, ref, index){
+		var isArray = typeof index == 'number',
+			width = isArray ? self.dimensions[ref][index] : self.dimensions[ref].width,
+			minActiveSpace = isArray ? self.minActiveSpaces[ref][index] : self.minActiveSpaces[ref],
+			requiredWidth = skinManager.skin.width + minActiveSpace;
+
+		if(width < requiredWidth){
+			console.warn('Field manager: Not enough space for field', id, '(', width, '<', requiredWidth, ')\n', self.fields[id]);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	//Table
+	var id,
+		width = this.dimensions.firstTable.width;
+	for(var i = 0; i < this.tableOrder.length; i++){
+		id = 'TABLE' + this.tableOrder[i];
+		x = this.positions.firstTable.x + (width + tableOffset)*i;
+		y = this.positions.firstTable.y;
+		this.positions[id] = {x: x, y: y};
+		this.dimensions[id] = {width: width};		
+		notEnoughSpace(this, id, 'firstTable')
+	}
+
+	//Player
+	this.positions[this.pid] = {
+		x: this.positions.playerHand.x,
+		y: this.positions.playerHand.y
+	};
+	this.dimensions[this.pid] = {
+		width:this.dimensions.playerHand.width
+	};
+	notEnoughSpace(this, this.pid, 'playerHand')
+
+	//Opponents
+	function copyPlacement(v){
+		return v;
+	}
+	var dimensions = this.dimensions.firstOpponent,
+		i = this.pi + 1,
+		oi = 0,
+		pi = 0,
+		placement = this.opponentPlacement.map(copyPlacement),
+		directions = ['backward', 'forward', 'forward'],
+		flipped = [false, true, true],
+		alignment = ['vertical', 'horizontal', 'vertical'];
+
+
+	if(i >= this.players.length)
+		i = 0;
+	
+	while(i != this.pi){
+		var p = this.players[i];
+
+		x = this.positions.firstOpponent[pi].x + (dimensions[pi].width + opponentsOffset[pi])*oi;
+		y = this.positions.firstOpponent[pi].y;
+		this.positions[p.id] = {
+			x: x,
+			y: y
+		};
+		this.dimensions[p.id] = {
+			width: dimensions[pi].width,
+			height: dimensions[pi].height,
+			direction: directions[pi],
+			flipped: flipped[pi],
+			alignment: alignment[pi]
+		};
+		notEnoughSpace(this, p.id, 'firstOpponent', pi)
+		oi++;
+		i++;
+		if(i >= this.players.length)
+			i = 0;
+
+		placement[pi]--;
+		if(!placement[pi]){
+			pi++;
+			oi = 0;
+		}
+	}
+}
+
+//Расчитывает положение полей противников (слева, сверху, справа)
+FieldManager.prototype.calculateOpponentPlacement = function(n){
+	var a = [0, 0, 0];
+	var i = 0;
+	while(n--){
+		if(i > 2)
+			i = 0;
+		if(n >= 2)
+			a[i]++
+		else if(a[0] == a[2])
+			a[1]++
+		else
+			a[2]++;
+		i++;
+	}
+	return a
 }
 
 //Добавляет поле
@@ -668,5 +764,6 @@ FieldManager.prototype.toggleDebugMode = function(){
 	this.forEachField(function(field, si){
 		if(field.isInDebugMode != this.isInDebugMode)
 			field.toggleDebugMode();
-	})
+	});
+	actions && actions.length && this.highlightPossibleActions(actions);
 }
