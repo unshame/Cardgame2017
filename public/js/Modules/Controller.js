@@ -262,9 +262,6 @@ Controller.prototype.cardSpawnTrail = function(){
 	this.trail.emitX = this.card.sprite.x - this.trail.position.x;
 	this.trail.emitY = this.card.sprite.y - this.trail.position.y;
 	this.trail.emitParticle();
-	this.trail.forEachAlive(function(p){
-		p.alpha = p.lifespan / this.trail.lifespan * 0.6;
-	}, this)
 }
 
 //Ресетит хвост карты
@@ -362,10 +359,20 @@ Controller.prototype.updateCard = function(){
 	this.cardSpawnTrail();
 }
 
+//Обновление прозрачности партиклей хвоста
+Controller.prototype.updateTrail = function(){
+	if(!this.trail.countLiving())
+		return;
+	this.trail.forEachAlive(function(p){
+		p.alpha = p.lifespan / this.trail.lifespan * 0.6;
+	}, this)
+}
+
 //Обновление контроллера
 Controller.prototype.update = function(){
 	this.updateCard();
 	this.updateCursor();
+	this.updateTrail();
 }
 
 //Ресет модуля
