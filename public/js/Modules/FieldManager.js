@@ -35,33 +35,62 @@ FieldManager.prototype.calculateSizes = function(){
 	var id;
 
 	//Initial
-	this.positions = {
-		DECK: {
-			x: 50,
-			y: game.screenHeight/2 - skinManager.skin.height/2 - 125
-		},
-		DISCARD_PILE: {
-			x:game.screenWidth - 250,
-			y:game.screenHeight/2 - skinManager.skin.height/2 - 125
-		},
+	this.offsets = {
+		DECK: 22,
+		DISCARD_PILE: 10,
 
 		//Поле игрока пока не известен id игрока
-		playerHand: {
-			x:100,
-			y:game.screenHeight - 250
-		},
+		playerHand: 10,
 
 		//Позиция первого поля на столе
-		firstField: {
-			x:340,
-			y:game.screenHeight/2 - skinManager.skin.height/2 - 100
-		},
+		firstTable: 4,
 
 		//Позиция первого поля соперника
-		firstOpponent: {
-			x:100,
-			y:-100
-		} 
+		firstOpponent: 10
+	}
+	this.positions = {
+		DECK: grid.at(
+			1,
+			Math.floor(grid.numRows / 2) - 1,
+			-this.offsets['DECK'],
+			-this.offsets['DECK'],
+			false,
+			true
+		),
+		DISCARD_PILE: grid.at(
+			grid.numCols - grid.density - 2,
+			Math.floor(grid.numRows / 2) - 1,
+			-this.offsets['DISCARD_PILE'],
+			-this.offsets['DISCARD_PILE'],
+			false,
+			true
+		),
+
+		//Поле игрока пока не известен id игрока
+		playerHand: grid.at(
+			1,
+			grid.numRows - grid.density - 1,
+			-this.offsets.playerHand,
+			-this.offsets.playerHand
+		),
+
+		//Позиция первого поля на столе
+		firstTable: grid.at(
+			2 + Math.round(grid.density*1.75),
+			Math.floor(grid.numRows / 2) - 1,
+			-this.offsets.firstTable,
+			-this.offsets.firstTable,
+			false,
+			true
+		),
+
+		//Позиция первого поля соперника
+		firstOpponent: grid.at(
+			1,
+			-Math.floor(grid.density / 2 - 1),
+			-this.offsets.firstOpponent,
+			-this.offsets.firstOpponent
+		)
 	}
 	this.dimensions = {
 		DECK:{
@@ -75,28 +104,43 @@ FieldManager.prototype.calculateSizes = function(){
 
 		//Поле игрока пока не известен id игрока
 		playerHand: {
-			width:game.screenWidth - 200,
+			width: (grid.numCols - 2)*grid.cellWidth,
 			//height: 
 		},
 
-		firstField: {
-			width: (game.screenWidth - 700) / 6 - 50
+		firstTable: {
+			width: 
+				Math.round(
+					((
+						grid.numCols 
+						- 2 
+						- grid.density * 2 
+						- grid.density * 1.75
+					) * grid.cellWidth)
+					- this.offsets.firstTable * 2 * (this.tableOrder.length - 1) 
+				) / this.tableOrder.length
 			//height:
 		},
 
 		//Размер первого поля соперника
 		firstOpponent: {
-			width: (game.screenWidth - 130) / (this.players.length - 1) - 50
+			width: 
+				Math.round(
+					(
+						(grid.numCols - 2) * grid.cellWidth 
+						- (grid.cellWidth + this.offsets.firstOpponent * 2 ) * (this.players.length - 2)
+					)
+				) / (this.players.length - 1)
 			//height: 
 		} 
 	}
 
 	//Field
-	var width = this.dimensions.firstField.width;
+	var width = this.dimensions.firstTable.width;
 	for(var i = 0; i < 6; i++){
 		id = 'TABLE' + this.tableOrder[i];
-		x = this.positions.firstField.x + (width + 50)*i;
-		y = this.positions.firstField.y;
+		x = this.positions.firstTable.x + (width + this.offsets.firstTable*2)*i;
+		y = this.positions.firstTable.y;
 		this.positions[id] = {x: x, y: y};
 		this.dimensions[id] = {width: width};
 	}
@@ -118,7 +162,7 @@ FieldManager.prototype.calculateSizes = function(){
 		i = 0;
 	while(i != this.pi){
 		var p = this.players[i];
-		x = this.positions.firstOpponent.x + (width + 50)*oi;
+		x = this.positions.firstOpponent.x + (width + grid.cellWidth + this.offsets.firstOpponent*2)*oi;
 		y = this.positions.firstOpponent.y;
 		this.positions[p.id] = {
 			x: x,
@@ -157,7 +201,7 @@ FieldManager.prototype.createSpotNetwork = function(players){
 		minActiveSpace: numOfCards / 2,
 		align: 'right',
 		padding: 0,
-		margin: 22,
+		margin: this.offsets['DECK'],
 		focusable:false,
 		forcedSpace: 0.5,
 		texture: 'field',
@@ -176,9 +220,11 @@ FieldManager.prototype.createSpotNetwork = function(players){
 		y: this.positions['DISCARD_PILE'].y,
 		minActiveSpace: numOfCards / 2,
 		padding:0,
+		margin: this.offsets['DISCARD_PILE'],
 		focusable:false,
 		forcedSpace: 0.5,
 		texture: 'field',
+		align: 'left',
 		sorting: false,
 		type: 'DISCARD_PILE',
 		id: 'DISCARD_PILE'
@@ -195,7 +241,7 @@ FieldManager.prototype.createSpotNetwork = function(players){
 			height: this.dimensions[id].height,
 			minActiveSpace: skinManager.skin.trumpOffset,
 			forcedSpace: skinManager.skin.trumpOffset,
-			margin:0,
+			margin: this.offsets.firstTable,
 			texture: 'field',
 			focusable:false,
 			sorting:false,
@@ -211,6 +257,7 @@ FieldManager.prototype.createSpotNetwork = function(players){
 		x:this.positions[this.pid].x,
 		y:this.positions[this.pid].y,
 		width:this.dimensions.playerHand.width,
+		margin:this.offsets.playerHand,
 		texture: 'field',
 		type: 'HAND',
 		id: this.pid,
@@ -229,6 +276,7 @@ FieldManager.prototype.createSpotNetwork = function(players){
 			x: this.positions[p.id].x,
 			y: this.positions[p.id].y,
 			width: this.dimensions[p.id].width,
+			margin:this.offsets.firstOpponent,
 			texture: 'field',
 			sorting:false,
 			focusable:false,

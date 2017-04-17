@@ -35,11 +35,11 @@ Grid.prototype.draw = function(){
 	var screenWidth = game.screenWidth;
 	var screenHeight = game.screenHeight;
 
-	var grid = game.make.graphics(0, 0);
-	var density = this.density;
-	var thickness = this.thickness;
-	var width = this.cellWidth = Math.round(skinManager.skin.width/density);
-	var height = this.cellHeight = Math.round(skinManager.skin.height/density);
+	var grid = game.make.graphics(0, 0),
+		density = this.density,
+		thickness = this.thickness,
+		width = this.cellWidth = Math.round(skinManager.skin.width/density),
+		height = this.cellHeight = Math.round(skinManager.skin.height/density);
 	
 	//grid.lineStyle(thickness, 0x2BC41D, 1);
 	grid.lineStyle(thickness, 0xffffff, 1);
@@ -60,10 +60,10 @@ Grid.prototype.draw = function(){
 	this.width = screenWidth - offset.x*2;
 	this.height = screenHeight - offset.y*2;
 
-	var x = offset.x;
-	var y = offset.y;
-	//var color = 0xC10BAC;
-	var color = 0xA50000;
+	var x = offset.x,
+		y = offset.y,
+		//color = 0xC10BAC,
+		color = 0xA50000;
 	
 	var border = this.border = game.add.graphics(0, 0);
 	border.lineStyle(y, color, 1);
@@ -83,18 +83,23 @@ Grid.prototype.draw = function(){
 	game.background.add(this.border);
 }
 
-Grid.prototype.at = function(col, row, offsetX, offsetY){
+Grid.prototype.at = function(col, row, offsetX, offsetY, centerX, centerY){
 	if(!offsetX)
 		offsetX = 0;
 	if(!offsetY)
 		offsetY = 0;
-	var x = col*this.cellWidth + this.offset.x;
-	var y = row*this.cellHeight + this.offset.y;
+
+	var toCenter = Math.floor(this.density/2),
+		toCenterX = centerX ? toCenter : 0,
+		toCenterY = centerY ? toCenter : 0,
+		x = (col-toCenterX)*this.cellWidth + this.offset.x,
+		y = (row-toCenterY)*this.cellHeight + this.offset.y;
+
 	if(this.highlight){
 		this.highlight.reset();
 		this.highlight.position.x = x;
 		this.highlight.position.y = y;
 		game.world.bringToTop(this.highlight)
 	}
-	return {x: x + offsetX, y: y - offsetY}
+	return {x: x + offsetX, y: y + offsetY}
 }
