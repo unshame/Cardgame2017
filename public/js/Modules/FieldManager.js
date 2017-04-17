@@ -37,7 +37,7 @@ FieldManager.prototype.calculateSizes = function(){
 	//Initial
 	this.offsets = {
 		DECK: 22,
-		DISCARD_PILE: 10,
+		DISCARD_PILE: 22,
 
 		//Поле игрока пока не известен id игрока
 		playerHand: 10,
@@ -54,16 +54,14 @@ FieldManager.prototype.calculateSizes = function(){
 			Math.floor(grid.numRows / 2) - 1,
 			-this.offsets['DECK'],
 			-this.offsets['DECK'],
-			false,
-			true
+			'middle left'
 		),
 		DISCARD_PILE: grid.at(
 			grid.numCols - grid.density - 2,
 			Math.floor(grid.numRows / 2) - 1,
 			-this.offsets['DISCARD_PILE'],
 			-this.offsets['DISCARD_PILE'],
-			false,
-			true
+			'middle left'
 		),
 
 		//Поле игрока пока не известен id игрока
@@ -80,8 +78,7 @@ FieldManager.prototype.calculateSizes = function(){
 			Math.floor(grid.numRows / 2) - 1,
 			-this.offsets.firstTable,
 			-this.offsets.firstTable,
-			false,
-			true
+			'middle left'
 		),
 
 		//Позиция первого поля соперника
