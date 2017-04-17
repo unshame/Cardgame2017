@@ -37,8 +37,21 @@ Game.prototype.updateAppDimensionsListener = function(){
 		grid && grid.draw();
 		fieldManager.resizeFields();
 		this.rope.maxHeight = this.rope.sprite.y = this.screenHeight;
-		this.skipButton.reposition(this.screenWidth/2 - skinManager.skin.width/2, this.screenHeight - skinManager.skin.height - 120);
-		this.takeButton.reposition(this.screenWidth/2 - skinManager.skin.width/2, this.screenHeight - skinManager.skin.height - 120);
+
+		var buttonPosition = grid.at(
+			Math.floor(grid.numCols/2),
+			grid.numRows - grid.density - 2,
+			-95,
+			-25
+		)
+		this.skipButton.reposition(
+			buttonPosition.x,
+			buttonPosition.y
+		);
+		this.takeButton.reposition(
+			buttonPosition.x,
+			buttonPosition.y
+		);
 		this.menu.update();
 	}
 	$('#loading').hide().css('opacity', 0);

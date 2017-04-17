@@ -80,8 +80,24 @@ playState.createApp = function(){
 	game.cardsGroup = game.add.group();
 	controller = new Controller(false);
 	game.rope = new Rope();
-	game.skipButton = new Button(game.screenWidth/2 - skinManager.skin.width/2, game.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('SKIP')}, 'Skip');
-	game.takeButton = new Button(game.screenWidth/2 - skinManager.skin.width/2, game.screenHeight - skinManager.skin.height - 120, function(){sendRealAction('TAKE')}, 'Take');
+	var buttonPosition = grid.at(
+		Math.floor(grid.numCols/2),
+		grid.numRows - grid.density - 2,
+		-95,
+		-25
+	);
+	game.skipButton = new Button(
+		buttonPosition.x,
+		buttonPosition.y,
+		function(){sendRealAction('SKIP')},
+		'Skip'
+	);
+	game.takeButton = new Button(
+		buttonPosition.x,
+		buttonPosition.y,
+		function(){sendRealAction('TAKE')},
+		'Take'
+	);
 	game.skipButton.hide();
 	game.takeButton.hide();
 	game.menu = new Menu(game.screenWidth/2,game.screenHeight/2);
