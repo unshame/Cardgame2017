@@ -383,8 +383,10 @@ FieldManager.prototype.executeAction = function(action){
 		action.type = 'CARDS';
 	}
 
-	if(!this.networkCreated)
+	if(!this.networkCreated){
+		console.error('Field manager: field network hasn\'t been created')
 		return;
+	}
 
 	var delay = 0,
 		cards, card, field;
@@ -489,8 +491,10 @@ FieldManager.prototype.executeAction = function(action){
 
 //Подсвечивает карты, которыми можно ходить
 FieldManager.prototype.highlightPossibleActions = function(actions){
-	if(!this.networkCreated)
+	if(!this.networkCreated){
+		console.error('Field manager: field network hasn\'t been created')
 		return;
+	}
 	
 	this.forEachField(function(field, si){
 		field.setHighlight(false);
