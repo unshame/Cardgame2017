@@ -29,7 +29,6 @@ var FieldManager = function(){
 //ПОЛЯ
 
 //Рассчитывает размеры полей
-//Нужно будет придумать, как распологать поля на экране
 FieldManager.prototype.calculateSizes = function(numOfCards){
 
 	var defaultFieldOptions = Field.prototype.getDefaultOptions();
