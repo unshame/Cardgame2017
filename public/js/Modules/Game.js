@@ -22,9 +22,6 @@ var Game = function(){
 		Phaser.Canvas, 
 		'cardgame'
 	);
-
-	this.gridDensity = 4;
-	this.gridThickness = 1;
 }
 
 Game.prototype = Object.create(Phaser.Game.prototype);
