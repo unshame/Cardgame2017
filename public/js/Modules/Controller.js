@@ -113,7 +113,7 @@ Controller.prototype.cardPutDown = function(){
 	if(this.isInDebugMode)
 		console.log('Controller: Putting down', this.card.id);
 
-	var field = this.cardOnValidSpot();
+	var field = this.cardOnValidField();
 
 	if(field && !this.pointer.rightButton.isDown){
 		this.cardRebaseAtPointer(field);
@@ -124,14 +124,14 @@ Controller.prototype.cardPutDown = function(){
 }
 
 //Оставляет карту в позиции курсора
-Controller.prototype.cardRebaseAtPointer = function(newSpot){
+Controller.prototype.cardRebaseAtPointer = function(newField){
 
 	if(!this.card){
 		console.warn('Controller: cardRebaseAtPointer called but no Card assigned.');
 		return
 	}
 
-	var success = sendAction(newSpot, this.card);
+	var success = sendAction(newField, this.card);
 
 	if(!success){
 		this.cardReturn();
@@ -151,7 +151,7 @@ Controller.prototype.cardRebaseAtPointer = function(newSpot){
 	this.card.setRelativePosition(0, 0);
 	this.card.setDraggability(false);
 
-	fieldManager.forEachSpot(function(field, si){
+	fieldManager.forEachField(function(field, si){
 		field.setHighlight(false);
 	})
 
@@ -217,11 +217,11 @@ Controller.prototype.cardClickedInbound = function(){
 //ХВОСТ КАРТЫ
 
 //Проверка корректности позиции карты
-Controller.prototype.cardOnValidSpot = function(){
+Controller.prototype.cardOnValidField = function(){
 	if(!this.card.isPlayable)
 		return false;
 
-	var fields = fieldManager.forEachSpot(function(field, si){
+	var fields = fieldManager.forEachField(function(field, si){
 		if(field.isHighlighted && field.cardIsInside(this.card, false)){
 			return field
 		}

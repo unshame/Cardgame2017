@@ -115,6 +115,6 @@ Button.prototype.reposition = function(x, y){
 	this.text.x = this.centerX;
 	this.text.y = this.centerY;
 }
-Button.prototype.showSpot = function(){
+Button.prototype.showField = function(){
 	server.onConnect(conn);
 }

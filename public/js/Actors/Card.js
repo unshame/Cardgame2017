@@ -24,7 +24,7 @@ var Card = function (options) {
 	this.id = this.options.id;
 
 	//Field
-	this.presetSpot(this.options.fieldId)
+	this.presetField(this.options.fieldId)
 	this.field = null;
 
 	//Sprite
@@ -243,7 +243,7 @@ Card.prototype.bringToTop = function(fixController){
 
 //Запоминает id поля, в которое будет перемещена карта
 //Устанавливает перетаскиваемость
-Card.prototype.presetSpot = function(fieldId){
+Card.prototype.presetField = function(fieldId){
 	this.fieldId = fieldId;
 	 if(fieldId == game.pid){
 		this.setDraggability(true);

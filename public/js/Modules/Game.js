@@ -35,7 +35,7 @@ Game.prototype.updateAppDimensionsListener = function(){
 		this.surface.width = this.screenWidth;
 		this.surface.height =  this.screenHeight;
 		grid && grid.draw();
-		fieldManager.resizeSpots();
+		fieldManager.resizeFields();
 		this.rope.maxHeight = this.rope.sprite.y = this.screenHeight;
 		this.skipButton.reposition(this.screenWidth/2 - skinManager.skin.width/2, this.screenHeight - skinManager.skin.height - 120);
 		this.takeButton.reposition(this.screenWidth/2 - skinManager.skin.width/2, this.screenHeight - skinManager.skin.height - 120);

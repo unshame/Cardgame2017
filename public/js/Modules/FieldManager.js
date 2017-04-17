@@ -32,8 +32,6 @@ var FieldManager = function(){
 //Нужно будет придумать, как распологать поля на экране
 FieldManager.prototype.calculateSizes = function(){
 
-	var id;
-
 	//Initial
 	this.offsets = {
 		DECK: 22,
@@ -133,7 +131,8 @@ FieldManager.prototype.calculateSizes = function(){
 	}
 
 	//Field
-	var width = this.dimensions.firstTable.width;
+	var id,
+		width = this.dimensions.firstTable.width;
 	for(var i = 0; i < 6; i++){
 		id = 'TABLE' + this.tableOrder[i];
 		x = this.positions.firstTable.x + (width + this.offsets.firstTable*2)*i;
@@ -176,7 +175,7 @@ FieldManager.prototype.calculateSizes = function(){
 }
 
 //Создает поля
-FieldManager.prototype.createSpotNetwork = function(players){
+FieldManager.prototype.createFieldNetwork = function(players){
 
 	this.pid = game.pid;
 	this.players = players;
@@ -293,7 +292,7 @@ FieldManager.prototype.createSpotNetwork = function(players){
 }
 
 //Добавляет поле
-FieldManager.prototype.addSpot = function(options){
+FieldManager.prototype.addField = function(options){
 	if(!options)
 		options = {};
 
@@ -357,7 +356,7 @@ FieldManager.prototype.addSpot = function(options){
 FieldManager.prototype.executeAction = function(action){
 	if(action.type == 'GAME_INFO' && action.players.length){
 		fieldManager.resetNetwork();
-		fieldManager.createSpotNetwork(action.players);
+		fieldManager.createFieldNetwork(action.players);
 		action.type = 'CARDS';
 	}
 
@@ -367,7 +366,7 @@ FieldManager.prototype.executeAction = function(action){
 	var delay = 0,
 		cards, card, field;
 
-	this.forEachSpot(function(field, si){
+	this.forEachField(function(field, si){
 		field.setHighlight(false);
 	})
 
@@ -382,7 +381,7 @@ FieldManager.prototype.executeAction = function(action){
 		break;
 
 	case 'CARDS':
-		this.resetSpots();
+		this.resetFields();
 		controller.reset();
 
 		for(var cid in game.cards){
@@ -470,7 +469,7 @@ FieldManager.prototype.highlightPossibleActions = function(actions){
 	if(!this.networkCreated)
 		return;
 	
-	this.forEachSpot(function(field, si){
+	this.forEachField(function(field, si){
 		field.setHighlight(false);
 	})
 	var field = this.fields[this.pid];
@@ -506,7 +505,7 @@ FieldManager.prototype.queueCards = function(newCards){
 		var card = game.cards[c.cid];
 		if(card){
 			card.presetValue(c.suit, c.value);		
-			card.presetSpot(c.field || c.pid);
+			card.presetField(c.field || c.pid);
 		}
 		else{
 			var options = {
@@ -550,7 +549,7 @@ FieldManager.prototype.placeCards = function(field, newCards){
 		
 		if(card){
 			card.presetValue(suit, value);
-			card.presetSpot(field.id);
+			card.presetField(field.id);
 			card.field && card.field.removeCard(card);
 			cardsToPlace.push(card)
 		}
@@ -562,10 +561,10 @@ FieldManager.prototype.placeCards = function(field, newCards){
 }
 
 
-//FOR EACH SPOT
+//FOR EACH FIELD
 
 //Выполняет callback для каждого поля из this.fields
-FieldManager.prototype.forEachSpot = function(callback, context){
+FieldManager.prototype.forEachField = function(callback, context){
 	var returnedValues = [];
 	for(var si in this.fields){
 		if(!this.fields.hasOwnProperty(si))
@@ -580,7 +579,7 @@ FieldManager.prototype.forEachSpot = function(callback, context){
 
 //Удаляет карты this.cardsToRemove из соответсвующих полей
 FieldManager.prototype.removeMarkedCards = function(){
-	this.forEachSpot(function(field, si){
+	this.forEachField(function(field, si){
 		var cards = this.cardsToRemove[si];
 		if(cards.length){
 			field.removeCards(cards);
@@ -591,37 +590,30 @@ FieldManager.prototype.removeMarkedCards = function(){
 
 //Выполняет размещение очередей карт каждого поля
 FieldManager.prototype.placeQueuedCards = function(){
-	this.forEachSpot(function(field, si){
+	this.forEachField(function(field, si){
 		field.placeQueuedCards();
 	})
 }
 
 //Меняет размеры и устанавливает позицию полей в соотстветсвии с this.positions и this.dimensions
-FieldManager.prototype.resizeSpots = function(){
+FieldManager.prototype.resizeFields = function(){
 	this.calculateSizes();
-	this.forEachSpot(function(field, si){
+	this.forEachField(function(field, si){
 		field.setBase(this.positions[si].x, this.positions[si].y);
 		field.resize(this.dimensions[si].width, this.dimensions[si].height, true);
 	})
 }
 
-//Применяет текущий скин к полям. На данный момент меняет только высоту поля 
-FieldManager.prototype.applySkin = function(){
-	this.forEachSpot(function(field, si){
-		field.resize(null, null, true);
-	})
-}
-
 //Ресетит поля
-FieldManager.prototype.resetSpots = function(){
-	this.forEachSpot(function(field, si){
+FieldManager.prototype.resetFields = function(){
+	this.forEachField(function(field, si){
 		field.reset();
 	})
 }
 
 //Убирает поля
 FieldManager.prototype.resetNetwork = function(){
-	this.forEachSpot(function(field, si){
+	this.forEachField(function(field, si){
 		field.destroy();
 	})
 	this.fields = {};
@@ -631,14 +623,14 @@ FieldManager.prototype.resetNetwork = function(){
 
 //Обновляет дебаг каждого поля
 FieldManager.prototype.updateDebug = function(){
-	this.forEachSpot(function(field, si){
+	this.forEachField(function(field, si){
 		field.updateDebug();
 	})
 }
 
 //Переключает режим дебага в каждом поле
 FieldManager.prototype.toggleDebugMode = function(){
-	this.forEachSpot(function(field, si){
+	this.forEachField(function(field, si){
 		field.toggleDebugMode();
 	})
 }

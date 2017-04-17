@@ -458,7 +458,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 		cardSpacing = requiredActiveWidth/(this.cards.length-1);
 	if(this.forcedSpace){
 		if(cardSpacing < this.forcedSpace && this.cards.length > 1)
-			console.warn("Spot", this.id, "wants to space cards out by", this.forcedSpace + "px", "but only has", cardSpacing + "px", "available per card\n", this)
+			console.warn("Field", this.id, "wants to space cards out by", this.forcedSpace + "px", "but only has", cardSpacing + "px", "available per card\n", this)
 		cardSpacing = Math.min(cardSpacing, this.forcedSpace);
 	}
 
@@ -619,7 +619,7 @@ Field.prototype.moveCard = function(
 	}
 
 	//Проверяем перетаскиваемость карты для тех случаев, когда карта была перемещена
-	//без использования presetSpot метода
+	//без использования presetField метода
 	if(this.type == 'HAND' && this.id == game.pid && !card.draggable)
 		card.setDraggability(true)
 	else if(card.draggable)
