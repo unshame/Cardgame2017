@@ -72,7 +72,7 @@ FieldManager.prototype.calculateSizes = function(){
 
 		//Позиция первого поля на столе
 		firstTable: grid.at(
-			2 + Math.round(grid.density*1.75),
+			2 + Math.round(grid.density*1.5),
 			Math.floor(grid.numRows / 2) - 1,
 			-this.offsets.firstTable,
 			-this.offsets.firstTable,
@@ -86,6 +86,18 @@ FieldManager.prototype.calculateSizes = function(){
 			-this.offsets.firstOpponent,
 			-this.offsets.firstOpponent
 		)
+	}
+	var tableCols = Math.round(grid.numCols - 2 - grid.density * 2 - grid.density * 1.5),
+		tableOffset = this.offsets.firstTable * 2,
+		opponentsCols = Math.round(grid.numCols - 2),
+		opponentsOffset = (grid.cellWidth + this.offsets.firstOpponent * 2 ) ;
+	if(tableCols <= 0){
+		console.warn('Negative amount of columns for field firstTable, defaulting to 0\n', this);
+		tableCols = 0;
+	}
+	if(opponentsCols <= 0){
+		console.warn('Negative amount of columns for field firstOpponent, defaulting to 0\n', this);
+		opponentsCols = 0;
 	}
 	this.dimensions = {
 		DECK:{
@@ -104,41 +116,33 @@ FieldManager.prototype.calculateSizes = function(){
 		},
 
 		firstTable: {
-			width: 
-				Math.round(
-					((
-						grid.numCols 
-						- 2 
-						- grid.density * 2 
-						- grid.density * 1.75
-					) * grid.cellWidth)
-					- this.offsets.firstTable * 2 * (this.tableOrder.length - 1) 
-				) / this.tableOrder.length
+			width: (tableCols * grid.cellWidth - tableOffset * (this.tableOrder.length - 1)) / this.tableOrder.length
 			//height:
 		},
 
 		//Размер первого поля соперника
 		firstOpponent: {
-			width: 
-				Math.round(
-					(
-						(grid.numCols - 2) * grid.cellWidth 
-						- (grid.cellWidth + this.offsets.firstOpponent * 2 ) * (this.players.length - 2)
-					)
-				) / (this.players.length - 1)
+			width: (opponentsCols * grid.cellWidth - opponentsOffset * (this.players.length - 2)) / (this.players.length - 1)
 			//height: 
 		} 
 	}
 
-	//Field
+	//Выводит предупреждение в консоль, если ширина меньше ширины одной карты
+	function checkNotEnoughSpace(self, id, width){
+		if(width < skinManager.skin.width)
+		console.warn('Not enough space for field', id, '(', width, '<', skinManager.skin.width, ')\n', self.fields[id])
+	}
+
+	//Table
 	var id,
 		width = this.dimensions.firstTable.width;
 	for(var i = 0; i < 6; i++){
 		id = 'TABLE' + this.tableOrder[i];
-		x = this.positions.firstTable.x + (width + this.offsets.firstTable*2)*i;
+		x = this.positions.firstTable.x + (width + tableOffset)*i;
 		y = this.positions.firstTable.y;
 		this.positions[id] = {x: x, y: y};
-		this.dimensions[id] = {width: width};
+		this.dimensions[id] = {width: width};		
+		checkNotEnoughSpace(this, id, width)
 	}
 
 	//Player
@@ -149,6 +153,7 @@ FieldManager.prototype.calculateSizes = function(){
 	this.dimensions[this.pid] = {
 		width:this.dimensions.playerHand.width
 	};
+	checkNotEnoughSpace(this, this.pid, this.dimensions[this.pid])
 
 	//Opponents
 	width = this.dimensions.firstOpponent.width;
@@ -158,7 +163,7 @@ FieldManager.prototype.calculateSizes = function(){
 		i = 0;
 	while(i != this.pi){
 		var p = this.players[i];
-		x = this.positions.firstOpponent.x + (width + grid.cellWidth + this.offsets.firstOpponent*2)*oi;
+		x = this.positions.firstOpponent.x + (width + opponentsOffset)*oi;
 		y = this.positions.firstOpponent.y;
 		this.positions[p.id] = {
 			x: x,
@@ -167,6 +172,7 @@ FieldManager.prototype.calculateSizes = function(){
 		this.dimensions[p.id] = {
 			width: width
 		};
+		checkNotEnoughSpace(this, p.id, width)
 		oi++;
 		i++;
 		if(i >= this.players.length)
