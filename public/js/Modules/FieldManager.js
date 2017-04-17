@@ -97,11 +97,11 @@ FieldManager.prototype.calculateSizes = function(numOfCards){
 		opponentsCols = Math.round(grid.numCols - 2),
 		opponentsOffset = (grid.cellWidth + this.offsets.firstOpponent * 2 ) ;
 	if(tableCols <= 0){
-		console.warn('Negative amount of columns for field firstTable (', tableCols, '), defaulting to 0\n', this);
+		console.warn('Field manager: Negative amount of columns for field firstTable (', tableCols, '), defaulting to 0\n', this);
 		tableCols = 0;
 	}
 	if(opponentsCols <= 0){
-		console.warn('Negative amount of columns for field firstOpponent (', opponentsCols, '), defaulting to 0\n', this);
+		console.warn('Field manager: Negative amount of columns for field firstOpponent (', opponentsCols, '), defaulting to 0\n', this);
 		opponentsCols = 0;
 	}
 
@@ -144,7 +144,7 @@ FieldManager.prototype.calculateSizes = function(numOfCards){
 			requiredWidth = skinManager.skin.width + minActiveSpace;
 
 		if(width < requiredWidth)
-			console.warn('Not enough space for field', id, '(', width, '<', requiredWidth, ')\n', self.fields[id])
+			console.warn('Field manager: Not enough space for field', id, '(', width, '<', requiredWidth, ')\n', self.fields[id])
 	}
 
 	//Table
@@ -204,7 +204,7 @@ FieldManager.prototype.createFieldNetwork = function(players){
 
 	this.pi = players.map(function(p){ return p.id }).indexOf(this.pid);
 	if(!~this.pi){
-		console.error('Player', this.pid, 'not found in players\n', players);
+		console.error('Field manager: Player', this.pid, 'not found in players\n', players);
 		return
 	}
 
