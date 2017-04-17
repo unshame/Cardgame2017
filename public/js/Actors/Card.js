@@ -177,9 +177,9 @@ Card.prototype.setDraggability = function(draggable){
 }
 
 //Устанавливает, можно ли ходить этой картой
-Card.prototype.setPlayability = function(playable){
+Card.prototype.setPlayability = function(playable, tint){
 	if(playable){
-		this.glowStart(0.25, 0.75, 1500, 500, 0xFF8300)
+		this.glowStart(0.25, 0.75, 1500, 500, tint || 0xFF8300)
 	}
 	else{
 		this.glowStop();
