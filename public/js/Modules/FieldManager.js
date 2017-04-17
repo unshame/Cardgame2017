@@ -589,7 +589,7 @@ FieldManager.prototype.forEachField = function(callback, context){
 	var returnedValues = [];
 	for(var si in this.fields){
 		if(!this.fields.hasOwnProperty(si))
-			return;
+			continue;
 		var field = this.fields[si];
 		var returnValue = callback.call(context || this, field, si);
 		if(returnValue !== undefined)
