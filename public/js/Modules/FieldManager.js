@@ -12,6 +12,8 @@ var FieldManager = function(){
 
 	this.networkCreated = false;
 
+	this.offsets = {};
+	this.minActiveSpaces = {};
 	this.fields = {};
 	this.positions = {};
 	this.dimensions = {};
@@ -36,7 +38,7 @@ FieldManager.prototype.calculateSizes = function(numOfCards){
 	/* ОБОБЩЕННЫЕ РАЗМЕРЫ */
 
 	//Отступы
-	this.offsets = {		
+	this.offsets = {
 		DECK: 22,			//Колода		
 		DISCARD_PILE: 22,	//Стопка сброса		
 		playerHand: 10,		//Поле игрока пока не известен id игрока
