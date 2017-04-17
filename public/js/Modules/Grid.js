@@ -16,12 +16,15 @@ var Grid = function(options){
 
 	this.density = this.options.density;
 	this.thickness = this.options.thickness;
+
+	this.isInDebugMode = this.options.debug;
 }
 
 Grid.prototype.getDefaultOptions = function(){
 	var options = {
 		density:4,		//плотность сетки (масштаб - 1:density)
-		thickness: 1	//толщина линий сетки для дебага
+		thickness: 1,	//толщина линий сетки для дебага
+		debug: false
 	}
 	return options
 }
@@ -40,61 +43,64 @@ Grid.prototype.draw = function(){
 		this.highlights.destroy(true);
 		this.highlights = null;
 	}
-	if(!game.isInDebugMode)
-		return;
 
 	var screenWidth = game.screenWidth;
 	var screenHeight = game.screenHeight;
 
-	var grid = game.make.graphics(0, 0),
+	var grid = this.isInDebugMode ? game.make.graphics(0, 0) : null,
 		density = this.density,
 		thickness = this.thickness,
 		width = this.cellWidth = Math.round(skinManager.skin.width/density),
 		height = this.cellHeight = Math.round(skinManager.skin.height/density);
 	
-	//grid.lineStyle(thickness, 0x2BC41D, 1);
-	grid.lineStyle(thickness, 0xffffff, 1);
-	grid.drawRect(0, 0, width-thickness, height-thickness);
-	this.gridTexture = grid.generateTexture();
-	this.grid = game.add.tileSprite(0, 0, screenWidth, screenHeight, this.gridTexture);
-	this.grid.alpha = 0.3
+	if(this.isInDebugMode){
+		//grid.lineStyle(thickness, 0x2BC41D, 1);
+		grid.lineStyle(thickness, 0xffffff, 1);
+		grid.drawRect(0, 0, width-thickness, height-thickness);
+		this.gridTexture = grid.generateTexture();
+		this.grid = game.add.tileSprite(0, 0, screenWidth, screenHeight, this.gridTexture);
+		this.grid.alpha = 0.3
 
-	this.highlights = game.add.group();
-	game.world.add(this.highlights);
+		this.highlights = game.add.group();
+		game.world.add(this.highlights);
+	}
 
 	var offset = this.offset = {
 		x: Math.round(screenWidth%width/2),
 		y: Math.round(screenHeight%height/2)
 	}
-	this.grid.tilePosition = offset;
 
 	this.numCols = Math.floor(screenWidth/width);
 	this.numRows = Math.floor(screenHeight/height);
 	this.width = screenWidth - offset.x*2;
 	this.height = screenHeight - offset.y*2;
 
-	var x = offset.x,
-		y = offset.y,
-		//color = 0xC10BAC,
-		color = 0x000000,
-		alpha = 1;
-	
-	var border = this.border = game.add.graphics(0, 0);
-	border.lineStyle(y, color, alpha);
-	border.moveTo(0, y/2 - thickness/2);
-	border.lineTo(screenWidth, y/2 - thickness/2);
-	border.lineStyle(x, color, alpha);
-	border.moveTo(screenWidth - x/2 + thickness/2, 0);
-	border.lineTo(screenWidth - x/2 + thickness/2, screenHeight);
-	border.lineStyle(y, color, alpha);
-	border.moveTo(screenWidth, screenHeight - y/2 + thickness/2);
-	border.lineTo(0,screenHeight - y/2 + thickness/2);
-	border.lineStyle(x, color, alpha);
-	border.moveTo(x/2 - thickness/2, screenHeight);
-	border.lineTo(x/2 - thickness/2,0);
+	if(this.isInDebugMode){
+		this.grid.tilePosition = offset;
 
-	game.background.add(this.grid);
-	game.background.add(this.border);
+		var x = offset.x,
+			y = offset.y,
+			//color = 0xC10BAC,
+			color = 0x000000,
+			alpha = 1;
+		
+		var border = this.border = game.add.graphics(0, 0);
+		border.lineStyle(y, color, alpha);
+		border.moveTo(0, y/2 - thickness/2);
+		border.lineTo(screenWidth, y/2 - thickness/2);
+		border.lineStyle(x, color, alpha);
+		border.moveTo(screenWidth - x/2 + thickness/2, 0);
+		border.lineTo(screenWidth - x/2 + thickness/2, screenHeight);
+		border.lineStyle(y, color, alpha);
+		border.moveTo(screenWidth, screenHeight - y/2 + thickness/2);
+		border.lineTo(0,screenHeight - y/2 + thickness/2);
+		border.lineStyle(x, color, alpha);
+		border.moveTo(x/2 - thickness/2, screenHeight);
+		border.lineTo(x/2 - thickness/2,0);
+
+		game.background.add(this.grid);
+		game.background.add(this.border);
+	}
 }
 
 //Возвращает координаты ячейки [col, row] 
@@ -173,4 +179,9 @@ Grid.prototype.at = function(col, row, offsetX, offsetY, align){
 		game.world.bringToTop(this.highlights)
 	}
 	return {x: x + offsetX, y: y + offsetY}
+}
+
+Grid.prototype.toggleDebugMode = function(){
+	this.isInDebugMode = !this.isInDebugMode;
+	this.draw();
 }

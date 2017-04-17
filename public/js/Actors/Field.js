@@ -133,7 +133,7 @@ Field.prototype.getDefaultOptions = function(){
 		texture: null,
 		alpha: 0.35,
 
-		debug: true,
+		debug: false,
 		specialId: null
 	}
 	return options

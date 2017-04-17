@@ -271,7 +271,7 @@ Controller.prototype.cardResetTrail = function(soft){
 			p.alpha = 0
 		else{
 			p.kill();
-			p.reset('trail reset hard');
+			p.reset();
 		}
 	}, this)
 	this.trail.position = {x: 0, y: 0};
@@ -361,7 +361,7 @@ Controller.prototype.updateCard = function(){
 
 //Обновление прозрачности партиклей хвоста
 Controller.prototype.updateTrail = function(){
-	if(!this.trail.countLiving())
+	if(!this.trail.countLiving() || this.trail.parent == this.trailDefaultBase)
 		return;
 	this.trail.forEachAlive(function(p){
 		p.alpha = p.lifespan / this.trail.lifespan * 0.6;

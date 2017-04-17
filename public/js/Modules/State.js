@@ -78,14 +78,20 @@ playState.createApp = function(){
 	grid.draw();	
 	
 	game.cardsGroup = game.add.group();
-	controller = new Controller(false);
+	controller = new Controller();
 	game.rope = new Rope();
 	var buttonPosition = grid.at(
 		Math.floor(grid.numCols/2),
 		grid.numRows - grid.density - 2,
 		-95,
 		-25
-	);
+	),
+	debugButtonPosition = grid.at(
+		grid.numCols - grid.density,
+		grid.numRows - grid.density - 2,
+		-95,
+		-25
+	)
 	game.skipButton = new Button(
 		buttonPosition.x,
 		buttonPosition.y,
@@ -97,6 +103,13 @@ playState.createApp = function(){
 		buttonPosition.y,
 		function(){sendRealAction('TAKE')},
 		'Take'
+	);
+	game.debugButton = new Button(
+		debugButtonPosition.x,
+		debugButtonPosition.y,
+		game.toggleDebugMode,
+		'Debug',
+		game
 	);
 	game.skipButton.hide();
 	game.takeButton.hide();

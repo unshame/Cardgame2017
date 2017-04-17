@@ -585,12 +585,20 @@ Card.prototype.updateDebug = function(){
 
 	var x = this.base.x + this.sprite.x - this.skin.width/2;
 	var y = this.base.y + this.sprite.y + this.skin.height/2 + 12;
-	if(this.suit || this.suit === 0)
+	if(this.suit || this.suit === 0){
 		game.debug.text(
-			getSuitStrings('EN')[this.suit] + ' ' + cardValueToString(this.value, 'EN'),
-			x, 
-			y 
+			getSuitStrings('EN')[this.suit] + ' ' + 
+			cardValueToString(this.value, 'EN'),
+			x, y 
 		);
+		y += 14;
+	}
+	game.debug.text(
+		Math.round(this.base.x + this.sprite.x) + ' ' + 
+		Math.round(this.base.y + this.sprite.y),
+		x, y 
+	);
+				
 }
 
 

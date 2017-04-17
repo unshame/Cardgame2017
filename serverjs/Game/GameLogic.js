@@ -64,8 +64,8 @@ class Game{
 			discard: 20,
 			take: 20,
 			actionComplete: 20,
-			actionAttack: 15,
-			actionDefend: 15
+			actionAttack: 20,
+			actionDefend: 20
 		};
 
 		//Запускаем игру

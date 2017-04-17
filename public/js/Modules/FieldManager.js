@@ -8,7 +8,7 @@
  * 	Поле стола должно центровать поля 
  */
 
-var FieldManager = function(){
+var FieldManager = function(isInDebugMode){
 
 	this.networkCreated = false;
 
@@ -24,7 +24,9 @@ var FieldManager = function(){
 
 	this.cardsToRemove = {};
 
-	this.tableOrder = [4, 2, 0, 1, 3, 5]
+	this.tableOrder = [4, 2, 0, 1, 3, 5];
+
+	this.isInDebugMode = isInDebugMode;
 }
 
 
@@ -227,7 +229,8 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		id: 'DECK',
 		alignment: 'horizontal',
 		direction: 'backward',
-		delayTime: 50
+		delayTime: 50,
+		debug: this.isInDebugMode
 	});
 	this.cardsToRemove['DECK'] = [];
 
@@ -244,7 +247,8 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		align: 'left',
 		sorting: false,
 		type: 'DISCARD_PILE',
-		id: 'DISCARD_PILE'
+		id: 'DISCARD_PILE',
+		debug: this.isInDebugMode
 	});
 	this.cardsToRemove['DISCARD_PILE'] = [];
 
@@ -264,7 +268,8 @@ FieldManager.prototype.createFieldNetwork = function(players){
 			sorting:false,
 			type: 'TABLE',
 			id: 'TABLE' + i,
-			specialId: i + 1
+			specialId: i + 1,
+			debug: this.isInDebugMode
 		});
 		this.cardsToRemove[id] = [];
 	}
@@ -279,7 +284,8 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		texture: 'field',
 		type: 'HAND',
 		id: this.pid,
-		specialId: this.pi + 1
+		specialId: this.pi + 1,
+		debug: this.isInDebugMode
 	});
 	this.cardsToRemove[this.pid] = [];
 
@@ -303,7 +309,8 @@ FieldManager.prototype.createFieldNetwork = function(players){
 			type: 'HAND',
 			id: p.id,
 			name: p.name,
-			specialId: i + 1
+			specialId: i + 1,
+			debug: this.isInDebugMode
 		});
 		this.cardsToRemove[p.id] = [];
 		oi++;
@@ -657,7 +664,9 @@ FieldManager.prototype.updateDebug = function(){
 
 //Переключает режим дебага в каждом поле
 FieldManager.prototype.toggleDebugMode = function(){
+	this.isInDebugMode = !this.isInDebugMode;
 	this.forEachField(function(field, si){
-		field.toggleDebugMode();
+		if(field.isInDebugMode != this.isInDebugMode)
+			field.toggleDebugMode();
 	})
 }

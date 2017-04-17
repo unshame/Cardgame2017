@@ -86,8 +86,8 @@ Menu.prototype.toggle = function(){
 		this.reset()
 }
 
-var Button = function(x, y, action, text){
-	Phaser.Button.call(this, game, x, y, 'button_grey_wide', action, this, 1, 0, 2, 0);
+var Button = function(x, y, action, text, context){
+	Phaser.Button.call(this, game, x, y, 'button_grey_wide', action, context || this, 1, 0, 2, 0);
 	game.add.existing(this);
 	this.style = { font: '20px Verdana', fill: '#000', align: 'center' };
 	this.text = game.add.text(this.centerX, this.centerY, text, this.style);

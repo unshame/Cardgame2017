@@ -1,6 +1,6 @@
 var Game = function(){
 
-	this.isInDebugMode = true;
+	this.isInDebugMode = false;
 
 	this.cards = {}
 	this.rope = null
@@ -43,6 +43,12 @@ Game.prototype.updateAppDimensionsListener = function(){
 			grid.numRows - grid.density - 2,
 			-95,
 			-25
+		),
+		debugButtonPosition = grid.at(
+			grid.numCols - grid.density,
+			grid.numRows - grid.density - 2,
+			-95,
+			-25
 		)
 		this.skipButton.reposition(
 			buttonPosition.x,
@@ -51,6 +57,10 @@ Game.prototype.updateAppDimensionsListener = function(){
 		this.takeButton.reposition(
 			buttonPosition.x,
 			buttonPosition.y
+		);
+		this.debugButton.reposition(
+			debugButtonPosition.x,
+			debugButtonPosition.y
 		);
 		this.menu.update();
 	}
@@ -79,5 +89,15 @@ Game.prototype.newPixel = function(){
 
 Game.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
-	grid.draw();
+	if(grid && grid.isInDebugMode != this.isInDebugMode)
+		grid.toggleDebugMode();
+	if(controller && controller.isInDebugMode != this.isInDebugMode)
+		controller.toggleDebugMode();
+	if(fieldManager && fieldManager.isInDebugMode != this.isInDebugMode)
+		fieldManager.toggleDebugMode();
+	isInDebugMode = this.isInDebugMode;
+	for(var ci in this.cards){
+		if(this.cards.hasOwnProperty(ci))
+			this.cards[ci].isInDebugMode = this.isInDebugMode;
+	}
 }
