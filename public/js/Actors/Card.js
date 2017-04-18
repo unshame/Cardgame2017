@@ -253,6 +253,7 @@ Card.prototype.presetField = function(fieldId){
 	}
 };
 
+//Устанавливает угол поворота карты
 Card.prototype.setAngle = function(angle){
 	if(this.rotator){
 		this.rotator.stop();
@@ -262,7 +263,6 @@ Card.prototype.setAngle = function(angle){
 	this.sprite.angle = angle;
 	this.update();
 };
-
 
 //ПЕРЕДВИЖЕНИЕ
 
@@ -380,6 +380,7 @@ Card.prototype.returnToBase = function(time, delay){
 	this.moveTo(0, 0, time || 0, delay || 0, true);
 };
 
+//Поворачивает карту 
 Card.prototype.rotateTo = function(angle, time, delay){
 
 	//Останавливаем твин, если он есть
@@ -431,7 +432,6 @@ Card.prototype.rotateTo = function(angle, time, delay){
 		}, this);
 	}
 };
-
 
 //СКИН
 
@@ -598,7 +598,6 @@ Card.prototype.updateDebug = function(){
 		Math.round(this.base.y + this.sprite.y),
 		x, y 
 	);
-				
 };
 
 
