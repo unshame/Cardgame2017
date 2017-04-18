@@ -65,7 +65,7 @@ var EurecaClientSetup = function(callback, context) {
 			function(){
 				sendResponse();	
 			},
-			!delay && 1 || (delay + 500)/game.speed
+			!delay && 1 || (delay/game.speed + 500)
 		)
 		if(isInDebugMode)
 			console.log(action)
