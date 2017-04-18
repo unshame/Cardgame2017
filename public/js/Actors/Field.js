@@ -54,6 +54,10 @@ var Field = function(options){
 	if(!~['top', 'middle', 'bottom'].indexOf(this.verticalAlign))
 		this.verticalAlign = defaultOptions.verticalAlign;
 
+	this.order = this.options.order;
+	if(!~['ascending', 'descending'].indexOf(this.order))
+		this.order = defaultOptions.order;
+
 	this.flipped = this.options.flipped;
 
 	this.margin = this.options.margin;
@@ -127,7 +131,8 @@ Field.prototype.getDefaultOptions = function(){
 		//Поворот поля, меняет местами align и verticalAlign (right станет bottom и т.д.),
 		//не влияет на width и height
 		alignment: 'horizontal', 
-		direction: 'forward',	 //Направление поля
+		direction: 'forward',	//Направление поля
+		order: 'ascending',		//С какой стороны добавляются новые карты
 		flipped: false,
 
 		texture: null,
@@ -215,6 +220,16 @@ Field.prototype.sortCards = function(){
 		this.cards.sort(this.comparator);
 }
 
+Field.prototype.appendCard = function(card){
+	if(
+		this.direction == 'forward' && this.order == 'ascending' ||
+		this.direction == 'backward' && this.order == 'descending'
+	)
+		this.cards.push(card)
+	else
+		this.cards.unshift(card);
+}
+
 //Компаратор сортировки
 Field.prototype.comparator = function(a, b){
 	if(!a.suit && a.suit !== 0){
@@ -284,7 +299,6 @@ Field.prototype.queueCards = function(newCards, delay){
 		//возвращаем перетаскиваемую карту
 		if(controller.card && controller.card.field && controller.card.field == card.field)
 			controller.cardReturn();
-
 		this.queuedCards.push(card);
 		this.delays[card.id] = delay;
 		delay += this.delayTime;
@@ -303,7 +317,7 @@ Field.prototype.placeQueuedCards = function(){
 	for(var ci = 0; ci < this.queuedCards.length; ci++){
 		var card = this.queuedCards[ci];
 		card.field = this;
-		this.cards.push(card)
+		this.appendCard(card);
 	}
 
 	var bringUpOn = (this.type == 'DECK') ? 'init' : 'start';
@@ -344,7 +358,7 @@ Field.prototype.addCards = function(newCards, noDelay){
 		for(var ci = 0; ci < newCards.length; ci++){
 			var card = newCards[ci];
 			card.field = this;
-			this.cards.push(card);
+			this.appendCard(card);
 		}
 		this.sortCards();
 		return this.placeCards(newCards, 'start', noDelay);

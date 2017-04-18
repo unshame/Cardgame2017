@@ -65,6 +65,7 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		id: 'DECK',
 		alignment: 'vertical',
 		direction: 'backward',
+		order: 'descending',
 		delayTime: 50,
 		debug: this.isInDebugMode
 	});
