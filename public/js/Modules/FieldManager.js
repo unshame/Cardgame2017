@@ -201,7 +201,7 @@ FieldManager.prototype.calculateGeneralSizes = function(numOfCards){
 		halfDensity = Math.floor(grid.density / 2);
 
 	//Кол-во колонок и отступы для рук противников и мест на столе
-	var tableCells = this.tableCells = Math.round(grid.numCols - 4 - grid.density * 1.5),
+	var tableCells = this.tableCells = this.opponentPlacement[0] ? Math.round(grid.numCols - 4 - grid.density * 1.5) : grid.numCols - 2,
 		tableOffset = this.tableOffset = this.offsets.table * 2,
 
 		numRows = Math.round(grid.numRows - grid.density*2 + halfDensity - 4),
@@ -287,7 +287,7 @@ FieldManager.prototype.calculateGeneralSizes = function(numOfCards){
 			-this.offsets.player
 		),
 		table: grid.at(
-			1 + grid.density,
+			this.opponentPlacement[0] ? 1 + grid.density : 1,
 			halfRows - 1,
 			-this.offsets.table,
 			-this.offsets.table,
