@@ -63,7 +63,7 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		sorting: false,
 		type: 'DECK',
 		id: 'DECK',
-		alignment: 'vertical',
+		axis: 'vertical',
 		direction: 'backward',
 		order: 'descending',
 		delayTime: 50,
@@ -83,7 +83,7 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		texture: 'field',
 		horizontalAlign: 'right',
 		sorting: false,
-		alignment: 'vertical',
+		axis: 'vertical',
 		direction: 'backward',
 		type: 'DISCARD_PILE',
 		id: 'DISCARD_PILE',
@@ -145,7 +145,7 @@ FieldManager.prototype.createFieldNetwork = function(players){
 			texture: 'field',
 			sorting:false,
 			focusable:false,
-			alignment: this.dimensions[p.id].alignment,
+			axis: this.dimensions[p.id].axis,
 			direction: this.dimensions[p.id].direction,
 			flipped: this.dimensions[p.id].flipped,
 			type: 'HAND',
@@ -356,7 +356,7 @@ FieldManager.prototype.calculateSpecificSizes = function(){
 		}),
 		directions = ['backward', 'forward', 'forward'],
 		flipped = [false, true, true],
-		alignment = ['vertical', 'horizontal', 'vertical'],
+		axis = ['vertical', 'horizontal', 'vertical'],
 		xs = [
 			0,
 			dimensions[1].width + opponentsOffset[1],
@@ -377,7 +377,7 @@ FieldManager.prototype.calculateSpecificSizes = function(){
 			x = this.positions.opponent[pi].x + xs[pi]*oi,
 			y = this.positions.opponent[pi].y + ys[pi]*oi;
 		if(directions[pi] == 'backward'){
-			if(alignment[pi] == 'horizontal')
+			if(axis[pi] == 'horizontal')
 				x -= dimensions[pi].width
 			else
 				y -= dimensions[pi].height
@@ -391,7 +391,7 @@ FieldManager.prototype.calculateSpecificSizes = function(){
 			height: dimensions[pi].height,
 			direction: directions[pi],
 			flipped: flipped[pi],
-			alignment: alignment[pi]
+			axis: axis[pi]
 		};
 		this.notEnoughSpace(p.id, 'opponent', pi)
 		oi++;

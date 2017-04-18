@@ -38,9 +38,9 @@ var Field = function(options){
 	this.id = this.options.id;
 	this.name = this.options.name;
 
-	this.alignment = this.options.alignment;
-	if(!~['vertical', 'horizontal'].indexOf(this.alignment))
-		this.alignment = defaultOptions.alignment;
+	this.axis = this.options.axis;
+	if(!~['vertical', 'horizontal'].indexOf(this.axis))
+		this.axis = defaultOptions.axis;
 
 	this.direction = this.options.direction;
 	if(!~['forward', 'backward'].indexOf(this.direction))
@@ -70,10 +70,10 @@ var Field = function(options){
 	this.moveTime = this.options.moveTime;
 	this.delayTime = this.options.delayTime;
 
-	if(this.focusable && this.alignment == 'vertical'){
+	if(this.focusable && this.axis == 'vertical'){
 		this.focusable = false;
 		console.warn(
-			'Field', this.type, this.id, 'set to focusable and ' + this.alignment,
+			'Field', this.type, this.id, 'set to focusable and ' + this.axis,
 			'. This is not supported, focusable defaulted to false\n', this
 		)
 	}
@@ -130,7 +130,7 @@ Field.prototype.getDefaultOptions = function(){
 		verticalAlign:'middle',
 		//Поворот поля, меняет местами horizontalAlign и verticalAlign (right станет bottom и т.д.),
 		//не влияет на width и height
-		alignment: 'horizontal', 
+		axis: 'horizontal', 
 		direction: 'forward',	//Направление поля
 		order: 'ascending',		//С какой стороны добавляются новые карты
 		flipped: false,
@@ -178,7 +178,7 @@ Field.prototype.resize = function(width, height, shouldPlace){
 	if(shouldPlace === undefined)
 		shouldPlace = false;
 
-	if(this.alignment == 'vertical'){
+	if(this.axis == 'vertical'){
 		if(width < skinManager.skin.height){
 			width = skinManager.skin.height;
 		}
@@ -387,10 +387,10 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 		noDelay = false;
 
 	//Размеры и угол поля
-	var areaWidth = (this.alignment == 'vertical') ?  this.area.height : this.area.width;
-	var areaHeight = (this.alignment == 'vertical') ? this.area.width : this.area.height;
+	var areaWidth = (this.axis == 'vertical') ?  this.area.height : this.area.width;
+	var areaHeight = (this.axis == 'vertical') ? this.area.width : this.area.height;
 	var angle = 0;
-	if(this.alignment == 'vertical')
+	if(this.axis == 'vertical')
 		angle += 90;
 	if(this.flipped)
 		angle += 180;
@@ -529,7 +529,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 	if(this.isInDebugMode){
 		this.debugActiveSpace.x = this.base.x;
 		this.debugActiveSpace.y = this.base.y;
-		if(this.alignment == 'vertical'){
+		if(this.axis == 'vertical'){
 			this.debugActiveSpace.x += topMargin - cardHeight/2;
 			this.debugActiveSpace.y += leftMargin - shift;
 			this.debugActiveSpace.width = cardHeight;
@@ -608,7 +608,7 @@ Field.prototype.moveCard = function(
 	//Вертикальная позиция
 	var y = topMargin;
 
-	if(this.alignment == 'vertical'){
+	if(this.axis == 'vertical'){
 		var temp = x;
 		x = y + this.base.x;
 		y = temp + this.base.y;
