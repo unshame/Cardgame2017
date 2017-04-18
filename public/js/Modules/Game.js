@@ -6,7 +6,7 @@ var Game = function(){
 	this.rope = null;
 	this.speed = 1;
 	
-	window.fieldManager = new FieldManager();
+	window.fieldManager = new FieldManager(false);
 	window.skinManager = null;
 	window.controller = null;
 	window.addEventListener('resize', this.updateAppDimensions.bind(this));
@@ -45,7 +45,7 @@ Game.prototype.initialize = function(){
 	this.surface = this.add.tileSprite(0, 0, this.screenWidth, this.screenHeight, 'blue');
 	this.background.add(this.surface); 
 
-	window.grid = new Grid();
+	window.grid = new Grid({debug: false});
 	grid.draw();	
 	
 	this.cardsGroup = this.add.group();
@@ -58,7 +58,7 @@ Game.prototype.initialize = function(){
 		-25
 	),
 	debugButtonPosition = grid.at(
-		grid.numCols - grid.density,
+		grid.numCols - grid.density*1.5 - 1,
 		grid.numRows - grid.density - 2,
 		-95,
 		-25

@@ -63,7 +63,7 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		sorting: false,
 		type: 'DECK',
 		id: 'DECK',
-		alignment: 'horizontal',
+		alignment: 'vertical',
 		direction: 'backward',
 		delayTime: 50,
 		debug: this.isInDebugMode
@@ -80,8 +80,10 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		focusable:false,
 		forcedSpace: 0.5,
 		texture: 'field',
-		align: 'left',
+		align: 'right',
 		sorting: false,
+		alignment: 'vertical',
+		direction: 'backward',
 		type: 'DISCARD_PILE',
 		id: 'DISCARD_PILE',
 		debug: this.isInDebugMode
@@ -96,9 +98,9 @@ FieldManager.prototype.createFieldNetwork = function(players){
 			y: this.positions[id].y,
 			width: this.dimensions[id].width,
 			height: this.dimensions[id].height,
-			minActiveSpace: this.minActiveSpaces.firstTable,
-			forcedSpace: this.minActiveSpaces.firstTable,
-			margin: this.offsets.firstTable,
+			minActiveSpace: this.minActiveSpaces.table,
+			forcedSpace: this.minActiveSpaces.table,
+			margin: this.offsets.table,
 			texture: 'field',
 			focusable:false,
 			sorting:false,
@@ -114,9 +116,9 @@ FieldManager.prototype.createFieldNetwork = function(players){
 	this.fields[this.pid] = new Field({
 		x:this.positions[this.pid].x,
 		y:this.positions[this.pid].y,
-		width:this.dimensions.playerHand.width,
-		minActiveSpace: this.minActiveSpaces.playerHand,
-		margin:this.offsets.playerHand,
+		width:this.dimensions.player.width,
+		minActiveSpace: this.minActiveSpaces.player,
+		margin:this.offsets.player,
 		texture: 'field',
 		type: 'HAND',
 		id: this.pid,
@@ -136,8 +138,9 @@ FieldManager.prototype.createFieldNetwork = function(players){
 			x: this.positions[p.id].x,
 			y: this.positions[p.id].y,
 			width: this.dimensions[p.id].width,
-			minActiveSpace: this.minActiveSpaces.firstOpponent[1],
-			margin:this.offsets.firstOpponent[1],
+			height: this.dimensions[p.id].height,
+			minActiveSpace: this.minActiveSpaces.opponent[1],
+			margin:this.offsets.opponent[1],
 			texture: 'field',
 			sorting:false,
 			focusable:false,
@@ -174,96 +177,100 @@ FieldManager.prototype.calculateGeneralSizes = function(numOfCards){
 	this.offsets = {
 		DECK: 22,					//Колода		
 		DISCARD_PILE: 22,			//Стопка сброса		
-		playerHand: 10,				//Поле игрока пока не известен id игрока
-		firstTable: 4,				//Первое поле на столе		
-		firstOpponent: [10, 10, 10]	//Первые поля соперника
+		player: 10,				//Поле игрока пока не известен id игрока
+		table: 4,				//Первое поле на столе		
+		opponent: [10, 10, 10]	//Первые поля соперника
 	}
 
 	//Минимальное место для расположения карт в поле
 	this.minActiveSpaces = {
 		DECK: numOfCards/2,
 		DISCARD_PILE: numOfCards/2,
-		playerHand: defaultFieldOptions.minActiveSpace,
-		firstTable: skinManager.skin.trumpOffset,
-		firstOpponent: [
+		player: defaultFieldOptions.minActiveSpace,
+		table: skinManager.skin.trumpOffset,
+		opponent: [
 			defaultFieldOptions.minActiveSpace,
 			defaultFieldOptions.minActiveSpace,
 			defaultFieldOptions.minActiveSpace
 		]
 	}
 
+	var halfCols = Math.floor(grid.numCols / 2),
+		halfRows = Math.floor(grid.numRows / 2),
+		halfDensity = Math.floor(grid.density / 2);
+
 	//Позиции полей
 	this.positions = {
 		DECK: grid.at(
-			-2,
-			Math.floor(grid.numRows / 2) - 1,
+			1,
+			-(halfDensity - 1),
 			-this.offsets['DECK'],
-			-this.offsets['DECK'],
-			'middle left'
+			-this.offsets['DECK']
 		),
 		DISCARD_PILE: grid.at(
-			grid.numCols - grid.density + 1,
-			Math.floor(grid.numRows / 2) - 1,
+			grid.numCols - grid.density - 2,
+			-(halfDensity - 1),
 			-this.offsets['DISCARD_PILE'],
-			-this.offsets['DISCARD_PILE'],
-			'middle left'
+			-this.offsets['DISCARD_PILE']
 		),
-		playerHand: grid.at(
+		player: grid.at(
 			1,
 			grid.numRows - grid.density - 1,
-			-this.offsets.playerHand,
-			-this.offsets.playerHand
+			-this.offsets.player,
+			-this.offsets.player
 		),
-		firstTable: grid.at(
+		table: grid.at(
 			1 + grid.density,
-			Math.floor(grid.numRows / 2) - 1,
-			-this.offsets.firstTable,
-			-this.offsets.firstTable,
+			halfRows - 1,
+			-this.offsets.table,
+			-this.offsets.table,
 			'middle left'
 		),
-		firstOpponent: [
+		opponent: [
 			grid.at(
-				1,
-				2,
-				-this.offsets.firstOpponent[0],
-				-this.offsets.firstOpponent[0]
+				-halfDensity,
+				grid.numRows - grid.density - 2,
+				-this.offsets.opponent[0],
+				-this.offsets.opponent[0]
 			),
 			grid.at(
-				1,
-				-Math.floor(grid.density / 2 - 1),
-				-this.offsets.firstOpponent[1],
-				-this.offsets.firstOpponent[1]
+				Math.floor(grid.density*2),
+				-(halfDensity - 1),
+				-this.offsets.opponent[1],
+				-this.offsets.opponent[1]
 			),
 			grid.at(
-				1,
-				8,
-				-this.offsets.firstOpponent[2],
-				-this.offsets.firstOpponent[2]
-			)
+				grid.numCols - grid.density + 1,
+				grid.density,
+				-this.offsets.opponent[0],
+				-this.offsets.opponent[0]
+			),
 		]
 	}
 
 	//Кол-во колонок и отступы для рук противников и мест на столе
-	var tableCols = this.tableCols = Math.round(grid.numCols - 4 - grid.density * 1.5),
-		tableOffset = this.tableOffset = this.offsets.firstTable * 2,
-		opponentsCols = this.opponentsCols = [
-			Math.round(grid.numCols - 2),
-			Math.round(grid.numCols - 2),
-			Math.round(grid.numCols - 2)
+	var tableCells = this.tableCells = Math.round(grid.numCols - 4 - grid.density * 1.5),
+		tableOffset = this.tableOffset = this.offsets.table * 2,
+
+		numRows = Math.round(grid.numRows - grid.density*2 + halfDensity - 4),
+		opponentCells = this.opponentCells = [
+			numRows,
+			grid.numCols - grid.density*4,
+			numRows
 		],
 		opponentsOffset = this.opponentsOffset = [
-			(grid.cellWidth + this.offsets.firstOpponent[0] * 2 ),
-			(grid.cellWidth + this.offsets.firstOpponent[1] * 2 ),
-			(grid.cellWidth + this.offsets.firstOpponent[2] * 2 )
+			(grid.cellHeight + this.offsets.opponent[0] * 2 ),
+			(grid.cellWidth + this.offsets.opponent[1] * 2 ),
+			(grid.cellHeight + this.offsets.opponent[2] * 2 )
 		];
-	if(tableCols <= 0){
-		console.warn('Field manager: Negative amount of columns for field firstTable (', tableCols, '), defaulting to 0\n', this);
-		tableCols = 0;
+	if(tableCells <= 0){
+		console.warn('Field manager: Negative amount of columns for field table (', tableCells, '), defaulting to 0\n', this);
+		tableCells = 0;
 	}
-	for(var i = 0; i < opponentsCols.length; i++){
-		if(opponentsCols[i] <= 0){
-			console.warn('Field manager: Negative amount of columns for field firstOpponent[', i, '] (', opponentsCols[i], '), defaulting to 0\n', this);
-			opponentsCols[i] = 0;
+	for(var i = 0; i < opponentCells.length; i++){
+		if(opponentCells[i] <= 0){
+			console.warn('Field manager: Negative amount of columns for field opponent[', i, '] (', opponentCells[i], '), defaulting to 0\n', this);
+			opponentCells[i] = 0;
 		}
 	}
 
@@ -279,29 +286,29 @@ FieldManager.prototype.calculateGeneralSizes = function(numOfCards){
 		},
 
 		//Поле игрока пока не известен id игрока
-		playerHand: {
+		player: {
 			width: (grid.numCols - 2)*grid.cellWidth,
 			//height: 
 		},
 
-		firstTable: {
-			width: (tableCols * grid.cellWidth - tableOffset * (this.tableOrder.length - 1)) / this.tableOrder.length
+		table: {
+			width: (tableCells * grid.cellWidth - tableOffset * (this.tableOrder.length - 1)) / this.tableOrder.length
 			//height:
 		},
 
 		//Размер первого поля соперника
-		firstOpponent: [
+		opponent: [
 			{
-				width: (opponentsCols[0] * grid.cellWidth - opponentsOffset[0] * (this.opponentPlacement[0] - 1)) / this.opponentPlacement[0]
+				//width: , 
+				height: (opponentCells[0] * grid.cellHeight - opponentsOffset[0] * (this.opponentPlacement[0] - 1)) / this.opponentPlacement[0]
+			},
+			{
+				width: (opponentCells[1] * grid.cellWidth - opponentsOffset[1] * (this.opponentPlacement[1] - 1)) / this.opponentPlacement[1]
 				//height: 
 			},
 			{
-				width: (opponentsCols[1] * grid.cellWidth - opponentsOffset[1] * (this.opponentPlacement[1] - 1)) / this.opponentPlacement[1]
-				//height: 
-			},
-			{
-				width: (opponentsCols[2] * grid.cellWidth - opponentsOffset[2] * (this.opponentPlacement[2] - 1)) / this.opponentPlacement[2]
-				//height: 
+				//width: , 
+				height: (opponentCells[2] * grid.cellHeight - opponentsOffset[2] * (this.opponentPlacement[2] - 1)) / this.opponentPlacement[2]
 			}
 		]
 	}
@@ -310,70 +317,70 @@ FieldManager.prototype.calculateGeneralSizes = function(numOfCards){
 //Размеры для каждого поля
 FieldManager.prototype.calculateSpecificSizes = function(){
 
-	var tableCols = this.tableCols,
+	var tableCells = this.tableCells,
 		tableOffset = this.tableOffset,
-		opponentsCols = this.opponentsCols,
+		opponentCells = this.opponentCells,
 		opponentsOffset = this.opponentsOffset;
-
-	//Выводит предупреждение в консоль, если ширина меньше ширины одной карты
-	function notEnoughSpace(self, id, ref, index){
-		var isArray = typeof index == 'number',
-			width = isArray ? self.dimensions[ref][index] : self.dimensions[ref].width,
-			minActiveSpace = isArray ? self.minActiveSpaces[ref][index] : self.minActiveSpaces[ref],
-			requiredWidth = skinManager.skin.width + minActiveSpace;
-
-		if(width < requiredWidth){
-			console.warn('Field manager: Not enough space for field', id, '(', width, '<', requiredWidth, ')\n', self.fields[id]);
-			return true;
-		}
-		else
-			return false;
-	}
 
 	//Table
 	var id,
-		width = this.dimensions.firstTable.width;
+		width = this.dimensions.table.width;
 	for(var i = 0; i < this.tableOrder.length; i++){
 		id = 'TABLE' + this.tableOrder[i];
-		x = this.positions.firstTable.x + (width + tableOffset)*i;
-		y = this.positions.firstTable.y;
+		x = this.positions.table.x + (width + tableOffset)*i;
+		y = this.positions.table.y;
 		this.positions[id] = {x: x, y: y};
 		this.dimensions[id] = {width: width};		
-		notEnoughSpace(this, id, 'firstTable')
+		this.notEnoughSpace(id, 'table')
 	}
 
 	//Player
 	this.positions[this.pid] = {
-		x: this.positions.playerHand.x,
-		y: this.positions.playerHand.y
+		x: this.positions.player.x,
+		y: this.positions.player.y
 	};
 	this.dimensions[this.pid] = {
-		width:this.dimensions.playerHand.width
+		width:this.dimensions.player.width
 	};
-	notEnoughSpace(this, this.pid, 'playerHand')
+	this.notEnoughSpace(this.pid, 'player')
 
 	//Opponents
-	function copyPlacement(v){
-		return v;
-	}
-	var dimensions = this.dimensions.firstOpponent,
+
+	var dimensions = this.dimensions.opponent,
 		i = this.pi + 1,
 		oi = 0,
 		pi = 0,
-		placement = this.opponentPlacement.map(copyPlacement),
+		placement = this.opponentPlacement.map(function(v){
+			return v;
+		}),
 		directions = ['backward', 'forward', 'forward'],
 		flipped = [false, true, true],
-		alignment = ['vertical', 'horizontal', 'vertical'];
+		alignment = ['vertical', 'horizontal', 'vertical'],
+		xs = [
+			0,
+			dimensions[1].width + opponentsOffset[1],
+			0
+		],
+		ys = [
+			-(dimensions[0].height + opponentsOffset[0]),
+			0,
+			dimensions[2].height + opponentsOffset[2]
+		]
 
 
 	if(i >= this.players.length)
 		i = 0;
 	
 	while(i != this.pi){
-		var p = this.players[i];
-
-		x = this.positions.firstOpponent[pi].x + (dimensions[pi].width + opponentsOffset[pi])*oi;
-		y = this.positions.firstOpponent[pi].y;
+		var p = this.players[i],
+			x = this.positions.opponent[pi].x + xs[pi]*oi,
+			y = this.positions.opponent[pi].y + ys[pi]*oi;
+		if(directions[pi] == 'backward'){
+			if(alignment[pi] == 'horizontal')
+				x -= dimensions[pi].width
+			else
+				y -= dimensions[pi].height
+		}
 		this.positions[p.id] = {
 			x: x,
 			y: y
@@ -385,7 +392,7 @@ FieldManager.prototype.calculateSpecificSizes = function(){
 			flipped: flipped[pi],
 			alignment: alignment[pi]
 		};
-		notEnoughSpace(this, p.id, 'firstOpponent', pi)
+		this.notEnoughSpace(p.id, 'opponent', pi)
 		oi++;
 		i++;
 		if(i >= this.players.length)
@@ -601,11 +608,11 @@ FieldManager.prototype.highlightPossibleActions = function(actions){
 	
 	this.forEachField(function(field, si){
 		field.setHighlight(false);
+		for(var ci = 0; ci < field.cards.length; ci++){
+			field.cards[ci].setPlayability(false);
+		}
 	})
-	var field = this.fields[this.pid];
-	for(var ci = 0; ci < field.cards.length; ci++){
-		field.cards[ci].setPlayability(false);
-	}
+
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
 		if(action.cid && game.cards[action.cid]){
@@ -766,4 +773,29 @@ FieldManager.prototype.toggleDebugMode = function(){
 			field.toggleDebugMode();
 	});
 	actions && actions.length && this.highlightPossibleActions(actions);
+}
+
+//Выводит предупреждение в консоль, если ширина меньше ширины одной карты
+FieldManager.prototype.notEnoughSpace = function(id, ref, index){
+	var isArray = typeof index == 'number',
+		width = isArray ? this.dimensions[ref][index].width : this.dimensions[ref].width,
+		height = isArray ? this.dimensions[ref][index].height : this.dimensions[ref].height,
+		minActiveSpace = isArray ? this.minActiveSpaces[ref][index] : this.minActiveSpaces[ref],
+		requiredWidth = skinManager.skin.width + minActiveSpace,
+		requiredHeight = skinManager.skin.height + minActiveSpace,
+		str = null;
+
+	if((width || width === 0) && width < requiredWidth){
+		str = ['Field manager: Not enough space for field', id, '(', width, '<', requiredWidth, ')\n'];
+	}
+	else if((height || height === 0) && height < requiredHeight){
+		str = ['Field manager: Not enough space for field', id, '(', height, '<', requiredHeight, ')\n'];
+	}
+
+	if(str){
+		str.push(this.fields[id]);
+		console.warn.apply(console, str);
+		return true;
+	}
+	else return false;
 }
