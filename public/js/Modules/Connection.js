@@ -93,6 +93,7 @@ function sendAction(field, card){
 		var action = actions[ai];
 		if(action.cid == card.id && field.id == action.field){
 			game.rope.stop();
+			actions = null;
 			server.recieveCompleteAction(action);
 			return true;
 		}
@@ -110,10 +111,12 @@ function sendRealAction(type){
 	var action;
 	if(~actionTypes.indexOf(type))
 		action = {type: type};
+	actions = null;
 	server.recieveCompleteAction(action);
 }
 
 function sendResponse(){
 	game.rope.stop();
+	actions = null;
 	server.recieveResponse();
 }
