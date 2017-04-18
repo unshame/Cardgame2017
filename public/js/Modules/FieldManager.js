@@ -625,7 +625,7 @@ FieldManager.prototype.highlightPossibleActions = function(actions){
 
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai],
-			tint = action.type == 'ATTACK' ? 0xC93F3F : 0xFF8300;
+			tint = action.type == 'ATTACK' ? 0x68C655 : 0xFF8300;
 		if(action.cid && game.cards[action.cid]){
 			game.cards[action.cid].setPlayability(true, tint);
 			this.fields[action.field].setHighlight(true, tint);
