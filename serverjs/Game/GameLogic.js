@@ -181,7 +181,7 @@ class Game{
 
 		utils.log('Turn Ended');
 		
-		this.field.usedFields = 0;
+		this.table.usedFields = 0;
 		this.skipCounter = 0;
 		this.turnStages.current = null;
 		this.turnStages.next = 'DEFAULT';	

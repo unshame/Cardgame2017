@@ -15,7 +15,7 @@ class GameReactions{
 
 		let activePlayers = this.players.active;
 		let cardsById = this.cards.byId;
-		let tableFields = this.field.byKey('id');
+		let tableFields = this.table.byKey('id');
 		let ci, card;
 
 		let str;
@@ -31,19 +31,31 @@ class GameReactions{
 		card = cardsById[action.cid];
 		ci = this.hands[player.id].indexOf(card);
 
-		this.logAction(card, action.type, card.field, action.field );
+		//Находим первое пустое поле
+		let field = action.field;
+		for(let fi = 0; fi < this.table.length; fi++){
+			let tableField = this.table[fi];
+
+			if(!tableField.attack && !tableField.defense){
+				field = action.field = tableField.id;
+				break;
+			} 
+
+		}
+
+		this.logAction(card, action.type, card.field, field );
 
 		//Перемещаем карту на стол и убираем карту из руки
-		card.field = action.field;
+		card.field = field;
 		this.hands[player.id].splice(ci, 1);
-		tableFields[action.field].attack = card;
+		tableFields[field].attack = card;
 
 		//Добавляем информацию о карте в действие
 		action.value = card.value;
 		action.suit = card.suit;
 
 		//Увеличиваем кол-во занятых мест на столе
-		this.field.usedFields++;
+		this.table.usedFields++;
 
 		//Если игрок клал карту в догонку, даем ему воможность положить еще карту
 		if(this.turnStages.current == 'FOLLOWUP'){
@@ -67,7 +79,7 @@ class GameReactions{
 	DEFENSE(player, action){
 
 		let cardsById = this.cards.byId;
-		let tableFields = this.field.byKey('id');
+		let tableFields = this.table.byKey('id');
 		let ci, card;
 
 		utils.log(player.name, 'defends');
@@ -86,8 +98,8 @@ class GameReactions{
 		action.value = card.value;
 		action.suit = card.suit;
 
-		for(let di = 0; di < this.field.length; di++){
-			let tableField = this.field[di];
+		for(let di = 0; di < this.table.length; di++){
+			let tableField = this.table[di];
 			if(tableField.attack && !tableField.defense){
 				this.setNextTurnStage('DEFENSE');
 				break;

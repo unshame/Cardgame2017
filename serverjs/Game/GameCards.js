@@ -18,10 +18,10 @@ class GameCards extends BetterArray{
 		this.maxValue = 14;
 		this.normalHandSize = 6;	
 
-		this.field = new BetterArray();
-		this.field.usedFields = 0;
-		this.field.maxLength = 6;
-		this.field.zeroDiscardLength = this.field.maxLength - 1;
+		this.table = new BetterArray();
+		this.table.usedFields = 0;
+		this.table.maxLength = 6;
+		this.table.zeroDiscardLength = this.table.maxLength - 1;
 	}
 	static get [Symbol.species]() { return Array; }
 
@@ -70,9 +70,9 @@ class GameCards extends BetterArray{
 			}			
 
 			//В игре
-			for(let fi = 0; fi < this.field.length; fi++){
+			for(let fi = 0; fi < this.table.length; fi++){
 
-				let tableField = this.field[fi];
+				let tableField = this.table[fi];
 				if(tableField.attack){
 					let card = tableField.attack;
 					let newCard = card.info;
@@ -105,17 +105,17 @@ class GameCards extends BetterArray{
 		this.hands = {};			
 
 		//Поля (стол) (объекты с id карт)
-		this.field.length = 0;
-		this.field.length = this.field.maxLength;		
-		this.field.fullLength = this.field.zeroDiscardLength;
-		for(let i = 0; i < this.field.length; i++) {
+		this.table.length = 0;
+		this.table.length = this.table.maxLength;		
+		this.table.fullLength = this.table.zeroDiscardLength;
+		for(let i = 0; i < this.table.length; i++) {
 			let id = 'TABLE'+i;
 			let tableField = {
 				attack: null,
 				defense: null,
 				id: id
 			};
-			this.field[i] = tableField;
+			this.table[i] = tableField;
 		}
 	}
 
@@ -152,7 +152,7 @@ class GameCards extends BetterArray{
 		//Добавляем указатели на элементы игре
 		game.deck = this.deck;
 		game.discardPile = this.discardPile;
-		game.field = this.field;
+		game.table = this.table;
 		game.hands = this.hands;
 	}
 
@@ -297,9 +297,9 @@ class GameCards extends BetterArray{
 		};
 
 		//Убираем карты со всех позиций на столе
-		for(let fi = 0; fi < this.field.length; fi++){
+		for(let fi = 0; fi < this.table.length; fi++){
 
-			let tableField = this.field[fi];
+			let tableField = this.table[fi];
 
 			if(tableField.attack){
 				let card = tableField.attack;
@@ -327,9 +327,9 @@ class GameCards extends BetterArray{
 		if(action.ids.length){
 
 			//После первого сброса на стол можно класть больше карт
-			if(this.field.fullLength <= this.field.zeroDiscardLength){
-				this.field.fullLength++;
-				utils.log('First discard, field expanded to', this.field.fullLength);
+			if(this.table.fullLength <= this.table.zeroDiscardLength){
+				this.table.fullLength++;
+				utils.log('First discard, field expanded to', this.table.fullLength);
 			}
 
 			return action;

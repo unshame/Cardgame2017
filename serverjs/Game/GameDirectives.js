@@ -23,12 +23,12 @@ class GameDirectives{
 		let defHand = this.hands[this.players.defender.id];
 
 		if(
-			this.field.usedFields >= this.field.fullLength || 
+			this.table.usedFields >= this.table.fullLength || 
 			!hand.length ||
 			turnStage != 'FOLLOWUP' && !defHand.length
 		){
 			utils.log(
-				this.field.usedFields >= this.field.fullLength && 'Field is full' ||
+				this.table.usedFields >= this.table.fullLength && 'Field is full' ||
 				!this.hands[pid].length && 'Attacker has no cards' ||
 				turnStage != 'FOLLOWUP' && !defHand.length && 'Defender has no cards'
 			);
@@ -41,8 +41,8 @@ class GameDirectives{
 
 		//Находим значения карт, которые можно подбрасывать
 		let validValues = [];
-		for(let fi = 0; fi < this.field.length; fi++){
-			let tableField = this.field[fi];
+		for(let fi = 0; fi < this.table.length; fi++){
+			let tableField = this.table[fi];
 			if(tableField.attack){
 				let card = tableField.attack;
 				validValues.push(card.value);
@@ -55,20 +55,19 @@ class GameDirectives{
 		if(!validValues.length)
 			validValues = null;
 
-		//Выбираем первую незаполненную позицию на столе
-		let field = 'TABLE' + this.field.usedFields;
-
 		//Выбираем подходящие карты из руки атакующего и собираем из них возможные действия
 		for(let ci = 0; ci < hand.length; ci++){
 			let card = hand[ci];
 			let cid = card.id;
-			if(!validValues || ~validValues.indexOf(card.value)){			
-				let action = {
-					type: 'ATTACK',
-					cid: cid,
-					field: field
-				};
-				actions.push(action);
+			if(!validValues || ~validValues.indexOf(card.value)){		
+				for(let fi = 0; fi < this.table.length; fi++){	
+					let action = {
+						type: 'ATTACK',
+						cid: cid,
+						field: this.table[fi].id
+					};
+					actions.push(action);
+				}
 			}
 		}
 
@@ -107,8 +106,8 @@ class GameDirectives{
 		let defenseFields = [];
 
 		//Находим карту, которую нужно отбивать
-		for(let fi = 0; fi < this.field.length; fi++){
-			let tableField = this.field[fi];
+		for(let fi = 0; fi < this.table.length; fi++){
+			let tableField = this.table[fi];
 
 			if(tableField.attack && !tableField.defense){
 				defenseFields.push(tableField);
@@ -130,13 +129,13 @@ class GameDirectives{
 			this.canTransfer && 
 			this.hands[
 				this.players.ally && this.players.ally.id || this.players.attacker.id
-			].length > this.field.usedFields;
+			].length > this.table.usedFields;
 
-		let attackField = this.field[this.field.usedFields];
+		let attackField = this.table[this.table.usedFields];
 
 		if(canTransfer){
-			for(let fi = 0; fi < this.field.length; fi++){
-				let tableField = this.field[fi];
+			for(let fi = 0; fi < this.table.length; fi++){
+				let tableField = this.table[fi];
 				if(tableField.defense){
 					canTransfer = false;
 					break;
@@ -149,7 +148,7 @@ class GameDirectives{
 
 		//Создаем список возможных действий защищающегося
 		for(let di = 0; di < defenseFields.length; di++){
-			let field = defenseFields[di].id;
+			let fid = defenseFields[di].id;
 			for(let ci = 0; ci < hand.length; ci++){
 				let card = hand[ci];
 				let cid = card.id;
@@ -164,19 +163,38 @@ class GameDirectives{
 					let action = {
 						type: 'DEFENSE',
 						cid: cid,
-						field: field
+						field: fid
 					};
 					actions.push(action);
 				}
+			}
+		}
+		//Возожность перевода
+		let defenseActionFields = actions.map((action) => action.field);
+		if(canTransfer && attackField){
+			for(let di = 0; di < defenseFields.length; di++){
+				for(let ci = 0; ci < hand.length; ci++){
+					let card = hand[ci];
+					let cid = card.id;
+					let otherCard = defenseFields[di].attack;
 
-				//Возожность перевода
-				if(canTransfer && attackField && card.value == otherCard.value){
-					let action = {
-						type: 'ATTACK',
-						cid: cid,
-						field: attackField.id
-					};
-					actions.push(action);
+					if(card.value != otherCard.value)
+						continue;
+
+					//Все поля, которые уже не находятся в возможных действиях
+					for(let fi = 0; fi < this.table.length; fi++){	
+						let fid = this.table[fi].id;
+
+						if(defenseActionFields.includes(fid))
+							continue;
+
+						let action = {
+							type: 'ATTACK',
+							cid: cid,
+							field: fid
+						};
+						actions.push(action);
+					}
 				}
 			}
 		}
@@ -239,8 +257,8 @@ class GameDirectives{
 			type: 'TAKE',
 			cards:[]
 		};
-		for(let fi = 0; fi < this.field.length; fi++){
-			let tableField = this.field[fi];
+		for(let fi = 0; fi < this.table.length; fi++){
+			let tableField = this.table[fi];
 
 			if(tableField.attack){
 

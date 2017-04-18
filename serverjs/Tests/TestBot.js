@@ -47,7 +47,7 @@ class TestBot extends Bot{
 
 			//Тест перевода игроку, у которого нет достаточного кол-ва карт, чтобы отбиться
 			this.tests++;
-			var usedFields = game.fieldUsedFields;
+			var usedFields = game.table.usedFields;
 			var handSize = game.hands[game.players.ally && game.players.ally.id || game.players.attacker.id].length;
 			if(handSize <= usedFields){
 				console.log('Test %s (transfer) failed on %s', this.tests, this.name);
