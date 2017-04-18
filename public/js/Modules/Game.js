@@ -28,6 +28,83 @@ var Game = function(){
 Game.prototype = Object.create(Phaser.Game.prototype);
 Game.prototype.constructor = Game;
 
+Game.prototype.initialize = function(){
+	if(this.created)
+		return;
+
+	$('#loading').animate({opacity: 0}, 2000, function(){
+		$('#loading').hide();
+	})
+
+	this.created = true;
+	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
+	this.stage.disableVisibilityChange  = true;	
+	
+	//Фон
+	this.background = this.add.group();
+	this.surface = this.add.tileSprite(0, 0, this.screenWidth, this.screenHeight, 'blue');
+	this.background.add(this.surface); 
+
+	window.grid = new Grid();
+	grid.draw();	
+	
+	this.cardsGroup = this.add.group();
+	controller = new Controller();
+	this.rope = new Rope();
+	var buttonPosition = grid.at(
+		Math.floor(grid.numCols/2),
+		grid.numRows - grid.density - 2,
+		-95,
+		-25
+	),
+	debugButtonPosition = grid.at(
+		grid.numCols - grid.density,
+		grid.numRows - grid.density - 2,
+		-95,
+		-25
+	)
+	this.skipButton = new Button(
+		buttonPosition.x,
+		buttonPosition.y,
+		function(){sendRealAction('SKIP')},
+		'Skip'
+	);
+	this.takeButton = new Button(
+		buttonPosition.x,
+		buttonPosition.y,
+		function(){sendRealAction('TAKE')},
+		'Take'
+	);
+	this.debugButton = new Button(
+		debugButtonPosition.x,
+		debugButtonPosition.y,
+		this.toggleDebugMode,
+		'Debug',
+		this
+	);
+	this.skipButton.hide();
+	this.takeButton.hide();
+	this.menu = new Menu(this.screenWidth/2,this.screenHeight/2);
+	this.menu.addButton(function(){	},'SinglePlayer');
+	this.menu.addButton(function(){console.log('sup');},'Multiplayer');
+	this.menu.addButton(function(){console.log('lel');},'Options');
+	this.canvas.oncontextmenu = function (e) { e.preventDefault(); }
+/*	this.testButton = new Button(
+		50,
+		50, function(){
+			this.menu.toggle();
+		},
+		'Menu'
+	)*/
+
+	
+	/*this.onPause.add(function(){console.log('paused')});
+	this.onResume.add(function(){console.log('unpaused')});
+	this.onBlur.add(function(){console.log('blured')});
+	this.onFocus.add(function(){console.log('focused')});*/
+
+}
+
 Game.prototype.updateAppDimensionsListener = function(){
 	this.screenWidth = window.innerWidth;
 	this.screenHeight = window.innerHeight;
