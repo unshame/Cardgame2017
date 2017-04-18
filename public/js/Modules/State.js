@@ -21,6 +21,9 @@ playState.preload = function(){
 	//Кнопки
 	game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 3);
 
+	game.load.spritesheet('cursor_yellow', 'assets/cursors/yellow.png', 128, 128, 3);
+	game.load.spritesheet('cursor_orange', 'assets/cursors/orange.png', 128, 128, 3);
+
 	//Скины
 	window.skinManager = new SkinManager('modern');
 	skinManager.addSkin({name: 'modern'});

@@ -40,7 +40,7 @@ Game.prototype.initialize = function(){
 
 	this.created = true;
 	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
-	this.stage.disableVisibilityChange  = true;	
+	//this.stage.disableVisibilityChange  = true;	
 	
 	//Фон
 	this.background = this.add.group();
@@ -100,9 +100,14 @@ Game.prototype.initialize = function(){
 	)*/
 
 	
-	/*this.onPause.add(function(){console.log('paused')});
-	this.onResume.add(function(){console.log('unpaused')});
-	this.onBlur.add(function(){console.log('blured')});
+	this.onPause.add(function(){
+		controller && controller.cursor.kill();
+		game.canvas.style.cursor = "default";
+	});
+	this.onResume.add(function(){
+
+	});
+/*	this.onBlur.add(function(){console.log('blured')});
 	this.onFocus.add(function(){console.log('focused')});*/
 
 };

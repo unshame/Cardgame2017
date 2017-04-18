@@ -10,6 +10,9 @@ var Controller = function(isInDebugMode){
 	this.card = null;
 	this.pointer = null;
 
+	this.cursor = game.add.sprite(0, 0, 'cursor_orange');
+	this.cursor.width = this.cursor.height = 32;
+
 	this.trail = game.add.emitter(0, 0);
 	this.trailDefaultBase = game.add.group();
 	this.trailDefaultBase.add(this.trail);
@@ -196,7 +199,6 @@ Controller.prototype.cardReturn = function(){
 	else{
 		card.returnToBase(this.cardReturnTime, 0);
 	}
-	game.canvas.style.cursor = "default";
 };
 
 
@@ -300,11 +302,28 @@ Controller.prototype.resetCardClickTimer = function(){
 
 //Обновляет курсор
 Controller.prototype.updateCursor = function(){
+	if(game.paused && this.cursor.alive){
+		this.cursor.kill();
+		return;
+	}
+	else if(!game.paused && !this.cursor.alive){
+		this.cursor.reset();
+	}
+	game.canvas.style.cursor = "none";
+	this.cursor.x = game.input.x;
+	this.cursor.y = game.input.y;
+	game.world.bringToTop(this.cursor);
+	if(this.card){
+		this.cursor.x -= this.cursor.width/2;
+		this.cursor.y -= this.cursor.height/2;
+		this.cursor.frame = 2;
+		return;
+	}
 	if(
 		game.skipButton && game.skipButton.input.pointerOver() ||
 		game.takeButton && game.takeButton.input.pointerOver()
 	){
-		game.canvas.style.cursor = "pointer";
+		this.cursor.frame = 1;
 		return;
 	}
 	for(var ci in game.cards){
@@ -312,11 +331,11 @@ Controller.prototype.updateCursor = function(){
 			continue;
 		var card = game.cards[ci];
 		if(card.mouseIsOver() && card.isDraggable){
-			game.canvas.style.cursor = "pointer";
+			this.cursor.frame = 1;
 			return;
 		}
 	}
-	game.canvas.style.cursor = "default";
+	this.cursor.frame = 0;
 };
 
 //Обновление позиции карты и хвоста
