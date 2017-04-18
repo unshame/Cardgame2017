@@ -46,9 +46,9 @@ var Field = function(options){
 	if(!~['forward', 'backward'].indexOf(this.direction))
 		this.direction = defaultOptions.direction;
 
-	this.align = this.options.align;
-	if(!~['left', 'center', 'right'].indexOf(this.align))
-		this.align = defaultOptions.align;
+	this.horizontalAlign = this.options.horizontalAlign;
+	if(!~['left', 'center', 'right'].indexOf(this.horizontalAlign))
+		this.horizontalAlign = defaultOptions.horizontalAlign;
 
 	this.verticalAlign = this.options.verticalAlign;
 	if(!~['top', 'middle', 'bottom'].indexOf(this.verticalAlign))
@@ -126,9 +126,9 @@ Field.prototype.getDefaultOptions = function(){
 		type:'GENERIC',
 		name: null,
 
-		align:'center',			 //Выравнивание по горизонтали
+		horizontalAlign:'center',			 //Выравнивание по горизонтали
 		verticalAlign:'middle',
-		//Поворот поля, меняет местами align и verticalAlign (right станет bottom и т.д.),
+		//Поворот поля, меняет местами horizontalAlign и verticalAlign (right станет bottom и т.д.),
 		//не влияет на width и height
 		alignment: 'horizontal', 
 		direction: 'forward',	//Направление поля
@@ -438,7 +438,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 	//Если ширина карт меньше ширины поля, устанавливаем отступ
 	//По умолчанию отступ слева уже указан
 	if(requiredActiveWidth != areaActiveWidth){
-		switch(this.align){
+		switch(this.horizontalAlign){
 		case 'center':
 			leftMargin = (areaWidth - requiredActiveWidth)/2;
 			break;
