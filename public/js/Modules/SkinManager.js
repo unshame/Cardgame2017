@@ -7,7 +7,7 @@ var SkinManager = function(skinToSet){
 	this.skins = {};
 	this.skin = null;
 	this.skinToSet = skinToSet || null;
-}
+};
 
 //Добавляет скин, загружает графику
 SkinManager.prototype.addSkin = function(options){
@@ -22,7 +22,7 @@ SkinManager.prototype.addSkin = function(options){
 	skin.scale = {
 		x: options.scaleX || 1,
 		y: options.scaleY || 1
-	}
+	};
 
 	skin.width = skin.frameWidth*skin.scale.x;
 	skin.height = skin.frameHeight*skin.scale.y;
@@ -66,7 +66,7 @@ SkinManager.prototype.addSkin = function(options){
 		this.skin = skin;
 		this.skinToSet = null;
 	}
-}
+};
 
 //Применяет скин
 //@skinName String - название скина
@@ -83,7 +83,7 @@ SkinManager.prototype.setSkin = function(skinName){
 	}
 	grid.draw();
 	fieldManager.resizeFields();
-}
+};
 
 //Устанавливает рубашку карт
 //@i - индекс рубашки в cardbackPossibleFrames текущего скина
@@ -107,4 +107,4 @@ SkinManager.prototype.setCardback = function(i){
 		if(game.cards.hasOwnProperty(ci))
 			game.cards[ci].applyCardback();
 	}
-}
+};

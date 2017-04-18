@@ -23,7 +23,7 @@ var Game = function(){
 		Phaser.Canvas, 
 		'cardgame'
 	);
-}
+};
 
 Game.prototype = Object.create(Phaser.Game.prototype);
 Game.prototype.constructor = Game;
@@ -36,7 +36,7 @@ Game.prototype.initialize = function(){
 
 	$('#loading').animate({opacity: 0}, 2000, function(){
 		$('#loading').hide();
-	})
+	});
 
 	this.created = true;
 	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
@@ -64,17 +64,17 @@ Game.prototype.initialize = function(){
 		grid.numRows - grid.density - 2,
 		-95,
 		-25
-	)
+	);
 	this.skipButton = new Button(
 		buttonPosition.x,
 		buttonPosition.y,
-		function(){sendRealAction('SKIP')},
+		function(){sendRealAction('SKIP');},
 		'Skip'
 	);
 	this.takeButton = new Button(
 		buttonPosition.x,
 		buttonPosition.y,
-		function(){sendRealAction('TAKE')},
+		function(){sendRealAction('TAKE');},
 		'Take'
 	);
 	this.debugButton = new Button(
@@ -90,7 +90,7 @@ Game.prototype.initialize = function(){
 	this.menu.addButton(function(){	},'SinglePlayer');
 	this.menu.addButton(function(){console.log('sup');},'Multiplayer');
 	this.menu.addButton(function(){console.log('lel');},'Options');
-	this.canvas.oncontextmenu = function (e) { e.preventDefault(); }
+	this.canvas.oncontextmenu = function (e) { e.preventDefault(); };
 /*	this.testButton = new Button(
 		50,
 		50, function(){
@@ -105,13 +105,13 @@ Game.prototype.initialize = function(){
 	this.onBlur.add(function(){console.log('blured')});
 	this.onFocus.add(function(){console.log('focused')});*/
 
-}
+};
 
 Game.prototype.updateAppDimensionsListener = function(){
 	this.screenWidth = window.innerWidth;
 	this.screenHeight = window.innerHeight;
 	if(this.created){
-		this.scale.setGameSize(this.screenWidth, this.screenHeight)
+		this.scale.setGameSize(this.screenWidth, this.screenHeight);
 		this.surface.width = this.screenWidth;
 		this.surface.height =  this.screenHeight;
 		grid && grid.draw();
@@ -129,7 +129,7 @@ Game.prototype.updateAppDimensionsListener = function(){
 			grid.numRows - grid.density - 2,
 			-95,
 			-25
-		)
+		);
 		this.skipButton.reposition(
 			buttonPosition.x,
 			buttonPosition.y
@@ -146,7 +146,7 @@ Game.prototype.updateAppDimensionsListener = function(){
 	}
 	$('#loading').hide().css('opacity', 0);
 	this.dimensionsUpdateTimeout = null;
-}
+};
 
 Game.prototype.updateAppDimensions = function(){
 	if(this.dimensionsUpdateTimeout){
@@ -155,17 +155,17 @@ Game.prototype.updateAppDimensions = function(){
 	else{
 		$('#loading').show().css('opacity', 1);
 	}
-	this.dimensionsUpdateTimeout = setTimeout(this.updateAppDimensionsListener.bind(this), 500)
+	this.dimensionsUpdateTimeout = setTimeout(this.updateAppDimensionsListener.bind(this), 500);
 
-}
+};
 
 Game.prototype.newPixel = function(){
 	var pixel = this.make.graphics(0, 0);
 	pixel.beginFill(0xffffff);
 	pixel.drawRect(0, 0, 1, 1);
 	pixel.endFill();
-	return pixel
-}
+	return pixel;
+};
 
 Game.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
@@ -180,4 +180,4 @@ Game.prototype.toggleDebugMode = function(){
 		if(this.cards.hasOwnProperty(ci))
 			this.cards[ci].isInDebugMode = this.isInDebugMode;
 	}
-}
+};

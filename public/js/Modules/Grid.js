@@ -8,7 +8,7 @@ var Grid = function(options){
 
 	this.options = this.getDefaultOptions();
 
-	for(o in options){
+	for(var o in options){
 		if(options.hasOwnProperty(o) && options[o] !== undefined){
 			this.options[o] = options[o];
 		}
@@ -18,16 +18,16 @@ var Grid = function(options){
 	this.thickness = this.options.thickness;
 
 	this.isInDebugMode = this.options.debug;
-}
+};
 
 Grid.prototype.getDefaultOptions = function(){
 	var options = {
 		density:4,		//плотность сетки (масштаб - 1:density)
 		thickness: 1,	//толщина линий сетки для дебага
 		debug: false
-	}
-	return options
-}
+	};
+	return options;
+};
 
 //Рисует или уничтожает сетку с рамкой по размеру карт
 Grid.prototype.draw = function(){
@@ -59,7 +59,7 @@ Grid.prototype.draw = function(){
 		grid.drawRect(0, 0, width-thickness, height-thickness);
 		this.gridTexture = grid.generateTexture();
 		this.grid = game.add.tileSprite(0, 0, screenWidth, screenHeight, this.gridTexture);
-		this.grid.alpha = 0.3
+		this.grid.alpha = 0.3;
 
 		this.highlights = game.add.group();
 		game.world.add(this.highlights);
@@ -68,7 +68,7 @@ Grid.prototype.draw = function(){
 	var offset = this.offset = {
 		x: Math.round(screenWidth%width/2),
 		y: Math.round(screenHeight%height/2)
-	}
+	};
 
 	this.numCols = Math.floor(screenWidth/width);
 	this.numRows = Math.floor(screenHeight/height);
@@ -101,7 +101,7 @@ Grid.prototype.draw = function(){
 		game.background.add(this.grid);
 		game.background.add(this.border);
 	}
-}
+};
 
 //Возвращает координаты ячейки [col, row] 
 //с опциональным сдвигом (offsetX, offsetY) 
@@ -122,7 +122,7 @@ Grid.prototype.at = function(col, row, offsetX, offsetY, align){
 		validAlignHorizontal = ['left', 'center', 'right'];
 
 	if(!align)
-		align = [validAlignVertical[0], validAlignHorizontal[0]]
+		align = [validAlignVertical[0], validAlignHorizontal[0]];
 	else
 		align = align.split(' ');
 
@@ -176,12 +176,12 @@ Grid.prototype.at = function(col, row, offsetX, offsetY, align){
 		highlight.tint = 0x2DD300;
 		highlight.position.x = x;
 		highlight.position.y = y;
-		game.world.bringToTop(this.highlights)
+		game.world.bringToTop(this.highlights);
 	}
-	return {x: x + offsetX, y: y + offsetY}
-}
+	return {x: x + offsetX, y: y + offsetY};
+};
 
 Grid.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	this.draw();
-}
+};

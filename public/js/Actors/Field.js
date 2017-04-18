@@ -23,7 +23,7 @@ var Field = function(options){
 
 	var defaultOptions = this.options = this.getDefaultOptions();
 
-	for(o in options){
+	for(var o in options){
 		if(options.hasOwnProperty(o) && options[o] !== undefined){
 			this.options[o] = options[o];
 		}
@@ -75,7 +75,7 @@ var Field = function(options){
 		console.warn(
 			'Field', this.type, this.id, 'set to focusable and ' + this.axis,
 			'. This is not supported, focusable defaulted to false\n', this
-		)
+		);
 	}
 
 	this.base = game.add.group();
@@ -93,14 +93,14 @@ var Field = function(options){
 
 	this.isHighlighted = false;
 
-	this.resize(this.options.width, this.options.height)
+	this.resize(this.options.width, this.options.height);
 	
 	game.world.setChildIndex(this.base, 1);	
 
 	this.debugActiveSpace = new Phaser.Rectangle();
 	this.isInDebugMode = this.options.debug;
 	this.specialId = this.options.specialId;
-}
+};
 
 //Возвращает опции по умолчанию
 Field.prototype.getDefaultOptions = function(){
@@ -140,9 +140,9 @@ Field.prototype.getDefaultOptions = function(){
 
 		debug: false,
 		specialId: null
-	}
-	return options
-}
+	};
+	return options;
+};
 
 
 //ПОЗИЦИОНИРОВАНИЕ ПОЛЯ
@@ -161,17 +161,17 @@ Field.prototype.setBase = function(x, y, shouldPlace){
 
 	if(shouldPlace)
 		this.placeCards();
-}
+};
 
 //Изменяет размер поля
 Field.prototype.resize = function(width, height, shouldPlace){
 	if(width === null || width === undefined)
-		width = this.options.width
+		width = this.options.width;
 	else
 		this.options.width = width;
 
 	if(height === null || height === undefined)
-		height = this.options.height
+		height = this.options.height;
 	else
 		this.options.height = height;
 
@@ -202,15 +202,14 @@ Field.prototype.resize = function(width, height, shouldPlace){
 
 	if(shouldPlace)
 		this.placeCards();
-}
+};
 
 Field.prototype.setHighlight = function(on, tint){
 	this.area.visible = on || this.isInDebugMode ? true : false;
 	this.area.tint = on ? (tint || 0xFF8300) : 0xFFFFFF;
 	this.area.alpha = on ? 1 : 0.35;
 	this.isHighlighted = on;
-}
-
+};
 
 //СОРТИРОВКА
 
@@ -218,45 +217,45 @@ Field.prototype.setHighlight = function(on, tint){
 Field.prototype.sortCards = function(){
 	if(this.sorting)
 		this.cards.sort(this.comparator);
-}
+};
 
 Field.prototype.appendCard = function(card){
 	if(
 		this.direction == 'forward' && this.order == 'ascending' ||
 		this.direction == 'backward' && this.order == 'descending'
 	)
-		this.cards.push(card)
+		this.cards.push(card);
 	else
 		this.cards.unshift(card);
-}
+};
 
 //Компаратор сортировки
 Field.prototype.comparator = function(a, b){
 	if(!a.suit && a.suit !== 0){
 		if(b.suit || b.suit === 0)
-			return -1
+			return -1;
 		else
-			return 0
+			return 0;
 	}
 	if(!b.suit && b.suit !== 0){
 		if(a.suit || a.suit === 0)
-			return 1
+			return 1;
 		else
-			return 0
+			return 0;
 	}
 	if(a.suit == b.suit){
 		if(a.value == b.value)
-			return 0
+			return 0;
 		else if(a.value > b.value)
-			return 1
+			return 1;
 		else
 			return -1;
 	}
 	else if(a.suit > b.suit)
-		return 1
+		return 1;
 	else
 		return -1;
-}
+};
 
 Field.prototype.zAlignCards = function(){
 	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
@@ -265,7 +264,7 @@ Field.prototype.zAlignCards = function(){
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 		this.cards[i].bringToTop(false);
 	}
-}
+};
 
 
 
@@ -276,23 +275,25 @@ Field.prototype.queueCards = function(newCards, delay){
 	if(!newCards.length)
 		return;
 
+	var ci;
+
 	//Если задержка не указана, используем задержку последней карты в очереди
 	if(typeof delay != 'number' || isNaN(delay)){
 		var lastQueuedCard = this.queuedCards[this.queuedCards.length - 1];
 		if(lastQueuedCard)
-			delay = this.delays[lastQueuedCard.id] || 0
+			delay = this.delays[lastQueuedCard.id] || 0;
 		else
 			delay = 0;
 	}
 
 	//Устанавливаем задержку для всех карт, равную задержке первой карты в очереди
-	for(var ci = 0; ci < this.cards.length; ci++){
+	for(ci = 0; ci < this.cards.length; ci++){
 		if(this.delays[this.cards[ci].id] === undefined)
 			this.delays[this.cards[ci].id] = delay;
 	}
 
 	//Устанавливаем задержку для кард в очереди, увеличивая каждую следующую
-	for(var ci = 0; ci < newCards.length; ci++){
+	for(ci = 0; ci < newCards.length; ci++){
 		var card = newCards[ci];
 
 		//Если карта переходит из поля, одну из карт которых перетаскивает игрок,
@@ -306,8 +307,8 @@ Field.prototype.queueCards = function(newCards, delay){
 
 	//Запоминаем задержку для uninteractibleTimer
 	this.expectedDelay = delay;
-	return delay
-}
+	return delay;
+};
 
 //Размещает карты из очереди
 Field.prototype.placeQueuedCards = function(){
@@ -327,14 +328,14 @@ Field.prototype.placeQueuedCards = function(){
 	this.queuedCards = [];
 	this.delays = {};
 	this.expectedDelay = 0;
-}
+};
 
 //Очищает очередь на добавление
 Field.prototype.resetQueue = function(){
 	this.queuedCards = [];
 	this.delays = {};
 	this.expectedDelay = 0;
-}
+};
 
 
 //ДОБАВЛЕНИЕ КАРТ
@@ -352,7 +353,7 @@ Field.prototype.addCards = function(newCards, noDelay){
 		this.queueCards(newCards, delay);
 		this.placeQueuedCards();
 		delay += (this.queuedCards.length - 1)*this.delayTime;
-		return delay
+		return delay;
 	}
 	else{
 		for(var ci = 0; ci < newCards.length; ci++){
@@ -363,12 +364,12 @@ Field.prototype.addCards = function(newCards, noDelay){
 		this.sortCards();
 		return this.placeCards(newCards, 'start', noDelay);
 	}
-}
+};
 
 //Для добавления одной карты, возвращает время добавления
 Field.prototype.addCard = function(card){
 	return this.addCards([card]);
-}
+};
 
 
 //РАЗМЕЩЕНИЕ КАРТ
@@ -405,7 +406,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 	//Необходимая ширина для размещения карт
 	var requiredActiveWidth = this.cards.length - 1;
 	if(this.forcedSpace)
-		requiredActiveWidth *= this.forcedSpace
+		requiredActiveWidth *= this.forcedSpace;
 	else
 		requiredActiveWidth *= cardWidth;
 
@@ -472,7 +473,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 		cardSpacing = requiredActiveWidth/(this.cards.length-1);
 	if(this.forcedSpace){
 		if(cardSpacing < this.forcedSpace && this.cards.length > 1)
-			console.warn("Field", this.id, "wants to space cards out by", this.forcedSpace + "px", "but only has", cardSpacing + "px", "available per card\n", this)
+			console.warn("Field", this.id, "wants to space cards out by", this.forcedSpace + "px", "but only has", cardSpacing + "px", "available per card\n", this);
 		cardSpacing = Math.min(cardSpacing, this.forcedSpace);
 	}
 
@@ -504,7 +505,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 
 		var localDelay = noDelay ? 0 : this.delays[this.cards[i].id]; 
 
-		delayArray.push(localDelay)
+		delayArray.push(localDelay);
 	}
 	
 	//Передвигаем карты
@@ -517,7 +518,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 		delayIndex = this.moveCard(
 			card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
 			delayArray, delayIndex, increaseDelayIndex, bringUpOn
-		)
+		);
 	}
 
 	//Поднимаем карту контроллера наверх
@@ -545,8 +546,8 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 
 	//Возвращаем время задержки
 	var delay = delayIndex*this.delayTime + this.moveTime;
-	return delay
-}
+	return delay;
+};
 
 //Для размещения одной карты
 Field.prototype.placeCard = function(card, bringUpOn, noDelay){
@@ -554,7 +555,7 @@ Field.prototype.placeCard = function(card, bringUpOn, noDelay){
 	if(!~i)
 		return;
 	return this.placeCards([card], bringUpOn, noDelay);
-}
+};
 
 /*
  * Перемещает заданную карту в соответствии с переданными данными
@@ -635,7 +636,7 @@ Field.prototype.moveCard = function(
 	//Проверяем перетаскиваемость карты для тех случаев, когда карта была перемещена
 	//без использования presetField метода
 	if(this.type == 'HAND' && this.id == game.pid && !card.draggable)
-		card.setDraggability(true)
+		card.setDraggability(true);
 	else if(card.draggable)
 		card.setDraggability(false);
 
@@ -644,7 +645,7 @@ Field.prototype.moveCard = function(
 	if(increaseDelayIndex)
 		delayIndex++;
 	return delayIndex;
-}
+};
 
 //УДАЛЕНИЕ КАРТ ИЗ ПОЛЯ
 
@@ -665,29 +666,29 @@ Field.prototype.removeCards = function(cardsToRemove){
 		this.sortCards();
 		this.placeCards(null, bringUpOn);
 	}
-}
+};
 
 //Удаляет все карты из поля
 Field.prototype.removeAllCards = function(){
-	this.removeCards(this.cards)
-}
+	this.removeCards(this.cards);
+};
 
 //Для удаления одной карты
 Field.prototype.removeCard = function(card){
-	this.removeCards([card])
-}
+	this.removeCards([card]);
+};
 
 //Ресет поля
 Field.prototype.reset = function(){
 	this.removeAllCards();
-}
+};
 
 Field.prototype.destroy = function(){
 	this.removeAllCards();
 	this.area.kill();
 	this.base.removeAll(true);
 	game.world.removeChild(this.base);
-}
+};
 
 
 //БУЛЕВЫ ФУНКЦИИ
@@ -709,10 +710,10 @@ Field.prototype.cardIsInside = function(card, includeShift){
 		card.base.y + card.sprite.y < this.base.y + this.margin ||
 		card.base.y + card.sprite.y > this.base.y + this.area.height - this.margin
 	)
-		return false
+		return false;
 	else
-		return true
-}
+		return true;
+};
 
 
 //ВЫДЕЛЕНИЕ КАРТ КУРСОРОМ
@@ -735,7 +736,7 @@ Field.prototype.setUninteractibleTimer = function(time){
 		field.zAlignCards();
 		field.uninteractibleTimer = null;
 	}, time/game.speed, this);
-}
+};
 
 //Запоминает карту, над которой находится курсор
 Field.prototype.focusOnCard = function(card, pointer){
@@ -745,7 +746,7 @@ Field.prototype.focusOnCard = function(card, pointer){
 	this.focusedCard = card;
 	if(!this.uninteractibleTimer)
 		this.placeCards(null, 'init');
-}
+};
 
 //Обнуляет запомненную карту, когда курсор с нее ушел
 Field.prototype.focusOffCard = function(card){
@@ -761,7 +762,7 @@ Field.prototype.focusOffCard = function(card){
 	this.focusedCard = null;
 	if(!this.uninteractibleTimer)
 		this.placeCards(null, 'init');
-}
+};
 
 
 //ДЕБАГ
@@ -775,7 +776,7 @@ Field.prototype.updateDebug = function(){
 
 	var str;
 	if(this.type == this.id)
-		str = this.type
+		str = this.type;
 	else
 		str = this.type + ' ' + this.id;
 	if(this.name !== null && this.name !== undefined)
@@ -786,7 +787,7 @@ Field.prototype.updateDebug = function(){
 	game.debug.text(str, x, y );
 
 	game.debug.geom( this.debugActiveSpace, 'rgba(0,127,127,0.3)' ) ;
-}
+};
 
 //Переключает режим дебага
 Field.prototype.toggleDebugMode = function(){
@@ -794,4 +795,4 @@ Field.prototype.toggleDebugMode = function(){
 	this.area.visible = this.isInDebugMode;
 	if(!this.isInDebugMode)
 		game.debug.reset();
-}
+};

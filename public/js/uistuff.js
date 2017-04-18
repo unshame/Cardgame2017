@@ -11,17 +11,18 @@ var Rope = function(){
 	this.duration = 0;
 	this.isBurning = false;
 	this.maxHeight = game.screenHeight;
-}
+};
 
 Rope.prototype.update = function(){
-	var now = new Date().getTime();
+	var now = new Date().getTime(),
+		isBurning = false;
 	if(!this.isBurning && this.startTime && this.startTime < now)
 		isBurning = true;
 
 	else if(!this.isBurning)
 		return;
-	var endTime = this.duration + this.startTime
-	var left = endTime - now;
+	var endTime = this.duration + this.startTime,
+		left = endTime - now;
 	if(left <= 0){
 		this.stop();
 	}
@@ -31,7 +32,7 @@ Rope.prototype.update = function(){
 		if(percentage < 0.25 && this.sprite.tint != '0xC93F3F')
 			this.sprite.tint = '0xC93F3F';
 	}
-}
+};
 
 Rope.prototype.start = function(duration, start){
 	if(!duration || isNaN(duration))
@@ -45,7 +46,7 @@ Rope.prototype.start = function(duration, start){
 	this.startTime = start && now + start || now; 
 	this.duration = duration;
 	this.sprite.height = this.maxHeight;
-}
+};
 
 Rope.prototype.stop = function(){
 	this.isBurning = false;
@@ -53,5 +54,5 @@ Rope.prototype.stop = function(){
 	this.startTime = 0;
 	this.duration = 0;
 	this.sprite.tint = '0xFF8300';
-}
+};
 

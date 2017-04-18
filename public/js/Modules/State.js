@@ -35,7 +35,7 @@ playState.preload = function(){
 		scaleX: 0.4,
 		scaleY: 0.4,
 		trumpOffset: 90
-	}
+	};
 	skinManager.addSkin(options);
 	options = {
 		width: 150,
@@ -49,13 +49,13 @@ playState.preload = function(){
 		trailHeight: 55,
 		scaleX: 0.9,
 		scaleY: 0.9
-	}
+	};
 	skinManager.addSkin(options);
-}
+};
 
 playState.create = function(){
 	game.client = EurecaClientSetup(game.initialize, game);
-}
+};
 
 
 playState.update = function(){
@@ -73,7 +73,7 @@ playState.update = function(){
 			continue;
 		game.cards[ci].update();
 	}
-}
+};
 
 
 playState.render = function(){
@@ -88,9 +88,9 @@ playState.render = function(){
 			continue;
 		game.cards[ci].updateDebug();
 	}
-}
+};
 
 playState.loadUpdate = function(){
 	
-}
+};
 

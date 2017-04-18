@@ -4,10 +4,11 @@
  * В будущем будет переделан как ConnectionManager 
 */
 
-var server;
-var isInDebugMode = false;
-var actions = null;
-var timeout = null;
+var server,
+	isInDebugMode = false,
+	actions = null,
+	timeout = null,
+	timer = null;
 
 var EurecaClientSetup = function(callback, context) {
 	//создаем eureca.io клиент
@@ -22,32 +23,31 @@ var EurecaClientSetup = function(callback, context) {
 	
 	//Методы, принадлежащие export, становятся доступны на стороне сервера
 	
-	client.exports.setId = function(pid) 
-	{
+	client.exports.setId = function(pid){
 		game.pid = pid;
-	}	
+	};	
 	client.exports.meetOpponents = function(opponents){
 		if(isInDebugMode)
 			console.log(opponents);
-	}
+	};
 	client.exports.recievePossibleActions = function(newActions, time, time_sent){		
 		actions = newActions;
-		var actionTypes = actions.map(function(a){return a.type});
+		var actionTypes = actions.map(function(a){return a.type;});
 		var action;
 		if(~actionTypes.indexOf('SKIP'))
 			game.skipButton.show();
 		if(~actionTypes.indexOf('TAKE'))
 			game.takeButton.show();
 
-		var current_time = new Date;
+		var current_time = new Date();
 		time = time - current_time.getTime();
 		if(time)
 			game.rope.start(time - 1000);
 
 		fieldManager.highlightPossibleActions(newActions);
 		if(isInDebugMode)
-			console.log(newActions)
-	}
+			console.log(newActions);
+	};
 	client.exports.recieveCompleteAction = function(action){
 		game.rope.stop();
 		if(game.celebration){
@@ -66,24 +66,24 @@ var EurecaClientSetup = function(callback, context) {
 				sendResponse();	
 			},
 			!delay && 1 || (delay/game.speed + 500)
-		)
+		);
 		if(isInDebugMode)
-			console.log(action)
-	}
+			console.log(action);
+	};
 	client.exports.recieveNotification = function(note, actions){
-		console.log(note)
+		console.log(note);
 		if(note && note.results && note.results.winners && ~note.results.winners.indexOf(game.pid))
 			game.celebration = new ThrowCards();
 
 		if(isInDebugMode)
-			console.log(note, actions)
-	}
+			console.log(note, actions);
+	};
 	client.exports.handleLateness = function(){
 		if(isInDebugMode)
 			console.log('Too late');
-	}
+	};
 	return client;
-}
+};
 
 function sendAction(field, card){
 	if(!actions)
@@ -107,7 +107,7 @@ function sendRealAction(type){
 
 	if(!actions || !actions.length)
 		return;
-	var actionTypes = actions.map(function(a){return a.type});
+	var actionTypes = actions.map(function(a){return a.type;});
 	var action;
 	if(~actionTypes.indexOf(type))
 		action = {type: type};

@@ -21,7 +21,7 @@ var Controller = function(isInDebugMode){
 	this.cardReturnTime = 200;
 	this.cardClickMaxDelay = 200;
 	this.cardMoveThreshold = 2;
-}
+};
 
 //Обрабатывает нажатие на карту
 Controller.prototype.cardClick = function(card, pointer){
@@ -40,7 +40,7 @@ Controller.prototype.cardClick = function(card, pointer){
 	else{
 		this.cardPickup(card, pointer);
 	}
-}
+};
 
 //Обрабатывает поднятие кнопки после нажатия на карту
 Controller.prototype.cardUnclick = function(card){
@@ -56,13 +56,13 @@ Controller.prototype.cardUnclick = function(card){
 	else if(!this.cardClickedInbound() || !this.cardClickTimer || !this.pointer.isMouse){
 		this.cardPutDown();
 	}
-}
+};
 
 //Поднимает карту
 Controller.prototype.cardPickup = function(card, pointer){
 	if(!card){
 		console.warn('Controller: cardPickup called but no Card assigned.');
-		return
+		return;
 	}
 
 	this.card = card;
@@ -86,7 +86,7 @@ Controller.prototype.cardPickup = function(card, pointer){
 
 	this.cardSetPathToCursor();
 	game.cardsGroup.bringToTop(this.card.base);
-}
+};
 
 //Устанавливает путь и время смещения карты к курсору
 Controller.prototype.cardSetPathToCursor = function(){
@@ -100,14 +100,14 @@ Controller.prototype.cardSetPathToCursor = function(){
 		y: this.pointer.y - this.card.base.y - this.card.sprite.y
 	};
 	this.cardShiftEndTime = new Date().getTime() + this.cardShiftDuration;
-}
+};
 
 //Кладет карту
 Controller.prototype.cardPutDown = function(){
 
 	if(!this.card){
 		console.warn('Controller: cardPutDown called but no Card assigned.');
-		return
+		return;
 	}
 
 	if(this.isInDebugMode)
@@ -121,14 +121,14 @@ Controller.prototype.cardPutDown = function(){
 	else{
 		this.cardReturn();
 	}
-}
+};
 
 //Оставляет карту в позиции курсора
 Controller.prototype.cardRebaseAtPointer = function(newField){
 
 	if(!this.card){
 		console.warn('Controller: cardRebaseAtPointer called but no Card assigned.');
-		return
+		return;
 	}
 
 	var success = sendAction(newField, this.card);
@@ -153,7 +153,7 @@ Controller.prototype.cardRebaseAtPointer = function(newField){
 
 	fieldManager.forEachField(function(field, si){
 		field.setHighlight(false);
-	})
+	});
 
 
 	var field = this.card.field;
@@ -166,14 +166,14 @@ Controller.prototype.cardRebaseAtPointer = function(newField){
 	this.card = null;
 	this.pointer = null;
 
-}
+};
 
 //Возвращает карту на базу
 Controller.prototype.cardReturn = function(){
 
 	if(!this.card){
 		console.warn('Controller: cardReturn called but no Card assigned.');
-		return
+		return;
 	}
 
 	if(this.isInDebugMode)
@@ -185,7 +185,6 @@ Controller.prototype.cardReturn = function(){
 	}
 
 	var card = this.card;
-	var pointer = this.pointer;
 
 	this.card = null;
 	this.pointer = null;
@@ -198,7 +197,7 @@ Controller.prototype.cardReturn = function(){
 		card.returnToBase(this.cardReturnTime, 0);
 	}
 	game.canvas.style.cursor = "default";
-}
+};
 
 
 //БУЛЕВЫ ФУНКЦИИ
@@ -209,9 +208,9 @@ Controller.prototype.cardClickedInbound = function(){
 		this.pointer.x >= this.card.base.x - skinManager.skin.width / 2 &&
 		this.pointer.x <= this.card.base.x + skinManager.skin.width / 2 &&
 		this.pointer.y >= this.card.base.y - skinManager.skin.height / 2 &&
-		this.pointer.y <= this.card.base.y + skinManager.skin.height / 2
-	return cond
-}
+		this.pointer.y <= this.card.base.y + skinManager.skin.height / 2;
+	return cond;
+};
 
 
 //ХВОСТ КАРТЫ
@@ -223,21 +222,21 @@ Controller.prototype.cardOnValidField = function(){
 
 	var fields = fieldManager.forEachField(function(field, si){
 		if(field.isHighlighted && field.cardIsInside(this.card, false)){
-			return field
+			return field;
 		}
-	}, this)
+	}, this);
 	if(fields.length){
 		if(fields.length > 1)
-			console.warn('Controller: Card is over more than 1 valid field')
+			console.warn('Controller: Card is over more than 1 valid field');
 		return fields[0];
 	}
-}
+};
 
 //Смещает хвост относительно базы карты
 Controller.prototype.cardShiftTrial = function(x, y){
 	this.trail.position.x += x;
 	this.trail.position.y += y;
-}
+};
 
 //Создает хвост карты при движении
 Controller.prototype.cardSpawnTrail = function(){
@@ -262,21 +261,21 @@ Controller.prototype.cardSpawnTrail = function(){
 	this.trail.emitX = this.card.sprite.x - this.trail.position.x;
 	this.trail.emitY = this.card.sprite.y - this.trail.position.y;
 	this.trail.emitParticle();
-}
+};
 
 //Ресетит хвост карты
 Controller.prototype.cardResetTrail = function(soft){
 	this.trail.forEachAlive(function(p){
 		if(soft)
-			p.alpha = 0
+			p.alpha = 0;
 		else{
 			p.kill();
 			p.reset();
 		}
-	}, this)
+	}, this);
 	this.trail.position = {x: 0, y: 0};
 	this.trailDefaultBase.add(this.trail);
-}
+};
 
 
 //ТАЙМЕР НАЖАТИЯ
@@ -286,7 +285,7 @@ Controller.prototype.setCardClickTimer = function(){
 	this.resetCardClickTimer();
 
 	this.cardClickTimer = game.time.events.add(this.cardClickMaxDelay, this.resetCardClickTimer, this);
-}
+};
 
 //Обнуляет таймер клика по карте
 Controller.prototype.resetCardClickTimer = function(){
@@ -294,7 +293,7 @@ Controller.prototype.resetCardClickTimer = function(){
 		game.time.events.remove(this.cardClickTimer);
 		this.cardClickTimer = null;
 	}
-}
+};
 
 
 //UPDATE, RESET
@@ -318,7 +317,7 @@ Controller.prototype.updateCursor = function(){
 		}
 	}
 	game.canvas.style.cursor = "default";
-}
+};
 
 //Обновление позиции карты и хвоста
 Controller.prototype.updateCard = function(){
@@ -357,7 +356,7 @@ Controller.prototype.updateCard = function(){
 
 	//Спавним хвост
 	this.cardSpawnTrail();
-}
+};
 
 //Обновление прозрачности партиклей хвоста
 Controller.prototype.updateTrail = function(){
@@ -365,15 +364,15 @@ Controller.prototype.updateTrail = function(){
 		return;
 	this.trail.forEachAlive(function(p){
 		p.alpha = p.lifespan / this.trail.lifespan * 0.6;
-	}, this)
-}
+	}, this);
+};
 
 //Обновление контроллера
 Controller.prototype.update = function(){
 	this.updateCard();
 	this.updateCursor();
 	this.updateTrail();
-}
+};
 
 //Ресет модуля
 Controller.prototype.reset = function(reason){
@@ -384,7 +383,7 @@ Controller.prototype.reset = function(reason){
 	this.cardResetTrail(true);
 	this.card = null;
 	this.pointer = null;
-}
+};
 
 
 //ДЕБАГ
@@ -444,7 +443,7 @@ Controller.prototype.updateDebug = function(){
 
 	if(this.pointer)
 		game.debug.pointer(this.pointer);
-}
+};
 
 //Переключает дебаг
 Controller.prototype.toggleDebugMode = function(){
@@ -456,4 +455,4 @@ Controller.prototype.toggleDebugMode = function(){
 	else{
 		console.log('Controller: Debug mode ON');
 	}
-}
+};

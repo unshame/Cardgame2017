@@ -11,7 +11,7 @@ var Card = function (options) {
 
 	//Options
 	this.options = this.getDefaultOptions();
-	for(o in options){
+	for(var o in options){
 		if(options.hasOwnProperty(o))
 			this.options[o] = options[o];
 	}
@@ -24,7 +24,7 @@ var Card = function (options) {
 	this.id = this.options.id;
 
 	//Field
-	this.presetField(this.options.fieldId)
+	this.presetField(this.options.fieldId);
 	this.field = null;
 
 	//Sprite
@@ -80,9 +80,9 @@ Card.prototype.getDefaultOptions = function(){
 		skin:skinManager.skin,
 		fieldId: 'DECK',
 		debug: false
-	}
-	return options
-}
+	};
+	return options;
+};
 
 
 //ЗНАЧЕНИЯ
@@ -107,7 +107,7 @@ Card.prototype.presetValue = function(suit, value){
 		this.value = value;
 	}
 	this.valueChanged = true;
-}
+};
 
 //Устанавливает заданные ранее значения и переворачивает карту
 Card.prototype.updateValue = function(){
@@ -139,11 +139,11 @@ Card.prototype.updateValue = function(){
 	else{
 		this.flipper.onChildComplete.addOnce(function(){
 			this.sprite.frame =  this.skin.firstValueFrame + this.suit*13 + this.value - 2;
-		}, this)
+		}, this);
 	}
 	this.flipper.start();
 
-}
+};
 
 //Устанавливает значение карты сразу, с анимацией или без
 Card.prototype.setValue = function(suit, value, animate){
@@ -169,24 +169,24 @@ Card.prototype.setValue = function(suit, value, animate){
 		this.sprite.frame =  this.skin.firstValueFrame + this.suit*13 + this.value - 2;
 	}		
 
-}
+};
 
 //Устанавливает перетаскиваемость карты
 Card.prototype.setDraggability = function(draggable){	
 	this.isDraggable = draggable;
-}
+};
 
 //Устанавливает, можно ли ходить этой картой
 Card.prototype.setPlayability = function(playable, tint){
 	if(playable){
-		this.glowStart(0.25, 0.75, 1500, 500, tint || 0xFF8300)
+		this.glowStart(0.25, 0.75, 1500, 500, tint || 0xFF8300);
 	}
 	else{
 		this.glowStop();
 	}
 	this.isPlayable = playable;
 
-}
+};
 
 
 //ПОЗИЦИОНИРОВАНИЕ
@@ -202,7 +202,7 @@ Card.prototype.setPosition = function(x, y){
 	this.sprite.x = x - this.base.x;
 	this.sprite.y = y - this.base.y;
 	this.update();
-}
+};
 
 //Устанавливает положение карты по отношению к базе карты
 Card.prototype.setRelativePosition = function(x, y){
@@ -215,7 +215,7 @@ Card.prototype.setRelativePosition = function(x, y){
 	this.sprite.x = x;
 	this.sprite.y = y;
 	this.update();
-}
+};
 
 //Устанавливает позицию базы карты
 Card.prototype.setBase = function(x, y){
@@ -230,16 +230,16 @@ Card.prototype.setBase = function(x, y){
 	this.base.x = x;
 	this.base.y = y;
 	this.update();
-}
+};
 
 //Поднимает карту наверх, опционально поднимает перетаскиваемую карту наверх
 Card.prototype.bringToTop = function(fixController){
-	if(fixController == undefined)
+	if(fixController === undefined)
 		fixController = true;
 	game.cardsGroup.bringToTop(this.base);
 	if(fixController && controller.card)
 		game.cardsGroup.bringToTop(controller.card.base);
-}
+};
 
 //Запоминает id поля, в которое будет перемещена карта
 //Устанавливает перетаскиваемость
@@ -251,7 +251,7 @@ Card.prototype.presetField = function(fieldId){
 	else{
 		this.setDraggability(false);
 	}
-}
+};
 
 Card.prototype.setAngle = function(angle){
 	if(this.rotator){
@@ -261,7 +261,7 @@ Card.prototype.setAngle = function(angle){
 
 	this.sprite.angle = angle;
 	this.update();
-}
+};
 
 
 //ПЕРЕДВИЖЕНИЕ
@@ -373,12 +373,12 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		}, this);
 	}
 
-}
+};
 
 //Плавно возвращает карту на базу
 Card.prototype.returnToBase = function(time, delay){
-	this.moveTo(0, 0, time || 0, delay || 0, true)
-}
+	this.moveTo(0, 0, time || 0, delay || 0, true);
+};
 
 Card.prototype.rotateTo = function(angle, time, delay){
 
@@ -430,7 +430,7 @@ Card.prototype.rotateTo = function(angle, time, delay){
 			this.rotator = null;
 		}, this);
 	}
-}
+};
 
 
 //СКИН
@@ -442,14 +442,14 @@ Card.prototype.applySkin = function(){
 	this.glow.loadTexture(this.skin.glowSheetName);
 	this.glow.scale.setTo(this.skin.scale.x, this.skin.scale.y);
 	this.setValue(this.suit, this.value, false);
-}
+};
 
 //Меняет рубашку карт на текущую
 Card.prototype.applyCardback = function(){
 	if(!this.suit && this.suit !== 0){
 		this.sprite.frame = this.skin.cardbackFrame;
 	}
-}
+};
 
 
 //СВЕЧЕНИЕ
@@ -485,13 +485,13 @@ Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 	this.glowIncreaser.onComplete.add(function(){
 		if(this.glow.visible && this.glowDecreaser)
 			this.glowDecreaser.start();
-	},this)
+	},this);
 	this.glowDecreaser.onComplete.add(function(){
 		if(this.glow.visible && this.glowIncreaser)
 			this.glowIncreaser.start();
-	},this)
-	this.glowDecreaser.start()
-}
+	},this);
+	this.glowDecreaser.start();
+};
 
 //Останавливает свечение
 Card.prototype.glowStop = function(){
@@ -506,22 +506,22 @@ Card.prototype.glowStop = function(){
 	if(this.glow.visible){
 		this.glow.kill();
 	}
-}
+};
 
 //Останавливает и восстанавливает свечение
 Card.prototype.glowReset = function(){
 	this.glowStop();
 	this.glow.reset();
 	this.glowUpdatePosition();
-}
+};
 
 //Обновляет позицию свечения
 Card.prototype.glowUpdatePosition = function(){
 	this.glow.x = this.sprite.x;
 	this.glow.y = this.sprite.y;
-	this.glow.scale.setTo(this.sprite.scale.x, this.sprite.scale.y)
+	this.glow.scale.setTo(this.sprite.scale.x, this.sprite.scale.y);
 	this.glow.angle = this.sprite.angle;
-}
+};
 
 
 //СОБЫТИЯ
@@ -529,30 +529,30 @@ Card.prototype.glowUpdatePosition = function(){
 //Вызывается при нажатии на карту
 Card.prototype.mouseDown = function(sprite, pointer){
 	controller.cardClick(this, pointer);
-}
+};
 
 //Вызывается при окончании нажатия на карту
 Card.prototype.mouseUp = function(sprite, pointer){
 	controller.cardUnclick(this, pointer);
-}
+};
 
 //Вызывается при наведении на карту
 Card.prototype.mouseOver = function(sprite, pointer){
 	if(this.field)
 		this.field.focusOnCard(this, pointer);
-}
+};
 
 //Вызывается когда курсор покидает спрайт карты
 Card.prototype.mouseOut = function(sprite, pointer){
 	if(this.field)
 		this.field.focusOffCard(this);
-}
+};
 
 
 //БУЛЕВЫ ФУНКЦИИ
 Card.prototype.mouseIsOver = function(){
 	return this.sprite.input.pointerOver();
-}
+};
 
 
 //KILL, RESET, UPDATE
@@ -564,13 +564,13 @@ Card.prototype.kill = function() {
 	if(this.field){
 		this.field.removeCard(this);
 	}
-}
+};
 
 //Восстанавливает карту
 Card.prototype.reset = function(){
 	this.sprite.reset();  
 	this.setValue(this.suit, this.value, false);
-}
+};
 
 //Обновление карты
 //В будущем возможно будет делать что-то еще
@@ -599,7 +599,7 @@ Card.prototype.updateDebug = function(){
 		x, y 
 	);
 				
-}
+};
 
 
 //ТЕСТОВЫЕ ФУНКЦИИ
@@ -611,7 +611,7 @@ var ThrowCards = function(){
 
 	var frames = [];
 	for(var i = 0; i < 52; i++){
-		frames.push(i)
+		frames.push(i);
 	}
 	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
 
@@ -619,13 +619,13 @@ var ThrowCards = function(){
 	this.emitter.width = game.screenWidth;
 	this.emitter.height = game.screenHeight;
 
-	game.world.bringToTop(this.emitter)
-}
+	game.world.bringToTop(this.emitter);
+};
 ThrowCards.prototype.stop = function(){
 	if(this.emitter.on){
 		this.emitter.destroy();
 	}
-}
+};
 
 //Возвращает несколько карт в массиве
 //Если не указать num, возвратит все карты
@@ -633,22 +633,23 @@ function getCards(num, except){
 	if(!num)
 		num = Infinity;
 	var crds = [];
-	for(var ci in game.cards){
-		if(!game.cards.hasOwnProperty(ci) || except && except.length && ~except.indexOf(game.cards[ci]))
+	for(var ci = 0; ci < game.cards.length; ci++){
+		var card = game.cards[ci];
+		if(except && except.length && ~except.indexOf(card))
 			continue;
 		if(num-- <= 0)
-			break
-		crds.push(game.cards[ci]);
+			break;
+		crds.push(card);
 	}
-	return crds
+	return crds;
 }
 
 //Возвращает одну карту, которая не входит в except
 function getCard(except){
 	var card = getCards(1, except);
 	if(card.length)
-		card = card[0]
+		card = card[0];
 	else
 		card = null;
-	return card
+	return card;
 }
