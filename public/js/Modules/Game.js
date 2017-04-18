@@ -4,7 +4,7 @@ var Game = function(){
 
 	this.cards = {};
 	this.rope = null;
-	this.speed = 2;
+	this.speed = 1;
 	
 	window.fieldManager = new FieldManager();
 	window.skinManager = null;
