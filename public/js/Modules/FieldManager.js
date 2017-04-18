@@ -377,6 +377,10 @@ FieldManager.prototype.calculateSpecificSizes = function(){
 		i = 0;
 	
 	while(i != this.pi){
+		if(!placement[pi]){
+			pi++;
+			oi = 0;
+		}
 		var p = this.players[i],
 			x = this.positions.opponent[pi].x + xs[pi]*oi,
 			y = this.positions.opponent[pi].y + ys[pi]*oi;
@@ -404,10 +408,6 @@ FieldManager.prototype.calculateSpecificSizes = function(){
 			i = 0;
 
 		placement[pi]--;
-		if(!placement[pi]){
-			pi++;
-			oi = 0;
-		}
 	}
 }
 
