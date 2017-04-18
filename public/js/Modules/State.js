@@ -46,9 +46,9 @@ playState.preload = function(){
 		cardbackFrame: 52,
 		trumpOffset: 32,
 		trailWidth: 55,
-		trailHeight: 55/*,
+		trailHeight: 55,
 		scaleX: 0.9,
-		scaleY: 0.9*/
+		scaleY: 0.9
 	}
 	skinManager.addSkin(options);
 }
