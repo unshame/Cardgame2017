@@ -32,8 +32,8 @@ playState.preload = function(){
 		cardbackPossibleFrames: [51],
 		cardbackFrame: 51,
 		glowHeight: 238,
-		scaleX: 0.5,
-		scaleY: 0.5,
+		scaleX: 0.4,
+		scaleY: 0.4,
 		trumpOffset: 90
 	}
 	skinManager.addSkin(options);

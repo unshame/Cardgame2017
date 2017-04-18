@@ -32,6 +32,8 @@ Game.prototype.initialize = function(){
 	if(this.created)
 		return;
 
+	Phaser.Canvas.setImageRenderingCrisp(game.canvas);
+
 	$('#loading').animate({opacity: 0}, 2000, function(){
 		$('#loading').hide();
 	})
