@@ -200,55 +200,6 @@ FieldManager.prototype.calculateGeneralSizes = function(numOfCards){
 		halfRows = Math.floor(grid.numRows / 2),
 		halfDensity = Math.floor(grid.density / 2);
 
-	//Позиции полей
-	this.positions = {
-		DECK: grid.at(
-			1,
-			-(halfDensity - 1),
-			-this.offsets['DECK'],
-			-this.offsets['DECK']
-		),
-		DISCARD_PILE: grid.at(
-			grid.numCols - grid.density - 2,
-			-(halfDensity - 1),
-			-this.offsets['DISCARD_PILE'],
-			-this.offsets['DISCARD_PILE']
-		),
-		player: grid.at(
-			1,
-			grid.numRows - grid.density - 1,
-			-this.offsets.player,
-			-this.offsets.player
-		),
-		table: grid.at(
-			1 + grid.density,
-			halfRows - 1,
-			-this.offsets.table,
-			-this.offsets.table,
-			'middle left'
-		),
-		opponent: [
-			grid.at(
-				-halfDensity,
-				grid.numRows - grid.density - 2,
-				-this.offsets.opponent[0],
-				-this.offsets.opponent[0]
-			),
-			grid.at(
-				Math.floor(grid.density*2),
-				-(halfDensity - 1),
-				-this.offsets.opponent[1],
-				-this.offsets.opponent[1]
-			),
-			grid.at(
-				grid.numCols - grid.density + 1,
-				grid.density,
-				-this.offsets.opponent[0],
-				-this.offsets.opponent[0]
-			),
-		]
-	}
-
 	//Кол-во колонок и отступы для рук противников и мест на столе
 	var tableCells = this.tableCells = Math.round(grid.numCols - 4 - grid.density * 1.5),
 		tableOffset = this.tableOffset = this.offsets.table * 2,
@@ -256,7 +207,7 @@ FieldManager.prototype.calculateGeneralSizes = function(numOfCards){
 		numRows = Math.round(grid.numRows - grid.density*2 + halfDensity - 4),
 		opponentCells = this.opponentCells = [
 			numRows,
-			grid.numCols - grid.density*4,
+			grid.numCols - grid.density*4 - 2,
 			numRows
 		],
 		opponentsOffset = this.opponentsOffset = [
@@ -313,6 +264,59 @@ FieldManager.prototype.calculateGeneralSizes = function(numOfCards){
 			}
 		]
 	}
+
+
+	//Позиции полей
+	this.positions = {
+		DECK: grid.at(
+			grid.density + 3,
+			-(halfDensity - 1),
+			-this.offsets['DECK'],
+			-this.offsets['DECK']
+		),
+		DISCARD_PILE: grid.at(
+			grid.numCols - grid.density - 3,
+			-(halfDensity - 1),
+			-this.offsets['DISCARD_PILE'],
+			-this.offsets['DISCARD_PILE']
+		),
+		player: grid.at(
+			1,
+			grid.numRows - grid.density - 1,
+			-this.offsets.player,
+			-this.offsets.player
+		),
+		table: grid.at(
+			1 + grid.density,
+			halfRows - 1,
+			-this.offsets.table,
+			-this.offsets.table,
+			'middle left'
+		),
+		opponent: [
+			grid.at(
+				grid.density,
+				grid.numRows - grid.density - 2,
+				-this.offsets.opponent[0],
+				-this.offsets.opponent[0]
+			),
+			grid.at(
+				Math.floor(grid.density*2) + 1,
+				-(halfDensity - 1),
+				-this.offsets.opponent[1],
+				-this.offsets.opponent[1]
+			),
+			grid.at(
+				grid.numCols - grid.density,
+				grid.density,
+				-this.offsets.opponent[0],
+				-this.offsets.opponent[0]
+			),
+		]
+	}
+	this.positions['DECK'].x -= skinManager.skin.height;
+	this.positions.opponent[0].x -= skinManager.skin.height;
+
 }
 
 //Размеры для каждого поля
