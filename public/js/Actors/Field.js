@@ -720,7 +720,7 @@ Field.prototype.setUninteractibleTimer = function(time){
 	this.uninteractibleTimer = setTimeout(function(field){
 		field.zAlignCards();
 		field.uninteractibleTimer = null;
-	}, time, this);
+	}, time/game.speed, this);
 }
 
 //Запоминает карту, над которой находится курсор

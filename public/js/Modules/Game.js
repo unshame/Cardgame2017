@@ -2,8 +2,9 @@ var Game = function(){
 
 	this.isInDebugMode = false;
 
-	this.cards = {}
-	this.rope = null
+	this.cards = {};
+	this.rope = null;
+	this.speed = 2;
 	
 	window.fieldManager = new FieldManager();
 	window.skinManager = null;

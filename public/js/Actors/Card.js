@@ -127,8 +127,8 @@ Card.prototype.updateValue = function(){
 	}
 
 	this.flipper = game.add.tween(this.sprite.scale);
-	this.flipper.to({x: 0}, this.flipTime/2);
-	this.flipper.to({x: this.skin.scale.x}, this.flipTime/2);
+	this.flipper.to({x: 0}, (this.flipTime/game.speed)/2);
+	this.flipper.to({x: this.skin.scale.x}, (this.flipTime/game.speed)/2);
 
 	if(this.suit === null){
 		this.flipper.onChildComplete.addOnce(function(){
@@ -341,7 +341,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	else if(this.mover && !delay){
 		this.mover.updateTweenData('x', moveX, -1);
 		this.mover.updateTweenData('y', moveY, -1);
-		this.mover.updateTweenData('duration', time, -1);
+		this.mover.updateTweenData('duration', time/game.speed, -1);
 		this.updateValue();
 		if(this.bringToTopOn == 'start')
 			this.bringToTop();
@@ -355,10 +355,10 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 				x: moveX,
 				y: moveY
 			},
-			time || 0,
+			time/game.speed || 0,
 			Phaser.Easing.Quadratic.Out,
 			true,
-			delay || 0
+			delay/game.speed || 0
 		);
 		this.mover.onStart.addOnce(function(){
 			this.updateValue();
@@ -419,10 +419,10 @@ Card.prototype.rotateTo = function(angle, time, delay){
 			{
 				angle: angle
 			},
-			time || 0,
+			time/game.speed || 0,
 			Phaser.Easing.Quadratic.Out,
 			true,
-			delay || 0
+			delay/game.speed || 0
 		);
 
 		//Ресет твина по окончанию
@@ -467,19 +467,19 @@ Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 	this.glowDecreaser = game.add.tween(this.glow);
 	this.glowDecreaser.to(
 		{alpha: minGlow}, 
-		speed, 
+		speed/game.speed, 
 		Phaser.Easing.Linear.None, 
 		false, 
-		Math.floor(Math.random()*(delayRange || 0))
+		Math.floor(Math.random()*(delayRange/game.speed || 0))
 	);
 
 	this.glowIncreaser = game.add.tween(this.glow);
 	this.glowIncreaser.to(
 		{alpha: maxGlow},
-		speed, 
+		speed/game.speed, 
 		Phaser.Easing.Linear.None, 
 		false, 
-		Math.floor(Math.random()*(delayRange || 0))
+		Math.floor(Math.random()*(delayRange/game.speed || 0))
 	);
 
 	this.glowIncreaser.onComplete.add(function(){
