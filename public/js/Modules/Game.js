@@ -19,7 +19,8 @@ var Game = function(){
 	this.colors = {
 		orange: 0xFF8300,
 		green: 0x68C655,
-		red: 0xC93F3F
+		red: 0xC93F3F,
+		white: 0xFFFFFF
 	}
 
 	Phaser.Game.call(
@@ -168,7 +169,7 @@ Game.prototype.updateAppDimensions = function(){
 
 Game.prototype.newPixel = function(){
 	var pixel = this.make.graphics(0, 0);
-	pixel.beginFill(0xffffff);
+	pixel.beginFill(game.colors.white);
 	pixel.drawRect(0, 0, 1, 1);
 	pixel.endFill();
 	return pixel;

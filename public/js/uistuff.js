@@ -2,7 +2,7 @@ var Rope = function(){
 	var pixel = game.newPixel();
 
 	this.sprite = game.add.sprite(0, 0, pixel.generateTexture());
-	this.sprite.tint = '0xFF8300';
+	this.sprite.tint = game.colors.orange;
 	this.sprite.width = 30;
 	this.sprite.height = 0;
 	this.sprite.y = game.screenHeight;
@@ -29,8 +29,8 @@ Rope.prototype.update = function(){
 	else{
 		var percentage = left/this.duration;
 		this.sprite.height = left/this.duration * this.maxHeight;
-		if(percentage < 0.25 && this.sprite.tint != '0xC93F3F')
-			this.sprite.tint = '0xC93F3F';
+		if(percentage < 0.25 && this.sprite.tint != game.colors.red)
+			this.sprite.tint = game.colors.red;
 	}
 };
 
