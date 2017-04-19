@@ -326,9 +326,9 @@ Field.prototype.placeQueuedCards = function(){
 	this.appendCard(this.queuedCards);
 	var bringUpOn; 
 	if(this.type == 'DECK')
-		bringUpOn = 'init'
+		bringUpOn = 'init';
 	else if(this.sorted)
-		bringUpOn = 'endAll'
+		bringUpOn = 'endAll';
 	else
 		bringUpOn = 'start';
 	this.sortCards();
