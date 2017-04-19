@@ -4,7 +4,7 @@ var Game = function(){
 
 	this.cards = {};
 	this.rope = null;
-	this.speed = 0.7;
+	this.speed = 1;
 	
 	window.fieldManager = new FieldManager(false);
 	window.skinManager = null;
@@ -38,7 +38,7 @@ Game.prototype.initialize = function(){
 
 	this.created = true;
 	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
-	this.stage.disableVisibilityChange  = true;	
+	//this.stage.disableVisibilityChange  = true;	
 	
 	//Фон
 	this.background = this.add.group();
