@@ -12,6 +12,8 @@ var Controller = function(isInDebugMode){
 
 	this.cursor = game.add.sprite(0, 0, 'cursor_orange');
 	this.cursor.width = this.cursor.height = 32;
+	this.cursor.isInGame = true;
+	this.cursor.kill();
 
 	this.trail = game.add.emitter(0, 0);
 	this.trailDefaultBase = game.add.group();
@@ -301,14 +303,18 @@ Controller.prototype.resetCardClickTimer = function(){
 //UPDATE, RESET
 
 //Обновляет курсор
-Controller.prototype.updateCursor = function(){
-	if(game.paused && this.cursor.alive){
+Controller.prototype.updateCursor = function(cursorIsInGame){
+	if(cursorIsInGame !== undefined)
+		this.cursor.isInGame = cursorIsInGame;
+	if((!this.cursor.isInGame || game.paused) && this.cursor.alive){
 		this.cursor.kill();
-		return;
+		game.canvas.style.cursor = "default";
 	}
-	else if(!game.paused && !this.cursor.alive){
+	else if(this.cursor.isInGame && !game.paused && !this.cursor.alive){
 		this.cursor.reset();
 	}
+	if(!this.cursor.isInGame || game.paused)
+		return;
 	game.canvas.style.cursor = "none";
 	this.cursor.x = game.input.x;
 	this.cursor.y = game.input.y;

@@ -40,7 +40,7 @@ Game.prototype.initialize = function(){
 
 	this.created = true;
 	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
-	//this.stage.disableVisibilityChange  = true;	
+	this.stage.disableVisibilityChange  = true;	
 	
 	//Фон
 	this.background = this.add.group();
@@ -91,6 +91,9 @@ Game.prototype.initialize = function(){
 	this.menu.addButton(function(){console.log('sup');},'Multiplayer');
 	this.menu.addButton(function(){console.log('lel');},'Options');
 	this.canvas.oncontextmenu = function (e) { e.preventDefault(); };
+
+	document.addEventListener('mouseleave', controller.updateCursor.bind(controller, false));
+	document.addEventListener('mouseenter', controller.updateCursor.bind(controller, true));
 /*	this.testButton = new Button(
 		50,
 		50, function(){
@@ -100,14 +103,9 @@ Game.prototype.initialize = function(){
 	)*/
 
 	
-	this.onPause.add(function(){
-		controller && controller.cursor.kill();
-		game.canvas.style.cursor = "default";
-	});
-	this.onResume.add(function(){
-
-	});
-/*	this.onBlur.add(function(){console.log('blured')});
+/*	this.onPause.add();
+	this.onResume.add(function(){});
+	this.onBlur.add(function(){console.log('blured')});
 	this.onFocus.add(function(){console.log('focused')});*/
 
 };
