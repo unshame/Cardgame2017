@@ -638,10 +638,12 @@ ThrowCards.prototype.stop = function(){
 //Если не указать num, возвратит все карты
 function getCards(num, except){
 	if(!num)
-		num = Infinity;
+		num = game.cards.length;
 	var crds = [];
-	for(var ci = 0; ci < game.cards.length; ci++){
-		var card = game.cards[ci];
+	for(var cid in game.cards){
+		if(!game.cards.hasOwnProperty(cid))
+			continue;
+		var card = game.cards[cid];
 		if(except && except.length && ~except.indexOf(card))
 			continue;
 		if(num-- <= 0)
