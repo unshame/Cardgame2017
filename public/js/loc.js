@@ -24,7 +24,7 @@ var cardValueToString = function(value, locale){
 	if(value < 10 || value > 14)
 		return String(value);
 	else
-		return cardValuesString[locale][value - 11] || String(value);
+		return cardValuesString[locale] && cardValuesString[locale][value - 11] || String(value);
 };
 
 var getSuitStrings = function(locale){
