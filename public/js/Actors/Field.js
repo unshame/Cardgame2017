@@ -67,7 +67,7 @@ var Field = function(options){
 
 	this.forcedSpace = this.options.forcedSpace;
 	this.focusable = this.options.focusable;
-	this.sorting = this.options.sorting;
+	this.sorted = this.options.sorted;
 
 	this.moveTime = this.options.moveTime;
 	this.delayTime = this.options.delayTime;
@@ -122,7 +122,7 @@ Field.prototype.getDefaultOptions = function(){
 		forcedSpace: false,	
 
 		focusable: true,	//Нужно ли сдвигать карты при наведении
-		sorting: true,		//Нужно ли сортировать карты
+		sorted: true,		//Нужно ли сортировать карты
 		
 		id:null,
 		type:'GENERIC',
@@ -218,7 +218,7 @@ Field.prototype.setHighlight = function(on, tint){
 
 //Сортирует карты
 Field.prototype.sortCards = function(){
-	if(this.sorting)
+	if(this.sorted)
 		this.cards.sort(this.comparator);
 };
 
@@ -263,12 +263,14 @@ Field.prototype.comparator = function(a, b){
 		return -1;
 };
 
-Field.prototype.zAlignCards = function(){
+Field.prototype.zAlignCards = function(finished){
 	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
 	var iterator = this.direction == 'backward' ? -1 : 1;
 
 	for(; i >= 0 && i < this.cards.length; i += iterator){
-		this.cards[i].bringToTop(false);
+		var card = this.cards[i];
+		if(!finished || !card.mover)
+			card.bringToTop(false);
 	}
 };
 
@@ -322,7 +324,13 @@ Field.prototype.placeQueuedCards = function(){
 		return;
 	
 	this.appendCard(this.queuedCards);
-	var bringUpOn = (this.type == 'DECK') ? 'init' : 'start';
+	var bringUpOn; 
+	if(this.type == 'DECK')
+		bringUpOn = 'init'
+	else if(this.sorted)
+		bringUpOn = 'endAll'
+	else
+		bringUpOn = 'start';
 	this.sortCards();
 	this.placeCards(null, bringUpOn);
 	this.setUninteractibleTimer(this.expectedDelay);
@@ -374,7 +382,7 @@ Field.prototype.addCard = function(card){
 /*
  * Размещает карты в поле
  * @newCards Array (Card) - только что добавленные карты, они будут перемещены в поле по очереди
- * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
+ * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
  * Возвращает задержку следующей карты
  */
 Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
@@ -570,7 +578,7 @@ Field.prototype.placeCard = function(card, bringUpOn, noDelay){
  * @focusedIndex Number (int) - индекс выделенной карты в поле
  * @delayIndex Number (int) - индекс карты в очереди
  * @increaseDelayIndex Bool - нужно ли увеличивать индекс очереди в конце выполнения функции
- * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
+ * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
  */
 Field.prototype.moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,

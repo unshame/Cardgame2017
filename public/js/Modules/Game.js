@@ -4,7 +4,7 @@ var Game = function(){
 
 	this.cards = {};
 	this.rope = null;
-	this.speed = 1;
+	this.speed = 0.7;
 	
 	window.fieldManager = new FieldManager(false);
 	window.skinManager = null;
@@ -35,7 +35,7 @@ Game.prototype.initialize = function(){
 	Phaser.Canvas.setImageRenderingCrisp(game.canvas);
 
 	$('#loading').hide();
-	
+
 	this.created = true;
 	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
 	this.stage.disableVisibilityChange  = true;	

@@ -274,7 +274,7 @@ Card.prototype.setAngle = function(angle){
  * @relativeToBase Bool - перемещение происходит относительно базы карты
  * @shouldRebase Bool - нужно ли перемещать базу карты или только карту
  * Если база не изменилась, то эта переменная всегда будет false
- * @bringUpOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end')
+ * @bringUpOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
 */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn){
 
@@ -283,7 +283,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		relativeToBase = false;
 	if(shouldRebase === undefined)
 		shouldRebase = false;
-	if(bringToTopOn === undefined || !~['never', 'init', 'start', 'end'].indexOf(bringToTopOn))
+	if(bringToTopOn === undefined || !~['never', 'init', 'start', 'end', 'endAll'].indexOf(bringToTopOn))
 		bringToTopOn = 'init';
 
 	this.bringToTopOn = bringToTopOn;
@@ -367,9 +367,13 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		}, this);
 		//Ресет твина по окончанию
 		this.mover.onComplete.addOnce(function(){
-			if(this.bringToTopOn == 'end')
-				this.bringToTop();
 			this.mover = null;
+			if(this.bringToTopOn == 'end' || this.bringToTopOn == 'endAll'){
+				if(!this.field || this.bringToTopOn == 'end')
+					this.bringToTop();
+				else
+					this.field.zAlignCards(true);
+			}
 		}, this);
 	}
 
