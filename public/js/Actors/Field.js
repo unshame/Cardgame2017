@@ -54,11 +54,13 @@ var Field = function(options){
 	if(!~['top', 'middle', 'bottom'].indexOf(this.verticalAlign))
 		this.verticalAlign = defaultOptions.verticalAlign;
 
-	this.order = this.options.order;
-	if(!~['ascending', 'descending'].indexOf(this.order))
-		this.order = defaultOptions.order;
+	this.addTo = this.options.addTo;
+	if(!~['front', 'back'].indexOf(this.addTo))
+		this.addTo = defaultOptions.addTo;
 
 	this.flipped = this.options.flipped;
+
+	this.reversed = this.options.reversed;
 
 	this.margin = this.options.margin;
 	this.padding = this.options.padding;
@@ -131,8 +133,9 @@ Field.prototype.getDefaultOptions = function(){
 		//Поворот поля, меняет местами horizontalAlign и verticalAlign (right станет bottom и т.д.),
 		//не влияет на width и height
 		axis: 'horizontal', 
-		direction: 'forward',	//Направление поля
-		order: 'ascending',		//С какой стороны добавляются новые карты
+		direction: 'forward',	//В какую сторону происходит итерация по картам
+		addTo: 'front',		//В какой конец поля добавляются карты (front - в конец, back - в начало)
+		reversed: false,	//Карты добавляются начиная с последней
 		flipped: false,
 
 		texture: null,
@@ -219,15 +222,18 @@ Field.prototype.sortCards = function(){
 		this.cards.sort(this.comparator);
 };
 
-Field.prototype.appendCard = function(card){
-	if(
-		this.direction == 'forward' && this.order == 'ascending' ||
-		this.direction == 'backward' && this.order == 'descending'
-	)
-		this.cards.push(card);
-	else
-		this.cards.unshift(card);
+Field.prototype.appendCard = function(cards){
+
+    for(var ci = 0; ci < cards.length; ci++){
+        var card = cards[ci];
+        card.field = this;
+        if(this.addTo == 'front')
+            this.cards.push(card);
+        else
+            this.cards.unshift(card);
+    }
 };
+
 
 //Компаратор сортировки
 Field.prototype.comparator = function(a, b){
@@ -315,12 +321,7 @@ Field.prototype.placeQueuedCards = function(){
 	if(!this.queuedCards.length)
 		return;
 	
-	for(var ci = 0; ci < this.queuedCards.length; ci++){
-		var card = this.queuedCards[ci];
-		card.field = this;
-		this.appendCard(card);
-	}
-
+	this.appendCard(this.queuedCards);
 	var bringUpOn = (this.type == 'DECK') ? 'init' : 'start';
 	this.sortCards();
 	this.placeCards(null, bringUpOn);
@@ -356,11 +357,7 @@ Field.prototype.addCards = function(newCards, noDelay){
 		return delay;
 	}
 	else{
-		for(var ci = 0; ci < newCards.length; ci++){
-			var card = newCards[ci];
-			card.field = this;
-			this.appendCard(card);
-		}
+		this.appendCard(newCards);
 		this.sortCards();
 		return this.placeCards(newCards, 'start', noDelay);
 	}
@@ -497,13 +494,15 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 	}
 
 	//Создаем массив задержек в зависимости от направления поля
-	var delayArray = [];
-	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
-	var iterator = this.direction == 'backward' ? -1 : 1;
+	var delayArray = [],
+		i = this.direction == 'backward' ? this.cards.length - 1 : 0,
+		iterator = this.direction == 'backward' ? -1 : 1,
+		k = this.reversed ? this.cards.length - 1 : 0,
+		kterator = this.reversed ? -1 : 1;
 
-	for(; i >= 0 && i < this.cards.length; i += iterator){
+	for(; k >= 0 && k < this.cards.length; k += kterator){
 
-		var localDelay = noDelay ? 0 : this.delays[this.cards[i].id]; 
+		var localDelay = noDelay ? 0 : this.delays[this.cards[k].id]; 
 
 		delayArray.push(localDelay);
 	}

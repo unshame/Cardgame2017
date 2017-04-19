@@ -65,7 +65,7 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		id: 'DECK',
 		axis: 'vertical',
 		direction: 'backward',
-		order: 'descending',
+		reversed: true,
 		delayTime: 50,
 		debug: this.isInDebugMode
 	});
@@ -85,6 +85,7 @@ FieldManager.prototype.createFieldNetwork = function(players){
 		sorting: false,
 		axis: 'vertical',
 		direction: 'backward',
+		addTo: 'back',
 		type: 'DISCARD_PILE',
 		id: 'DISCARD_PILE',
 		debug: this.isInDebugMode
@@ -146,8 +147,9 @@ FieldManager.prototype.createFieldNetwork = function(players){
 			sorting:false,
 			focusable:false,
 			axis: this.dimensions[p.id].axis,
-			direction: this.dimensions[p.id].direction,
 			flipped: this.dimensions[p.id].flipped,
+			direction: this.dimensions[p.id].direction,
+			addTo: this.dimensions[p.id].addTo,
 			type: 'HAND',
 			id: p.id,
 			name: p.name,
@@ -362,6 +364,7 @@ FieldManager.prototype.calculateSpecificSizes = function(){
 		directions = ['backward', 'forward', 'forward'],
 		flipped = [false, true, true],
 		axis = ['vertical', 'horizontal', 'vertical'],
+		addTo = ['back', 'front', 'front'],
 		xs = [
 			0,
 			dimensions[1].width + opponentsOffset[1],
@@ -404,7 +407,8 @@ FieldManager.prototype.calculateSpecificSizes = function(){
 			height: dimensions[pi].height,
 			direction: directions[pi],
 			flipped: flipped[pi],
-			axis: axis[pi]
+			axis: axis[pi],
+			addTo: addTo[pi]
 		};
 		this.notEnoughSpace(p.id, 'opponent', pi);
 		oi++;
