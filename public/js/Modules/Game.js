@@ -16,6 +16,12 @@ var Game = function(){
 	this.screenHeight = window.innerHeight;
 	this.surface = null;
 
+	this.colors = {
+		orange: 0xFF8300,
+		green: 0x68C655,
+		red: 0xC93F3F
+	}
+
 	Phaser.Game.call(
 		this,
 		this.screenWidth, 

@@ -26,6 +26,8 @@ var FieldManager = function(isInDebugMode){
 
 	this.tableOrder = [4, 2, 0, 1, 3, 5];
 
+	this.highlightingTrumpCards = false;
+
 	this.isInDebugMode = isInDebugMode;
 };
 
@@ -513,20 +515,63 @@ FieldManager.prototype.executeAction = function(action){
 	}
 
 	var delay = 0,
-		cards, card, field, i;
+		cards, card, field, i, ci;
 
 	this.forEachField(function(field){
 		field.setHighlight(false);
 	});
 
 	field = this.fields[this.pid];
-	for(var ci = 0; ci < field.cards.length; ci++){
+	for(ci = 0; ci < field.cards.length; ci++){
 		field.cards[ci].setPlayability(false);
 	}
 
 	switch(action.type){
 
 	case 'TRUMP_CARDS':
+		if(action.cards && action.cards.length){
+			delay = 3000/game.speed;
+
+			//Показываем козырные карты
+			for(ci = 0; ci < action.cards.length; ci++){
+				var c = action.cards[ci];
+				card = game.cards[c.cid];
+
+				if(action.pid != c.pid)
+					this.fields[c.pid].setHighlight(true, game.colors.red);
+
+				if(card.field.id == self.pid)
+					continue;
+
+				this.highlightingTrumpCards = true;
+
+				card.presetValue(c.suit, c.value);
+				card.field.focusOnCard(card, null, true);				
+
+			};
+			//Выделяем поле игрока с наибольшим козырем
+			this.fields[action.pid].setHighlight(true, game.colors.green);
+
+			//Прячем козырные карты
+			setTimeout(function(self, cards){				
+				for(ci = 0; ci < cards.length; ci++){
+					var c = cards[ci];
+					card = game.cards[c.cid];	
+
+					self.fields[c.pid].setHighlight(false);		
+
+					if(card.field.id == self.pid)
+						continue;									
+			
+					card.presetValue(null, null);
+					card.field.focusOffCard(card, true);
+				};
+				self.highlightingTrumpCards = false;				
+
+			}, delay, this, action.cards);
+
+			delay += 500;
+		}
 		break;
 
 	case 'CARDS':
@@ -629,7 +674,7 @@ FieldManager.prototype.highlightPossibleActions = function(actions){
 
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai],
-			tint = action.type == 'ATTACK' ? 0x68C655 : 0xFF8300;
+			tint = action.type == 'ATTACK' ? game.colors.green : game.colors.orange;
 		if(action.cid && game.cards[action.cid]){
 			game.cards[action.cid].setPlayability(true, tint);
 			this.fields[action.field].setHighlight(true, tint);

@@ -209,7 +209,7 @@ Field.prototype.resize = function(width, height, shouldPlace){
 
 Field.prototype.setHighlight = function(on, tint){
 	this.area.visible = on || this.isInDebugMode ? true : false;
-	this.area.tint = on ? (tint || 0xFF8300) : 0xFFFFFF;
+	this.area.tint = on ? (tint || game.colors.orange) : 0xFFFFFF;
 	this.area.alpha = on ? 1 : 0.35;
 	this.isHighlighted = on;
 };
@@ -486,6 +486,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 
 	//Проверка выделенной карты
 	if(
+		!fieldManager.highlightingTrumpCards &&
 		controller.card && 
 		controller.card != this.focusedCard
 	){
@@ -746,23 +747,28 @@ Field.prototype.setUninteractibleTimer = function(time){
 };
 
 //Запоминает карту, над которой находится курсор
-Field.prototype.focusOnCard = function(card, pointer){
-	if(!card || !~this.cards.indexOf(card) || !this.focusable || !this.cardIsInside(card))
+Field.prototype.focusOnCard = function(card, pointer, forced){
+	if(!card || !~this.cards.indexOf(card) || !forced && (!this.focusable || !this.cardIsInside(card)))
 		return;
 
 	this.focusedCard = card;
-	if(!this.uninteractibleTimer)
+	if(!this.uninteractibleTimer || forced){
 		this.placeCards(null, 'init');
+	}
 };
 
 //Обнуляет запомненную карту, когда курсор с нее ушел
-Field.prototype.focusOffCard = function(card){
+Field.prototype.focusOffCard = function(card, forced){
 	if(
+		!card ||
+		!~this.cards.indexOf(card) ||
 		!this.focusedCard ||
-		!this.focusable ||
-		!this.cardIsInside(this.focusedCard, false) ||
-		card != this.focusedCard ||
-		~this.cards.indexOf(controller.card)
+		!forced && (
+			!this.focusable ||
+			!this.cardIsInside(this.focusedCard, false) ||
+			card != this.focusedCard ||
+			~this.cards.indexOf(controller.card)
+		)
 	)
 		return;
 
