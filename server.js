@@ -44,22 +44,21 @@ var randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavo
 var newPlayers = [];
 var botsAdded = 0;
 
-var numBots = Number(process.env.BOTS);
-var numPlayers = Number(process.env.PLAYERS);
-var rndBots = Number(process.env.RND);
-var transfer = Number(process.env.TRANSFER);
-var testing = Number(process.env.TEST);
+var argv = require('minimist')(process.argv.slice(2));
+var numBots = argv.b === undefined ? Number(argv.bots) : Number(argv.b);
+var numPlayers = argv.p === undefined ? Number(argv.players) : Number(argv.p);
+var rndBots = Boolean(argv.r || argv.rnd || argv.random);
+var transfer = argv.transfer;
+var testing = Boolean(argv.t || argv.test || argv.testing);
 
 if(isNaN(numBots))
 	numBots = 3;
 if(isNaN(numPlayers) || !numPlayers)
 	numPlayers = 1;
-if(isNaN(rndBots))
-	rndBots = false;
-if(isNaN(transfer))
+if(transfer === undefined)
 	transfer = true;
-if(isNaN(testing))
-	testing = false;
+
+console.log('numBots=' + numBots, 'numPlayers=' + numPlayers, 'rndBots=' + rndBots, 'transfer=' + transfer, 'testing=' + testing)
 
 if(rndBots && numBots)
 	numBots = Math.floor(Math.random()*numBots) + 1;

@@ -23,8 +23,8 @@ class TestBot extends Bot{
 		if(this.tester.running && game.turnStages.current != 'FOLLOWUP' && game.turnStages.next == 'DEFENSE' && ~attackIndex && !~defenseIndex){
 			var defenseFields = 0;
 			this.tests++;
-			for(var fi = 0; fi < game.field.length; fi++){
-				var tableField = game.field[fi];
+			for(var fi = 0; fi < game.table.length; fi++){
+				var tableField = game.table[fi];
 
 				if(tableField.attack && !tableField.defense){
 					defenseFields++;
