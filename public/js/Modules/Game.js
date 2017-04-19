@@ -34,10 +34,8 @@ Game.prototype.initialize = function(){
 
 	Phaser.Canvas.setImageRenderingCrisp(game.canvas);
 
-	$('#loading').animate({opacity: 0}, 2000, function(){
-		$('#loading').hide();
-	});
-
+	$('#loading').hide();
+	
 	this.created = true;
 	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
 	this.stage.disableVisibilityChange  = true;	
