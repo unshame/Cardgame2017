@@ -14,8 +14,4 @@ docker-compose.yml
 logs/
 !logs/.gitkeep
 
-<<<<<<< HEAD
-/report
-=======
 report/
->>>>>>> dev
