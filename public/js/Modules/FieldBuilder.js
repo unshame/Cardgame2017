@@ -173,8 +173,7 @@ FieldBuilder.prototype.calculateGeneralSizes = function(numOfCards){
 FieldBuilder.prototype.calculateSpecificSizes = function(){
 
 	var tableOffset = this.tableOffset,
-		opponentsOffset = this.opponentsOffset,
-		i, oi, pi, x, y, p, id;
+		i, x, y, id;
 
 	//Table
 	var width = this.dimensions.table.width;
@@ -199,9 +198,15 @@ FieldBuilder.prototype.calculateSpecificSizes = function(){
 	this.notEnoughSpace(this.manager.pid, 'player');
 
 	//Opponents
-	i = this.manager.pi + 1;	//индекс первого противника по кругу после игрока
-	oi = 0;	//Счетчик размещенных полей
-	pi = 0;	//Индекс позиции для размещения
+	this.calculateOpponentSizes();
+};
+
+//Размеры для полей противников
+FieldBuilder.prototype.calculateOpponentSizes = function(){
+	var opponentsOffset = this.opponentsOffset,
+		i = this.manager.pi + 1,	//индекс первого противника по кругу после игрока
+		oi = 0,	//Счетчик размещенных полей
+		pi = 0;	//Индекс позиции для размещения
 
 	var dimensions = this.dimensions.opponent,
 		placement = this.opponentPlacement.map(function(v){
@@ -234,9 +239,9 @@ FieldBuilder.prototype.calculateSpecificSizes = function(){
 			oi = 0;
 		}
 
-		p = this.manager.players[i];
-		x = this.positions.opponent[pi].x + xs[pi]*oi,
-		y = this.positions.opponent[pi].y + ys[pi]*oi;
+		var p = this.manager.players[i],
+			x = this.positions.opponent[pi].x + xs[pi]*oi,
+			y = this.positions.opponent[pi].y + ys[pi]*oi;
 
 		if(directions[pi] == 'backward'){
 			if(axis[pi] == 'horizontal')
@@ -269,7 +274,7 @@ FieldBuilder.prototype.calculateSpecificSizes = function(){
 };
 
 //Расчитывает положение полей противников (слева, сверху, справа)
-FieldBuilder.prototype.calculateOpponentPlacement = function(n){
+FieldBuilder.prototype._countOpponentPlacement = function(n){
 	var a = [0, 0, 0];
 	var i = 0;
 	while(n--){
@@ -302,7 +307,7 @@ FieldBuilder.prototype.createFieldNetwork = function(players){
 		return;
 	}
 
-	this.opponentPlacement = this.calculateOpponentPlacement(manager.players.length - 1);
+	this.opponentPlacement = this._countOpponentPlacement(manager.players.length - 1);
 	this.calculateSizes(numOfCards);
 
 	//Deck
