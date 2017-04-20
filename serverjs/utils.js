@@ -1,7 +1,5 @@
 'use strict';
 
-var isInDebugMode = true;
-
 const 
 	fs = require('fs'),
 	crypto = require('crypto');
@@ -10,7 +8,8 @@ fs.writeFile('./logs/log.txt','');
 var logStream = fs.createWriteStream('./logs/log.txt', {'flags': 'a'});
 
 var stats = {
-	line: 0
+	line: 0,
+	isInDebugMode: true
 }
 
 exports.stats = stats;
@@ -48,7 +47,7 @@ exports.log = function(){
 		if(logLine.length)
 			logLine += ' ';
 		logLine += String(arg);
-		if(isInDebugMode){
+		if(stats.isInDebugMode){
 			if(logSLine.length)
 				logSLine += ' ';
 			logSLine += '%s';
@@ -56,7 +55,7 @@ exports.log = function(){
 	}
 	logLine += "\n";
 	logStream.write(logLine)
-	if(isInDebugMode){
+	if(stats.isInDebugMode){
 		let args = Array.prototype.slice.call(arguments);
 		args.unshift(logSLine);
 		console.log.apply(this, args);	

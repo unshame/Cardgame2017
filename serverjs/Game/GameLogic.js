@@ -21,10 +21,12 @@ const
 	GameDirectives = require('./GameDirectives');
 
 class Game{
-	constructor(players, canTransfer, isTest){
+	constructor(players, canTransfer, isTest, debugOn){
 		if(!players || !players.length){
 			utils.log('ERROR: Can\'t start a game without players');
 		}
+
+		utils.stats.isInDebugMode = debugOn || false;
 
 		this.test = isTest || false;
 

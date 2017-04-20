@@ -48,15 +48,14 @@ var argv = require('minimist')(process.argv.slice(2));
 var numBots = argv.b === undefined ? Number(argv.bots) : Number(argv.b);
 var numPlayers = argv.p === undefined ? Number(argv.players) : Number(argv.p);
 var rndBots = Boolean(argv.r || argv.rnd || argv.random);
-var transfer = argv.transfer;
+var transfer = Boolean(process.env.TRANSFER || argv.transfer);
 var testing = Boolean(argv.t || argv.test || argv.testing);
+var debug = Boolean(argv.d || argv.debug);
 
 if(isNaN(numBots))
 	numBots = 3;
 if(isNaN(numPlayers) || !numPlayers)
 	numPlayers = 1;
-if(transfer === undefined)
-	transfer = true;
 
 console.log('numBots=' + numBots, 'numPlayers=' + numPlayers, 'rndBots=' + rndBots, 'transfer=' + transfer, 'testing=' + testing)
 
@@ -98,7 +97,7 @@ server.onConnect(function (conn) {
 	players.push(p);
 
 	if(newPlayers.length >= numPlayers + numBots){	
-		games.push(new Game(newPlayers, transfer));
+		games.push(new Game(newPlayers, transfer, false, debug));
 		newPlayers = [];
 		botsAdded = 0;
 	}
