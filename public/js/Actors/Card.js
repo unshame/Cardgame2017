@@ -179,7 +179,7 @@ Card.prototype.setDraggability = function(draggable){
 //Устанавливает, можно ли ходить этой картой
 Card.prototype.setPlayability = function(playable, tint){
 	if(playable){
-		this.glowStart(0.25, 0.75, 1500, 500, tint || 0xFF8300);
+		this.glowStart(0.25, 0.75, 1500, 500, tint || game.colors.orange);
 	}
 	else{
 		this.glowStop();
@@ -463,7 +463,7 @@ Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 	
 	this.glowReset();
 
-	this.glow.tint = color || 0xFFFFFF;
+	this.glow.tint = color || game.colors.white;
 
 	if(game.paused)
 		return;
