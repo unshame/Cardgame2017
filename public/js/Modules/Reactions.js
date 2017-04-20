@@ -4,6 +4,16 @@
  */
 
 window.reactions = {
+	/*
+	 * 	TRUMP_CARDS - наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них
+	 * 		.cards Array of {
+	 * 			cid,
+	 * 			pid,
+	 * 			suit,
+	 * 			value
+	 * 		}
+	 * 		.pid String
+	 */
 	TRUMP_CARDS: function(action){
 		var delay = 0, card;
 		if(action.cards && action.cards.length){
@@ -53,6 +63,18 @@ window.reactions = {
 		return delay;
 	},
 
+	/*
+	 * 	CARDS - карты, присутствующие в игре
+	 * 		.cards Array of {
+	 * 			cid,
+	 * 			field,
+	 * 			[suit,]
+	 * 			[value]
+	 * 		}
+	 * 		[.numDiscarded Number]
+	 * 		[.trumpSuit Number]
+	 *
+	 */
 	CARDS: function(action){
 		fieldManager.resetFields();
 		controller.reset();
@@ -82,6 +104,15 @@ window.reactions = {
 		return delay;
 	},
 
+	/*
+	 * 	DRAW - раздача карт
+	 * 		.cards Array of {
+	 * 			cid,
+	 * 			pid,
+	 * 			[suit,]
+	 * 			[value]
+	 * 		}
+	 */
 	DRAW: function(action){
 		var delay = fieldManager.queueCards(action.cards);
 		fieldManager.removeMarkedCards();
@@ -89,6 +120,15 @@ window.reactions = {
 		return delay;
 	},
 
+	/*
+	 * 	TAKE - игрок либо хочет взять, либо уже берет карты, зависит от присутствия .cards
+	 * 		[.cards Array of {
+	 * 			cid,
+	 * 			[suit,]
+	 * 			[value]
+	 * 		}]
+	 * 		.pid String
+	 */
 	TAKE: function(action){
 		var delay = 0;
 		if(!action.cards)
@@ -106,6 +146,14 @@ window.reactions = {
 		return delay;
 	},
 
+	/*
+	 * 	DEFENSE, ATTACK - игрок атакует/защищается
+	 * 		.cid String
+	 * 		.pid String
+	 * 		.field String
+	 * 		.suit Number
+	 * 		.value Number
+	 */
 	DEFENSE: function(action){
 		var delay = 0;
 		var card = {
@@ -118,6 +166,10 @@ window.reactions = {
 		return delay;
 	},
 
+	/*
+	 * 	DISCARD - карты перекладываются со стола в стопку сброса
+	 * 		.ids Array of String
+	 */
 	DISCARD: function(action){
 		var delay = 0;
 		var cards = [];
@@ -133,6 +185,10 @@ window.reactions = {
 		return delay;
 	},
 
+	/*
+	 * 	SKIP - игрок пропускает ход
+	 * 		.pid
+	 */
 	SKIP: function(action){
 		return 0;
 	}

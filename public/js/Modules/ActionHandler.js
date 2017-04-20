@@ -11,57 +11,8 @@ var ActionHandler = function(reactions){
 
 //ОБРАБОТКА КОМАНД СЕРВЕРА
 
-/*
- * Выполняет действие
- * action.type
- * 	TRUMP_CARDS - наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них
- * 		.cards Array of {
- * 			cid,
- * 			pid,
- * 			suit,
- * 			value
- * 		}
- * 		.pid String
- * 		
- * 	CARDS - карты, присутствующие в игре
- * 		.cards Array of {
- * 			cid,
- * 			field,
- * 			[suit,]
- * 			[value]
- * 		}
- * 		[.numDiscarded Number]
- * 		[.trumpSuit Number]
- *
- * 	DRAW - раздача карт
- * 		.cards Array of {
- * 			cid,
- * 			pid,
- * 			[suit,]
- * 			[value]
- * 		}
- *
- * 	TAKE - игрок либо хочет взять, либо уже берет карты, зависит от присутствия .cards
- * 		[.cards Array of {
- * 			cid,
- * 			[suit,]
- * 			[value]
- * 		}]
- * 		.pid String
- *
- * 	DEFENSE, ATTACK - игрок атакует/защищается
- * 		.cid String
- * 		.pid String
- * 		.field String
- * 		.suit Number
- * 		.value Number
- *
- * 	DISCARD - карты перекладываются со стола в стопку сброса
- * 		.ids Array of String
- *
- * 	SKIP - игрок пропускает ход
- * 		.pid
- */
+//Выполняет действие
+
 ActionHandler.prototype.executeAction = function(action){
 	if(action.type == 'GAME_INFO' && action.players.length){
 		fieldManager.resetNetwork();
