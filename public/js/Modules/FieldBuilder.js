@@ -14,14 +14,149 @@ var FieldBuilder = function(manager){
 	this.tableOrder = [4, 2, 0, 1, 3, 5];
 };
 
+//Создает поля
+FieldBuilder.prototype.createFieldNetwork = function(players){
+
+	var manager = this.manager;
+
+	manager.pid = game.pid;
+	manager.players = players;
+	var numOfCards = players.length > 3 ? 52 : 36,
+		id, i;
+
+	manager.pi = players.map(function(p){ return p.id; }).indexOf(manager.pid);
+	if(!~manager.pi){
+		console.error('Field builder: Player', manager.pid, 'not found in players\n', players);
+		return;
+	}
+
+	this.opponentPlacement = this._countOpponentPlacement(manager.players.length - 1);
+	this._calculateSizes(numOfCards);
+
+	//Deck
+	manager.fields.DECK = new Field({
+		x: this.positions.DECK.x,
+		y: this.positions.DECK.y,
+		minActiveSpace: this.minActiveSpaces.DECK,
+		horizontalAlign: 'right',
+		padding: 0,
+		margin: this.offsets.DECK,
+		focusable:false,
+		forcedSpace: 0.5,
+		texture: 'field',
+		sorted: false,
+		type: 'DECK',
+		id: 'DECK',
+		axis: 'vertical',
+		direction: 'backward',
+		reversed: true,
+		delayTime: 50,
+		debug: manager.isInDebugMode
+	});
+	manager.cardsToRemove.DECK = [];
+
+	//Discard pile
+	manager.fields.DISCARD_PILE = new Field({
+		x: this.positions.DISCARD_PILE.x,
+		y: this.positions.DISCARD_PILE.y,
+		minActiveSpace: this.minActiveSpaces.DISCARD_PILE,
+		padding:0,
+		margin: this.offsets.DISCARD_PILE,
+		focusable:false,
+		forcedSpace: 0.5,
+		texture: 'field',
+		horizontalAlign: 'right',
+		sorted: false,
+		axis: 'vertical',
+		direction: 'backward',
+		addTo: 'back',
+		type: 'DISCARD_PILE',
+		id: 'DISCARD_PILE',
+		debug: manager.isInDebugMode
+	});
+	manager.cardsToRemove.DISCARD_PILE = [];
+
+	//Field
+	for(i = 0; i < this.tableOrder.length; i++){
+		id = 'TABLE' + i;
+		manager.fields[id] = new Field({
+			x: this.positions[id].x,
+			y: this.positions[id].y,
+			width: this.dimensions[id].width,
+			height: this.dimensions[id].height,
+			minActiveSpace: this.minActiveSpaces.table,
+			forcedSpace: this.minActiveSpaces.table,
+			margin: this.offsets.table,
+			texture: 'field',
+			focusable:false,
+			sorted:false,
+			type: 'TABLE',
+			id: 'TABLE' + i,
+			specialId: i + 1,
+			debug: manager.isInDebugMode
+		});
+		manager.cardsToRemove[id] = [];
+	}
+
+	//Player hand
+	manager.fields[manager.pid] = new Field({
+		x:this.positions[manager.pid].x,
+		y:this.positions[manager.pid].y,
+		width:this.dimensions.player.width,
+		minActiveSpace: this.minActiveSpaces.player,
+		margin:this.offsets.player,
+		texture: 'field',
+		type: 'HAND',
+		id: manager.pid,
+		specialId: manager.pi + 1,
+		debug: manager.isInDebugMode
+	});
+	manager.cardsToRemove[manager.pid] = [];
+
+	//Opponents
+	i =  manager.pi + 1;
+	var oi = 0;
+	if(i >= players.length)
+		i = 0;
+	while(i != manager.pi){
+		var p = players[i];
+		manager.fields[p.id] = new Field({
+			x: this.positions[p.id].x,
+			y: this.positions[p.id].y,
+			width: this.dimensions[p.id].width,
+			height: this.dimensions[p.id].height,
+			minActiveSpace: this.minActiveSpaces.opponent[1],
+			margin:this.offsets.opponent[1],
+			texture: 'field',
+			sorted:false,
+			focusable:false,
+			axis: this.dimensions[p.id].axis,
+			flipped: this.dimensions[p.id].flipped,
+			direction: this.dimensions[p.id].direction,
+			addTo: this.dimensions[p.id].addTo,
+			type: 'HAND',
+			id: p.id,
+			name: p.name,
+			specialId: i + 1,
+			debug: manager.isInDebugMode
+		});
+		manager.cardsToRemove[p.id] = [];
+		oi++;
+		i++;
+		if(i >= players.length)
+			i = 0;
+	}
+	manager.networkCreated = true;
+};
+
 //Рассчитывает размеры полей
-FieldBuilder.prototype.calculateSizes = function(numOfCards){
-	this.calculateGeneralSizes(numOfCards);
-	this.calculateSpecificSizes();
+FieldBuilder.prototype._calculateSizes = function(numOfCards){
+	this._calculateGeneralSizes(numOfCards);
+	this._calculateSpecificSizes();
 };
 
 //Обобщенные размеры
-FieldBuilder.prototype.calculateGeneralSizes = function(numOfCards){
+FieldBuilder.prototype._calculateGeneralSizes = function(numOfCards){
 
 	var defaultFieldOptions = Field.prototype.getDefaultOptions();
 
@@ -170,7 +305,7 @@ FieldBuilder.prototype.calculateGeneralSizes = function(numOfCards){
 };
 
 //Размеры для каждого поля
-FieldBuilder.prototype.calculateSpecificSizes = function(){
+FieldBuilder.prototype._calculateSpecificSizes = function(){
 
 	var tableOffset = this.tableOffset,
 		i, x, y, id;
@@ -184,7 +319,7 @@ FieldBuilder.prototype.calculateSpecificSizes = function(){
 
 		this.positions[id] = {x: x, y: y};
 		this.dimensions[id] = {width: width};		
-		this.notEnoughSpace(id, 'table');
+		this._notEnoughSpace(id, 'table');
 	}
 
 	//Player
@@ -195,14 +330,14 @@ FieldBuilder.prototype.calculateSpecificSizes = function(){
 	this.dimensions[this.manager.pid] = {
 		width:this.dimensions.player.width
 	};
-	this.notEnoughSpace(this.manager.pid, 'player');
+	this._notEnoughSpace(this.manager.pid, 'player');
 
 	//Opponents
-	this.calculateOpponentSizes();
+	this._calculateOpponentSizes();
 };
 
 //Размеры для полей противников
-FieldBuilder.prototype.calculateOpponentSizes = function(){
+FieldBuilder.prototype._calculateOpponentSizes = function(){
 	var opponentsOffset = this.opponentsOffset,
 		i = this.manager.pi + 1,	//индекс первого противника по кругу после игрока
 		oi = 0,	//Счетчик размещенных полей
@@ -263,7 +398,7 @@ FieldBuilder.prototype.calculateOpponentSizes = function(){
 			axis: axis[pi],
 			addTo: addTo[pi]
 		};
-		this.notEnoughSpace(p.id, 'opponent', pi);
+		this._notEnoughSpace(p.id, 'opponent', pi);
 		oi++;
 		i++;
 		if(i >= this.manager.players.length)
@@ -291,143 +426,10 @@ FieldBuilder.prototype._countOpponentPlacement = function(n){
 	return a;
 };
 
-//Создает поля
-FieldBuilder.prototype.createFieldNetwork = function(players){
 
-	var manager = this.manager;
-
-	manager.pid = game.pid;
-	manager.players = players;
-	var numOfCards = players.length > 3 ? 52 : 36,
-		id, i;
-
-	manager.pi = players.map(function(p){ return p.id; }).indexOf(manager.pid);
-	if(!~manager.pi){
-		console.error('Field builder: Player', manager.pid, 'not found in players\n', players);
-		return;
-	}
-
-	this.opponentPlacement = this._countOpponentPlacement(manager.players.length - 1);
-	this.calculateSizes(numOfCards);
-
-	//Deck
-	manager.fields.DECK = new Field({
-		x: this.positions.DECK.x,
-		y: this.positions.DECK.y,
-		minActiveSpace: this.minActiveSpaces.DECK,
-		horizontalAlign: 'right',
-		padding: 0,
-		margin: this.offsets.DECK,
-		focusable:false,
-		forcedSpace: 0.5,
-		texture: 'field',
-		sorted: false,
-		type: 'DECK',
-		id: 'DECK',
-		axis: 'vertical',
-		direction: 'backward',
-		reversed: true,
-		delayTime: 50,
-		debug: manager.isInDebugMode
-	});
-	manager.cardsToRemove.DECK = [];
-
-	//Discard pile
-	manager.fields.DISCARD_PILE = new Field({
-		x: this.positions.DISCARD_PILE.x,
-		y: this.positions.DISCARD_PILE.y,
-		minActiveSpace: this.minActiveSpaces.DISCARD_PILE,
-		padding:0,
-		margin: this.offsets.DISCARD_PILE,
-		focusable:false,
-		forcedSpace: 0.5,
-		texture: 'field',
-		horizontalAlign: 'right',
-		sorted: false,
-		axis: 'vertical',
-		direction: 'backward',
-		addTo: 'back',
-		type: 'DISCARD_PILE',
-		id: 'DISCARD_PILE',
-		debug: manager.isInDebugMode
-	});
-	manager.cardsToRemove.DISCARD_PILE = [];
-
-	//Field
-	for(i = 0; i < this.tableOrder.length; i++){
-		id = 'TABLE' + i;
-		manager.fields[id] = new Field({
-			x: this.positions[id].x,
-			y: this.positions[id].y,
-			width: this.dimensions[id].width,
-			height: this.dimensions[id].height,
-			minActiveSpace: this.minActiveSpaces.table,
-			forcedSpace: this.minActiveSpaces.table,
-			margin: this.offsets.table,
-			texture: 'field',
-			focusable:false,
-			sorted:false,
-			type: 'TABLE',
-			id: 'TABLE' + i,
-			specialId: i + 1,
-			debug: manager.isInDebugMode
-		});
-		manager.cardsToRemove[id] = [];
-	}
-
-	//Player hand
-	manager.fields[manager.pid] = new Field({
-		x:this.positions[manager.pid].x,
-		y:this.positions[manager.pid].y,
-		width:this.dimensions.player.width,
-		minActiveSpace: this.minActiveSpaces.player,
-		margin:this.offsets.player,
-		texture: 'field',
-		type: 'HAND',
-		id: manager.pid,
-		specialId: manager.pi + 1,
-		debug: manager.isInDebugMode
-	});
-	manager.cardsToRemove[manager.pid] = [];
-
-	//Opponents
-	i =  manager.pi + 1;
-	var oi = 0;
-	if(i >= players.length)
-		i = 0;
-	while(i != manager.pi){
-		var p = players[i];
-		manager.fields[p.id] = new Field({
-			x: this.positions[p.id].x,
-			y: this.positions[p.id].y,
-			width: this.dimensions[p.id].width,
-			height: this.dimensions[p.id].height,
-			minActiveSpace: this.minActiveSpaces.opponent[1],
-			margin:this.offsets.opponent[1],
-			texture: 'field',
-			sorted:false,
-			focusable:false,
-			axis: this.dimensions[p.id].axis,
-			flipped: this.dimensions[p.id].flipped,
-			direction: this.dimensions[p.id].direction,
-			addTo: this.dimensions[p.id].addTo,
-			type: 'HAND',
-			id: p.id,
-			name: p.name,
-			specialId: i + 1,
-			debug: manager.isInDebugMode
-		});
-		manager.cardsToRemove[p.id] = [];
-		oi++;
-		i++;
-		if(i >= players.length)
-			i = 0;
-	}
-	manager.networkCreated = true;
-};
 
 //Выводит предупреждение в консоль, если ширина меньше ширины одной карты
-FieldBuilder.prototype.notEnoughSpace = function(id, ref, index){
+FieldBuilder.prototype._notEnoughSpace = function(id, ref, index){
 	var isArray = typeof index == 'number',
 		width = isArray ? this.dimensions[ref][index].width : this.dimensions[ref].width,
 		height = isArray ? this.dimensions[ref][index].height : this.dimensions[ref].height,
