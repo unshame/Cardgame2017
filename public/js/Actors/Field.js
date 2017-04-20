@@ -216,27 +216,26 @@ Field.prototype.setHighlight = function(on, tint){
 
 //СОРТИРОВКА
 
+//Устанавливает z-index карт
+Field.prototype.zAlignCards = function(finished){
+	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
+	var iterator = this.direction == 'backward' ? -1 : 1;
+
+	for(; i >= 0 && i < this.cards.length; i += iterator){
+		var card = this.cards[i];
+		if(!finished || !card.mover)
+			card.bringToTop(false);
+	}
+};
+
 //Сортирует карты
-Field.prototype.sortCards = function(){
+Field.prototype._sortCards = function(){
 	if(this.sorted)
-		this.cards.sort(this.comparator);
+		this.cards.sort(this._compareCards);
 };
-
-Field.prototype.appendCard = function(cards){
-
-    for(var ci = 0; ci < cards.length; ci++){
-        var card = cards[ci];
-        card.field = this;
-        if(this.addTo == 'front')
-            this.cards.push(card);
-        else
-            this.cards.unshift(card);
-    }
-};
-
 
 //Компаратор сортировки
-Field.prototype.comparator = function(a, b){
+Field.prototype._compareCards = function(a, b){
 	if(!a.suit && a.suit !== 0){
 		if(b.suit || b.suit === 0)
 			return -1;
@@ -262,19 +261,6 @@ Field.prototype.comparator = function(a, b){
 	else
 		return -1;
 };
-
-Field.prototype.zAlignCards = function(finished){
-	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
-	var iterator = this.direction == 'backward' ? -1 : 1;
-
-	for(; i >= 0 && i < this.cards.length; i += iterator){
-		var card = this.cards[i];
-		if(!finished || !card.mover)
-			card.bringToTop(false);
-	}
-};
-
-
 
 //ОЧЕРЕДЬ
 
@@ -323,7 +309,7 @@ Field.prototype.placeQueuedCards = function(){
 	if(!this.queuedCards.length)
 		return;
 	
-	this.appendCard(this.queuedCards);
+	this._appendCards(this.queuedCards);
 	var bringUpOn; 
 	if(this.type == 'DECK')
 		bringUpOn = 'init';
@@ -331,7 +317,7 @@ Field.prototype.placeQueuedCards = function(){
 		bringUpOn = 'endAll';
 	else
 		bringUpOn = 'start';
-	this.sortCards();
+	this._sortCards();
 	this.placeCards(null, bringUpOn);
 	this.setUninteractibleTimer(this.expectedDelay);
 	this.queuedCards = [];
@@ -365,8 +351,8 @@ Field.prototype.addCards = function(newCards, noDelay){
 		return delay;
 	}
 	else{
-		this.appendCard(newCards);
-		this.sortCards();
+		this._appendCards(newCards);
+		this._sortCards();
 		return this.placeCards(newCards, 'start', noDelay);
 	}
 };
@@ -374,6 +360,18 @@ Field.prototype.addCards = function(newCards, noDelay){
 //Для добавления одной карты, возвращает время добавления
 Field.prototype.addCard = function(card){
 	return this.addCards([card]);
+};
+
+Field.prototype._appendCards = function(cards){
+
+    for(var ci = 0; ci < cards.length; ci++){
+        var card = cards[ci];
+        card.field = this;
+        if(this.addTo == 'front')
+            this.cards.push(card);
+        else
+            this.cards.unshift(card);
+    }
 };
 
 
@@ -523,7 +521,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 		var card = this.cards[i];	
 		var increaseDelayIndex = (newCards && ~newCards.indexOf(card));
 
-		delayIndex = this.moveCard(
+		delayIndex = this._moveCard(
 			card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
 			delayArray, delayIndex, increaseDelayIndex, bringUpOn
 		);
@@ -581,7 +579,7 @@ Field.prototype.placeCard = function(card, bringUpOn, noDelay){
  * @increaseDelayIndex Bool - нужно ли увеличивать индекс очереди в конце выполнения функции
  * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
  */
-Field.prototype.moveCard = function(
+Field.prototype._moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
 	delayArray, delayIndex, increaseDelayIndex, bringUpOn
 ){
@@ -671,7 +669,7 @@ Field.prototype.removeCards = function(cardsToRemove){
 	}
 	if(this.cards.length){
 		var bringUpOn = (this.type == 'DECK') ? 'never' : 'end';
-		this.sortCards();
+		this._sortCards();
 		this.placeCards(null, bringUpOn);
 	}
 };
