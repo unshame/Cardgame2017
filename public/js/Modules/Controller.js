@@ -237,7 +237,7 @@ Controller.prototype.cardOnValidField = function(){
 };
 
 //Смещает хвост относительно базы карты
-Controller.prototype.cardShiftTrial = function(x, y){
+Controller.prototype.cardShiftTrail = function(x, y){
 	this.trail.position.x += x;
 	this.trail.position.y += y;
 };

@@ -30,10 +30,10 @@ var Card = function (options) {
 	//Sprite
 	this.sprite = game.add.sprite();
 	this.sprite.inputEnabled = true;
-	this.sprite.events.onInputDown.add(this.mouseDown, this);
-	this.sprite.events.onInputUp.add(this.mouseUp, this);
-	this.sprite.events.onInputOver.add(this.mouseOver, this);
-	this.sprite.events.onInputOut.add(this.mouseOut, this);
+	this.sprite.events.onInputDown.add(this._mouseDown, this);
+	this.sprite.events.onInputUp.add(this._mouseUp, this);
+	this.sprite.events.onInputOver.add(this._mouseOver, this);
+	this.sprite.events.onInputOut.add(this._mouseOut, this);
 	this.sprite.anchor.set(0.5, 0.5);
 
 	//Glow
@@ -179,10 +179,10 @@ Card.prototype.setDraggability = function(draggable){
 //Устанавливает, можно ли ходить этой картой
 Card.prototype.setPlayability = function(playable, tint){
 	if(playable){
-		this.glowStart(0.25, 0.75, 1500, 500, tint || game.colors.orange);
+		this._glowStart(0.25, 0.75, 1500, 500, tint || game.colors.orange);
 	}
 	else{
-		this.glowStop();
+		this._glowStop();
 	}
 	this.isPlayable = playable;
 
@@ -459,9 +459,9 @@ Card.prototype.applyCardback = function(){
 //СВЕЧЕНИЕ
 
 //Запускает свечение
-Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
+Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 	
-	this.glowReset();
+	this._glowReset();
 
 	this.glow.tint = color || game.colors.white;
 
@@ -498,7 +498,7 @@ Card.prototype.glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 };
 
 //Останавливает свечение
-Card.prototype.glowStop = function(){
+Card.prototype._glowStop = function(){
 	if(this.glowIncreaser){
 		this.glowIncreaser.stop();
 		this.glowIncreaser = null;
@@ -513,14 +513,14 @@ Card.prototype.glowStop = function(){
 };
 
 //Останавливает и восстанавливает свечение
-Card.prototype.glowReset = function(){
-	this.glowStop();
+Card.prototype._glowReset = function(){
+	this._glowStop();
 	this.glow.reset();
-	this.glowUpdatePosition();
+	this._glowUpdatePosition();
 };
 
 //Обновляет позицию свечения
-Card.prototype.glowUpdatePosition = function(){
+Card.prototype._glowUpdatePosition = function(){
 	this.glow.x = this.sprite.x;
 	this.glow.y = this.sprite.y;
 	this.glow.scale.setTo(this.sprite.scale.x, this.sprite.scale.y);
@@ -531,23 +531,23 @@ Card.prototype.glowUpdatePosition = function(){
 //СОБЫТИЯ
 
 //Вызывается при нажатии на карту
-Card.prototype.mouseDown = function(sprite, pointer){
+Card.prototype._mouseDown = function(sprite, pointer){
 	controller.cardClick(this, pointer);
 };
 
 //Вызывается при окончании нажатия на карту
-Card.prototype.mouseUp = function(sprite, pointer){
+Card.prototype._mouseUp = function(sprite, pointer){
 	controller.cardUnclick(this, pointer);
 };
 
 //Вызывается при наведении на карту
-Card.prototype.mouseOver = function(sprite, pointer){
+Card.prototype._mouseOver = function(sprite, pointer){
 	if(this.field)
 		this.field.focusOnCard(this, pointer);
 };
 
 //Вызывается когда курсор покидает спрайт карты
-Card.prototype.mouseOut = function(sprite, pointer){
+Card.prototype._mouseOut = function(sprite, pointer){
 	if(this.field)
 		this.field.focusOffCard(this);
 };
@@ -587,7 +587,7 @@ Card.prototype.reset = function(){
 //Обновление карты
 //В будущем возможно будет делать что-то еще
 Card.prototype.update = function() {
-	this.glowUpdatePosition();
+	this._glowUpdatePosition();
 };
 
 //Обновляет позицию текста карты

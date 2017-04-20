@@ -635,7 +635,7 @@ Field.prototype._moveCard = function(
 		card.moveTo(x, y, this.moveTime, delay, false, true, bringUpOn);
 	}
 	else{
-		controller.cardShiftTrial(card.base.x - x, card.base.y - y);	
+		controller.cardShiftTrail(card.base.x - x, card.base.y - y);	
 		card.setBase(x, y);
 	}
 
