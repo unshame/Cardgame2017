@@ -7,6 +7,7 @@ var Game = function(){
 	this.speed = 1;
 	
 	window.fieldManager = new FieldManager(false);
+	window.actionHandler = new ActionHandler();
 	window.skinManager = null;
 	window.controller = null;
 	window.addEventListener('resize', this.updateAppDimensions.bind(this));
@@ -21,7 +22,7 @@ var Game = function(){
 		green: 0x68C655,
 		red: 0xC93F3F,
 		white: 0xFFFFFF
-	}
+	};
 
 	Phaser.Game.call(
 		this,

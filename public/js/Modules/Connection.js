@@ -31,8 +31,7 @@ var EurecaClientSetup = function(callback, context) {
 			console.log(opponents);
 	};
 	client.exports.recievePossibleActions = function(newActions, time, time_sent){		
-		actions = newActions;
-		var actionTypes = actions.map(function(a){return a.type;});
+		var actionTypes = newActions.map(function(a){return a.type;});
 		var action;
 		if(~actionTypes.indexOf('SKIP'))
 			game.skipButton.show();
@@ -44,7 +43,7 @@ var EurecaClientSetup = function(callback, context) {
 		if(time)
 			game.rope.start(time - 1000);
 
-		fieldManager.highlightPossibleActions(newActions);
+		actionHandler.highlightPossibleActions(newActions);
 		if(isInDebugMode)
 			console.log(newActions);
 	};
@@ -60,7 +59,7 @@ var EurecaClientSetup = function(callback, context) {
 			clearTimeout(timer);
 			timer = null;
 		}
-		var delay = fieldManager.executeAction(action);
+		var delay = actionHandler.executeAction(action);
 		setTimeout(
 			function(){
 				sendResponse();	
@@ -86,6 +85,8 @@ var EurecaClientSetup = function(callback, context) {
 };
 
 function sendAction(field, card){
+	var actions = actionHandler.possibleActions;
+
 	if(!actions)
 		return;
 	
@@ -105,6 +106,8 @@ function sendRealAction(type){
 	game.skipButton.hide();
 	game.takeButton.hide();
 
+	var actions = actionHandler.possibleActions;
+
 	if(!actions || !actions.length)
 		return;
 	var actionTypes = actions.map(function(a){return a.type;});
@@ -117,6 +120,6 @@ function sendRealAction(type){
 
 function sendResponse(){
 	game.rope.stop();
-	actions = null;
+	actionHandler.possibleActions = null;
 	server.recieveResponse();
 }
