@@ -274,7 +274,6 @@ Controller.prototype.cardResetTrail = function(soft){
 			p.alpha = 0;
 		else{
 			p.kill();
-			p.reset();
 		}
 	}, this);
 	this.trail.position = {x: 0, y: 0};
