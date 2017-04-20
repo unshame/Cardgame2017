@@ -11,6 +11,8 @@ var FieldBuilder = function(manager){
 	this.positions = {};
 	this.dimensions = {};
 
+	this.minActiveSpace = 10;
+
 	this.tableOrder = [4, 2, 0, 1, 3, 5];
 };
 
@@ -158,8 +160,6 @@ FieldBuilder.prototype._calculateSizes = function(numOfCards){
 //Обобщенные размеры
 FieldBuilder.prototype._calculateGeneralSizes = function(numOfCards){
 
-	var defaultFieldOptions = Field.prototype.getDefaultOptions();
-
 	//Отступы
 	this.offsets = {
 		DECK: 22,					//Колода		
@@ -173,12 +173,12 @@ FieldBuilder.prototype._calculateGeneralSizes = function(numOfCards){
 	this.minActiveSpaces = {
 		DECK: numOfCards/2,
 		DISCARD_PILE: numOfCards/2,
-		player: defaultFieldOptions.minActiveSpace,
+		player: this.minActiveSpace,
 		table: skinManager.skin.trumpOffset,
 		opponent: [
-			defaultFieldOptions.minActiveSpace,
-			defaultFieldOptions.minActiveSpace,
-			defaultFieldOptions.minActiveSpace
+			this.minActiveSpace,
+			this.minActiveSpace,
+			this.minActiveSpace
 		]
 	};
 

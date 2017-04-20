@@ -10,7 +10,7 @@
 var Card = function (options) {
 
 	//Options
-	this.options = this.getDefaultOptions();
+	this.options = this._getDefaultOptions();
 	for(var o in options){
 		if(options.hasOwnProperty(o))
 			this.options[o] = options[o];
@@ -69,7 +69,7 @@ var Card = function (options) {
 };
 
 //Возвращает опции по умолчанию
-Card.prototype.getDefaultOptions = function(){
+Card.prototype._getDefaultOptions = function(){
 	var options = {
 		id:null,
 		x: game.screenWidth / 2,

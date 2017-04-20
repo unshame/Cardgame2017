@@ -6,7 +6,7 @@
 
 var Grid = function(options){
 
-	this.options = this.getDefaultOptions();
+	this.options = this._getDefaultOptions();
 
 	for(var o in options){
 		if(options.hasOwnProperty(o) && options[o] !== undefined){
@@ -20,7 +20,7 @@ var Grid = function(options){
 	this.isInDebugMode = this.options.debug;
 };
 
-Grid.prototype.getDefaultOptions = function(){
+Grid.prototype._getDefaultOptions = function(){
 	var options = {
 		density:4,		//плотность сетки (масштаб - 1:density)
 		thickness: 1,	//толщина линий сетки для дебага

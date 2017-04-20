@@ -132,7 +132,7 @@ FieldManager.prototype.placeQueuedCards = function(){
 
 //Меняет размеры и устанавливает позицию полей в соотстветсвии с this.positions и this.dimensions
 FieldManager.prototype.resizeFields = function(){
-	this.calculateSizes();
+	this.builder._calculateSizes();
 	this.forEachField(function(field, si){
 		field.setBase(this.builder.positions[si].x, this.builder.positions[si].y);
 		field.resize(this.builder.dimensions[si].width, this.builder.dimensions[si].height, true);

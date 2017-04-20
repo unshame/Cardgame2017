@@ -21,7 +21,7 @@
 
 var Field = function(options){
 
-	var defaultOptions = this.options = this.getDefaultOptions();
+	var defaultOptions = this.options = this._getDefaultOptions();
 
 	for(var o in options){
 		if(options.hasOwnProperty(o) && options[o] !== undefined){
@@ -105,7 +105,7 @@ var Field = function(options){
 };
 
 //Возвращает опции по умолчанию
-Field.prototype.getDefaultOptions = function(){
+Field.prototype._getDefaultOptions = function(){
 	var options = {
 		x:0,
 		y:0,
@@ -113,7 +113,7 @@ Field.prototype.getDefaultOptions = function(){
 		height:0,
 		margin:10,
 		padding:10,
-		minActiveSpace: 10,	//Минимальная ширина\высота для расположения карт
+		minActiveSpace: fieldManager.builder.minActiveSpace,	//Минимальная ширина\высота для расположения карт
 
 		moveTime: 300,
 		delayTime: 100,
