@@ -7,7 +7,7 @@ var Game = function(){
 	this.speed = 1;
 	
 	window.fieldManager = new FieldManager(false);
-	window.actionHandler = new ActionHandler();
+	window.actionHandler = new ActionHandler(reactions);
 	window.skinManager = null;
 	window.controller = null;
 	window.addEventListener('resize', this.updateAppDimensions.bind(this));
