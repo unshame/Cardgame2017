@@ -28,15 +28,14 @@ window.reactions = {
 				if(action.pid != c.pid)
 					fieldManager.fields[c.pid].setHighlight(true, game.colors.red);
 
-				if(card.field.id == playerManager.pid)
-					continue;
+				card.raised = true;
 
-				this.highlightingTrumpCards = true;
+				if(card.field.id != playerManager.pid){	
+					card.presetValue(c.suit, c.value);	
+				}
+				card.field.placeCards(null, 'init', true);
+			}		
 
-				card.presetValue(c.suit, c.value);
-				card.field.focusOnCard(card, null, true);				
-
-			}
 			//Выделяем поле игрока с наибольшим козырем
 			fieldManager.fields[action.pid].setHighlight(true, game.colors.green);
 
@@ -49,13 +48,13 @@ window.reactions = {
 
 					fieldManager.fields[c.pid].setHighlight(false);		
 
-					if(card.field.id == playerManager.pid)
-						continue;									
-			
-					card.presetValue(null, null);
-					card.field.focusOffCard(card, true);
-				}
-				fieldManager.highlightingTrumpCards = false;				
+					card.raised = false;
+
+					if(card.field.id != playerManager.pid){					
+						card.presetValue(null, null);
+					}
+					card.field.placeCards(null, 'init', true);
+				}			
 
 			}, delay, this);
 

@@ -15,6 +15,7 @@ var Card = function (options) {
 	this.isInDebugMode = this.options.debug;
 	this.isDraggable = false;
 	this.isPlayable = false;
+	this.raised = false;
 
 	//Id
 	this.id = this.options.id;

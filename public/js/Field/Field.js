@@ -64,6 +64,7 @@ var Field = function(options){
 
 	this.margin = this.options.margin;
 	this.padding = this.options.padding;
+	this.raisedHeight = this.options.raisedHeight;
 
 	this.forcedSpace = this.options.forcedSpace;
 	this.focusable = this.options.focusable;
@@ -114,6 +115,7 @@ Field.prototype._getDefaultOptions = function(){
 		margin:10,
 		padding:10,
 		minActiveSpace: fieldManager.builder.minActiveSpace,	//Минимальная ширина\высота для расположения карт
+		raisedHeight: skinManager.skin.height,
 
 		moveTime: 300,
 		delayTime: 100,
@@ -608,12 +610,16 @@ Field.prototype._moveCard = function(
 		leftMargin += skinManager.skin.trumpOffset;
 	}
 
+	var bottomMargin = card.raised ? this.raisedHeight : 0;
+	if(this.flipped && this.axis == 'horizontal' || !this.flipped && this.axis == 'vertical')
+		bottomMargin = -bottomMargin;
+
 	//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению
 	//к предыдущим картам, позиции базы поля и сдвига от курсора
-	var x = leftMargin + cardSpacing*index + shift;
+	var x = leftMargin + cardSpacing*index;
 
 	//Вертикальная позиция
-	var y = topMargin;
+	var y = topMargin - bottomMargin;
 
 	if(this.axis == 'vertical'){
 		var temp = x;
