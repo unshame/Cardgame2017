@@ -177,7 +177,6 @@ class GameCards extends BetterArray{
 
 			let thisCard = this.deck[ci];
 			let otherCard = this.deck[this.deck.length - 1];
-				console.log(thisCard.value, this.maxValue)
 			if(thisCard.value != this.maxValue){
 				this.deck[this.deck.length - 1] = thisCard;
 				this.deck[ci] = otherCard;
