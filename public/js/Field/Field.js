@@ -486,7 +486,6 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 
 	//Проверка выделенной карты
 	if(
-		!fieldManager.highlightingTrumpCards &&
 		controller.card && 
 		controller.card != this.focusedCard
 	){
@@ -616,7 +615,7 @@ Field.prototype._moveCard = function(
 
 	//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению
 	//к предыдущим картам, позиции базы поля и сдвига от курсора
-	var x = leftMargin + cardSpacing*index;
+	var x = leftMargin + cardSpacing*index + shift;
 
 	//Вертикальная позиция
 	var y = topMargin - bottomMargin;
@@ -777,7 +776,7 @@ Field.prototype.focusOffCard = function(card, forced){
 		return;
 
 	this.focusedCard = null;
-	if(!this.uninteractibleTimer)
+	if(!this.uninteractibleTimer || forced)
 		this.placeCards(null, 'init');
 };
 

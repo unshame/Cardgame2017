@@ -10,8 +10,6 @@ var FieldManager = function(isInDebugMode){
 
 	this.cardsToRemove = {};
 
-	this.highlightingTrumpCards = false;
-
 	this.isInDebugMode = isInDebugMode;
 
 	this.builder = new FieldBuilder(this);
