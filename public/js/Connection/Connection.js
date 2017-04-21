@@ -50,10 +50,7 @@ var EurecaClientSetup = function(callback, context) {
 	};
 	client.exports.recieveCompleteAction = function(action){
 		game.rope.stop();
-		if(game.celebration){
-			game.celebration.stop();
-			game.celebration = null;
-		}
+		cardManager.throwCardsStop();
 		game.skipButton.hide();
 		game.takeButton.hide();
 		if(timeout){
@@ -73,7 +70,7 @@ var EurecaClientSetup = function(callback, context) {
 	client.exports.recieveNotification = function(note, actions){
 		console.log(note);
 		if(note && note.results && note.results.winners && ~note.results.winners.indexOf(game.pid))
-			game.celebration = new ThrowCards();
+			cardManager.throwCardsStart();
 
 		if(isInDebugMode)
 			console.log(note, actions);

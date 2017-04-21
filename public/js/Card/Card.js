@@ -1,10 +1,6 @@
 /*
  * Конструктор карт
  * 
- * Тестовые функции:
- * throwCards - конструктор разлетающихся карт
- * getCards(num, except) - выбирает num карт из cards, пропускает карты из except
- * getCard(except) - выбирает одну карту из cards, пропускает карты из except
  */
 
 var Card = function (options) {
@@ -613,56 +609,3 @@ Card.prototype.updateDebug = function(){
 };
 
 
-//ТЕСТОВЫЕ ФУНКЦИИ
-
-//Party time
-var ThrowCards = function(){
-
-	this.emitter = game.add.emitter(game.world.centerX, 200, 200);
-
-	var frames = [];
-	for(var i = 0; i < 52; i++){
-		frames.push(i);
-	}
-	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
-
-	this.emitter.start(false, 5000, 20);
-	this.emitter.width = game.screenWidth;
-	this.emitter.height = game.screenHeight;
-
-	game.world.bringToTop(this.emitter);
-};
-ThrowCards.prototype.stop = function(){
-	if(this.emitter.on){
-		this.emitter.destroy();
-	}
-};
-
-//Возвращает несколько карт в массиве
-//Если не указать num, возвратит все карты
-function getCards(num, except){
-	if(!num)
-		num = game.cards.length;
-	var crds = [];
-	for(var cid in game.cards){
-		if(!game.cards.hasOwnProperty(cid))
-			continue;
-		var card = game.cards[cid];
-		if(except && except.length && ~except.indexOf(card))
-			continue;
-		if(num-- <= 0)
-			break;
-		crds.push(card);
-	}
-	return crds;
-}
-
-//Возвращает одну карту, которая не входит в except
-function getCard(except){
-	var card = getCards(1, except);
-	if(card.length)
-		card = card[0];
-	else
-		card = null;
-	return card;
-}
