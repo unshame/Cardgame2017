@@ -25,6 +25,7 @@ var EurecaClientSetup = function(callback, context) {
 	
 	client.exports.setId = function(pid){
 		game.pid = pid;
+		window.playerManager = new PlayerManager(pid);
 	};	
 	client.exports.meetOpponents = function(opponents){
 		if(isInDebugMode)

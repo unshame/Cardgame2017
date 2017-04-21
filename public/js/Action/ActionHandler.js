@@ -15,8 +15,9 @@ var ActionHandler = function(reactions){
 
 ActionHandler.prototype.executeAction = function(action){
 	if(action.type == 'GAME_INFO' && action.players.length){
+		playerManager.savePlayers(action.players);
 		fieldManager.resetNetwork();
-		fieldManager.builder.createFieldNetwork(action.players);
+		fieldManager.builder.createFieldNetwork();
 		action.type = 'CARDS';
 	}
 
@@ -31,7 +32,7 @@ ActionHandler.prototype.executeAction = function(action){
 		field.setHighlight(false);
 	});
 
-	var field = fieldManager.fields[fieldManager.pid];
+	var field = fieldManager.fields[playerManager.pid];
 	for(var ci = 0; ci < field.cards.length; ci++){
 		field.cards[ci].setPlayability(false);
 	}

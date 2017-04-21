@@ -28,7 +28,7 @@ window.reactions = {
 				if(action.pid != c.pid)
 					fieldManager.fields[c.pid].setHighlight(true, game.colors.red);
 
-				if(card.field.id == fieldManager.pid)
+				if(card.field.id == playerManager.pid)
 					continue;
 
 				this.highlightingTrumpCards = true;
@@ -49,7 +49,7 @@ window.reactions = {
 
 					fieldManager.fields[c.pid].setHighlight(false);		
 
-					if(card.field.id == fieldManager.pid)
+					if(card.field.id == playerManager.pid)
 						continue;									
 			
 					card.presetValue(null, null);

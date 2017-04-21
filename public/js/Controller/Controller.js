@@ -13,7 +13,6 @@ var Controller = function(isInDebugMode){
 	this.cursor = game.add.sprite(0, 0, 'cursor_orange');
 	this.cursor.width = this.cursor.height = 32;
 	this.cursor.isInGame = true;
-	this.cursor.kill();
 
 	this.trail = game.add.emitter(0, 0);
 	this.trailDefaultBase = game.add.group();

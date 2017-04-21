@@ -8,10 +8,6 @@ var FieldManager = function(isInDebugMode){
 
 	this.networkCreated = false;
 
-	this.players = {};
-	this.pid = null;
-	this.pi = 0;
-
 	this.cardsToRemove = {};
 
 	this.highlightingTrumpCards = false;

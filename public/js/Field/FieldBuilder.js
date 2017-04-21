@@ -17,22 +17,15 @@ var FieldBuilder = function(manager){
 };
 
 //Создает поля
-FieldBuilder.prototype.createFieldNetwork = function(players){
+FieldBuilder.prototype.createFieldNetwork = function(){
 
-	var manager = this.manager;
+	var manager = this.manager,
+		players = playerManager.players;
 
-	manager.pid = game.pid;
-	manager.players = players;
 	var numOfCards = players.length > 3 ? 52 : 36,
 		id, i;
 
-	manager.pi = players.map(function(p){ return p.id; }).indexOf(manager.pid);
-	if(!~manager.pi){
-		console.error('Field builder: Player', manager.pid, 'not found in players\n', players);
-		return;
-	}
-
-	this.opponentPlacement = this._countOpponentPlacement(manager.players.length - 1);
+	this.opponentPlacement = this._countOpponentPlacement(players.length - 1);
 	this._calculateSizes(numOfCards);
 
 	//Deck
@@ -101,26 +94,26 @@ FieldBuilder.prototype.createFieldNetwork = function(players){
 	}
 
 	//Player hand
-	manager.fields[manager.pid] = new Field({
-		x:this.positions[manager.pid].x,
-		y:this.positions[manager.pid].y,
+	manager.fields[playerManager.pid] = new Field({
+		x:this.positions[playerManager.pid].x,
+		y:this.positions[playerManager.pid].y,
 		width:this.dimensions.player.width,
 		minActiveSpace: this.minActiveSpaces.player,
 		margin:this.offsets.player,
 		texture: 'field',
 		type: 'HAND',
-		id: manager.pid,
-		specialId: manager.pi + 1,
+		id: playerManager.pid,
+		specialId: playerManager.pi + 1,
 		debug: manager.isInDebugMode
 	});
-	manager.cardsToRemove[manager.pid] = [];
+	manager.cardsToRemove[playerManager.pid] = [];
 
 	//Opponents
-	i =  manager.pi + 1;
+	i =  playerManager.pi + 1;
 	var oi = 0;
 	if(i >= players.length)
 		i = 0;
-	while(i != manager.pi){
+	while(i != playerManager.pi){
 		var p = players[i];
 		manager.fields[p.id] = new Field({
 			x: this.positions[p.id].x,
@@ -323,14 +316,14 @@ FieldBuilder.prototype._calculateSpecificSizes = function(){
 	}
 
 	//Player
-	this.positions[this.manager.pid] = {
+	this.positions[playerManager.pid] = {
 		x: this.positions.player.x,
 		y: this.positions.player.y
 	};
-	this.dimensions[this.manager.pid] = {
+	this.dimensions[playerManager.pid] = {
 		width:this.dimensions.player.width
 	};
-	this._notEnoughSpace(this.manager.pid, 'player');
+	this._notEnoughSpace(playerManager.pid, 'player');
 
 	//Opponents
 	this._calculateOpponentSizes();
@@ -338,8 +331,9 @@ FieldBuilder.prototype._calculateSpecificSizes = function(){
 
 //Размеры для полей противников
 FieldBuilder.prototype._calculateOpponentSizes = function(){
-	var opponentsOffset = this.opponentsOffset,
-		i = this.manager.pi + 1,	//индекс первого противника по кругу после игрока
+	var players = playerManager.players,
+		opponentsOffset = this.opponentsOffset,
+		i = playerManager.pi + 1,	//индекс первого противника по кругу после игрока
 		oi = 0,	//Счетчик размещенных полей
 		pi = 0;	//Индекс позиции для размещения
 
@@ -364,17 +358,17 @@ FieldBuilder.prototype._calculateOpponentSizes = function(){
 			dimensions[2].height + opponentsOffset[2]
 		];
 
-	if(i >= this.manager.players.length)
+	if(i >= players.length)
 		i = 0;
 	
-	while(i != this.manager.pi){
+	while(i != playerManager.pi){
 
 		if(!placement[pi]){
 			pi++;
 			oi = 0;
 		}
 
-		var p = this.manager.players[i],
+		var p = players[i],
 			x = this.positions.opponent[pi].x + xs[pi]*oi,
 			y = this.positions.opponent[pi].y + ys[pi]*oi;
 
@@ -401,7 +395,7 @@ FieldBuilder.prototype._calculateOpponentSizes = function(){
 		this._notEnoughSpace(p.id, 'opponent', pi);
 		oi++;
 		i++;
-		if(i >= this.manager.players.length)
+		if(i >= players.length)
 			i = 0;
 
 		placement[pi]--;
