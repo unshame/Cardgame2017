@@ -111,7 +111,7 @@ Game.prototype.initialize = function(){
 	this.onBlur.add(function(){console.log('blured')});
 	this.onFocus.add(function(){console.log('focused')});*/
 
-	$('#loading').hide();
+	document.getElementById('loading').style.display = 'none';
 	this.created = true;
 };
 
@@ -156,10 +156,10 @@ Game.prototype.updateAppDimensionsListener = function(){
 			debugButtonPosition.x,
 			debugButtonPosition.y
 		);
-		this.menu.update();
+		//this.menu.update();
 	}
 
-	$('#loading').hide();
+	document.getElementById('loading').style.display = 'none';
 	this.dimensionsUpdateTimeout = null;
 };
 
@@ -168,7 +168,7 @@ Game.prototype.updateAppDimensions = function(){
 		clearTimeout(this.dimensionsUpdateTimeout);
 	}
 	else{
-		$('#loading').show();
+		document.getElementById('loading').style.display = 'block';
 	}
 	this.dimensionsUpdateTimeout = setTimeout(this.updateAppDimensionsListener.bind(this), 500);
 
