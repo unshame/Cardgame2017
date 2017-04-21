@@ -10,7 +10,7 @@ var logStream = fs.createWriteStream('./logs/log.txt', {'flags': 'a'});
 var stats = {
 	line: 0,
 	isInDebugMode: true
-}
+};
 
 exports.stats = stats;
 
@@ -22,11 +22,11 @@ exports.generateId = function(){
 		len = chars.length;
 
 	for (let i = 0; i < howMany; i++) {
-	    value[i] = chars[rnd[i] % len]
-	};
+	    value[i] = chars[rnd[i] % len];
+	}
 
 	return value.join('');
-}
+};
 
 exports.copyObject = function(obj){
 	let newObj = {};
@@ -35,7 +35,7 @@ exports.copyObject = function(obj){
 			newObj[key] = obj[key];
 	}
 	return newObj;
-}
+};
 
 exports.log = function(){
 	stats.line++;
@@ -54,10 +54,10 @@ exports.log = function(){
 		}
 	}
 	logLine += "\n";
-	logStream.write(logLine)
+	logStream.write(logLine);
 	if(stats.isInDebugMode){
 		let args = Array.prototype.slice.call(arguments);
 		args.unshift(logSLine);
 		console.log.apply(this, args);	
 	}
-}
+};
