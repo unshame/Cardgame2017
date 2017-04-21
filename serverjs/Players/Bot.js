@@ -24,15 +24,15 @@ class Bot extends Player{
 
 
 	recieveGameInfo(cards){
-		setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
+		setTimeout(() => {this.sendResponse();},Math.random()*fakeDescisionTimer);
 	}
 
 	recieveDeals(deals){
-		setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
+		setTimeout(() => {this.sendResponse();},Math.random()*fakeDescisionTimer);
 	}
 
 	recieveMinTrumpCards(cards, winner){
-		setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
+		setTimeout(() => {this.sendResponse();},Math.random()*fakeDescisionTimer);
 	}
 
 	recieveValidActions(actions){
@@ -40,12 +40,12 @@ class Bot extends Player{
 	}
 
 	recieveCompleteAction(action){
-		setTimeout(() => {this.sendResponse()},Math.random()*fakeDescisionTimer)
+		setTimeout(() => {this.sendResponse();},Math.random()*fakeDescisionTimer);
 	}
 
 	recieveNotification(note, actions){
 		if(actions)
-			setTimeout(() => {this.sendResponse(actions[0])},Math.random()*fakeDescisionTimer)
+			setTimeout(() => {this.sendResponse(actions[0]);},Math.random()*fakeDescisionTimer);
 	}
 
 }

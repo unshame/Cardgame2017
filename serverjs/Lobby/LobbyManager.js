@@ -2,4 +2,4 @@ class LobbyManager{
 	
 } 
 
-module.exports = LobbyManager
+module.exports = LobbyManager;

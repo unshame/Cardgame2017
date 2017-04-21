@@ -86,7 +86,7 @@ class TestBot extends Bot{
 			let numOfOriginalAttackers = this.game.players.originalAttackers.length;
 			if(numOfTransfers != numOfOriginalAttackers){
 				console.log('Test %s (transfer attacker saving) failed on %s', this.tests, this.name);
-				console.log('Transfers: %d but saved attackers: %d', numOfTransfers, numOfOriginalAttackers)
+				console.log('Transfers: %d but saved attackers: %d', numOfTransfers, numOfOriginalAttackers);
 				console.log('See line %s in log.txt for context', lineNum + 1);
 				console.log('----------------\n');
 				this.failedTests++;
@@ -106,15 +106,15 @@ class TestBot extends Bot{
 				console.log('After:   ', result);
 				console.log('Active:  ',
 					active.map((p) => {
-						return p.name
+						return p.name;
 					}),
 					'=>',
 					activePlayers.map((p) => {
-						return p.name
+						return p.name;
 					})
 				);
-				console.log('See line %s in log.txt for context', lineNum + 1)
-				console.log('----------------\n')
+				console.log('See line %s in log.txt for context', lineNum + 1);
+				console.log('----------------\n');
 				this.failedTests++;
 			}
 		}
