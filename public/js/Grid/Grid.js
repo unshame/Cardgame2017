@@ -18,6 +18,8 @@ var Grid = function(options){
 	this.thickness = this.options.thickness;
 
 	this.isInDebugMode = this.options.debug;
+
+	this.draw();
 };
 
 Grid.prototype._getDefaultOptions = function(){

@@ -25,6 +25,9 @@ var Controller = function(isInDebugMode){
 	this.cardReturnTime = 200;
 	this.cardClickMaxDelay = 200;
 	this.cardMoveThreshold = 2;
+
+	document.addEventListener('mouseleave', this.updateCursor.bind(this, false));
+	document.addEventListener('mouseenter', this.updateCursor.bind(this, true));
 };
 
 //Обрабатывает нажатие на карту

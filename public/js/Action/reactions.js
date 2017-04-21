@@ -77,16 +77,12 @@ window.reactions = {
 	 *
 	 */
 	CARDS: function(action){
+
 		fieldManager.resetFields();
 		controller.reset();
+		cardManager.reset();
+		cardManager.createCards(action.cards);
 
-		for(var cid in game.cards){
-			if(game.cards.hasOwnProperty(cid)){
-				game.cards[cid].base.removeAll(true);
-			}
-		}
-		game.cards = {};
-		game.cardsGroup.removeAll(true);
 		var delay = fieldManager.queueCards(action.cards);
 		fieldManager.removeMarkedCards();
 		fieldManager.placeQueuedCards();
@@ -97,7 +93,7 @@ window.reactions = {
 				var options = {
 					id: id
 				};
-				game.cards[id] = new Card(options);
+				cardManager.addCard(options);
 				discardCards.push(game.cards[id]);
 			}
 			fieldManager.fields.DISCARD_PILE.addCards(discardCards);

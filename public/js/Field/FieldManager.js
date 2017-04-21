@@ -40,14 +40,8 @@ FieldManager.prototype.queueCards = function(newCards){
 			card.presetField(c.field || c.pid);
 		}
 		else{
-			var options = {
-				id: c.cid,
-				suit: c.suit,
-				value: c.value,
-				fieldId: c.field || c.pid
-			};
-			game.cards[c.cid] = new Card(options);
-			card = game.cards[c.cid];
+			console.error('Field manager: Card', c.cid, 'not found');
+			continue;
 		}
 		card.field && this.cardsToRemove[card.field.id].push(card);
 		var fieldId = card.fieldId;
