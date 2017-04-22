@@ -97,6 +97,7 @@ Controller.prototype.cardPickup = function(card, pointer){
 
 	this.trail.minParticleSpeed.setTo(-skinManager.skin.width, -skinManager.skin.height);
 	this.trail.maxParticleSpeed.setTo(skinManager.skin.width, skinManager.skin.height);
+	this.lastParticleTime = game.time.now;
 
 	this.trail.makeParticles(this.card.skin.trailName, this.card.suit);
 
@@ -115,7 +116,7 @@ Controller.prototype.cardSetPathToCursor = function(){
 		x: this.pointer.x - this.card.base.x - this.card.sprite.x,
 		y: this.pointer.y - this.card.base.y - this.card.sprite.y
 	};
-	this.cardShiftEndTime = new Date().getTime() + (this.cardShiftDuration/game.speed);
+	this.cardShiftEndTime = game.time.now + (this.cardShiftDuration/game.speed);
 };
 
 //Кладет карту
@@ -260,13 +261,18 @@ Controller.prototype.cardShiftTrail = function(x, y){
 };
 
 //Создает хвост карты при движении
-Controller.prototype.cardSpawnTrail = function(){
+Controller.prototype.cardSpawnTrail = function(curTime){
 
-	var curTime = new Date().getTime();
-	if(this.lastParticleTime && curTime - this.lastParticleTime < this.trail.interval)
+	var	delta = curTime - this.lastParticleTime;
+	if(this.lastParticleTime && delta < this.trail.interval)
 		return;
 
-	this.lastParticleTime = curTime;
+	//Прибавляем интервал к последнему моменту спавна, чтобы кол-во партиклей соответствовало прошедшему времени
+	//Для оптимизации ограничиваем разницу во времени
+	if(delta > this.trail.interval*10)
+		this.lastParticleTime += this.trail.interval*10;
+	else
+		this.lastParticleTime += this.trail.interval;
 
 	var distance = this.card.sprite.position.distance({
 		x: this.trail.emitX + this.trail.position.x, 
@@ -282,6 +288,7 @@ Controller.prototype.cardSpawnTrail = function(){
 	this.trail.emitX = this.card.sprite.x - this.trail.position.x;
 	this.trail.emitY = this.card.sprite.y - this.trail.position.y;
 	this.trail.emitParticle();
+
 };
 
 //Ресетит хвост карты
@@ -377,13 +384,11 @@ Controller.prototype.updateCard = function(){
 		return;
 	}
 
-	var curTime = new Date().getTime();
+	var curTime = game.time.now;
 
 	this.updateCardPosition(curTime);
 	this.updateCardAngle(curTime);
-
-	//Спавним хвост
-	this.cardSpawnTrail();
+	this.cardSpawnTrail(curTime);
 };
 
 //Устанавливаем позицию карты и плавно передивгаем ее к курсору
@@ -493,7 +498,7 @@ Controller.prototype.updateDebug = function(){
 	//Таймер клика
 	var time = (
 		this.cardClickTimer && 
-		this.cardClickTimer.timer.nextTick - new Date().getTime()
+		this.cardClickTimer.timer.nextTick - game.time.now
 	) || 0;
 	game.debug.text(time + 'sec', x, y );
 
