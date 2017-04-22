@@ -14,7 +14,7 @@ var Rope = function(){
 };
 
 Rope.prototype.update = function(){
-	var now = game.time.time,
+	var now = new Date().getTime(),
 		isBurning = false;
 	if(!this.isBurning && this.startTime && this.startTime < now)
 		isBurning = true;
@@ -41,7 +41,7 @@ Rope.prototype.start = function(duration, start){
 	if(this.isBurning)
 		this.stop();
 
-	var now = game.time.time;
+	var now = new Date().getTime();
 	this.isBurning = true;
 	this.startTime = start && now + start || now; 
 	this.duration = duration;

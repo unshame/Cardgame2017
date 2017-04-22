@@ -39,7 +39,8 @@ var EurecaClientSetup = function(callback, context) {
 		if(~actionTypes.indexOf('TAKE'))
 			game.takeButton.show();
 
-		time = time - game.time.time;
+		var current_time = new Date();
+		time = time - current_time.getTime();
 		if(time)
 			game.rope.start(time - 1000);
 
