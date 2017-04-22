@@ -24,7 +24,10 @@ var Controller = function(isInDebugMode){
 	this.cardShiftDuration = 100;
 	this.cardReturnTime = 200;
 	this.cardClickMaxDelay = 200;
+
 	this.cardMoveThreshold = 2;
+	this.cardMaxMoveAngle = 30;
+	this.inertiaHistory = [];
 
 	document.addEventListener('mouseleave', this.updateCursor.bind(this, false));
 	document.addEventListener('mouseenter', this.updateCursor.bind(this, true));
@@ -83,7 +86,10 @@ Controller.prototype.cardPickup = function(card, pointer){
 	if(this.isInDebugMode)
 		console.log('Controller: Picked up', this.card.id);
 
-	this.card.shouldUpdateAngle = true;
+	if(this.inertiaHistory.length)
+		this.inertiaHistory = [];
+	this.cardLastX = this.card.sprite.x;
+
 	this.setCardClickTimer();
 	this.cardResetTrail();
 	this.card.base.addAt(this.trail, 0);
@@ -148,7 +154,8 @@ Controller.prototype.cardRebaseAtPointer = function(newField){
 		return;
 	}
 
-	this.card.shouldUpdateAngle = false;
+	if(this.inertiaHistory.length)
+		this.inertiaHistory = [];
 
 	this.trail.position.x -= this.card.sprite.x; 
 	this.trail.position.y -= this.card.sprite.y; 
@@ -196,7 +203,8 @@ Controller.prototype.cardReturn = function(){
 		this.card.mover = null;
 	}
 
-	this.card.shouldUpdateAngle = false;
+	if(this.inertiaHistory.length)
+		this.inertiaHistory = [];
 
 	var card = this.card;
 
@@ -371,7 +379,15 @@ Controller.prototype.updateCard = function(){
 
 	var curTime = new Date().getTime();
 
-	//Устанавливаем позицию карты и плавно передивгаем ее к курсору
+	this.updateCardPosition(curTime);
+	this.updateCardAngle(curTime);
+
+	//Спавним хвост
+	this.cardSpawnTrail();
+};
+
+//Устанавливаем позицию карты и плавно передивгаем ее к курсору
+Controller.prototype.updateCardPosition = function(curTime){
 	var sTime, sP, mP;
 	sTime = this.cardShiftEndTime - curTime;
 	if(sTime > 0){
@@ -388,10 +404,42 @@ Controller.prototype.updateCard = function(){
 		y: this.pointer.y - this.card.base.y
 	};
 	this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
+}
 
-	//Спавним хвост
-	this.cardSpawnTrail();
-};
+//Устанавливает угол в зависимости от инерции карты
+//Взято отсюда:
+//https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53
+Controller.prototype.updateCardAngle = function(curTime){
+
+	var maxAngle = this.cardMaxMoveAngle,
+		curX = this.card.sprite.x,
+		distance = curX - this.cardLastX;
+
+	while(this.inertiaHistory.length && curTime - this.inertiaHistory[0][0] > 300) {
+		this.inertiaHistory.shift();
+	}
+
+	this.inertiaHistory.push([curTime, distance]);
+	
+	//Вычисляем угол из средней длины вектора инерции
+	var totalDistance = 0;
+	for(var i = 0; i < this.inertiaHistory.length; i++){
+		totalDistance += this.inertiaHistory[i][1];
+	}
+	var angle = totalDistance / this.inertiaHistory.length / 1.25;
+	if(angle != 0){
+			angle -= angle > 0 ? Math.min(angle, this.cardMoveThreshold) : Math.max(angle, -this.cardMoveThreshold);
+	}
+	if(angle > maxAngle) {
+	  angle = maxAngle;
+	}
+	if(angle < -maxAngle) {
+	  angle = -maxAngle;
+	}
+	this.card.setAngle(angle);
+
+	this.cardLastX = this.card.sprite.x;
+}
 
 //Обновление прозрачности партиклей хвоста
 Controller.prototype.updateTrail = function(){
