@@ -81,6 +81,8 @@ CardManager.prototype.toggleDebugMode = function(){
 //Party time
 CardManager.prototype.throwCardsStart = function(){
 
+	this.throwCardsStop();
+	
 	this.emitter = game.add.emitter(game.world.centerX, 200, 200);
 
 	var frames = [];
@@ -97,8 +99,9 @@ CardManager.prototype.throwCardsStart = function(){
 };
 
 CardManager.prototype.throwCardsStop = function(){
-	if(this.emitter && this.emitter.on){
+	if(this.emitter){
 		this.emitter.destroy();
+		this.emitter = null;
 	}
 };
 
