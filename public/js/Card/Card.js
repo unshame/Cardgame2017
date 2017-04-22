@@ -270,6 +270,8 @@ Card.prototype.setAngle = function(angle){
 };
 
 //Устанавливает угол в зависимости от инерции карты, если shouldUpdateAngle == true
+//Взято отсюда:
+//https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53
 Card.prototype._updateAngle = function(){
 
 	var curTime = new Date().getTime(),
@@ -278,13 +280,12 @@ Card.prototype._updateAngle = function(){
 		distance = curX - this.lastX;
 
 	this.lastX = this.sprite.x;
-	
+
 	if(!this.shouldUpdateAngle){
 		if(this.inertiaHistory.length)
 			this.inertiaHistory = [];
 		return;
 	}
-
 
 	while(this.inertiaHistory.length > 0 && curTime - this.inertiaHistory[0][0] > 300) {
 		this.inertiaHistory.shift();
