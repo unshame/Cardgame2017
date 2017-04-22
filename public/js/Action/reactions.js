@@ -78,7 +78,7 @@ window.reactions = {
 	CARDS: function(action){
 
 		fieldManager.resetFields();
-		controller.reset();
+		cardControl.reset();
 		cardManager.reset();
 		cardManager.createCards(action.cards);
 

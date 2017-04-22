@@ -37,16 +37,17 @@ playState.update = function(){
 	if(!game.created)
 		return;
 
-	controller.update();
+	cardControl.update();
 	game.rope.update();
 	cardManager.update();
+	cursor.update();
 };
 
 playState.render = function(){
 	if(!game.created)
 		return;
 
-	controller.updateDebug();
+	cardControl.updateDebug();
 	fieldManager.updateDebug();
 	cardManager.updateDebug();
 };

@@ -1,18 +1,13 @@
 /*
- * Модуль, обрабатывающий взаимодействие игрока с игрой
- * На данный момент отвечает за перенос карт, отображение хвоста карты и курсора
+ * Модуль, отвечающий за перетаскивание карт
  */
 
-var Controller = function(isInDebugMode){
+var CardControl = function(isInDebugMode){
 
 	this.isInDebugMode = isInDebugMode || false;
 
 	this.card = null;
 	this.pointer = null;
-
-	this.cursor = game.add.sprite(0, 0, 'cursor_orange');
-	this.cursor.width = this.cursor.height = 32;
-	this.cursor.isInGame = true;
 
 	this.trail = game.add.emitter(0, 0);
 	this.trailDefaultBase = game.add.group();
@@ -28,13 +23,10 @@ var Controller = function(isInDebugMode){
 	this.cardMoveThreshold = 2;
 	this.cardMaxMoveAngle = 30;
 	this.inertiaHistory = [];
-
-	document.addEventListener('mouseleave', this.updateCursor.bind(this, false));
-	document.addEventListener('mouseenter', this.updateCursor.bind(this, true));
 };
 
 //Обрабатывает нажатие на карту
-Controller.prototype.cardClick = function(card, pointer){
+CardControl.prototype.cardClick = function(card, pointer){
 	if(pointer.button == 1 || pointer.button == 4)
 		console.log(card);
 
@@ -42,7 +34,7 @@ Controller.prototype.cardClick = function(card, pointer){
 		return;
 
 	if(this.isInDebugMode)
-		console.log('Controller: Clicked', card.id);
+		console.log('Card control: Clicked', card.id);
 
 	if(this.card){
 		this.cardPutDown();
@@ -53,12 +45,12 @@ Controller.prototype.cardClick = function(card, pointer){
 };
 
 //Обрабатывает поднятие кнопки после нажатия на карту
-Controller.prototype.cardUnclick = function(card){
+CardControl.prototype.cardUnclick = function(card){
 	if(!this.card || this.card != card)
 		return;
 
 	if(this.isInDebugMode)
-		console.log('Controller: Unclicked', card.id);
+		console.log('Card control: Unclicked', card.id);
 
 	if(!this.pointer.withinGame){
 		this.cardReturn();
@@ -69,9 +61,9 @@ Controller.prototype.cardUnclick = function(card){
 };
 
 //Поднимает карту
-Controller.prototype.cardPickup = function(card, pointer){
+CardControl.prototype.cardPickup = function(card, pointer){
 	if(!card){
-		console.warn('Controller: cardPickup called but no Card assigned.');
+		console.warn('Card control: cardPickup called but no Card assigned.');
 		return;
 	}
 
@@ -84,7 +76,7 @@ Controller.prototype.cardPickup = function(card, pointer){
 	}
 
 	if(this.isInDebugMode)
-		console.log('Controller: Picked up', this.card.id);
+		console.log('Card control: Picked up', this.card.id);
 
 	if(this.inertiaHistory.length)
 		this.inertiaHistory = [];
@@ -97,7 +89,7 @@ Controller.prototype.cardPickup = function(card, pointer){
 
 	this.trail.minParticleSpeed.setTo(-skinManager.skin.width, -skinManager.skin.height);
 	this.trail.maxParticleSpeed.setTo(skinManager.skin.width, skinManager.skin.height);
-	this.lastParticleTime = game.time.now;
+	this.lastParticleTime = game.time.time;
 
 	this.trail.makeParticles(this.card.skin.trailName, this.card.suit);
 
@@ -106,7 +98,7 @@ Controller.prototype.cardPickup = function(card, pointer){
 };
 
 //Устанавливает путь и время смещения карты к курсору
-Controller.prototype.cardSetPathToCursor = function(){
+CardControl.prototype.cardSetPathToCursor = function(){
 
 	if(this.card.mover){
 		this.card.mover.stop();
@@ -116,19 +108,19 @@ Controller.prototype.cardSetPathToCursor = function(){
 		x: this.pointer.x - this.card.base.x - this.card.sprite.x,
 		y: this.pointer.y - this.card.base.y - this.card.sprite.y
 	};
-	this.cardShiftEndTime = game.time.now + (this.cardShiftDuration/game.speed);
+	this.cardShiftEndTime = game.time.time + (this.cardShiftDuration/game.speed);
 };
 
 //Кладет карту
-Controller.prototype.cardPutDown = function(){
+CardControl.prototype.cardPutDown = function(){
 
 	if(!this.card){
-		console.warn('Controller: cardPutDown called but no Card assigned.');
+		console.warn('Card control: cardPutDown called but no Card assigned.');
 		return;
 	}
 
 	if(this.isInDebugMode)
-		console.log('Controller: Putting down', this.card.id);
+		console.log('Card control: Putting down', this.card.id);
 
 	var field = this.cardOnValidField();
 
@@ -141,10 +133,10 @@ Controller.prototype.cardPutDown = function(){
 };
 
 //Оставляет карту в позиции курсора
-Controller.prototype.cardRebaseAtPointer = function(newField){
+CardControl.prototype.cardRebaseAtPointer = function(newField){
 
 	if(!this.card){
-		console.warn('Controller: cardRebaseAtPointer called but no Card assigned.');
+		console.warn('Card control: cardRebaseAtPointer called but no Card assigned.');
 		return;
 	}
 
@@ -165,7 +157,7 @@ Controller.prototype.cardRebaseAtPointer = function(newField){
 	var y = this.card.base.y + this.card.sprite.y;
 	
 	if(this.isInDebugMode)
-		console.log('Controller: Rebasing', this.card.id, 'at', x, y);
+		console.log('Card control: Rebasing', this.card.id, 'at', x, y);
 
 	this.card.setBase(x, y);
 	this.card.setRelativePosition(0, 0);
@@ -189,15 +181,15 @@ Controller.prototype.cardRebaseAtPointer = function(newField){
 };
 
 //Возвращает карту на базу
-Controller.prototype.cardReturn = function(){
+CardControl.prototype.cardReturn = function(){
 
 	if(!this.card){
-		console.warn('Controller: cardReturn called but no Card assigned.');
+		console.warn('Card control: cardReturn called but no Card assigned.');
 		return;
 	}
 
 	if(this.isInDebugMode)
-		console.log('Controller: Returning', this.card.id, 'to base');
+		console.log('Card control: Returning', this.card.id, 'to base');
 
 	if(this.card.mover){
 		this.card.mover.stop();
@@ -225,7 +217,7 @@ Controller.prototype.cardReturn = function(){
 //БУЛЕВЫ ФУНКЦИИ
 
 //Проверка нажатия на базу карты
-Controller.prototype.cardClickedInbound = function(){
+CardControl.prototype.cardClickedInbound = function(){
 	var cond = 
 		this.pointer.x >= this.card.base.x - skinManager.skin.width / 2 &&
 		this.pointer.x <= this.card.base.x + skinManager.skin.width / 2 &&
@@ -238,7 +230,7 @@ Controller.prototype.cardClickedInbound = function(){
 //ХВОСТ КАРТЫ
 
 //Проверка корректности позиции карты
-Controller.prototype.cardOnValidField = function(){
+CardControl.prototype.cardOnValidField = function(){
 	if(!this.card.isPlayable)
 		return false;
 
@@ -249,19 +241,19 @@ Controller.prototype.cardOnValidField = function(){
 	}, this);
 	if(fields.length){
 		if(fields.length > 1)
-			console.warn('Controller: Card is over more than 1 valid field');
+			console.warn('Card control: Card is over more than 1 valid field');
 		return fields[0];
 	}
 };
 
 //Смещает хвост относительно базы карты
-Controller.prototype.cardShiftTrail = function(x, y){
+CardControl.prototype.cardShiftTrail = function(x, y){
 	this.trail.position.x += x;
 	this.trail.position.y += y;
 };
 
 //Создает хвост карты при движении
-Controller.prototype.cardSpawnTrail = function(curTime){
+CardControl.prototype.cardSpawnTrail = function(curTime){
 
 	var	delta = curTime - this.lastParticleTime;
 	if(this.lastParticleTime && delta < this.trail.interval)
@@ -292,7 +284,7 @@ Controller.prototype.cardSpawnTrail = function(curTime){
 };
 
 //Ресетит хвост карты
-Controller.prototype.cardResetTrail = function(soft){
+CardControl.prototype.cardResetTrail = function(soft){
 	this.trail.forEachAlive(function(p){
 		if(soft)
 			p.alpha = 0;
@@ -308,14 +300,14 @@ Controller.prototype.cardResetTrail = function(soft){
 //ТАЙМЕР НАЖАТИЯ
 
 //Запускает таймер клика по карте
-Controller.prototype.setCardClickTimer = function(){
+CardControl.prototype.setCardClickTimer = function(){
 	this.resetCardClickTimer();
 
 	this.cardClickTimer = game.time.events.add(this.cardClickMaxDelay, this.resetCardClickTimer, this);
 };
 
 //Обнуляет таймер клика по карте
-Controller.prototype.resetCardClickTimer = function(){
+CardControl.prototype.resetCardClickTimer = function(){
 	if(this.cardClickTimer){
 		game.time.events.remove(this.cardClickTimer);
 		this.cardClickTimer = null;
@@ -325,50 +317,8 @@ Controller.prototype.resetCardClickTimer = function(){
 
 //UPDATE, RESET
 
-//Обновляет курсор
-Controller.prototype.updateCursor = function(cursorIsInGame){
-	if(cursorIsInGame !== undefined)
-		this.cursor.isInGame = cursorIsInGame;
-	if((!this.cursor.isInGame || game.paused) && this.cursor.alive){
-		this.cursor.kill();
-		game.canvas.style.cursor = "default";
-	}
-	else if(this.cursor.isInGame && !game.paused && !this.cursor.alive){
-		this.cursor.reset();
-	}
-	if(!this.cursor.isInGame || game.paused)
-		return;
-	game.canvas.style.cursor = "none";
-	this.cursor.x = game.input.x;
-	this.cursor.y = game.input.y;
-	game.world.bringToTop(this.cursor);
-	if(this.card){
-		this.cursor.x -= this.cursor.width/2;
-		this.cursor.y -= this.cursor.height/2;
-		this.cursor.frame = 2;
-		return;
-	}
-	if(
-		game.skipButton && game.skipButton.input.pointerOver() ||
-		game.takeButton && game.takeButton.input.pointerOver()
-	){
-		this.cursor.frame = 1;
-		return;
-	}
-	for(var ci in game.cards){
-		if(!game.cards.hasOwnProperty(ci))
-			continue;
-		var card = game.cards[ci];
-		if(card.mouseIsOver() && card.isDraggable){
-			this.cursor.frame = 1;
-			return;
-		}
-	}
-	this.cursor.frame = 0;
-};
-
 //Обновление позиции карты и хвоста
-Controller.prototype.updateCard = function(){
+CardControl.prototype.updateCard = function(){
 	if(!this.card)
 		return;
 
@@ -384,7 +334,7 @@ Controller.prototype.updateCard = function(){
 		return;
 	}
 
-	var curTime = game.time.now;
+	var curTime = game.time.time;
 
 	this.updateCardPosition(curTime);
 	this.updateCardAngle(curTime);
@@ -392,7 +342,7 @@ Controller.prototype.updateCard = function(){
 };
 
 //Устанавливаем позицию карты и плавно передивгаем ее к курсору
-Controller.prototype.updateCardPosition = function(curTime){
+CardControl.prototype.updateCardPosition = function(curTime){
 	var sTime, sP, mP;
 	sTime = this.cardShiftEndTime - curTime;
 	if(sTime > 0){
@@ -414,7 +364,7 @@ Controller.prototype.updateCardPosition = function(curTime){
 //Устанавливает угол в зависимости от инерции карты
 //Взято отсюда:
 //https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53
-Controller.prototype.updateCardAngle = function(curTime){
+CardControl.prototype.updateCardAngle = function(curTime){
 
 	var maxAngle = this.cardMaxMoveAngle,
 		curX = this.card.sprite.x,
@@ -447,7 +397,7 @@ Controller.prototype.updateCardAngle = function(curTime){
 }
 
 //Обновление прозрачности партиклей хвоста
-Controller.prototype.updateTrail = function(){
+CardControl.prototype.updateTrail = function(){
 	if(!this.trail.countLiving() || this.trail.parent == this.trailDefaultBase)
 		return;
 	this.trail.forEachAlive(function(p){
@@ -456,17 +406,16 @@ Controller.prototype.updateTrail = function(){
 };
 
 //Обновление контроллера
-Controller.prototype.update = function(){
+CardControl.prototype.update = function(){
 	this.updateCard();
-	this.updateCursor();
 	this.updateTrail();
 };
 
 //Ресет модуля
-Controller.prototype.reset = function(reason){
+CardControl.prototype.reset = function(reason){
 
 	if(this.isInDebugMode)
-		console.log('Controller: Reset' + (reason ? ': ' + reason : ''));
+		console.log('Card control: Reset' + (reason ? ': ' + reason : ''));
 
 	this.cardResetTrail(true);
 	this.card = null;
@@ -477,7 +426,7 @@ Controller.prototype.reset = function(reason){
 //ДЕБАГ
 
 //Рисует дебаг хвоста
-Controller.prototype.updateDebug = function(){
+CardControl.prototype.updateDebug = function(){
 	if(!this.isInDebugMode)
 		return;
 
@@ -498,7 +447,7 @@ Controller.prototype.updateDebug = function(){
 	//Таймер клика
 	var time = (
 		this.cardClickTimer && 
-		this.cardClickTimer.timer.nextTick - game.time.now
+		this.cardClickTimer.timer.nextTick - game.time.time
 	) || 0;
 	game.debug.text(time + 'sec', x, y );
 
@@ -534,13 +483,13 @@ Controller.prototype.updateDebug = function(){
 };
 
 //Переключает дебаг
-Controller.prototype.toggleDebugMode = function(){
+CardControl.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	if(!this.isInDebugMode){
-		console.log('Controller: Debug mode OFF');
+		console.log('Card control: Debug mode OFF');
 		game.debug.reset();
 	}
 	else{
-		console.log('Controller: Debug mode ON');
+		console.log('Card control: Debug mode ON');
 	}
 };

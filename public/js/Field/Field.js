@@ -294,8 +294,8 @@ Field.prototype.queueCards = function(newCards, delay){
 
 		//Если карта переходит из поля, одну из карт которых перетаскивает игрок,
 		//возвращаем перетаскиваемую карту
-		if(controller.card && controller.card.field && controller.card.field == card.field)
-			controller.cardReturn();
+		if(cardControl.card && cardControl.card.field && cardControl.card.field == card.field)
+			cardControl.cardReturn();
 		this.queuedCards.push(card);
 		this.delays[card.id] = delay;
 		delay += this.delayTime;
@@ -486,8 +486,8 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 
 	//Проверка выделенной карты
 	if(
-		controller.card && 
-		controller.card != this.focusedCard
+		cardControl.card && 
+		cardControl.card != this.focusedCard
 	){
 		this.focusedCard = null;
 	}
@@ -529,8 +529,8 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 	}
 
 	//Поднимаем карту контроллера наверх
-	if(controller.card)
-		game.cardsGroup.bringToTop(controller.card.base);
+	if(cardControl.card)
+		game.cardsGroup.bringToTop(cardControl.card.base);
 
 
 	//Дебаг отображение активно используемого пространства
@@ -636,11 +636,11 @@ Field.prototype._moveCard = function(
 	card.rotateTo(angle, this.moveTime, delay);
 
 	//Запускаем перемещение карты
-	if(controller.card != card){
+	if(cardControl.card != card){
 		card.moveTo(x, y, this.moveTime, delay, false, true, bringUpOn);
 	}
 	else{
-		controller.cardShiftTrail(card.base.x - x, card.base.y - y);	
+		cardControl.cardShiftTrail(card.base.x - x, card.base.y - y);	
 		card.setBase(x, y);
 	}
 
@@ -770,7 +770,7 @@ Field.prototype.focusOffCard = function(card, forced){
 			!this.focusable ||
 			!this.cardIsInside(this.focusedCard, false) ||
 			card != this.focusedCard ||
-			~this.cards.indexOf(controller.card)
+			~this.cards.indexOf(cardControl.card)
 		)
 	)
 		return;

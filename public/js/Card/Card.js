@@ -234,8 +234,8 @@ Card.prototype.bringToTop = function(fixController){
 	if(fixController === undefined)
 		fixController = true;
 	game.cardsGroup.bringToTop(this.base);
-	if(fixController && controller.card)
-		game.cardsGroup.bringToTop(controller.card.base);
+	if(fixController && cardControl.card)
+		game.cardsGroup.bringToTop(cardControl.card.base);
 };
 
 //Запоминает id поля, в которое будет перемещена карта
@@ -311,8 +311,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	//Убираем хвост, т.к. он отображается только при перетаскивании карты игроком
 	//Хвост остается, если карта возвращается на базу
-	if(controller.trail.parent == this.base && shouldRebase)
-		controller.cardResetTrail(true);
+	if(cardControl.trail.parent == this.base && shouldRebase)
+		cardControl.cardResetTrail(true);
 
 	//Меняем позицию базы карты перед началом анимации
 	//и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась
@@ -529,12 +529,12 @@ Card.prototype._glowUpdatePosition = function(){
 
 //Вызывается при нажатии на карту
 Card.prototype._mouseDown = function(sprite, pointer){
-	controller.cardClick(this, pointer);
+	cardControl.cardClick(this, pointer);
 };
 
 //Вызывается при окончании нажатия на карту
 Card.prototype._mouseUp = function(sprite, pointer){
-	controller.cardUnclick(this, pointer);
+	cardControl.cardUnclick(this, pointer);
 };
 
 //Вызывается при наведении на карту

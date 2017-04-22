@@ -44,7 +44,7 @@ Game.prototype.initialize = function(){
 	Phaser.Canvas.setImageRenderingCrisp(game.canvas);
 
 	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
-	//this.stage.disableVisibilityChange  = true;	
+	this.stage.disableVisibilityChange  = true;	
 	
 	//Фон
 	this.background = this.add.group();
@@ -53,9 +53,10 @@ Game.prototype.initialize = function(){
 
 	window.grid = new Grid({debug: false});	
 	
-	window.cardManager = new CardManager();
+	window.cursor = new Cursor('cursor_orange');
 
-	window.controller = new Controller();
+	window.cardManager = new CardManager();
+	window.cardControl = new CardControl();
 
 	this.rope = new Rope();
 
@@ -199,8 +200,8 @@ Game.prototype.toggleDebugMode = function(){
 	if(grid.isInDebugMode != this.isInDebugMode)
 		grid.toggleDebugMode();
 
-	if(controller.isInDebugMode != this.isInDebugMode)
-		controller.toggleDebugMode();
+	if(cardControl.isInDebugMode != this.isInDebugMode)
+		cardControl.toggleDebugMode();
 
 	if(fieldManager.isInDebugMode != this.isInDebugMode)
 		fieldManager.toggleDebugMode();

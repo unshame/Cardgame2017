@@ -61,7 +61,7 @@ CardManager.prototype.update = function(){
 };
 
 CardManager.prototype.updateDebug = function(){
-	for(var ci in game.cards){
+	for(var ci in this.cards){
 		if(!this.cards.hasOwnProperty(ci))
 			continue;
 		this.cards[ci].updateDebug();
@@ -76,13 +76,25 @@ CardManager.prototype.toggleDebugMode = function(){
 	}
 };
 
+CardManager.prototype.mouseIsOverACard = function(){
+	for(var ci in this.cards){
+		if(!this.cards.hasOwnProperty(ci))
+			continue;
+		var card = this.cards[ci];
+		if(card.mouseIsOver() && card.isDraggable){
+			return true
+		}
+	}
+	return false;
+}
+
 //ТЕСТОВЫЕ ФУНКЦИИ
 
 //Party time
 CardManager.prototype.throwCardsStart = function(){
 
 	this.throwCardsStop();
-	
+
 	this.emitter = game.add.emitter(game.world.centerX, 200, 200);
 
 	var frames = [];

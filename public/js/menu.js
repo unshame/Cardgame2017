@@ -91,6 +91,7 @@ var Button = function(x, y, action, text, context, group){
 	this.style = { font: '20px Verdana', fill: '#000', align: 'center' };
 	this.text = game.add.text(this.centerX, this.centerY, text, this.style);
 	this.text.anchor.set(0.5, 0.5);
+	this.input.useHandCursor = false;
 	if(group){
 		group.add(this);
 		group.add(this.text);
