@@ -83,9 +83,12 @@ Controller.prototype.cardPickup = function(card, pointer){
 	if(this.isInDebugMode)
 		console.log('Controller: Picked up', this.card.id);
 
+	this.card.shouldUpdateAngle = true;
 	this.setCardClickTimer();
 	this.cardResetTrail();
 	this.card.base.addAt(this.trail, 0);
+	this.card.setAngle(0);
+
 	this.trail.minParticleSpeed.setTo(-skinManager.skin.width, -skinManager.skin.height);
 	this.trail.maxParticleSpeed.setTo(skinManager.skin.width, skinManager.skin.height);
 
@@ -106,7 +109,7 @@ Controller.prototype.cardSetPathToCursor = function(){
 		x: this.pointer.x - this.card.base.x - this.card.sprite.x,
 		y: this.pointer.y - this.card.base.y - this.card.sprite.y
 	};
-	this.cardShiftEndTime = new Date().getTime() + this.cardShiftDuration;
+	this.cardShiftEndTime = new Date().getTime() + (this.cardShiftDuration/game.speed);
 };
 
 //Кладет карту
@@ -144,6 +147,8 @@ Controller.prototype.cardRebaseAtPointer = function(newField){
 		this.cardReturn();
 		return;
 	}
+
+	this.card.shouldUpdateAngle = false;
 
 	this.trail.position.x -= this.card.sprite.x; 
 	this.trail.position.y -= this.card.sprite.y; 
@@ -190,6 +195,8 @@ Controller.prototype.cardReturn = function(){
 		this.card.mover.stop();
 		this.card.mover = null;
 	}
+
+	this.card.shouldUpdateAngle = false;
 
 	var card = this.card;
 
@@ -362,13 +369,15 @@ Controller.prototype.updateCard = function(){
 		return;
 	}
 
+	var curTime = new Date().getTime();
+
 	//Устанавливаем позицию карты и плавно передивгаем ее к курсору
 	var sTime, sP, mP;
-	sTime = this.cardShiftEndTime - new Date().getTime();
+	sTime = this.cardShiftEndTime - curTime;
 	if(sTime > 0){
 		sP = {
-			x: Math.round(this.cardShiftPosition.x / this.cardShiftDuration * sTime), 
-			y: Math.round(this.cardShiftPosition.y / this.cardShiftDuration * sTime)
+			x: Math.round(this.cardShiftPosition.x / (this.cardShiftDuration/game.speed) * sTime), 
+			y: Math.round(this.cardShiftPosition.y / (this.cardShiftDuration/game.speed) * sTime)
 		};
 	}
 	else{

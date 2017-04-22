@@ -46,6 +46,12 @@ var Card = function (options) {
 	this.base.add(this.sprite);
 	game.cardsGroup.add(this.base);  
 
+	this.inertiaHistory = [];
+	this.shouldUpdateAngle = false;
+	this.lastX = 0;
+	this.maxMoveAngle = this.options.maxMoveAngle;
+	this.moveAngleDeadZone = this.options.moveAngleDeadZone;
+
 	//Tweens
 	this.mover = null;
 	this.rotator = null;
@@ -74,6 +80,8 @@ Card.prototype._getDefaultOptions = function(){
 		value:0,
 		suit:null,
 		flipTime: 150,
+		maxMoveAngle:30,
+		moveAngleDeadZone:2,
 		skin:skinManager.skin,
 		fieldId: 'DECK',
 		debug: false
@@ -258,8 +266,50 @@ Card.prototype.setAngle = function(angle){
 	}
 
 	this.sprite.angle = angle;
-	this.update();
+	this._glowUpdatePosition();
 };
+
+//Устанавливает угол в зависимости от инерции карты, если shouldUpdateAngle == true
+Card.prototype._updateAngle = function(){
+
+	var curTime = new Date().getTime(),
+		maxAngle = this.maxMoveAngle,
+		curX = this.sprite.x,
+		distance = curX - this.lastX;
+
+	this.lastX = this.sprite.x;
+	
+	if(!this.shouldUpdateAngle){
+		if(this.inertiaHistory.length)
+			this.inertiaHistory = [];
+		return;
+	}
+
+
+	while(this.inertiaHistory.length > 0 && curTime - this.inertiaHistory[0][0] > 300) {
+		this.inertiaHistory.shift();
+	}
+
+	this.inertiaHistory.push([curTime, distance]);
+
+	if(this.inertiaHistory.length){
+		var totalDistance = 0;
+		for(var i = 0; i < this.inertiaHistory.length; i++){
+			totalDistance += this.inertiaHistory[i][1];
+		}
+		var angle = totalDistance / this.inertiaHistory.length / 1.25;
+		if(angle != 0){
+				angle -= angle > 0 ? Math.min(angle, this.moveAngleDeadZone) : Math.max(angle, -this.moveAngleDeadZone);
+		}
+		if(angle > maxAngle) {
+		  angle = maxAngle;
+		}
+		if(angle < -maxAngle) {
+		  angle = -maxAngle;
+		}
+		this.setAngle(angle);
+	}	
+}
 
 //ПЕРЕДВИЖЕНИЕ
 
@@ -382,7 +432,7 @@ Card.prototype.returnToBase = function(time, delay){
 };
 
 //Поворачивает карту 
-Card.prototype.rotateTo = function(angle, time, delay){
+Card.prototype.rotateTo = function(angle, time, delay, easing){
 
 	//Останавливаем твин, если он есть
 	if(this.rotator){
@@ -422,7 +472,7 @@ Card.prototype.rotateTo = function(angle, time, delay){
 				angle: angle
 			},
 			time/game.speed || 0,
-			Phaser.Easing.Quadratic.Out,
+			easing || Phaser.Easing.Quadratic.Out,
 			true,
 			delay/game.speed || 0
 		);
@@ -584,6 +634,7 @@ Card.prototype.reset = function(){
 //Обновление карты
 //В будущем возможно будет делать что-то еще
 Card.prototype.update = function() {
+	this._updateAngle();
 	this._glowUpdatePosition();
 };
 
