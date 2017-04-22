@@ -60,6 +60,8 @@ Game.prototype.initialize = function(){
 	this.rope = new Rope();
 
 	//Кнопки (временные)
+	this.buttons = this.add.group();
+	
 	var buttonPosition = grid.at(
 		Math.floor(grid.numCols/2),
 		grid.numRows - grid.density - 2,
@@ -76,23 +78,29 @@ Game.prototype.initialize = function(){
 		buttonPosition.x,
 		buttonPosition.y,
 		function(){sendRealAction('SKIP');},
-		'Skip'
+		'Skip',
+		null,
+		this.buttons
 	);
 	this.takeButton = new Button(
 		buttonPosition.x,
 		buttonPosition.y,
 		function(){sendRealAction('TAKE');},
-		'Take'
+		'Take',
+		null,
+		this.buttons
 	);
 	this.debugButton = new Button(
 		debugButtonPosition.x,
 		debugButtonPosition.y,
 		this.toggleDebugMode,
 		'Debug',
-		this
+		this,
+		this.buttons
 	);
 	this.skipButton.hide();
 	this.takeButton.hide();
+	this.world.setChildIndex(this.buttons, 1);
 
 	/*this.menu = new Menu(this.screenWidth/2,this.screenHeight/2);
 	this.menu.addButton(function(){	},'SinglePlayer');
