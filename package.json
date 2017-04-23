@@ -7,7 +7,8 @@
   },
   "main": "server.js",
   "scripts": {
-    "server": "node server.js"
+    "server": "node server.js",
+    "report": "plato -d report/client ./public/js/* ./public/js/**/* && plato -d report/server ./serverjs/* ./serverjs/**/*"
   },
   "dependencies": {
     "engine.io": "2.0.1",

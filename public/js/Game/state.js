@@ -26,7 +26,6 @@ playState.preload = function(){
 
     game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
-
 	//Скины
 	window.skinManager = new SkinManager('modern');
 	skinManager.addSkins(window.skins);
