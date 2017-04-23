@@ -160,6 +160,7 @@ CardControl.prototype.cardRebaseAtPointer = function(newField){
 		console.log('Card control: Rebasing', this.card.id, 'at', x, y);
 
 	this.card.setBase(x, y);
+	this.card.rotateTo(0, this.card.flipTime, 0);
 	this.card.setRelativePosition(0, 0);
 	this.card.setDraggability(false);
 
