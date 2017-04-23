@@ -52,6 +52,32 @@ CardManager.prototype.reset = function(){
 	game.cards = this.cards;
 };
 
+CardManager.prototype.mouseIsOverACard = function(){
+	for(var ci in this.cards){
+		if(!this.cards.hasOwnProperty(ci))
+			continue;
+		var card = this.cards[ci];
+		if(card.mouseIsOver() && card.isDraggable){
+			return true
+		}
+	}
+	return false;
+};
+
+CardManager.prototype.resetRaised = function(){
+	var raised = false
+	for(var ci in this.cards){
+		var card = this.cards[ci]; 
+		if(card.raised){
+			card.raised = false;
+			raised = true;
+		}
+	}
+	if(!raised)
+		return;
+	fieldManager.placeCards();
+};
+
 CardManager.prototype.update = function(){
 	for(var ci in this.cards){
 		if(!this.cards.hasOwnProperty(ci))
@@ -75,18 +101,6 @@ CardManager.prototype.toggleDebugMode = function(){
 			this.cards[ci].isInDebugMode = this.isInDebugMode;
 	}
 };
-
-CardManager.prototype.mouseIsOverACard = function(){
-	for(var ci in this.cards){
-		if(!this.cards.hasOwnProperty(ci))
-			continue;
-		var card = this.cards[ci];
-		if(card.mouseIsOver() && card.isDraggable){
-			return true
-		}
-	}
-	return false;
-}
 
 //ТЕСТОВЫЕ ФУНКЦИИ
 

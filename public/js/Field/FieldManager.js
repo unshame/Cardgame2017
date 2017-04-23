@@ -60,7 +60,7 @@ FieldManager.prototype.queueCards = function(newCards){
  * 		[value]
  * } 
  */
-FieldManager.prototype.placeCards = function(field, newCards, noDelay){
+FieldManager.prototype.moveCards = function(field, newCards, noDelay){
 	if(!newCards.length)
 		return 0;
 
@@ -110,6 +110,13 @@ FieldManager.prototype.removeMarkedCards = function(){
 			field.removeCards(cards);
 			this.cardsToRemove[si] = [];
 		}
+	});
+};
+
+//Заставляет каждое поле разместить все карты
+FieldManager.prototype.placeCards = function(){
+	this.forEachField(function(field){
+		field.placeCards();
 	});
 };
 

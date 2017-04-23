@@ -138,7 +138,7 @@ window.reactions = {
 			});
 		}
 		var field = fieldManager.fields[action.pid];
-		delay = fieldManager.placeCards(field, cards, true);
+		delay = fieldManager.moveCards(field, cards, true);
 		return delay;
 	},
 
@@ -158,7 +158,7 @@ window.reactions = {
 			value: action.value
 		};
 		var field = fieldManager.fields[action.field];
-		delay = fieldManager.placeCards(field, [card]);
+		delay = fieldManager.moveCards(field, [card]);
 		return delay;
 	},
 
@@ -177,7 +177,7 @@ window.reactions = {
 			});
 		}
 		var field = fieldManager.fields.DISCARD_PILE;
-		delay = fieldManager.placeCards(field, cards);
+		delay = fieldManager.moveCards(field, cards);
 		return delay;
 	},
 

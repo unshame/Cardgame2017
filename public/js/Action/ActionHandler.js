@@ -37,6 +37,8 @@ ActionHandler.prototype.executeAction = function(action){
 		field.cards[ci].setPlayability(false);
 	}
 
+	cardManager.resetRaised();
+
 	var react = this.reactions[action.type],
 		delay = 0;
 	if(!react){
