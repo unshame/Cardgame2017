@@ -44,7 +44,7 @@ Game.prototype.initialize = function(){
 	//Phaser.Canvas.setImageRenderingCrisp(game.canvas);
 
 	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
-	//this.stage.disableVisibilityChange  = true;	
+	this.stage.disableVisibilityChange  = true;	
 	
 	//Фон
 	this.background = this.add.group();

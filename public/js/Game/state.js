@@ -49,6 +49,9 @@ playState.render = function(){
 	if(!game.created)
 		return;
 
+	if(game.stage.disableVisibilityChange && game.paused)
+		game.paused = false;
+
 	cardControl.updateDebug();
 	fieldManager.updateDebug();
 	cardManager.updateDebug();
