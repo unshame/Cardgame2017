@@ -23,8 +23,11 @@ Cursor.prototype.constructor = Cursor;
 //Обновление контроллера
 Cursor.prototype.update = function(cursorIsInGame){
 
+	if(!Phaser.Device.desktop)
+		return;
+
 	this.initialized = this.unitialized || (game.input.x != 0 || game.input.y != 0);
-	
+
 	if(cursorIsInGame !== undefined)
 		this.isInGame = cursorIsInGame;
 	if((!this.isInGame || game.paused || !this.initialized) && this.alive){
@@ -47,8 +50,7 @@ Cursor.prototype.update = function(cursorIsInGame){
 		return;
 	}
 	if(
-		game.skipButton && game.skipButton.input.pointerOver() ||
-		game.takeButton && game.takeButton.input.pointerOver() ||
+		game.actionButton && game.actionButton.input.pointerOver() ||
 		game.debugButton && game.debugButton.input.pointerOver()
 	){
 		this.frame = 1;

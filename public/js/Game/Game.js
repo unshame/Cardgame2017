@@ -41,10 +41,10 @@ Game.prototype.initialize = function(){
 	this.canvas.oncontextmenu = function (e) {e.preventDefault();};
 
 	//Антиалиасинг
-	Phaser.Canvas.setImageRenderingCrisp(game.canvas);
+	//Phaser.Canvas.setImageRenderingCrisp(game.canvas);
 
 	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
-	this.stage.disableVisibilityChange  = true;	
+	//this.stage.disableVisibilityChange  = true;	
 	
 	//Фон
 	this.background = this.add.group();
@@ -75,18 +75,10 @@ Game.prototype.initialize = function(){
 		-95,
 		-25
 	);
-	this.skipButton = new Button(
+	this.actionButton = new Button(
 		buttonPosition.x,
 		buttonPosition.y,
-		function(){sendRealAction('SKIP');},
-		'Skip',
-		null,
-		this.buttons
-	);
-	this.takeButton = new Button(
-		buttonPosition.x,
-		buttonPosition.y,
-		function(){sendRealAction('TAKE');},
+		function(){sendRealAction(actionHandler.realAction);},
 		'Take',
 		null,
 		this.buttons
@@ -99,8 +91,7 @@ Game.prototype.initialize = function(){
 		this,
 		this.buttons
 	);
-	this.skipButton.hide();
-	this.takeButton.hide();
+	this.actionButton.disable();
 	this.world.setChildIndex(this.buttons, 1);
 
 	/*this.menu = new Menu(this.screenWidth/2,this.screenHeight/2);
@@ -153,11 +144,7 @@ Game.prototype.updateAppDimensionsListener = function(){
 			-95,
 			-25
 		);
-		this.skipButton.reposition(
-			buttonPosition.x,
-			buttonPosition.y
-		);
-		this.takeButton.reposition(
+		this.actionButton.reposition(
 			buttonPosition.x,
 			buttonPosition.y
 		);
@@ -185,10 +172,20 @@ Game.prototype.updateAppDimensions = function(){
 
 Game.prototype.newPixel = function(){
 	var pixel = this.make.graphics(0, 0);
-	pixel.beginFill(game.colors.white);
+	pixel.beginFill(this.colors.white);
 	pixel.drawRect(0, 0, 1, 1);
 	pixel.endFill();
 	return pixel;
+};
+
+Game.prototype.loadButtonText = function(){
+	if(!this.created)
+		return;
+	for(var i = 0; i < this.buttons.children.length; i++){
+		var button = this.buttons.children[i];
+		if(typeof button.text == 'object')
+			button.text.setText(button.text.text);
+	}
 };
 
 Game.prototype.toggleDebugMode = function(){

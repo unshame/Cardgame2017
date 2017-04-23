@@ -19,10 +19,13 @@ playState.preload = function(){
 	game.load.image('testParticle', 'assets/test_particle.png');
 
 	//Кнопки
-	game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 3);
+	game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 49, 4);
 
 	game.load.spritesheet('cursor_yellow', 'assets/cursors/yellow.png', 128, 128, 3);
 	game.load.spritesheet('cursor_orange', 'assets/cursors/orange.png', 128, 128, 3);
+
+    game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+
 
 	//Скины
 	window.skinManager = new SkinManager('modern');
