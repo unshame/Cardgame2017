@@ -163,6 +163,7 @@ CardControl.prototype.cardRebaseAtPointer = function(newField){
 	this.card.rotateTo(0, this.card.flipTime, 0);
 	this.card.setRelativePosition(0, 0);
 	this.card.setDraggability(false);
+	this.card.marked = true;
 
 	fieldManager.forEachField(function(field, si){
 		field.setHighlight(false);

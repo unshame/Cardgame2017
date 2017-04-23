@@ -58,6 +58,7 @@ var Card = function (options) {
 	this.suit = this.options.suit;
 	this.value = this.options.value;	
 	this.valueChanged = false;
+	this.marked = false;
 	this.flipTime = this.options.flipTime;
 
 	//Skin
@@ -170,6 +171,8 @@ Card.prototype.setValue = function(suit, value, animate){
 
 //Устанавливает перетаскиваемость карты
 Card.prototype.setDraggability = function(draggable){	
+	if(this.marked)
+		return;
 	this.isDraggable = draggable;
 };
 
@@ -275,6 +278,8 @@ Card.prototype.setAngle = function(angle){
 */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn){
 
+	if(this.marked)
+		return;
 
 	if(relativeToBase === undefined)
 		relativeToBase = false;

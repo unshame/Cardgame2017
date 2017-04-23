@@ -34,6 +34,7 @@ FieldManager.prototype.queueCards = function(newCards){
 		var c = newCards[ci];
 		var card = game.cards[c.cid];
 		if(card){
+			card.marked = false;
 			card.presetValue(c.suit, c.value);		
 			card.presetField(c.field || c.pid);
 		}
@@ -71,6 +72,7 @@ FieldManager.prototype.placeCards = function(field, newCards, noDelay){
 			card = game.cards[cid];
 		
 		if(card){
+			card.marked = false;
 			card.presetValue(suit, value);
 			card.presetField(field.id);
 			card.field && card.field.removeCard(card);
