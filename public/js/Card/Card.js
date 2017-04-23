@@ -108,7 +108,7 @@ Card.prototype.presetValue = function(suit, value){
 };
 
 //Устанавливает заданные ранее значения и переворачивает карту
-Card.prototype.updateValue = function(){
+Card.prototype._updateValue = function(){
 	if(!this.valueChanged)
 		return;
 
@@ -140,7 +140,6 @@ Card.prototype.updateValue = function(){
 		}, this);
 	}
 	this.flipper.start();
-
 };
 
 //Устанавливает значение карты сразу, с анимацией или без
@@ -152,9 +151,9 @@ Card.prototype.setValue = function(suit, value, animate){
 	if(animate === undefined)
 		animate = true;
 
-	if(animate){
+	if(animate && !game.paused){
 		this.presetValue(suit, value);
-		this.updateValue();
+		this._updateValue();
 	}
 	else if(suit === null){
 		this.suit = null;
@@ -166,7 +165,6 @@ Card.prototype.setValue = function(suit, value, animate){
 		this.value = value;
 		this.sprite.frame =  this.skin.firstValueFrame + this.suit*13 + this.value - 2;
 	}		
-
 };
 
 //Устанавливает перетаскиваемость карты
@@ -185,7 +183,6 @@ Card.prototype.setPlayability = function(playable, tint){
 		this._glowStop();
 	}
 	this.isPlayable = playable;
-
 };
 
 
@@ -254,7 +251,7 @@ Card.prototype.bringToTop = function(fixController){
 //Устанавливает перетаскиваемость
 Card.prototype.presetField = function(fieldId){
 	this.fieldId = fieldId;
-	 if(fieldId == game.pid){
+	if(fieldId == game.pid){
 		this.setDraggability(true);
 	}
 	else{
@@ -344,7 +341,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	//Создаем и запускаем твин или перемещаем карту если игра остановлена
 	if(game.paused){
-		this.updateValue();
+		this._updateValue();
 		this.setRelativePosition(moveX, moveY);
 		if(this.mover){
 			this.mover.stop();
@@ -378,7 +375,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	//Переворачиваем карту, когда начинается движение
 	this.mover.onStart.addOnce(function(){
-		this.updateValue();
+		this._updateValue();
 		if(this.bringToTopOn == 'start')
 			this.bringToTop();
 	}, this);
@@ -393,7 +390,6 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 				this.field.zAlignCards(true);
 		}
 	}, this);
-
 };
 
 //Плавно возвращает карту на базу
