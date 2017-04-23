@@ -62,30 +62,29 @@ Game.prototype.initialize = function(){
 
 	//Кнопки (временные)
 	this.buttons = this.add.group();
-	
-	var buttonPosition = grid.at(
-		Math.floor(grid.numCols/2),
-		grid.numRows - grid.density - 2,
-		-95,
-		-25
-	),
-	debugButtonPosition = grid.at(
-		grid.numCols - grid.density*1.5 - 1,
-		grid.numRows - grid.density - 2,
-		-95,
-		-25
-	);
 	this.actionButton = new Button(
-		buttonPosition.x,
-		buttonPosition.y,
+		function(){
+			return grid.at(
+				Math.floor(grid.numCols/2),
+				grid.numRows - grid.density - 2,
+				-95,
+				-25
+			);
+		},
 		function(){sendRealAction(actionHandler.realAction);},
 		'Take',
 		null,
 		this.buttons
 	);
 	this.debugButton = new Button(
-		debugButtonPosition.x,
-		debugButtonPosition.y,
+		function(){
+			return grid.at(
+				grid.numCols - grid.density*1.5 - 1,
+				grid.numRows - grid.density - 2,
+				-95,
+				-25
+			);
+		},
 		this.toggleDebugMode,
 		'Debug',
 		this,
@@ -132,26 +131,8 @@ Game.prototype.updateAppDimensionsListener = function(){
 		this.rope.maxHeight = this.rope.sprite.y = this.screenHeight;
 
 		//Кнопки
-		var buttonPosition = grid.at(
-			Math.floor(grid.numCols/2),
-			grid.numRows - grid.density - 2,
-			-95,
-			-25
-		),
-		debugButtonPosition = grid.at(
-			grid.numCols - grid.density,
-			grid.numRows - grid.density - 2,
-			-95,
-			-25
-		);
-		this.actionButton.reposition(
-			buttonPosition.x,
-			buttonPosition.y
-		);
-		this.debugButton.reposition(
-			debugButtonPosition.x,
-			debugButtonPosition.y
-		);
+		this.actionButton.updatePosition();
+		this.debugButton.updatePosition();
 		//this.menu.update();
 	}
 

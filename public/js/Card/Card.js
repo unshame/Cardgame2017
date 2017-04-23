@@ -192,9 +192,12 @@ Card.prototype.setPlayability = function(playable, tint){
 //ПОЗИЦИОНИРОВАНИЕ
 
 //Устанавливает абсолютную позицию карты
-Card.prototype.setPosition = function(x, y){
+Card.prototype.setPosition = function(x, y, resetMover){
 
-	if(this.mover){
+	if(typeof resetMover == 'undefined')
+		resetMover = true;
+
+	if(this.mover && resetMover){
 		this.mover.stop();
 		this.mover = null;
 	}
@@ -205,9 +208,12 @@ Card.prototype.setPosition = function(x, y){
 };
 
 //Устанавливает положение карты по отношению к базе карты
-Card.prototype.setRelativePosition = function(x, y){
+Card.prototype.setRelativePosition = function(x, y, resetMover){
 
-	if(this.mover){
+	if(typeof resetMover == 'undefined')
+		resetMover = true;
+
+	if(this.mover && resetMover){
 		this.mover.stop();
 		this.mover = null;
 	}
@@ -218,9 +224,12 @@ Card.prototype.setRelativePosition = function(x, y){
 };
 
 //Устанавливает позицию базы карты
-Card.prototype.setBase = function(x, y){
+Card.prototype.setBase = function(x, y, resetMover){
 
-	if(this.mover){
+	if(typeof resetMover == 'undefined')
+		resetMover = true;
+
+	if(this.mover && resetMover){
 		this.mover.stop();
 		this.mover = null;
 	}
@@ -276,7 +285,7 @@ Card.prototype.setAngle = function(angle){
  * Если база не изменилась, то эта переменная всегда будет false
  * @bringUpOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
 */
-Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn){
+Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn, easing){
 
 	if(this.marked)
 		return;
@@ -289,9 +298,6 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		bringToTopOn = 'init';
 
 	this.bringToTopOn = bringToTopOn;
-
-	if(game.paused)
-		this.updateValue();
 
 	if(this.bringToTopOn == 'init' || game.paused && this.bringToTopOn != 'never')
 		this.bringToTop();
@@ -327,8 +333,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		moveX = moveY = 0;
 		var newX = this.sprite.x - (newBaseX - this.base.x);
 		var newY = this.sprite.y - (newBaseY - this.base.y);
-		this.setBase(newBaseX, newBaseY);
-		this.setRelativePosition(newX, newY);
+		this.setBase(newBaseX, newBaseY, false);
+		this.setRelativePosition(newX, newY, false);
 	}
 	else{
 		//Если база остается прежней, то двигаем карту к нужной позиции
@@ -338,46 +344,55 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	//Создаем и запускаем твин или перемещаем карту если игра остановлена
 	if(game.paused){
+		this.updateValue();
 		this.setRelativePosition(moveX, moveY);
+		if(this.mover){
+			this.mover.stop();
+			this.mover = null;
+		}
+		return;
 	}
-	else if(this.mover && !delay){
-		this.mover.updateTweenData('x', moveX, -1);
-		this.mover.updateTweenData('y', moveY, -1);
-		this.mover.updateTweenData('duration', time/game.speed, -1);
+
+	//Уменьшаем время движения, если твин уже в процессе, чтобы уменьшить заторможенность карт,
+	//когда они несколько раз меняют направление движения (игрок проносит курсор над рукой)
+	//Ограничиваем минимальное время половиной заданного, чтобы карты резко не прыгали
+	if(this.mover && !delay){
+		var moverData = this.mover.timeline[this.mover.current];
+		time = Math.max(moverData.duration - moverData.dt*game.speed, time/2);
+	}
+
+	//Останавливаем существующий твин и запускаем новый
+	if(this.mover)
+		this.mover.stop();
+	this.mover = game.add.tween(this.sprite);
+	this.mover.to(
+		{
+			x: moveX,
+			y: moveY
+		},
+		time/game.speed || 0,
+		easing || Phaser.Easing.Quadratic.Out,
+		true,
+		delay/game.speed || 0
+	);
+
+	//Переворачиваем карту, когда начинается движение
+	this.mover.onStart.addOnce(function(){
 		this.updateValue();
 		if(this.bringToTopOn == 'start')
 			this.bringToTop();
-	}
-	else{
-		if(this.mover)
-			this.mover.stop();
-		this.mover = game.add.tween(this.sprite);
-		this.mover.to(
-			{
-				x: moveX,
-				y: moveY
-			},
-			time/game.speed || 0,
-			Phaser.Easing.Quadratic.Out,
-			true,
-			delay/game.speed || 0
-		);
-		this.mover.onStart.addOnce(function(){
-			this.updateValue();
-			if(this.bringToTopOn == 'start')
+	}, this);
+
+	//Ресет твина по окончанию
+	this.mover.onComplete.addOnce(function(){
+		this.mover = null;
+		if(this.bringToTopOn == 'end' || this.bringToTopOn == 'endAll'){
+			if(!this.field || this.bringToTopOn == 'end')
 				this.bringToTop();
-		}, this);
-		//Ресет твина по окончанию
-		this.mover.onComplete.addOnce(function(){
-			this.mover = null;
-			if(this.bringToTopOn == 'end' || this.bringToTopOn == 'endAll'){
-				if(!this.field || this.bringToTopOn == 'end')
-					this.bringToTop();
-				else
-					this.field.zAlignCards(true);
-			}
-		}, this);
-	}
+			else
+				this.field.zAlignCards(true);
+		}
+	}, this);
 
 };
 
