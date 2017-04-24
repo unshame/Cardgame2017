@@ -109,8 +109,14 @@ Game.prototype.initialize = function(){
 	
 	/*this.onPause.add();
 	this.onResume.add(function(){});
-	this.onBlur.add(function(){console.log('blured')});
-	this.onFocus.add(function(){console.log('focused')});*/
+	this.onBlur.add(function(){
+		console.log('blurred')
+
+	});
+	this.onFocus.add(function(){
+		console.log('focused')
+		fieldManager.placeCards();
+	});*/
 
 	document.getElementById('loading').style.display = 'none';
 	this.created = true;

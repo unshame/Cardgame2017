@@ -114,9 +114,9 @@ FieldManager.prototype.removeMarkedCards = function(){
 };
 
 //Заставляет каждое поле разместить все карты
-FieldManager.prototype.placeCards = function(){
+FieldManager.prototype.placeCards = function(bringToTopOn, noDelay){
 	this.forEachField(function(field){
-		field.placeCards();
+		field.placeCards(null, bringToTopOn, noDelay);
 	});
 };
 
