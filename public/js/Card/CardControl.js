@@ -222,11 +222,13 @@ CardControl.prototype.cardReturn = function(){
 
 //Проверка нажатия на базу карты
 CardControl.prototype.cardPointerInbound = function(){
-	var cond = 
-		this.pointer.x >= this.card.base.x - skinManager.skin.width / 2 &&
-		this.pointer.x <= this.card.base.x + skinManager.skin.width / 2 &&
-		this.pointer.y >= this.card.base.y - skinManager.skin.height / 2 &&
-		this.pointer.y <= this.card.base.y + skinManager.skin.height / 2;
+	var width = this.card.field ? skinManager.skin.width*(1 + this.card.field.focusedScaleDiff) : skinManager.skin.width,
+		height = this.card.field ? skinManager.skin.height*(1 + this.card.field.focusedScaleDiff) : skinManager.skin.height,
+		cond = 
+			this.pointer.x >= this.card.base.x - width / 2 &&
+			this.pointer.x <= this.card.base.x + width / 2 &&
+			this.pointer.y >= this.card.base.y - height / 2 &&
+			this.pointer.y <= this.card.base.y + height / 2;
 	return cond;
 };
 
