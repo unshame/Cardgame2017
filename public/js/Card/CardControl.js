@@ -55,7 +55,7 @@ CardControl.prototype.cardUnclick = function(card){
 	if(!this.pointer.withinGame){
 		this.cardReturn();
 	}
-	else if(!this.cardClickedInbound() || !this.cardClickTimer || !this.pointer.isMouse){
+	else if(!this.cardPointerInbound() || !this.cardClickTimer || !this.pointer.isMouse){
 		this.cardPutDown();
 	}
 };
@@ -70,7 +70,7 @@ CardControl.prototype.cardPickup = function(card, pointer){
 	this.card = card;
 	this.pointer = pointer;
 	
-	if(!this.cardClickedInbound() || (this.pointer.isMouse && !this.pointer.leftButton.isDown)){
+	if(!this.cardPointerInbound() || (this.pointer.isMouse && !this.pointer.leftButton.isDown)){
 		this.reset('clicked out of bounds or wrong mouse button');
 		return;
 	}
@@ -202,11 +202,13 @@ CardControl.prototype.cardReturn = function(){
 		this.inertiaHistory = [];
 
 	var card = this.card;
+	var stillInbound = this.cardPointerInbound();
 
 	this.card = null;
 	this.pointer = null;
 	if(card.field){
-		card.field.focusedCard = null;
+		if(!stillInbound)
+			card.field.focusedCard = null;
 		card.field.placeCard(card, 'end', true);
 		//card.field.setUninteractibleTimer(card.field.moveTime);
 	}
@@ -219,7 +221,7 @@ CardControl.prototype.cardReturn = function(){
 //БУЛЕВЫ ФУНКЦИИ
 
 //Проверка нажатия на базу карты
-CardControl.prototype.cardClickedInbound = function(){
+CardControl.prototype.cardPointerInbound = function(){
 	var cond = 
 		this.pointer.x >= this.card.base.x - skinManager.skin.width / 2 &&
 		this.pointer.x <= this.card.base.x + skinManager.skin.width / 2 &&
