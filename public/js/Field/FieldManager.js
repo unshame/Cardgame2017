@@ -120,6 +120,18 @@ FieldManager.prototype.placeCards = function(bringToTopOn, noDelay){
 	});
 };
 
+FieldManager.prototype.rotateCards = function(){
+	this.forEachField(function(field){
+		field.rotateCards();
+	});
+};
+
+FieldManager.prototype.zAlignCards = function(){
+	this.forEachField(function(field){
+		field.zAlignCards();
+	});
+};
+
 //Выполняет размещение очередей карт каждого поля
 FieldManager.prototype.placeQueuedCards = function(){
 	this.forEachField(function(field){

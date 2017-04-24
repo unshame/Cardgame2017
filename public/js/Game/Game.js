@@ -35,6 +35,7 @@ var Game = function(){
 Game.prototype = Object.create(Phaser.Game.prototype);
 Game.prototype.constructor = Game;
 
+//Инициализация игры
 Game.prototype.initialize = function(){
 	if(this.created)
 		return;
@@ -112,16 +113,15 @@ Game.prototype.initialize = function(){
 	this.onBlur.add(function(){
 		console.log('blurred')
 
-	});
-	this.onFocus.add(function(){
-		console.log('focused')
-		fieldManager.placeCards();
-	});*/
+	});*/	
 
 	document.getElementById('loading').style.display = 'none';
 	this.created = true;
+
+	this.addVisibilityChangeListener();
 };
 
+//Выполняется по окончанию throttle'a изменения размера экрана
 Game.prototype.updateAppDimensionsListener = function(){
 	this.screenWidth = window.innerWidth;
 	this.screenHeight = window.innerHeight;
@@ -148,6 +148,7 @@ Game.prototype.updateAppDimensionsListener = function(){
 	this.dimensionsUpdateTimeout = null;
 };
 
+//Выполняется при изменении размера экрана
 Game.prototype.updateAppDimensions = function(){
 	if(this.dimensionsUpdateTimeout){
 		clearTimeout(this.dimensionsUpdateTimeout);
@@ -159,6 +160,50 @@ Game.prototype.updateAppDimensions = function(){
 
 };
 
+//Выполняется, когда вкладка переходит на задний/передний план
+Game.prototype.visibilityChangeListener = function(){
+	if (!document[this.hiddenValue]) {
+
+		//Снимаем игру с паузы
+		this.paused = false;
+		if(this.pauseTimeout){
+			clearTimeout(this.pauseTimeout);
+			this.pauseTimeout = null;
+		}
+
+		//Ждем секунду, прежде чем откорректировать элементы игры, которые могли оказаться в неправильном положении
+		//Это делается, чтобы браузер не пропустил requireAnimationFrames движка, или что-то еще, что может пойти не так
+		setTimeout(function(){
+			actionHandler.possibleActions && actionHandler.highlightPossibleActions(actionHandler.possibleActions)
+			fieldManager.rotateCards();
+			fieldManager.zAlignCards();
+		}, 1000, this)
+	}
+	else{
+		//Устанавливаем таймаут, после которого игра ставится на паузу
+		this.pauseTimeout = setTimeout(function(){
+			this.paused = true;		
+		}, 10000, this)
+	}
+}
+
+//Добавляет листенер изменения видимости вкладки в зависимости от браузера
+Game.prototype.addVisibilityChangeListener = function(){
+	var visibilityChange; 
+	if (typeof document.hidden !== "undefined") {
+		this.hiddenValue = "hidden";
+		visibilityChange = "visibilitychange";
+	} else if (typeof document.msHidden !== "undefined") {
+		this.hiddenValue = "msHidden";
+		visibilityChange = "msvisibilitychange";
+	} else if (typeof document.webkitHidden !== "undefined") {
+		this.hiddenValue = "webkitHidden";
+		visibilityChange = "webkitvisibilitychange";
+	}
+	document.addEventListener(visibilityChange, this.visibilityChangeListener.bind(this), false);
+}
+
+//Возвращает phaser пиксель для превращения в текстуру
 Game.prototype.newPixel = function(){
 	var pixel = this.make.graphics(0, 0);
 	pixel.beginFill(this.colors.white);
@@ -167,6 +212,7 @@ Game.prototype.newPixel = function(){
 	return pixel;
 };
 
+//Обновляет текст всех кнопок
 Game.prototype.loadButtonText = function(){
 	if(!this.created)
 		return;
@@ -177,6 +223,7 @@ Game.prototype.loadButtonText = function(){
 	}
 };
 
+//Переключение дебага
 Game.prototype.toggleDebugMode = function(){
 	if(!this.created)
 		return;

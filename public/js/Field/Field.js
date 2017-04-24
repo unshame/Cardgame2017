@@ -517,7 +517,6 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 	}
 	
 	//Передвигаем карты
-	i = (this.direction == 'backward') ? this.cards.length - 1 : 0;
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 
 		var card = this.cards[i];	
@@ -564,6 +563,21 @@ Field.prototype.placeCard = function(card, bringUpOn, noDelay){
 		return;
 	return this.placeCards([card], bringUpOn, noDelay);
 };
+
+Field.prototype.rotateCards = function(){
+	var angle = 0;
+	if(this.axis == 'vertical')
+		angle += 90;
+	if(this.flipped)
+		angle += 180;
+
+	for(var i = 0; i < this.cards.length; i++){
+		var card = this.cards[i];	
+		if(card.fieldId == 'BOTTOM')
+			angle = Math.abs(angle - 90);
+		card.rotateTo(angle, this.moveTime, 0);
+	}
+}
 
 /*
  * Перемещает заданную карту в соответствии с переданными данными
