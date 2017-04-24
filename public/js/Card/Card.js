@@ -350,25 +350,30 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		return;
 	}
 
-	//Не перезапускаем твин, если нет задержки и пункт назначения е изменился
-	if(!shouldRebase && this.mover && !delay){
-		this._updateValue();
-		if(this.bringToTopOn == 'start')
-			this.bringToTop();
-		return;
-	}
+	if(this.mover){
+		var moverData = this.mover.timeline[this.mover.current],
+			endPosition = moverData && moverData.vEnd;
 
-	//Уменьшаем время движения, если твин уже в процессе, чтобы уменьшить заторможенность карт,
-	//когда они несколько раз меняют направление движения (игрок проносит курсор над рукой)
-	//Ограничиваем минимальное время половиной заданного, чтобы карты резко не прыгали
-	if(this.mover && !delay){
-		var moverData = this.mover.timeline[this.mover.current];
-		time = Math.max(moverData.duration - moverData.dt*game.speed, time/2);
-	}
+		//Не перезапускаем твин, если нет задержки и пункт назначения не изменился
+		if(!shouldRebase && !delay && endPosition && endPosition.x == moveX && endPosition.y == moveY){
+			this._updateValue();
+			if(this.bringToTopOn == 'start')
+				this.bringToTop();
+			return;
+		}
 
-	//Останавливаем существующий твин и запускаем новый
-	if(this.mover)
+		//Уменьшаем время движения, если твин уже в процессе, чтобы уменьшить заторможенность карт,
+		//когда они несколько раз меняют направление движения (игрок проносит курсор над рукой)
+		//Ограничиваем минимальное время половиной заданного, чтобы карты резко не прыгали
+		if(!delay){		
+			time = Math.max(moverData.duration - moverData.dt*game.speed, time/2);
+		}
+
+		//Останавливаем существующий твин
 		this.mover.stop();
+	}
+
+	//Запускаем новый твин
 	this.mover = game.add.tween(this.sprite);
 	this.mover.to(
 		{
@@ -408,11 +413,6 @@ Card.prototype.returnToBase = function(time, delay){
 //Поворачивает карту 
 Card.prototype.rotateTo = function(angle, time, delay, easing){
 
-	//Останавливаем твин, если он есть
-	if(this.rotator){
-		this.rotator.stop();
-		this.rotator = null;
-	}
 	var offset = angle < 0 ? 360 : 0,
 
 		angleAbs = Math.abs(angle),
@@ -434,6 +434,16 @@ Card.prototype.rotateTo = function(angle, time, delay, easing){
 
 	if(angle == oldAnglePos)
 		return;
+
+	//Останавливаем твин, если он есть и угол поворота изменился
+	if(this.rotator){
+		var rotatorData = this.rotator.timeline[this.rotator.current];
+		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle)
+			return;
+
+		this.rotator.stop();
+		this.rotator = null;
+	}
 
 	//Создаем и запускаем твин или поворачиваем карту если игра остановлена
 	if(game.paused){

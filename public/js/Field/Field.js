@@ -115,7 +115,7 @@ Field.prototype._getDefaultOptions = function(){
 		margin:10,
 		padding:10,
 		minActiveSpace: fieldManager.builder.minActiveSpace,	//Минимальная ширина\высота для расположения карт
-		raisedHeight: skinManager.skin.height,
+		raisedHeight: skinManager.skin.height/2,
 
 		moveTime: 300,
 		delayTime: 100,
