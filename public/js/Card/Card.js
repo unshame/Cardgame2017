@@ -270,6 +270,11 @@ Card.prototype.setAngle = function(angle){
 	this._glowUpdatePosition();
 };
 
+Card.prototype.setScale = function(scale){
+	this.sprite.scale.setTo(this.skin.scale.x*scale, this.skin.scale.y*scale);
+	this.glow.scale.setTo(this.sprite.scale.x*scale, this.sprite.scale.y*scale);
+}
+
 //ПЕРЕДВИЖЕНИЕ
 
 /*
@@ -473,9 +478,8 @@ Card.prototype.rotateTo = function(angle, time, delay, easing){
 //Применяет текущий скин к карте
 Card.prototype.applySkin = function(){
 	this.sprite.loadTexture(this.skin.sheetName);
-	this.sprite.scale.setTo(this.skin.scale.x, this.skin.scale.y);
 	this.glow.loadTexture(this.skin.glowSheetName);
-	this.glow.scale.setTo(this.skin.scale.x, this.skin.scale.y);
+	this.setScale(1);
 	this.setValue(this.suit, this.value, false);
 };
 

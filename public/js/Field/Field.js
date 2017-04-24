@@ -68,6 +68,7 @@ var Field = function(options){
 
 	this.forcedSpace = this.options.forcedSpace;
 	this.focusable = this.options.focusable;
+	this.focusedScaleDiff = this.options.focusedScaleDiff;
 	this.sorted = this.options.sorted;
 
 	this.moveTime = this.options.moveTime;
@@ -124,6 +125,7 @@ Field.prototype._getDefaultOptions = function(){
 		forcedSpace: false,	
 
 		focusable: true,	//Нужно ли сдвигать карты при наведении
+		focusedScaleDiff: 0.025,
 		sorted: true,		//Нужно ли сортировать карты
 		
 		id:null,
@@ -498,7 +500,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 	//Если курсор находится над одной из карт и карты не вмещаются в поле,
 	//указываем сдвиг карты от курсора
 	if(this.focusedCard && cardWidth*(this.cards.length - 1) > areaActiveWidth){		
-		shift = cardWidth - cardSpacing;
+		shift = cardWidth*(1 + this.focusedScaleDiff/2) - cardSpacing;
 	}
 
 	//Создаем массив задержек в зависимости от направления поля
@@ -590,13 +592,13 @@ Field.prototype._moveCard = function(
 	}
 
 	//Сдвиг текущей карты
-	//card.sprite.scale.setTo(1,1);
+	card.setScale(1);
 	if(this.focusedCard){
 		if(index != focusedIndex){
 			shift = (index < focusedIndex) ? -shift : shift;				
 		}
 		else{
-			//card.sprite.scale.setTo(1.05, 1.05)
+			card.setScale(1 + this.focusedScaleDiff);
 			shift = 0;
 		}
 	}
