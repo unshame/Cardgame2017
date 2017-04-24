@@ -350,6 +350,14 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		return;
 	}
 
+	//Не перезапускаем твин, если нет задержки и пункт назначения е изменился
+	if(!shouldRebase && this.mover && !delay){
+		this._updateValue();
+		if(this.bringToTopOn == 'start')
+			this.bringToTop();
+		return;
+	}
+
 	//Уменьшаем время движения, если твин уже в процессе, чтобы уменьшить заторможенность карт,
 	//когда они несколько раз меняют направление движения (игрок проносит курсор над рукой)
 	//Ограничиваем минимальное время половиной заданного, чтобы карты резко не прыгали
