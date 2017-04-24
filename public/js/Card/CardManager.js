@@ -58,15 +58,17 @@ CardManager.prototype.mouseIsOverACard = function(){
 			continue;
 		var card = this.cards[ci];
 		if(card.mouseIsOver() && card.isDraggable){
-			return true
+			return true;
 		}
 	}
 	return false;
 };
 
 CardManager.prototype.resetRaised = function(){
-	var raised = false
+	var raised = false;
 	for(var ci in this.cards){
+		if(!this.cards.hasOwnProperty(ci))
+			continue;
 		var card = this.cards[ci]; 
 		if(card.raised){
 			card.raised = false;
@@ -148,7 +150,7 @@ CardManager.prototype.getCards = function(num, except){
 		crds.push(card);
 	}
 	return crds;
-}
+};
 
 //Возвращает одну карту, которая не входит в except
 CardManager.prototype.getCard = function(except){
@@ -158,4 +160,4 @@ CardManager.prototype.getCard = function(except){
 	else
 		card = null;
 	return card;
-}
+};

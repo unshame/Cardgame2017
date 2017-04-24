@@ -1,3 +1,5 @@
+/*jshint unused:false*/
+
 var cardValuesChar = {
 	EN: ['J', 'Q', 'K', 'A'],
 	RU: ['В', 'Д', 'К', 'Т']

@@ -365,7 +365,7 @@ CardControl.prototype.updateCardPosition = function(curTime){
 		y: this.pointer.y - this.card.base.y
 	};
 	this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
-}
+};
 
 //Устанавливает угол в зависимости от инерции карты
 //Взято отсюда:
@@ -388,7 +388,7 @@ CardControl.prototype.updateCardAngle = function(curTime){
 		totalDistance += this.inertiaHistory[i][1];
 	}
 	var angle = totalDistance / this.inertiaHistory.length / 1.25;
-	if(angle != 0){
+	if(angle !== 0){
 			angle -= angle > 0 ? Math.min(angle, this.cardMoveThreshold) : Math.max(angle, -this.cardMoveThreshold);
 	}
 	if(angle > maxAngle) {
@@ -400,7 +400,7 @@ CardControl.prototype.updateCardAngle = function(curTime){
 	this.card.setAngle(angle);
 
 	this.cardLastX = this.card.sprite.x;
-}
+};
 
 //Обновление прозрачности партиклей хвоста
 CardControl.prototype.updateTrail = function(){

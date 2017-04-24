@@ -1,6 +1,5 @@
 {
   "browser": true,
-  "esnext": true,
   "globals": {
     "Phaser":true,
     "$":true,
@@ -29,6 +28,12 @@
     "playerManager":true,
     "CardManager":true,
     "cardManager":true,
+    "CardControl":true,
+    "cardControl":true,
+    "Eureca":true,
+    "Cursor":true,
+    "cursor":true,
+    "skins":true,
 
     "actions":true,
     "Menu":true,

@@ -6,11 +6,10 @@
 
 var server,
 	isInDebugMode = false,
-	actions = null,
 	timeout = null,
 	timer = null;
 
-var EurecaClientSetup = function(callback, context) {
+window.EurecaClientSetup = function(callback, context) {
 	//создаем eureca.io клиент
 
 	var client = new Eureca.Client();
@@ -33,7 +32,6 @@ var EurecaClientSetup = function(callback, context) {
 	};
 	client.exports.recievePossibleActions = function(newActions, time, time_sent){		
 		var actionTypes = newActions.map(function(a){return a.type;});
-		var action;
 		if(~actionTypes.indexOf('SKIP')){
 			actionHandler.realAction = 'SKIP';
 			game.actionButton.text.setText('Skip');
@@ -86,6 +84,8 @@ var EurecaClientSetup = function(callback, context) {
 	};
 	return client;
 };
+
+/*jshint unused:false*/
 
 function sendAction(field, card){
 	var actions = actionHandler.possibleActions;

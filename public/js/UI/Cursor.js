@@ -26,7 +26,7 @@ Cursor.prototype.update = function(cursorIsInGame){
 	if(!Phaser.Device.desktop)
 		return;
 
-	this.initialized = this.unitialized || (game.input.x != 0 || game.input.y != 0);
+	this.initialized = this.unitialized || (game.input.x !== 0 || game.input.y !== 0);
 
 	if(cursorIsInGame !== undefined)
 		this.isInGame = cursorIsInGame;

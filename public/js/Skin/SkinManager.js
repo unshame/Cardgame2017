@@ -14,7 +14,7 @@ SkinManager.prototype.addSkins = function(skins){
 	for(var i = 0; i < skins.length; i++){
 		this.addSkin(skins[i]);
 	}
-}
+};
 
 //Добавляет скин, загружает графику
 SkinManager.prototype.addSkin = function(options){

@@ -14,24 +14,24 @@ class TestBot extends Bot{
 
 	recieveValidActions(actions){
 		//console.log('Here we\'ll send info to tester', this.name, this.game.id)	
-		var game = this.game;
-		var types = actions.map(a => a.type),
+		let game = this.game;
+		let types = actions.map(a => a.type),
 			attackIndex = types.indexOf('ATTACK'),
 			defenseIndex = types.indexOf('DEFENSE');
-		var lineNum = utils.stats.line;
+		let lineNum = utils.stats.line;
 
 		if(this.tester.running && game.turnStages.current != 'FOLLOWUP' && game.turnStages.next == 'DEFENSE' && ~attackIndex && !~defenseIndex){
-			var defenseFields = 0;
+			let defenseFields = 0;
 			this.tests++;
-			for(var fi = 0; fi < game.table.length; fi++){
-				var tableField = game.table[fi];
+			for(let fi = 0; fi < game.table.length; fi++){
+				let tableField = game.table[fi];
 
 				if(tableField.attack && !tableField.defense){
 					defenseFields++;
 				} 
 
 			}
-			var handSize = game.hands[game.players.defender.id].length;
+			let handSize = game.hands[game.players.defender.id].length;
 			if(handSize <= defenseFields){
 				console.log('Test %s (attack) failed on %s', this.tests, this.name);
 				console.log('%s cards to beat but %s cards in hand', defenseFields + 1, handSize);
@@ -43,12 +43,12 @@ class TestBot extends Bot{
 
 		//Тесты перевода
 		if(this.tester.running && game.turnStages.current == 'DEFENSE' && ~attackIndex){		
-			var action = actions[attackIndex];
+			let action = actions[attackIndex];
 
 			//Тест перевода игроку, у которого нет достаточного кол-ва карт, чтобы отбиться
 			this.tests++;
-			var usedFields = game.table.usedFields;
-			var handSize = game.hands[game.players.ally && game.players.ally.id || game.players.attacker.id].length;
+			let usedFields = game.table.usedFields;
+			let handSize = game.hands[game.players.ally && game.players.ally.id || game.players.attacker.id].length;
 			if(handSize <= usedFields){
 				console.log('Test %s (transfer) failed on %s', this.tests, this.name);
 				console.log('%s cards to beat but %s cards in hand', usedFields + 1, handSize);
@@ -60,23 +60,23 @@ class TestBot extends Bot{
 
 			//Тест смены ролей игроков при переводе
 			this.tests++;
-			var before = [
+			let before = [
 				game.players.attacker.name,
 				game.players.defender.name
 			];
 			if(game.players.ally)
 				before.push(game.players.ally.name);
-			var expected = [];
-			var activePlayers = game.players.active;
-			var parties = activePlayers.length > 2 ? 3 : 2;
-			var ai = activePlayers.indexOf(game.players.attacker);
-			for(var i = 0; i < parties; i++){
+			let expected = [];
+			let activePlayers = game.players.active;
+			let parties = activePlayers.length > 2 ? 3 : 2;
+			let ai = activePlayers.indexOf(game.players.attacker);
+			for(let i = 0; i < parties; i++){
 				ai++;
 				if(ai >= activePlayers.length)
 					ai = 0;
 				expected.push(activePlayers[ai].name);
 			}
-			var active = activePlayers.slice();
+			let active = activePlayers.slice();
 
 			this.sendResponse(action);
 
@@ -93,7 +93,7 @@ class TestBot extends Bot{
 			}
 
 			//Тест смены ролей игроков при переводе (продолжение)
-			var result = [
+			let result = [
 				game.players.attacker.name,
 				game.players.defender.name
 			];

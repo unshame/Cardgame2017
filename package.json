@@ -8,7 +8,7 @@
   "main": "server.js",
   "scripts": {
     "server": "node server.js",
-    "report": "plato -d report/client ./public/js/* ./public/js/**/* && plato -d report/server ./serverjs/* ./serverjs/**/*"
+    "report": "plato -d report/client --jshint .jshintrc ./public/js/*.js ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc ./serverjs/*.js ./serverjs/**/*.js"
   },
   "dependencies": {
     "engine.io": "2.0.1",

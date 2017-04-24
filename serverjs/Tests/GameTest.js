@@ -12,7 +12,7 @@ function runTest(){
 	for(var i = 0; i < 5; i++){
 		bots.push(new TestBot(tester,randomNames));
 	}
-	var game = new Game(bots, true, true);
+	new Game(bots, true, true);
 	setTimeout(() => {
 		console.log('Tests finished...');
 		tester.running = false;

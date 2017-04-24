@@ -273,7 +273,7 @@ Card.prototype.setAngle = function(angle){
 Card.prototype.setScale = function(scale){
 	this.sprite.scale.setTo(this.skin.scale.x*scale, this.skin.scale.y*scale);
 	this.glow.scale.setTo(this.sprite.scale.x*scale, this.sprite.scale.y*scale);
-}
+};
 
 //ПЕРЕДВИЖЕНИЕ
 

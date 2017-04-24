@@ -1,0 +1,11 @@
+{
+  "node": true,
+  "esnext": true,
+  "undef": true,
+  "unused": "vars",
+  "forin": true,
+  "node": true,
+  "sub": true,
+  "expr": true,
+  "-W058": true
+}
