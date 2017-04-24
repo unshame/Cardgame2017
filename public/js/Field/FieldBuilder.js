@@ -87,7 +87,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 			sorted:false,
 			type: 'TABLE',
 			id: 'TABLE' + i,
-			specialId: i + 1,
+			specialId: i,
 			debug: manager.isInDebugMode
 		});
 		manager.cardsToRemove[id] = [];
@@ -103,7 +103,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		texture: 'field',
 		type: 'HAND',
 		id: playerManager.pid,
-		specialId: playerManager.pi + 1,
+		specialId: playerManager.pi,
 		debug: manager.isInDebugMode
 	});
 	manager.cardsToRemove[playerManager.pid] = [];
@@ -132,7 +132,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 			type: 'HAND',
 			id: p.id,
 			name: p.name,
-			specialId: i + 1,
+			specialId: this.dimensions[p.id].specialId,
 			debug: manager.isInDebugMode
 		});
 		manager.cardsToRemove[p.id] = [];
@@ -390,7 +390,8 @@ FieldBuilder.prototype._calculateOpponentSizes = function(){
 			direction: directions[pi],
 			flipped: flipped[pi],
 			axis: axis[pi],
-			addTo: addTo[pi]
+			addTo: addTo[pi],
+			specialId: i + '('+ oi + ')'
 		};
 		this._notEnoughSpace(p.id, 'opponent', pi);
 		oi++;

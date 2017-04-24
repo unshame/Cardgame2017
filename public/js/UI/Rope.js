@@ -1,3 +1,6 @@
+/*
+ * Конструктор фитиля-таймера
+ */
 var Rope = function(){
 	var pixel = game.newPixel();
 
@@ -13,6 +16,7 @@ var Rope = function(){
 	this.maxHeight = game.screenHeight;
 };
 
+//Обновляет прогресс таймера
 Rope.prototype.update = function(){
 	var now = new Date().getTime(),
 		isBurning = false;
@@ -34,6 +38,7 @@ Rope.prototype.update = function(){
 	}
 };
 
+//Запускает таймер
 Rope.prototype.start = function(duration, start){
 	if(!duration || isNaN(duration))
 		return false;
@@ -48,6 +53,7 @@ Rope.prototype.start = function(duration, start){
 	this.sprite.height = this.maxHeight;
 };
 
+//Останавливает таймер
 Rope.prototype.stop = function(){
 	this.isBurning = false;
 	this.sprite.height = 0;

@@ -20,7 +20,7 @@ var Cursor = function(textureName){
 Cursor.prototype = Object.create(Phaser.Sprite.prototype);
 Cursor.prototype.constructor = Cursor;
 
-//Обновление контроллера
+//Обновление позиции и вида курсора
 Cursor.prototype.update = function(cursorIsInGame){
 
 	if(!Phaser.Device.desktop)

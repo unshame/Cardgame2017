@@ -1,3 +1,5 @@
+//Функции локализации
+
 /*jshint unused:false*/
 
 var cardValuesChar = {

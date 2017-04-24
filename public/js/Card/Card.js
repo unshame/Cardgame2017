@@ -1,6 +1,9 @@
 /*
  * Конструктор карт
- * 
+ * Три основные компонента: base, sprite и glow
+ * Имеет методы для перемещения (с анимацией и без), установки значений,
+ * установки флагов, применения скинов. Передает информацию о курсоре
+ * присвоенному полю (Field) и контроллеру карт (CardControl). 
  */
 
 var Card = function (options) {
@@ -270,6 +273,7 @@ Card.prototype.setAngle = function(angle){
 	this._glowUpdatePosition();
 };
 
+//Устанавливает масштаб карты относительно масштаба текущего скина
 Card.prototype.setScale = function(scale){
 	this.sprite.scale.setTo(this.skin.scale.x*scale, this.skin.scale.y*scale);
 	this.glow.scale.setTo(this.sprite.scale.x*scale, this.sprite.scale.y*scale);
@@ -285,7 +289,8 @@ Card.prototype.setScale = function(scale){
  * @relativeToBase Bool - перемещение происходит относительно базы карты
  * @shouldRebase Bool - нужно ли перемещать базу карты или только карту
  * Если база не изменилась, то эта переменная всегда будет false
- * @bringUpOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
+ * @bringToTopOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
+ * @easing - функция плавности. По-умолчанию Phaser.Easing.Quadratic.Out
 */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn, easing){
 
@@ -581,7 +586,7 @@ Card.prototype._mouseOver = function(sprite, pointer){
 		this.field.focusOnCard(this, pointer);
 };
 
-//Вызывается когда курсор покидает спрайт карты
+//Вызывается когда указатель покидает спрайт карты
 Card.prototype._mouseOut = function(sprite, pointer){
 	if(this.field)
 		this.field.focusOffCard(this);
@@ -589,7 +594,9 @@ Card.prototype._mouseOut = function(sprite, pointer){
 
 
 //БУЛЕВЫ ФУНКЦИИ
-Card.prototype.mouseIsOver = function(pointer){
+
+//Находится ли указатель над картой
+Card.prototype.mouseIsOver = function(){
 	if(
 		game.input.x < this.base.x + this.sprite.x - this.sprite.width/2 ||
 		game.input.x > this.base.x + this.sprite.x + this.sprite.width/2 ||
@@ -604,7 +611,7 @@ Card.prototype.mouseIsOver = function(pointer){
 
 //KILL, RESET, UPDATE
 
-//Убивает спрайты карты
+//Убивает спрайты карты (не используется)
 Card.prototype.kill = function() {
 	this.glow.kill();
 	this.sprite.kill();  
@@ -613,14 +620,14 @@ Card.prototype.kill = function() {
 	}
 };
 
-//Восстанавливает карту
+//Восстанавливает карту (не используется)
 Card.prototype.reset = function(){
 	this.sprite.reset();  
 	this.setValue(this.suit, this.value, false);
 };
 
 //Обновление карты
-//В будущем возможно будет делать что-то еще
+//На данный момент только обновляет позицию свечения
 Card.prototype.update = function() {
 	this._glowUpdatePosition();
 };

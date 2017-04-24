@@ -1,3 +1,5 @@
+//Скины, передаваемые в skinManager
+
 window.skins = [];
 
 //Modern

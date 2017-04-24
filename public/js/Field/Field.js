@@ -112,41 +112,40 @@ Field.prototype._getDefaultOptions = function(){
 		x:0,
 		y:0,
 		width:0,
-		height:0,
-		margin:10,
-		padding:10,
+		height:0,		
+		margin:10,		//Отступ по краям поля
+		padding:10,		//Отступ между картами
 		minActiveSpace: fieldManager.builder.minActiveSpace,	//Минимальная ширина\высота для расположения карт
-		raisedHeight: skinManager.skin.height/2,
+		raisedHeight: skinManager.skin.height/2,	//Насколько поднимать карты с raised = true
 
 		moveTime: 300,
 		delayTime: 100,
-		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать
-		//заданное значение
+		//Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать заданное значение
 		forcedSpace: false,	
 
 		focusable: true,	//Нужно ли сдвигать карты при наведении
-		focusedScaleDiff: 0.025,
+		focusedScaleDiff: 0.025,	//На сколько увеличивать масштаб карт при наведении
 		sorted: true,		//Нужно ли сортировать карты
 		
 		id:null,
 		type:'GENERIC',
 		name: null,
 
-		horizontalAlign:'center',			 //Выравнивание по горизонтали
-		verticalAlign:'middle',
+		horizontalAlign:'center',	//Выравнивание по горизонтали
+		verticalAlign:'middle',		//по вертикали
 		//Поворот поля, меняет местами horizontalAlign и verticalAlign (right станет bottom и т.д.),
 		//не влияет на width и height
-		axis: 'horizontal', 
+		axis: 'horizontal', 	//Направление поля
 		direction: 'forward',	//В какую сторону происходит итерация по картам
 		addTo: 'front',		//В какой конец поля добавляются карты (front - в конец, back - в начало)
 		reversed: false,	//Карты добавляются начиная с последней
-		flipped: false,
+		flipped: false,		//Карты распологаются повернутыми на 180 градусов
 
 		texture: null,
 		alpha: 0.35,
 
 		debug: false,
-		specialId: null
+		specialId: null		//ID в группе полей для дебага
 	};
 	return options;
 };
@@ -789,8 +788,21 @@ Field.prototype.focusOffCard = function(card, forced){
 Field.prototype.updateDebug = function(){
 	if(!this.isInDebugMode)
 		return;
-	var x = this.base.x;
-	var y = this.base.y - 5;
+
+	var x, y;
+	if(this.base.x < 0)
+		x = 0;
+	else if(this.base.x + this.base.width > game.screenWidth)
+		x = game.screenWidth - 300;
+	else
+		x = this.base.x;
+
+	if(this.base.y < 0)
+		y = this.base.height + this.base.y + 15;
+	else if(this.base.y > game.screenHeight)
+		y = game.screenHeight;
+	else
+		y = this.base.y - 5;
 
 	var str;
 	if(this.type == this.id)
