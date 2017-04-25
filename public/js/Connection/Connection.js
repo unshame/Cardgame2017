@@ -61,11 +61,7 @@ window.EurecaClientSetup = function(callback, context) {
 			timer = null;
 		}
 		var delay = actionHandler.executeAction(action);
-		setTimeout(
-			function(){
-				sendResponse();	
-			},
-			!delay && 1 || (delay/game.speed + 300)
+		setTimeout(sendResponse, !delay && 1 || (delay/game.speed + 300)
 		);
 		if(isInDebugMode)
 			console.log(action);
