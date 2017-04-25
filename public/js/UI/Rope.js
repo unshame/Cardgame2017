@@ -48,7 +48,7 @@ Rope.prototype.start = function(duration, start){
 
 	var now = new Date().getTime();
 	this.isBurning = true;
-	this.startTime = start && now + start || now; 
+	this.startTime = start ? (now + start) : now; 
 	this.duration = duration;
 	this.sprite.height = this.maxHeight;
 };

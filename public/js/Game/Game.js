@@ -121,7 +121,7 @@ Game.prototype.initialize = function(){
 	this.addVisibilityChangeListener();
 };
 
-//Выполняется по окончанию throttle'a изменения размера экрана
+//Выполняется по окончании throttle'a изменения размера экрана
 Game.prototype.updateAppDimensionsListener = function(){
 	this.screenWidth = window.innerWidth;
 	this.screenHeight = window.innerHeight;

@@ -30,7 +30,7 @@ window.EurecaClientSetup = function(callback, context) {
 		if(isInDebugMode)
 			console.log(opponents);
 	};
-	client.exports.recievePossibleActions = function(newActions, time, time_sent){		
+	client.exports.recievePossibleActions = function(newActions, time, timeSent){		
 		var actionTypes = newActions.map(function(a){return a.type;});
 		if(~actionTypes.indexOf('SKIP')){
 			actionHandler.realAction = 'SKIP';
