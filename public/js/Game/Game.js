@@ -173,17 +173,19 @@ Game.prototype.visibilityChangeListener = function(){
 
 		//Ждем секунду, прежде чем откорректировать элементы игры, которые могли оказаться в неправильном положении
 		//Это делается, чтобы браузер не пропустил requireAnimationFrames движка, или что-то еще, что может пойти не так
-		setTimeout(function(game){
+		function correct(){
 			actionHandler.possibleActions && actionHandler.highlightPossibleActions(actionHandler.possibleActions);
 			fieldManager.rotateCards();
 			fieldManager.zAlignCards();
-		}, 1000, this);
+		}
+		setTimeout(correct.bind(this), 1000);
 	}
 	else{
 		//Устанавливаем таймаут, после которого игра ставится на паузу
-		this.pauseTimeout = setTimeout(function(game){
-			game.paused = true;		
-		}, 10000, this);
+		function pause(){
+			this.paused = true;	
+		}
+		this.pauseTimeout = setTimeout(pause.bind(this), 10000);
 	}
 };
 

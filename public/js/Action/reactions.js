@@ -40,8 +40,8 @@ window.reactions = {
 			fieldManager.fields[action.pid].setHighlight(true, game.colors.green);
 
 			//Прячем козырные карты
-			setTimeout(function(handler){	
-				var cards = handler.action.cards;			
+			function hideTrumpCards(){
+				var cards = this.action.cards;			
 				for(var ci = 0; ci < cards.length; ci++){
 					var c = cards[ci];
 					card = game.cards[c.cid];	
@@ -55,8 +55,8 @@ window.reactions = {
 					}
 					card.field.placeCards(null, 'init', true);
 				}			
-
-			}, delay, this);
+			}
+			setTimeout(hideTrumpCards.bind(this), delay);
 
 			delay += 500;
 		}

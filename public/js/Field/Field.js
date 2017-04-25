@@ -758,10 +758,12 @@ Field.prototype.setUninteractibleTimer = function(time){
 	if(game.paused)
 		return;
 
-	this.uninteractibleTimer = setTimeout(function(field){
-		field.zAlignCards();
-		field.uninteractibleTimer = null;
-	}, time/game.speed, this);
+	function makeInteracible(){
+		this.zAlignCards();
+		this.uninteractibleTimer = null;
+	}
+
+	this.uninteractibleTimer = setTimeout(makeInteracible.bind(this), time/game.speed);
 };
 
 //Запоминает карту, над которой находится курсор
