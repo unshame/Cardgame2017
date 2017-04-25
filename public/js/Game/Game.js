@@ -173,19 +173,19 @@ Game.prototype.visibilityChangeListener = function(){
 
 		//Ждем секунду, прежде чем откорректировать элементы игры, которые могли оказаться в неправильном положении
 		//Это делается, чтобы браузер не пропустил requireAnimationFrames движка, или что-то еще, что может пойти не так
-		setTimeout(function(){
-			actionHandler.possibleActions && actionHandler.highlightPossibleActions(actionHandler.possibleActions)
+		setTimeout(function(game){
+			actionHandler.possibleActions && actionHandler.highlightPossibleActions(actionHandler.possibleActions);
 			fieldManager.rotateCards();
 			fieldManager.zAlignCards();
-		}, 1000, this)
+		}, 1000, this);
 	}
 	else{
 		//Устанавливаем таймаут, после которого игра ставится на паузу
-		this.pauseTimeout = setTimeout(function(){
-			this.paused = true;		
-		}, 10000, this)
+		this.pauseTimeout = setTimeout(function(game){
+			game.paused = true;		
+		}, 10000, this);
 	}
-}
+};
 
 //Добавляет листенер изменения видимости вкладки в зависимости от браузера
 Game.prototype.addVisibilityChangeListener = function(){
@@ -201,7 +201,7 @@ Game.prototype.addVisibilityChangeListener = function(){
 		visibilityChange = "webkitvisibilitychange";
 	}
 	document.addEventListener(visibilityChange, this.visibilityChangeListener.bind(this), false);
-}
+};
 
 //Возвращает phaser пиксель для превращения в текстуру
 Game.prototype.newPixel = function(){
