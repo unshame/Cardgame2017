@@ -40,13 +40,13 @@ ActionHandler.prototype.executeAction = function(action){
 
 	cardManager.resetRaised();
 
-	var react = this.reactions[action.type],
+	var reaction = this.reactions[action.type],
 		delay = 0;
-	if(!react){
+	if(!reaction){
 		console.warn('Action handler: Unknown action type', action.type, action);
 	}
 	else{
-		delay = react.call(this, action);
+		delay = reaction.call(this, action);
 	}
 	return delay;
 };

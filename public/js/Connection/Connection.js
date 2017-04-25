@@ -43,8 +43,8 @@ window.EurecaClientSetup = function(callback, context) {
 			game.actionButton.enable();
 		}
 
-		var current_time = new Date();
-		time = time - current_time.getTime();
+		var currentTime = new Date();
+		time = time - currentTime.getTime();
 		if(time)
 			game.rope.start(time - 1000);
 
