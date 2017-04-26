@@ -247,13 +247,13 @@ FieldBuilder.prototype._calculateGeneralSizes = function(numOfCards){
 	this.positions = {
 		DECK: grid.at(
 			grid.density + 3,
-			-(halfDensity - 1),
+			-halfDensity,
 			-this.offsets.DECK,
 			-this.offsets.DECK
 		),
 		DISCARD_PILE: grid.at(
 			grid.numCols - grid.density - 3,
-			-(halfDensity - 1),
+			-halfDensity,
 			-this.offsets.DISCARD_PILE,
 			-this.offsets.DISCARD_PILE
 		),
@@ -272,19 +272,19 @@ FieldBuilder.prototype._calculateGeneralSizes = function(numOfCards){
 		),
 		opponent: [
 			grid.at(
-				grid.density,
+				halfDensity + 1,
 				grid.numRows - grid.density - 2,
 				-this.offsets.opponent[0],
 				-this.offsets.opponent[0]
 			),
 			grid.at(
 				Math.floor(grid.density*2) + 1,
-				-(halfDensity - 1),
+				-halfDensity,
 				-this.offsets.opponent[1],
 				-this.offsets.opponent[1]
 			),
 			grid.at(
-				grid.numCols - grid.density,
+				grid.numCols - halfDensity - 1,
 				grid.density,
 				-this.offsets.opponent[0],
 				-this.offsets.opponent[0]

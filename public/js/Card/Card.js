@@ -317,7 +317,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	var newBaseY = relativeToBase ? y + this.base.y : y;
 
 	//Предупреждаем о том, что карта вышла за пределы экрана
-	if(newBaseX < 0 || newBaseX > game.screenWidth || newBaseY < 0 || newBaseY > game.screenHeight)
+	if(newBaseX < -this.skin.width/2 || newBaseX > game.screenWidth + this.skin.width/2 || newBaseY < -this.skin.height/2 || newBaseY > game.screenHeight + this.skin.height/2)
 		console.warn(
 			'Moving card', this.id, 'out of the screen (' + newBaseX + ', ' + newBaseY + ')\n',
 			this
