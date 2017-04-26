@@ -720,21 +720,31 @@ Field.prototype.destroy = function(){
 //БУЛЕВЫ ФУНКЦИИ
 
 //Проверяет нахождение карты внутри поля (по координатам)
-Field.prototype.cardIsInside = function(card, includeShift){
+Field.prototype.cardIsInside = function(card, includeShift, includeWholeCard){
 
 	if(includeShift === undefined)
 		includeShift = true;
+
+	if(includeWholeCard === undefined)
+		includeWholeCard = false;
 
 	var shift = 0;
 	if(includeShift)
 		shift = skinManager.skin.width - this.cardSpacing;
 
+	var addX = 0,
+		addY = 0;
+	if(includeWholeCard){
+		addX = skinManager.skin.width/2;
+		addY = skinManager.skin.height/2;
+	}
+
 	if(
 		!card ||
-		card.base.x + card.sprite.x < this.base.x + this.margin - shift ||
-		card.base.x + card.sprite.x > this.base.x + this.area.width - this.margin + shift ||
-		card.base.y + card.sprite.y < this.base.y + this.margin ||
-		card.base.y + card.sprite.y > this.base.y + this.area.height - this.margin
+		card.base.x + card.sprite.x < this.base.x + this.margin - shift - addX ||
+		card.base.x + card.sprite.x > this.base.x + this.area.width - this.margin + shift + addX ||
+		card.base.y + card.sprite.y < this.base.y + this.margin - addY ||
+		card.base.y + card.sprite.y > this.base.y + this.area.height - this.margin + addY
 	)
 		return false;
 	else

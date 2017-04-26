@@ -245,6 +245,13 @@ CardControl.prototype.cardOnValidField = function(){
 			return field;
 		}
 	}, this);
+	if(!fields.length){
+		fields = fieldManager.forEachField(function(field, si){
+			if(field.isHighlighted && field.cardIsInside(this.card, false, true)){
+				return field;
+			}
+		}, this);
+	}
 	if(fields.length){
 		if(fields.length > 1)
 			console.warn('Card control: Card is over more than 1 valid field');
