@@ -273,65 +273,67 @@ class Game{
 	//Ждет ответа от игроков
 	waitForResponse(time, players){
 
+		if(this.timer){
+			clearTimeout(this.timer);
+			this.timer = null;
+		}
+
 		//Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
 		let humanActivePlayer = this.players.getWithFirst('type', 'player', this.players.active);
 		if(!humanActivePlayer)
 			players = this.players.getWith('type', 'bot', false, players);
-		
+
 		this.players.working = players;
-		this.setResponseTimer(time);
+		if(players.length){
+			this.timer = setTimeout(this.timeOut.bind(this), time * 1000);
+		}
+		else{
+			utils.log('WARNING: Set to wait for response but nobody to wait for');
+			this.timeOut();
+		}
 	}
 
-	//Таймер ожидания ответа игроков 
-	setResponseTimer(time){
+	//Выполняется по окончанию таймера ответа игроков 
+	timeOut(){
+		let playersWorking = this.players.working;
+		let names = '';
+		for(let pi = 0; pi < playersWorking.length; pi++){
+			let name = playersWorking[pi].name;
+			names += name + ' ';
+		}
+		utils.log('Players timed out: ', names);
 
-		if(this.timer)
-			clearTimeout(this.timer);
-		
-		this.timer = setTimeout(() => {
-
-			let playersWorking = this.players.working;
-			let names = '';
-			for(let pi = 0; pi < playersWorking.length; pi++){
-				let name = playersWorking[pi].name;
-				names += name + ' ';
-			}
-			utils.log('Players timed out: ', names);
-
-
-			//Если есть действия, выполняем первое попавшееся действие
-			if(this.validActions.length && this.states.current == 'STARTED'){
-				let actionIndex = 0;
-				for(let ai = 0; ai < this.validActions.length; ai++){
-					let action = this.validActions[ai];
-					if(action.type == 'SKIP' || action.type == 'TAKE'){
-						actionIndex = ai;
-						break;
-					}
+		//Если есть действия, выполняем первое попавшееся действие
+		if(this.validActions.length && this.states.current == 'STARTED'){
+			let actionIndex = 0;
+			for(let ai = 0; ai < this.validActions.length; ai++){
+				let action = this.validActions[ai];
+				if(action.type == 'SKIP' || action.type == 'TAKE'){
+					actionIndex = ai;
+					break;
 				}
-
-				//У нас поддерживается только одно действие от одного игрока за раз
-				let player = playersWorking[0];	
-
-				let outgoingAction = this.processAction(player, this.validActions[actionIndex]);
-
-				//Убираем игрока из списка действующих
-				this.players.working = [];
-
-				this.waitForResponse(this.timeouts.actionComplete, this.players);
-				//Отправляем оповещение о том, что время хода вышло
-				player.handleLateness();
-				this.players.completeActionNotify(outgoingAction);
 			}
 
-			//Иначе, обнуляем действующих игроков, возможные действия и продолжаем ход
-			else{
-				this.players.working = [];
-				this.validActions = [];
-				this.continue();
-			}	
+			//У нас поддерживается только одно действие от одного игрока за раз
+			let player = playersWorking[0];	
 
-		}, time * 1000); //TODO: заменить на 1000 в финальной версии
+			let outgoingAction = this.processAction(player, this.validActions[actionIndex]);
+
+			//Убираем игрока из списка действующих
+			this.players.working = [];
+
+			this.waitForResponse(this.timeouts.actionComplete, this.players);
+			//Отправляем оповещение о том, что время хода вышло
+			player.handleLateness();
+			this.players.completeActionNotify(outgoingAction);
+		}
+
+		//Иначе, обнуляем действующих игроков, возможные действия и продолжаем ход
+		else{
+			this.players.working = [];
+			this.validActions = [];
+			this.continue();
+		}	
 	}
 
 	//Получает ответ от игрока
