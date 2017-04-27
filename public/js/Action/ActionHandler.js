@@ -110,4 +110,4 @@ ActionHandler.prototype.setTimedAction = function(callback, context, delay){
 	};
 
 	this.timedActionTimeout = setTimeout(this.timedAction.bind(this), delay);
-}
+};

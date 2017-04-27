@@ -162,6 +162,17 @@ Game.prototype.updateAppDimensions = function(){
 
 //Выполняется, когда вкладка переходит на задний/передний план
 Game.prototype.visibilityChangeListener = function(){
+
+	function correct(){
+		actionHandler.possibleActions && actionHandler.highlightPossibleActions(actionHandler.possibleActions);
+		fieldManager.rotateCards();
+		fieldManager.zAlignCards();
+	}
+
+	function pause(){
+		this.paused = true;	
+	}
+
 	if (!document[this.hiddenValue]) {
 
 		//Снимаем игру с паузы
@@ -173,18 +184,10 @@ Game.prototype.visibilityChangeListener = function(){
 
 		//Ждем секунду, прежде чем откорректировать элементы игры, которые могли оказаться в неправильном положении
 		//Это делается, чтобы браузер не пропустил requireAnimationFrames движка, или что-то еще, что может пойти не так
-		function correct(){
-			actionHandler.possibleActions && actionHandler.highlightPossibleActions(actionHandler.possibleActions);
-			fieldManager.rotateCards();
-			fieldManager.zAlignCards();
-		}
 		setTimeout(correct.bind(this), 1000);
 	}
 	else{
 		//Устанавливаем таймаут, после которого игра ставится на паузу
-		function pause(){
-			this.paused = true;	
-		}
 		this.pauseTimeout = setTimeout(pause.bind(this), 10000);
 	}
 };

@@ -8,13 +8,6 @@ var server,
 	isInDebugMode = false,
 	responseTimer = null;
 
-function resetTimer(){
-	if(responseTimer){
-		clearTimeout(responseTimer);
-		responseTimer = null;
-	}
-}
-
 window.EurecaClientSetup = function(callback, context) {
 	//создаем eureca.io клиент
 
@@ -29,17 +22,17 @@ window.EurecaClientSetup = function(callback, context) {
 	//Методы, принадлежащие export, становятся доступны на стороне сервера
 	
 	client.exports.setId = function(pid){
-		resetTimer()
+		resetTimer();
 		game.pid = pid;
 		window.playerManager = new PlayerManager(pid);
 	};	
 	client.exports.meetOpponents = function(opponents){
-		resetTimer()
+		resetTimer();
 		if(isInDebugMode)
 			console.log(opponents);
 	};
 	client.exports.recievePossibleActions = function(newActions, time, timeSent){	
-		resetTimer()
+		resetTimer();
 		var actionTypes = newActions.map(function(a){return a.type;});
 		if(~actionTypes.indexOf('SKIP')){
 			actionHandler.realAction = 'SKIP';
@@ -62,7 +55,7 @@ window.EurecaClientSetup = function(callback, context) {
 			console.log(newActions);
 	};
 	client.exports.recieveCompleteAction = function(action){
-		resetTimer()
+		resetTimer();
 		game.rope.stop();
 		cardManager.throwCardsStop();
 		game.actionButton.disable();
@@ -72,7 +65,7 @@ window.EurecaClientSetup = function(callback, context) {
 			console.log(action);
 	};
 	client.exports.recieveNotification = function(note, actions){
-		resetTimer()
+		resetTimer();
 		console.log(note);
 		if(note && note.results && note.results.winners && ~note.results.winners.indexOf(game.pid))
 			cardManager.throwCardsStart();
@@ -88,6 +81,13 @@ window.EurecaClientSetup = function(callback, context) {
 };
 
 /*jshint unused:false*/
+
+function resetTimer(){
+	if(responseTimer){
+		clearTimeout(responseTimer);
+		responseTimer = null;
+	}
+}
 
 function sendAction(field, card){
 	var actions = actionHandler.possibleActions;

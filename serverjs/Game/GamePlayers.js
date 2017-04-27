@@ -617,7 +617,6 @@ class GamePlayers extends BetterArray{
 	notEnoughActive(){
 
 		let activePlayers = this.active;
-		let humanActivePlayer = this.getWithFirst('type', 'player', activePlayers);
 
 		//Если осталось меньше двух игроков, завершаем игру
 		if(activePlayers.length < 2){		

@@ -564,6 +564,7 @@ Field.prototype.placeCard = function(card, bringUpOn, noDelay){
 	return this.placeCards([card], bringUpOn, noDelay);
 };
 
+//Поворачивает все карты
 Field.prototype.rotateCards = function(){
 	var angle = 0;
 	if(this.axis == 'vertical')
@@ -577,7 +578,7 @@ Field.prototype.rotateCards = function(){
 			angle = Math.abs(angle - 90);
 		card.rotateTo(angle, this.moveTime, 0);
 	}
-}
+};
 
 /*
  * Перемещает заданную карту в соответствии с переданными данными

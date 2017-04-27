@@ -17,49 +17,50 @@ window.reactions = {
 	 */
 	TRUMP_CARDS: function(action){
 		var delay = 0, card;
-		if(action.cards && action.cards.length){
-			delay = 3000/game.speed;
+		if(!action.cards || !action.cards.length)
+			return 0;
 
-			//Показываем козырные карты
-			for(var ci = 0; ci < action.cards.length; ci++){
-				var c = action.cards[ci];
-				card = game.cards[c.cid];
+		delay = 3000/game.speed;
 
-				if(action.pid != c.pid)
-					fieldManager.fields[c.pid].setHighlight(true, game.colors.red);
+		//Показываем козырные карты
+		for(var ci = 0; ci < action.cards.length; ci++){
+			var c = action.cards[ci];
+			card = game.cards[c.cid];
 
-				card.raised = true;
+			if(action.pid != c.pid)
+				fieldManager.fields[c.pid].setHighlight(true, game.colors.red);
 
-				if(card.field.id != playerManager.pid){	
-					card.presetValue(c.suit, c.value);	
+			card.raised = true;
+
+			if(card.field.id != playerManager.pid){	
+				card.presetValue(c.suit, c.value);	
+			}
+			card.field.placeCards(null, 'init', true);
+		}		
+
+		//Выделяем поле игрока с наибольшим козырем
+		fieldManager.fields[action.pid].setHighlight(true, game.colors.green);
+
+		//Прячем козырные карты
+		function hideTrumpCards(){
+			var cards = this.action.cards;			
+			for(var ci = 0; ci < cards.length; ci++){
+				var c = cards[ci];
+				card = game.cards[c.cid];	
+
+				fieldManager.fields[c.pid].setHighlight(false);		
+
+				card.raised = false;
+
+				if(card.field.id != playerManager.pid){					
+					card.presetValue(null, null);
 				}
 				card.field.placeCards(null, 'init', true);
-			}		
-
-			//Выделяем поле игрока с наибольшим козырем
-			fieldManager.fields[action.pid].setHighlight(true, game.colors.green);
-
-			//Прячем козырные карты
-			function hideTrumpCards(){
-				var cards = this.action.cards;			
-				for(var ci = 0; ci < cards.length; ci++){
-					var c = cards[ci];
-					card = game.cards[c.cid];	
-
-					fieldManager.fields[c.pid].setHighlight(false);		
-
-					card.raised = false;
-
-					if(card.field.id != playerManager.pid){					
-						card.presetValue(null, null);
-					}
-					card.field.placeCards(null, 'init', true);
-				}			
-			}
-			this.setTimedAction(hideTrumpCards, this, delay)
-
-			delay += 500;
+			}			
 		}
+		this.setTimedAction(hideTrumpCards, this, delay);
+
+		delay += 500;
 		return delay;
 	},
 
