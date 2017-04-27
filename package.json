@@ -8,7 +8,7 @@
   "main": "server.js",
   "scripts": {
     "server": "node server.js",
-    "report": "plato -d report/client --jshint .jshintrc ./public/js/*.js ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc ./serverjs/*.js ./serverjs/**/*.js"
+    "report": "plato -d report/client --jshint .jshintrc -t \"Durak: Client Javascript Report\" ./public/js/*.js ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc -t \"Durak: Server Javascript Report\" ./serverjs/*.js ./serverjs/**/*.js"
   },
   "dependencies": {
     "engine.io": "2.0.1",
