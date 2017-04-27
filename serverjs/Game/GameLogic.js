@@ -181,7 +181,7 @@ class Game{
 	//Сбрасываем счетчики и стадию игры
 	resetTurn(){
 
-		utils.log('Turn Ended');
+		utils.log('Turn Ended', (Date.now() - this.turnStartTime)/1000);
 		
 		this.table.usedFields = 0;
 		this.skipCounter = 0;
@@ -210,6 +210,8 @@ class Game{
 			let pid = p.id;
 			utils.log(p.name, this.hands[pid].length);
 		}
+
+		this.turnStartTime = Date.now();
 
 		//Увеличиваем счетчик ходов, меняем стадию игры на первую атаку и продолжаем ход
 		this.turnNumber++;	

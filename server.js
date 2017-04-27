@@ -57,7 +57,7 @@ if(isNaN(numBots))
 if(isNaN(numPlayers) || !numPlayers)
 	numPlayers = 1;
 
-console.log('numBots=' + numBots, 'numPlayers=' + numPlayers, 'rndBots=' + rndBots, 'transfer=' + transfer, 'testing=' + testing);
+console.log('numBots=' + numBots, 'numPlayers=' + numPlayers, 'rndBots=' + rndBots, 'transfer=' + transfer, 'testing=' + testing, 'debug=' + debug);
 
 if(rndBots && numBots)
 	numBots = Math.floor(Math.random()*numBots) + 1;
@@ -157,6 +157,6 @@ server.exports.recieveResponse = function(){
 httpServer.listen(app.get('port'), () => {
 	console.log('Node app is running on port', app.get('port'));
 	if(testing)
-		Tests.runTest();
+		Tests.runTest(numBots);
 });
 

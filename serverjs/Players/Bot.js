@@ -18,8 +18,13 @@ class Bot extends Player{
 		this.connected = true;
 
 		let nameIndex = Math.floor(Math.random()*randomNames.length);
-		this.name = randomNames[nameIndex];
-		randomNames.splice(nameIndex,1);
+		if(randomNames.length){
+			this.name = randomNames[nameIndex];
+			randomNames.splice(nameIndex,1);
+		}
+		else{
+			this.name = this.id;
+		}
 	}
 
 

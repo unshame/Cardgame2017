@@ -453,7 +453,7 @@ Card.prototype.rotateTo = function(angle, time, delay, easing){
 	//Останавливаем твин, если он есть и угол поворота изменился
 	if(this.rotator){
 		var rotatorData = this.rotator.timeline[this.rotator.current];
-		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle)
+		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle && !game.paused)
 			return;
 
 		this.rotator.stop();
