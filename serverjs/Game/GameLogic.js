@@ -21,14 +21,12 @@ const
 	GameDirectives = require('./GameDirectives');
 
 class Game{
-	constructor(players, canTransfer, isTest, debugOn){
+	constructor(players, canTransfer, debugOn){
 		if(!players || !players.length){
 			utils.log('ERROR: Can\'t start a game without players');
 		}
 
 		utils.stats.isInDebugMode = debugOn || false;
-
-		this.test = isTest || false;
 
 		//Генерируем айди игры
 		this.id = 'game_' + utils.generateId();
@@ -88,6 +86,8 @@ class Game{
 			winners: [],
 			loser: null
 		};
+
+		this.simulating = !this.players.getWith('type', 'player').length;
 
 		//Ресет игроков
 		this.players.resetGame();
@@ -204,7 +204,7 @@ class Game{
 			'\nCards in deck:', this.deck.length
 		);
 		utils.stats.line += 2;
-		
+
 		for(let pi = 0; pi < this.players.length; pi++){
 			let p = this.players[pi];
 			let pid = p.id;
@@ -281,8 +281,15 @@ class Game{
 		}
 
 		//Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
-		let humanActivePlayer = this.players.getWithFirst('type', 'player', this.players.active);
-		if(!humanActivePlayer)
+		if(!this.simulating){
+			let humanActivePlayer = this.players.getWithFirst('type', 'player', this.players.active);
+			if(!humanActivePlayer){
+				let humanPlayers = this.players.getWith('type', 'player');
+				this.players.notify({message: 'SIMULATING'}, null, humanPlayers);
+				this.simulating = true;
+			}
+		}
+		if(this.simulating)
 			players = this.players.getWith('type', 'bot', false, players);
 
 		this.players.working = players;
@@ -290,8 +297,8 @@ class Game{
 			this.timer = setTimeout(this.timeOut.bind(this), time * 1000);
 		}
 		else{
-			utils.log('WARNING: Set to wait for response but nobody to wait for');
-			this.timeOut();
+			utils.log('ERROR: Set to wait for response but nobody to wait for');
+			return;
 		}
 	}
 

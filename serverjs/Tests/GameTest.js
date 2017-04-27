@@ -2,7 +2,7 @@ const
 	Game = require('../Game/GameLogic'),
 	TestBot = require('./TestBot');
 
-function runTest(numBots, duration){
+function runTest(numBots, duration, debug){
 	console.log('Testing...');
 	var bots = [];
 	var randomNames = ['bot1', 'bot2', 'bot3', 'bot4', 'bot5'];
@@ -14,7 +14,7 @@ function runTest(numBots, duration){
 	for(var i = 0; i < numBots; i++){
 		bots.push(new TestBot(tester,randomNames));
 	}
-	new Game(bots, true, true);
+	new Game(bots, true, true, debug);
 	setTimeout(() => {
 		console.log('Tests finished...');
 		tester.running = false;

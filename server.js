@@ -97,7 +97,7 @@ server.onConnect(function (conn) {
 	players.push(p);
 
 	if(newPlayers.length >= numPlayers + numBots){	
-		games.push(new Game(newPlayers, transfer, false, debug));
+		games.push(new Game(newPlayers, transfer, debug));
 		newPlayers = [];
 		botsAdded = 0;
 	}
@@ -157,6 +157,6 @@ server.exports.recieveResponse = function(){
 httpServer.listen(app.get('port'), () => {
 	console.log('Node app is running on port', app.get('port'));
 	if(testing)
-		Tests.runTest(numBots);
+		Tests.runTest(numBots, null, debug);
 });
 
