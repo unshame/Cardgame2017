@@ -56,7 +56,7 @@ window.reactions = {
 					card.field.placeCards(null, 'init', true);
 				}			
 			}
-			setTimeout(hideTrumpCards.bind(this), delay);
+			this.setTimedAction(hideTrumpCards, this, delay)
 
 			delay += 500;
 		}

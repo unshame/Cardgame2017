@@ -6,8 +6,14 @@
 
 var server,
 	isInDebugMode = false,
-	timeout = null,
-	timer = null;
+	responseTimer = null;
+
+function resetTimer(){
+	if(responseTimer){
+		clearTimeout(responseTimer);
+		responseTimer = null;
+	}
+}
 
 window.EurecaClientSetup = function(callback, context) {
 	//создаем eureca.io клиент
@@ -23,14 +29,17 @@ window.EurecaClientSetup = function(callback, context) {
 	//Методы, принадлежащие export, становятся доступны на стороне сервера
 	
 	client.exports.setId = function(pid){
+		resetTimer()
 		game.pid = pid;
 		window.playerManager = new PlayerManager(pid);
 	};	
 	client.exports.meetOpponents = function(opponents){
+		resetTimer()
 		if(isInDebugMode)
 			console.log(opponents);
 	};
-	client.exports.recievePossibleActions = function(newActions, time, timeSent){		
+	client.exports.recievePossibleActions = function(newActions, time, timeSent){	
+		resetTimer()
 		var actionTypes = newActions.map(function(a){return a.type;});
 		if(~actionTypes.indexOf('SKIP')){
 			actionHandler.realAction = 'SKIP';
@@ -53,20 +62,17 @@ window.EurecaClientSetup = function(callback, context) {
 			console.log(newActions);
 	};
 	client.exports.recieveCompleteAction = function(action){
+		resetTimer()
 		game.rope.stop();
 		cardManager.throwCardsStop();
 		game.actionButton.disable();
-		if(timeout){
-			clearTimeout(timer);
-			timer = null;
-		}
 		var delay = actionHandler.executeAction(action);
-		setTimeout(sendResponse, !delay && 1 || (delay/game.speed + 300)
-		);
+		responseTimer = setTimeout(sendResponse, !delay && 1 || (delay/game.speed + 300));
 		if(isInDebugMode)
 			console.log(action);
 	};
 	client.exports.recieveNotification = function(note, actions){
+		resetTimer()
 		console.log(note);
 		if(note && note.results && note.results.winners && ~note.results.winners.indexOf(game.pid))
 			cardManager.throwCardsStart();
@@ -118,6 +124,9 @@ function sendRealAction(type){
 
 function sendResponse(){
 	game.rope.stop();
+	actionHandler.executeTimedAction();
 	actionHandler.possibleActions = null;
 	server.recieveResponse();
+	if(responseTimer)
+		responseTimer = null;
 }

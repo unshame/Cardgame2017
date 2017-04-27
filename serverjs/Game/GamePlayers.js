@@ -640,10 +640,6 @@ class GamePlayers extends BetterArray{
 
 			return true;
 		}
-		else if(!humanActivePlayer && !this.game.test){
-			utils.log('All players are out');
-			return true;
-		}
 		return false;
 	}
 

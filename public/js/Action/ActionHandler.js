@@ -8,6 +8,9 @@ var ActionHandler = function(reactions){
 	this.reactions = reactions;
 	this.action = null;
 	this.possibleActions = null;
+
+	this.timedAction = null;
+	this.timedActionTimeout = null;
 };
 
 //ОБРАБОТКА КОМАНД СЕРВЕРА
@@ -15,6 +18,9 @@ var ActionHandler = function(reactions){
 //Выполняет действие
 
 ActionHandler.prototype.executeAction = function(action){
+
+	this.executeTimedAction();
+
 	if(action.type == 'GAME_INFO' && action.players.length){
 		playerManager.savePlayers(action.players);
 		fieldManager.resetNetwork();
@@ -53,6 +59,9 @@ ActionHandler.prototype.executeAction = function(action){
 
 //Подсвечивает карты, которыми можно ходить
 ActionHandler.prototype.highlightPossibleActions = function(actions){
+
+	this.executeTimedAction();
+
 	if(!fieldManager.networkCreated){
 		console.error('Action handler: field network hasn\'t been created');
 		return;
@@ -76,3 +85,29 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 		}
 	}
 };
+
+ActionHandler.prototype.executeTimedAction = function(){
+	if(!this.timedAction)
+		return;
+
+	//console.log('action force executed')
+
+	clearTimeout(this.timedActionTimeout);
+	this.timedAction();
+	if(this.timedAction || this.timedActionTimeout)
+		this.timedAction = this.timedActionTimeout = null;
+};
+
+ActionHandler.prototype.setTimedAction = function(callback, context, delay){
+	this.executeTimedAction();
+
+	//console.log('action set')
+
+	this.timedAction = function(){
+		//console.log('action executed')
+		callback.call(context);
+		this.timedAction = this.timedActionTimeout = null;
+	};
+
+	this.timedActionTimeout = setTimeout(this.timedAction.bind(this), delay);
+}

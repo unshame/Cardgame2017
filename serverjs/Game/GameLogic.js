@@ -273,6 +273,11 @@ class Game{
 	//Ждет ответа от игроков
 	waitForResponse(time, players){
 
+		//Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
+		let humanActivePlayer = this.players.getWithFirst('type', 'player', this.players.active);
+		if(!humanActivePlayer)
+			players = this.players.getWith('type', 'bot', false, players);
+		
 		this.players.working = players;
 		this.setResponseTimer(time);
 	}
