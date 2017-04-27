@@ -442,8 +442,13 @@ Card.prototype.rotateTo = function(angle, time, delay, easing){
 		oldAnglePos = 360 - (oldAngleAbs - oldAngleDiv*360);
 	}	
 
-	if(angle == oldAnglePos)
+	if(angle == oldAnglePos){
+		if(this.rotator){
+			this.rotator.stop();
+			this.rotator = null;
+		}
 		return;
+	}
 
 	//Останавливаем твин, если он есть и угол поворота изменился
 	if(this.rotator){
