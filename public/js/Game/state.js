@@ -29,6 +29,7 @@ playState.preload = function(){
 	game.load.spritesheet('button_orange_small', 'assets/buttons/orange_small.png', 49, 49, 4);
 
 	game.load.spritesheet('icon_fullscreen', 'assets/buttons/icon_fullscreen.png', 30, 30, 2);
+	game.load.image('icon_menu', 'assets/buttons/icon_menu.png');
 
 	game.load.spritesheet('cursor_yellow', 'assets/cursors/yellow.png', 128, 128, 3);
 	game.load.spritesheet('cursor_orange', 'assets/cursors/orange.png', 128, 128, 3);

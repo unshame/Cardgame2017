@@ -66,10 +66,12 @@ Game.prototype.initialize = function(){
 	//Кнопки (временные)
 	this.buttons = this.add.group();
 	this.actionButton = new Button({
-		position: function(){
+		position: function(width, height){
 			return grid.at(
 				Math.floor(grid.numCols/2),
-				grid.numRows - grid.density - 2
+				grid.numRows - grid.density - 2,
+				-width/2,
+				-height/2
 			);
 		},
 		action: function(){sendRealAction(actionHandler.realAction);},
@@ -81,10 +83,12 @@ Game.prototype.initialize = function(){
 		group: this.buttons
 	});
 	this.debugButton = new Button({
-		position: function(){
+		position: function(width, height){
 			return grid.at(
 				grid.numCols - grid.density*1.5 - 1,
-				grid.numRows - grid.density - 2
+				grid.numRows - grid.density - 2,
+				-width/2,
+				-height/2
 			);
 		},
 		action: this.toggleDebugMode,
@@ -98,19 +102,31 @@ Game.prototype.initialize = function(){
 
 	this.fullScreenButton = new Button({
 		position: function(width, height){
-			return grid.at(
-				grid.numCols,
-				0,
-				-width/2,
-				height/2
-			);
+			return {
+				x: game.screenWidth - 15 - width,
+				y: 15
+			};
 		},
 		action: this.toggleFullScreen,
 		icon: 'fullscreen',
 		context: this,
 		color: 'orange',
 		size: 'small',
-		textColor: 'white',
+		group: this.buttons
+	});
+
+	this.menuButton = new Button({
+		position: function(width, height){
+			return {
+				x: game.screenWidth - 15 - width,
+				y: game.screenHeight - 15 - height
+			};
+		},
+		action: function(){console.log('menu');},
+		icon: 'menu',
+		context: this,
+		color: 'orange',
+		size: 'small',
 		group: this.buttons
 	});
 
@@ -163,6 +179,7 @@ Game.prototype.updateAppDimensionsListener = function(){
 		this.actionButton.updatePosition();
 		this.debugButton.updatePosition();
 		this.fullScreenButton.updatePosition();
+		this.menuButton.updatePosition();
 		//this.menu.update();
 	}
 

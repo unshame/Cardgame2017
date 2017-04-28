@@ -141,8 +141,8 @@ Button.prototype.updatePosition = function(position){
 		position = this.defaultPosition;
 	if(typeof position == 'function')
 		position = position(this.width, this.height);
-	this.x = position.x - this.width/2;
-	this.y = position.y - this.height/2;
+	this.x = position.x;
+	this.y = position.y;
 
 	if(this.label){
 		this.label.x = this.centerX;
