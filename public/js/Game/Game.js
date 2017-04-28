@@ -65,6 +65,7 @@ Game.prototype.initialize = function(){
 
 	//Кнопки (временные)
 	this.buttons = this.add.group();
+	this.cornerButtons = this.add.group();
 	this.actionButton = new Button({
 		position: function(width, height){
 			return grid.at(
@@ -112,7 +113,7 @@ Game.prototype.initialize = function(){
 		context: this,
 		color: 'orange',
 		size: 'small',
-		group: this.buttons
+		group: this.cornerButtons
 	});
 
 	this.menuButton = new Button({
@@ -127,7 +128,7 @@ Game.prototype.initialize = function(){
 		context: this,
 		color: 'orange',
 		size: 'small',
-		group: this.buttons
+		group: this.cornerButtons
 	});
 
 	this.actionButton.disable();

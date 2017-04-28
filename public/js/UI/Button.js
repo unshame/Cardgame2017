@@ -52,6 +52,10 @@ var Button = function(options){
 	//Убираем дефолтный курсор
 	this.input.useHandCursor = false;
 
+	game.add.existing(this);
+	if(this.label)
+		game.add.existing(this.label);
+
 	//Группа
 	if(this.options.group){
 		this.group = this.options.group;
@@ -59,10 +63,6 @@ var Button = function(options){
 		if(this.label)
 			this.group.add(this.label);
 	}
-
-	game.add.existing(this);
-	if(this.label)
-		game.add.existing(this.label);
 };
 
 Button.prototype = Object.create(Phaser.Button.prototype);
