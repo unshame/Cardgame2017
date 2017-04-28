@@ -365,7 +365,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 			endPosition = moverData && moverData.vEnd;
 
 		//Не перезапускаем твин, если нет задержки и пункт назначения не изменился
-		if(!shouldRebase && !delay && endPosition && endPosition.x == moveX && endPosition.y == moveY){
+		if(!shouldRebase && endPosition && endPosition.x == moveX && endPosition.y == moveY && moverData.delay == delay){
 			this._updateValue();
 			if(this.bringToTopOn == 'start')
 				this.bringToTop();
@@ -453,7 +453,7 @@ Card.prototype.rotateTo = function(angle, time, delay, easing){
 	//Останавливаем твин, если он есть и угол поворота изменился
 	if(this.rotator){
 		var rotatorData = this.rotator.timeline[this.rotator.current];
-		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle && !game.paused)
+		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle && rotatorData.delay == delay && !game.paused)
 			return;
 
 		this.rotator.stop();
