@@ -50,9 +50,7 @@ Cursor.prototype.update = function(cursorIsInGame){
 		return;
 	}
 	if(
-		cardManager.mouseIsOverACard() ||
-		game.actionButton && game.actionButton.input.pointerOver() ||
-		game.debugButton && game.debugButton.input.pointerOver()
+		cardManager.mouseIsOverACard()
 	){
 		this.x -= this.width*0.41;
 		this.frame = 1;

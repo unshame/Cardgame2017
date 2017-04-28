@@ -65,34 +65,55 @@ Game.prototype.initialize = function(){
 
 	//Кнопки (временные)
 	this.buttons = this.add.group();
-	this.actionButton = new Button(
-		function(){
+	this.actionButton = new Button({
+		position: function(){
 			return grid.at(
 				Math.floor(grid.numCols/2),
-				grid.numRows - grid.density - 2,
-				-95,
-				-25
+				grid.numRows - grid.density - 2
 			);
 		},
-		function(){sendRealAction(actionHandler.realAction);},
-		'Take',
-		null,
-		this.buttons
-	);
-	this.debugButton = new Button(
-		function(){
+		action: function(){sendRealAction(actionHandler.realAction);},
+		text: 'Take',
+		context: null,
+		color: 'orange',
+		size: 'wide',
+		textColor: 'white',
+		group: this.buttons
+	});
+	this.debugButton = new Button({
+		position: function(){
 			return grid.at(
 				grid.numCols - grid.density*1.5 - 1,
-				grid.numRows - grid.density - 2,
-				-95,
-				-25
+				grid.numRows - grid.density - 2
 			);
 		},
-		this.toggleDebugMode,
-		'Debug',
-		this,
-		this.buttons
-	);
+		action: this.toggleDebugMode,
+		text: 'Debug',
+		context: this,
+		color: 'orange',
+		size: 'wide',
+		textColor: 'white',
+		group: this.buttons
+	});
+
+	this.fullScreenButton = new Button({
+		position: function(width, height){
+			return grid.at(
+				grid.numCols,
+				0,
+				-width/2,
+				height/2
+			);
+		},
+		action: this.toggleFullScreen,
+		icon: 'fullscreen',
+		context: this,
+		color: 'orange',
+		size: 'small',
+		textColor: 'white',
+		group: this.buttons
+	});
+
 	this.actionButton.disable();
 	this.world.setChildIndex(this.buttons, 1);
 
@@ -141,6 +162,7 @@ Game.prototype.updateAppDimensionsListener = function(){
 		//Кнопки
 		this.actionButton.updatePosition();
 		this.debugButton.updatePosition();
+		this.fullScreenButton.updatePosition();
 		//this.menu.update();
 	}
 
@@ -150,6 +172,11 @@ Game.prototype.updateAppDimensionsListener = function(){
 
 //Выполняется при изменении размера экрана
 Game.prototype.updateAppDimensions = function(){
+	if(this.shouldUpdateFast){
+		this.shouldUpdateFast = false;
+		this.updateAppDimensionsListener();
+		return;
+	}
 	if(this.dimensionsUpdateTimeout){
 		clearTimeout(this.dimensionsUpdateTimeout);
 	}
@@ -223,8 +250,8 @@ Game.prototype.loadButtonText = function(){
 		return;
 	for(var i = 0; i < this.buttons.children.length; i++){
 		var button = this.buttons.children[i];
-		if(typeof button.text == 'object')
-			button.text.setText(button.text.text);
+		if(typeof button.label == 'object' && button.label.isText)
+			button.label.setText(button.label.text);
 	}
 };
 
@@ -249,3 +276,18 @@ Game.prototype.toggleDebugMode = function(){
 
 	isInDebugMode = this.isInDebugMode;
 };
+
+
+Game.prototype.toggleFullScreen = function(){
+	if (this.scale.isFullScreen){
+		this.fullScreenButton.label.frame = 0;
+		this.shouldUpdateFast = true;
+	    this.scale.stopFullScreen();
+	}
+	else{
+		this.fullScreenButton.label.frame = 1;
+		this.shouldUpdateFast = true;
+	    this.scale.startFullScreen();
+	}
+};
+

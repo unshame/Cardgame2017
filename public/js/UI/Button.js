@@ -2,51 +2,103 @@
  * Конструктор кнопок с текстом
  */
 
-var Button = function(position, action, text, context, group){
+var Button = function(options){
 
+	this.options = this._getDefaultOptions();
+	for(var o in options){
+		if(options.hasOwnProperty(o))
+			this.options[o] = options[o];
+	}
+
+	//Действие
+	this.action = this.options.action;
 	var thisButton = this;
-
 	function actionWrapper(button, pointer, isOver){
 		if(isOver)
 			thisButton.action.call(this, button, pointer, isOver);
 	}
-	this.defaultPosition = position;
-	if(typeof position == 'function')
-		position = position();
 
-	this.action = action;
+	//Phaser кнопка
+	Phaser.Button.call(
+		this, game,
+		0,
+		0,
+		'button_' + this.options.color + '_' + this.options.size,
+		actionWrapper,
+		this.options.context,
+		1, 0, 2, 0
+	);
 
-	Phaser.Button.call(this, game, position.x, position.y, 'button_grey_wide', actionWrapper, context || this, 1, 0, 2, 0);
-	game.add.existing(this);
-
-	var style = { font: '24px Exo', fill: '#000', align: 'center' };
-	this.text = game.add.text(this.centerX, this.centerY, text, style);
-	this.text.anchor.set(0.5, 0.5);
-	this.text.state = 'Out';
-	this.text.downOffset = 5;
-
-	this.input.useHandCursor = false;
-
-	if(group){
-		group.add(this);
-		group.add(this.text);
+	//Текст
+	var style = { font: this.options.font, fill: this.options.textColor, align: 'center' };
+	if(this.options.text){
+		this.label = game.make.text(this.centerX, this.centerY, this.options.text, style);
+		this.label.setShadow(1, 1, 'rgba(0,0,0,0.5)', 1);
+		this.label.isText = true;
+	}
+	else if(this.options.icon){
+		this.label = game.make.image(0, 0, 'icon_' + this.options.icon);
+		this.label.isText = false;
+	}	
+	if(this.label){
+		this.label.state = 'Out';
+		this.label.downOffset = 4;
+		this.label.anchor.set(0.5, 0.5);
 	}
 
+	this.updatePosition(this.options.position);
+
+
+	//Убираем дефолтный курсор
+	this.input.useHandCursor = false;
+
+	//Группа
+	if(this.options.group){
+		this.group = this.options.group;
+		this.group.add(this);
+		if(this.label)
+			this.group.add(this.label);
+	}
+
+	game.add.existing(this);
+	if(this.label)
+		game.add.existing(this.label);
 };
 
 Button.prototype = Object.create(Phaser.Button.prototype);
 Button.prototype.constructor = Button;
 
+Button.prototype._getDefaultOptions = function(){
+	var options = {
+		position: {
+			x: 0,
+			y: 0
+		},
+		color: 'grey',
+		size: 'wide',
+		action: function(){},
+		text: null,
+		icon: null,
+		textColor: 'black',
+		font: '28px Exo',
+		context: this,
+		group: null
+	};
+	return options;
+};
+
 //Прячет кнопку
 Button.prototype.hide = function(){
 	this.visible = false;
-	this.text.visible = false;
+	if(this.label)
+		this.label.visible = false;
 };
 
 //Показывает кнопку
 Button.prototype.show = function(){
 	this.visible = true;
-	this.text.visible = true;
+	if(this.label)
+		this.label.visible = true;
 };
 
 //Включает кнопку
@@ -55,10 +107,13 @@ Button.prototype.enable = function(){
 		return;
 	this.frame = 0;
 	this.inputEnabled = true;
-	this.text.alpha = 1;
-	if(this.text.isDown){
-		this.text.isDown = false;
-		this.updatePosition();
+
+	if(this.label){
+		this.label.alpha = 1;
+		if(this.label.isDown){
+			this.label.isDown = false;
+			this.updatePosition();
+		}
 	}
 };
 
@@ -68,10 +123,13 @@ Button.prototype.disable = function(){
 		return;
 	this.frame = 3;
 	this.inputEnabled = false;
-	this.text.alpha = 0.35;
-	if(!this.text.isDown){
-		this.text.y += this.text.downOffset;
-		this.text.isDown = true;
+
+	if(this.label){
+		this.label.alpha = 0.55;
+		if(!this.label.isDown){
+			this.label.y += this.label.downOffset;
+			this.label.isDown = true;
+		}
 	}
 };
 
@@ -82,32 +140,38 @@ Button.prototype.updatePosition = function(position){
 	else
 		position = this.defaultPosition;
 	if(typeof position == 'function')
-		position = position();
-	this.x = position.x;
-	this.y = position.y;
-	this.text.x = this.centerX;
-	this.text.y = this.centerY;
-	if(this.text.isDown)
-		this.text.y += this.text.downOffset;
+		position = position(this.width, this.height);
+	this.x = position.x - this.width/2;
+	this.y = position.y - this.height/2;
+
+	if(this.label){
+		this.label.x = this.centerX;
+		this.label.y = this.centerY;
+		if(!this.label.isText){
+			this.label.x++;
+			this.label.y -= this.label.downOffset/2;
+		}
+		if(this.label.isDown)
+			this.label.y += this.label.downOffset;
+	}
 };
 
 //Расширение Phaser.Button.changeStateFrame, для добавления изменения позиции текста
 //при изменении состоянии кнопки
 Button.prototype.changeStateFrame = function (state) {
-	if(this.text && this.inputEnabled){
-		if(state != 'Down' && this.text.isDown){
-			this.text.isDown = false;
+	if(this.label && this.inputEnabled){
+		if(state != 'Down' && this.label.isDown){
+			this.label.isDown = false;
 			this.updatePosition();
 		}
-		else if(state == 'Down' && !this.text.isDown){
-			this.text.isDown = true;
-			this.text.y += this.text.downOffset;
+		else if(state == 'Down' && !this.label.isDown){
+			this.label.isDown = true;
+			this.label.y += this.label.downOffset;
 		}
 	}
-	if(this.text)
-		this.text.state = state;
+	if(this.label)
+		this.label.state = state;
 
 	if(this.inputEnabled)
 		return Object.getPrototypeOf(Button.prototype).changeStateFrame.call(this, state);
-
 };

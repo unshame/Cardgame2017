@@ -36,12 +36,12 @@ window.EurecaClientSetup = function(callback, context) {
 		var actionTypes = newActions.map(function(a){return a.type;});
 		if(~actionTypes.indexOf('SKIP')){
 			actionHandler.realAction = 'SKIP';
-			game.actionButton.text.setText('Skip');
+			game.actionButton.label.setText('Skip');
 			game.actionButton.enable();
 		}
 		else if(~actionTypes.indexOf('TAKE')){
 			actionHandler.realAction = 'TAKE';
-			game.actionButton.text.setText('Take');
+			game.actionButton.label.setText('Take');
 			game.actionButton.enable();
 		}
 
