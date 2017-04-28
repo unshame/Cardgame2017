@@ -34,7 +34,7 @@ class Server extends Eureca.Server{
 		this.transfer = Boolean(process.env.TRANSFER || argv.transfer);
 		this.testing = Boolean(argv.t || argv.test || argv.testing);
 		this.debug = Boolean(argv.d || argv.debug);
-		this.port = Number(argv.port);
+		this.port = process.env.PORT || Number(argv.port);
 
 		if(isNaN(this.port) || !this.port)
 			this.port = 5000;
