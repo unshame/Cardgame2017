@@ -9,6 +9,8 @@ var FieldManager = function(isInDebugMode){
 	this.networkCreated = false;
 
 	this.cardsToRemove = {};
+	this.fields = {};
+	this.table = [];
 
 	this.isInDebugMode = isInDebugMode;
 
@@ -91,6 +93,16 @@ FieldManager.prototype.moveCards = function(field, newCards, noDelay){
 	return field.addCards(cardsToPlace, noDelay);
 };
 
+FieldManager.prototype.findFirstEmptyTable = function(){
+	for(var i = 0; i < this.table.length; i++){
+		var field = this.table[i];
+		if(!field.cards.length)
+			return field;
+	}
+	console.error('Field manager: could\'t find an empty table');
+	return null;
+}
+
 
 //FOR EACH FIELD
 
@@ -169,7 +181,9 @@ FieldManager.prototype.resetNetwork = function(){
 		field.destroy();
 	});
 	this.fields = {};
+	this.table = [];
 };
+
 
 //ДЕБАГ
 

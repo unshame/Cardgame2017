@@ -71,10 +71,10 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 	});
 	manager.cardsToRemove.DISCARD_PILE = [];
 
-	//Field
+	//Table
 	for(i = 0; i < this.tableOrder.length; i++){
 		id = 'TABLE' + i;
-		manager.fields[id] = new Field({
+		var tableField = new Field({
 			x: this.positions[id].x,
 			y: this.positions[id].y,
 			width: this.dimensions[id].width,
@@ -90,6 +90,8 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 			specialId: i,
 			debug: manager.isInDebugMode
 		});
+		manager.fields[id] = tableField;
+		manager.table.push(tableField);
 		manager.cardsToRemove[id] = [];
 	}
 

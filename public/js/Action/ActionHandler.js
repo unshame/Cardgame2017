@@ -81,7 +81,7 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 			tint = action.type == 'ATTACK' ? game.colors.green : game.colors.orange;
 		if(action.cid && game.cards[action.cid]){
 			game.cards[action.cid].setPlayability(true, tint);
-			fieldManager.fields[action.field].setHighlight(true, tint);
+			fieldManager.fields[action.field].setHighlight(true, tint, action.type);
 		}
 	}
 };
