@@ -457,7 +457,8 @@ class Game{
 			if(
 				incomingAction.type == validAction.type &&
 				(!validAction.cid || incomingAction.cid == validAction.cid) &&
-				(!validAction.field || incomingAction.field == validAction.field)
+				(!validAction.field || incomingAction.field == validAction.field) &&
+				(!validAction.linkedField || incomingAction.linkedField == validAction.linkedField)
 			){
 				action = validAction;
 				break;

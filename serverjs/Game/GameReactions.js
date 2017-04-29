@@ -31,17 +31,10 @@ class GameReactions{
 		card = cardsById[action.cid];
 		ci = this.hands[player.id].indexOf(card);
 
-		//Находим первое пустое поле
+		if(action.linkedField)
+			action.field = action.linkedField;
+
 		let field = action.field;
-		for(let fi = 0; fi < this.table.length; fi++){
-			let tableField = this.table[fi];
-
-			if(!tableField.attack && !tableField.defense){
-				field = action.field = tableField.id;
-				break;
-			} 
-
-		}
 
 		this.logAction(card, action.type, card.field, field );
 

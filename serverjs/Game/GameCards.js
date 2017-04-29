@@ -30,6 +30,15 @@ class GameCards extends BetterArray{
 		return this.byKey('id');
 	}
 
+	//Возвращает первое свободное место на столе
+	get firstEmptyTable(){
+		for(let fi = 0; fi < this.table.length; fi++){
+			let tableField = this.table[fi];
+			if(!tableField.attack && !tableField.defense)
+				return tableField;
+		}
+	}
+
 	getInfo(){
 
 		let cardsToSend = {};

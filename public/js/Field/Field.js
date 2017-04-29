@@ -33,7 +33,7 @@ var Field = function(options){
 	this.delays = {};
 	this.queuedCards = [];
 	this.focusedCard = null;
-	this.actionType = null;
+	this.linkedField = null;
 
 	this.type = this.options.type;
 	this.id = this.options.id;
@@ -211,10 +211,10 @@ Field.prototype.resize = function(width, height, shouldPlace){
 		this.placeCards();
 };
 
-Field.prototype.setHighlight = function(on, tint, actionType){
+Field.prototype.setHighlight = function(on, tint, linkedField){
 	this.area.visible = on || this.isInDebugMode ? true : false;
 	this.area.tint = on ? (tint || game.colors.orange) : 0xFFFFFF;
-	this.actionType = actionType || null;
+	this.linkedField = fieldManager.fields[linkedField] || null;
 	this.area.alpha = on ? 0.55 : 0.35;
 	this.isHighlighted = on;
 };

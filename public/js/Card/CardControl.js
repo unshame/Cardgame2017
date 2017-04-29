@@ -152,8 +152,8 @@ CardControl.prototype.cardMoveToField = function(newField){
 	this.card = null;
 	this.pointer = null;
 
-	if(newField.actionType == 'ATTACK')
-		newField = fieldManager.findFirstEmptyTable();
+	if(newField.linkedField)
+		newField = newField.linkedField;
 
 	fieldManager.moveCards(newField, [{
 		cid: card.id,

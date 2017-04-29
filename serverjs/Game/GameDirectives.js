@@ -39,6 +39,8 @@ class GameDirectives{
 
 		let actions = [];
 
+		let emptyTable = this.cards.firstEmptyTable;
+
 		//Находим значения карт, которые можно подбрасывать
 		let validValues = [];
 		for(let fi = 0; fi < this.table.length; fi++){
@@ -64,7 +66,8 @@ class GameDirectives{
 					let action = {
 						type: 'ATTACK',
 						cid: cid,
-						field: this.table[fi].id
+						field: this.table[fi].id,
+						linkedField: emptyTable.id
 					};
 					actions.push(action);
 				}
@@ -172,6 +175,9 @@ class GameDirectives{
 		//Возожность перевода
 		let defenseActionFields = actions.map((action) => action.field);
 		if(canTransfer && attackField){
+
+			let emptyTable = this.cards.firstEmptyTable;
+
 			for(let di = 0; di < defenseFields.length; di++){
 				for(let ci = 0; ci < hand.length; ci++){
 					let card = hand[ci];
@@ -191,7 +197,8 @@ class GameDirectives{
 						let action = {
 							type: 'ATTACK',
 							cid: cid,
-							field: fid
+							field: fid,
+							linkedField: emptyTable.id
 						};
 						actions.push(action);
 					}
