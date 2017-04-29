@@ -12,7 +12,7 @@ class Player{
 		this.connId = connId;
 
 		if(this.remote){
-			this.remote.setId(this.id);
+			this.remote.setId(this.connId, this.id);
 			this.connected = true;
 		}
 
@@ -22,7 +22,7 @@ class Player{
 	}
 
 	meetOpponents(opponents){
-		if(this.remote)
+		if(this.remote && this.connected)
 			this.remote.meetOpponents(opponents);
 	}
 
@@ -37,7 +37,7 @@ class Player{
 
 		if(numDiscarded || numDiscarded === 0)
 			action.numDiscarded = numDiscarded;	
-		if(this.remote)
+		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
 	}
 
@@ -49,7 +49,7 @@ class Player{
 		for(let ci = 0; ci < deals.length; ci++){
 			action.cards.push(deals[ci]);
 		}
-		if(this.remote)
+		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
 	}
 
@@ -59,12 +59,12 @@ class Player{
 			cards: cards,
 			pid: winner
 		};
-		if(this.remote)
+		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
 	}
 
 	recieveValidActions(actions, time){
-		if(this.remote){
+		if(this.remote && this.connected){
 			let current_time = Date.now();
 			this.remote.recievePossibleActions(actions, current_time + time*1000, current_time);
 		}
@@ -76,17 +76,17 @@ class Player{
 
 
 	recieveCompleteAction(action){
-		if(this.remote)
+		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
 	}
 
 	recieveNotification(note, actions){
-		if(this.remote)
+		if(this.remote && this.connected)
 			this.remote.recieveNotification(note, actions);
 	}
 
 	handleLateness(){
-		if(this.remote)
+		if(this.remote && this.connected)
 			this.remote.handleLateness();
 	}
 
@@ -117,6 +117,19 @@ class Player{
 				this.sendResponse(action);
 			},1000);
 		}
+	}
+
+	updateRemote(newConnId, newRemote){
+		this.remote = newRemote;
+		this.connId = newConnId;
+		if(this.remote)
+			this.remote.updateId(this.id);
+	}
+
+	reconnect(){
+		this.connected = true;
+		if(this.game)
+			this.game.players.gameStateNotifyOnReconnect(this);
 	}
 }
 

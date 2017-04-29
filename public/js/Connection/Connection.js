@@ -8,7 +8,7 @@ var server,
 	isInDebugMode = false,
 	responseTimer = null;
 
-window.EurecaClientSetup = function(callback, context) {
+window.setupClient = function(callback, context) {
 	//создаем eureca.io клиент
 
 	var client = new Eureca.Client();
@@ -21,11 +21,26 @@ window.EurecaClientSetup = function(callback, context) {
 	
 	//Методы, принадлежащие export, становятся доступны на стороне сервера
 	
-	client.exports.setId = function(pid){
+	client.exports.setId = function(connId, pid){
 		resetTimer();
 		game.pid = pid;
-		window.playerManager = new PlayerManager(pid);
+		var oldId = localStorage.getItem('durak_id');
+		if(oldId){
+			server.reconnectClient(oldId);
+		}
+		else{
+			window.playerManager = new PlayerManager(pid);
+		}
+		localStorage.setItem('durak_id', connId);
 	};	
+	client.exports.updateId = function(pid){
+		if(pid){
+			console.log('Reconnected to', pid);
+			game.pid = pid;
+		}
+		window.playerManager = new PlayerManager(game.pid);
+		server.requestGameInfo();
+	};
 	client.exports.meetOpponents = function(opponents){
 		resetTimer();
 		if(isInDebugMode)

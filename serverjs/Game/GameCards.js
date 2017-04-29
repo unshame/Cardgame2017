@@ -30,15 +30,16 @@ class GameCards extends BetterArray{
 		return this.byKey('id');
 	}
 
-	getInfo(players){
+	getInfo(){
 
 		let cardsToSend = {};
+
+		let players = this.game.players;
 
 		for(let pi = 0; pi < players.length; pi++){
 
 			let p = players[pi];
 			let pid = p.id;
-			let hand = this.hands[pid];
 			cardsToSend[pid] = [];
 
 			//Колода
@@ -56,18 +57,25 @@ class GameCards extends BetterArray{
 			}
 
 			//Руки
-			for(let ci = 0; ci < hand.length; ci++){
+			for(let hid in this.hands){
 
-				let card = hand[ci];
-				let newCard = card.info;
+				if(!this.hands.hasOwnProperty(hid))
+					return;
 
-				if(card.field != pid){
-					newCard.value = null;
-					newCard.suit = null;			
-				} 
+				let hand = this.hands[hid];
+				for(let ci = 0; ci < hand.length; ci++){
 
-				cardsToSend[pid].push(newCard);
-			}			
+					let card = hand[ci];
+					let newCard = card.info;
+
+					if(card.field != pid){
+						newCard.value = null;
+						newCard.suit = null;			
+					} 
+
+					cardsToSend[pid].push(newCard);
+				}	
+			}		
 
 			//В игре
 			for(let fi = 0; fi < this.table.length; fi++){

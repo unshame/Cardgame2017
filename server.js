@@ -6,6 +6,7 @@ const Server = require(__dirname + '/serverjs/Server/Server');
 
 let server = new Server({allow:[
 	'setId',
+	'updateId',
 	'meetOpponents',
 	'recievePossibleActions',
 	'recieveCompleteAction',

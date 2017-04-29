@@ -55,11 +55,7 @@ class Server extends Eureca.Server{
 			'debug=' + this.params.debug
 		);
 
-		if(this.params.rndBots && this.params.numBots)
-			this.params.numBots = Math.floor(Math.random()*this.params.numBots) + 1;
-
 		if(!this.params.testing){
-			console.log('Bots added:', this.params.numBots);
 			console.log('Waiting for players:', this.params.numPlayers);
 		}
 
@@ -95,30 +91,13 @@ class Server extends Eureca.Server{
 		//Запоминаем информацию о клиенте
 		this.clients[conn.id] = {id:conn.id, remote:remote};
 
-		if(!this.newPlayers.length && this.params.numBots){
-			let randomNamesCopy = this.randomNames.slice();
-			for (let n = 0; n < this.params.numBots; n++) {
-				let bot = new Bot(randomNamesCopy);
-				this.newPlayers.push(bot);
-			}
-		}
-
 		//Подключаем клиента к экземпляру игрока	
 		let p = new Player(remote, conn.id);
 
 		console.log('New client %s (%s)\n', p.id, conn.id, conn.remoteAddress);
 
 		//Запускаем игру с ботами и игроком
-		this.newPlayers.push(p);
 		this.players[conn.id] = p;
-
-		if(this.newPlayers.length >= this.params.numPlayers + this.params.numBots){	
-			this.games.push(new Game(this.newPlayers, this.params.transfer, this.params.debug));
-			this.newPlayers = [];
-		}
-		else{
-			console.log('Waiting for players:', this.params.numPlayers - this.newPlayers.length + this.params.numBots);
-		}
 	}
 
 	handleDisconnect(conn){
@@ -161,6 +140,32 @@ class Server extends Eureca.Server{
 			if(this.params.testing)
 				Tests.runTest(this.params.numBots, null, this.params.debug);
 		});
+	}
+
+	addPlayerToQueue(player){
+		this.newPlayers.push(player);
+		if(this.newPlayers.length >= this.params.numPlayers){	
+
+			if(this.params.numBots){
+
+				let numBots = this.params.numBots;
+				if(this.params.rndBots)
+					numBots = Math.floor(Math.random()*numBots) + 1;
+
+				let randomNamesCopy = this.randomNames.slice();
+				for (let n = 0; n < numBots; n++) {
+					let bot = new Bot(randomNamesCopy);
+					this.newPlayers.push(bot);
+				}
+				console.log('Bots added:', numBots);
+			}
+
+			this.games.push(new Game(this.newPlayers, this.params.transfer, this.params.debug));
+			this.newPlayers = [];
+		}
+		else{
+			console.log('Waiting for players:', this.params.numPlayers - this.newPlayers.length);
+		}
 	}
 
 

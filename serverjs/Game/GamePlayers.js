@@ -291,7 +291,7 @@ class GamePlayers extends BetterArray{
 
 		//Карты
 		if(send.cards)
-			cardsToSend = game.cards.getInfo(players);
+			cardsToSend = game.cards.getInfo();
 
 		//Игроки
 		if(send.players)
@@ -313,6 +313,19 @@ class GamePlayers extends BetterArray{
 		catch(e){
 			utils.log('ERROR: Couldn\'t send game info', e);
 		}
+	}
+
+	gameStateNotifyOnReconnect(player){
+		if(!this.includes(player)){
+			utils.log('WARNING: Can\'t reconnect player that\'s not in this game', this.game.id, player.id);
+			return;
+		}
+		this.gameStateNotify([player], {
+			cards: true,
+			players: true,
+			suit: true,
+			discard: true
+		})
 	}
 
 	//Оповещает игроков об оппонентах

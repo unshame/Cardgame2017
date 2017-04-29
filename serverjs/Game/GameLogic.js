@@ -67,6 +67,8 @@ class Game{
 			actionAttack: 20,
 			actionDefend: 20
 		};
+		this.actionDeadline = null;
+		this.timer = null;
 
 		//Запускаем игру
 		this.reset();
@@ -294,7 +296,9 @@ class Game{
 
 		this.players.working = players;
 		if(players.length){
-			this.timer = setTimeout(this.timeOut.bind(this), time * 1000);
+			let duration = time * 1000;
+			this.actionDeadline = Date.now() + duration;
+			this.timer = setTimeout(this.timeOut.bind(this), duration);
 		}
 		else{
 			utils.log('ERROR: Set to wait for response but nobody to wait for');
@@ -356,7 +360,8 @@ class Game{
 			return;
 		}
 		if(this.validActions.length && !action){
-			utils.log('ERROR: Wating for action but no action recieved');
+			utils.log('WARNING: Wating for action but no action recieved');
+			player.recieveValidActions(this.validActions.slice(), (this.actionDeadline - Date.now())/1000);
 			return;
 		}
 
@@ -410,10 +415,10 @@ class Game{
 		if(!playersWorking.length){
 			clearTimeout(this.timer);
 
-			//Останавливаем игру, если игрок отключился
+/*			//Останавливаем игру, если игрок отключился
 			if(this.players.getWithFirst('connected',false)){
 				return;
-			}
+			}*/
 
 			this.continue();
 		}
@@ -508,6 +513,10 @@ class Game{
 			note.successful = false;
 
 		return note;
+	}
+
+	isStarted(){
+		return this.states.current != 'NOT_STARTED';
 	}
 
 	//Записывает действие над картой в лог

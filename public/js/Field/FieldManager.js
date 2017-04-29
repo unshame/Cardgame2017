@@ -79,7 +79,7 @@ FieldManager.prototype.moveCards = function(field, newCards, noDelay){
 			cardsToPlace.push(card);
 		}
 		else{
-			console.error('Field Manager: Card', card.cid, 'not found');
+			console.error('Field Manager: Card', cid, 'not found');
 		}
 	}
 	return field.addCards(cardsToPlace, noDelay);
@@ -141,6 +141,8 @@ FieldManager.prototype.placeQueuedCards = function(){
 
 //Меняет размеры и устанавливает позицию полей в соотстветсвии с this.positions и this.dimensions
 FieldManager.prototype.resizeFields = function(){
+	if(!this.networkCreated)
+		return;
 	this.builder._calculateSizes();
 	this.forEachField(function(field, si){
 		field.setBase(this.builder.positions[si].x, this.builder.positions[si].y);

@@ -42,7 +42,7 @@ playState.preload = function(){
 };
 
 playState.create = function(){
-	game.client = EurecaClientSetup(game.initialize, game);
+	game.client = setupClient(game.initialize, game);
 };
 
 playState.update = function(){
