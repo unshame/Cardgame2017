@@ -63,24 +63,29 @@ class Server extends Eureca.Server{
 		this.app = express();
 		this.app.use(express.static(path.join(__dirname, rootPath, '/public')));
 
-		this.clients = {};
-		this.games = [];
-		this.players = {};
-		this.newPlayers = [];
+		this.clients = {};		//подключенные клиенты
+		this.games = [];		//Работающие игры
+		this.players = {};		//Все игроки
+		this.newPlayers = [];	//Игроки в очереди
 
+		//Биндим функции на ивенты
 		this.on('connect', this.handleConnect);
 		this.on('disconnect', this.handleDisconnect);
 		this.on('error', this.handleError);
 		this.on('message', this.handleMessage);
 
-		this.randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavonne','Leola','Arlena','Marilynn','Shawnna','Alanna','Armando','Julieann','Alyson','Rutha','Wilber','Marty','Tyrone','Mammie','Shalon','Faith','Mi','Denese','Flora','Josphine','Christa','Sharonda','Sofia','Collene','Marlyn','Herma','Mac','Marybelle','Casimira','Nicholle','Ervin','Evia','Noriko','Yung','Devona','Kenny','Aliza','Stacey','Toni','Brigette','Lorri','Bernetta','Sonja','Margaretta', 'Johnny Cocksucker III'];
+		//Функции, доступные со стороны клиента
 		this.exports = getRemoteFunctions(this);
 
+		//Случайные имена ботов
+		this.randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavonne','Leola','Arlena','Marilynn','Shawnna','Alanna','Armando','Julieann','Alyson','Rutha','Wilber','Marty','Tyrone','Mammie','Shalon','Faith','Mi','Denese','Flora','Josphine','Christa','Sharonda','Sofia','Collene','Marlyn','Herma','Mac','Marybelle','Casimira','Nicholle','Ervin','Evia','Noriko','Yung','Devona','Kenny','Aliza','Stacey','Toni','Brigette','Lorri','Bernetta','Sonja','Margaretta', 'Johnny Cocksucker III'];
+		
 		//Подключаем сервер к порту
 		this.httpServer = http.createServer(this.app);
 		this.attach(this.httpServer);
 	}
 
+	//Обработка подключения нового клиента
 	handleConnect(conn){
 		if(this.params.testing)
 			return;
@@ -100,6 +105,7 @@ class Server extends Eureca.Server{
 		this.players[conn.id] = p;
 	}
 
+	//Обработка отключения клиента
 	handleDisconnect(conn){
 		if(this.params.testing)
 			return;
@@ -110,14 +116,17 @@ class Server extends Eureca.Server{
 
 		let p = this.players[removeId];
 		if(p){
+			//Удаляем игрока из очереди
 			let pi = this.newPlayers.indexOf(p);
 			if(~pi){
 				this.newPlayers.splice(pi, 1);
 			}
 
+			//Если игрок не находится в игре, удаляем его
 			if(!p.game){
 				delete this.players[removeId];
 			}
+			//иначе устанавливаем отключенный статус
 			else{
 				p.connected = false;
 			}
@@ -126,14 +135,17 @@ class Server extends Eureca.Server{
 		delete this.clients[removeId];
 	}
 
+	//Обработка ошибок
 	handleError(conn){
 
 	}
 
+	//Выполняется при любом ответе от клиента
 	handleMessage(conn){
 
 	}
 
+	//Запускает сервер
 	start(){
 		this.httpServer.listen(this.params.port, () => {
 			console.log('Node app is running on port', this.params.port);
@@ -142,13 +154,18 @@ class Server extends Eureca.Server{
 		});
 	}
 
+	//Добавляет игрока в очередь и запускает игру, если очередь заполнена
 	addPlayerToQueue(player){
 		this.newPlayers.push(player);
+
+		//Запускаем игру при достаточном кол-ве игроков
 		if(this.newPlayers.length >= this.params.numPlayers){	
 
+			//Добавляем ботов, если нужно
 			if(this.params.numBots){
-
 				let numBots = this.params.numBots;
+
+				//Случайное кол-во ботов
 				if(this.params.rndBots)
 					numBots = Math.floor(Math.random()*numBots) + 1;
 
@@ -160,9 +177,11 @@ class Server extends Eureca.Server{
 				console.log('Bots added:', numBots);
 			}
 
+			//Создаем игру, очищаем очередь
 			this.games.push(new Game(this.newPlayers, this.params.transfer, this.params.debug));
 			this.newPlayers = [];
 		}
+		//иначе продолжаем ждать игроков
 		else{
 			console.log('Waiting for players:', this.params.numPlayers - this.newPlayers.length);
 		}

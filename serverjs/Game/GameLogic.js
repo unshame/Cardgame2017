@@ -36,11 +36,12 @@ class Game{
 		this.reactions = new GameReactions();
 		this.directives = new GameDirectives();
 
-		//Сохраняем ссылки на игроков локально
+		//Добавляем бота, если игрок один
 		if(players.length < 2){
 			players.push(new Bot(['addedBot']));
 			utils.log('WARNING: Only one player at the start of the game, adding a bot');
 		}
+		//Сохраняем ссылки на игроков локально
 		this.players = new GamePlayers(this, players.slice());
 
 		//Сообщаем игрокам о соперниках
@@ -298,8 +299,11 @@ class Game{
 		this.players.working = players;
 		if(players.length){
 			let duration = time * 1000;
+
+			//Если игрок afk, время действия уменьшается
 			if(players.length == 1 && players[0].afk)
 				duration = this.timeouts.afk * 1000;
+
 			this.actionDeadline = Date.now() + duration;
 			this.timer = setTimeout(this.timeOut.bind(this), duration);
 		}
@@ -333,6 +337,7 @@ class Game{
 			//У нас поддерживается только одно действие от одного игрока за раз
 			let player = playersWorking[0];	
 
+			//Устанавливаем, что игрок не выбрал действие
 			player.afk = true;
 
 			let outgoingAction = this.processAction(player, this.validActions[actionIndex]);
@@ -377,6 +382,7 @@ class Game{
 		//Выполняем или сохраняем действие
 		if(action){
 
+			//Игрок выбрал действие, он не afk
 			if(player.afk)
 				player.afk = false;
 
@@ -425,12 +431,6 @@ class Game{
 		//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
 		if(!playersWorking.length){
 			clearTimeout(this.timer);
-
-/*			//Останавливаем игру, если игрок отключился
-			if(this.players.getWithFirst('connected',false)){
-				return;
-			}*/
-
 			this.continue();
 		}
 	}
@@ -526,6 +526,8 @@ class Game{
 		return note;
 	}
 
+	//Запущена ли игра
+	//Игра не запущена, когда идет голосование о рестарте
 	isStarted(){
 		return this.states.current != 'NOT_STARTED';
 	}

@@ -61,7 +61,7 @@ class GamePlayers extends BetterArray{
 		}
 	}
 
-	//Ставит статусы по умолчанию
+	//Ставит статусы по умолчанию хода
 	resetTurn(){
 		for(let i = 0; i < this.length; i++){
 			let p = this[i];
@@ -69,7 +69,7 @@ class GamePlayers extends BetterArray{
 		}
 	}
 
-	//Ставит статусы по умолчанию
+	//Ставит статусы по умолчанию игры
 	resetGame(){
 		for(let i = 0; i < this.length; i++){
 			let p = this[i];
@@ -315,6 +315,7 @@ class GamePlayers extends BetterArray{
 		}
 	}
 
+	//Передает полную информацию об игре игроку
 	gameStateNotifyOnReconnect(player){
 		if(!this.includes(player)){
 			utils.log('WARNING: Can\'t reconnect player that\'s not in this game', this.game.id, player.id);
