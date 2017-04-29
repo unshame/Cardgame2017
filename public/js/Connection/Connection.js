@@ -70,6 +70,7 @@ window.setupClient = function(callback, context) {
 			console.log(newActions);
 	};
 	client.exports.recieveCompleteAction = function(action){
+		game.queueButton.hide();
 		resetTimer();
 		game.rope.stop();
 		cardManager.throwCardsStop();

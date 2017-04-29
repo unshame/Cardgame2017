@@ -66,18 +66,37 @@ Game.prototype.initialize = function(){
 	//Кнопки (временные)
 	this.buttons = this.add.group();
 	this.cornerButtons = this.add.group();
+	this.queueButton = new Button({
+		position: function(width, height){
+			return {
+				x: game.screenWidth/2 - width/2,
+				y: game.screenHeight/2 - height/2
+			};
+		},
+		action: function(){
+			server.queueUp();
+			this.hide();
+		},
+		text: 'Queue Up',
+		color: 'grey',
+		size: 'wide',
+		textColor: 'black',
+		group: this.buttons
+	});
 	this.actionButton = new Button({
 		position: function(width, height){
-			return grid.at(
-				Math.floor(grid.numCols/2),
-				grid.numRows - grid.density - 2,
-				-width/2,
-				-height/2
-			);
+			return {
+				x: game.screenWidth/2 - width/2,
+				y: grid.at(
+					0,
+					grid.numRows - grid.density - 2,
+					0,
+					-height/2
+				).y
+			};
 		},
 		action: function(){sendRealAction(actionHandler.realAction);},
 		text: 'Take',
-		context: null,
 		color: 'orange',
 		size: 'wide',
 		textColor: 'white',

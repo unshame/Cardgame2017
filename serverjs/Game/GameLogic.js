@@ -57,15 +57,16 @@ class Game{
 
 		//Время ожидания сервера
 		this.timeouts = {
-			gameStart: 20,
+			gameStart: 10,
 			gameEnd: 20,
-			trumpCards: 20,
-			deal: 20,
-			discard: 20,
-			take: 20,
-			actionComplete: 20,
+			trumpCards: 10,
+			deal: 5,
+			discard: 5,
+			take: 5,
+			actionComplete: 3,
 			actionAttack: 20,
-			actionDefend: 20
+			actionDefend: 20,
+			afk: 5
 		};
 		this.actionDeadline = null;
 		this.timer = null;
@@ -297,6 +298,8 @@ class Game{
 		this.players.working = players;
 		if(players.length){
 			let duration = time * 1000;
+			if(players.length == 1 && players[0].afk)
+				duration = this.timeouts.afk * 1000;
 			this.actionDeadline = Date.now() + duration;
 			this.timer = setTimeout(this.timeOut.bind(this), duration);
 		}
@@ -329,6 +332,8 @@ class Game{
 
 			//У нас поддерживается только одно действие от одного игрока за раз
 			let player = playersWorking[0];	
+
+			player.afk = true;
 
 			let outgoingAction = this.processAction(player, this.validActions[actionIndex]);
 
@@ -369,6 +374,10 @@ class Game{
 
 		//Выполняем или сохраняем действие
 		if(action){
+
+			if(player.afk)
+				player.afk = false;
+			
 			let outgoingAction;
 
 			//Во время игры один игрок действует за раз

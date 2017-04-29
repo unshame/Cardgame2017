@@ -19,11 +19,14 @@ class Player{
 		this.name = name || this.id;
 
 		this.game = null;
+		this.afk = false;
 	}
 
 	meetOpponents(opponents){
 		if(this.remote && this.connected)
 			this.remote.meetOpponents(opponents);
+		else if(!this.connected)
+			this.sendInstantResponse();
 	}
 
 	recieveGameInfo(cards, players, trumpSuit, numDiscarded){
@@ -39,6 +42,8 @@ class Player{
 			action.numDiscarded = numDiscarded;	
 		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
+		else if(!this.connected)
+			this.sendInstantResponse();
 	}
 
 	recieveDeals(deals){
@@ -51,6 +56,8 @@ class Player{
 		}
 		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
+		else if(!this.connected)
+			this.sendInstantResponse();
 	}
 
 	recieveMinTrumpCards(cards, winner){
@@ -61,12 +68,16 @@ class Player{
 		};
 		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
+		else if(!this.connected)
+			this.sendInstantResponse();
 	}
 
 	recieveValidActions(actions, time){
 		if(this.remote && this.connected){
-			let current_time = Date.now();
-			this.remote.recievePossibleActions(actions, current_time + time*1000, current_time);
+			let now = Date.now();
+			if(this.afk)
+				time = this.game.timeouts.afk;
+			this.remote.recievePossibleActions(actions, now + time*1000, now);
 		}
 
 		//Функции для дебага
@@ -78,16 +89,22 @@ class Player{
 	recieveCompleteAction(action){
 		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
+		else if(!this.connected)
+			this.sendInstantResponse();
 	}
 
 	recieveNotification(note, actions){
 		if(this.remote && this.connected)
 			this.remote.recieveNotification(note, actions);
+		else if(!this.connected)
+			this.sendInstantResponse();
 	}
 
 	handleLateness(){
 		if(this.remote && this.connected)
 			this.remote.handleLateness();
+		else if(!this.connected)
+			this.sendInstantResponse();
 	}
 
 	sendResponse(action){
@@ -96,6 +113,10 @@ class Player{
 			return;
 		}
 		this.game.recieveResponse(this, action ? action : null);
+	}
+
+	sendInstantResponse(){
+		setTimeout(() => {this.sendResponse();},0);
 	}
 
 	sendRandomAction(actions){
@@ -120,10 +141,12 @@ class Player{
 	}
 
 	updateRemote(newConnId, newRemote){
-		this.remote = newRemote;
-		this.connId = newConnId;
+		if(newConnId){
+			this.connId = newConnId;
+			this.remote = newRemote;
+		}
 		if(this.remote)
-			this.remote.updateId(this.id);
+			this.remote.updateId(newConnId ? this.id : null);
 	}
 
 	reconnect(){

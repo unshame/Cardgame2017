@@ -15,12 +15,12 @@ module.exports = function(server){
 			let player = server.players[connId];
 			if(player && !player.connected && player.game.isStarted()){
 				server.players[newConnId] = player;
-				server.players[connId] = null;
+				delete server.players[connId];
 				player.updateRemote(newConnId, server.clients[newConnId].remote);
 			}
 			else{
 				let player = server.players[newConnId];
-				player.remote.updateId();
+				player.updateRemote();
 			}
 		},
 		queueUp: function(){
