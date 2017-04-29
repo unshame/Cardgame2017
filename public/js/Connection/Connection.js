@@ -82,11 +82,10 @@ window.setupClient = function(callback, context) {
 	};
 	client.exports.recieveNotification = function(note, actions){
 		resetTimer();
-		console.log(note);
 		if(note && note.results && note.results.winners && ~note.results.winners.indexOf(game.pid))
 			cardManager.throwCardsStart();
 
-		if(isInDebugMode)
+		//if(isInDebugMode)
 			console.log(note, actions);
 	};
 	client.exports.handleLateness = function(){

@@ -361,12 +361,14 @@ class Game{
 		let playersWorking = this.players.working;
 		let pi = playersWorking.indexOf(player);
 		if(!~pi){
-			utils.log('ERROR:', player.name, 'Late or uncalled response');
+			if(player.type != 'player' || !this.simulating)
+				utils.log('ERROR:', player.name, player.id, 'Late or uncalled response');
 			return;
 		}
 		if(this.validActions.length && !action){
 			utils.log('WARNING: Wating for action but no action recieved');
-			player.recieveValidActions(this.validActions.slice(), (this.actionDeadline - Date.now())/1000);
+			if(this.isStarted())
+				player.recieveValidActions(this.validActions.slice(), (this.actionDeadline - Date.now())/1000);
 			return;
 		}
 
@@ -377,7 +379,7 @@ class Game{
 
 			if(player.afk)
 				player.afk = false;
-			
+
 			let outgoingAction;
 
 			//Во время игры один игрок действует за раз
