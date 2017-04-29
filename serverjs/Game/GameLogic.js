@@ -502,23 +502,33 @@ class Game{
 		//TODO: заменить на this.players.length в финальной версии
 		let minAcceptedNeeded = Math.ceil(this.players.length / 2); 
 		
+		let allConnected = true;
+
 		for(let pi = 0; pi < this.players.length; pi++){
 
-			let pid = this.players[pi].id;
+			let player = this.players[pi]
+			let pid = player.id;
 			let action = this.storedActions[pid];
+
+			if(!player.connected){
+				allConnected = false;
+				continue;
+			}
 
 			if(action && action.type == 'ACCEPT')
 				numAccepted++;
 		}
 
 		utils.log(numAccepted, 'out of', this.players.length, 'voted for rematch');
+		if(!allConnected)
+			utils.log('Some players disconnected');
 
 		let note = {
 			message: 'VOTE_RESULTS',
 			results: utils.copyObject(this.storedActions)
 		};
 
-		if(numAccepted >= minAcceptedNeeded)
+		if(allConnected && numAccepted >= minAcceptedNeeded)
 			note.successful = true;
 		else
 			note.successful = false;

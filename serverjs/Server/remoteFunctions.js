@@ -43,7 +43,7 @@ module.exports = function(server){
 			let player = server.players[this.connection.id];
 			if(player)
 				player.reconnect();
-		}
+		},
 
 		//Добавляет игрока в очередь
 		queueUp: function(){
@@ -59,6 +59,6 @@ module.exports = function(server){
 				}
 				server.addPlayerToQueue(player);
 			}
-		},
+		}
 	}
 }
