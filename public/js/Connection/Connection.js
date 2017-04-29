@@ -33,7 +33,7 @@ window.setupClient = function(callback, context) {
 		}
 		localStorage.setItem('durak_id', connId);
 	};	
-	
+
 	client.exports.updateId = function(pid){
 		if(pid){
 			console.log('Reconnected to', pid);
@@ -97,11 +97,12 @@ function sendAction(field, card){
 
 	if(!actions)
 		return;
-	
+
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
 		if(action.cid == card.id && field.id == action.field){
 			game.rope.stop();
+			game.actionButton.disable();
 			actions = null;
 			server.recieveCompleteAction(action);
 			return true;
@@ -111,22 +112,23 @@ function sendAction(field, card){
 }
 
 function sendRealAction(type){
-	game.actionButton.disable();
 
 	var actions = actionHandler.possibleActions;
 
 	if(!actions || !actions.length)
 		return;
+
 	var actionTypes = actions.map(function(a){return a.type;});
-	var action;
-	if(~actionTypes.indexOf(type))
-		action = {type: type};
-	actions = null;
-	server.recieveCompleteAction(action);
+	if(~actionTypes.indexOf(type)){
+		game.rope.stop();
+		game.actionButton.disable();
+		var action = {type: type};
+		actions = null;
+		server.recieveCompleteAction(action);
+	}
 }
 
 function sendResponse(){
-	game.rope.stop();
 	actionHandler.executeTimedAction();
 	actionHandler.possibleActions = null;
 	server.recieveResponse();
