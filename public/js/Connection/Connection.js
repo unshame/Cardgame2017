@@ -82,8 +82,23 @@ window.setupClient = function(callback, context) {
 	};
 	client.exports.recieveNotification = function(note, actions){
 		resetTimer();
-		if(note && note.results && note.results.winners && ~note.results.winners.indexOf(game.pid))
+		if(note && note.message == 'GAME_ENDED' && note.results && note.results.winners && ~note.results.winners.indexOf(game.pid)){
 			cardManager.throwCardsStart();
+		}
+		else if(note && (note.message == 'INVALID_ACTION' || note.message == 'LATE_OR_UNCALLED_ACTION') && note.action){
+			var action = note.action;
+			var card = cardManager.cards[action.cid];
+			var cardInfo = {
+				cid: card.id,
+				suit: card.suit,
+				value: card.value
+			};
+			var field = fieldManager.fields[playerManager.pid];
+			fieldManager.moveCards(field, [cardInfo]);
+			if(note.validActions){
+				actionHandler.highlightPossibleActions(note.validActions);
+			}
+		}
 
 		//if(isInDebugMode)
 			console.log(note, actions);

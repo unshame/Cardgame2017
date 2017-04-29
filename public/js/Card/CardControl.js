@@ -125,18 +125,18 @@ CardControl.prototype.cardPutDown = function(){
 	var field = this.cardOnValidField();
 
 	if(field && !this.pointer.rightButton.isDown){
-		this.cardRebaseAtPointer(field);
+		this.cardMoveToField(field);
 	}
 	else{
 		this.cardReturn();
 	}
 };
 
-//Оставляет карту в позиции курсора
-CardControl.prototype.cardRebaseAtPointer = function(newField){
+//Перемещает карту в новое поле
+CardControl.prototype.cardMoveToField = function(newField){
 
 	if(!this.card){
-		console.warn('Card control: cardRebaseAtPointer called but no Card assigned.');
+		console.warn('Card control: cardMoveToField called but no Card assigned.');
 		return;
 	}
 
@@ -147,39 +147,27 @@ CardControl.prototype.cardRebaseAtPointer = function(newField){
 		return;
 	}
 
-	if(this.inertiaHistory.length)
-		this.inertiaHistory = [];
+	var card = this.card;
+	var field = card.field;
+	this.card = null;
+	this.pointer = null;
 
-	this.trail.position.x -= this.card.sprite.x; 
-	this.trail.position.y -= this.card.sprite.y; 
-
-	var x = this.card.base.x + this.card.sprite.x;
-	var y = this.card.base.y + this.card.sprite.y;
-	
-	if(this.isInDebugMode)
-		console.log('Card control: Rebasing', this.card.id, 'at', x, y);
-
-	this.card.setBase(x, y);
-	this.card.rotateTo(0, this.card.flipTime, 0);
-	this.card.setRelativePosition(0, 0);
-	this.card.setDraggability(false);
-	this.card.marked = true;
+	fieldManager.moveCards(newField, [{
+		cid: card.id,
+		suit: card.suit,
+		value: card.value
+	}], true);
 
 	fieldManager.forEachField(function(field, si){
 		field.setHighlight(false);
 	});
 
-
-	var field = this.card.field;
 	if(field){
 		for(var ci = 0; ci < field.cards.length; ci++){
-			this.card.field.cards[ci].setPlayability(false);
+			field.cards[ci].setPlayability(false);
 		}
 	}
-			
-	this.card = null;
-	this.pointer = null;
-
+	card.setPlayability(false);
 };
 
 //Возвращает карту на базу
@@ -192,11 +180,6 @@ CardControl.prototype.cardReturn = function(){
 
 	if(this.isInDebugMode)
 		console.log('Card control: Returning', this.card.id, 'to base');
-
-	if(this.card.mover){
-		this.card.mover.stop();
-		this.card.mover = null;
-	}
 
 	if(this.inertiaHistory.length)
 		this.inertiaHistory = [];

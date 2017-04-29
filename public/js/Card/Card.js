@@ -61,7 +61,6 @@ var Card = function (options) {
 	this.suit = this.options.suit;
 	this.value = this.options.value;	
 	this.valueChanged = false;
-	this.marked = false;
 	this.flipTime = this.options.flipTime;
 
 	//Skin
@@ -79,7 +78,7 @@ Card.prototype._getDefaultOptions = function(){
 		suit:null,
 		flipTime: 150,
 		skin:skinManager.skin,
-		fieldId: 'DECK',
+		fieldId: null,
 		debug: false
 	};
 	return options;
@@ -172,8 +171,6 @@ Card.prototype.setValue = function(suit, value, animate){
 
 //Устанавливает перетаскиваемость карты
 Card.prototype.setDraggability = function(draggable){	
-	if(this.marked)
-		return;
 	this.isDraggable = draggable;
 };
 
@@ -253,6 +250,9 @@ Card.prototype.bringToTop = function(fixController){
 //Запоминает id поля, в которое будет перемещена карта
 //Устанавливает перетаскиваемость
 Card.prototype.presetField = function(fieldId){
+	if(this.fieldId == fieldId){
+		return false;
+	}
 	this.fieldId = fieldId;
 	if(fieldId == game.pid){
 		this.setDraggability(true);
@@ -260,6 +260,7 @@ Card.prototype.presetField = function(fieldId){
 	else{
 		this.setDraggability(false);
 	}
+	return true;
 };
 
 //Устанавливает угол поворота карты
@@ -294,9 +295,6 @@ Card.prototype.setScale = function(scale){
 */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn, easing){
 
-	if(this.marked)
-		return;
-
 	if(relativeToBase === undefined)
 		relativeToBase = false;
 	if(shouldRebase === undefined)
@@ -327,27 +325,30 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	if(shouldRebase && newBaseX == this.base.x && newBaseY == this.base.y)
 		shouldRebase = false;
 
-	//Убираем хвост, т.к. он отображается только при перетаскивании карты игроком
-	//Хвост остается, если карта возвращается на базу
-	if(cardControl.trail.parent == this.base && shouldRebase)
-		cardControl.cardResetTrail(true);
-
 	//Меняем позицию базы карты перед началом анимации
 	//и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась
 	if(shouldRebase){
 
 		//Мы будем двигать карту к новой позиции базы
 		moveX = moveY = 0;
-		var newX = this.sprite.x - (newBaseX - this.base.x);
-		var newY = this.sprite.y - (newBaseY - this.base.y);
+		var shiftX = newBaseX - this.base.x,
+			shiftY = newBaseY - this.base.y,
+			newX = this.sprite.x - shiftX,
+			newY = this.sprite.y - shiftY;
 		this.setBase(newBaseX, newBaseY, false);
 		this.setRelativePosition(newX, newY, false);
+
+		//Смещаем хвост карты
+		if(cardControl.trail.parent == this.base){
+			cardControl.cardShiftTrail(-shiftX, -shiftY);
+		}
 	}
 	else{
 		//Если база остается прежней, то двигаем карту к нужной позиции
 		moveX = relativeToBase ? x : x - this.base.x;
 		moveY = relativeToBase ? y : y - this.base.y;
 	}
+
 
 	//Создаем и запускаем твин или перемещаем карту если игра остановлена
 	if(game.paused){
@@ -376,7 +377,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		//когда они несколько раз меняют направление движения (игрок проносит курсор над рукой)
 		//Ограничиваем минимальное время половиной заданного, чтобы карты резко не прыгали
 		if(!delay){		
-			time = Math.max(moverData.duration - moverData.dt*game.speed, time/2);
+			time = Math.max(moverData.duration*game.speed - moverData.dt*game.speed, time/2);
 		}
 
 		//Останавливаем существующий твин
@@ -390,10 +391,10 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 			x: moveX,
 			y: moveY
 		},
-		time/game.speed || 0,
+		(time/game.speed) || 0,
 		easing || Phaser.Easing.Quadratic.Out,
 		true,
-		delay/game.speed || 0
+		(delay/game.speed) || 0
 	);
 
 	//Переворачиваем карту, когда начинается движение

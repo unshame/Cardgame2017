@@ -160,7 +160,7 @@ window.reactions = {
 		};
 		var field = fieldManager.fields[action.field];
 		delay = fieldManager.moveCards(field, [card]);
-		return delay;
+		return delay || field.moveTime;
 	},
 
 	/*

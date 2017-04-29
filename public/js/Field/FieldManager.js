@@ -33,26 +33,31 @@ FieldManager.prototype.queueCards = function(newCards){
 	for(var ci = 0; ci < newCards.length; ci++){
 		var c = newCards[ci];
 		var card = game.cards[c.cid];
+		var fieldChanged;
 		if(card){
-			card.marked = false;
 			card.presetValue(c.suit, c.value);		
-			card.presetField(c.field || c.pid);
+			fieldChanged = card.presetField(c.field || c.pid);
 		}
 		else{
 			console.error('Field manager: Card', c.cid, 'not found');
 			continue;
 		}
-		card.field && this.cardsToRemove[card.field.id].push(card);
-		var fieldId = card.fieldId;
-		if(fieldId == 'BOTTOM')
-			fieldId = 'DECK';
-		delay = this.fields[fieldId].queueCards([card], delay);
+		if(fieldChanged){
+			card.field && this.cardsToRemove[card.field.id].push(card);
+			var fieldId = card.fieldId;
+			if(fieldId == 'BOTTOM')
+				fieldId = 'DECK';
+			delay = this.fields[fieldId].queueCards([card], delay);
+		}
+		else{
+			console.warn('Field manager: Card', c.cid, 'already on field', (c.field || c.pid));
+		}
 	}
 	return delay;
 };
 
 /*
- * Добавляет карты в очередь в поле field
+ * Перемещает карты в соответствующие поля
  * @field Field - куда добавлять
  * @newCards Array of {
  * 		cid,
@@ -72,11 +77,12 @@ FieldManager.prototype.moveCards = function(field, newCards, noDelay){
 			card = game.cards[cid];
 		
 		if(card){
-			card.marked = false;
 			card.presetValue(suit, value);
-			card.presetField(field.id);
-			card.field && card.field.removeCard(card);
-			cardsToPlace.push(card);
+			var fieldChanged = card.presetField(field.id);
+			if(fieldChanged){
+				card.field && card.field.removeCard(card);
+				cardsToPlace.push(card);
+			}
 		}
 		else{
 			console.error('Field Manager: Card', cid, 'not found');

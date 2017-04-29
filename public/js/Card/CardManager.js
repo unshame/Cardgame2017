@@ -25,7 +25,6 @@ CardManager.prototype.createCards = function(cards){
 				id: c.cid,
 				suit: c.suit,
 				value: c.value,
-				fieldId: c.field || c.pid,
 				debug: this.isInDebugMode
 			};
 			this.addCard(options);

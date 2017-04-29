@@ -61,7 +61,7 @@ class Game{
 			gameStart: 10,
 			gameEnd: 20,
 			trumpCards: 10,
-			deal: 5,
+			deal: 10,
 			discard: 5,
 			take: 5,
 			actionComplete: 3,
@@ -368,6 +368,18 @@ class Game{
 		if(!~pi){
 			if(player.type != 'player' || !this.simulating)
 				utils.log('ERROR:', player.name, player.id, 'Late or uncalled response');
+
+			//Сообщаем игроку, что действие пришло не вовремя
+			if(action){
+				this.players.notify(
+					{
+						message: 'LATE_OR_UNCALLED_ACTION',
+						action: action
+					},
+					null,
+					[player]
+				);
+			}
 			return;
 		}
 		if(this.validActions.length && !action){
@@ -410,7 +422,8 @@ class Game{
 					this.players.notify(
 						{
 							message: 'INVALID_ACTION',
-							action: action
+							action: action,
+							validActions: this.validActions.slice()
 						},
 						null,
 						[player]
