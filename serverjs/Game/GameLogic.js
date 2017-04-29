@@ -423,9 +423,10 @@ class Game{
 						{
 							message: 'INVALID_ACTION',
 							action: action,
-							validActions: this.validActions.slice()
+							time: this.actionDeadline,
+							timeSent: Date.now()
 						},
-						null,
+						this.validActions.slice(),
 						[player]
 					);
 				}
@@ -494,15 +495,26 @@ class Game{
 	}
 
 	//Сохраняет полученное действие игрока
-	storeAction(player, action){
+	storeAction(player, incomingAction){
+
+		//Проверка действия
+		let action;
+		for(let ai = 0; ai < this.validActions.length; ai++){
+			let validAction = this.validActions[ai];
+			if(incomingAction.type == validAction.type){
+				action = validAction;
+				break;
+			}
+		}
 
 		let ai = this.validActions.indexOf(action);
 
-		//Проверка действия
 		if( !~ai ){
-			utils.log('ERROR: Invalid action', player.id, action.type, action);
+			utils.log('ERROR: Invalid action', player.id, incomingAction.type, incomingAction);
 			return;
 		}
+
+		action.pid = player.id;
 
 		this.storedActions[player.id] = utils.copyObject(action);
 	}

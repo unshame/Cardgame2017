@@ -171,6 +171,8 @@ CardControl.prototype.cardMoveToField = function(newField){
 		}
 	}
 	card.setPlayability(false);
+	game.actionButton.disable();
+	game.rope.stop();
 };
 
 //Возвращает карту на базу

@@ -5,7 +5,8 @@
 
 var ActionHandler = function(reactions){
 
-	this.reactions = reactions;
+	this.actionReactions = actionReactions;
+	this.notificationReactions = notificationReactions;
 	this.action = null;
 	this.possibleActions = null;
 
@@ -46,7 +47,7 @@ ActionHandler.prototype.executeAction = function(action){
 
 	cardManager.resetRaised();
 
-	var reaction = this.reactions[action.type],
+	var reaction = this.actionReactions[action.type],
 		delay = 0;
 	if(!reaction){
 		console.warn('Action handler: Unknown action type', action.type, action);
@@ -55,6 +56,38 @@ ActionHandler.prototype.executeAction = function(action){
 		delay = reaction.call(this, action);
 	}
 	return delay;
+};
+
+ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent){
+
+	var actionTypes = actions.map(function(a){return a.type;});
+	if(~actionTypes.indexOf('SKIP')){
+		this.realAction = 'SKIP';
+		game.actionButton.label.setText('Skip');
+		game.actionButton.enable();
+	}
+	else if(~actionTypes.indexOf('TAKE')){
+		this.realAction = 'TAKE';
+		game.actionButton.label.setText('Take');
+		game.actionButton.enable();
+	}
+
+	var currentTime = new Date();
+	time = time - currentTime.getTime();
+	if(time)
+		game.rope.start(time - 1000);
+
+	this.highlightPossibleActions(actions, time, timeSent);
+};
+
+ActionHandler.prototype.handleNotification = function(note, actions){
+	var reaction = this.notificationReactions[note.message];
+	if(!reaction){
+		console.warn('Action handler: Unknown notification handler', note.message, note, actions);
+	}
+	else{
+		reaction.call(this, note, actions);
+	}
 };
 
 //Подсвечивает карты, которыми можно ходить

@@ -3,7 +3,7 @@
  * Выполняются в контексте ActionHandler
  */
 
-window.reactions = {
+window.actionReactions = {
 	
 	/*
 	 * 	TRUMP_CARDS - наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них
@@ -191,4 +191,6 @@ window.reactions = {
 	}
 };
 
-reactions['ATTACK'] = reactions['DEFENSE'];
+/*jshint undef:false*/
+
+actionReactions['ATTACK'] = actionReactions['DEFENSE'];
