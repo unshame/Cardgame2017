@@ -11,5 +11,4 @@ module.exports = function(server){
 			player && player.sendResponse();
 		}
 	}
-
 }

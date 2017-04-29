@@ -28,29 +28,39 @@ class Server extends Eureca.Server{
 
 		//Консольные параметры
 		let argv = minimist(paramLine);
-		this.numBots = argv.b === undefined ? Number(argv.bots) : Number(argv.b);
-		this.numPlayers = argv.p === undefined ? Number(argv.players) : Number(argv.p);
-		this.rndBots = Boolean(argv.r || argv.rnd || argv.random);
-		this.transfer = Boolean(process.env.TRANSFER || argv.transfer);
-		this.testing = Boolean(argv.t || argv.test || argv.testing);
-		this.debug = Boolean(argv.d || argv.debug);
-		this.port = process.env.PORT || Number(argv.port);
+		this.params = {
+			numBots: argv.b === undefined ? Number(argv.bots) : Number(argv.b),
+			numPlayers: argv.p === undefined ? Number(argv.players) : Number(argv.p),
+			rndBots: Boolean(argv.r || argv.rnd || argv.random),
+			transfer: Boolean(process.env.TRANSFER || argv.transfer),
+			testing: Boolean(argv.t || argv.test || argv.testing),
+			debug: Boolean(argv.d || argv.debug),
+			port: process.env.PORT || Number(argv.port)
+		};
 
-		if(isNaN(this.port) || !this.port)
-			this.port = 5000;
-		if(isNaN(this.numBots))
-			this.numBots = 3;
-		if(isNaN(this.numPlayers) || !this.numPlayers)
-			this.numPlayers = 1;
+		if(isNaN(this.params.port) || !this.params.port)
+			this.params.port = 5000;
+		if(isNaN(this.params.numBots))
+			this.params.numBots = 3;
+		if(isNaN(this.params.numPlayers) || !this.params.numPlayers)
+			this.params.numPlayers = 1;
 
-		console.log('port=' + this.port, 'numBots=' + this.numBots, 'numPlayers=' + this.numPlayers, 'rndBots=' + this.rndBots, 'transfer=' + this.transfer, 'testing=' + this.testing, 'debug=' + this.debug);
+		console.log(
+			'port=' + this.params.port,
+			'numBots=' + this.params.numBots,
+			'numPlayers=' + this.params.numPlayers,
+			'rndBots=' + this.params.rndBots,
+			'transfer=' + this.params.transfer,
+			'testing=' + this.params.testing,
+			'debug=' + this.params.debug
+		);
 
-		if(this.rndBots && this.numBots)
-			this.numBots = Math.floor(Math.random()*this.numBots) + 1;
+		if(this.params.rndBots && this.params.numBots)
+			this.params.numBots = Math.floor(Math.random()*this.params.numBots) + 1;
 
-		if(!this.testing){
-			console.log('Bots added:', this.numBots);
-			console.log('Waiting for players:', this.numPlayers);
+		if(!this.params.testing){
+			console.log('Bots added:', this.params.numBots);
+			console.log('Waiting for players:', this.params.numPlayers);
 		}
 
 		//express
@@ -76,7 +86,7 @@ class Server extends Eureca.Server{
 	}
 
 	handleConnect(conn){
-		if(this.testing)
+		if(this.params.testing)
 			return;
 
 		//getClient позволяет нам получить доступ к функциям на стороне клиента
@@ -85,9 +95,9 @@ class Server extends Eureca.Server{
 		//Запоминаем информацию о клиенте
 		this.clients[conn.id] = {id:conn.id, remote:remote};
 
-		if(!this.newPlayers.length && this.numBots){
+		if(!this.newPlayers.length && this.params.numBots){
 			let randomNamesCopy = this.randomNames.slice();
-			for (let n = 0; n < this.numBots; n++) {
+			for (let n = 0; n < this.params.numBots; n++) {
 				let bot = new Bot(randomNamesCopy);
 				this.newPlayers.push(bot);
 			}
@@ -102,17 +112,17 @@ class Server extends Eureca.Server{
 		this.newPlayers.push(p);
 		this.players[conn.id] = p;
 
-		if(this.newPlayers.length >= this.numPlayers + this.numBots){	
-			this.games.push(new Game(this.newPlayers, this.transfer, this.debug));
+		if(this.newPlayers.length >= this.params.numPlayers + this.params.numBots){	
+			this.games.push(new Game(this.newPlayers, this.params.transfer, this.params.debug));
 			this.newPlayers = [];
 		}
 		else{
-			console.log('Waiting for players:', this.numPlayers - this.newPlayers.length + this.numBots);
+			console.log('Waiting for players:', this.params.numPlayers - this.newPlayers.length + this.params.numBots);
 		}
 	}
 
 	handleDisconnect(conn){
-		if(this.testing)
+		if(this.params.testing)
 			return;
 
 		console.log('Client disconnected ', conn.id);
@@ -146,10 +156,10 @@ class Server extends Eureca.Server{
 	}
 
 	start(){
-		this.httpServer.listen(this.port, () => {
-			console.log('Node app is running on port', this.port);
-			if(this.testing)
-				Tests.runTest(this.numBots, null, this.debug);
+		this.httpServer.listen(this.params.port, () => {
+			console.log('Node app is running on port', this.params.port);
+			if(this.params.testing)
+				Tests.runTest(this.params.numBots, null, this.params.debug);
 		});
 	}
 
