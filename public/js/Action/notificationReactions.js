@@ -52,7 +52,7 @@ window.notificationReactions = {
 	 * 		}
 	 */
 	VOTE_RESULTS: function(note){
-		console.log(note)
+		console.log(note);
 	},
 
 	/*

@@ -140,7 +140,7 @@ CardControl.prototype.cardMoveToField = function(newField){
 		return;
 	}
 
-	var success = sendAction(newField, this.card);
+	var success = connection.server.sendAction(newField, this.card);
 
 	if(!success){
 		this.cardReturn();

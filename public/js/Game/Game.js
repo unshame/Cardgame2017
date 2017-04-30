@@ -115,7 +115,7 @@ Game.prototype.initialize = function(){
 			};
 		},
 		action: function(){
-			server.queueUp();
+			connection.proxy.queueUp();
 			this.hide();
 		},
 		text: 'Queue Up',
@@ -136,7 +136,9 @@ Game.prototype.initialize = function(){
 				).y
 			};
 		},
-		action: function(){sendRealAction(actionHandler.realAction);},
+		action: function(){
+			connection.server.sendRealAction(actionHandler.realAction);
+		},
 		text: 'Take',
 		color: 'orange',
 		size: 'wide',

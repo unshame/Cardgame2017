@@ -5,8 +5,8 @@
 
 var ActionHandler = function(reactions){
 
-	this.actionReactions = actionReactions;
-	this.notificationReactions = notificationReactions;
+	this.actionReactions = window.actionReactions;
+	this.notificationReactions = window.notificationReactions;
 	this.action = null;
 	this.possibleActions = null;
 

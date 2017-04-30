@@ -42,7 +42,8 @@
     "getSuitStrings":true,
     "cardValueToString":true,
     "reactions": true,
-    "server": true
+    "ConnectionManager": true,
+    "connection": true
   },
   "undef": true,
   "unused": "vars",

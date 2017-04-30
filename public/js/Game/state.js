@@ -42,7 +42,7 @@ playState.preload = function(){
 };
 
 playState.create = function(){
-	game.client = setupClient(game.initialize, game);
+	window.connection = new ConnectionManager(game.initialize, game);
 };
 
 playState.update = function(){
