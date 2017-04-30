@@ -3,8 +3,8 @@
 var Game = function(minWidth, minHeight, speed, isInDebugMode){
 
 	this.speed = speed || 1;
-	this.minWidth = minWidth || 1280;
-	this.minHeight = minHeight || 720;
+	this.minWidth = minWidth || 1024;
+	this.minHeight = minHeight || 768;
 	this.isInDebugMode = isInDebugMode || false;
 
 	this.surface = this.background = this.rope = null;
