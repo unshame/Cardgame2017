@@ -29,7 +29,7 @@ window.setupClient = function(callback, context) {
 			server.reconnectClient(oldId);
 		}
 		else{
-			window.playerManager = new PlayerManager(pid);
+			playerManager.pid = pid;
 		}
 		localStorage.setItem('durak_id', connId);
 	};	
@@ -39,7 +39,7 @@ window.setupClient = function(callback, context) {
 			console.log('Reconnected to', pid);
 			game.pid = pid;
 		}
-		window.playerManager = new PlayerManager(game.pid);
+		playerManager.pid = game.pid;
 		server.requestGameInfo();
 	};
 

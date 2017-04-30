@@ -9,6 +9,7 @@ var Game = function(){
 	
 	window.fieldManager = new FieldManager(false);
 	window.actionHandler = new ActionHandler(window.reactions);
+	window.playerManager = new PlayerManager();
 
 	window.addEventListener('resize', this.updateAppDimensions.bind(this));
 	window.addEventListener('orientationchange', this.updateAppDimensions.bind(this));

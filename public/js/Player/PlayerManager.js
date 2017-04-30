@@ -1,7 +1,7 @@
 /* Менеджер игроков */
 
-var PlayerManager = function(pid){
-	this.pid = pid;
+var PlayerManager = function(){
+	this.pid = null;
 	this.pi = null;
 };
 
