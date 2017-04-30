@@ -25,6 +25,15 @@ var Game = function(minWidth, minHeight, speed, isInDebugMode){
 		white: 0xFFFFFF
 	};
 
+	this.backgroundTextures = [
+		'blue',
+		'green',
+		'black',
+		'assault',
+		'wood_light',
+		'wood_dark'
+	];
+
 	Phaser.Game.call(
 		this,
 		this.screenWidth,
@@ -93,6 +102,7 @@ Game.prototype.initialize = function(){
 	//Фон
 	this.background = this.add.group();
 	this.surface = this.add.tileSprite(0, 0, this.screenWidth, this.screenHeight, 'blue');
+	this.surface.textureName = 'blue';
 	this.background.add(this.surface); 
 
 	window.grid = new Grid({debug: false});	
@@ -370,3 +380,42 @@ Game.prototype.toggleFullScreen = function(){
 	}
 };
 
+Game.prototype.setBackgroundTexture = function(textureName){
+	var fakebg = this.add.tileSprite(0, 0, this.screenWidth, this.screenHeight, this.surface.textureName);
+	this.background.addChildAt(fakebg, 1);
+	this.surface.loadTexture(textureName);
+	this.surface.textureName = textureName;
+	var transition = game.add.tween(fakebg.position);
+	var position, i = Math.floor(Math.random()*4);
+	switch(i){
+		case 0:
+		position = {y: -this.screenHeight};
+		break;
+
+		case 1:
+		position = {y: this.screenHeight};
+		break;
+
+		case 2:
+		position = {x: -this.screenWidth};
+		break;
+
+		case 3:
+		position = {x: this.screenWidth};
+		break;
+	}
+	transition.to(position, 2000, Phaser.Easing.Bounce.Out);
+	transition.onComplete.addOnce(function(){
+		this.destroy();
+	}, fakebg);
+	transition.start();
+};
+
+Game.prototype.nextBackgroundTexture = function(){
+	var ti = this.backgroundTextures.indexOf(this.surface.textureName);
+	ti++;
+	if(!this.backgroundTextures[ti])
+		ti = 0;
+	var textureName = this.backgroundTextures[ti];
+	this.setBackgroundTexture(textureName);
+};
