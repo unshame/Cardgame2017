@@ -31,9 +31,8 @@ Rope.prototype.update = function(){
 		this.stop();
 	}
 	else{
-		var percentage = left/this.duration;
 		this.sprite.height = left/this.duration * this.maxHeight;
-		if(percentage < 0.25 && this.sprite.tint != game.colors.red)
+		if(left <= 5000 && this.sprite.tint != game.colors.red)
 			this.sprite.tint = game.colors.red;
 	}
 };
