@@ -28,7 +28,7 @@ var Game = function(){
 		this,
 		this.screenWidth, 
 		this.screenHeight,  
-		Phaser.Canvas, 
+		Phaser.CANVAS, 
 		'cardgame'
 	);
 };
