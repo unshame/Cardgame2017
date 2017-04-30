@@ -41,7 +41,8 @@
     "sendRealAction":true,
     "getSuitStrings":true,
     "cardValueToString":true,
-    "reactions": true
+    "reactions": true,
+    "server": true
   },
   "undef": true,
   "unused": "vars",

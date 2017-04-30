@@ -1,9 +1,11 @@
 //Модуль, работающий с движком игры и инициализирующий все остальные модули
 
-var Game = function(){
+var Game = function(minWidth, minHeight, speed, isInDebugMode){
 
-	this.speed = 1;
-	this.isInDebugMode = false;
+	this.speed = speed || 1;
+	this.minWidth = minWidth || 1280;
+	this.minHeight = minHeight || 720;
+	this.isInDebugMode = isInDebugMode || false;
 
 	this.surface = this.background = this.rope = null;
 	
@@ -14,8 +16,7 @@ var Game = function(){
 	window.addEventListener('resize', this.updateAppDimensions.bind(this));
 	window.addEventListener('orientationchange', this.updateAppDimensions.bind(this));
 
-	this.screenWidth = window.innerWidth;
-	this.screenHeight = window.innerHeight;
+	this.calculateScreenSize();
 
 	this.colors = {
 		orange: 0xFF8300,
@@ -26,8 +27,8 @@ var Game = function(){
 
 	Phaser.Game.call(
 		this,
-		this.screenWidth, 
-		this.screenHeight,  
+		this.screenWidth,
+ 		this.screenHeight, 
 		Phaser.CANVAS, 
 		'cardgame'
 	);
@@ -36,10 +37,48 @@ var Game = function(){
 Game.prototype = Object.create(Phaser.Game.prototype);
 Game.prototype.constructor = Game;
 
+Game.prototype.calculateScreenSize = function(){
+	var width = window.innerWidth,
+		height = window.innerHeight,
+		minWidth = this.minWidth,
+		minHeight = this.minHeight,
+		diffWidth = minWidth - width,
+		diffHeight = minHeight - height,
+		multWidth = width/minWidth,
+		multHeight = height/minHeight;
+
+	if(this.isInDebugMode){
+		console.log(
+			'width:', width,
+			'height:', height
+		);
+		console.log(
+			'diffWidth:', diffWidth,
+			'diffHeight:', diffHeight
+		);
+		console.log(
+			'multWidth:', multWidth,
+			'multHeight:', multHeight
+		);
+	}
+
+	this.screenWidth = 	Math.max(width, minWidth);
+	this.screenHeight = Math.max(height, minHeight);
+	if(diffWidth > 0){
+		this.screenHeight /= multWidth;
+	}
+	if(diffHeight > 0){
+		this.screenWidth /= multHeight;
+	}
+};
+
 //Инициализация игры
 Game.prototype.initialize = function(){
 	if(this.created)
 		return;
+
+	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+	this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
 	//Отключаем контекстное меню
 	this.canvas.oncontextmenu = function (e) {e.preventDefault();};
@@ -47,7 +86,6 @@ Game.prototype.initialize = function(){
 	//Антиалиасинг
 	//Phaser.Canvas.setImageRenderingCrisp(game.canvas);
 
-	//this.world.setBounds(0, 0, this.screenWidth, this.screenHeight);
 	this.stage.disableVisibilityChange  = true;	
 	
 	//Фон
@@ -181,8 +219,7 @@ Game.prototype.initialize = function(){
 
 //Выполняется по окончании throttle'a изменения размера экрана
 Game.prototype.updateAppDimensionsListener = function(){
-	this.screenWidth = window.innerWidth;
-	this.screenHeight = window.innerHeight;
+	this.calculateScreenSize();
 	if(this.created){
 
 		this.scale.setGameSize(this.screenWidth, this.screenHeight);
