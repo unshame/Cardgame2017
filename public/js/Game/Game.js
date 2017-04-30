@@ -80,6 +80,8 @@ Game.prototype.initialize = function(){
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 	this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
+	this.scale.setGameSize(this.screenWidth, this.screenHeight);
+
 	//Отключаем контекстное меню
 	this.canvas.oncontextmenu = function (e) {e.preventDefault();};
 
