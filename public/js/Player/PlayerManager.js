@@ -3,6 +3,7 @@
 var PlayerManager = function(){
 	this.pid = null;
 	this.pi = null;
+	this.players = [];
 };
 
 PlayerManager.prototype.savePlayers = function(players){
