@@ -14,11 +14,27 @@ window.setupClient = function(callback, context) {
 	var client = new Eureca.Client();
 	
 	client.ready(function (proxy) {		
+		console.log('Ready');
 		server = proxy;
 		callback.call(context);
 	});
-	
-	
+
+	client.onConnectionLost(function(){
+		console.log('Lost connection');
+	});
+
+	client.onDisconnect(function(){
+		console.log('Disconnected');
+	});
+
+	client.onError(function(){
+		console.log('Error');
+	});
+
+	client.onConnect(function(){
+		console.log('Connected');
+	});
+
 	//Методы, принадлежащие export, становятся доступны на стороне сервера
 	
 	client.exports.setId = function(connId, pid){
