@@ -88,6 +88,12 @@ SkinManager.prototype.setSkin = function(skinName){
 			card.applySkin();
 		}
 	}
+	cardManager.emitter.forEach(function(p){
+		p.loadTexture(this.skin.sheetName);
+	}, this);
+	cardControl.trail.forEach(function(p){
+		p.loadTexture(this.skin.trailName);
+	}, this);
 	grid.draw();
 	fieldManager.resizeFields();
 };

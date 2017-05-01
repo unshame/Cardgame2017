@@ -15,6 +15,11 @@ var CardManager = function(isInDebugMode){
 	game.cardsGroup = this.cardsGroup;
 	this.emitter = game.add.emitter(game.world.centerX, -skinManager.skin.height, 100);
 	this.emitter.name = 'partyEmitter';
+	var frames = [];
+	for(var i = 0; i < 52; i++){
+		frames.push(i);
+	}
+	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
 
 	this.isInDebugMode = isInDebugMode || false;
 };
@@ -113,13 +118,8 @@ CardManager.prototype.throwCardsStart = function(){
 
 	this.throwCardsStop();
 
-	var frames = [];
-	for(var i = 0; i < 52; i++){
-		frames.push(i);
-	}
 	this.emitter.maxParticleSpeed = {x: 100*game.speed, y: 500*game.speed};
 	this.emitter.minParticleSpeed = {x: -100*game.speed, y: 300*game.speed};
-	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
 	this.emitter.x = game.world.centerX;
 	this.emitter.width = game.screenWidth;
 	var lifespan = game.screenHeight/this.emitter.minParticleSpeed.y * 1000,

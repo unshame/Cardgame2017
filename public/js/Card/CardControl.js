@@ -11,6 +11,7 @@ var CardControl = function(isInDebugMode){
 
 	this.trail = game.add.emitter(0, 0);
 	this.trailDefaultBase = game.add.group();
+	this.trail.makeParticles(skinManager.skin.trailName, 0);
 	this.trailDefaultBase.name = 'trail';
 	this.trailDefaultBase.add(this.trail);
 	this.trail.gravity = 0;
@@ -88,11 +89,10 @@ CardControl.prototype.cardPickup = function(card, pointer){
 	this.card.base.addAt(this.trail, 0);
 	this.card.setAngle(0);
 
+	this.trail._frames = this.card.suit;
 	this.trail.minParticleSpeed.setTo(-skinManager.skin.width, -skinManager.skin.height);
 	this.trail.maxParticleSpeed.setTo(skinManager.skin.width, skinManager.skin.height);
 	this.lastParticleTime = game.time.time;
-
-	this.trail.makeParticles(this.card.skin.trailName, this.card.suit);
 
 	this.cardSetPathToCursor();
 	game.cardsGroup.bringToTop(this.card.base);
