@@ -55,6 +55,27 @@ SkinManager.prototype.addSkin = function(options){
 	skin.trailPath = options.name && 'assets/skins/' + options.name + '/trails.png' || 'assets/skins/default/trails.png';
 	skin.trailName = options.trailName || options.name + 'Trail';
 
+	skin.loaded = false;
+
+	this.skins[skin.name] = skin;
+	if(this.skinToSet == skin.name){
+		this.skin = skin;
+		this.skinToSet = null;
+		this.loadSkin(skin.name, false);
+	}
+};
+
+//Загружает ассеты скина
+//@skinName String - название скина
+SkinManager.prototype.loadSkin = function(skinName, apply){
+	var skin = this.skins[skinName];
+
+	if(!skin || skin.loaded){
+		return;
+	}
+
+	skin.loaded = true;
+
 	game.load.spritesheet(
 		skin.sheetName, 
 		skin.sheetPath, 
@@ -64,20 +85,25 @@ SkinManager.prototype.addSkin = function(options){
 	);
 	game.load.image(skin.glowSheetName, skin.glowPath);
 	game.load.spritesheet(skin.trailName, skin.trailPath, skin.trailWidth, skin.trailHeight, 4);
+	if(apply)
+		game.load.onLoadComplete.addOnce(this.applySkin, this);
+	game.load.start();
+}
 
-	this.skins[skin.name] = skin;
-	if(this.skinToSet == skin.name){
-		this.skin = skin;
-		this.skinToSet = null;
-	}
-};
-
-//Применяет скин
+//Устанавливает скин
 //@skinName String - название скина
 SkinManager.prototype.setSkin = function(skinName){
 	if(!this.skins[skinName])
 		return;
 	this.skin = this.skins[skinName];
+	if(!this.skin.loaded)
+		this.loadSkin(skinName, true);
+	else
+		this.applySkin();
+};
+
+//Применяет скин
+SkinManager.prototype.applySkin = function(){
 	cardManager.applySkin();
 	cardControl.trailApplySkin();
 	grid.draw();
