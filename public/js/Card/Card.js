@@ -128,7 +128,7 @@ Card.prototype._updateValue = function(){
 
 	this.flipper = game.add.tween(this.sprite.scale);
 	this.flipper.to({x: 0}, (this.flipTime/game.speed)/2);
-	this.flipper.to({x: this.skin.scale.x}, (this.flipTime/game.speed)/2);
+	this.flipper.to({x: this.skin.scale}, (this.flipTime/game.speed)/2);
 
 	if(this.suit === null){
 		this.flipper.onChildComplete.addOnce(function(){
@@ -276,7 +276,7 @@ Card.prototype.setAngle = function(angle){
 
 //Устанавливает масштаб карты относительно масштаба текущего скина
 Card.prototype.setScale = function(scale){
-	this.sprite.scale.setTo(this.skin.scale.x*scale, this.skin.scale.y*scale);
+	this.sprite.scale.setTo(this.skin.scale*scale, this.skin.scale*scale);
 	this.glow.scale.setTo(this.sprite.scale.x*scale, this.sprite.scale.y*scale);
 };
 
@@ -340,7 +340,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 		//Смещаем хвост карты
 		if(cardControl.trail.parent == this.base){
-			cardControl.cardShiftTrail(-shiftX, -shiftY);
+			cardControl.trailShift(-shiftX, -shiftY);
 		}
 	}
 	else{

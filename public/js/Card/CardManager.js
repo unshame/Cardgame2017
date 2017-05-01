@@ -27,7 +27,7 @@ var CardManager = function(isInDebugMode){
 CardManager.prototype.createCards = function(cards){
 	for(var ci = 0; ci < cards.length; ci++){
 		var c = cards[ci];
-		var card = game.cards[c.cid];
+		var card = this.cards[c.cid];
 		if(!card){
 			var options = {
 				id: c.cid,
@@ -85,6 +85,20 @@ CardManager.prototype.resetRaised = function(){
 	if(!raised)
 		return;
 	fieldManager.placeCards();
+};
+
+CardManager.prototype.applySkin = function(){
+	for(var ci in this.cards){
+		if(this.cards.hasOwnProperty(ci)){
+			var card = this.cards[ci]; 
+			card.skin = skinManager.skin;
+			card.applySkin();
+		}
+	}
+	this.emitter.minParticleScale = this.emitter.maxParticleScale = skinManager.skin.scale;
+	this.emitter.forEach(function(p){
+		p.loadTexture(skinManager.skin.sheetName);
+	}, this);
 };
 
 CardManager.prototype.update = function(){

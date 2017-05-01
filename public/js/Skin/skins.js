@@ -16,8 +16,7 @@ skins.push({
 	cardbackPossibleFrames: [51],
 	cardbackFrame: 51,
 	glowHeight: 238,
-	scaleX: 0.4,
-	scaleY: 0.4,
+	scale: 0.4,
 	trumpOffset: 90
 });
 
@@ -32,8 +31,7 @@ skins.push({
 	trumpOffset: 32,
 	trailWidth: 55,
 	trailHeight: 55,
-	scaleX: 0.9,
-	scaleY: 0.9
+	scale: 0.9
 });
 
 //Abstract
@@ -47,8 +45,7 @@ skins.push({
 	trumpOffset: 32,
 	trailWidth: 35,
 	trailHeight: 35,
-	scaleX: 1,
-	scaleY: 1
+	scale: 1
 });
 
 //Uno
@@ -62,6 +59,5 @@ skins.push({
 	trumpOffset: 32,
 	trailWidth: 35,
 	trailHeight: 35,
-	scaleX: 1,
-	scaleY: 1
+	scale: 1
 });

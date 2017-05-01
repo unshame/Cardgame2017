@@ -85,7 +85,7 @@ CardControl.prototype.cardPickup = function(card, pointer){
 	this.cardLastX = this.card.sprite.x;
 
 	this.setCardClickTimer();
-	this.cardResetTrail();
+	this.trailReset();
 	this.card.base.addAt(this.trail, 0);
 	this.card.setAngle(0);
 
@@ -148,6 +148,8 @@ CardControl.prototype.cardMoveToField = function(newField){
 		return;
 	}
 
+	this.setTrailResetTimer();
+
 	var card = this.card;
 	var field = card.field;
 	this.card = null;
@@ -185,6 +187,8 @@ CardControl.prototype.cardReturn = function(){
 	if(this.isInDebugMode)
 		console.log('Card control: Returning', this.card.id, 'to base');
 
+	this.setTrailResetTimer();
+
 	if(this.inertiaHistory.length)
 		this.inertiaHistory = [];
 
@@ -205,6 +209,23 @@ CardControl.prototype.cardReturn = function(){
 };
 
 
+//ТАЙМЕР НАЖАТИЯ
+
+//Запускает таймер клика по карте
+CardControl.prototype.setCardClickTimer = function(){
+	this.resetCardClickTimer();
+	this.cardClickTimer = setTimeout(this.resetCardClickTimer.bind(this), this.cardClickMaxDelay);
+};
+
+//Обнуляет таймер клика по карте
+CardControl.prototype.resetCardClickTimer = function(){
+	if(this.cardClickTimer){
+		clearTimeout(this.cardClickTimer);
+		this.cardClickTimer = null;
+	}
+};
+
+
 //БУЛЕВЫ ФУНКЦИИ
 
 //Проверка нажатия на базу карты
@@ -219,10 +240,7 @@ CardControl.prototype.cardPointerInbound = function(){
 	return cond;
 };
 
-
-//ХВОСТ КАРТЫ
-
-//Проверка корректности позиции карты
+//Проверка корректности позиции карты (возащает false или поля)
 CardControl.prototype.cardOnValidField = function(){
 	if(!this.card.isPlayable)
 		return false;
@@ -244,16 +262,20 @@ CardControl.prototype.cardOnValidField = function(){
 			console.warn('Card control: Card is over more than 1 valid field');
 		return fields[0];
 	}
+	return false;
 };
 
+
+//ХВОСТ КАРТЫ
+
 //Смещает хвост относительно базы карты
-CardControl.prototype.cardShiftTrail = function(x, y){
+CardControl.prototype.trailShift = function(x, y){
 	this.trail.position.x += x;
 	this.trail.position.y += y;
 };
 
 //Создает хвост карты при движении
-CardControl.prototype.cardSpawnTrail = function(curTime){
+CardControl.prototype.trailSpawnParticle = function(curTime){
 
 	var	delta = curTime - this.lastParticleTime;
 	if(this.lastParticleTime && delta < this.trail.interval)
@@ -280,11 +302,11 @@ CardControl.prototype.cardSpawnTrail = function(curTime){
 	this.trail.emitX = this.card.sprite.x - this.trail.position.x;
 	this.trail.emitY = this.card.sprite.y - this.trail.position.y;
 	this.trail.emitParticle();
-
 };
 
 //Ресетит хвост карты
-CardControl.prototype.cardResetTrail = function(soft){
+CardControl.prototype.trailReset = function(soft){
+	this.resetTrailResetTimer();
 	this.trail.forEachAlive(function(p){
 		if(soft)
 			p.alpha = 0;
@@ -296,21 +318,23 @@ CardControl.prototype.cardResetTrail = function(soft){
 	this.trailDefaultBase.add(this.trail);
 };
 
+CardControl.prototype.trailApplySkin = function(){
+	this.trail.forEach(function(p){
+		p.loadTexture(skinManager.skin.trailName);
+	}, this);
+}
 
-//ТАЙМЕР НАЖАТИЯ
+//ТАЙМЕР РЕСЕТА ХВОСТА
 
-//Запускает таймер клика по карте
-CardControl.prototype.setCardClickTimer = function(){
-	this.resetCardClickTimer();
-
-	this.cardClickTimer = game.time.events.add(this.cardClickMaxDelay, this.resetCardClickTimer, this);
+CardControl.prototype.setTrailResetTimer = function(){
+	this.resetTrailResetTimer();
+	this.trailResetTimer = setTimeout(this.trailReset.bind(this), this.trail.lifespan);
 };
 
-//Обнуляет таймер клика по карте
-CardControl.prototype.resetCardClickTimer = function(){
-	if(this.cardClickTimer){
-		game.time.events.remove(this.cardClickTimer);
-		this.cardClickTimer = null;
+CardControl.prototype.resetTrailResetTimer = function(){
+	if(this.trailResetTimer){
+		clearTimeout(this.trailResetTimer);
+		this.trailResetTimer = null;
 	}
 };
 
@@ -338,7 +362,7 @@ CardControl.prototype.updateCard = function(){
 
 	this.updateCardPosition(curTime);
 	this.updateCardAngle(curTime);
-	this.cardSpawnTrail(curTime);
+	this.trailSpawnParticle(curTime);
 };
 
 //Устанавливаем позицию карты и плавно передивгаем ее к курсору
@@ -417,7 +441,7 @@ CardControl.prototype.reset = function(reason){
 	if(this.isInDebugMode)
 		console.log('Card control: Reset' + (reason ? ': ' + reason : ''));
 
-	this.cardResetTrail(true);
+	this.trailReset(true);
 	this.card = null;
 	this.pointer = null;
 };
@@ -443,13 +467,6 @@ CardControl.prototype.updateDebug = function(){
 	this.debugBase.width = width;
 	this.debugBase.height = height;
 	game.debug.geom( this.debugBase, 'rgba(255,0,0,0.6)' ) ;
-
-	//Таймер клика
-	var time = (
-		this.cardClickTimer && 
-		this.cardClickTimer.timer.nextTick - game.time.time
-	) || 0;
-	game.debug.text(time + 'sec', x, y );
 
 	//Визуализация максимальной скорости хвоста
 	if(!this.debugSpeed){

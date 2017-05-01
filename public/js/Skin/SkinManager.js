@@ -26,13 +26,10 @@ SkinManager.prototype.addSkin = function(options){
 	skin.frameWidth = options.width || 140;
 	skin.frameHeight = options.height || 190;
 
-	skin.scale = {
-		x: options.scaleX || 1,
-		y: options.scaleY || 1
-	};
+	skin.scale = options.scale || 1;
 
-	skin.width = skin.frameWidth*skin.scale.x;
-	skin.height = skin.frameHeight*skin.scale.y;
+	skin.width = skin.frameWidth*skin.scale;
+	skin.height = skin.frameHeight*skin.scale;
 
 	skin.name = options.name || 'default';
 	skin.sheetName = skin.name + 'Cards';
@@ -50,8 +47,8 @@ SkinManager.prototype.addSkin = function(options){
 	skin.glowSheetName = options.name + 'Glow';
 	skin.glowRealWidth = options.glowWidth || 170;
 	skin.glowRealHeight = options.glowHeight || 220;
-	skin.glowWidth = skin.glowRealWidth*skin.scale.x;
-	skin.glowHeight = skin.glowRealHeight*skin.scale.y;
+	skin.glowWidth = skin.glowRealWidth*skin.scale;
+	skin.glowHeight = skin.glowRealHeight*skin.scale;
 
 	skin.trailWidth = options.trailWidth || 35;
 	skin.trailHeight = options.trailHeight || 35;
@@ -81,19 +78,8 @@ SkinManager.prototype.setSkin = function(skinName){
 	if(!this.skins[skinName])
 		return;
 	this.skin = this.skins[skinName];
-	for(var ci in game.cards){
-		if(game.cards.hasOwnProperty(ci)){
-			var card = game.cards[ci]; 
-			card.skin = this.skin;
-			card.applySkin();
-		}
-	}
-	cardManager.emitter.forEach(function(p){
-		p.loadTexture(this.skin.sheetName);
-	}, this);
-	cardControl.trail.forEach(function(p){
-		p.loadTexture(this.skin.trailName);
-	}, this);
+	cardManager.applySkin();
+	cardControl.trailApplySkin();
 	grid.draw();
 	fieldManager.resizeFields();
 };
