@@ -57,7 +57,7 @@ skins.push({
 	height: 196,
 	name: 'uno',
 	numOfFrames: 56,
-	cardbackPossibleFrames: [41, 55],
+	cardbackPossibleFrames: [53, 55],
 	cardbackFrame: 55,
 	trumpOffset: 32,
 	trailWidth: 35,
