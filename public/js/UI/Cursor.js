@@ -9,6 +9,7 @@ var Cursor = function(textureName){
 	this.width = this.height = 32;
 	this.isInGame = true;
 	this.initialized = false;
+	this.name = 'cursor';
 
 	game.add.existing(this);
 

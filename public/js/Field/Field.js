@@ -95,13 +95,12 @@ var Field = function(options){
 	this.area.alpha = 0.35;
 	this.area.visible = this.isInDebugMode;
 	this.base.add(this.area);
+	fieldManager.fieldsGroup.add(this.base);
 
 	this.isHighlighted = false;
 
 	this.resize(this.options.width, this.options.height);
 	
-	game.world.setChildIndex(this.base, 1);	
-
 	this.debugActiveSpace = new Phaser.Rectangle();
 	this.isInDebugMode = this.options.debug;
 	this.specialId = this.options.specialId;

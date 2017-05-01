@@ -9,7 +9,6 @@ var Game = function(minWidth, minHeight, speed, isInDebugMode){
 
 	this.surface = this.background = this.rope = null;
 	
-	window.fieldManager = new FieldManager(false);
 	window.actionHandler = new ActionHandler(window.reactions);
 	window.playerManager = new PlayerManager();
 
@@ -101,6 +100,7 @@ Game.prototype.initialize = function(){
 	
 	//Фон
 	this.background = this.add.group();
+	this.background.name = 'background';
 	this.surface = this.add.tileSprite(0, 0, this.screenWidth, this.screenHeight, 'blue');
 	this.surface.textureName = 'blue';
 	this.background.add(this.surface); 
@@ -109,6 +109,7 @@ Game.prototype.initialize = function(){
 	
 	window.cursor = new Cursor('cursor_orange');
 
+	window.fieldManager = new FieldManager(false);
 	window.cardManager = new CardManager();
 	window.cardControl = new CardControl();
 
@@ -116,7 +117,9 @@ Game.prototype.initialize = function(){
 
 	//Кнопки (временные)
 	this.buttons = this.add.group();
+	this.buttons.name = 'buttons';
 	this.cornerButtons = this.add.group();
+	this.cornerButtons.name = 'cornerButtons';
 	this.queueButton = new Button({
 		position: function(width, height){
 			return {
@@ -245,7 +248,7 @@ Game.prototype.updateAppDimensionsListener = function(){
 
 		fieldManager.resizeFields();
 
-		this.rope.maxHeight = this.rope.sprite.y = this.screenHeight;
+		this.rope.maxHeight = this.rope.y = this.screenHeight;
 
 		//Кнопки
 		this.actionButton.updatePosition();

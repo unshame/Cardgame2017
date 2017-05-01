@@ -10,8 +10,11 @@
 var CardManager = function(isInDebugMode){
 	this.cards = {};
 	this.cardsGroup = game.add.group();
+	this.cardsGroup.name = 'cards';
 	game.cards = this.cards;
 	game.cardsGroup = this.cardsGroup;
+	this.emitter = game.add.emitter(game.world.centerX, 200, 200);
+	this.emitter.name = 'partyEmitter';
 
 	this.isInDebugMode = isInDebugMode || false;
 };
@@ -110,15 +113,13 @@ CardManager.prototype.throwCardsStart = function(){
 
 	this.throwCardsStop();
 
-	this.emitter = game.add.emitter(game.world.centerX, 200, 200);
-
 	var frames = [];
 	for(var i = 0; i < 52; i++){
 		frames.push(i);
 	}
 	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
 
-	this.emitter.start(false, 5000, 20);
+	this.emitter.start(false, 10000, 20);
 	this.emitter.width = game.screenWidth;
 	this.emitter.height = game.screenHeight;
 
@@ -126,9 +127,8 @@ CardManager.prototype.throwCardsStart = function(){
 };
 
 CardManager.prototype.throwCardsStop = function(){
-	if(this.emitter){
-		this.emitter.destroy();
-		this.emitter = null;
+	if(this.emitter.on){
+		this.emitter.on = false;
 	}
 };
 

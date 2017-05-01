@@ -64,7 +64,6 @@ Grid.prototype.draw = function(){
 		this.grid.alpha = 0.3;
 
 		this.highlights = game.add.group();
-		game.world.add(this.highlights);
 	}
 
 	var offset = this.offset = {

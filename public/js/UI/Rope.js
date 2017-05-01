@@ -3,18 +3,24 @@
  */
 var Rope = function(){
 	var pixel = game.newPixel();
+	Phaser.Sprite.call(this, game, 0, 0, pixel.generateTexture());
+	this.tint = game.colors.orange;
+	this.width = 30;
+	this.height = 0;
+	this.y = game.screenHeight;
+	this.anchor.setTo(0, 1);
+	this.name = 'rope';
+	game.add.existing(this);
 
-	this.sprite = game.add.sprite(0, 0, pixel.generateTexture());
-	this.sprite.tint = game.colors.orange;
-	this.sprite.width = 30;
-	this.sprite.height = 0;
-	this.sprite.y = game.screenHeight;
-	this.sprite.anchor.setTo(0, 1);
 	this.startTime = 0;
 	this.duration = 0;
 	this.isBurning = false;
 	this.maxHeight = game.screenHeight;
+
 };
+
+Rope.prototype = Object.create(Phaser.Sprite.prototype);
+Rope.prototype.constructor = Rope;
 
 //Обновляет прогресс таймера
 Rope.prototype.update = function(){
@@ -31,9 +37,9 @@ Rope.prototype.update = function(){
 		this.stop();
 	}
 	else{
-		this.sprite.height = left/this.duration * this.maxHeight;
-		if(left <= 5000 && this.sprite.tint != game.colors.red)
-			this.sprite.tint = game.colors.red;
+		this.height = left/this.duration * this.maxHeight;
+		if(left <= 5000 && this.tint != game.colors.red)
+			this.tint = game.colors.red;
 	}
 };
 
@@ -49,15 +55,15 @@ Rope.prototype.start = function(duration, start){
 	this.isBurning = true;
 	this.startTime = start ? (now + start) : now; 
 	this.duration = duration;
-	this.sprite.height = this.maxHeight;
+	this.height = this.maxHeight;
 };
 
 //Останавливает таймер
 Rope.prototype.stop = function(){
 	this.isBurning = false;
-	this.sprite.height = 0;
+	this.height = 0;
 	this.startTime = 0;
 	this.duration = 0;
-	this.sprite.tint = '0xFF8300';
+	this.tint = '0xFF8300';
 };
 

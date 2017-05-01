@@ -11,6 +11,7 @@ var CardControl = function(isInDebugMode){
 
 	this.trail = game.add.emitter(0, 0);
 	this.trailDefaultBase = game.add.group();
+	this.trailDefaultBase.name = 'trail';
 	this.trailDefaultBase.add(this.trail);
 	this.trail.gravity = 0;
 	this.trail.lifespan = 600;

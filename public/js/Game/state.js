@@ -50,9 +50,7 @@ playState.update = function(){
 		return;
 
 	cardControl.update();
-	game.rope.update();
 	cardManager.update();
-	cursor.update();
 };
 
 playState.render = function(){

@@ -10,6 +10,8 @@ var FieldManager = function(isInDebugMode){
 
 	this.cardsToRemove = {};
 	this.fields = {};
+	this.fieldsGroup = game.add.group();
+	this.fieldsGroup.name = 'fields';
 	this.table = [];
 
 	this.isInDebugMode = isInDebugMode;
