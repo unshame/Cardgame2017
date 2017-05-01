@@ -113,13 +113,7 @@ SkinManager.prototype.applySkin = function(){
 //Устанавливает рубашку карт
 //@i - индекс рубашки в cardbackPossibleFrames текущего скина
 SkinManager.prototype.setCardback = function(i){
-	if(
-		typeof i != 'number' || 
-		i >= this.skin.cardbackPossibleFrames.length || 
-		i < 0 || 
-		i === undefined || 
-		i === null
-	){
+	if(isNaN(i) || i >= this.skin.cardbackPossibleFrames.length || i < 0){
 		console.error(
 			'SkinManager: Cardback with index', i, 'not found.',
 			'Highest possible index for current skin', this.skin.name, 'is',
