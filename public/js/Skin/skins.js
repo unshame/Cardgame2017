@@ -35,3 +35,33 @@ skins.push({
 	scaleX: 0.9,
 	scaleY: 0.9
 });
+
+//Abstract
+skins.push({
+	width: 130,
+	height: 202,
+	name: 'abstract',
+	numOfFrames: 58,
+	cardbackPossibleFrames: [52, 53, 54, 55, 56, 57],
+	cardbackFrame: 54,
+	trumpOffset: 32,
+	trailWidth: 35,
+	trailHeight: 35,
+	scaleX: 1,
+	scaleY: 1
+});
+
+//Uno
+skins.push({
+	width: 140,
+	height: 196,
+	name: 'uno',
+	numOfFrames: 56,
+	cardbackPossibleFrames: [41, 55],
+	cardbackFrame: 55,
+	trumpOffset: 32,
+	trailWidth: 35,
+	trailHeight: 35,
+	scaleX: 1,
+	scaleY: 1
+});
