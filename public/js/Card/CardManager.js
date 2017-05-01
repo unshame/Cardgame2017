@@ -13,7 +13,9 @@ var CardManager = function(isInDebugMode){
 	this.cardsGroup.name = 'cards';
 	game.cards = this.cards;
 	game.cardsGroup = this.cardsGroup;
-	this.emitter = game.add.emitter(game.world.centerX, 200, 200);
+	this.emitter = game.add.emitter(game.world.centerX, -skinManager.skin.height, 100);
+	this.emitter.maxParticleSpeed = {x: 100, y: 500};
+	this.emitter.minParticleSpeed = {x: -100, y: 300};
 	this.emitter.name = 'partyEmitter';
 
 	this.isInDebugMode = isInDebugMode || false;
@@ -118,12 +120,13 @@ CardManager.prototype.throwCardsStart = function(){
 		frames.push(i);
 	}
 	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
-
-	this.emitter.start(false, 10000, 20);
+	this.emitter.x = game.world.centerX;
 	this.emitter.width = game.screenWidth;
-	this.emitter.height = game.screenHeight;
+	var lifespan = game.screenHeight/300 * 1000,
+		interval = lifespan/this.emitter.maxParticles;
+	this.emitter.start(false, lifespan, interval);
 
-	game.world.bringToTop(this.emitter);
+	game.world.setChildIndex(this.emitter, game.world.children.length - 3);
 };
 
 CardManager.prototype.throwCardsStop = function(){

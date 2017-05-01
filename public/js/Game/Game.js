@@ -257,6 +257,9 @@ Game.prototype.updateAppDimensionsListener = function(){
 		this.debugButton.updatePosition();
 		this.fullScreenButton.updatePosition();
 		this.menuButton.updatePosition();
+
+		if(cardManager.emitter.on)
+			cardManager.throwCardsStart();
 		//this.menu.update();
 	}
 
