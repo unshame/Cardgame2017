@@ -363,6 +363,12 @@ CardControl.prototype.updateCard = function(){
 	this.updateCardPosition(curTime);
 	this.updateCardAngle(curTime);
 	this.trailSpawnParticle(curTime);
+	if(this.cardOnValidField()){
+		this.card.setScale(1);
+	}
+	else{
+		this.card.setScale(1.1);
+	}
 };
 
 //Устанавливаем позицию карты и плавно передивгаем ее к курсору

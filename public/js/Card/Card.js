@@ -276,8 +276,11 @@ Card.prototype.setAngle = function(angle){
 
 //Устанавливает масштаб карты относительно масштаба текущего скина
 Card.prototype.setScale = function(scale){
-	this.sprite.scale.setTo(this.skin.scale*scale, this.skin.scale*scale);
-	this.glow.scale.setTo(this.sprite.scale.x*scale, this.sprite.scale.y*scale);
+	scale = this.skin.scale*scale;
+	if(scale != this.sprite.scale.x || scale != this.sprite.scale.y){
+		this.sprite.scale.setTo(scale, scale);
+		this.glow.scale.setTo(scale, scale);
+	}
 };
 
 //ПЕРЕДВИЖЕНИЕ
