@@ -396,19 +396,19 @@ Game.prototype.setBackgroundTexture = function(textureName){
 	var transition = game.add.tween(fakebg.position);
 	var position, i = Math.floor(Math.random()*4);
 	switch(i){
-		case 0:
+	case 0:
 		position = {y: -this.screenHeight};
 		break;
 
-		case 1:
+	case 1:
 		position = {y: this.screenHeight};
 		break;
 
-		case 2:
+	case 2:
 		position = {x: -this.screenWidth};
 		break;
 
-		case 3:
+	case 3:
 		position = {x: this.screenWidth};
 		break;
 	}

@@ -88,7 +88,7 @@ SkinManager.prototype.loadSkin = function(skinName, apply){
 	if(apply)
 		game.load.onLoadComplete.addOnce(this.applySkin, this);
 	game.load.start();
-}
+};
 
 //Устанавливает скин
 //@skinName String - название скина

@@ -322,7 +322,7 @@ CardControl.prototype.trailApplySkin = function(){
 	this.trail.forEach(function(p){
 		p.loadTexture(skinManager.skin.trailName);
 	}, this);
-}
+};
 
 //ТАЙМЕР РЕСЕТА ХВОСТА
 
