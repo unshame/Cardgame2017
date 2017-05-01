@@ -63,6 +63,9 @@ playState.render = function(){
 	cardControl.updateDebug();
 	fieldManager.updateDebug();
 	cardManager.updateDebug();
+
+	if(game.isInDebugMode)
+		game.debug.text(game.time.fps, 2, 14, "#00ff00");
 };
 
 playState.loadUpdate = function(){

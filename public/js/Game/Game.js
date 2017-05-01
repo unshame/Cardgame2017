@@ -85,6 +85,8 @@ Game.prototype.initialize = function(){
 	if(this.created)
 		return;
 
+	this.time.advancedTiming = true;
+
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 	this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
