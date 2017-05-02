@@ -635,8 +635,12 @@ dl.param-type {
   border-bottom: 1px solid #eee;
 }
 
-.section-members {
+.section-members, .container-overview {
   border-bottom: 1px solid #eee;
+}
+
+.container-overview .section-method{
+  border-bottom: none;
 }
 
 @media only screen and (min-width: 320px) and (max-width: 680px) {

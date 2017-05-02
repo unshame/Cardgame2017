@@ -324,7 +324,12 @@ Card.prototype.setPlayability = function(playable, tint){
 
 //ПОЗИЦИОНИРОВАНИЕ
 
-//Устанавливает абсолютную позицию карты
+/**
+ * Устанавливает абсолютную позицию карты
+ * @param {number} x          позиция
+ * @param {number} y          позиция
+ * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
+ */
 Card.prototype.setPosition = function(x, y, resetMover){
 
 	if(typeof resetMover == 'undefined')
@@ -340,7 +345,12 @@ Card.prototype.setPosition = function(x, y, resetMover){
 	this.update();
 };
 
-//Устанавливает положение карты по отношению к базе карты
+/**
+ * Устанавливает положение карты по отношению к базе карты
+ * @param {number} x          позиция
+ * @param {number} y          позиция
+ * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
+ */
 Card.prototype.setRelativePosition = function(x, y, resetMover){
 
 	if(typeof resetMover == 'undefined')
@@ -356,7 +366,12 @@ Card.prototype.setRelativePosition = function(x, y, resetMover){
 	this.update();
 };
 
-//Устанавливает позицию базы карты
+/**
+ * Устанавливает позицию базы карты
+ * @param {number} x          позиция
+ * @param {number} y          позиция
+ * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
+ */
 Card.prototype.setBase = function(x, y, resetMover){
 
 	if(typeof resetMover == 'undefined')
@@ -374,7 +389,10 @@ Card.prototype.setBase = function(x, y, resetMover){
 	this.update();
 };
 
-//Поднимает карту наверх, опционально поднимает перетаскиваемую карту наверх
+/**
+ * Поднимает карту наверх, опционально поднимает перетаскиваемую карту наверх
+ * @param {boolean} [fixController=true] нужно ли поднимать {@link CardControl#card} наверх
+ */
 Card.prototype.bringToTop = function(fixController){
 	if(fixController === undefined)
 		fixController = true;
@@ -383,8 +401,10 @@ Card.prototype.bringToTop = function(fixController){
 		game.cardsGroup.bringToTop(cardControl.card.base);
 };
 
-//Запоминает id поля, в которое будет перемещена карта
-//Устанавливает перетаскиваемость
+/**
+ * Запоминает id поля, в которое будет перемещена карта. Устанавливает перетаскиваемость.
+ * @param {string} fieldId id поля
+ */
 Card.prototype.presetField = function(fieldId){
 	if(this.fieldId == fieldId){
 		return false;
@@ -399,7 +419,10 @@ Card.prototype.presetField = function(fieldId){
 	return true;
 };
 
-//Устанавливает угол поворота карты
+/**
+ * Устанавливает угол поворота карты.
+ * @param {number} angle угол поворота
+ */
 Card.prototype.setAngle = function(angle){
 	if(this.rotator){
 		this.rotator.stop();
@@ -410,7 +433,10 @@ Card.prototype.setAngle = function(angle){
 	this._glowUpdatePosition();
 };
 
-//Устанавливает масштаб карты относительно масштаба текущего скина
+/**
+ * Устанавливает масштаб карты относительно масштаба текущего скина.
+ * @param {number} scale масштаб
+ */
 Card.prototype.setScale = function(scale){
 	scale = this.skin.scale*scale;
 	if(scale != this.sprite.scale.x || scale != this.sprite.scale.y){
