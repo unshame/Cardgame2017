@@ -111,8 +111,25 @@ Game.prototype.initialize = function(){
 	
 	window.cursor = new Cursor('cursor_orange');
 
+	/**
+	 * Менеджер полей
+	 * @type {FieldManager}
+	 * @global
+	 */
 	window.fieldManager = new FieldManager(false);
+
+	/**
+	 * Менеджер карт
+	 * @type {CardManager}
+	 * @global
+	 */
 	window.cardManager = new CardManager();
+
+	/**
+	 * Контроллер карт
+	 * @type {CardControl}
+	 * @global
+	 */
 	window.cardControl = new CardControl();
 
 	this.rope = new Rope();

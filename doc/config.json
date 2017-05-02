@@ -3,5 +3,8 @@
 	    "template": "./node_modules/minami",        
 	    "recurse": true, 
 	    "private": true
-	}
+	},
+	"plugins": [
+	    "plugins/markdown"
+	]
 }
