@@ -1,9 +1,20 @@
-/*
- * Конструктор карт
- * Три основные компонента: base, sprite и glow
+/**
+ * Конструктор карт  
+ * Три основные компонента: {@link Card#base}, {@link Card#sprite} и {@link Card#glow}  
  * Имеет методы для перемещения (с анимацией и без), установки значений,
  * установки флагов, применения скинов. Передает информацию о курсоре
- * присвоенному полю (Field) и контроллеру карт (CardControl). 
+ * присвоенному полю ({@link Field}) и контроллеру карт ({@link CardControl}).
+ * @constructor
+ * @param {object} options 		 - Опции, используемые при создании карты
+ * @param {string} options.id 	 - id карты
+ * @param {number} [options.x=game.screenWidth/2] 	 - позиция по горизонтали
+ * @param {number} [options.y=game.screenHeight+300] - позиция по вертикали
+ * @param {(number|null)} [options.suit=null]  - масть карты
+ * @param {number} [options.value=0] 		 - значение карты
+ * @param {number} [options.flipTime=150] - время переворота карты
+ * @param {object} [options.skin=skinManager.skin] - скин карты
+ * @param {string} [options.fieldId=null] - id поля, в которое будет добавлена карта
+ * @param {boolean} [options.debug=false] - вывод дебаг информации
  */
 
 var Card = function (options) {
@@ -68,14 +79,17 @@ var Card = function (options) {
 	this.applySkin();
 };
 
-//Возвращает опции по умолчанию
+/** 
+ * Возвращает опции по умолчанию (см. Card options)
+ * @private
+ */
 Card.prototype._getDefaultOptions = function(){
 	var options = {
 		id:null,
 		x: game.screenWidth / 2,
 		y: game.screenHeight + 300,
-		value:0,
 		suit:null,
+		value:0,
 		flipTime: 150,
 		skin:skinManager.skin,
 		fieldId: null,
@@ -87,7 +101,12 @@ Card.prototype._getDefaultOptions = function(){
 
 //ЗНАЧЕНИЯ
 
-//Задает значения для установки в будущем
+/**
+ * Задает значения для установки в будущем.
+ * Отсутствие suit означает, что карта лежит рубашкой вверх.
+ * @param  {(number|null)} [suit=null]  - масть карты
+ * @param  {number} [value=0] - значение карты
+ */
 Card.prototype.presetValue = function(suit, value){
 	if(suit === undefined)
 		suit = null;
@@ -109,7 +128,10 @@ Card.prototype.presetValue = function(suit, value){
 	this.valueChanged = true;
 };
 
-//Устанавливает заданные ранее значения и переворачивает карту
+/** 
+ * Устанавливает заданные ранее значения и переворачивает карту
+ * @private
+ */
 Card.prototype._updateValue = function(){
 	if(!this.valueChanged)
 		return;
@@ -144,7 +166,13 @@ Card.prototype._updateValue = function(){
 	this.flipper.start();
 };
 
-//Устанавливает значение карты сразу, с анимацией или без
+/**
+ * Устанавливает значение карты сразу, с анимацией или без.
+ * Отсутствие suit означает, что карта лежит рубашкой вверх.
+ * @param  {(number|null)} [suit=null]  - масть карты
+ * @param  {number} [value=0] - значение карты
+ * @param {boolean} [animate=true] - анимировать ли переворот карты
+ */
 Card.prototype.setValue = function(suit, value, animate){
 
 	if(suit === undefined)
@@ -169,12 +197,19 @@ Card.prototype.setValue = function(suit, value, animate){
 	}		
 };
 
-//Устанавливает перетаскиваемость карты
+/**
+ * Устанавливает перетаскиваемость карты
+ * @param {boolean} draggable - значение перетаскиваемости
+ */
 Card.prototype.setDraggability = function(draggable){	
 	this.isDraggable = draggable;
 };
 
-//Устанавливает, можно ли ходить этой картой
+/**
+ * Устанавливает, можно ли ходить этой картой
+ * @param {boolean} playable - играбильность карты
+ * @param {number} [tint=game.colors.orange] - цвет свечения карты
+ */
 Card.prototype.setPlayability = function(playable, tint){
 	if(playable){
 		this._glowStart(0.25, 0.75, 1500, 500, tint || game.colors.orange);
@@ -285,17 +320,18 @@ Card.prototype.setScale = function(scale){
 
 //ПЕРЕДВИЖЕНИЕ
 
-/*
+/**
  * Плавно перемещает карту
- * @x, y Number - позиция
- * @time Number (мс) - время перемещения
- * @delay Number (мс) - задержка перед перемещением
- * @relativeToBase Bool - перемещение происходит относительно базы карты
- * @shouldRebase Bool - нужно ли перемещать базу карты или только карту
- * Если база не изменилась, то эта переменная всегда будет false
- * @bringToTopOn - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
- * @easing - функция плавности. По-умолчанию Phaser.Easing.Quadratic.Out
-*/
+ * @param  {number} x              - позиция
+ * @param  {number} y              - позиция
+ * @param  {number} time           - время перемещения
+ * @param  {number} delay          - задержка перед перемещением
+ * @param  {boolean} [relativeToBase=false] - перемещение происходит относительно базы карты
+ * @param  {boolean} [shouldRebase=false]   - нужно ли перемещать базу карты или только карту  
+ * если база не изменилась, то эта переменная всегда будет false
+ * @param  {string} [bringToTopOn='init']   - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
+ * @param  {functon} [easing=Phaser.Easing.Quadratic.Out] - функция плавности
+ */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn, easing){
 
 	if(relativeToBase === undefined)
@@ -419,7 +455,12 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	}, this);
 };
 
-//Плавно возвращает карту на базу
+/**
+ * Плавно возвращает карту на базу
+ * @see  {@link Card#moveTo}
+ * @param  {number} time           - время перемещения
+ * @param  {number} delay          - задержка перед перемещением
+ */
 Card.prototype.returnToBase = function(time, delay){
 	this.moveTo(0, 0, time || 0, delay || 0, true);
 };

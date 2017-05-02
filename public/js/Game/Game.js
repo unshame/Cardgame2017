@@ -1,4 +1,7 @@
-//Модуль, работающий с движком игры и инициализирующий все остальные модули
+/**
+ * Модуль, работающий с движком игры и инициализирующий все остальные модули
+ * @constructor
+ */
 
 var Game = function(minWidth, minHeight, speed, isInDebugMode){
 
@@ -69,7 +72,11 @@ Game.prototype.calculateScreenSize = function(){
 			'multHeight:', multHeight
 		);
 	}
-
+	/**
+	 * Ширина игры без учета масштаба
+	 * @param Game#screenWidth
+	 * @type {number}
+	 */
 	this.screenWidth = 	Math.max(width, minWidth);
 	this.screenHeight = Math.max(height, minHeight);
 	if(diffWidth > 0){
