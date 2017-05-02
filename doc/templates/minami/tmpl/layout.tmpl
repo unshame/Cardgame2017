@@ -53,9 +53,10 @@
         );
     }
     $(function () {
-        $('body>footer').css('margin-top', window.innerHeight);
+        $('body>footer').css('margin-top', window.innerHeight - $('body>footer').outerHeight() - 70);
 
-        var className = $('.page-title').text();
+        var title = $('.page-title');
+        var className = title.text();
         var topLevel = false;
         if(className == 'Global')
             className = 'global';
@@ -87,6 +88,29 @@
                 }
             });
         });
+
+
+        function appendMembers(div){
+            return function(){
+                var name = $(this).find('h4').attr('id');
+                div.append('<code><a href="#' + name + '">' + name + '</a></code> ')
+            }
+        }
+        var div;
+        if($('#methods').size()){
+            div = $('<div class="members-list">');
+            title.after('<strong><a href="#methods">Methods</a></strong> ');
+            $('#methods').after(div);
+            $('article>.section-method').each(appendMembers(div));
+
+        }
+        if($('#members').size()){
+            div = $('<div class="members-list">');
+            title.after('<strong><a href="#members">Members</a></strong> ');
+            $('#members').after(div);
+            $('article>.section-members').each(appendMembers(div));
+        }
+
     });
 </script>
 </body>
