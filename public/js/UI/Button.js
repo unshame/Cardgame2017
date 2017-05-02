@@ -4,7 +4,7 @@
 
 var Button = function(options){
 
-	this.options = this._getDefaultOptions();
+	this.options = Button.getDefaultOptions();
 	for(var o in options){
 		if(options.hasOwnProperty(o))
 			this.options[o] = options[o];
@@ -68,7 +68,7 @@ var Button = function(options){
 Button.prototype = Object.create(Phaser.Button.prototype);
 Button.prototype.constructor = Button;
 
-Button.prototype._getDefaultOptions = function(){
+Button.getDefaultOptions = function(){
 	var options = {
 		position: {
 			x: 0,

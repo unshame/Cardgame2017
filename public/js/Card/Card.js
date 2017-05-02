@@ -1,6 +1,6 @@
 /**
  * Конструктор карт  
- * Три основные компонента: {@link Card#base}, {@link Card#sprite} и {@link Card#glow}  
+ * Три основных компонента: {@link Card#base}, {@link Card#sprite} и {@link Card#glow}.  
  * Имеет методы для перемещения (с анимацией и без), установки значений,
  * установки флагов, применения скинов. Передает информацию о курсоре
  * присвоенному полю ({@link Field}) и контроллеру карт ({@link CardControl}).
@@ -20,7 +20,7 @@
 var Card = function (options) {
 
 	//Options
-	this.options = this._getDefaultOptions();
+	this.options = Card.getDefaultOptions();
 	for(var o in options){
 		if(options.hasOwnProperty(o))
 			this.options[o] = options[o];
@@ -30,7 +30,6 @@ var Card = function (options) {
 	 * Выводить ли дебаг информацию
 	 * @param Card#isInDebugMode 
 	 * @type {boolean}
-	 * @see  Card#toggleDebugMode
 	 */
 	this.isInDebugMode = this.options.debug;
 
@@ -99,6 +98,22 @@ var Card = function (options) {
 	this.glow.visible = false;
 
 	/**
+	 * Твин увеличения яркости свечения карты
+	 * @param Card#glowIncreaser
+	 * @type {Phaser.Tween}
+	 * @default null
+	 */
+	this.glowIncreaser = null;
+
+	/**
+	 * Твин уменьшения яркости свечения карты
+	 * @param Card#glowDecreaser
+	 * @type {Phaser.Tween}
+	 * @default null
+	 */
+	this.glowDecreaser = null;
+
+	/**
 	 * Группа, содержащая спрайт и свечение карты (база карты)
 	 * @param Card#base
 	 * @type {Phaser.Group}
@@ -134,13 +149,13 @@ var Card = function (options) {
 
 	/**
 	 * Когда карта будет перемещена вверх группы ('never', 'init', 'start', 'end', 'endAll')  
-	 * @param Card#bringToTopOn
+	 * @param Card#_bringToTopOn
 	 * @private
 	 * @type {string}
 	 * @default 'never'
 	 * @see  {@link Card#moveTo}
 	 */
-	this.bringToTopOn = 'never';
+	this._bringToTopOn = 'never';
 
 	/**
 	 * Масть карты
@@ -156,17 +171,17 @@ var Card = function (options) {
 	this.value = this.options.value;	
 	/**
 	 * Изменилось ли значение карты
-	 * @param Card#valueChanged
+	 * @param Card#_valueChanged
 	 * @type {boolean}
 	 * @private
 	 * @see {@link Card#presetValue}
 	 */
-	this.valueChanged = false;
+	this._valueChanged = false;
 	/**
 	 * Время переворота карты
 	 * @param Card#flipTime
 	 * @type {number}
-	 * @see {@link Card#_updateValue}
+	 * @see {@link Card#updateValue}
 	 */
 	this.flipTime = this.options.flipTime;
 
@@ -181,10 +196,10 @@ var Card = function (options) {
 };
 
 /** 
- * Возвращает опции по умолчанию (см. Card options)
- * @private
+ * Возвращает опции по умолчанию (см. Card options).
+ * @static
  */
-Card.prototype._getDefaultOptions = function(){
+Card.getDefaultOptions = function(){
 	var options = {
 		id:null,
 		x: game.screenWidth / 2,
@@ -226,18 +241,17 @@ Card.prototype.presetValue = function(suit, value){
 		this.suit = suit;
 		this.value = value;
 	}
-	this.valueChanged = true;
+	this._valueChanged = true;
 };
 
 /** 
- * Устанавливает заданные ранее значения и переворачивает карту
- * @private
+ * Устанавливает заданные ранее значения и переворачивает карту.
  */
-Card.prototype._updateValue = function(){
-	if(!this.valueChanged)
+Card.prototype.updateValue = function(){
+	if(!this._valueChanged)
 		return;
 
-	this.valueChanged = false;
+	this._valueChanged = false;
 
 	if(this.flipper){
 		this.flipper.stop();
@@ -284,7 +298,7 @@ Card.prototype.setValue = function(suit, value, animate){
 
 	if(animate && !game.paused){
 		this.presetValue(suit, value);
-		this._updateValue();
+		this.updateValue();
 	}
 	else if(suit === null){
 		this.suit = null;
@@ -299,7 +313,7 @@ Card.prototype.setValue = function(suit, value, animate){
 };
 
 /**
- * Устанавливает перетаскиваемость карты
+ * Устанавливает перетаскиваемость карты.
  * @param {boolean} draggable - значение перетаскиваемости
  */
 Card.prototype.setDraggability = function(draggable){	
@@ -307,7 +321,7 @@ Card.prototype.setDraggability = function(draggable){
 };
 
 /**
- * Устанавливает, можно ли ходить этой картой
+ * Устанавливает, можно ли ходить этой картой.
  * @param {boolean} playable - играбильность карты
  * @param {number} [tint=game.colors.orange] - цвет свечения карты
  */
@@ -325,7 +339,7 @@ Card.prototype.setPlayability = function(playable, tint){
 //ПОЗИЦИОНИРОВАНИЕ
 
 /**
- * Устанавливает абсолютную позицию карты
+ * Устанавливает абсолютную позицию карты.
  * @param {number} x          позиция
  * @param {number} y          позиция
  * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
@@ -346,7 +360,7 @@ Card.prototype.setPosition = function(x, y, resetMover){
 };
 
 /**
- * Устанавливает положение карты по отношению к базе карты
+ * Устанавливает положение карты по отношению к базе карты.
  * @param {number} x          позиция
  * @param {number} y          позиция
  * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
@@ -367,7 +381,7 @@ Card.prototype.setRelativePosition = function(x, y, resetMover){
 };
 
 /**
- * Устанавливает позицию базы карты
+ * Устанавливает позицию базы карты.
  * @param {number} x          позиция
  * @param {number} y          позиция
  * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
@@ -390,7 +404,7 @@ Card.prototype.setBase = function(x, y, resetMover){
 };
 
 /**
- * Поднимает карту наверх, опционально поднимает перетаскиваемую карту наверх
+ * Поднимает карту наверх, опционально поднимает перетаскиваемую карту наверх.
  * @param {boolean} [fixController=true] нужно ли поднимать {@link CardControl#card} наверх
  */
 Card.prototype.bringToTop = function(fixController){
@@ -468,9 +482,9 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	if(bringToTopOn === undefined || !~['never', 'init', 'start', 'end', 'endAll'].indexOf(bringToTopOn))
 		bringToTopOn = 'init';
 
-	this.bringToTopOn = bringToTopOn;
+	this._bringToTopOn = bringToTopOn;
 
-	if(this.bringToTopOn == 'init' || game.paused && this.bringToTopOn != 'never')
+	if(this._bringToTopOn == 'init' || game.paused && this._bringToTopOn != 'never')
 		this.bringToTop();
 
 	//Куда двигать карту
@@ -518,7 +532,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	//Создаем и запускаем твин или перемещаем карту если игра остановлена
 	if(game.paused){
-		this._updateValue();
+		this.updateValue();
 		this.setRelativePosition(moveX, moveY);
 		if(this.mover){
 			this.mover.stop();
@@ -533,8 +547,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 		//Не перезапускаем твин, если нет задержки и пункт назначения не изменился
 		if(!shouldRebase && endPosition && endPosition.x == moveX && endPosition.y == moveY && moverData.delay == delay){
-			this._updateValue();
-			if(this.bringToTopOn == 'start')
+			this.updateValue();
+			if(this._bringToTopOn == 'start')
 				this.bringToTop();
 			return;
 		}
@@ -565,16 +579,16 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	//Переворачиваем карту, когда начинается движение
 	this.mover.onStart.addOnce(function(){
-		this._updateValue();
-		if(this.bringToTopOn == 'start')
+		this.updateValue();
+		if(this._bringToTopOn == 'start')
 			this.bringToTop();
 	}, this);
 
 	//Ресет твина по окончанию
 	this.mover.onComplete.addOnce(function(){
 		this.mover = null;
-		if(this.bringToTopOn == 'end' || this.bringToTopOn == 'endAll'){
-			if(!this.field || this.bringToTopOn == 'end')
+		if(this._bringToTopOn == 'end' || this._bringToTopOn == 'endAll'){
+			if(!this.field || this._bringToTopOn == 'end')
 				this.bringToTop();
 			else
 				this.field.zAlignCards(true);
@@ -583,7 +597,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 };
 
 /**
- * Плавно возвращает карту на базу
+ * Плавно возвращает карту на базу.
  * @see  {@link Card#moveTo}
  * @param  {number} time           - время перемещения
  * @param  {number} delay          - задержка перед перемещением
@@ -592,7 +606,13 @@ Card.prototype.returnToBase = function(time, delay){
 	this.moveTo(0, 0, time || 0, delay || 0, true);
 };
 
-//Поворачивает карту 
+/**
+ * Поворачивает карту с анимацией.
+ * @param  {number} angle  угол, к которому будет поворачиваться карта
+ * @param  {number} time   время поворота
+ * @param  {number} [delay=0]  задержка перед поворотом
+ * @param  {function} [easing=Phaser.Easing.Quadratic.Out] функция плавности
+ */
 Card.prototype.rotateTo = function(angle, time, delay, easing){
 
 	var offset = angle < 0 ? 360 : 0,
@@ -657,7 +677,9 @@ Card.prototype.rotateTo = function(angle, time, delay, easing){
 
 //СКИН
 
-//Применяет текущий скин к карте
+/**
+ * Применяет текущий скин к карте.
+ */
 Card.prototype.applySkin = function(){
 	this.sprite.loadTexture(this.skin.sheetName);
 	this.glow.loadTexture(this.skin.glowSheetName);
@@ -665,7 +687,9 @@ Card.prototype.applySkin = function(){
 	this.setValue(this.suit, this.value, false);
 };
 
-//Меняет рубашку карт на текущую
+/**
+ * Меняет рубашку карт на текущую
+ */
 Card.prototype.applyCardback = function(){
 	if(!this.suit && this.suit !== 0){
 		this.sprite.frame = this.skin.cardbackFrame;
@@ -675,7 +699,15 @@ Card.prototype.applyCardback = function(){
 
 //СВЕЧЕНИЕ
 
-//Запускает свечение
+/**
+ * Запускает свечение.
+ * @param  {number} minGlow    минимальная прозрачность свечения
+ * @param  {number} maxGlow    максимальная прозрачность свечения
+ * @param  {number} speed      время анимации между minGlow и maxGlow
+ * @param  {number} [delayRange=0] максимальное значение задержки начала свечения
+ * @param  {number} [color=game.colors.white]     цвет свечения
+ * @private
+ */
 Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 	
 	this._glowReset();
@@ -714,7 +746,10 @@ Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color)
 	this.glowDecreaser.start();
 };
 
-//Останавливает свечение
+/**
+ * Останавливает свечение.
+ * @private
+ */
 Card.prototype._glowStop = function(){
 	if(this.glowIncreaser){
 		this.glowIncreaser.stop();
@@ -729,14 +764,20 @@ Card.prototype._glowStop = function(){
 	}
 };
 
-//Останавливает и восстанавливает свечение
+/**
+ * Останавливает и восстанавливает свечение.
+ * @private
+ */
 Card.prototype._glowReset = function(){
 	this._glowStop();
 	this.glow.reset();
 	this._glowUpdatePosition();
 };
 
-//Обновляет позицию свечения
+/**
+ * Обновляет позицию свечения.
+ * @private
+ */
 Card.prototype._glowUpdatePosition = function(){
 	this.glow.x = this.sprite.x;
 	this.glow.y = this.sprite.y;
@@ -747,24 +788,39 @@ Card.prototype._glowUpdatePosition = function(){
 
 //СОБЫТИЯ
 
-//Вызывается при нажатии на карту
+/**
+ * Вызывается при нажатии на карту.
+ * @param  {Phaser.Sprite} sprite  Card#sprite
+ * @param  {Phaser.Pointer} вызвавший ивент указатель
+ */
 Card.prototype._mouseDown = function(sprite, pointer){
 	cardControl.cardClick(this, pointer);
 };
 
-//Вызывается при окончании нажатия на карту
+/**
+ * Вызывается при окончании нажатия на карту.
+ * @param  {Phaser.Sprite} sprite  Card#sprite
+ * @param  {Phaser.Pointer} вызвавший ивент указатель
+ */
 Card.prototype._mouseUp = function(sprite, pointer){
 	cardControl.cardUnclick(this, pointer);
 };
 
-//Вызывается при наведении на карту
+/**
+ * Вызывается при наведении на карту.
+ * @param  {Phaser.Sprite} sprite  Card#sprite
+ * @param  {Phaser.Pointer} вызвавший ивент указатель
+ */
 Card.prototype._mouseOver = function(sprite, pointer){
 	if(this.field)
 		this.field.focusOnCard(this, pointer);
 };
 
-//Вызывается когда указатель покидает спрайт карты
-Card.prototype._mouseOut = function(sprite, pointer){
+/**
+ * Вызывается когда указатель покидает спрайт карты.
+ * @param  {Phaser.Sprite} sprite  Card#sprite
+ */
+Card.prototype._mouseOut = function(sprite){
 	if(this.field)
 		this.field.focusOffCard(this);
 };
@@ -772,7 +828,10 @@ Card.prototype._mouseOut = function(sprite, pointer){
 
 //БУЛЕВЫ ФУНКЦИИ
 
-//Находится ли указатель над картой
+/**
+ * Находится ли указатель над картой.
+ * @return {boolean}
+ */
 Card.prototype.mouseIsOver = function(){
 	if(
 		game.input.x < this.base.x + this.sprite.x - this.sprite.width/2 ||
@@ -788,7 +847,10 @@ Card.prototype.mouseIsOver = function(){
 
 //KILL, RESET, UPDATE
 
-//Убивает спрайты карты (не используется)
+/**
+ * Убивает спрайты карты.
+ * @deprecated Ипользуется Card#base.removeAll(true) для уничтожения карт.
+ */
 Card.prototype.kill = function() {
 	this.glow.kill();
 	this.sprite.kill();  
@@ -797,19 +859,26 @@ Card.prototype.kill = function() {
 	}
 };
 
-//Восстанавливает карту (не используется)
+/**
+ * Восстанавливает карту.
+ * @deprecated Ипользуется Card#base.removeAll(true) для уничтожения карт.
+ */
 Card.prototype.reset = function(){
 	this.sprite.reset();  
 	this.setValue(this.suit, this.value, false);
 };
 
-//Обновление карты
-//На данный момент только обновляет позицию свечения
+/**
+ * Обновление карты.  
+ * На данный момент только обновляет позицию свечения.
+ */
 Card.prototype.update = function() {
 	this._glowUpdatePosition();
 };
 
-//Обновляет позицию текста карты
+/**
+ * Обновляет позицию дебаг информации.
+ */
 Card.prototype.updateDebug = function(){
 	if(!this.isInDebugMode)
 		return;

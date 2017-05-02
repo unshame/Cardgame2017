@@ -43,5 +43,51 @@
 
 <script>prettyPrint();</script>
 <script src="scripts/linenumber.js"></script>
+<script src="scripts/jquery-1.9.1.min.js"></script>
+<script>    
+    function highlight(container, target){
+        $('.highlighted').removeClass('highlighted');
+        target.parent().addClass('highlighted');
+        container.scrollTop(
+            target.offset().top - container.offset().top + container.scrollTop() - 100
+        );
+    }
+    $(function () {
+        $('body>footer').css('margin-top', window.innerHeight);
+
+        var className = $('.page-title').text();
+        var topLevel = false;
+        if(className == 'Global')
+            className = 'global';
+        var container = $('body>nav');
+        var target = $('body>nav a[href="' + className + '.html"]');
+        if(target.size())
+            highlight(container, target);
+
+        var currentHash = "#initial_hash";
+        $(document).scroll(function () {
+            $('h4.name').each(function () {
+                var top = window.pageYOffset;
+                var distance = top - $(this).offset().top;
+                var hash = $(this).attr('id');
+                if (distance < 30 && distance > -30 && currentHash != hash) {
+                    history.pushState(null, null, '#' + hash);
+                    currentHash = hash;
+                    var name = hash;
+                    var link = className + '.html#' + hash;
+                    var target = $('body>nav a[href="' + link + '"]');
+                    if(!target.size()){
+                        target = $('body>nav a[href="' + className + '.html"]');
+                    }
+                    if(!target.size()){
+                        target = $('body>nav a[href="global.html#' + hash + '"]');
+                    }
+                    if(target.size())
+                        highlight(container, target);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

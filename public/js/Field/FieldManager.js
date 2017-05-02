@@ -119,7 +119,7 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, noDelay){
 
 	var cardsToPlace = [];
 	for(var i = 0; i < cardsInfo.length; i++){
-		var cid = newCards[i].cid,
+		var cid = cardsInfo[i].cid,
 			suit = cardsInfo[i].suit,
 			value = cardsInfo[i].value, 
 			card = game.cards[cid];

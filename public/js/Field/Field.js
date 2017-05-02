@@ -13,7 +13,7 @@
 
 var Field = function(options){
 
-	var defaultOptions = this.options = this._getDefaultOptions();
+	var defaultOptions = this.options = Field.getDefaultOptions();
 
 	for(var o in options){
 		if(options.hasOwnProperty(o) && options[o] !== undefined){
@@ -99,7 +99,7 @@ var Field = function(options){
 };
 
 //Возвращает опции по умолчанию
-Field.prototype._getDefaultOptions = function(){
+Field.getDefaultOptions = function(){
 	var options = {
 		x:0,
 		y:0,

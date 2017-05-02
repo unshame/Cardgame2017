@@ -698,3 +698,8 @@ dl.param-type {
     width: 100%;
   }
 }
+
+
+.highlighted {
+  background-color: gold;
+}
