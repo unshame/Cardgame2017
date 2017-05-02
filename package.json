@@ -8,7 +8,9 @@
   "main": "server.js",
   "scripts": {
     "server": "node server.js",
-    "report": "plato -d report/client --jshint .jshintrc -t \"Durak: Client Javascript Report\" ./public/js/*.js ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc -t \"Durak: Server Javascript Report\" ./serverjs/*.js ./serverjs/**/*.js ./server.js"
+    "setupDev": "npm install plato -g && npm install jsdoc -g && npm install minami",
+    "report": "plato -d report/client --jshint .jshintrc -t \"Durak: Client Javascript Report\" ./public/js/*.js ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc -t \"Durak: Server Javascript Report\" ./serverjs/*.js ./serverjs/**/*.js ./server.js",
+    "makeDoc": "jsdoc -c ./doc/config.json -d ./doc/client/ ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ ./serverjs/"  
   },
   "dependencies": {
     "engine.io": "2.0.1",
@@ -26,6 +28,8 @@
     "url": "https://github.com/unshame/Cardgame2017/issues"
   },
   "homepage": "https://github.com/unshame/Cardgame2017#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "tui-jsdoc-template": "^1.1.0"
+  },
   "author": "UnShame"
 }

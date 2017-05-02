@@ -1,0 +1,7 @@
+{
+	"opts": {
+	    "template": "./node_modules/minami",        
+	    "recurse": true, 
+	    "private": true
+	}
+}

@@ -15,3 +15,5 @@ logs/
 !logs/.gitkeep
 
 report/
+doc/client
+doc/server
