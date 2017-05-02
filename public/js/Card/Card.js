@@ -26,19 +26,61 @@ var Card = function (options) {
 			this.options[o] = options[o];
 	}
 
+	/**
+	 * Выводить ли дебаг информацию
+	 * @param Card#isInDebugMode 
+	 * @type {boolean}
+	 * @see  Card#toggleDebugMode
+	 */
 	this.isInDebugMode = this.options.debug;
+
+	/**
+	 * Можно ли перетаскивать карту
+	 * @param Card#isDraggable 
+	 * @type {boolean}
+	 * @default false
+	 * @see  Card#setDraggability
+	 */
 	this.isDraggable = false;
+
+	/**
+	 * Играбильна ли карта
+	 * @param Card#isPlayable 
+	 * @type {boolean}
+	 * @default false
+	 * @see  Card#setPlayability
+	 */
 	this.isPlayable = false;
+
+	/**
+	 * Говорит {@link Card#field}, что карту нужно поднять
+	 * @param Card#raised 
+	 * @default false
+	 * @type {boolean}
+	 */
 	this.raised = false;
 
-	//Id
+	/**
+	 * id карты
+	 * @param Card#id 
+	 * @type {string}
+	 */
 	this.id = this.options.id;
 
-	//Field
-	this.presetField(this.options.fieldId);
+	/**
+	 * Поле карты
+	 * @param Card#field 
+	 * @default null
+	 * @type {Field}
+	 */
 	this.field = null;
+	this.presetField(this.options.fieldId);
 
-	//Sprite
+	/**
+	 * Спрайт карты
+	 * @param Card#sprite
+	 * @type {Phaser.Sprite}
+	 */
 	this.sprite = game.add.sprite();
 	this.sprite.inputEnabled = true;
 	this.sprite.events.onInputDown.add(this._mouseDown, this);
@@ -47,12 +89,20 @@ var Card = function (options) {
 	this.sprite.events.onInputOut.add(this._mouseOut, this);
 	this.sprite.anchor.set(0.5, 0.5);
 
-	//Glow
+	/**
+	 * Свечение карты
+	 * @param Card#glow
+	 * @type {Phaser.Sprite}
+	 */
 	this.glow = game.add.sprite();
 	this.glow.anchor.set(0.5, 0.5);
 	this.glow.visible = false;
 
-	//Base
+	/**
+	 * Группа, содержащая спрайт и свечение карты (база карты)
+	 * @param Card#base
+	 * @type {Phaser.Group}
+	 */
 	this.base = game.add.group();
 	this.base.x = this.options.x;
 	this.base.y = this.options.y;
@@ -60,21 +110,72 @@ var Card = function (options) {
 	this.base.add(this.sprite);
 	game.cardsGroup.add(this.base);  
 
-	//Tweens
+	/**
+	 * Твин передвижения карты
+	 * @param Card#mover
+	 * @type {Phaser.Tween}
+	 * @default null
+	 */
 	this.mover = null;
+	/**
+	 * Твин вращения карты
+	 * @param Card#rotator
+	 * @type {Phaser.Tween}
+	 * @default null
+	 */
 	this.rotator = null;
-	this.scaler = null;
+	/**
+	 * Твин переворота карты
+	 * @param Card#flipper
+	 * @type {Phaser.Tween}
+	 * @default null
+	 */
 	this.flipper = null;
 
+	/**
+	 * Когда карта будет перемещена вверх группы ('never', 'init', 'start', 'end', 'endAll')  
+	 * @param Card#bringToTopOn
+	 * @private
+	 * @type {string}
+	 * @default 'never'
+	 * @see  {@link Card#moveTo}
+	 */
 	this.bringToTopOn = 'never';
 
-	//Value
+	/**
+	 * Масть карты
+	 * @param Card#suit
+	 * @type {number}
+	 */
 	this.suit = this.options.suit;
+	/**
+	 * Значение карты
+	 * @param Card#value
+	 * @type {number}
+	 */
 	this.value = this.options.value;	
+	/**
+	 * Изменилось ли значение карты
+	 * @param Card#valueChanged
+	 * @type {boolean}
+	 * @private
+	 * @see {@link Card#presetValue}
+	 */
 	this.valueChanged = false;
+	/**
+	 * Время переворота карты
+	 * @param Card#flipTime
+	 * @type {number}
+	 * @see {@link Card#_updateValue}
+	 */
 	this.flipTime = this.options.flipTime;
 
-	//Skin
+	/**
+	 * Скин карты
+	 * @param Card#skin
+	 * @type {object}
+	 * @see {@link SkinManager}
+	 */
 	this.skin = this.options.skin;
 	this.applySkin();
 };

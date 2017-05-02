@@ -1,6 +1,6 @@
 {
 	"opts": {
-	    "template": "./node_modules/minami",        
+	    "template": "./doc/templates/minami",        
 	    "recurse": true, 
 	    "private": true
 	},

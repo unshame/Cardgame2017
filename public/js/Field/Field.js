@@ -3,20 +3,11 @@
  * Производит размещение карт на экране. Контролирует позицию карт при наведении курсора.  
  * Карты добавляются в поле двумя методами:  
  *
- * ##### .queueCards(newCards, delay) и .placeQueuedCards():  
- * 
- * * Добавляет карты в очередь и размещает их с указанной задержкой  
- * * .placeQueuedCards финализирует размещение и должно быть использовано до дальнейшей работы с 
- * полем. Этот метод также отключает выделение карт при наведении на время перемещения карт.  
- *
- * ##### .addCards(newCards)  
- * 
- * * Добавляет карты сразу без возможности указания задержки  
- * * Задержка рассчитывается автоматически  
+ * * {@link Field#queueCards} {@link Field#placeQueuedCards}  
+ * * {@link Field#addCards}  
  *
  * Использование второго метода до финализации первого добавляет карты в очередь и запускает очередь  
  * .queueCards(c1) -> .addCards(c2) => .queueCards(c1) -> .queueCards(c2) -> .placeQueuedCards()   
- * Так делать не рекомендуется
  * @constructor
  */
 
@@ -269,7 +260,13 @@ Field.prototype._compareCards = function(a, b){
 
 //ОЧЕРЕДЬ
 
-//Добавляет карты в очередь на добавление, возвращает планируемое время добавления
+/**
+ * Добавляет карты в очередь на добавление
+ * @param  {Card[]} newCards - добавляемые карты
+ * @param  {number} delay    - задержка, добавляемая к первой карте в очереди
+ * @return {number}          Планируемое время добавления
+ * @see  {@link Field#placeQueuedCards}
+ */
 Field.prototype.queueCards = function(newCards, delay){
 	if(!newCards.length)
 		return;
@@ -309,7 +306,10 @@ Field.prototype.queueCards = function(newCards, delay){
 	return delay;
 };
 
-//Размещает карты из очереди
+/**
+ * Размещает карты из очереди
+ * @see  {@link Field#queueCards}
+ */
 Field.prototype.placeQueuedCards = function(){
 	if(!this.queuedCards.length)
 		return;
@@ -330,7 +330,11 @@ Field.prototype.placeQueuedCards = function(){
 	this.expectedDelay = 0;
 };
 
-//Очищает очередь на добавление
+/**
+ * Очищает очередь на добавление
+ * @see  {@link Field#queueCards}
+ * @see  {@link Field#placeQueuedCards}
+ */
 Field.prototype.resetQueue = function(){
 	this.queuedCards = [];
 	this.delays = {};
@@ -340,7 +344,12 @@ Field.prototype.resetQueue = function(){
 
 //ДОБАВЛЕНИЕ КАРТ
 
-//Добавляет карты в поле, возвращает время добавления
+/**
+ * Добавляет карты в поле
+ * @param {Card[]} newCards - добавляемые карты
+ * @param {boolean} noDelay  - убирает время ожидание перед добавлением карт
+ * @return {number} Время добавления
+ */
 Field.prototype.addCards = function(newCards, noDelay){
 
 	if(!newCards.length)
@@ -362,7 +371,12 @@ Field.prototype.addCards = function(newCards, noDelay){
 	}
 };
 
-//Для добавления одной карты, возвращает время добавления
+/**
+ * Добавляет одну карту в поле
+ * @param {Card} card - добавляемая карта
+ * @return {number} Время добавления
+ * @see {@link Field#addCards}
+ */
 Field.prototype.addCard = function(card){
 	return this.addCards([card]);
 };

@@ -12,7 +12,6 @@ var FieldManager = function(isInDebugMode){
 	 * Созданы ли поля
 	 * @param FieldManager#networkCreated 
 	 * @type {boolean}
-	 * @private
 	 * @default false
 	 */
 	this.networkCreated = false;
@@ -49,9 +48,9 @@ var FieldManager = function(isInDebugMode){
 
 	/**
 	 * Выводить ли дебаг информацию
-	 * @param FieldManager#table 
-	 * @type {Field[]}
-	 * @private
+	 * @param FieldManager#isInDebugMode 
+	 * @type {bollean}
+	 * @see  FieldManager#toggleDebugMode
 	 */
 	this.isInDebugMode = isInDebugMode;
 
