@@ -1,5 +1,6 @@
-/*
+/**
  * Модуль, создающий поля для FieldManager
+ * @class
  */
 
 var FieldBuilder = function(manager){

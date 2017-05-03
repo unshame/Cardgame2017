@@ -1,6 +1,7 @@
-/*
+/**
  * Модуль отвечает за обработку действий от сервера
  * Формирует и передает информацию о действиях FieldManager'у
+ * @class
  */
 
 var ActionHandler = function(reactions){

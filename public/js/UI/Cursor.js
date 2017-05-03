@@ -1,5 +1,6 @@
-/*
+/**
  * Заменяет курсор на спрайт
+ * @class
  */
 
 var Cursor = function(textureName){

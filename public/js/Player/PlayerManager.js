@@ -1,4 +1,7 @@
-/* Менеджер игроков */
+/**
+ * Менеджер игроков
+ * @class
+ */
 
 var PlayerManager = function(){
 	this.pid = null;

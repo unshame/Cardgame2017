@@ -1,6 +1,9 @@
-//Основное состояние игры
-//Предоставляет движку функции, которые выполняются при загрузке, создании
-//и обновлении игрового цикла 
+/**
+ * Основное состояние игры.  
+ * Предоставляет движку функции, которые выполняются при загрузке, создании
+ * и обновлении игрового цикла 
+ * @namespace playState
+ */
 
 window.playState = new Phaser.State();
 
@@ -42,6 +45,11 @@ playState.preload = function(){
 };
 
 playState.create = function(){
+	/**
+	 * Менеджер соединения с сервером
+	 * @type {ConnectionManager}
+	 * @global
+	 */
 	window.connection = new ConnectionManager(game.initialize, game);
 };
 

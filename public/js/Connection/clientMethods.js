@@ -1,5 +1,6 @@
-/*
+/**
  * Методы, вызываемые сервером
+ * @namespace clientMethods
  */
 
 window.clientMethods = {

@@ -1,5 +1,6 @@
-/*
+/**
  * Конструктор фитиля-таймера
+ * @class
  */
 var Rope = function(){
 	var pixel = game.newPixel();

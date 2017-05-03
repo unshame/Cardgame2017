@@ -1,7 +1,8 @@
-/*
+/**
  * Модуль, отвечает за общение между клиентом и сервером
  * Основан на Eureca.Client
  * Инициализирует игру по готовности клиента
+ * @class
 */
 
 var ConnectionManager = function(callback, context, isInDebugMode){

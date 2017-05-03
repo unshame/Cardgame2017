@@ -1,5 +1,6 @@
-/*
+/**
  * Конструктор кнопок с текстом
+ * @class
  */
 
 var Button = function(options){

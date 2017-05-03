@@ -1,10 +1,11 @@
-/* 
+/**
  * Менеджер карт
  * 
  * Тестовые функции:
  * throwCards - разлетающиеся карты
  * getCards(num, except) - выбирает num карт из cards, пропускает карты из except
  * getCard(except) - выбирает одну карту из cards, пропускает карты из except
+ * @class
  */
 
 var CardManager = function(isInDebugMode){

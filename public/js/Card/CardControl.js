@@ -1,5 +1,6 @@
-/*
+/**
  * Модуль, отвечающий за перетаскивание карт
+ * @class
  */
 
 var CardControl = function(isInDebugMode){

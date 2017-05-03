@@ -1,6 +1,6 @@
 /**
  * Модуль, работающий с движком игры и инициализирующий все остальные модули
- * @constructor
+ * @class
  */
 
 var Game = function(minWidth, minHeight, speed, isInDebugMode){
@@ -12,7 +12,18 @@ var Game = function(minWidth, minHeight, speed, isInDebugMode){
 
 	this.surface = this.background = this.rope = null;
 	
+	/**
+	 * Обработчик действий сервера
+	 * @type {ActionHandler}
+	 * @global
+	 */
 	window.actionHandler = new ActionHandler(window.reactions);
+
+	/**
+	 * Менеджер игроков
+	 * @type {PlayerManager}
+	 * @global
+	 */
 	window.playerManager = new PlayerManager();
 
 	window.addEventListener('resize', this.updateAppDimensions.bind(this));
@@ -114,8 +125,18 @@ Game.prototype.initialize = function(){
 	this.surface.textureName = 'blue';
 	this.background.add(this.surface); 
 
+	/**
+	 * Сетка
+	 * @type {Grid}
+	 * @global
+	 */
 	window.grid = new Grid({debug: false});	
 	
+	/**
+	 * Курсор
+	 * @type {Cursor}
+	 * @global
+	 */
 	window.cursor = new Cursor('cursor_orange');
 
 	/**
