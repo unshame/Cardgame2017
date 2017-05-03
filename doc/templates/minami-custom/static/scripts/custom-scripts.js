@@ -54,19 +54,36 @@ $(function () {
 		});
 	});
 
-	var div;
-	if($('#methods').size()){
+	var div, dl, dd, li,
+		methods = $('#methods'),
+		members = $('#members');
+	if(methods.size() || members.size()){
+		dl = $('.container-overview .details');
+		if(!dl.size()){
+			dl = $('<dl class="details">');
+			
+			title.after(dl);
+		}
+		dl.append('<dt class="tag-source">Jump to:</dt>');
+		dd = $('<dd>');
+		dd.html('<ul class="dummy"><li></li></ul>');
+		dl.append(dd);
+		li = dd.find('li');
+	}
+
+	if(members.size()){
 		div = $('<div class="members-list">');
-		title.after('<strong><a href="#methods">Methods</a></strong> ');
-		$('#methods').after(div);
+		li.append('<strong><a href="#members">Members</a></strong> ');
+		members.after(div);
+		$('article>.section-members').each(appendMembers(div));
+	}
+	if(methods.size()){
+		div = $('<div class="members-list">');
+		li.append('<strong><a href="#methods">Methods</a></strong> ');
+		methods.after(div);
 		$('article>.section-method').each(appendMembers(div));
 
 	}
-	if($('#members').size()){
-		div = $('<div class="members-list">');
-		title.after('<strong><a href="#members">Members</a></strong> ');
-		$('#members').after(div);
-		$('article>.section-members').each(appendMembers(div));
-	}
+
 
 });
