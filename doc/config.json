@@ -2,7 +2,8 @@
 	"opts": {
 	    "template": "./doc/templates/minami",        
 	    "recurse": true, 
-	    "private": true
+	    "private": true,
+	    "readme": "./README.md"
 	},
 	"plugins": [
 	    "plugins/markdown"
