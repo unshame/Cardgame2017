@@ -22,36 +22,44 @@ $(function () {
 	if(className == 'Global')
 		className = 'global';
 	var container = $('body>nav');
-	var target = $('body>nav a[href="' + className + '.html"]');
-	if(target.size())
-		highlight(container, target);
 
 	if(className)
 	  $('.nav-item.' + className + ', .nav-item.global').show();
 	else
 	  $('.nav-item.global').show();
 
-	var currentHash = "#initial_hash";
+	function highlightCurrent(hash){
+		var link = className + '.html#' + hash;
+		var target = $('body>nav a[href="' + link + '"]');
+		if(!target.size()){
+			target = $('body>nav a[href="' + className + '.html"]');
+		}
+		if(!target.size()){
+			target = $('body>nav a[href="global.html#' + hash + '"]');
+		}
+		if(target.size())
+			highlight(container, target);
+	}
+
+	var currentHash = document.location.hash.substr(1);
+	highlightCurrent(currentHash);
 	$(document).scroll(function () {
-		$('h4.name').each(function () {
+		var lastHash, 
+			lastDistance = Infinity;
+		$('h4.name, h1.page-title').each(function () {
 			var top = window.pageYOffset;
 			var distance = top - $(this).offset().top;
 			var hash = $(this).attr('id');
-			if (distance < 30 && distance > -30 && currentHash != hash) {
-				history.pushState(null, null, '#' + hash);
-				currentHash = hash;
-				var link = className + '.html#' + hash;
-				var target = $('body>nav a[href="' + link + '"]');
-				if(!target.size()){
-					target = $('body>nav a[href="' + className + '.html"]');
-				}
-				if(!target.size()){
-					target = $('body>nav a[href="global.html#' + hash + '"]');
-				}
-				if(target.size())
-					highlight(container, target);
+			if (distance >= 0 && distance < lastDistance) {
+				lastHash = hash;
+				lastDistance = distance;
 			}
 		});
+		if(lastHash && currentHash != lastHash){
+			history.pushState(null, null, '#' + lastHash);
+			currentHash = lastHash;
+			highlightCurrent(lastHash);
+		}
 	});
 
 	var div, dl, dd, li,
