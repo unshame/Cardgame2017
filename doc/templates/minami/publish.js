@@ -411,16 +411,25 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
         } else {
           nav.push(buildNavHeading(buildNavType(item.kind, linktoFn(item.longname, displayName))))
         }
+        if (members.length) {
+          members.forEach(function(method) {
+            if (method.inherited && conf.showInheritedInNav === false) {
+              return
+            }
 
+            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name)), displayName || null))
+          })
+        }
         if (methods.length) {
           methods.forEach(function(method) {
             if (method.inherited && conf.showInheritedInNav === false) {
               return
             }
 
-            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name))))
+            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name)), displayName || null))
           })
         }
+
 
         itemsSeen[item.longname] = true
       }
@@ -476,12 +485,23 @@ function buildNavHeading (content) {
  * @param {String} itemContent navigation item content
  * @return {String}
  */
-function buildNavItem (itemContent) {
-  return [
-    '<li class="nav-item">',
-    itemContent,
-    '</li>'
-  ].join('')
+function buildNavItem (itemContent, itemName) {
+  if(itemName == null)
+    itemName = 'global';
+  if(itemName){
+    return [
+      '<li class="nav-item ' + itemName + '">',
+      itemContent,
+      '</li>'
+    ].join('')
+  }
+  else{
+    return [
+      '<li class="nav-item">',
+      itemContent,
+      '</li>'
+    ].join('')
+  }
 }
 
 function buildNavType (type, typeLink) {

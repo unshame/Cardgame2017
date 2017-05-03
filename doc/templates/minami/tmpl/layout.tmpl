@@ -65,6 +65,11 @@
         if(target.size())
             highlight(container, target);
 
+        if(className)
+          $('.nav-item.' + className + ', .nav-item.global').show();
+        else
+          $('.nav-item.global').show();
+
         var currentHash = "#initial_hash";
         $(document).scroll(function () {
             $('h4.name').each(function () {

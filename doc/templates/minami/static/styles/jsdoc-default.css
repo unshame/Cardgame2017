@@ -703,3 +703,7 @@ dl.param-type {
 .highlighted {
   background-color: gold;
 }
+
+.nav-item{
+  display: none;
+}
