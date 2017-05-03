@@ -26,7 +26,7 @@ var Button = function(options){
 		0,
 		'button_' + this.options.color + '_' + this.options.size,
 		actionWrapper,
-		this.options.context,
+		this.options.context || this,
 		1, 0, 2, 0
 	);
 
@@ -82,7 +82,7 @@ Button.getDefaultOptions = function(){
 		icon: null,
 		textColor: 'black',
 		font: '28px Exo',
-		context: this,
+		context: null,
 		group: null
 	};
 	return options;
