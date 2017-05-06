@@ -4,7 +4,7 @@ const
 
 function runTest(numBots, duration, debug){
 	console.log('Testing...');
-	if(isNaN(duration))
+	if(typeof duration != 'number')
 		duration = 2000;
 	var bots = [];
 	var randomNames = ['bot1', 'bot2', 'bot3', 'bot4', 'bot5'];
