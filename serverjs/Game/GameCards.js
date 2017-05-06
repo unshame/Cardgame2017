@@ -32,11 +32,10 @@ class GameCards extends BetterArray{
 
 	//Возвращает первое свободное место на столе
 	get firstEmptyTable(){
-		for(let fi = 0; fi < this.table.length; fi++){
-			let tableField = this.table[fi];
-			if(!tableField.attack && !tableField.defense)
-				return tableField;
-		}
+		let tableField = this.table.find((t) => {
+			return !t.attack && !t.defense;
+		});
+		return tableField;
 	}
 
 	getInfo(){
@@ -45,16 +44,12 @@ class GameCards extends BetterArray{
 
 		let players = this.game.players;
 
-		for(let pi = 0; pi < players.length; pi++){
-
-			let p = players[pi];
+		players.forEach((p) => {
 			let pid = p.id;
 			cardsToSend[pid] = [];
 
 			//Колода
-			for(let ci = 0; ci < this.deck.length; ci++){
-
-				let card = this.deck[ci];
+			this.deck.forEach((card) => {
 				let newCard = card.info;
 
 				//Игроки знают только о значении карты на дне колоды
@@ -63,18 +58,16 @@ class GameCards extends BetterArray{
 					newCard.suit = null;			
 				} 
 				cardsToSend[pid].push(newCard);
-			}
+			});
 
 			//Руки
 			for(let hid in this.hands){
-
 				if(!this.hands.hasOwnProperty(hid))
-					return;
+					continue;
 
+				/*jshint loopfunc: true */
 				let hand = this.hands[hid];
-				for(let ci = 0; ci < hand.length; ci++){
-
-					let card = hand[ci];
+				hand.forEach((card) => {
 					let newCard = card.info;
 
 					if(card.field != pid){
@@ -83,13 +76,11 @@ class GameCards extends BetterArray{
 					} 
 
 					cardsToSend[pid].push(newCard);
-				}	
-			}		
+				});
+			}	
 
 			//В игре
-			for(let fi = 0; fi < this.table.length; fi++){
-
-				let tableField = this.table[fi];
+			this.table.forEach((tableField) => {
 				if(tableField.attack){
 					let card = tableField.attack;
 					let newCard = card.info;
@@ -100,8 +91,8 @@ class GameCards extends BetterArray{
 					let newCard = card.info;
 					cardsToSend[pid].push(newCard);
 				}		
-			}
-		}
+			});
+		});
 
 		return cardsToSend;
 	}
@@ -159,9 +150,9 @@ class GameCards extends BetterArray{
 		}	
 
 		//Создаем руки
-		for (let pi = 0; pi < game.players.length; pi++) {
-			this.hands[game.players[pi].id] = [];
-		}
+		game.players.forEach((p) => {
+			this.hands[p.id] = [];
+		});
 
 		//Создаем колоду
 		this.makeDeck();
@@ -177,14 +168,13 @@ class GameCards extends BetterArray{
 	makeDeck(){
 
 		//Добавляем карты в колоду и в сам объект
-		for(let vi = 0; vi < this.values.length; vi++){
-
+		this.values.forEach((v) => {
 			for(let si = 0; si < this.numOfSuits; si++){
-				let card = new Card(si, this.values[vi], 'DECK');
+				let card = new Card(si, v, 'DECK');
 				this.push(card);
 				this.deck.push(card);
 			}		
-		}
+		});
 
 		//Перемешиваем колоду
 		this.deck.shuffle();
@@ -253,22 +243,20 @@ class GameCards extends BetterArray{
 		let deals = [];
 
 		let sequence = [];
-		for(let oi = 0; oi < originalAttackers.length; oi++){
-			let p = originalAttackers[oi];
-			if(!~sequence.indexOf(p))
+		originalAttackers.forEach((p) => {
+			if(!sequence.includes(p))
 				sequence.push(p);
-		}
-		if(!~sequence.indexOf(attacker))
+		});
+		if(!sequence.includes(attacker))
 			sequence.push(attacker);
 
-		if(ally && !~sequence.indexOf(ally))
+		if(ally && !sequence.includes(ally))
 			sequence.push(ally);
 
-		if(!~sequence.indexOf(defender))
+		if(!sequence.includes(defender))
 			sequence.push(defender);
 
-		for(let si = 0; si < sequence.length; si++){
-			let player = sequence[si];
+		sequence.forEach((player) => {
 			let pid = player.id;
 			let cardsInHand = this.hands[pid].length;
 			if(cardsInHand < this.normalHandSize){
@@ -278,7 +266,7 @@ class GameCards extends BetterArray{
 				};
 				deals.push(dealInfo);
 			}
-		}
+		});
 
 		if(deals.length){
 			return this.deal(deals);
@@ -314,9 +302,7 @@ class GameCards extends BetterArray{
 		};
 
 		//Убираем карты со всех позиций на столе
-		for(let fi = 0; fi < this.table.length; fi++){
-
-			let tableField = this.table[fi];
+		this.table.forEach((tableField) => {
 
 			if(tableField.attack){
 				let card = tableField.attack;
@@ -338,7 +324,7 @@ class GameCards extends BetterArray{
 				tableField.defense = null;
 			}
 
-		}
+		});
 
 		//Если карты были убраны, оповещаем игроков и переходим в фазу раздачи карт игрокам
 		if(action.ids.length){

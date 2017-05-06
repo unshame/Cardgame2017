@@ -383,7 +383,7 @@ class GamePlayers extends BetterArray{
 		try{
 			for(let pi = 0; pi < this.length; pi++) {
 				let p = this[pi];				
-				p.recieveCompleteAction(utils.copyObject(action));
+				p.recieveCompleteAction(Object.assign({}, action));
 			}
 		}
 		catch(e){
@@ -414,7 +414,7 @@ class GamePlayers extends BetterArray{
 
 				for(let ci = 0; ci < action.cards.length; ci++){
 					
-					let card = utils.copyObject(action.cards[ci]);
+					let card = Object.assign({}, action.cards[ci]);
 					delete card.value;
 					delete card.suit;
 					
@@ -437,7 +437,7 @@ class GamePlayers extends BetterArray{
 		try{
 			for(let pi = 0; pi < players.length; pi++){
 				let p = players[pi];				
-				p.recieveNotification(utils.copyObject(note) || null, actions || null);
+				p.recieveNotification(Object.assign({}, note) || null, actions || null);
 			}
 		}
 		catch(e){

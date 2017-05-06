@@ -134,10 +134,13 @@ class Game{
 		utils.log('Game ended', this.id, '\n\n');
 		utils.stats.line += 2;
 		
+		let results = Object.assign({}, this.result);
+		results.winners = this.result.winners.slice();
+
 		let note = {
 			message: 'GAME_ENDED',
 			scores: this.players.scores,
-			results: utils.copyObject(this.result)				 
+			results: results				 
 		};
 		let actionAccept = {
 			type: 'ACCEPT'
@@ -453,18 +456,16 @@ class Game{
 	processAction(player, incomingAction){
 
 		let action;
-		for(let ai = 0; ai < this.validActions.length; ai++){
-			let validAction = this.validActions[ai];
-			if(
-				incomingAction.type == validAction.type &&
-				(!validAction.cid || incomingAction.cid == validAction.cid) &&
-				(!validAction.field || incomingAction.field == validAction.field) &&
-				(!validAction.linkedField || incomingAction.linkedField == validAction.linkedField)
-			){
-				action = validAction;
-				break;
+		this.validActions.forEach((validAction) => {
+			for(let k in validAction){
+				if(!validAction.hasOwnProperty(k))
+					continue;
+				if(validAction[k] != incomingAction[k]){
+					return;
+				}
 			}
-		}
+			action = validAction;
+		});
 		let ai = this.validActions.indexOf(action);
 
 		//Проверка действия
@@ -516,7 +517,7 @@ class Game{
 
 		action.pid = player.id;
 
-		this.storedActions[player.id] = utils.copyObject(action);
+		this.storedActions[player.id] = Object.assign({}, action);
 	}
 
 	//Считает сохраненные голоса и возвращает результаты
@@ -531,8 +532,7 @@ class Game{
 		let allConnected = true;
 
 		for(let pi = 0; pi < this.players.length; pi++){
-
-			let player = this.players[pi]
+			let player = this.players[pi];
 			let pid = player.id;
 			let action = this.storedActions[pid];
 
@@ -549,9 +549,16 @@ class Game{
 		if(!allConnected)
 			utils.log('Some players disconnected');
 
+		let results = [];
+		for(let pid in this.storedActions){
+			if(!this.storedActions.hasOwnProperty(pid))
+				continue;
+			results.push(Object.assign({}, this.storedActions[pid]));
+		}
+
 		let note = {
 			message: 'VOTE_RESULTS',
-			results: utils.copyObject(this.storedActions)
+			results: results
 		};
 
 		if(allConnected && numAccepted >= minAcceptedNeeded)

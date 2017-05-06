@@ -33,12 +33,11 @@ class BetterArray extends Array{
 	//Пропускает элементы без заданных ключей и с пустыми ключами
 	byKey(key){
 		let obj = {};
-		for(let i = 0; i < this.length; i++){
-			let v = this[i];
+		this.forEach((v) => {
 			if(!v || typeof v != 'object' || !v[key])
-				continue;
-			obj[v[key]] = v;	
-		}
+				return;
+			obj[v[key]] = v;
+		});
 		return obj;
 	}
 
