@@ -3,7 +3,7 @@
  * @readonly
  * @enum {number}
  */
-BRING_TO_TOP_ON = {
+window.BRING_TO_TOP_ON = {
 	NEVER: 0,
 	INIT: 1,
 	START: 2,

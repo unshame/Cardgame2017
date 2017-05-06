@@ -60,5 +60,5 @@ module.exports = function(server){
 				server.addPlayerToQueue(player);
 			}
 		}
-	}
-}
+	};
+};
