@@ -23,16 +23,26 @@ class GameDirectives{
 		let defHand = this.hands[this.players.defender.id];
 
 		if(
-			this.table.usedFields >= this.table.fullLength || 
-			!hand.length ||
+			this.table.usedFields >= this.table.fullLength || 			
 			turnStage != 'FOLLOWUP' && !defHand.length
 		){
 			utils.log(
 				this.table.usedFields >= this.table.fullLength && 'Field is full' ||
-				!this.hands[pid].length && 'Attacker has no cards' ||
 				turnStage != 'FOLLOWUP' && !defHand.length && 'Defender has no cards'
 			);
 			this.setNextTurnStage('DEFENSE');
+			this.continue();
+			return;
+		}
+		else if(!hand.length){
+			utils.log('Attacker has no cards');
+			if(this.skipCounter < 2 && this.players.ally){
+				this.skipCounter++;
+				this.setNextTurnStage('SUPPORT');
+			}
+			else{
+				this.setNextTurnStage('DEFENSE');
+			}
 			this.continue();
 			return;
 		}

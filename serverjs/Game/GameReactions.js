@@ -56,12 +56,12 @@ class GameReactions{
 		}
 		else if(this.turnStages.current == 'DEFENSE'){
 			this.players.setOriginalAttackers([this.players.attacker]);
-				let currentAttackerIndex = activePlayers.indexOf(this.players.attacker);
-				this.players.findToGoNext(currentAttackerIndex);
-				this.setNextTurnStage('DEFENSE');	
+			let currentAttackerIndex = activePlayers.indexOf(this.players.attacker);
+			this.players.findToGoNext(currentAttackerIndex);
+			this.setNextTurnStage('DEFENSE');	
 		}
 		else{
-			this.skipCounter = 0;//Если же это просто ход, сбрасываем счетчик пропущенных ходов
+			this.skipCounter = 0;	//Если же это просто ход, сбрасываем счетчик пропущенных ходов
 		}
 
 		return action;
