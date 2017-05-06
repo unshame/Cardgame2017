@@ -1,10 +1,12 @@
 
-function highlight(container, target){
+function highlight(container, target, shouldScroll){
 	$('.highlighted').removeClass('highlighted');
 	target.parent().addClass('highlighted');
-	container.scrollTop(
-		target.offset().top - container.offset().top + container.scrollTop() - 100
-	);
+	if(shouldScroll){
+		container.scrollTop(
+			target.offset().top - container.offset().top + container.scrollTop() - 100
+		);
+	}
 }
 
 function appendMembers(div){
@@ -17,8 +19,17 @@ function appendMembers(div){
 $(function () {
 	$('body>footer').css('margin-top', window.innerHeight - $('body>footer').outerHeight() - 70);
 
+	var shouldScroll = true;
+	var navbar = $('body>nav');
+	navbar.mouseenter(function(){
+		shouldScroll = false;
+	});
+	navbar.mouseleave(function(){
+		shouldScroll = true;
+	});
+
 	var title = $('.page-title');
-	var className = title.text();
+	var className = title.attr('id');
 	if(className == 'Global')
 		className = 'global';
 	var container = $('body>nav');
@@ -35,10 +46,13 @@ $(function () {
 			target = $('body>nav a[href="' + className + '.html"]');
 		}
 		if(!target.size()){
+			target = $('body>nav a[href="external-' + className + '.html"]');
+		}
+		if(!target.size()){
 			target = $('body>nav a[href="global.html#' + hash + '"]');
 		}
 		if(target.size())
-			highlight(container, target);
+			highlight(container, target, shouldScroll);
 	}
 
 	var currentHash = document.location.hash.substr(1);
