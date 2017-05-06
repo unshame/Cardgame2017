@@ -84,7 +84,7 @@ class TestBot extends Bot{
 			this.tester.transfers++;
 			let numOfTransfers = this.tester.transfers;
 			let numOfOriginalAttackers = this.game.players.originalAttackers.length;
-			if(numOfTransfers != numOfOriginalAttackers){
+			if(numOfTransfers != numOfOriginalAttackers && numOfOriginalAttackers != active.length){
 				console.log('Test %s (transfer attacker saving) failed on %s', this.tests, this.name);
 				console.log('Transfers: %d but saved attackers: %d', numOfTransfers, numOfOriginalAttackers);
 				console.log('See line %s in log.txt for context', lineNum + 1);

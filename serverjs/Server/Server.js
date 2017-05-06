@@ -33,7 +33,7 @@ class Server extends Eureca.Server{
 			numPlayers: argv.p === undefined ? Number(argv.players) : Number(argv.p),
 			rndBots: Boolean(argv.r || argv.rnd || argv.random),
 			transfer: Boolean(process.env.TRANSFER || argv.transfer),
-			testing: Boolean(argv.t || argv.test || argv.testing),
+			testing: argv.t || argv.test || argv.testing,
 			debug: Boolean(argv.d || argv.debug),
 			port: process.env.PORT || Number(argv.port)
 		};
@@ -149,8 +149,9 @@ class Server extends Eureca.Server{
 	start(){
 		this.httpServer.listen(this.params.port, () => {
 			console.log('Node app is running on port', this.params.port);
-			if(this.params.testing)
-				Tests.runTest(this.params.numBots, null, this.params.debug);
+			if(this.params.testing){
+				Tests.runTest(this.params.numBots, this.params.testing, this.params.debug);
+			}
 		});
 	}
 

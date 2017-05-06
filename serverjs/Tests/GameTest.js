@@ -4,6 +4,8 @@ const
 
 function runTest(numBots, duration, debug){
 	console.log('Testing...');
+	if(isNaN(duration))
+		duration = 2000;
 	var bots = [];
 	var randomNames = ['bot1', 'bot2', 'bot3', 'bot4', 'bot5'];
 	var tester = {
@@ -14,7 +16,7 @@ function runTest(numBots, duration, debug){
 	for(var i = 0; i < numBots; i++){
 		bots.push(new TestBot(tester,randomNames));
 	}
-	new Game(bots, true, true, debug);
+	new Game(bots, true, debug);
 	setTimeout(() => {
 		console.log('Tests finished...');
 		tester.running = false;
@@ -23,6 +25,6 @@ function runTest(numBots, duration, debug){
 			var bot = bots[bi];			
 			console.log('Bot %s: failed %s out of %s', bot.name, bot.failedTests, bot.tests);
 		}
-	}, duration || 2000);
+	}, duration);
 }
 module.exports.runTest = runTest;
