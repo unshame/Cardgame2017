@@ -1,12 +1,16 @@
 /**
  * Основное состояние игры.  
  * Предоставляет движку функции, которые выполняются при загрузке, создании
- * и обновлении игрового цикла 
+ * и обновлении игрового цикла.
  * @namespace playState
  */
 
 window.playState = new Phaser.State();
 
+/**
+ * Выполняется до загрузки игры и загружает ассеты.
+ * @memberof playState
+ */
 playState.preload = function(){
 	//Фон
 	game.load.image('wood_light', 'assets/backgrounds/wood_light.png');
@@ -37,13 +41,32 @@ playState.preload = function(){
 	game.load.spritesheet('cursor_yellow', 'assets/cursors/yellow.png', 128, 128, 3);
 	game.load.spritesheet('cursor_orange', 'assets/cursors/orange.png', 128, 128, 3);
 
+	/**
+	 * Google WebFont Loader  
+	 * 
+	 * > Web Font Loader gives you added control when using linked fonts via @font-face.
+	 * It provides a common interface to loading fonts regardless of the source, then
+	 * adds a standard set of events you may use to control the loading experience.
+	 * The Web Font Loader is able to load fonts from Google Fonts, Typekit, Fonts.com,
+	 * and Fontdeck, as well as self-hosted web fonts.
+	 * @namespace WebFont
+	 * @see  {@link https://github.com/typekit/webfontloader}
+	 */
     game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
-	//Скины
+	/**
+	 * Менеджер скинов
+	 * @type {SkinManager}
+	 * @global
+	 */
 	window.skinManager = new SkinManager('modern');
 	skinManager.addSkins(window.skins);
 };
 
+/**
+ * Выполняется после загрузки игры, инициализирует соединение с сервером.
+ * @memberof playState
+ */
 playState.create = function(){
 	/**
 	 * Менеджер соединения с сервером
@@ -53,6 +76,11 @@ playState.create = function(){
 	window.connection = new ConnectionManager(game.initialize, game);
 };
 
+/**
+ * Выполняется каждый кадр игры между preUpdate и postUpdate элементов игры.
+ * Обновляет состояние элементов игры, которые не обновляются игрой автоматически.
+ * @memberof playState
+ */
 playState.update = function(){
 	if(!game.created)
 		return;
@@ -61,6 +89,11 @@ playState.update = function(){
 	cardManager.update();
 };
 
+/**
+ * Выполняется каждый кадр игры после рендера всех элементов игры.
+ * Выводит дебаг информацию.
+ * @memberof playState
+ */
 playState.render = function(){
 	if(!game.created)
 		return;
@@ -76,6 +109,10 @@ playState.render = function(){
 		game.debug.text(game.time.fps, 2, 14, "#00ff00");
 };
 
+/**
+ * Выполняется во время загрузки игры.
+ * @memberof playState
+ */
 playState.loadUpdate = function(){
 	
 };

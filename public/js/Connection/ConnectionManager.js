@@ -6,6 +6,12 @@
 */
 
 var ConnectionManager = function(callback, context, isInDebugMode){
+
+	/**
+	 * A nodejs transparent bidirectional RPC.
+	 * @external Eureca
+	 * @see {@link http://eureca.io/}
+	 */
 	Eureca.Client.call(this);
 
 	this.callback = callback;

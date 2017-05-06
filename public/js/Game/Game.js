@@ -47,6 +47,12 @@ var Game = function(minWidth, minHeight, speed, isInDebugMode){
 		'wood_dark'
 	];
 
+	/**
+	 * HTML5 game framework.  
+	 * ![Phaser](https://camo.githubusercontent.com/41b3f653a9ad25ca565c9c4bcfcc13b6d778e329/687474703a2f2f7068617365722e696f2f696d616765732f6769746875622f6172636164652d6361622e706e67)
+	 * @external Phaser
+	 * @see {@link https://phaser.io/docs/2.6.2/index}
+	 */
 	Phaser.Game.call(
 		this,
 		this.screenWidth,
