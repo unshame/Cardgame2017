@@ -174,7 +174,7 @@ FieldManager.prototype.removeMarkedCards = function(){
 
 /** 
  * Заставляет каждое поле разместить все карты
- * @param  {string} bringToTopOn - Когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
+ * @param  {BRING_TO_TOP_ON} bringToTopOn - Когда поднимать карту на передний план
  * @param  {boolean} noDelay - Говорит полю, что перемещение не нужно задерживать
  */
 FieldManager.prototype.placeCards = function(bringToTopOn, noDelay){

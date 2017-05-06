@@ -17,6 +17,7 @@
  * @param {boolean} [options.debug=false] - вывод дебаг информации
  */
 
+
 var Card = function (options) {
 
 	//Options
@@ -148,14 +149,14 @@ var Card = function (options) {
 	this.flipper = null;
 
 	/**
-	 * Когда карта будет перемещена вверх группы ('never', 'init', 'start', 'end', 'endAll')  
+	 * Когда карта будет перемещена вверх группы  
 	 * @param Card#_bringToTopOn
 	 * @private
-	 * @type {string}
-	 * @default 'never'
+	 * @type {BRING_TO_TOP_ON}
+	 * @default BRING_TO_TOP_ON.NEVER
 	 * @see  {@link Card#moveTo}
 	 */
-	this._bringToTopOn = 'never';
+	this._bringToTopOn = BRING_TO_TOP_ON.NEVER;
 
 	/**
 	 * Масть карты
@@ -470,7 +471,7 @@ Card.prototype.setScale = function(scale){
  * @param  {boolean} [relativeToBase=false] - перемещение происходит относительно базы карты
  * @param  {boolean} [shouldRebase=false]   - нужно ли перемещать базу карты или только карту  
  * если база не изменилась, то эта переменная всегда будет false
- * @param  {string} [bringToTopOn='init']   - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
+ * @param  {BRING_TO_TOP_ON} [bringToTopOn=BRING_TO_TOP_ON.INIT]   - когда поднимать карту на передний план 
  * @param  {functon} [easing=Phaser.Easing.Quadratic.Out] - функция плавности
  */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn, easing){
@@ -479,12 +480,12 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		relativeToBase = false;
 	if(shouldRebase === undefined)
 		shouldRebase = false;
-	if(bringToTopOn === undefined || !~['never', 'init', 'start', 'end', 'endAll'].indexOf(bringToTopOn))
-		bringToTopOn = 'init';
+	if(bringToTopOn === undefined)
+		bringToTopOn = BRING_TO_TOP_ON.INIT;
 
 	this._bringToTopOn = bringToTopOn;
 
-	if(this._bringToTopOn == 'init' || game.paused && this._bringToTopOn != 'never')
+	if(this._bringToTopOn == BRING_TO_TOP_ON.INIT || game.paused && this._bringToTopOn != BRING_TO_TOP_ON.NEVER)
 		this.bringToTop();
 
 	//Куда двигать карту
@@ -548,7 +549,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		//Не перезапускаем твин, если нет задержки и пункт назначения не изменился
 		if(!shouldRebase && endPosition && endPosition.x == moveX && endPosition.y == moveY && moverData.delay == delay){
 			this.updateValue();
-			if(this._bringToTopOn == 'start')
+			if(this._bringToTopOn == BRING_TO_TOP_ON.START)
 				this.bringToTop();
 			return;
 		}
@@ -580,15 +581,15 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	//Переворачиваем карту, когда начинается движение
 	this.mover.onStart.addOnce(function(){
 		this.updateValue();
-		if(this._bringToTopOn == 'start')
+		if(this._bringToTopOn == BRING_TO_TOP_ON.START)
 			this.bringToTop();
 	}, this);
 
 	//Ресет твина по окончанию
 	this.mover.onComplete.addOnce(function(){
 		this.mover = null;
-		if(this._bringToTopOn == 'end' || this._bringToTopOn == 'endAll'){
-			if(!this.field || this._bringToTopOn == 'end')
+		if(this._bringToTopOn == BRING_TO_TOP_ON.END || this._bringToTopOn == BRING_TO_TOP_ON.END_ALL){
+			if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.END)
 				this.bringToTop();
 			else
 				this.field.zAlignCards(true);

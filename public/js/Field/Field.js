@@ -315,15 +315,15 @@ Field.prototype.placeQueuedCards = function(){
 		return;
 	
 	this._appendCards(this.queuedCards);
-	var bringUpOn; 
+	var bringToTopOn; 
 	if(this.type == 'DECK')
-		bringUpOn = 'init';
+		bringToTopOn = BRING_TO_TOP_ON.INIT;
 	else if(this.sorted)
-		bringUpOn = 'endAll';
+		bringToTopOn = BRING_TO_TOP_ON.END_ALL;
 	else
-		bringUpOn = 'start';
+		bringToTopOn = BRING_TO_TOP_ON.START;
 	this._sortCards();
-	this.placeCards(null, bringUpOn);
+	this.placeCards(null, bringToTopOn);
 	this.setUninteractibleTimer(this.expectedDelay);
 	this.queuedCards = [];
 	this.delays = {};
@@ -367,7 +367,7 @@ Field.prototype.addCards = function(newCards, noDelay){
 	else{
 		this._appendCards(newCards);
 		this._sortCards();
-		return this.placeCards(newCards, 'start', noDelay);
+		return this.placeCards(newCards, BRING_TO_TOP_ON.START, noDelay);
 	}
 };
 
@@ -399,10 +399,10 @@ Field.prototype._appendCards = function(cards){
 /*
  * Размещает карты в поле
  * @newCards Array (Card) - только что добавленные карты, они будут перемещены в поле по очереди
- * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
+ * @bringToTopOn {BRING_TO_TOP_ON} - когда поднимать карту на передний план
  * Возвращает задержку следующей карты
  */
-Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
+Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 	if(newCards === undefined)
 		newCards = null;
@@ -540,7 +540,7 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 
 		delayIndex = this._moveCard(
 			card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
-			delayArray, delayIndex, increaseDelayIndex, bringUpOn
+			delayArray, delayIndex, increaseDelayIndex, bringToTopOn
 		);
 	}
 
@@ -573,11 +573,11 @@ Field.prototype.placeCards = function(newCards, bringUpOn, noDelay){
 };
 
 //Для размещения одной карты
-Field.prototype.placeCard = function(card, bringUpOn, noDelay){
+Field.prototype.placeCard = function(card, bringToTopOn, noDelay){
 	var i = this.cards.indexOf(card);
 	if(!~i)
 		return;
-	return this.placeCards([card], bringUpOn, noDelay);
+	return this.placeCards([card], bringToTopOn, noDelay);
 };
 
 //Поворачивает все карты
@@ -610,11 +610,11 @@ Field.prototype.rotateCards = function(){
  * @focusedIndex Number (int) - индекс выделенной карты в поле
  * @delayIndex Number (int) - индекс карты в очереди
  * @increaseDelayIndex Bool - нужно ли увеличивать индекс очереди в конце выполнения функции
- * @bringUpOn Bool - когда поднимать карту на передний план ('never', 'init', 'start', 'end', 'endAll')
+ * @bringToTopOn {BRING_TO_TOP_ON} - когда поднимать карту на передний план
  */
 Field.prototype._moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
-	delayArray, delayIndex, increaseDelayIndex, bringUpOn
+	delayArray, delayIndex, increaseDelayIndex, bringToTopOn
 ){
 	var delay = delayArray[index];
 	if(delay === null || delay === undefined){
@@ -669,7 +669,7 @@ Field.prototype._moveCard = function(
 
 	//Запускаем перемещение карты
 	if(cardControl.card != card){
-		card.moveTo(x, y, this.moveTime, delay, false, true, bringUpOn);
+		card.moveTo(x, y, this.moveTime, delay, false, true, bringToTopOn);
 	}
 	else{
 		cardControl.trailShift(card.base.x - x, card.base.y - y);	
@@ -705,9 +705,9 @@ Field.prototype.removeCards = function(cardsToRemove){
 		}
 	}
 	if(this.cards.length){
-		var bringUpOn = (this.type == 'DECK') ? 'never' : 'end';
+		var bringToTopOn = (this.type == 'DECK') ? BRING_TO_TOP_ON.NEVER : BRING_TO_TOP_ON.END;
 		this._sortCards();
-		this.placeCards(null, bringUpOn);
+		this.placeCards(null, bringToTopOn);
 	}
 };
 
@@ -800,7 +800,7 @@ Field.prototype.focusOnCard = function(card, pointer, forced){
 
 	this.focusedCard = card;
 	if(!this.uninteractibleTimer || forced){
-		this.placeCards(null, 'init');
+		this.placeCards(null, BRING_TO_TOP_ON.INIT);
 	}
 };
 
@@ -821,7 +821,7 @@ Field.prototype.focusOffCard = function(card, forced){
 
 	this.focusedCard = null;
 	if(!this.uninteractibleTimer || forced)
-		this.placeCards(null, 'init');
+		this.placeCards(null, BRING_TO_TOP_ON.INIT);
 };
 
 

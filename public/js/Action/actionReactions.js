@@ -37,7 +37,7 @@ window.actionReactions = {
 			if(card.field.id != playerManager.pid){	
 				card.presetValue(c.suit, c.value);	
 			}
-			card.field.placeCards(null, 'init', true);
+			card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);
 		}		
 
 		//Выделяем поле игрока с наибольшим козырем
@@ -57,7 +57,7 @@ window.actionReactions = {
 				if(card.field.id != playerManager.pid){					
 					card.presetValue(null, null);
 				}
-				card.field.placeCards(null, 'init', true);
+				card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);
 			}			
 		}
 		this.setTimedAction(hideTrumpCards, this, delay);
