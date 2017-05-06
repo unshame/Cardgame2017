@@ -38,7 +38,10 @@ class GameDirectives{
 			utils.log('Attacker has no cards');
 			if(this.skipCounter < 2 && this.players.ally){
 				this.skipCounter++;
-				this.setNextTurnStage('SUPPORT');
+				if(turnStage == 'FOLLOWUP')
+					this.setNextTurnStage('FOLLOWUP');
+				else
+					this.setNextTurnStage('SUPPORT');
 			}
 			else{
 				this.setNextTurnStage('DEFENSE');
