@@ -1,15 +1,48 @@
 /**
- * Заменяет курсор на спрайт
+ * Заменяет курсор на спрайт.  
  * @class
+ * @extends {Phaser.Sprite}
+ * @listens document.mouseleave
+ * @listens document.mouseenter
  */
 
 var Cursor = function(textureName){
 
 	Phaser.Sprite.call(this, game, -32, -32, textureName);
 
-	this.width = this.height = 32;
+	/**
+	 * Ширина курсора.
+	 * @param Cursor#width
+	 * @type {number}
+	 * @default 32
+	 */
+	this.width = 32;
+	
+	/**
+	 * Высота курсора.
+	 * @param Cursor#height
+	 * @type {number}
+	 * @default 32
+	 */
+	this.height = 32;
+
+	/**
+	 * Находится ли курсор внутри окна.
+	 * @param Cursor#isInGame
+	 * @type {boolean}
+	 * @default true
+	 */
 	this.isInGame = true;
+
+	/**
+	 * Инициализирован ли курсор.
+	 * Курсор инициализирован, если он сдвинулся с позиции `{x: 0, y: 0}`.
+	 * @param Cursor#initialized
+	 * @type {boolean}
+	 * @default false
+	 */
 	this.initialized = false;
+
 	this.name = 'cursor';
 
 	game.add.existing(this);
@@ -22,7 +55,10 @@ var Cursor = function(textureName){
 Cursor.prototype = Object.create(Phaser.Sprite.prototype);
 Cursor.prototype.constructor = Cursor;
 
-//Обновление позиции и вида курсора
+/**
+ * Обновляет позицию и внешний вид курсора.
+ * @param  {boolean} [cursorIsInGame=Cursor#isInGame] находится ли уазатель пользователя в окне
+ */
 Cursor.prototype.update = function(cursorIsInGame){
 
 	if(!Phaser.Device.desktop)
@@ -41,15 +77,22 @@ Cursor.prototype.update = function(cursorIsInGame){
 	}
 	if(!this.isInGame || game.paused || !this.initialized)
 		return;
+
 	game.canvas.style.cursor = "none";
 	this.x = game.input.x;
 	this.y = game.input.y;
+
+	//Курсор перетаскивает карту
+	//меняем его на сжатую руку
 	if(cardControl.card){
 		this.x -= this.width/2;
 		this.y -= this.height/2;
 		this.frame = 2;
 		return;
 	}
+
+	//Если курсор над картой или элементом интерфейса,
+	//меняем его на указатель
 	if(
 		cardManager.cursorIsOverACard() ||
 		ui.layers.cursorIsOverAnElement()
@@ -58,5 +101,7 @@ Cursor.prototype.update = function(cursorIsInGame){
 		this.frame = 1;
 		return;
 	}
+
+	//Курсор не над чем не находится
 	this.frame = 0;
 };
