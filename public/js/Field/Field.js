@@ -24,6 +24,7 @@ var Field = function(options){
 	this.cards = [];
 	this.delays = {};
 	this.queuedCards = [];
+	this.angles = {};
 	this.focusedCard = null;
 	this.linkedField = null;
 
@@ -66,6 +67,8 @@ var Field = function(options){
 
 	this.moveTime = this.options.moveTime;
 	this.delayTime = this.options.delayTime;
+
+	this.randomAngle = this.options.randomAngle;
 
 	if(this.focusable && this.axis == 'vertical'){
 		this.focusable = false;
@@ -132,6 +135,7 @@ Field.getDefaultOptions = function(){
 		addTo: 'front',		//В какой конец поля добавляются карты (front - в конец, back - в начало)
 		reversed: false,	//Карты добавляются начиная с последней
 		flipped: false,		//Карты распологаются повернутыми на 180 градусов
+		randomAngle: false,
 
 		texture: null,
 		alpha: 0.35,
@@ -383,13 +387,29 @@ Field.prototype.addCard = function(card){
 
 Field.prototype._appendCards = function(cards){
 
+	var card,
+		addedAngle = (Math.floor(Math.random()*5) + 8),
+		lastAngle = Math.floor(Math.random()*20) * (Math.random() > 0.5 ? 1 : -1) - addedAngle;
+
+	//Находим угол последней карты
+	if(this.randomAngle){		
+		for(var ci = 0; ci < this.cards.length; ci++){
+			card = this.cards[ci];
+			if(typeof this.angles[card.id] == 'number')
+				lastAngle = this.angles[card.id];
+		}
+	}
+
     for(var ci = 0; ci < cards.length; ci++){
-        var card = cards[ci];
+        card = cards[ci];
         card.field = this;
         if(this.addTo == 'front')
             this.cards.push(card);
         else
             this.cards.unshift(card);
+        if(this.randomAngle){
+        	this.angles[card.id] = lastAngle + addedAngle;
+        }
     }
 };
 
@@ -621,6 +641,10 @@ Field.prototype._moveCard = function(
 		delay = this.delayTime*delayIndex;
 	}
 
+	if(this.randomAngle){
+		angle = this.angles[card.id] || 0;		
+	}
+
 	//Сдвиг текущей карты
 	card.setScale(1);
 	if(this.focusedCard){
@@ -702,6 +726,7 @@ Field.prototype.removeCards = function(cardsToRemove){
 				this.focusedCard = null;
 			this.cards.splice(i, 1);
 			card.field = null;
+			this.angles[card.id] = null;
 		}
 	}
 	if(this.cards.length){
