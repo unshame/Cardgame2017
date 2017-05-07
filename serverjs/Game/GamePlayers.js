@@ -326,7 +326,7 @@ class GamePlayers extends BetterArray{
 			players: true,
 			suit: true,
 			discard: true
-		})
+		});
 	}
 
 	//Оповещает игроков об оппонентах

@@ -317,6 +317,7 @@ class Game{
 	}
 
 	//Выполняется по окончанию таймера ответа игроков 
+	//Выполняет случайное действие или продолжает игру
 	timeOut(){
 		let playersWorking = this.players.working;
 		let names = '';
@@ -328,30 +329,7 @@ class Game{
 
 		//Если есть действия, выполняем первое попавшееся действие
 		if(this.validActions.length && this.states.current == 'STARTED'){
-			let actionIndex = 0;
-			for(let ai = 0; ai < this.validActions.length; ai++){
-				let action = this.validActions[ai];
-				if(action.type == 'SKIP' || action.type == 'TAKE'){
-					actionIndex = ai;
-					break;
-				}
-			}
-
-			//У нас поддерживается только одно действие от одного игрока за раз
-			let player = playersWorking[0];	
-
-			//Устанавливаем, что игрок не выбрал действие
-			player.afk = true;
-
-			let outgoingAction = this.processAction(player, this.validActions[actionIndex]);
-
-			//Убираем игрока из списка действующих
-			this.players.working = [];
-
-			this.waitForResponse(this.timeouts.actionComplete, this.players);
-			//Отправляем оповещение о том, что время хода вышло
-			player.handleLateness();
-			this.players.completeActionNotify(outgoingAction);
+			this.executeFirstAction();
 		}
 
 		//Иначе, обнуляем действующих игроков, возможные действия и продолжаем ход
@@ -395,65 +373,76 @@ class Game{
 		//utils.log('Response from', player.id, action ? action : '');
 
 		//Выполняем или сохраняем действие
+		let waitingForResponse = false;
 		if(action){
-
-			//Игрок выбрал действие, он не afk
-			if(player.afk)
-				player.afk = false;
-
-			let outgoingAction;
-
-			//Во время игры один игрок действует за раз
-			if(this.states.current == 'STARTED'){
-
-				outgoingAction = this.processAction(player, action);
-
-				//Если действие легально
-				if(outgoingAction){
-
-					//Убираем игрока из списка действующих (он там один)
-					this.players.working = [];
-					
-					//Сообщаем игрокам о действии
-					this.waitForResponse(this.timeouts.actionComplete, this.players);
-					this.players.completeActionNotify(outgoingAction);
-					
-				}
-
-				//Сообщаем игроку, что действие нелегально
-				else{
-					this.players.notify(
-						{
-							message: 'INVALID_ACTION',
-							action: action,
-							time: this.actionDeadline,
-							timeSent: Date.now()
-						},
-						this.validActions.slice(),
-						[player]
-					);
-				}
-				return;			
-			}
-
-			//Если игра закончена, действовать могут все
-			else
-				this.storeAction(player, action);
+			waitingForResponse = this.processAction(player, action);
 		}
 
-		//Убираем игрока из списка действующих
-		playersWorking.splice(pi, 1);	
-		this.players.working = playersWorking;
+		//Если мы не оповещали игроков и не ждем от них ответа
+		if(!waitingForResponse){
+			//Убираем игрока из списка действующих
+			playersWorking.splice(pi, 1);	
+			this.players.working = playersWorking;
 
-		//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
-		if(!playersWorking.length){
-			clearTimeout(this.timer);
-			this.continue();
+			//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
+			if(!playersWorking.length){
+				clearTimeout(this.timer);
+				this.continue();
+			}
 		}
 	}
 
+	//Выполняет или сохраняет действие, оповещает игроков о результатах действия
+	//Возвращает ожидается ли ответ от игроков или нет
+	processAction(player, action){
+		//Игрок выбрал действие, он не afk
+		if(player.afk)
+			player.afk = false;
+
+		let outgoingAction;
+
+		//Во время игры один игрок действует за раз
+		if(this.states.current == 'STARTED'){
+
+			outgoingAction = this.executeAction(player, action);
+
+			//Если действие легально
+			if(outgoingAction){
+
+				//Убираем игрока из списка действующих (он там один)
+				this.players.working = [];
+				
+				//Сообщаем игрокам о действии
+				this.waitForResponse(this.timeouts.actionComplete, this.players);
+				this.players.completeActionNotify(outgoingAction);
+				
+			}
+
+			//Сообщаем игроку, что действие нелегально
+			else{
+				this.players.notify(
+					{
+						message: 'INVALID_ACTION',
+						action: action,
+						time: this.actionDeadline,
+						timeSent: Date.now()
+					},
+					this.validActions.slice(),
+					[player]
+				);
+			}
+			return true;			
+		}
+		//Если игра закончена, действовать могут все
+		else{
+			this.storeAction(player, action);
+		}
+
+		return false;
+	}
+
 	//Обрабатывает полученное от игрока действие, возвращает исходящее действие
-	processAction(player, incomingAction){
+	executeAction(player, incomingAction){
 
 		let action;
 		this.validActions.forEach((validAction) => {
@@ -493,6 +482,36 @@ class Game{
 		this.validActions = [];		
 
 		return action;
+	}
+
+	//Выполняет первое дейтсие из this.validActions
+	//Приоритезирует SKIP и TAKE
+	executeFirstAction(){
+		let playersWorking = this.players.working;
+		let actionIndex = 0;
+		for(let ai = 0; ai < this.validActions.length; ai++){
+			let action = this.validActions[ai];
+			if(action.type == 'SKIP' || action.type == 'TAKE'){
+				actionIndex = ai;
+				break;
+			}
+		}
+
+		//У нас поддерживается только одно действие от одного игрока за раз
+		let player = playersWorking[0];	
+
+		//Устанавливаем, что игрок не выбрал действие
+		player.afk = true;
+
+		let outgoingAction = this.executeAction(player, this.validActions[actionIndex]);
+
+		//Убираем игрока из списка действующих
+		this.players.working = [];
+
+		this.waitForResponse(this.timeouts.actionComplete, this.players);
+		//Отправляем оповещение о том, что время хода вышло
+		player.handleLateness();
+		this.players.completeActionNotify(outgoingAction);
 	}
 
 	//Сохраняет полученное действие игрока
