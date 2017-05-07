@@ -707,3 +707,7 @@ dl.param-type {
 .nav-item{
   display: none;
 }
+
+.nav-item-name.subsection{
+    font-size: 14px;
+}

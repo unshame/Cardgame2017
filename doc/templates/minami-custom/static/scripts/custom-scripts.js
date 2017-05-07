@@ -1,11 +1,37 @@
+var firstScroll = true;
 
 function highlight(container, target, shouldScroll){
 	$('.highlighted').removeClass('highlighted');
 	target.parent().addClass('highlighted');
 	if(shouldScroll){
-		container.scrollTop(
-			target.offset().top - container.offset().top + container.scrollTop() - 100
-		);
+		var toWindowTop = target.offset().top - container.offset().top,
+			offset = 100,
+			desired,
+			current = container.scrollTop(),
+			duration;
+
+		if(toWindowTop < offset || firstScroll){
+			desired = target.offset().top + current - container.offset().top - offset;
+		}
+		else if(toWindowTop > window.innerHeight - offset){
+			desired = target.offset().top + current - container.offset().top - window.innerHeight + offset;			
+		}
+
+		if(desired !== undefined){
+			container.stop();
+			duration = Math.abs(desired - current)/2;
+			if(duration > 25 && !firstScroll){
+				container.animate(
+					{scrollTop:	desired + "px"},
+					duration,
+					'linear'
+				);
+			}
+			else{
+				container.scrollTop(desired);
+			}
+		}
+		firstScroll = false;
 	}
 }
 
@@ -21,11 +47,29 @@ $(function () {
 
 	var shouldScroll = true;
 	var navbar = $('body>nav');
+	var timeout = null;
+
+	function setScroll(val){
+		if(timeout){
+			clearTimeout(timeout);
+			timeout = null;
+		}
+		shouldScroll = val;
+	}
+
 	navbar.mouseenter(function(){
-		shouldScroll = false;
+		setScroll(false);
 	});
 	navbar.mouseleave(function(){
-		shouldScroll = true;
+		setScroll(true);
+	});
+	navbar.mousedown(function(){
+		setScroll(true);
+	});
+	navbar.mouseup(function(){
+		timeout = setTimeout(function(){
+			setScroll(false);
+		}, 0);
 	});
 
 	var title = $('.page-title');
@@ -38,6 +82,7 @@ $(function () {
 	  $('.nav-item.' + className + ', .nav-item.global').show();
 	else
 	  $('.nav-item.global').show();
+
 
 	function highlightCurrent(hash){
 		var link = className + '.html#' + hash;
@@ -59,8 +104,11 @@ $(function () {
 	highlightCurrent(currentHash);
 	$(document).scroll(function () {
 		var lastHash, 
-			lastDistance = Infinity;
-		$('h4.name, h1.page-title').each(function () {
+			lastDistance = Infinity,
+			selector = 'h4.name, h1.page-title';
+		if(className && className != 'global')
+			selector += ', h3.subsection-title';
+		$(selector).each(function () {
 			var top = window.pageYOffset;
 			var distance = top - $(this).offset().top;
 			var hash = $(this).attr('id');
@@ -76,7 +124,7 @@ $(function () {
 		}
 	});
 
-	var div, dl, dd, li,
+	var div, dl, dd, li, nav,
 		methods = $('#methods'),
 		members = $('#members');
 	if(methods.size() || members.size()){
@@ -98,6 +146,15 @@ $(function () {
 		li.append('<strong><a href="#members">Members</a></strong> ');
 		members.after(div);
 		$('article>.section-members').each(appendMembers(div));
+
+		if(className && className != 'global'){
+			nav = $('<li>').addClass('nav-item').css('display', 'list-item');
+			nav.html('\
+				<span class="nav-item-name subsection"><a href="' + className + '.html#members">Members</a></span>\
+			');
+			navbar.find('.' + className).eq(0).before(nav);
+		}
+
 	}
 	if(methods.size()){
 		div = $('<div class="members-list">');
@@ -105,6 +162,13 @@ $(function () {
 		methods.after(div);
 		$('article>.section-method').each(appendMembers(div));
 
+		if(className && className != 'global'){
+			nav = $('<li>').addClass('nav-item').css('display', 'list-item');
+			nav.html('\
+				<span class="nav-item-name subsection"><a href="' + className + '.html#methods">Methods</a></span>\
+			');
+			navbar.find('.' + className + ' .type-function').eq(0).parent().before(nav);
+		}
 	}
 
 
