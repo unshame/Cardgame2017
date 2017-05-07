@@ -212,6 +212,7 @@ FieldManager.prototype.resizeFields = function(){
 		return;
 	this.builder._calculateSizes();
 	this.forEachField(function(field, si){
+		field.margin = this.builder.offsets[si];
 		field.setBase(this.builder.positions[si].x, this.builder.positions[si].y);
 		field.resize(this.builder.dimensions[si].width, this.builder.dimensions[si].height, true);
 	});
@@ -250,7 +251,8 @@ FieldManager.prototype.toggleDebugMode = function(){
 		if(field.isInDebugMode != this.isInDebugMode)
 			field.toggleDebugMode();
 	});
-	actionHandler.possibleActions && actionHandler.possibleActions.length && actionHandler.highlightPossibleActions(actionHandler.possibleActions);
+	if(actionHandler.possibleActions && actionHandler.possibleActions.length)
+		actionHandler.highlightPossibleActions(actionHandler.possibleActions);
 };
 
 /**

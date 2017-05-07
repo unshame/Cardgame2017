@@ -23,11 +23,10 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 	var manager = this.manager,
 		players = playerManager.players;
 
-	var numOfCards = players.length > 3 ? 52 : 36,
-		id, i;
+	var id, i;
 
 	this.opponentPlacement = this._countOpponentPlacement(players.length - 1);
-	this._calculateSizes(numOfCards);
+	this._calculateSizes();
 
 	//Deck
 	manager.fields.DECK = new Field({
@@ -151,13 +150,15 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 };
 
 //Рассчитывает размеры полей
-FieldBuilder.prototype._calculateSizes = function(numOfCards){
-	this._calculateGeneralSizes(numOfCards);
+FieldBuilder.prototype._calculateSizes = function(){
+	this._calculateGeneralSizes();
 	this._calculateSpecificSizes();
 };
 
 //Обобщенные размеры
-FieldBuilder.prototype._calculateGeneralSizes = function(numOfCards){
+FieldBuilder.prototype._calculateGeneralSizes = function(){
+
+	var numOfCards = playerManager.players.length > 3 ? 52 : 36;
 
 	//Отступы
 	this.offsets = {
@@ -210,6 +211,19 @@ FieldBuilder.prototype._calculateGeneralSizes = function(numOfCards){
 		}
 	}
 
+	//Пытаемся выровнять поля стола по центру
+	var minTableSpace = skinManager.skin.width + this.minActiveSpaces.table,
+		extraSpace = (tableCells * grid.cellWidth)/this.tableOrder.length - minTableSpace,
+		tableWidth;
+	if(extraSpace > 0){
+		this.offsets.table = extraSpace/4;
+		this.tableOffset = extraSpace/2;
+		tableWidth = (tableCells * grid.cellWidth - extraSpace/2 * (this.tableOrder.length - 1)) / this.tableOrder.length;
+	}
+	else{
+		tableWidth = (tableCells * grid.cellWidth - tableOffset * (this.tableOrder.length - 1)) / this.tableOrder.length;
+	}
+
 	//Размеры полей (по умолчанию равны размерам карты)
 	this.dimensions = {
 		DECK:{
@@ -228,7 +242,7 @@ FieldBuilder.prototype._calculateGeneralSizes = function(numOfCards){
 		},
 
 		table: {
-			width: (tableCells * grid.cellWidth - tableOffset * (this.tableOrder.length - 1)) / this.tableOrder.length
+			width: tableWidth
 			//height:
 		},
 
@@ -317,6 +331,7 @@ FieldBuilder.prototype._calculateSpecificSizes = function(){
 		y = this.positions.table.y;
 
 		this.positions[id] = {x: x, y: y};
+		this.offsets[id] = this.offsets.table;
 		this.dimensions[id] = {width: width};		
 		this._notEnoughSpace(id, 'table');
 	}
@@ -329,6 +344,7 @@ FieldBuilder.prototype._calculateSpecificSizes = function(){
 	this.dimensions[playerManager.pid] = {
 		width:this.dimensions.player.width
 	};
+	this.offsets[playerManager.pid] = this.offsets.player;
 	this._notEnoughSpace(playerManager.pid, 'player');
 
 	//Opponents
@@ -399,6 +415,7 @@ FieldBuilder.prototype._calculateOpponentSizes = function(){
 			addTo: addTo[pi],
 			specialId: i + '('+ oi + ')'
 		};
+		this.offsets[p.id] = this.offsets.opponent[pi];
 		this._notEnoughSpace(p.id, 'opponent', pi);
 		oi++;
 		i++;
