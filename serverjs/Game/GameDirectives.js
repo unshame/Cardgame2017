@@ -100,13 +100,7 @@ class GameDirectives{
 
 		this.validActions = actions;
 		this.waitForResponse(this.timeouts.actionAttack, [player]);
-		try{
-			player.recieveValidActions(actions.slice(), this.timeouts.actionAttack);	
-		}
-		catch(e){
-			console.log(e);
-			utils.log('ERROR: Couldn\'t send possible actions to', player);
-		}
+		player.recieveValidActions(actions.slice(), this.timeouts.actionAttack);	
 	}
 
 	//Отправляет защищающемуся возможные ходы
@@ -253,13 +247,8 @@ class GameDirectives{
 		}
 
 		this.waitForResponse(this.timeouts.actionDefend, [player]);
-		try{
-			player.recieveValidActions(actions.slice(), this.timeouts.actionDefend);	
-		}
-		catch(e){
-			console.log(e);
-			utils.log('ERROR: Couldn\'t send possible actions to', player);
-		}
+		player.recieveValidActions(actions.slice(), this.timeouts.actionDefend);	
+
 		return;
 	}
 

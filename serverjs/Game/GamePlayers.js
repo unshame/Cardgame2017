@@ -52,21 +52,17 @@ class GamePlayers extends GamePlayersBase{
 			playersToSend = this.info;
 
 		//Пересылка
-		try{
-			for (let pi = 0; pi < players.length; pi++) {
-				let p = players[pi];
-				let pid = p.id;
-				p.recieveGameInfo(
-					send.cards && cardsToSend[pid],
-					send.players && playersToSend,
-					send.suit && game.cards.trumpSuit,
-					send.discard && game.discardPile.length
-				);
-			}	
-		}
-		catch(e){
-			utils.log('ERROR: Couldn\'t send game info', e);
-		}
+		for (let pi = 0; pi < players.length; pi++) {
+			let p = players[pi];
+			let pid = p.id;
+			p.recieveGameInfo(
+				send.cards && cardsToSend[pid],
+				send.players && playersToSend,
+				send.suit && game.cards.trumpSuit,
+				send.discard && game.discardPile.length
+			);
+		}	
+
 	}
 
 	//Передает полную информацию об игре игроку
@@ -88,60 +84,47 @@ class GamePlayers extends GamePlayersBase{
 		let info = this.info;
 		if(!info.length)
 			return;
-		try{
-			for(let pi = 0; pi < this.length; pi++){
-				let p = this[pi];				
-				p.meetOpponents(info.slice());
-			}
-		}
-		catch(e){
-			utils.log('ERROR: Couldn\' notify about opponents', e);
+			
+		for(let pi = 0; pi < this.length; pi++){
+			let p = this[pi];				
+			p.meetOpponents(info.slice());
 		}
 	}
 
 	//Оповещает игроков о раздаче карт
 	dealNotify(deals){
 		let cardsById = this.game.cards.byId;
-		try{
-			for(let pi = 0; pi < this.length; pi++) {
 
-				let dealsToSend = [];
-				let p = this[pi];
+		for(let pi = 0; pi < this.length; pi++) {
 
-				for(let di = 0; di < deals.length; di++){
+			let dealsToSend = [];
+			let p = this[pi];
 
-					let deal = deals[di];
+			for(let di = 0; di < deals.length; di++){
 
-					dealsToSend[di] = {
-						pid: deal.pid,
-						cid: deal.cid
-					};
+				let deal = deals[di];
 
-					//Игроки знают только о значении своих карт
-					if(deal.pid == p.id){
-						dealsToSend[di].value = cardsById[deal.cid].value;
-						dealsToSend[di].suit = cardsById[deal.cid].suit;
-					}
-				}				
-				p.recieveDeals(dealsToSend.slice());
+				dealsToSend[di] = {
+					pid: deal.pid,
+					cid: deal.cid
+				};
 
-			}
+				//Игроки знают только о значении своих карт
+				if(deal.pid == p.id){
+					dealsToSend[di].value = cardsById[deal.cid].value;
+					dealsToSend[di].suit = cardsById[deal.cid].suit;
+				}
+			}				
+			p.recieveDeals(dealsToSend.slice());
+
 		}
-		catch(e){
-			utils.log('ERROR: Couldn\'t send deals', e);
-		}	
 	}
 
 	//Оповещает игроков о совершенном действии
 	completeActionNotify(action){
-		try{
-			for(let pi = 0; pi < this.length; pi++) {
-				let p = this[pi];				
-				p.recieveCompleteAction(Object.assign({}, action));
-			}
-		}
-		catch(e){
-			utils.log('ERROR: Couldn\'t send action', e);
+		for(let pi = 0; pi < this.length; pi++) {
+			let p = this[pi];				
+			p.recieveCompleteAction(Object.assign({}, action));
 		}
 	}
 
@@ -188,14 +171,9 @@ class GamePlayers extends GamePlayersBase{
 		if(!players || !players.length)
 			players = this;
 
-		try{
-			for(let pi = 0; pi < players.length; pi++){
-				let p = players[pi];				
-				p.recieveNotification(Object.assign({}, note) || null, actions || null);
-			}
-		}
-		catch(e){
-			utils.log('ERROR: Couldn\'t notify', note && ('of ' + note.message) || '', e);
+		for(let pi = 0; pi < players.length; pi++){
+			let p = players[pi];				
+			p.recieveNotification(Object.assign({}, note) || null, actions || null);
 		}
 	}
 
