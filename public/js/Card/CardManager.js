@@ -102,6 +102,16 @@ CardManager.prototype.applySkin = function(){
 	}, this);
 };
 
+CardManager.prototype.forceSetValues = function(){
+	for(var ci in this.cards){
+		if(this.cards.hasOwnProperty(ci)){
+			var card = this.cards[ci]; 
+			card.setValue(card.suit, card.value, false);
+		}
+	}
+
+};
+
 CardManager.prototype.update = function(){
 	for(var ci in this.cards){
 		if(!this.cards.hasOwnProperty(ci))
