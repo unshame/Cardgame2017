@@ -14,6 +14,6 @@ game.state.add('Play', playState, true);
  * @global
  * @see  {@link UILayers#getOrder}
  */
-function showLayers(){
+function printLayers(){
 	console.table(ui.layers.getOrder());
 }

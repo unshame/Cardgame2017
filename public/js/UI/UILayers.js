@@ -27,11 +27,18 @@ UILayers.prototype.addExistingLayer = function(layer, i){
 
 UILayers.prototype._positionLayer = function(layer){
 
-	var i = layer.index;
+	var i = layer.index,
+		len = game.world.children.length;
 	if(i < 0){
-		i = game.world.children.length + i;
+		i = len + i;
 	}
-	game.world.setChildIndex(layer, i);
+	i = Math.min(i, len - 1);
+	try{
+		game.world.setChildIndex(layer, i);
+	}
+	catch(e){
+		console.error(e);
+	}
 }
 
 UILayers.prototype.positionLayers = function(){
@@ -43,7 +50,7 @@ UILayers.prototype.positionLayers = function(){
 	}
 }
 
-UILayers.prototype._positionElementInLayer = function(layer){
+UILayers.prototype._positionElementsInLayer = function(layer){
 	layer.forEach(function(el){
 		if(el.updatePosition)
 			el.updatePosition();
@@ -55,7 +62,7 @@ UILayers.prototype.positionElements = function(){
 		if(!this.byName.hasOwnProperty(pname))
 			return;
 
-		this._positionElementInLayer(this.byName[pname]);
+		this._positionElementsInLayer(this.byName[pname]);
 	}
 }
 
