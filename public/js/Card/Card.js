@@ -616,26 +616,24 @@ Card.prototype.returnToBase = function(time, delay){
  */
 Card.prototype.rotateTo = function(angle, time, delay, easing){
 
-	var offset = angle < 0 ? 360 : 0,
+	var angleSign = angle < 0 ? -1 : 1,
 
 		angleAbs = Math.abs(angle),
 		angleDiv = Math.floor(angleAbs / 360),
 
 		oldAngle = this.sprite.angle,
-		oldAngleAbs, oldAngleDiv, oldAnglePos;
-
-	angle = Math.abs( offset - (angleAbs - angleDiv*360) );
-	
-	if(oldAngle > 0){
-		oldAnglePos = oldAngle;
-	}
-	else{
-		oldAngleAbs = Math.abs(oldAngle);
+		oldAngleSign = oldAngle < 0 ? -1 : 1,
+		oldAngleAbs = Math.abs(oldAngle),
 		oldAngleDiv = Math.floor(oldAngleAbs / 360);
-		oldAnglePos = 360 - (oldAngleAbs - oldAngleDiv*360);
-	}	
 
-	if(angle == oldAnglePos){
+	angle = (angleAbs - angleDiv*360)*angleSign;
+	oldAngle = (oldAngleAbs - oldAngleDiv*360)*oldAngleSign;
+
+	if(Math.abs(angle - oldAngle) >= 180){
+		angle -= 360*angleSign;
+	}
+
+	if(angle == oldAngle){
 		if(this.rotator){
 			this.rotator.stop();
 			this.rotator = null;
