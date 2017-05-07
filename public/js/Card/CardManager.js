@@ -139,17 +139,42 @@ CardManager.prototype.toggleDebugMode = function(){
 //ТЕСТОВЫЕ ФУНКЦИИ
 
 //Party time
-CardManager.prototype.throwCardsStart = function(){
+CardManager.prototype.throwCardsStart = function(minSpeed, maxSpeed, sway, interval, minRotation, maxRotation, gravity){
 
 	this.throwCardsStop();
 
-	this.emitter.maxParticleSpeed = {x: 100*game.speed, y: 500*game.speed};
-	this.emitter.minParticleSpeed = {x: -100*game.speed, y: 300*game.speed};
+	if(minSpeed === undefined)
+		minSpeed = this.emitter.minParticleSpeed.y;
+	if(maxSpeed === undefined)
+		maxSpeed = this.emitter.maxParticleSpeed.y;
+	if(sway === undefined)
+		sway = this.emitter.sway;
+	else
+		this.emitter.sway = sway;
+	if(minRotation === undefined)
+		minRotation = this.emitter.minRotation;
+	if(maxRotation === undefined)
+		maxRotation = this.emitter.maxRotation;
+	if(gravity !== undefined)
+		this.emitter.gravity = gravity;
+	if(interval === undefined)
+		interval = this.emitter.interval;
+
+	this.emitter.minParticleSpeed = {x: -sway*game.speed, y: minSpeed*game.speed};
+	this.emitter.maxParticleSpeed = {x: sway*game.speed, y: maxSpeed*game.speed};
+	this.emitter.minRotation = minRotation;
+	this.emitter.maxRotation = maxRotation;
 	this.emitter.x = game.world.centerX;
 	this.emitter.width = game.screenWidth;
-	var lifespan = game.screenHeight/this.emitter.minParticleSpeed.y * 1000,
+	function solveQuadtraticEq(a, b, c) {
+		return Math.abs((-1 * b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a));
+	}
+	
+	var lifespan = solveQuadtraticEq(this.emitter.gravity/2, minSpeed, -(game.screenHeight + skinManager.skin.height*2))*1000;
+	if(interval === false)
 		interval = lifespan/this.emitter.maxParticles;
-	this.emitter.start(false, lifespan, interval);
+	this.emitter.interval = interval;
+	this.emitter.start(false, lifespan, interval, undefined, undefined);
 
 	game.world.setChildIndex(this.emitter, game.world.children.length - 3);
 };

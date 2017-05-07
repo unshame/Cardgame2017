@@ -36,7 +36,7 @@ window.notificationReactions = {
 	 */
 	GAME_ENDED: function(note, actions){
 		if(note.results && note.results.winners && ~note.results.winners.indexOf(game.pid))
-			cardManager.throwCardsStart();
+			cardManager.throwCardsStart(300, 500, 100, false);
 	},
 
 	/*
