@@ -15,8 +15,12 @@ var Button = function(options){
 	this.action = this.options.action;
 	var thisButton = this;
 	function actionWrapper(button, pointer, isOver){
-		if(isOver)
+		if(isOver){
+			if(cardControl.card){
+				cardControl.cardReturn();
+			}
 			thisButton.action.call(this, button, pointer, isOver);
+		}
 	}
 
 	//Phaser кнопка
@@ -31,6 +35,7 @@ var Button = function(options){
 	);
 
 	this.name = this.options.name;
+	this.isDown = false;
 
 	//Текст
 	var style = { font: this.options.font, fill: this.options.textColor, align: 'center' };
@@ -114,8 +119,8 @@ Button.prototype.enable = function(){
 
 	if(this.label){
 		this.label.alpha = 1;
-		if(this.label.isDown){
-			this.label.isDown = false;
+		if(this.isdown){
+			this.isdown = false;
 			this.updatePosition();
 		}
 	}
@@ -130,9 +135,9 @@ Button.prototype.disable = function(){
 
 	if(this.label){
 		this.label.alpha = 0.55;
-		if(!this.label.isDown){
+		if(!this.isdown){
 			this.label.y += this.label.downOffset;
-			this.label.isDown = true;
+			this.isdown = true;
 		}
 	}
 };
@@ -155,7 +160,7 @@ Button.prototype.updatePosition = function(position){
 			this.label.x++;
 			this.label.y -= this.label.downOffset/2;
 		}
-		if(this.label.isDown)
+		if(this.isdown)
 			this.label.y += this.label.downOffset;
 	}
 };
@@ -164,12 +169,12 @@ Button.prototype.updatePosition = function(position){
 //при изменении состоянии кнопки
 Button.prototype.changeStateFrame = function (state) {
 	if(this.label && this.inputEnabled){
-		if(state != 'Down' && this.label.isDown){
-			this.label.isDown = false;
+		if(state != 'Down' && this.isdown){
+			this.isdown = false;
 			this.updatePosition();
 		}
-		else if(state == 'Down' && !this.label.isDown){
-			this.label.isDown = true;
+		else if(state == 'Down' && !this.isdown){
+			this.isdown = true;
 			this.label.y += this.label.downOffset;
 		}
 	}
@@ -178,4 +183,31 @@ Button.prototype.changeStateFrame = function (state) {
 
 	if(this.inputEnabled)
 		return Object.getPrototypeOf(Button.prototype).changeStateFrame.call(this, state);
+};
+
+Button.prototype.cursorIsOver = function(){
+	if(!this.inputEnabled || !this.visible)
+		return false;
+
+	var gx = 0,
+		gyTop = gyBottom = 0;
+	if(this.group){
+		gx = this.group.x;
+		gyTop = gyBottom = this.group.y;
+	}
+	if(this.label && this.isdown){
+		gyTop += 5;
+	}
+
+	if(
+		game.input.x < gx + this.x ||
+		game.input.x > gx + this.x + this.width ||
+		game.input.y < gyTop + this.y ||
+		game.input.y > gyBottom + this.y + this.height
+	){
+		return false;
+	}
+	else return true;
+
+
 };

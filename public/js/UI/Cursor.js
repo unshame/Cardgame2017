@@ -51,7 +51,8 @@ Cursor.prototype.update = function(cursorIsInGame){
 		return;
 	}
 	if(
-		cardManager.mouseIsOverACard()
+		cardManager.cursorIsOverACard() ||
+		ui.layers.cursorIsOverAnElement()
 	){
 		this.x -= this.width*0.41;
 		this.frame = 1;

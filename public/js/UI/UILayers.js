@@ -9,17 +9,19 @@ var UILayers = function(){
 	this.byName = {};
 }
 
-UILayers.prototype.addLayer = function(i, name){
+UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 	var layer = game.add.group();
 	layer.index = i;
 	layer.name = name;
+	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[name] = layer;
 	this._positionLayer(layer);
 	return layer;
 }
 
-UILayers.prototype.addExistingLayer = function(layer, i){
+UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 	layer.index = i;
+	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[layer.name] = layer;
 	this._positionLayer(layer);
 	return layer;
@@ -44,7 +46,7 @@ UILayers.prototype._positionLayer = function(layer){
 UILayers.prototype.positionLayers = function(){
 	for(var pname in this.byName){
 		if(!this.byName.hasOwnProperty(pname))
-			return;
+			continue;
 
 		this._positionLayer(this.byName[pname]);
 	}
@@ -59,23 +61,41 @@ UILayers.prototype._positionElementsInLayer = function(layer){
 
 UILayers.prototype.positionElements = function(){
 	for(var pname in this.byName){
-		if(!this.byName.hasOwnProperty(pname))
-			return;
+		var layer = this.byName[pname];
 
-		this._positionElementsInLayer(this.byName[pname]);
+		if(!this.byName.hasOwnProperty(pname) || !(layer instanceof Phaser.Group))
+			continue;
+
+		this._positionElementsInLayer(layer);
 	}
 }
 
 UILayers.prototype.loadLabels = function(){
 	for(var pname in this.byName){
-		if(!this.byName.hasOwnProperty(pname))
-			return;
-
 		var layer = this.byName[pname];
+
+		if(!this.byName.hasOwnProperty(pname) || !(layer instanceof Phaser.Group))
+			continue;
+
 		layer.forEach(function(el){
 			if(el.label && el.label.isText)
 				el.label.setText(el.label.text);
 		});
+	}
+}
+
+UILayers.prototype.cursorIsOverAnElement = function(){
+	for(var pname in this.byName){
+		var layer = this.byName[pname];
+
+		if(!this.byName.hasOwnProperty(pname) || !(layer instanceof Phaser.Group) || !layer.checkCursorOverlap)
+			continue;
+
+		for(var i = 0, len = layer.children.length; i < len; i++){
+			var el = layer.children[i];
+			if(el.cursorIsOver && el.cursorIsOver())
+				return true;				
+		}
 	}
 }
 

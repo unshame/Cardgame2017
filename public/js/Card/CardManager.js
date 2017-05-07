@@ -60,12 +60,12 @@ CardManager.prototype.reset = function(){
 	game.cards = this.cards;
 };
 
-CardManager.prototype.mouseIsOverACard = function(){
+CardManager.prototype.cursorIsOverACard = function(){
 	for(var ci in this.cards){
 		if(!this.cards.hasOwnProperty(ci))
 			continue;
 		var card = this.cards[ci];
-		if(card.mouseIsOver() && card.isDraggable){
+		if(card.cursorIsOver() && card.isDraggable){
 			return true;
 		}
 	}

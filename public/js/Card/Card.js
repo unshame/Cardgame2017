@@ -83,10 +83,10 @@ var Card = function (options) {
 	 */
 	this.sprite = game.add.sprite();
 	this.sprite.inputEnabled = true;
-	this.sprite.events.onInputDown.add(this._mouseDown, this);
-	this.sprite.events.onInputUp.add(this._mouseUp, this);
-	this.sprite.events.onInputOver.add(this._mouseOver, this);
-	this.sprite.events.onInputOut.add(this._mouseOut, this);
+	this.sprite.events.onInputDown.add(this._cursorDown, this);
+	this.sprite.events.onInputUp.add(this._cursorUp, this);
+	this.sprite.events.onInputOver.add(this._cursorOver, this);
+	this.sprite.events.onInputOut.add(this._cursorOut, this);
 	this.sprite.anchor.set(0.5, 0.5);
 
 	/**
@@ -792,7 +792,7 @@ Card.prototype._glowUpdatePosition = function(){
  * @param  {Phaser.Sprite} sprite  Card#sprite
  * @param  {Phaser.Pointer} вызвавший ивент указатель
  */
-Card.prototype._mouseDown = function(sprite, pointer){
+Card.prototype._cursorDown = function(sprite, pointer){
 	cardControl.cardClick(this, pointer);
 };
 
@@ -801,7 +801,7 @@ Card.prototype._mouseDown = function(sprite, pointer){
  * @param  {Phaser.Sprite} sprite  Card#sprite
  * @param  {Phaser.Pointer} вызвавший ивент указатель
  */
-Card.prototype._mouseUp = function(sprite, pointer){
+Card.prototype._cursorUp = function(sprite, pointer){
 	cardControl.cardUnclick(this, pointer);
 };
 
@@ -810,7 +810,7 @@ Card.prototype._mouseUp = function(sprite, pointer){
  * @param  {Phaser.Sprite} sprite  Card#sprite
  * @param  {Phaser.Pointer} вызвавший ивент указатель
  */
-Card.prototype._mouseOver = function(sprite, pointer){
+Card.prototype._cursorOver = function(sprite, pointer){
 	if(this.field)
 		this.field.focusOnCard(this, pointer);
 };
@@ -819,7 +819,7 @@ Card.prototype._mouseOver = function(sprite, pointer){
  * Вызывается когда указатель покидает спрайт карты.
  * @param  {Phaser.Sprite} sprite  Card#sprite
  */
-Card.prototype._mouseOut = function(sprite){
+Card.prototype._cursorOut = function(sprite){
 	if(this.field)
 		this.field.focusOffCard(this);
 };
@@ -831,7 +831,7 @@ Card.prototype._mouseOut = function(sprite){
  * Находится ли указатель над картой.
  * @return {boolean}
  */
-Card.prototype.mouseIsOver = function(){
+Card.prototype.cursorIsOver = function(){
 	if(
 		game.input.x < this.base.x + this.sprite.x - this.sprite.width/2 ||
 		game.input.x > this.base.x + this.sprite.x + this.sprite.width/2 ||

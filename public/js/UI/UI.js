@@ -54,8 +54,8 @@ UI.prototype.initialize = function(){
 }
 
 UI.prototype.addButtons = function(){
-	this.actionButtons = this.layers.addLayer(1, 'actionButtons');
-	this.cornerButtons = this.layers.addLayer(-2, 'cornerButtons');
+	this.actionButtons = this.layers.addLayer(1, 'actionButtons', true);
+	this.cornerButtons = this.layers.addLayer(-2, 'cornerButtons', true);
 
 	//Кнопки (временные)
 	new Button({
@@ -151,7 +151,7 @@ UI.prototype.addButtons = function(){
 }
 
 UI.prototype.updatePosition = function(){
-	this.rope.maxHeight = this.rope.y = this.screenHeight;
+	this.rope.updatePosition();
 	this.layers.positionElements();
 }
 

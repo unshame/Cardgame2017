@@ -68,3 +68,6 @@ Rope.prototype.stop = function(){
 	this.tint = '0xFF8300';
 };
 
+Rope.prototype.updatePosition = function(){
+	this.rope.maxHeight = this.rope.y = game.screenHeight;
+}
