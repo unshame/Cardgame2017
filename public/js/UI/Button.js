@@ -190,7 +190,8 @@ Button.prototype.cursorIsOver = function(){
 		return false;
 
 	var gx = 0,
-		gyTop = gyBottom = 0;
+		gyTop = 0, 
+		gyBottom = 0;
 	if(this.group){
 		gx = this.group.x;
 		gyTop = gyBottom = this.group.y;

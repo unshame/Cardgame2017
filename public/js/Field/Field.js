@@ -387,20 +387,20 @@ Field.prototype.addCard = function(card){
 
 Field.prototype._appendCards = function(cards){
 
-	var card,
+	var card, ci,
 		addedAngle,
 		lastAngle = this.randomAngle ? Math.floor(Math.random()*20) * (Math.random() > 0.5 ? 1 : -1) - 12 : undefined;
 
 	//Находим угол последней карты
 	if(this.randomAngle){		
-		for(var ci = 0; ci < this.cards.length; ci++){
+		for(ci = 0; ci < this.cards.length; ci++){
 			card = this.cards[ci];
 			if(typeof this.angles[card.id] == 'number')
 				lastAngle = this.angles[card.id];
 		}
 	}
 
-	for(var ci = 0; ci < cards.length; ci++){
+	for(ci = 0; ci < cards.length; ci++){
 		card = cards[ci];
 		card.field = this;
 		if(this.addTo == 'front')

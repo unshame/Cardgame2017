@@ -29,7 +29,7 @@ var UI = function(){
 	 * @type {UILayers}
 	 */
 	this.layers = new UILayers();
-}
+};
 
 UI.prototype.initialize = function(){
 
@@ -51,7 +51,7 @@ UI.prototype.initialize = function(){
 	this.layers.addExistingLayer(cardManager.emitter, 4);
 
 	this.layers.positionLayers();
-}
+};
 
 UI.prototype.addButtons = function(){
 	this.actionButtons = this.layers.addLayer(1, 'actionButtons', true);
@@ -148,12 +148,12 @@ UI.prototype.addButtons = function(){
 	});
 
 	this.actionButtons.getByName('action').disable();
-}
+};
 
 UI.prototype.updatePosition = function(){
 	this.rope.updatePosition();
 	this.layers.positionElements();
-}
+};
 
 UI.prototype.toggleFullScreen = function(){
 	if (game.scale.isFullScreen){

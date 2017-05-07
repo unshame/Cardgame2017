@@ -44,6 +44,11 @@
     "reactions": true,
     "ConnectionManager": true,
     "connection": true,
+    "UI": true,
+    "ui": true,
+    "Background": true,
+    "background": true,
+    "UILayers": true,
 
     "BRING_TO_TOP_ON": true
   },

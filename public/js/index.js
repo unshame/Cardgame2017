@@ -8,6 +8,7 @@
 window.game = new Game();
 game.state.add('Play', playState, true);
 
+/*jshint unused:false*/
 /**
  * Выводит в консоль имена слоев интерфейса и сами слои
  * @type {function}

@@ -4,10 +4,9 @@
  *
  * @class
  */
-
 var UILayers = function(){
 	this.byName = {};
-}
+};
 
 UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 	var layer = game.add.group();
@@ -17,7 +16,7 @@ UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 	this.byName[name] = layer;
 	this._positionLayer(layer);
 	return layer;
-}
+};
 
 UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 	layer.index = i;
@@ -25,7 +24,7 @@ UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 	this.byName[layer.name] = layer;
 	this._positionLayer(layer);
 	return layer;
-}
+};
 
 UILayers.prototype._positionLayer = function(layer){
 
@@ -41,7 +40,7 @@ UILayers.prototype._positionLayer = function(layer){
 	catch(e){
 		console.error(e);
 	}
-}
+};
 
 UILayers.prototype.positionLayers = function(){
 	for(var pname in this.byName){
@@ -50,31 +49,37 @@ UILayers.prototype.positionLayers = function(){
 
 		this._positionLayer(this.byName[pname]);
 	}
-}
+};
 
 UILayers.prototype._positionElementsInLayer = function(layer){
 	layer.forEach(function(el){
 		if(el.updatePosition)
 			el.updatePosition();
 	});
-}
+};
 
 UILayers.prototype.positionElements = function(){
-	for(var pname in this.byName){
-		var layer = this.byName[pname];
+	/*jshint loopfunc: true*/
 
-		if(!this.byName.hasOwnProperty(pname) || !(layer instanceof Phaser.Group))
+	for(var pname in this.byName){
+		if(!this.byName.hasOwnProperty(pname))
+			continue;
+
+		var layer = this.byName[pname];
+		if(!(layer instanceof Phaser.Group))
 			continue;
 
 		this._positionElementsInLayer(layer);
 	}
-}
+};
 
 UILayers.prototype.loadLabels = function(){
 	for(var pname in this.byName){
-		var layer = this.byName[pname];
+		if(!this.byName.hasOwnProperty(pname))
+			continue;
 
-		if(!this.byName.hasOwnProperty(pname) || !(layer instanceof Phaser.Group))
+		var layer = this.byName[pname];
+		if(!(layer instanceof Phaser.Group))
 			continue;
 
 		layer.forEach(function(el){
@@ -82,13 +87,15 @@ UILayers.prototype.loadLabels = function(){
 				el.label.setText(el.label.text);
 		});
 	}
-}
+};
 
 UILayers.prototype.cursorIsOverAnElement = function(){
 	for(var pname in this.byName){
-		var layer = this.byName[pname];
+		if(!this.byName.hasOwnProperty(pname))
+			continue;
 
-		if(!this.byName.hasOwnProperty(pname) || !(layer instanceof Phaser.Group) || !layer.checkCursorOverlap)
+		var layer = this.byName[pname];
+		if(!(layer instanceof Phaser.Group) || !layer.checkCursorOverlap)
 			continue;
 
 		for(var i = 0, len = layer.children.length; i < len; i++){
@@ -97,7 +104,7 @@ UILayers.prototype.cursorIsOverAnElement = function(){
 				return true;				
 		}
 	}
-}
+};
 
 UILayers.prototype.getOrder = function(){
 	var arr = {
@@ -109,4 +116,4 @@ UILayers.prototype.getOrder = function(){
 		}, this)
 	};
 	return arr;
-}
+};

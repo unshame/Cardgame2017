@@ -31,7 +31,7 @@ Background.prototype.constructor = Background;
 Background.prototype.updateSize = function(){
 	this.surface.width = game.screenWidth;
 	this.surface.height =  game.screenHeight;
-}
+};
 
 Background.prototype.setTexture = function(textureName){
 	var fakebg = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, this.surface.textureName);
