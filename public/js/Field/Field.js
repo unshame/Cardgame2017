@@ -267,8 +267,8 @@ Field.prototype._compareCards = function(a, b){
 /**
  * Добавляет карты в очередь на добавление
  * @param  {Card[]} newCards - добавляемые карты
- * @param  {number} delay    - задержка, добавляемая к первой карте в очереди
- * @return {number}          Планируемое время добавления
+ * @param  {number} delay	- задержка, добавляемая к первой карте в очереди
+ * @return {number}		  Планируемое время добавления
  * @see  {@link Field#placeQueuedCards}
  */
 Field.prototype.queueCards = function(newCards, delay){
@@ -388,8 +388,8 @@ Field.prototype.addCard = function(card){
 Field.prototype._appendCards = function(cards){
 
 	var card,
-		addedAngle = (Math.floor(Math.random()*5) + 8),
-		lastAngle = Math.floor(Math.random()*20) * (Math.random() > 0.5 ? 1 : -1) - addedAngle;
+		addedAngle,
+		lastAngle = this.randomAngle ? Math.floor(Math.random()*20) * (Math.random() > 0.5 ? 1 : -1) - 12 : undefined;
 
 	//Находим угол последней карты
 	if(this.randomAngle){		
@@ -400,17 +400,24 @@ Field.prototype._appendCards = function(cards){
 		}
 	}
 
-    for(var ci = 0; ci < cards.length; ci++){
-        card = cards[ci];
-        card.field = this;
-        if(this.addTo == 'front')
-            this.cards.push(card);
-        else
-            this.cards.unshift(card);
-        if(this.randomAngle){
-        	this.angles[card.id] = lastAngle + addedAngle;
-        }
-    }
+	for(var ci = 0; ci < cards.length; ci++){
+		card = cards[ci];
+		card.field = this;
+		if(this.addTo == 'front')
+			this.cards.push(card);
+		else
+			this.cards.unshift(card);
+
+		//Сохраняем новый угол карты
+		if(this.randomAngle){
+			addedAngle = (Math.floor(Math.random()*5) + 8);
+			if(this.randomAngle == 'bi' && Math.random() > 0.5 || this.randomAngle != 'bi' && this.direction == 'backward'){
+				addedAngle = -addedAngle;
+			}
+			lastAngle += addedAngle;
+			this.angles[card.id] = lastAngle;
+		}
+	}
 };
 
 
@@ -610,8 +617,12 @@ Field.prototype.rotateCards = function(){
 
 	for(var i = 0; i < this.cards.length; i++){
 		var card = this.cards[i];	
-		if(card.fieldId == 'BOTTOM')
+
+		if(this.randomAngle && typeof this.angles[card.id] == 'number')
+			angle = this.angles[card.id];
+		else if(card.fieldId == 'BOTTOM')
 			angle = Math.abs(angle - 90);
+		
 		card.rotateTo(angle, this.moveTime, 0);
 	}
 };
