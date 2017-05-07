@@ -44,7 +44,6 @@ Cursor.prototype.update = function(cursorIsInGame){
 	game.canvas.style.cursor = "none";
 	this.x = game.input.x;
 	this.y = game.input.y;
-	game.world.bringToTop(this);
 	if(cardControl.card){
 		this.x -= this.width/2;
 		this.y -= this.height/2;

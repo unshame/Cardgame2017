@@ -42,11 +42,11 @@ window.clientMethods = {
 	},
 
 	recieveCompleteAction: function(action){
-		game.queueButton.hide();
+		ui.actionButtons.getByName('queueUp').hide();
 		connection.resetTimer();
-		game.rope.stop();
+		ui.rope.stop();
 		cardManager.throwCardsStop();
-		game.actionButton.disable();
+		ui.actionButtons.getByName('action').disable();
 		var delay = actionHandler.executeAction(action);
 		connection.responseTimer = setTimeout(connection.server.sendResponse, !delay && 1 || (delay/game.speed + 300));
 		if(connection.isInDebugMode)

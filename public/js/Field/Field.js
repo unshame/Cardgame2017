@@ -84,7 +84,7 @@ var Field = function(options){
 	this.minActiveSpace = this.options.minActiveSpace;
 
 	//Текстура для дебага и область поля
-	var pixel = game.newPixel();
+	var pixel = ui.newPixel();
 
 	this.area = game.add.sprite(0, 0, pixel.generateTexture());
 	this.area.alpha = 0.35;
@@ -208,7 +208,7 @@ Field.prototype.resize = function(width, height, shouldPlace){
 
 Field.prototype.setHighlight = function(on, tint, linkedField){
 	this.area.visible = on || this.isInDebugMode ? true : false;
-	this.area.tint = on ? (tint || game.colors.orange) : 0xFFFFFF;
+	this.area.tint = on ? (tint || ui.colors.orange) : 0xFFFFFF;
 	this.linkedField = fieldManager.fields[linkedField] || null;
 	this.area.alpha = on ? 0.55 : 0.35;
 	this.isHighlighted = on;

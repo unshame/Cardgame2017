@@ -3,9 +3,9 @@
  * @class
  */
 var Rope = function(){
-	var pixel = game.newPixel();
+	var pixel = ui.newPixel();
 	Phaser.Sprite.call(this, game, 0, 0, pixel.generateTexture());
-	this.tint = game.colors.orange;
+	this.tint = ui.colors.orange;
 	this.width = 30;
 	this.height = 0;
 	this.y = game.screenHeight;
@@ -39,8 +39,8 @@ Rope.prototype.update = function(){
 	}
 	else{
 		this.height = left/this.duration * this.maxHeight;
-		if(left <= 5000 && this.tint != game.colors.red)
-			this.tint = game.colors.red;
+		if(left <= 5000 && this.tint != ui.colors.red)
+			this.tint = ui.colors.red;
 	}
 };
 

@@ -30,6 +30,8 @@ var Button = function(options){
 		1, 0, 2, 0
 	);
 
+	this.name = this.options.name;
+
 	//Текст
 	var style = { font: this.options.font, fill: this.options.textColor, align: 'center' };
 	if(this.options.text){
@@ -80,6 +82,7 @@ Button.getDefaultOptions = function(){
 		action: function(){},
 		text: null,
 		icon: null,
+		name: null,
 		textColor: 'black',
 		font: '28px Exo',
 		context: null,

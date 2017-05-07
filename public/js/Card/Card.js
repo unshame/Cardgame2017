@@ -324,11 +324,11 @@ Card.prototype.setDraggability = function(draggable){
 /**
  * Устанавливает, можно ли ходить этой картой.
  * @param {boolean} playable - играбильность карты
- * @param {number} [tint=game.colors.orange] - цвет свечения карты
+ * @param {number} [tint=ui.colors.orange] - цвет свечения карты
  */
 Card.prototype.setPlayability = function(playable, tint){
 	if(playable){
-		this._glowStart(0.25, 0.75, 1500, 500, tint || game.colors.orange);
+		this._glowStart(0.25, 0.75, 1500, 500, tint || ui.colors.orange);
 	}
 	else{
 		this._glowStop();
@@ -704,14 +704,14 @@ Card.prototype.applyCardback = function(){
  * @param  {number} maxGlow    максимальная прозрачность свечения
  * @param  {number} speed      время анимации между minGlow и maxGlow
  * @param  {number} [delayRange=0] максимальное значение задержки начала свечения
- * @param  {number} [color=game.colors.white]     цвет свечения
+ * @param  {number} [color=ui.colors.white]     цвет свечения
  * @private
  */
 Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 	
 	this._glowReset();
 
-	this.glow.tint = color || game.colors.white;
+	this.glow.tint = color || ui.colors.white;
 
 	if(game.paused)
 		return;

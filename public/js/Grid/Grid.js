@@ -100,8 +100,8 @@ Grid.prototype.draw = function(){
 		border.moveTo(x/2 - thickness/2, screenHeight);
 		border.lineTo(x/2 - thickness/2,0);
 
-		game.background.add(this.grid);
-		game.background.add(this.border);
+		background.add(this.grid);
+		background.add(this.border);
 	}
 };
 

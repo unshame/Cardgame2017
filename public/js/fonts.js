@@ -10,7 +10,7 @@ window.WebFontConfig = {
 	 * @type {function}
 	 */
     active: function() {
-    	game.time.events.add(Phaser.Timer.SECOND, game.loadButtonText.bind(game), this);
+    	game.time.events.add(Phaser.Timer.SECOND, ui.layers.loadLabels.bind(game), this);
     },
 
     /**

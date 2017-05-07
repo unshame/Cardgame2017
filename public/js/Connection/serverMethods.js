@@ -14,8 +14,8 @@ window.serverMethods = {
 		for(var ai = 0; ai < actions.length; ai++){
 			var action = actions[ai];
 			if(action.cid == card.id && field.id == action.field){
-				game.rope.stop();
-				game.actionButton.disable();
+				ui.rope.stop();
+				ui.actionButtons.getByName('action').disable();
 				actions = null;
 				connection.proxy.recieveCompleteAction(action);
 				return true;
@@ -33,8 +33,8 @@ window.serverMethods = {
 
 		var actionTypes = actions.map(function(a){return a.type;});
 		if(~actionTypes.indexOf(type)){
-			game.rope.stop();
-			game.actionButton.disable();
+			ui.rope.stop();
+			ui.actionButtons.getByName('action').disable();
 			var action = {type: type};
 			actions = null;
 			connection.proxy.recieveCompleteAction(action);

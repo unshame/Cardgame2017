@@ -30,7 +30,7 @@ window.actionReactions = {
 			card = game.cards[c.cid];
 
 			if(action.pid != c.pid)
-				fieldManager.fields[c.pid].setHighlight(true, game.colors.red);
+				fieldManager.fields[c.pid].setHighlight(true, ui.colors.red);
 
 			card.raised = true;
 
@@ -41,7 +41,7 @@ window.actionReactions = {
 		}		
 
 		//Выделяем поле игрока с наибольшим козырем
-		fieldManager.fields[action.pid].setHighlight(true, game.colors.green);
+		fieldManager.fields[action.pid].setHighlight(true, ui.colors.green);
 
 		//Прячем козырные карты
 		function hideTrumpCards(){

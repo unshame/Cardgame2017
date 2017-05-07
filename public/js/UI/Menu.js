@@ -1,6 +1,6 @@
 
 var Menu = function(x,y){
-	var pixel = game.newPixel();
+	var pixel = ui.newPixel();
 	this.background = game.add.sprite(0, 0, pixel.generateTexture());
 	this.base = game.add.group();
 	this.options = {};
