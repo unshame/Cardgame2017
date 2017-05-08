@@ -1,13 +1,14 @@
 /**
  * Конструктор полей карт.  
- * Производит размещение карт на экране. Контролирует позицию карт при наведении курсора.  
+ * Производит размещение карт на экране. Контролирует позицию карт при наведении курсора.
+ * Возможна подсветка поля.  
  * Карты добавляются в поле двумя методами:  
  *
- * * {@link Field#queueCards} {@link Field#placeQueuedCards}  
+ * * {@link Field#queueCards} -> {@link Field#placeQueuedCards}  
  * * {@link Field#addCards}  
  *
  * Использование второго метода до финализации первого добавляет карты в очередь и запускает очередь  
- * .queueCards(c1) -> .addCards(c2) => .queueCards(c1) -> .queueCards(c2) -> .placeQueuedCards()   
+ * `.queueCards(c1)` -> `.addCards(c2)` => `.queueCards(c1)` -> `.queueCards(c2)` -> `.placeQueuedCards()`   
  * @constructor
  */
 
@@ -101,7 +102,9 @@ var Field = function(options){
 	this.specialId = this.options.specialId;
 };
 
-//Возвращает опции по умолчанию
+/**
+ * Возвращает опции по умолчанию
+ */
 Field.getDefaultOptions = function(){
 	var options = {
 		x:0,
@@ -149,7 +152,12 @@ Field.getDefaultOptions = function(){
 
 //ПОЗИЦИОНИРОВАНИЕ ПОЛЯ
 
-//Устанавливает позицию поля
+/**
+ * Устанавливает позицию поля.
+ * @param {number} x            по горизонтали
+ * @param {number} y            по вертикали
+ * @param {boolean} shouldPlace нужно ли размещать карты после установки
+ */
 Field.prototype.setBase = function(x, y, shouldPlace){
 	if(x === null || x === undefined)
 		x = this.options.x;
@@ -165,7 +173,12 @@ Field.prototype.setBase = function(x, y, shouldPlace){
 		this.placeCards();
 };
 
-//Изменяет размер поля
+/**
+ * Устанавливает размер поля.
+ * @param  {number} width        ширина
+ * @param  {number} height       высота
+ * @param  {boolean} shouldPlace нужно ли размещать карты после установки
+ */
 Field.prototype.resize = function(width, height, shouldPlace){
 	if(width === null || width === undefined)
 		width = this.options.width;
@@ -206,35 +219,54 @@ Field.prototype.resize = function(width, height, shouldPlace){
 		this.placeCards();
 };
 
-Field.prototype.setHighlight = function(on, tint, linkedField){
-	this.area.visible = on || this.isInDebugMode ? true : false;
-	this.area.tint = on ? (tint || ui.colors.orange) : 0xFFFFFF;
-	this.linkedField = fieldManager.fields[linkedField] || null;
+/**
+ * Устанавливает подсветку поля. По умолчанию зависит от того,
+ * включен ли дебаг поля.
+ * @param {boolean} [on=Field#isInDebugMode] подствечивать ли поле
+ * @param {number} [tint=ui.colors.white]    цвет подсветки
+ * @param {string} [linkedFieldId=null]      связанное поле, используется `{@link cardControl#cardMoveToField}`
+ */
+Field.prototype.setHighlight = function(on, tint, linkedFieldId){
+	this.area.visible = (on || this.isInDebugMode) ? true : false;
+	this.area.tint = on ? (tint || ui.colors.orange) : ui.colors.white;
+	this.linkedField = fieldManager.fields[linkedFieldId] || null;
 	this.area.alpha = on ? 0.55 : 0.35;
 	this.isHighlighted = on;
 };
 
 //СОРТИРОВКА
 
-//Устанавливает z-index карт
-Field.prototype.zAlignCards = function(finished){
+/**
+ * Устанавливает z-index карт.
+ * @param  {boolean} [checkMover] если true, то будут подняты только карты,
+ * которые не перемещаются в данный момент.
+ */
+Field.prototype.zAlignCards = function(checkMover){
 	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
 	var iterator = this.direction == 'backward' ? -1 : 1;
 
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 		var card = this.cards[i];
-		if(!finished || !card.mover)
+		if(!checkMover || !card.mover)
 			card.bringToTop(false);
 	}
 };
 
-//Сортирует карты
+/**
+ * Сортирует карты в `{@link Field#cards}` по значению.
+ * @private
+ */
 Field.prototype._sortCards = function(){
 	if(this.sorted)
 		this.cards.sort(this._compareCards);
 };
 
-//Компаратор сортировки
+/**
+ * Компаратор для сортировки.
+ * @private
+ * @see  {@link Field#_sortCards}
+ * @see  {@link https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/sort?v=control|Array#sort}
+ */
 Field.prototype._compareCards = function(a, b){
 	if(!a.suit && a.suit !== 0){
 		if(b.suit || b.suit === 0)
@@ -265,9 +297,9 @@ Field.prototype._compareCards = function(a, b){
 //ОЧЕРЕДЬ
 
 /**
- * Добавляет карты в очередь на добавление
- * @param  {Card[]} newCards - добавляемые карты
- * @param  {number} delay	- задержка, добавляемая к первой карте в очереди
+ * Добавляет карты в очередь на добавление.
+ * @param  {Card[]} newCards добавляемые карты
+ * @param  {number} delay	задержка, добавляемая к первой карте в очереди
  * @return {number}		  Планируемое время добавления
  * @see  {@link Field#placeQueuedCards}
  */
@@ -311,7 +343,7 @@ Field.prototype.queueCards = function(newCards, delay){
 };
 
 /**
- * Размещает карты из очереди
+ * Размещает карты из очереди.
  * @see  {@link Field#queueCards}
  */
 Field.prototype.placeQueuedCards = function(){
@@ -335,7 +367,7 @@ Field.prototype.placeQueuedCards = function(){
 };
 
 /**
- * Очищает очередь на добавление
+ * Очищает очередь на добавление.
  * @see  {@link Field#queueCards}
  * @see  {@link Field#placeQueuedCards}
  */
@@ -349,7 +381,7 @@ Field.prototype.resetQueue = function(){
 //ДОБАВЛЕНИЕ КАРТ
 
 /**
- * Добавляет карты в поле
+ * Добавляет карты в поле.
  * @param {Card[]} newCards - добавляемые карты
  * @param {boolean} noDelay  - убирает время ожидание перед добавлением карт
  * @return {number} Время добавления
@@ -376,7 +408,7 @@ Field.prototype.addCards = function(newCards, noDelay){
 };
 
 /**
- * Добавляет одну карту в поле
+ * Добавляет одну карту в поле.
  * @param {Card} card - добавляемая карта
  * @return {number} Время добавления
  * @see {@link Field#addCards}
@@ -385,6 +417,12 @@ Field.prototype.addCard = function(card){
 	return this.addCards([card]);
 };
 
+/**
+ * Добавляет карты в `{@link Field#cards}`.
+ * Вычисляет и сохраняет угол карты в `{@link Field#angles}`, если указан `{@link Field#randomAngle}`.
+ * @private
+ * @param  {Card[]} cards карты для добавления
+ */
 Field.prototype._appendCards = function(cards){
 
 	var card, ci,
@@ -423,11 +461,12 @@ Field.prototype._appendCards = function(cards){
 
 //РАЗМЕЩЕНИЕ КАРТ
 
-/*
- * Размещает карты в поле
- * @newCards Array (Card) - только что добавленные карты, они будут перемещены в поле по очереди
- * @bringToTopOn {BRING_TO_TOP_ON} - когда поднимать карту на передний план
- * Возвращает задержку следующей карты
+/**
+ * Размещает карты в поле.
+ * @param  {Card[]} [newCards=null]       только что добавленные карты, они будут перемещены в поле по очереди
+ * @param  {BRING_TO_TOP_ON} bringToTopOn когда поднимать карту на передний план
+ * @param  {boolean} [noDelay=false]      все карты будут перемещены без задержки
+ * @return {number}              Возвращает задержку следующей карты.
  */
 Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
@@ -599,7 +638,14 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	return delay;
 };
 
-//Для размещения одной карты
+/**
+ * Размещает одну карту в поле.
+ * @param  {Card[]} [newCards=null]       только что добавленная карта, они будут перемещены в поле по очереди
+ * @param  {BRING_TO_TOP_ON} bringToTopOn когда поднимать карту на передний план
+ * @param  {boolean} [noDelay=false]      все карты будут перемещены без задержки
+ * @return {number}              Возвращает задержку следующей карты.
+ * @see  {@link Field#placeCards}
+ */
 Field.prototype.placeCard = function(card, bringToTopOn, noDelay){
 	var i = this.cards.indexOf(card);
 	if(!~i)
@@ -607,7 +653,9 @@ Field.prototype.placeCard = function(card, bringToTopOn, noDelay){
 	return this.placeCards([card], bringToTopOn, noDelay);
 };
 
-//Поворачивает все карты
+/**
+ * Поворачивает все карты.
+ */
 Field.prototype.rotateCards = function(){
 	var angle = 0;
 	if(this.axis == 'vertical')
@@ -627,21 +675,22 @@ Field.prototype.rotateCards = function(){
 	}
 };
 
-/*
- * Перемещает заданную карту в соответствии с переданными данными
- * Внутренний метод, проверка данных не проводится
- * @card Object (Card) - карта
- * @index Number (int) - индекс карты в поле
- * @topMargin Number (px) - отступ сверху
- * @leftMargin Number (px) - отступ слева
- * @cardSpacing Number (px) - отступ от предыдущей карты
- * @angle Number (градусы) - угол поворота
- * @shift Number (px) - сдвиг от выделенной карты
- * @delayArray Array (мс) - массив задержек карт
- * @focusedIndex Number (int) - индекс выделенной карты в поле
- * @delayIndex Number (int) - индекс карты в очереди
- * @increaseDelayIndex Bool - нужно ли увеличивать индекс очереди в конце выполнения функции
- * @bringToTopOn {BRING_TO_TOP_ON} - когда поднимать карту на передний план
+/**
+ * Перемещает заданную карту в соответствии с переданными данными.
+ * @private
+ * @param  {Card} card             	    карта
+ * @param  {number} index               индекс карты в поле
+ * @param  {number} topMargin           отступ сверху
+ * @param  {number} leftMargin          отступ слева
+ * @param  {number} cardSpacing         отступ от предыдущей карты
+ * @param  {number} angle               угол поворота
+ * @param  {number} shift               сдвиг от выделенной карты
+ * @param  {number} focusedIndex        индекс выделенной карты в поле
+ * @param  {number[]} delayArray        массив задержек карт
+ * @param  {number} delayIndex          индекс задержки карты
+ * @param  {boolean} increaseDelayIndex нужно ли увеличивать индекс задержки в конце выполнения функции
+ * @param  {BRING_TO_TOP_ON} bringToTopOn       когда поднимать карту на передний план
+ * @return {number}                   Возвращает индекс задержки следующей карты. 
  */
 Field.prototype._moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
@@ -727,7 +776,10 @@ Field.prototype._moveCard = function(
 
 //УДАЛЕНИЕ КАРТ ИЗ ПОЛЯ
 
-//Удаляет карты из поля
+/**
+ * Удаляет карты из поля.
+ * @param  {Card[]} cardsToRemove карты для удаления
+ */
 Field.prototype.removeCards = function(cardsToRemove){
 	for(var ci = cardsToRemove.length - 1; ci >= 0; ci--){
 		var card = cardsToRemove[ci];
@@ -747,21 +799,34 @@ Field.prototype.removeCards = function(cardsToRemove){
 	}
 };
 
-//Удаляет все карты из поля
+/**
+ * Удаляет все карты из поля.
+ * @see  {@link Field#removeCards}
+ */
 Field.prototype.removeAllCards = function(){
 	this.removeCards(this.cards);
 };
 
-//Для удаления одной карты
-Field.prototype.removeCard = function(card){
-	this.removeCards([card]);
+/**
+ * Удаляет одну карту из поля.
+ * @param  {Card} cardToRemove карта для удаления
+ * @see  {@link Field#removeCards}
+ */
+Field.prototype.removeCard = function(cardToRemove){
+	this.removeCards([cardToRemove]);
 };
 
-//Ресет поля
+/**
+ * Ресет поля. На данный момент только удаляет все карты из поля.
+ * @see  {@link Field#removeAllCards}
+ */
 Field.prototype.reset = function(){
 	this.removeAllCards();
 };
 
+/**
+ * Полностью уничтожает поле, убирае все карты предварительно.
+ */
 Field.prototype.destroy = function(){
 	this.removeAllCards();
 	this.area.kill();
@@ -772,18 +837,24 @@ Field.prototype.destroy = function(){
 
 //БУЛЕВЫ ФУНКЦИИ
 
-//Проверяет нахождение карты внутри поля (по координатам)
-Field.prototype.cardIsInside = function(card, includeShift, includeWholeCard){
+/**
+ * Проверяет нахождение карты внутри поля (по координатам).
+ * @param  {Card} card                     проверяемая карта
+ * @param  {boolean} [includeSpacing=true] нужно ли учитывать сдвиг карт друг от друга
+ * @param  {boolean} [includeWholeCard=false]      если false, то центр карты должен быть внутри поля, иначе - любая часть карты
+ * @return {boolean} Находится ли карта в поле.
+ */
+Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){
 
-	if(includeShift === undefined)
-		includeShift = true;
+	if(includeSpacing === undefined)
+		includeSpacing = true;
 
 	if(includeWholeCard === undefined)
 		includeWholeCard = false;
 
-	var shift = 0;
-	if(includeShift)
-		shift = skinManager.skin.width - this.cardSpacing;
+	var spacing = 0;
+	if(includeSpacing)
+		spacing = skinManager.skin.width - this.cardSpacing;
 
 	var addX = 0,
 		addY = 0;
@@ -794,8 +865,8 @@ Field.prototype.cardIsInside = function(card, includeShift, includeWholeCard){
 
 	if(
 		!card ||
-		card.base.x + card.sprite.x < this.base.x + this.margin - shift - addX ||
-		card.base.x + card.sprite.x > this.base.x + this.area.width - this.margin + shift + addX ||
+		card.base.x + card.sprite.x < this.base.x + this.margin - spacing - addX ||
+		card.base.x + card.sprite.x > this.base.x + this.area.width - this.margin + spacing + addX ||
 		card.base.y + card.sprite.y < this.base.y + this.margin - addY ||
 		card.base.y + card.sprite.y > this.base.y + this.area.height - this.margin + addY
 	)
@@ -807,7 +878,10 @@ Field.prototype.cardIsInside = function(card, includeShift, includeWholeCard){
 
 //ВЫДЕЛЕНИЕ КАРТ КУРСОРОМ
 
-//Запускает таймер, во время которого карты не реагируют на курсор
+/**
+ * Запускает таймер, во время которого карты не реагируют на курсор.
+ * @param {number} time время таймера
+ */
 Field.prototype.setUninteractibleTimer = function(time){
 
 	if(!time || typeof time != 'number' || isNaN(time))
@@ -829,7 +903,13 @@ Field.prototype.setUninteractibleTimer = function(time){
 	this.uninteractibleTimer = setTimeout(makeInteracible.bind(this), time/game.speed);
 };
 
-//Запоминает карту, над которой находится курсор
+/**
+ * Выделяет карту, над которой находится курсор.
+ * @param  {Card} card      выделенная карта
+ * @param  {Phaser.Pointer} pointer курсор
+ * @param  {boolean} [forced]  заставляет поле выделить карту, даже если она не находится в пределах поля
+ * или поле не выделяет карты при наведении
+ */
 Field.prototype.focusOnCard = function(card, pointer, forced){
 	if(!card || !~this.cards.indexOf(card) || !forced && (!this.focusable || !this.cardIsInside(card)))
 		return;
@@ -840,7 +920,11 @@ Field.prototype.focusOnCard = function(card, pointer, forced){
 	}
 };
 
-//Обнуляет запомненную карту, когда курсор с нее ушел
+/**
+ * Убирает выделение карты.
+ * @param  {Card} card   выделенная карта
+ * @param  {boolean} [forced] заставляет поле убрать выделение карты, даже если поле не стало бы этого делать
+ */
 Field.prototype.focusOffCard = function(card, forced){
 	if(
 		!card ||
@@ -863,7 +947,9 @@ Field.prototype.focusOffCard = function(card, forced){
 
 //ДЕБАГ
 
-//Обновляет дебаг
+/**
+ * Обновляет дебаг
+ */
 Field.prototype.updateDebug = function(){
 	if(!this.isInDebugMode)
 		return;
@@ -898,7 +984,9 @@ Field.prototype.updateDebug = function(){
 	game.debug.geom( this.debugActiveSpace, 'rgba(0,127,127,0.3)' ) ;
 };
 
-//Переключает режим дебага
+/**
+ * Переключает режим дебага
+ */
 Field.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	this.area.visible = this.isInDebugMode;

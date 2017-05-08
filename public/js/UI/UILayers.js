@@ -26,6 +26,13 @@ UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 	return layer;
 };
 
+UILayers.prototype.setLayerIndex = function(layer, i, checkCursorOverlap){
+	layer.index = i;
+	if(checkCursorOverlap !== undefined)
+		layer.checkCursorOverlap = checkCursorOverlap || false;
+	this._positionLayer(layer);
+}
+
 UILayers.prototype._positionLayer = function(layer){
 
 	var i = layer.index,
