@@ -4,7 +4,7 @@
  * Имеет методы для перемещения (с анимацией и без), установки значений,
  * установки флагов, применения скинов. Передает информацию о курсоре
  * присвоенному полю ({@link Field}) и контроллеру карт ({@link CardControl}).
- * @constructor
+ * @class
  * @param {object} options 		 - Опции, используемые при создании карты
  * @param {string} options.id 	 - id карты
  * @param {number} [options.x=game.screenWidth/2] 	 - позиция по горизонтали
@@ -197,8 +197,9 @@ var Card = function (options) {
 };
 
 /** 
- * Возвращает опции по умолчанию (см. Card options).
+ * Возвращает опции по умолчанию (см. {@link Card|Card options}).
  * @static
+ * @return {object} опции по умолчанию
  */
 Card.getDefaultOptions = function(){
 	var options = {

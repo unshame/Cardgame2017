@@ -1,7 +1,7 @@
 /**
  * Модуль, отвечает за общение между клиентом и сервером.
  * Основан на Eureca.Client.
- * По готовности клиента, меняет статус игры на `Play`.
+ * По готовности клиента, меняет статус игры на `play`.
  * @class
 */
 
@@ -35,7 +35,7 @@ ConnectionManager.prototype.constructor = ConnectionManager;
 ConnectionManager.prototype.bindProxy = function(proxy){
 	console.log('Ready');
 	this.proxy = proxy;
-	game.state.start('Play');
+	game.state.start('play');
 };
 
 ConnectionManager.prototype.handleConnection = function(){

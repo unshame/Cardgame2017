@@ -3,9 +3,18 @@
  * Загружает ассеты и создает соединение с сервером.  
  * Добавляется в `game.state`.  
  * @namespace stateBoot
+ * @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
+ * @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
  */
 
 window.stateBoot = {
+
+	/**
+	 * Название состояния.
+	 * @default 'boot'
+	 * @memberof stateBoot
+	 */
+	key: 'boot',
 
 	/**
 	 * Выполняется до загрузки игры и загружает ассеты.

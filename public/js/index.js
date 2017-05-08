@@ -6,8 +6,8 @@
  * @global
  */
 window.game = new Game();
-game.state.add('Play', statePlay, false);
-game.state.add('Boot', stateBoot, true);
+game.state.add(statePlay.key, statePlay, false);
+game.state.add(stateBoot.key, stateBoot, true);
 
 /*jshint unused:false*/
 /**
