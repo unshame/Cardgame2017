@@ -98,6 +98,8 @@ window.stateBoot = {
 		 * @memberof stateBoot
 		 */
 		this.loadtextDOM = document.getElementById('loading-text');
+		var loading = document.getElementById('loading');
+		loading.style.backgroundImage = 'url("assets/loading.gif")'
 	},
 
 	/**
