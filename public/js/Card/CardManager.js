@@ -139,7 +139,7 @@ CardManager.prototype.toggleDebugMode = function(){
 //ТЕСТОВЫЕ ФУНКЦИИ
 
 //Party time
-CardManager.prototype.throwCardsStart = function(minSpeed, maxSpeed, sway, interval, minRotation, maxRotation, gravity){
+CardManager.prototype.throwCardsStart = function(minSpeed, maxSpeed, sway, interval, rotation, gravity){
 
 	this.throwCardsStop();
 
@@ -151,10 +151,8 @@ CardManager.prototype.throwCardsStart = function(minSpeed, maxSpeed, sway, inter
 		sway = this.emitter.sway;
 	else
 		this.emitter.sway = sway;
-	if(minRotation === undefined)
-		minRotation = this.emitter.minRotation;
-	if(maxRotation === undefined)
-		maxRotation = this.emitter.maxRotation;
+	if(rotation === undefined)
+		rotation = this.emitter.maxRotation;
 	if(gravity !== undefined)
 		this.emitter.gravity = gravity;
 	if(interval === undefined)
@@ -162,8 +160,8 @@ CardManager.prototype.throwCardsStart = function(minSpeed, maxSpeed, sway, inter
 
 	this.emitter.minParticleSpeed = {x: -sway*game.speed, y: minSpeed*game.speed};
 	this.emitter.maxParticleSpeed = {x: sway*game.speed, y: maxSpeed*game.speed};
-	this.emitter.minRotation = minRotation;
-	this.emitter.maxRotation = maxRotation;
+	this.emitter.minRotation = -rotation;
+	this.emitter.maxRotation = rotation;
 	this.emitter.x = game.world.centerX;
 	this.emitter.width = game.screenWidth;
 	function solveQuadtraticEq(a, b, c) {
