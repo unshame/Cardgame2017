@@ -47,8 +47,8 @@ var Cursor = function(textureName){
 
 	game.add.existing(this);
 
-	document.addEventListener('mouseleave', this.update.bind(this, false));
-	document.addEventListener('mouseenter', this.update.bind(this, true));
+	document.body.addEventListener('mouseleave', this.update.bind(this, false));
+	document.body.addEventListener('mouseenter', this.update.bind(this, true));
 
 };
 

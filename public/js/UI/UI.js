@@ -5,9 +5,7 @@
  * а также существующие группы в него:
  * `fieldManager.fieldsGroup` `cardManager.cardsGroup` `cardManager.emitter`.
  * Также, переключает полноэкранный режим {@link UI#toggleFullScreen}.
- *  
  * @class
- * @extends {Phaser.Group}
  */
 
 var UI = function(){
