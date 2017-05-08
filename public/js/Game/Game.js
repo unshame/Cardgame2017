@@ -31,8 +31,8 @@ var Game = function(minWidth, minHeight, speed, isInDebugMode){
 	 */
 	window.ui = new UI();
 
-	window.addEventListener('resize', this.updateCoordinatesThrottle.bind(this));
-	window.addEventListener('orientationchange', this.updateCoordinatesThrottle.bind(this));
+	window.addEventListener('resize', this.updateCoordinatesDebounce.bind(this));
+	window.addEventListener('orientationchange', this.updateCoordinatesDebounce.bind(this));
 
 	this.calculateScreenSize();
 
@@ -95,8 +95,6 @@ Game.prototype.calculateScreenSize = function(){
 
 //Инициализация игры
 Game.prototype.initialize = function(){
-	if(this.created)
-		return;
 
 	this.time.advancedTiming = true;
 
@@ -153,47 +151,27 @@ Game.prototype.initialize = function(){
 	document.getElementById('loading').style.display = 'none';
 
 	this.addVisibilityChangeListener();
-
-	this.created = true;
 };
 
-//Выполняется по окончании throttle'a изменения размера экрана
+//Выполняется по окончании дебаунса изменения размера экрана
 Game.prototype.updateCoordinates = function(){
+	this.shouldUpdateFast = false;
 	this.calculateScreenSize();
-	if(this.created){
-
-		this.scale.setGameSize(this.screenWidth, this.screenHeight);
-
-		background.updateSize();
-
-		grid.draw();
-
-		fieldManager.resizeFields();
-
-		ui.updatePosition();
-
-		if(cardManager.emitter.on)
-			cardManager.throwCardsStart();
-	}
-
-	document.getElementById('loading').style.display = 'none';
+	var state = this.state.getCurrentState();
+	state.postResize();
 	this.dimensionsUpdateTimeout = null;
 };
 
 //Выполняется при изменении размера экрана
-Game.prototype.updateCoordinatesThrottle = function(){
-	if(this.shouldUpdateFast){
-		this.shouldUpdateFast = false;
-		this.updateCoordinates();
-		return;
-	}
+Game.prototype.updateCoordinatesDebounce = function(){
 	if(this.dimensionsUpdateTimeout){
 		clearTimeout(this.dimensionsUpdateTimeout);
 	}
-	else{
+	else if(!this.shouldUpdateFast){
 		document.getElementById('loading').style.display = 'block';
 	}
-	this.dimensionsUpdateTimeout = setTimeout(this.updateCoordinates.bind(this), 500);
+	var timeout = this.shouldUpdateFast ? 10 : 500;
+	this.dimensionsUpdateTimeout = setTimeout(this.updateCoordinates.bind(this), timeout);
 };
 
 //Выполняется, когда вкладка переходит на задний/передний план
@@ -247,8 +225,6 @@ Game.prototype.addVisibilityChangeListener = function(){
 
 //Переключение дебага
 Game.prototype.toggleDebugMode = function(){
-	if(!this.created)
-		return;
 
 	this.isInDebugMode = !this.isInDebugMode;
 

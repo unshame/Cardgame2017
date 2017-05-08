@@ -1,11 +1,11 @@
 /**
- * Модуль, отвечает за общение между клиентом и сервером
- * Основан на Eureca.Client
- * Инициализирует игру по готовности клиента
+ * Модуль, отвечает за общение между клиентом и сервером.
+ * Основан на Eureca.Client.
+ * По готовности клиента, меняет статус игры на `Play`.
  * @class
 */
 
-var ConnectionManager = function(callback, context, isInDebugMode){
+var ConnectionManager = function(isInDebugMode){
 
 	/**
 	 * A nodejs transparent bidirectional RPC.
@@ -14,8 +14,6 @@ var ConnectionManager = function(callback, context, isInDebugMode){
 	 */
 	Eureca.Client.call(this);
 
-	this.callback = callback;
-	this.context = context;
 	this.proxy = null;
 	this.server = window.serverMethods;
 	this.exports = window.clientMethods;
@@ -35,8 +33,9 @@ ConnectionManager.prototype = Object.create(Eureca.Client.prototype);
 ConnectionManager.prototype.constructor = ConnectionManager;
 
 ConnectionManager.prototype.bindProxy = function(proxy){
+	console.log('Ready');
 	this.proxy = proxy;
-	this.callback.call(this.context);
+	game.state.start('Play');
 };
 
 ConnectionManager.prototype.handleConnection = function(){

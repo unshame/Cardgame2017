@@ -3,7 +3,34 @@
 	<head>
 		<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 		<title>Cardgame</title>		
-		
+		<link type="text/css" rel="stylesheet" href="style.css">		
+	</head>
+	<body>
+	<div id="loading">
+		<div id="loading-text">loading scripts</div>
+	</div>
+		<script>
+		//Показ процесса загрузки скриптов
+		var loadCounter = 0;
+		var loadTextDOM = document.getElementById('loading-text');
+		var loadInterval = setInterval(function(){
+			if(window.game){
+				clearInterval(loadInterval);
+				delete window.loadInterval;
+				delete window.loadCounter;
+				delete window.loadTextDOM;
+				return;
+			}
+			var text = 'loading scripts';
+			if(loadCounter > 30)
+				loadCounter = 0;
+			for(var i = 0; i < loadCounter; i++){
+				text += '.';
+			}
+			loadTextDOM.innerHTML = text;
+			loadCounter++;
+		}, 50)
+		</script>
 		<!--<script src="lib/jquery.min.js" type="text/javascript"></script>-->
 		<script src="lib/phaser.js" type="text/javascript"></script>	 
 		<script src="lib/phaser-override.js" type="text/javascript"></script>	 
@@ -44,36 +71,11 @@
 		<script src="js/Grid/Grid.js" type="text/javascript"></script>	   
 		
 		<script src="js/Game/Game.js" type="text/javascript"></script>
-		<script src="js/Game/state.js" type="text/javascript"></script>
+		<script src="js/Game/stateBoot.js" type="text/javascript"></script>
+		<script src="js/Game/statePlay.js" type="text/javascript"></script>
 		
 		<script src="js/fonts.js" type="text/javascript"></script>
 		<script src="js/index.js" type="text/javascript"></script>
-		
-		<style>
-		html{
-			height:100%;
-			overflow: hidden;
-		}
-		body {
-			padding:0;
-			margin:0;
-			height:100%;
-		}
-		#loading{
-			width:100%;
-			height:100%;
-			background:url('assets/loading.gif') #ededed;
-			background-position:50%;
-			background-repeat:no-repeat;
-			z-index: 9999;
-			position:absolute;
-		}
-		</style>
-		
-	</head>
-	<body>
-	<div id="loading">
 
-	</div>
 	</body>
 </html>
