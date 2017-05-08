@@ -789,8 +789,8 @@ Card.prototype._glowUpdatePosition = function(){
 
 /**
  * Вызывается при нажатии на карту.
- * @param  {Phaser.Sprite} sprite  Card#sprite
- * @param  {Phaser.Pointer} вызвавший ивент указатель
+ * @param  {Phaser.Sprite} sprite {@link Card#sprite}
+ * @param  {Phaser.Pointer} pointer вызвавший ивент указатель
  */
 Card.prototype._cursorDown = function(sprite, pointer){
 	cardControl.cardClick(this, pointer);
@@ -798,8 +798,8 @@ Card.prototype._cursorDown = function(sprite, pointer){
 
 /**
  * Вызывается при окончании нажатия на карту.
- * @param  {Phaser.Sprite} sprite  Card#sprite
- * @param  {Phaser.Pointer} вызвавший ивент указатель
+ * @param  {Phaser.Sprite} sprite {@link Card#sprite}
+ * @param  {Phaser.Pointer} pointer вызвавший ивент указатель
  */
 Card.prototype._cursorUp = function(sprite, pointer){
 	cardControl.cardUnclick(this, pointer);
@@ -807,8 +807,8 @@ Card.prototype._cursorUp = function(sprite, pointer){
 
 /**
  * Вызывается при наведении на карту.
- * @param  {Phaser.Sprite} sprite  Card#sprite
- * @param  {Phaser.Pointer} вызвавший ивент указатель
+ * @param  {Phaser.Sprite} sprite {@link Card#sprite}
+ * @param  {Phaser.Pointer} pointer вызвавший ивент указатель
  */
 Card.prototype._cursorOver = function(sprite, pointer){
 	if(this.field)
@@ -817,7 +817,7 @@ Card.prototype._cursorOver = function(sprite, pointer){
 
 /**
  * Вызывается когда указатель покидает спрайт карты.
- * @param  {Phaser.Sprite} sprite  Card#sprite
+ * @param  {Phaser.Sprite} sprite {@link Card#sprite}
  */
 Card.prototype._cursorOut = function(sprite){
 	if(this.field)

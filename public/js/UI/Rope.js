@@ -69,5 +69,5 @@ Rope.prototype.stop = function(){
 };
 
 Rope.prototype.updatePosition = function(){
-	this.rope.maxHeight = this.rope.y = game.screenHeight;
+	this.maxHeight = this.y = game.screenHeight;
 };

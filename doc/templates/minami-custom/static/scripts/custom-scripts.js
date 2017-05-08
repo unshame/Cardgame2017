@@ -10,7 +10,10 @@ function highlight(container, target, shouldScroll){
 			current = container.scrollTop(),
 			duration;
 
-		if(toWindowTop < offset || firstScroll){
+		if(firstScroll){
+			desired = target.offset().top + current - container.offset().top - window.innerHeight/2 + offset;	
+		}
+		else if(toWindowTop < offset){
 			desired = target.offset().top + current - container.offset().top - offset;
 		}
 		else if(toWindowTop > window.innerHeight - offset){
