@@ -84,6 +84,7 @@ CardControl.prototype.cardPickup = function(card, pointer){
 	if(this.inertiaHistory.length)
 		this.inertiaHistory = [];
 	this.cardLastX = this.card.sprite.x;
+	this.cardLastY = this.card.sprite.y;
 
 	this.setCardClickTimer();
 	this.trailReset();
@@ -125,8 +126,34 @@ CardControl.prototype.cardPutDown = function(){
 		console.log('Card control: Putting down', this.card.id);
 
 	var field = this.cardOnValidField();
-
-	if(field && !this.pointer.rightButton.isDown){
+	if(this.card.sprite.body){
+		this.updateCardAngle();
+		var	dx = 0,
+			dy = 0, 
+			counted = 0,
+			curTime = Date.now();
+		for(var i = 0; i < this.inertiaHistory.length; i++){
+			if(curTime - this.inertiaHistory[i][0] < 100){
+				counted++;
+				dx += this.inertiaHistory[i][1];
+				dy += this.inertiaHistory[i][2];
+			}
+		}
+		console.log(dx, dy)
+		dx = dx/counted;
+		dy = dy/counted;
+		var velMult = 40,
+			angMult = 10;
+		this.card.sprite.body.velocity = {x: dx*velMult, y: dy*velMult};
+		this.card.sprite.body.drag = {x: Math.abs(dx*velMult), y: Math.abs(dy*velMult)};
+		this.card.sprite.body.angularVelocity = dx*angMult;
+		this.card.sprite.body.angularDrag = Math.abs(dx*angMult);
+		this.card = null;
+		this.pointer = null;
+		this.inertiaHistory = [];
+		this.setTrailResetTimer();
+	}
+	else if(field && !this.pointer.rightButton.isDown){
 		this.cardMoveToField(field);
 	}
 	else{
@@ -399,13 +426,17 @@ CardControl.prototype.updateCardAngle = function(curTime){
 
 	var maxAngle = this.cardMaxMoveAngle,
 		curX = this.card.sprite.x,
-		distance = curX - this.cardLastX;
+		curY = this.card.sprite.y,
+		distance = {
+			x: curX - this.cardLastX,
+			y: curY - this.cardLastY
+		};
 
 	while(this.inertiaHistory.length && curTime - this.inertiaHistory[0][0] > 300) {
 		this.inertiaHistory.shift();
 	}
 
-	this.inertiaHistory.push([curTime, distance]);
+	this.inertiaHistory.push([curTime, distance.x, distance.y]);
 	
 	//Вычисляем угол из средней длины вектора инерции
 	var totalDistance = 0;
@@ -425,6 +456,7 @@ CardControl.prototype.updateCardAngle = function(curTime){
 	this.card.setAngle(angle);
 
 	this.cardLastX = this.card.sprite.x;
+	this.cardLastY = this.card.sprite.y;
 };
 
 //Обновление прозрачности партиклей хвоста
