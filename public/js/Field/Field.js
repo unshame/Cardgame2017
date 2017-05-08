@@ -389,7 +389,7 @@ Field.prototype._appendCards = function(cards){
 
 	var card, ci,
 		addedAngle,
-		lastAngle = this.randomAngle ? Math.floor(Math.random()*20) * (Math.random() > 0.5 ? 1 : -1) - 12 : undefined;
+		lastAngle = this.randomAngle ? Math.floor(Math.random()*10) * (Math.random() > 0.5 ? 1 : -1) - 12 : undefined;
 
 	//Находим угол последней карты
 	if(this.randomAngle){		
