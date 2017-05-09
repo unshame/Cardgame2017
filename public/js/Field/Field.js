@@ -220,6 +220,16 @@ Field.prototype.resize = function(width, height, shouldPlace){
 };
 
 /**
+ * Устанавливает играбильность всех карт в поле.
+ * @param {boolean} playable играбильность карт
+ */
+Field.prototype.setPlayability = function(playable){
+	for(var ci = 0; ci < this.cards.length; ci++){
+		this.cards[ci].setPlayability(playable);
+	}
+}
+
+/**
  * Устанавливает подсветку поля. По умолчанию зависит от того,
  * включен ли дебаг поля.
  * @param {boolean} [on=Field#isInDebugMode] подствечивать ли поле

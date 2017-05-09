@@ -342,8 +342,8 @@ Card.prototype.setPlayability = function(playable, tint){
 
 /**
  * Устанавливает абсолютную позицию карты.
- * @param {number} x          позиция
- * @param {number} y          позиция
+ * @param {number} x          позиция по горизонтали
+ * @param {number} y          позиция по вертикали
  * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
  */
 Card.prototype.setPosition = function(x, y, resetMover){
@@ -363,8 +363,8 @@ Card.prototype.setPosition = function(x, y, resetMover){
 
 /**
  * Устанавливает положение карты по отношению к базе карты.
- * @param {number} x          позиция
- * @param {number} y          позиция
+ * @param {number} x          позиция по горизонтали
+ * @param {number} y          позиция по вертикали
  * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
  */
 Card.prototype.setRelativePosition = function(x, y, resetMover){
@@ -384,8 +384,8 @@ Card.prototype.setRelativePosition = function(x, y, resetMover){
 
 /**
  * Устанавливает позицию базы карты.
- * @param {number} x          позиция
- * @param {number} y          позиция
+ * @param {number} x          позиция по горизонтали
+ * @param {number} y          позиция по вертикали
  * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
  */
 Card.prototype.setBase = function(x, y, resetMover){
@@ -403,6 +403,25 @@ Card.prototype.setBase = function(x, y, resetMover){
 	this.base.x = x;
 	this.base.y = y;
 	this.update();
+};
+
+/**
+ * Устанавливает позицию базы карты, сохраняя относительный сдвиг спрайта и хвоста.
+ * @param {number} x  позиция по горизонтали
+ * @param {number} y  позиция по вертикали
+ */
+Card.prototype.setBasePreserving = function(x, y){
+	var shiftX = x - this.base.x,
+		shiftY = y - this.base.y,
+		newX = this.sprite.x - shiftX,
+		newY = this.sprite.y - shiftY;
+	this.setBase(x, y, false);
+	this.setRelativePosition(newX, newY, false);
+
+	//Смещаем хвост карты
+	if(cardControl.trail.parent == this.base){
+		cardControl.trailShift(-shiftX, -shiftY);
+	}
 };
 
 /**
@@ -465,10 +484,10 @@ Card.prototype.setScale = function(scale){
 
 /**
  * Плавно перемещает карту
- * @param  {number} x              - позиция
- * @param  {number} y              - позиция
+ * @param  {number} x              - позиция по горизонтали
+ * @param  {number} y              - позиция по вертикали
  * @param  {number} time           - время перемещения
- * @param  {number} delay          - задержка перед перемещением
+ * @param  {number} [delay=0]      - задержка перед перемещением
  * @param  {boolean} [relativeToBase=false] - перемещение происходит относительно базы карты
  * @param  {boolean} [shouldRebase=false]   - нужно ли перемещать базу карты или только карту  
  * если база не изменилась, то эта переменная всегда будет false
@@ -489,6 +508,28 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	if(this._bringToTopOn == BRING_TO_TOP_ON.INIT || game.paused && this._bringToTopOn != BRING_TO_TOP_ON.NEVER)
 		this.bringToTop();
 
+	var destination = this._getMoveCoordinates(x, y, relativeToBase, shouldRebase);
+
+	//Меняем позицию базы карты перед началом анимации
+	//и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась
+	if(shouldRebase){
+		this.setBasePreserving(destination.base.x, destination.base.y);
+	}
+
+	this._startMover(destination.sprite.x, destination.sprite.y, time, delay, shouldRebase, easing);
+};
+
+/**
+ * Вычисляет координаты базы и спрайта, к которым будет происходить движение, из переданных координат.
+ * @private
+ * @param  {number} x              позиция по горизонтали
+ * @param  {number} y              позиция по вертикали
+ * @param  {number} relativeToBase перемещение происходит относительно базы карты
+ * @param  {number} shouldRebase   нужно ли перемещать базу карты или только карту  
+ * @return {object}                Возвращает две позици `{ sprite: {x, y}, base: {x, y} }`
+ */
+Card.prototype._getMoveCoordinates = function(x, y, relativeToBase, shouldRebase){
+
 	//Куда двигать карту
 	var moveX, moveY;
 
@@ -507,23 +548,10 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	if(shouldRebase && newBaseX == this.base.x && newBaseY == this.base.y)
 		shouldRebase = false;
 
-	//Меняем позицию базы карты перед началом анимации
-	//и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась
-	if(shouldRebase){
 
+	if(shouldRebase){
 		//Мы будем двигать карту к новой позиции базы
 		moveX = moveY = 0;
-		var shiftX = newBaseX - this.base.x,
-			shiftY = newBaseY - this.base.y,
-			newX = this.sprite.x - shiftX,
-			newY = this.sprite.y - shiftY;
-		this.setBase(newBaseX, newBaseY, false);
-		this.setRelativePosition(newX, newY, false);
-
-		//Смещаем хвост карты
-		if(cardControl.trail.parent == this.base){
-			cardControl.trailShift(-shiftX, -shiftY);
-		}
 	}
 	else{
 		//Если база остается прежней, то двигаем карту к нужной позиции
@@ -531,11 +559,32 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		moveY = relativeToBase ? y : y - this.base.y;
 	}
 
+	return {
+		sprite: {
+			x: moveX,
+			y: moveY
+		},
+		base: {
+			x: newBaseX,
+			y: newBaseY
+		}
+	};
+};
 
-	//Создаем и запускаем твин или перемещаем карту если игра остановлена
+/**
+ * Создает и запускает твин передвижения или перемещает карту если игра остановлена.
+ * @private
+ * @param  {number} x              	 позиция по горизонтали
+ * @param  {number} y              	 позиция по вертикали
+ * @param  {number} time           	 время перемещения
+ * @param  {number} delay          	 задержка перед перемещением
+ * @param  {boolean} shouldRebase    нужно ли перемещать базу карты или только карту 
+ * @param  {functon} easing 		 функция плавности
+ */
+Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	if(game.paused){
 		this.updateValue();
-		this.setRelativePosition(moveX, moveY);
+		this.setRelativePosition(x, y);
 		if(this.mover){
 			this.mover.stop();
 			this.mover = null;
@@ -548,7 +597,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 			endPosition = moverData && moverData.vEnd;
 
 		//Не перезапускаем твин, если нет задержки и пункт назначения не изменился
-		if(!shouldRebase && endPosition && endPosition.x == moveX && endPosition.y == moveY && moverData.delay == delay){
+		if(!shouldRebase && endPosition && endPosition.x == x && endPosition.y == y && moverData.delay == delay){
 			this.updateValue();
 			if(this._bringToTopOn == BRING_TO_TOP_ON.START)
 				this.bringToTop();
@@ -569,9 +618,9 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	//Запускаем новый твин
 	this.mover = game.add.tween(this.sprite);
 	this.mover.to(
-		{
-			x: moveX,
-			y: moveY
+		{			
+			x: x,
+			y: y
 		},
 		(time/game.speed) || 0,
 		easing || Phaser.Easing.Quadratic.Out,
@@ -608,6 +657,8 @@ Card.prototype.returnToBase = function(time, delay){
 	this.moveTo(0, 0, time || 0, delay || 0, true);
 };
 
+//ПОВОРОТ
+
 /**
  * Поворачивает карту с анимацией.
  * @param  {number} angle  угол, к которому будет поворачиваться карта
@@ -617,6 +668,25 @@ Card.prototype.returnToBase = function(time, delay){
  */
 Card.prototype.rotateTo = function(angle, time, delay, easing){
 
+	var newAngle = this._calculateCorrectAngle(angle);
+
+	if(newAngle === false){
+		if(this.rotator){
+			this.rotator.stop();
+			this.rotator = null;
+		}
+		return;
+	}
+	this._startRotator(angle, time, delay, easing);
+};
+
+/**
+ * Корректирует угол. 
+ * @private
+ * @param  {number} angle     угол
+ * @return {(number|boolean)} Возвращает скорректированный угол, если он не равен текущему, или `false`.
+ */
+Card.prototype._calculateCorrectAngle = function(angle){
 	var angleSign = angle < 0 ? -1 : 1,
 
 		angleAbs = Math.abs(angle),
@@ -635,12 +705,20 @@ Card.prototype.rotateTo = function(angle, time, delay, easing){
 	}
 
 	if(angle == oldAngle){
-		if(this.rotator){
-			this.rotator.stop();
-			this.rotator = null;
-		}
-		return;
+		return false;
 	}
+	return angle;
+};
+
+/**
+ * Создает и запускает твин поворота или поворачивает карту если игра остановлена.
+ * @private
+ * @param  {number} angle    угол, к которому будет поворачиваться карта
+ * @param  {number} time     время поворота
+ * @param  {number} delay    задержка перед поворотом
+ * @param  {function} easing функция плавности
+ */
+Card.prototype._startRotator = function(angle, time, delay, easing){
 
 	//Останавливаем твин, если он есть и угол поворота изменился
 	if(this.rotator){
