@@ -848,24 +848,32 @@ Card.prototype.cursorIsOver = function(){
 //KILL, RESET, UPDATE
 
 /**
- * Убивает спрайты карты.
- * @deprecated Ипользуется Card#base.removeAll(true) для уничтожения карт.
+ * Полностью удаляет карту из игры с анимацией.
  */
-Card.prototype.kill = function() {
-	this.glow.kill();
-	this.sprite.kill();  
-	if(this.field){
+Card.prototype.destroy = function() {
+	var time = 1000,
+		alphaTween = game.add.tween(this.sprite),
+		scaleTween = game.add.tween(this.sprite.scale);
+	if(cardControl.card == this)
+		cardControl.reset();
+	this.setDraggability(false);
+	this.setPlayability(false);
+	if(this.mover)
+		this.mover.stop();
+	if(this.rotator)
+		this.rotator.stop();
+	if(this.flipper)
+		this.flipper.stop();
+	if(this.field)
 		this.field.removeCard(this);
-	}
-};
+	alphaTween.to({alpha: 0}, time, Phaser.Easing.Linear.None, true);
+	scaleTween.to({x: 0.6, y: 0.6}, time, Phaser.Easing.Linear.None, true);
 
-/**
- * Восстанавливает карту.
- * @deprecated Ипользуется Card#base.removeAll(true) для уничтожения карт.
- */
-Card.prototype.reset = function(){
-	this.sprite.reset();  
-	this.setValue(this.suit, this.value, false);
+	alphaTween.onComplete.addOnce(function(){
+		this.base.removeAll(true);
+		this.base.destroy();
+		delete cardManager.cards[this.id];
+	}, this);
 };
 
 /**
