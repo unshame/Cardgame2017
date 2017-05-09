@@ -52,12 +52,10 @@ CardManager.prototype.addCard = function(options){
 CardManager.prototype.reset = function(){
 	for(var cid in this.cards){
 		if(this.cards.hasOwnProperty(cid)){
-			this.cards[cid].base.removeAll(true);
+			this.cards[cid].destroy();
+			delete this.cards[cid];
 		}
 	}
-	this.cards = {};
-	this.cardsGroup.removeAll(true);
-	game.cards = this.cards;
 };
 
 CardManager.prototype.cursorIsOverACard = function(){
@@ -211,3 +209,26 @@ CardManager.prototype.getCard = function(except){
 		card = null;
 	return card;
 };
+
+CardManager.prototype.enablePhysics = function(makeDraggable){
+
+	//Ставим стопку сброса по центру экрана (for fun)
+	var position = grid.at(4, Math.floor(grid.numRows/2)-1, 0, 0, 'middle left'),
+		field = fieldManager.fields.DISCARD_PILE;
+	field.axis = 'horizontal';
+	field.direction = 'forward';
+	field.forcedSpace = false;
+	field.resize((grid.numCols-8)*grid.cellWidth)
+	field.setBase(position.x, position.y, true);
+
+	for(var cid in this.cards){
+		if(!this.cards.hasOwnProperty(cid))
+			continue;
+		var card = this.cards[cid];
+		if(makeDraggable)
+			card.setDraggability(true);
+		else
+			card.setDraggability(false);
+		game.physics.arcade.enable(card.sprite);
+	}
+}

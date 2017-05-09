@@ -127,31 +127,7 @@ CardControl.prototype.cardPutDown = function(){
 
 	var field = this.cardOnValidField();
 	if(this.card.sprite.body){
-		this.updateCardAngle();
-		var	dx = 0,
-			dy = 0, 
-			counted = 0,
-			curTime = Date.now();
-		for(var i = 0; i < this.inertiaHistory.length; i++){
-			if(curTime - this.inertiaHistory[i][0] < 100){
-				counted++;
-				dx += this.inertiaHistory[i][1];
-				dy += this.inertiaHistory[i][2];
-			}
-		}
-		console.log(dx, dy)
-		dx = dx/counted;
-		dy = dy/counted;
-		var velMult = 40,
-			angMult = 10;
-		this.card.sprite.body.velocity = {x: dx*velMult, y: dy*velMult};
-		this.card.sprite.body.drag = {x: Math.abs(dx*velMult), y: Math.abs(dy*velMult)};
-		this.card.sprite.body.angularVelocity = dx*angMult;
-		this.card.sprite.body.angularDrag = Math.abs(dx*angMult);
-		this.card = null;
-		this.pointer = null;
-		this.inertiaHistory = [];
-		this.setTrailResetTimer();
+		this.cardThrow();
 	}
 	else if(field && !this.pointer.rightButton.isDown){
 		this.cardMoveToField(field);
@@ -236,6 +212,40 @@ CardControl.prototype.cardReturn = function(){
 	}
 };
 
+CardControl.prototype.cardThrow = function(){
+	var	dx = 0,
+		dy = 0, 
+		counted = 0,
+		curTime = game.time.time;
+
+	this.saveInertia(curTime);
+	for(var i = 0; i < this.inertiaHistory.length; i++){
+		if(curTime - this.inertiaHistory[i][0] < 100){
+			counted++;
+			dx += this.inertiaHistory[i][1];
+			dy += this.inertiaHistory[i][2];
+		}
+	}
+	dx /= counted;
+	dy /= counted;
+	var velMult = 40,
+		angMult = 10,
+		card = this.card;
+	this.card = null;
+	this.pointer = null;
+	card.sprite.body.collideWorldBounds = true;
+	card.sprite.body.velocity = {x: dx*velMult, y: dy*velMult};
+	card.sprite.body.drag = {x: Math.abs(dx*velMult), y: Math.abs(dy*velMult)};
+	card.sprite.body.angularVelocity = dx*angMult;
+	card.sprite.body.angularDrag = Math.abs(dx*angMult);
+	card.setScale(1);
+	card.setDraggability(false);
+	this.inertiaHistory = [];
+	this.setTrailResetTimer();
+	setTimeout(function(){
+		card.destroy();
+	}, 1000);
+}
 
 //ТАЙМЕР НАЖАТИЯ
 
@@ -382,7 +392,10 @@ CardControl.prototype.updateCard = function(){
 
 	//Возвращаем карту по нажатию правой кнопки или если она была перевернута
 	if(this.pointer.rightButton.isDown || !this.card.isDraggable || !this.pointer.withinGame){
-		this.cardReturn();
+		if(this.card.sprite.body)
+			this.cardThrow();
+		else
+			this.cardReturn();
 		return;
 	}
 
@@ -419,13 +432,8 @@ CardControl.prototype.updateCardPosition = function(curTime){
 	this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
 };
 
-//Устанавливает угол в зависимости от инерции карты
-//Взято отсюда:
-//https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53
-CardControl.prototype.updateCardAngle = function(curTime){
-
-	var maxAngle = this.cardMaxMoveAngle,
-		curX = this.card.sprite.x,
+CardControl.prototype.saveInertia = function(curTime){
+	var curX = this.card.sprite.x,
 		curY = this.card.sprite.y,
 		distance = {
 			x: curX - this.cardLastX,
@@ -435,8 +443,17 @@ CardControl.prototype.updateCardAngle = function(curTime){
 	while(this.inertiaHistory.length && curTime - this.inertiaHistory[0][0] > 300) {
 		this.inertiaHistory.shift();
 	}
-
 	this.inertiaHistory.push([curTime, distance.x, distance.y]);
+}
+
+//Устанавливает угол в зависимости от инерции карты
+//Взято отсюда:
+//https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53
+CardControl.prototype.updateCardAngle = function(curTime){
+
+	var maxAngle = this.cardMaxMoveAngle;
+
+	this.saveInertia(curTime);
 	
 	//Вычисляем угол из средней длины вектора инерции
 	var totalDistance = 0;

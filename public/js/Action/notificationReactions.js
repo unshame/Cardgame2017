@@ -35,8 +35,14 @@ window.notificationReactions = {
 	 * 		]
 	 */
 	GAME_ENDED: function(note, actions){
-		if(note.results && note.results.winners && ~note.results.winners.indexOf(game.pid))
+		if(note.results && note.results.winners && ~note.results.winners.indexOf(game.pid)){
 			cardManager.throwCardsStart(300, 500, 100, false, 100, 10);
+			cardManager.enablePhysics(false);
+		}
+		else{
+			cardManager.enablePhysics(true);
+		}
+		fieldManager.resetFields();
 	},
 
 	/*
