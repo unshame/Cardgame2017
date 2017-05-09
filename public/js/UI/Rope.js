@@ -1,6 +1,7 @@
 /**
-* Конструктор фитиля-таймера
+* Конструктор фитиля-таймера.
 * @class
+* @extends {Phaser.Sprite}
 */
 var Rope = function(){
 	var pixel = ui.newPixel();
@@ -23,7 +24,9 @@ var Rope = function(){
 Rope.prototype = Object.create(Phaser.Sprite.prototype);
 Rope.prototype.constructor = Rope;
 
-//Обновляет прогресс таймера
+/**
+ * Обновляет прогресс таймера.
+ */
 Rope.prototype.update = function(){
 	var now = new Date().getTime(),
 		isBurning = false;
@@ -44,7 +47,11 @@ Rope.prototype.update = function(){
 	}
 };
 
-//Запускает таймер
+/**
+ * Запускает таймер.
+ * @param  {number} duration время таймера
+ * @param  {number} start    через сколько времени начинать отсчет 
+ */
 Rope.prototype.start = function(duration, start){
 	if(!duration || isNaN(duration))
 		return false;
@@ -59,7 +66,9 @@ Rope.prototype.start = function(duration, start){
 	this.height = this.maxHeight;
 };
 
-//Останавливает таймер
+/**
+ * Останавливает таймер.
+ */
 Rope.prototype.stop = function(){
 	this.isBurning = false;
 	this.height = 0;
@@ -68,6 +77,9 @@ Rope.prototype.stop = function(){
 	this.tint = '0xFF8300';
 };
 
+/**
+ * Обновляет позицию таймера.
+ */
 Rope.prototype.updatePosition = function(){
 	this.maxHeight = this.y = game.screenHeight;
 };
