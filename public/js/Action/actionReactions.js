@@ -29,6 +29,11 @@ window.actionReactions = {
 			var c = action.cards[ci];
 			card = game.cards[c.cid];
 
+			if(!card){
+				console.error('Action handler: Card', c.cid, 'not found');
+				continue;
+			}
+
 			if(action.pid != c.pid)
 				fieldManager.fields[c.pid].setHighlight(true, ui.colors.red);
 
@@ -45,10 +50,18 @@ window.actionReactions = {
 
 		//Прячем козырные карты
 		function hideTrumpCards(){
+			if(!action.cards || !action.cards.length)
+				return;
+			
 			var cards = this.action.cards;			
 			for(var ci = 0; ci < cards.length; ci++){
 				var c = cards[ci];
 				card = game.cards[c.cid];	
+
+				if(!card){
+					console.error('Action handler: Card', c.cid, 'not found');
+					continue;
+				}
 
 				fieldManager.fields[c.pid].setHighlight(false);		
 
