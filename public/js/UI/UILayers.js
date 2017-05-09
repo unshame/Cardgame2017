@@ -1,13 +1,26 @@
 /**
-* Создает и управляет "слоями" интерфейса.
-* Обновляет позиции элементов слоев, загружает текст кнопок после загрузки шрифтов.
-*
+* Создает и управляет "слоями" интерфейса. Слоем может быть любой `{@link DisplayObject}`.  
+* Обновляет z-index и позиции элементов слоев, загружает текст кнопок после загрузки шрифтов.  
+* Все слои добавляются в `game.world.children`. Существующие слои должны быть там же.
+* z-index - индекс элемента в `game.world.children`. 
 * @class
 */
 var UILayers = function(){
+
+	/**
+	 * Слои интерфейса.
+	 * @type {Object<DisplayObject>}
+	 */
 	this.byName = {};
 };
 
+/**
+ * Создает новую `Phaser.Group` группу и добавляет ее как слой.
+ * @param {number} i                   z-index слоя
+ * @param {string} name                имя слоя, должно быть уникальным
+ * @param {boolean} [checkCursorOverlap=false] Устанавливает `checkCursorOverlap` созданной группе.
+ * Указывает, нужно ли проверять эту группу в `{@link UILayers#cursorIsOverAnElement}`. 
+ */
 UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 	var layer = game.add.group();
 	layer.index = i;
@@ -18,6 +31,13 @@ UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 	return layer;
 };
 
+/**
+ * Добавляет существующий элемент игры, как слой.
+ * @param {DisplayObject} layer       добавляемый элемент игры
+ * @param {number} i                   z-index слоя
+ * @param {boolean} [checkCursorOverlap=false] Устанавливает `checkCursorOverlap` слою.
+ * Указывает, нужно ли проверять эту группу в `{@link UILayers#cursorIsOverAnElement}`. 
+ */
 UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 	layer.index = i;
 	layer.checkCursorOverlap = checkCursorOverlap || false;
@@ -26,13 +46,24 @@ UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 	return layer;
 };
 
+/**
+ * Меняет z-index и `checkCursorOverlap` слоя.
+ * @param {DisplayObject} layer        слой
+ * @param {number} i                   z-index слоя
+ * @param {boolean} [checkCursorOverlap] устанавливает `checkCursorOverlap` слою
+ */
 UILayers.prototype.setLayerIndex = function(layer, i, checkCursorOverlap){
 	layer.index = i;
 	if(checkCursorOverlap !== undefined)
 		layer.checkCursorOverlap = checkCursorOverlap || false;
 	this._positionLayer(layer);
-}
+};
 
+/**
+ * Позиционирует слой по вертикали.
+ * @private
+ * @param {DisplayObject} layer слой
+ */
 UILayers.prototype._positionLayer = function(layer){
 
 	var i = layer.index,
@@ -49,6 +80,9 @@ UILayers.prototype._positionLayer = function(layer){
 	}
 };
 
+/**
+ * Позиционирует все слои по вертикали.
+ */
 UILayers.prototype.positionLayers = function(){
 	for(var pname in this.byName){
 		if(!this.byName.hasOwnProperty(pname))
@@ -58,6 +92,10 @@ UILayers.prototype.positionLayers = function(){
 	}
 };
 
+/**
+ * Вызывает `updatePosition` у всех элементов слоя.
+ * @param {DisplayObject} layer слой
+ */
 UILayers.prototype._positionElementsInLayer = function(layer){
 	layer.forEach(function(el){
 		if(el.updatePosition)
@@ -65,8 +103,10 @@ UILayers.prototype._positionElementsInLayer = function(layer){
 	});
 };
 
+/**
+ * Вызывает `updatePosition` у всех элементов всех слоев, которые относятся к `Phaser.Group`.
+ */
 UILayers.prototype.positionElements = function(){
-	/*jshint loopfunc: true*/
 
 	for(var pname in this.byName){
 		if(!this.byName.hasOwnProperty(pname))
@@ -80,6 +120,9 @@ UILayers.prototype.positionElements = function(){
 	}
 };
 
+/**
+ * Перезагружает текст всех элементов всех слоев, относящихся к `Phaser.Group`, у готорых есть `label` и `label.isText`.
+ */
 UILayers.prototype.loadLabels = function(){
 	for(var pname in this.byName){
 		if(!this.byName.hasOwnProperty(pname))
@@ -96,6 +139,11 @@ UILayers.prototype.loadLabels = function(){
 	}
 };
 
+/**
+ * Находит первый элемент в слоях, относящихся к `Phaser.Group` с `checkCursorOverlap == true`, над которым находится курсор.
+ * @return {(DisplayObject|false)} Находится ли курсор над элементом.
+ * Если да, то возвращает первый попавшийся элемент, над которым находится курсор.
+ */
 UILayers.prototype.cursorIsOverAnElement = function(){
 	for(var pname in this.byName){
 		if(!this.byName.hasOwnProperty(pname))
@@ -114,6 +162,13 @@ UILayers.prototype.cursorIsOverAnElement = function(){
 	return false;
 };
 
+/**
+ * Дебаг функция для получения списка слоев.
+ * @return {object} Возвращает `{world: [], layers: []}`.  
+ * `world` содержит имена `{@link DisplayObject}` в `game.world.children`.  
+ * `layers` содержит соответствующие слои (`{@link DisplayObject}`), если они есть.
+ * @see  {@link printLayers}
+ */
 UILayers.prototype.getOrder = function(){
 	var arr = {
 		world: game.world.children.map(function(c){
