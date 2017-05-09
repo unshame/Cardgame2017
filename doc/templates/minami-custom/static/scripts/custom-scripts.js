@@ -121,7 +121,7 @@ $(function () {
 			}
 		});
 		if(lastHash && currentHash != lastHash){
-			history.pushState(null, null, '#' + lastHash);
+			history.replaceState(null, null, '#' + lastHash);
 			currentHash = lastHash;
 			highlightCurrent(lastHash);
 		}
