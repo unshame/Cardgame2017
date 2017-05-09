@@ -108,9 +108,10 @@ UILayers.prototype.cursorIsOverAnElement = function(){
 		for(var i = 0, len = layer.children.length; i < len; i++){
 			var el = layer.children[i];
 			if(el.cursorIsOver && el.cursorIsOver())
-				return true;				
+				return el;				
 		}
 	}
+	return false;
 };
 
 UILayers.prototype.getOrder = function(){

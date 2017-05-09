@@ -64,7 +64,7 @@ CardManager.prototype.cursorIsOverACard = function(){
 			continue;
 		var card = this.cards[ci];
 		if(card.cursorIsOver() && card.isDraggable){
-			return true;
+			return card;
 		}
 	}
 	return false;
