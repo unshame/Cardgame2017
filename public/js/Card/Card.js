@@ -480,6 +480,7 @@ Card.prototype.setScale = function(scale){
 	}
 };
 
+
 //ПЕРЕДВИЖЕНИЕ
 
 /**
@@ -753,6 +754,7 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 	}
 };
 
+
 //СКИН
 
 /**
@@ -923,7 +925,7 @@ Card.prototype.cursorIsOver = function(){
 };
 
 
-//KILL, RESET, UPDATE
+//DESTROY, UPDATE
 
 /**
  * Полностью удаляет карту из игры с анимацией.
@@ -985,5 +987,3 @@ Card.prototype.updateDebug = function(){
 		x, y 
 	);
 };
-
-
