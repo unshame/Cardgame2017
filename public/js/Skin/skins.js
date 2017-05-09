@@ -1,8 +1,8 @@
 /**
- * Скины, передаваемые в skinManager
- * @type {object[]}
- * @global
- */
+* Скины, передаваемые в skinManager
+* @type {object[]}
+* @global
+*/
 window.skins = [];
 
 //Modern

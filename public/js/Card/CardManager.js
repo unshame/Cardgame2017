@@ -1,12 +1,12 @@
 /**
- * Менеджер карт
- * 
- * Тестовые функции:
- * throwCards - разлетающиеся карты
- * getCards(num, except) - выбирает num карт из cards, пропускает карты из except
- * getCard(except) - выбирает одну карту из cards, пропускает карты из except
- * @class
- */
+* Менеджер карт
+* 
+* Тестовые функции:
+* throwCards - разлетающиеся карты
+* getCards(num, except) - выбирает num карт из cards, пропускает карты из except
+* getCard(except) - выбирает одну карту из cards, пропускает карты из except
+* @class
+*/
 
 var CardManager = function(isInDebugMode){
 	this.cards = {};
@@ -163,7 +163,7 @@ CardManager.prototype.throwCardsStart = function(minSpeed, maxSpeed, sway, inter
 	this.emitter.x = game.world.centerX;
 	this.emitter.width = game.screenWidth;
 	function solveQuadtraticEq(a, b, c) {
-		return Math.abs((-1 * b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a));
+		return Math.abs((-1* b + Math.sqrt(Math.pow(b, 2) - (4* a* c))) / (2* a));
 	}
 	
 	var lifespan = solveQuadtraticEq(this.emitter.gravity/2, minSpeed, -(game.screenHeight + skinManager.skin.height*2))*1000;

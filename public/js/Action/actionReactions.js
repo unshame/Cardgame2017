@@ -1,22 +1,22 @@
 /**
- * Действия, выполняемые в ответ на действия сервера  
- * Выполняются в контексте {@link ActionHandler}
- * @namespace actionReactions
- */
+* Действия, выполняемые в ответ на действия сервера  
+* Выполняются в контексте {@link ActionHandler}
+* @namespace actionReactions
+*/
 window.actionReactions = {
 	
 	/**
-	 * Наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них
-	 * @param {object} action - Обрабатываемое действие
-	 * @param {object[]} action.cards - Информация о козырных картах
-	 * @param {string} action.cards[].cid - id карты
-	 * @param {string} action.cards[].pid - id игрока
-	 * @param {number} action.cards[].suit - масть карты
-	 * @param {number} action.cards[].value - значение карты
-	 * @param {string} action.pid - id игрока с наименьшим козырем
-	 * @return {number} Время выполнения действия
-	 * @memberof actionReactions
-	 */
+	* Наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них
+	* @param {object} action - Обрабатываемое действие
+	* @param {object[]} action.cards - Информация о козырных картах
+	* @param {string} action.cards[].cid - id карты
+	* @param {string} action.cards[].pid - id игрока
+	* @param {number} action.cards[].suit - масть карты
+	* @param {number} action.cards[].value - значение карты
+	* @param {string} action.pid - id игрока с наименьшим козырем
+	* @return {number} Время выполнения действия
+	* @memberof actionReactions
+	*/
 	TRUMP_CARDS: function(action){
 		var delay = 0, card;
 		if(!action.cards || !action.cards.length)
@@ -80,18 +80,18 @@ window.actionReactions = {
 	},
 
 	/**
-	 * Карты, присутствующие в игре
-	 * @param {object} action - Обрабатываемое действие
-	 * @param {object[]} action.cards - Информация о картах
-	 * @param {string} action.cards[].cid - id карты
-	 * @param {string} action.cards[].field - id поля карты
-	 * @param {number} [action.cards[].suit] - масть карты
-	 * @param {number} [action.cards[].value] - значение карты
-	 * @param {number} [action.numDiscarded] - Количество карт в стопке сброса
-	 * @param {number} [action.trumpSuit] - Масть козырных карт
-	 * @return {number} Время до начала добавления последней карты
-	 * @memberof actionReactions
-	 */
+	* Карты, присутствующие в игре
+	* @param {object} action - Обрабатываемое действие
+	* @param {object[]} action.cards - Информация о картах
+	* @param {string} action.cards[].cid - id карты
+	* @param {string} action.cards[].field - id поля карты
+	* @param {number} [action.cards[].suit] - масть карты
+	* @param {number} [action.cards[].value] - значение карты
+	* @param {number} [action.numDiscarded] - Количество карт в стопке сброса
+	* @param {number} [action.trumpSuit] - Масть козырных карт
+	* @return {number} Время до начала добавления последней карты
+	* @memberof actionReactions
+	*/
 	CARDS: function(action){
 
 		fieldManager.resetFields();
@@ -118,16 +118,16 @@ window.actionReactions = {
 	},
 
 	/**
-	 * Раздача карт
-	 * @param {object} action - Обрабатываемое действие
-	 * @param {object[]} action.cards - Информация о картах
-	 * @param {string} action.cards[].cid - id карты
-	 * @param {string} action.cards[].pid - id игрока, который получает карту
-	 * @param {number} [action.cards[].suit] - масть карты
-	 * @param {number} [action.cards[].value] - значение карты
-	 * @return {number} Время до начала добавления последней карты
-	 * @memberof actionReactions
-	 */
+	* Раздача карт
+	* @param {object} action - Обрабатываемое действие
+	* @param {object[]} action.cards - Информация о картах
+	* @param {string} action.cards[].cid - id карты
+	* @param {string} action.cards[].pid - id игрока, который получает карту
+	* @param {number} [action.cards[].suit] - масть карты
+	* @param {number} [action.cards[].value] - значение карты
+	* @return {number} Время до начала добавления последней карты
+	* @memberof actionReactions
+	*/
 	DRAW: function(action){
 		var delay = fieldManager.queueCards(action.cards);
 		fieldManager.removeMarkedCards();
@@ -136,16 +136,16 @@ window.actionReactions = {
 	},
 
 	/**
-	 * Игрок либо хочет взять, либо уже берет карты, зависит от присутствия action.cards
-	 * @param {object} action - Обрабатываемое действие
-	 * @param {object[]} [action.cards] - Информация о картах
-	 * @param {string} action.cards[].cid - id карты
-	 * @param {number} [action.cards[].suit] - масть карты
-	 * @param {number} [action.cards[].value] - значение карты
-	 * @param {string} action.pid - id берущего игрока	 
-	 * @return {number} Время выполнения действия
-	 * @memberof actionReactions
-	 */
+	* Игрок либо хочет взять, либо уже берет карты, зависит от присутствия action.cards
+	* @param {object} action - Обрабатываемое действие
+	* @param {object[]} [action.cards] - Информация о картах
+	* @param {string} action.cards[].cid - id карты
+	* @param {number} [action.cards[].suit] - масть карты
+	* @param {number} [action.cards[].value] - значение карты
+	* @param {string} action.pid - id берущего игрока	 
+	* @return {number} Время выполнения действия
+	* @memberof actionReactions
+	*/
 	TAKE: function(action){
 		var delay = 0;
 		if(!action.cards)
@@ -164,16 +164,16 @@ window.actionReactions = {
 	},
 
 	/**
-	 * Игрок защищается
-	 * @param {object} action - Обрабатываемое действие
-	 * @param {string} action.cid - id карты
-	 * @param {string} action.pid - id игрока
-	 * @param {string} action.field - id поля
-	 * @param {number} action.suit - масть карты
-	 * @param {number} action.value - значение карты
-	 * @return {number} Время выполнения действия
-	 * @memberof actionReactions
-	 */
+	* Игрок защищается
+	* @param {object} action - Обрабатываемое действие
+	* @param {string} action.cid - id карты
+	* @param {string} action.pid - id игрока
+	* @param {string} action.field - id поля
+	* @param {number} action.suit - масть карты
+	* @param {number} action.value - значение карты
+	* @return {number} Время выполнения действия
+	* @memberof actionReactions
+	*/
 	DEFENSE: function(action){
 		var delay = 0;
 		var card = {
@@ -187,12 +187,12 @@ window.actionReactions = {
 	},
 
 	/**
-	 * Карты перемещаются в стопку сброса
-	 * @param {object} action - Обрабатываемое действие
-	 * @param {string[]} action.ids - массив id перемещаемых карт
-	 * @return {number} Время выполнения действия
-	 * @memberof actionReactions
-	 */
+	* Карты перемещаются в стопку сброса
+	* @param {object} action - Обрабатываемое действие
+	* @param {string[]} action.ids - массив id перемещаемых карт
+	* @return {number} Время выполнения действия
+	* @memberof actionReactions
+	*/
 	DISCARD: function(action){
 		var delay = 0;
 		var cards = [];
@@ -209,12 +209,12 @@ window.actionReactions = {
 	},
 
 	/**
-	 * Игрок пропускает ход
-	 * @param {object} action - Обрабатываемое действие
-	 * @param {string} action.pid - id игрока
-	 * @return {number} Время выполнения действия
-	 * @memberof actionReactions
-	 */
+	* Игрок пропускает ход
+	* @param {object} action - Обрабатываемое действие
+	* @param {string} action.pid - id игрока
+	* @return {number} Время выполнения действия
+	* @memberof actionReactions
+	*/
 	SKIP: function(action){
 		return 0;
 	}
@@ -223,15 +223,15 @@ window.actionReactions = {
 /*jshint undef:false*/
 
 /**
- * Игрок атакует
- * @method  ATTACK
- * @param {object} action - Обрабатываемое действие
- * @param {string} action.cid - id карты
- * @param {string} action.pid - id игрока
- * @param {string} action.field - id поля
- * @param {number} action.suit - масть карты
- * @param {number} action.value - значение карты
- * @return {number} Время выполнения действия
- * @memberof actionReactions
- */
+* Игрок атакует
+* @method  ATTACK
+* @param {object} action - Обрабатываемое действие
+* @param {string} action.cid - id карты
+* @param {string} action.pid - id игрока
+* @param {string} action.field - id поля
+* @param {number} action.suit - масть карты
+* @param {number} action.value - значение карты
+* @return {number} Время выполнения действия
+* @memberof actionReactions
+*/
 actionReactions['ATTACK'] = actionReactions['DEFENSE'];

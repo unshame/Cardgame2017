@@ -1,7 +1,7 @@
 /**
- * Модуль, создающий поля для FieldManager
- * @class
- */
+* Модуль, создающий поля для FieldManager
+* @class
+*/
 
 var FieldBuilder = function(manager){
 
@@ -186,8 +186,8 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 		halfDensity = Math.floor(grid.density / 2);
 
 	//Кол-во колонок и отступы для рук противников и мест на столе
-	var tableCells = this.tableCells = this.opponentPlacement[0] ? Math.round(grid.numCols - 4 - grid.density * 1.5) : grid.numCols - 2,
-		tableOffset = this.tableOffset = this.offsets.table * 2,
+	var tableCells = this.tableCells = this.opponentPlacement[0] ? Math.round(grid.numCols - 4 - grid.density* 1.5) : grid.numCols - 2,
+		tableOffset = this.tableOffset = this.offsets.table* 2,
 
 		numRows = Math.round(grid.numRows - grid.density*2 + halfDensity - 4),
 		opponentCells = this.opponentCells = [
@@ -196,9 +196,9 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 			numRows
 		],
 		opponentsOffset = this.opponentsOffset = [
-			(grid.cellHeight + this.offsets.opponent[0] * 2 ),
-			(grid.cellWidth + this.offsets.opponent[1] * 2 ),
-			(grid.cellHeight + this.offsets.opponent[2] * 2 )
+			(grid.cellHeight + this.offsets.opponent[0]* 2 ),
+			(grid.cellWidth + this.offsets.opponent[1]* 2 ),
+			(grid.cellHeight + this.offsets.opponent[2]* 2 )
 		];
 	if(tableCells <= 0){
 		console.warn('Field builder: Negative amount of columns for field table (', tableCells, '), defaulting to 0\n', this);
@@ -213,15 +213,15 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 
 	//Пытаемся выровнять поля стола по центру
 	var minTableSpace = skinManager.skin.width + this.minActiveSpaces.table,
-		extraSpace = (tableCells * grid.cellWidth)/this.tableOrder.length - minTableSpace,
+		extraSpace = (tableCells* grid.cellWidth)/this.tableOrder.length - minTableSpace,
 		tableWidth;
 	if(extraSpace > 0){
 		this.offsets.table = extraSpace/4;
 		this.tableOffset = extraSpace/2;
-		tableWidth = (tableCells * grid.cellWidth - extraSpace/2 * (this.tableOrder.length - 1)) / this.tableOrder.length;
+		tableWidth = (tableCells* grid.cellWidth - extraSpace/2* (this.tableOrder.length - 1)) / this.tableOrder.length;
 	}
 	else{
-		tableWidth = (tableCells * grid.cellWidth - tableOffset * (this.tableOrder.length - 1)) / this.tableOrder.length;
+		tableWidth = (tableCells* grid.cellWidth - tableOffset* (this.tableOrder.length - 1)) / this.tableOrder.length;
 	}
 
 	//Размеры полей (по умолчанию равны размерам карты)
@@ -250,15 +250,15 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 		opponent: [
 			{
 				//width: , 
-				height: (opponentCells[0] * grid.cellHeight - opponentsOffset[0] * (this.opponentPlacement[0] - 1)) / this.opponentPlacement[0]
+				height: (opponentCells[0]* grid.cellHeight - opponentsOffset[0]* (this.opponentPlacement[0] - 1)) / this.opponentPlacement[0]
 			},
 			{
-				width: (opponentCells[1] * grid.cellWidth - opponentsOffset[1] * (this.opponentPlacement[1] - 1)) / this.opponentPlacement[1]
+				width: (opponentCells[1]* grid.cellWidth - opponentsOffset[1]* (this.opponentPlacement[1] - 1)) / this.opponentPlacement[1]
 				//height: 
 			},
 			{
 				//width: , 
-				height: (opponentCells[2] * grid.cellHeight - opponentsOffset[2] * (this.opponentPlacement[2] - 1)) / this.opponentPlacement[2]
+				height: (opponentCells[2]* grid.cellHeight - opponentsOffset[2]* (this.opponentPlacement[2] - 1)) / this.opponentPlacement[2]
 			}
 		]
 	};
@@ -426,7 +426,7 @@ FieldBuilder.prototype._calculateOpponentSizes = function(){
 	}
 };
 
-//Расчитывает положение полей противников (слева, сверху, справа)
+//Рассчитывает положение полей противников (слева, сверху, справа)
 FieldBuilder.prototype._countOpponentPlacement = function(n){
 	var a = [0, 0, 0];
 	var i = 0;

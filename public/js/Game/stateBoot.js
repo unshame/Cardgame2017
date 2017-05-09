@@ -1,25 +1,25 @@
 /**
- * Состояние игры, отвечающее за загрузку.
- * Загружает ассеты и создает соединение с сервером.  
- * Добавляется в `game.state`.  
- * @namespace stateBoot
- * @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
- * @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
- */
+* Состояние игры, отвечающее за загрузку.
+* Загружает ассеты и создает соединение с сервером.  
+* Добавляется в `game.state`.  
+* @namespace stateBoot
+* @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
+* @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
+*/
 
 window.stateBoot = {
 
 	/**
-	 * Название состояния.
-	 * @default 'boot'
-	 * @memberof stateBoot
-	 */
+	* Название состояния.
+	* @default 'boot'
+	* @memberof stateBoot
+	*/
 	key: 'boot',
 
 	/**
-	 * Выполняется до загрузки игры и загружает ассеты.
-	 * @memberof stateBoot
-	 */
+	* Выполняется до загрузки игры и загружает ассеты.
+	* @memberof stateBoot
+	*/
 	preload: function(){
 		//Фон
 		game.load.image('wood_light', 'assets/backgrounds/wood_light.png');
@@ -51,81 +51,81 @@ window.stateBoot = {
 		game.load.spritesheet('cursor_orange', 'assets/cursors/orange.png', 128, 128, 3);
 
 		/**
-		 * Google WebFont Loader  
-		 *  
-		 * > Web Font Loader gives you added control when using linked fonts via @font-face.
-		 * It provides a common interface to loading fonts regardless of the source, then
-		 * adds a standard set of events you may use to control the loading experience.
-		 * The Web Font Loader is able to load fonts from Google Fonts, Typekit, Fonts.com,
-		 * and Fontdeck, as well as self-hosted web fonts.
-		 * @external WebFont
-		 * @see  {@link https://github.com/typekit/webfontloader}
-		 */
+		* Google WebFont Loader  
+		*  
+		* > Web Font Loader gives you added control when using linked fonts via @font-face.
+		* It provides a common interface to loading fonts regardless of the source, then
+		* adds a standard set of events you may use to control the loading experience.
+		* The Web Font Loader is able to load fonts from Google Fonts, Typekit, Fonts.com,
+		* and Fontdeck, as well as self-hosted web fonts.
+		* @external WebFont
+		* @see  {@link https://github.com/typekit/webfontloader}
+		*/
 		game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
 		/**
-		 * Менеджер скинов
-		 * @type {SkinManager}
-		 * @global
-		 */
+		* Менеджер скинов
+		* @type {SkinManager}
+		* @global
+		*/
 		window.skinManager = new SkinManager('modern');
 		skinManager.addSkins(window.skins);
 	},
 
 	/**
-	 * Выполняется в первую очередь, инициализирует показ процесса загрузки.
-	 * @memberof stateBoot
-	 */
+	* Выполняется в первую очередь, инициализирует показ процесса загрузки.
+	* @memberof stateBoot
+	*/
 	init: function(){
 
 		/**
-		 * Счетчик тиков загрузки ассетов.
-		 * @member preloadCounter
-		 * @memberof stateBoot
-		 */
+		* Счетчик тиков загрузки ассетов.
+		* @member preloadCounter
+		* @memberof stateBoot
+		*/
 		this.preloadCounter = 0;
 
 		/**
-		 * Счетчик тиков подключения к серверу.
-		 * @member loadCounter
-		 * @memberof stateBoot
-		 */
+		* Счетчик тиков подключения к серверу.
+		* @member loadCounter
+		* @memberof stateBoot
+		*/
 		this.loadCounter = 0;
 
 		/**
-		 * Контейнер с текстом загрузки.
-		 * @member loadtextDOM
-		 * @memberof stateBoot
-		 */
+		* Контейнер с текстом загрузки.
+		* @member loadtextDOM
+		* @memberof stateBoot
+		*/
 		this.loadtextDOM = document.getElementById('loading-text');
 		var loading = document.getElementById('loading');
 		loading.style.backgroundImage = 'url("assets/loading.gif")'
 	},
 
 	/**
-	 * Выполняется во время загрузки ассетов.
-	 * Выводит текст загрузки.
-	 * @memberof stateBoot
-	 */
+	* Выполняется во время загрузки ассетов.
+	* Выводит текст загрузки.
+	* @memberof stateBoot
+	*/
 	loadUpdate: function(){
 		this.updateLoadText('loading assets', 'preloadCounter');
 	},
 
 	/**
-	 * Выполняется во время соединения с сервером.
-	 * Выводит текст загрузки.
-	 * @memberof stateBoot
-	 */
+	* Выполняется во время соединения с сервером.
+	* Выводит текст загрузки.
+	* @memberof stateBoot
+	*/
 	update: function(){
 		this.updateLoadText('connecting to server', 'loadCounter');
 	},
 
 	/**
-	 * Обновляет загрузочный текст.
-	 * @memberof stateBoot
-	 * @param  {string} text       загрузочный текст
-	 * @param  {string} counterKey название счетчика загрузки
-	 */
+	* Обновляет загрузочный текст.
+	* @memberof stateBoot
+	* @param  {string} text       загрузочный текст
+	* @param  {string} counterKey название счетчика загрузки
+	*/
 	updateLoadText: function(text, counterKey){
 		if(this[counterKey] > 30)
 			this[counterKey] = 0;
@@ -137,31 +137,31 @@ window.stateBoot = {
 	},
 
 	/**
-	 * Выполняется после загрузки ассетов, инициализирует соединение с сервером.
-	 * @memberof stateBoot
-	 */
+	* Выполняется после загрузки ассетов, инициализирует соединение с сервером.
+	* @memberof stateBoot
+	*/
 	create: function(){
 		/**
-		 * Менеджер соединения с сервером
-		 * @type {ConnectionManager}
-		 * @global
-		 */
+		* Менеджер соединения с сервером
+		* @type {ConnectionManager}
+		* @global
+		*/
 		window.connection = new ConnectionManager();
 	},
 
 	/**
-	 * Выполняется после того, как игра обработала изменение размера экрана.
-	 * @memberof stateBoot
-	 */
+	* Выполняется после того, как игра обработала изменение размера экрана.
+	* @memberof stateBoot
+	*/
 	postResize: function(){
 
 	},
 
 	/**
-	 * Выполняется по окончании загрузки и подключения к серверу.
-	 * Убирает загрузочный текст.
-	 * @memberof stateBoot
-	 */
+	* Выполняется по окончании загрузки и подключения к серверу.
+	* Убирает загрузочный текст.
+	* @memberof stateBoot
+	*/
 	shutdown: function(){
 		this.loadtextDOM.innerHTML = '';
 	}

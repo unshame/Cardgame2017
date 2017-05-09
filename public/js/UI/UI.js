@@ -1,12 +1,12 @@
 /**
- * Менеджер интерфейса.
- * Создает и обновляет позиции всех элементов интерфейса: кнопки, курсор и таймер.
- * Создает менеджер слоев интерфейса {@link UILayers} и добавляет элементы интерфейса, 
- * а также существующие группы в него:
- * `fieldManager.fieldsGroup` `cardManager.cardsGroup` `cardManager.emitter`.
- * Также, переключает полноэкранный режим {@link UI#toggleFullScreen}.
- * @class
- */
+* Менеджер интерфейса.
+* Создает и обновляет позиции всех элементов интерфейса: кнопки, курсор и таймер.
+* Создает менеджер слоев интерфейса {@link UILayers} и добавляет элементы интерфейса, 
+* а также существующие группы в него:
+* `fieldManager.fieldsGroup` `cardManager.cardsGroup` `cardManager.emitter`.
+* Также, переключает полноэкранный режим {@link UI#toggleFullScreen}.
+* @class
+*/
 
 var UI = function(){
 
@@ -23,9 +23,9 @@ var UI = function(){
 	};
 
 	/*
-	 * Менеджер "слоев" элементов интерфейса
-	 * @type {UILayers}
-	 */
+	* Менеджер "слоев" элементов интерфейса
+	* @type {UILayers}
+	*/
 	this.layers = new UILayers();
 };
 
@@ -38,10 +38,10 @@ UI.prototype.initialize = function(){
 	this.addButtons();
 
 	/**
-	 * Курсор
-	 * @type {Cursor}
-	 * @global
-	 */
+	* Курсор
+	* @type {Cursor}
+	* @global
+	*/
 	this.cursor = this.layers.addExistingLayer(new Cursor('cursor_orange'), -1);
 
 	this.layers.addExistingLayer(fieldManager.fieldsGroup, 2);

@@ -1,64 +1,57 @@
 /**
- * Модуль, управляющий полями ({@link Field}).  
- * Добавляет и удаляет карты из полей, предоставляет методы для работы с полями.  
- * Создает {@link FieldBuilder}, который создает поля и карты.
- * @class
- * @param {Boolean} [isInDebugMode] - Отображать ли дебаг информацию {@link FieldManager#toggleDebugMode}
- */
+* Модуль, управляющий полями ({@link Field}).  
+* Добавляет и удаляет карты из полей, предоставляет методы для работы с полями.  
+* Создает {@link FieldBuilder}, который создает поля и карты.
+* @class
+* @param {Boolean} [isInDebugMode] - Отображать ли дебаг информацию {@link FieldManager#toggleDebugMode}
+*/
 
 var FieldManager = function(isInDebugMode){
 
 	/**
-	 * Созданы ли поля
-	 * @param FieldManager#networkCreated 
-	 * @type {boolean}
-	 * @default false
-	 */
+	* Созданы ли поля
+	* @type {boolean}
+	* @default false
+	*/
 	this.networkCreated = false;
 
 	/**
-	 * Карты, которые предстоит убрать из соответсвующих полей
-	 * @param FieldManager#cardsToRemove 
-	 * @type {object<array<Card>>}
-	 * @private
-	 */
+	* Карты, которые предстоит убрать из соответсвующих полей
+	* @type {object<array<Card>>}
+	* @private
+	*/
 	this.cardsToRemove = {};
 
 	/**
-	 * Поля
-	 * @param FieldManager#fields 
-	 * @type {object<Field>}
-	 */
+	* Поля
+	* @type {object<Field>}
+	*/
 	this.fields = {};
 
 	/**
-	 * Phaser группа полей
-	 * @param FieldManager#fieldsGroup 
-	 * @type {Phaser.Group}
-	 */
+	* Phaser группа полей
+	* @type {Phaser.Group}
+	*/
 	this.fieldsGroup = game.add.group();
 	this.fieldsGroup.name = 'fields';
 
 	/**
-	 * Поля стола
-	 * @param FieldManager#table 
-	 * @type {Field[]}
-	 */
+	* Поля стола
+	* @type {Field[]}
+	*/
 	this.table = [];
 
 	/**
-	 * Выводить ли дебаг информацию
-	 * @param FieldManager#isInDebugMode 
-	 * @type {bollean}
-	 * @see  FieldManager#toggleDebugMode
-	 */
+	* Выводить ли дебаг информацию
+	* @type {bollean}
+	* @see  FieldManager#toggleDebugMode
+	*/
 	this.isInDebugMode = isInDebugMode;
 
 	/**
-	 * Создает поля для менеджера
-	 * @param FieldManager#builder 
-	 * @type {FieldBuilder}
-	 */
+	* Создает поля для менеджера
+	* @type {FieldBuilder}
+	*/
 	this.builder = new FieldBuilder(this);
 };
 
@@ -66,14 +59,14 @@ var FieldManager = function(isInDebugMode){
 //РАЗМЕЩЕНИЕ КАРТ
 
 /**
- * Добавляет карты в очередь соответствующим полям
- * @param {object} 		cardsInfo 			- Информация о перемещаемых картах
- * @param {string} 		cardsInfo.cid 		- id карты
- * @param {string} 		cardsInfo.pid/field - id игрока/поля
- * @param {(number|null)} [cardsInfo.suit=null] - масть карты
- * @param {number} 		[cardsInfo.value=0]	- значение карты
- * @return {number} Время до начала движения последней перемещаемой карты
- */
+* Добавляет карты в очередь соответствующим полям
+* @param {object} 		cardsInfo 			- Информация о перемещаемых картах
+* @param {string} 		cardsInfo.cid 		- id карты
+* @param {string} 		cardsInfo.pid/field - id игрока/поля
+* @param {(number|null)} [cardsInfo.suit=null] - масть карты
+* @param {number} 		[cardsInfo.value=0]	- значение карты
+* @return {number} Время до начала движения последней перемещаемой карты
+*/
 FieldManager.prototype.queueCards = function(cardsInfo){
 
 	var delay = 0;
@@ -104,15 +97,15 @@ FieldManager.prototype.queueCards = function(cardsInfo){
 };
 
 /**
- * Перемещает карты в соответствующие поля
- * @param {Field} field - Поле, в которое происходит перемещение
- * @param {object} cardsInfo - Информация о перемещаемых картах
- * @param {string} cardsInfo.cid - id карты
- * @param {(number|null)} [cardsInfo.suit=null] - масть карты
- * @param {number} [cardsInfo.value=0] - значение карты
- * @param {boolean} [noDelay=false] - Говорит полю, что перемещение не нужно задерживать
- * @return {number} Время до начала движения последней перемещаемой карты
- */
+* Перемещает карты в соответствующие поля
+* @param {Field} field - Поле, в которое происходит перемещение
+* @param {object} cardsInfo - Информация о перемещаемых картах
+* @param {string} cardsInfo.cid - id карты
+* @param {(number|null)} [cardsInfo.suit=null] - масть карты
+* @param {number} [cardsInfo.value=0] - значение карты
+* @param {boolean} [noDelay=false] - Говорит полю, что перемещение не нужно задерживать
+* @return {number} Время до начала движения последней перемещаемой карты
+*/
 FieldManager.prototype.moveCards = function(field, cardsInfo, noDelay){
 	if(!cardsInfo.length)
 		return 0;
@@ -143,11 +136,11 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, noDelay){
 //FOR EACH FIELD
 
 /**
- * Выполняет callback для каждого поля из {@link FieldManager#fields}
- * @param {function} callback - Вызываемая функция
- * @param {function} context - Контекст вызываваемой функции
- * @return {any[]} Возвращенные переданной функцей значения
- */
+* Выполняет callback для каждого поля из {@link FieldManager#fields}
+* @param {function} callback - Вызываемая функция
+* @param {function} context - Контекст вызываваемой функции
+* @return {any[]} Возвращенные переданной функцей значения
+*/
 FieldManager.prototype.forEachField = function(callback, context){
 	var returnedValues = [];
 	for(var si in this.fields){
@@ -161,7 +154,7 @@ FieldManager.prototype.forEachField = function(callback, context){
 	return returnedValues;
 };
 
-/** Удаляет карты {@link FieldManager#cardsToRemove} из соответсвующих полей */
+/** Удаляет карты {@link FieldManager#cardsToRemove} из соответсвующих полей*/
 FieldManager.prototype.removeMarkedCards = function(){
 	this.forEachField(function(field, si){
 		var cards = this.cardsToRemove[si];
@@ -173,31 +166,31 @@ FieldManager.prototype.removeMarkedCards = function(){
 };
 
 /** 
- * Заставляет каждое поле разместить все карты
- * @param  {BRING_TO_TOP_ON} bringToTopOn - Когда поднимать карту на передний план
- * @param  {boolean} noDelay - Говорит полю, что перемещение не нужно задерживать
- */
+* Заставляет каждое поле разместить все карты
+* @param  {BRING_TO_TOP_ON} bringToTopOn - Когда поднимать карту на передний план
+* @param  {boolean} noDelay - Говорит полю, что перемещение не нужно задерживать
+*/
 FieldManager.prototype.placeCards = function(bringToTopOn, noDelay){
 	this.forEachField(function(field){
 		field.placeCards(null, bringToTopOn, noDelay);
 	});
 };
 
-/** Заставляет каждое поле повернуть все карты */
+/** Заставляет каждое поле повернуть все карты*/
 FieldManager.prototype.rotateCards = function(){
 	this.forEachField(function(field){
 		field.rotateCards();
 	});
 };
 
-/** Заставляет каждое поле присвоить правильный z-index всем картам */
+/** Заставляет каждое поле присвоить правильный z-index всем картам*/
 FieldManager.prototype.zAlignCards = function(){
 	this.forEachField(function(field){
 		field.zAlignCards();
 	});
 };
 
-/** Выполняет размещение очередей карт каждого поля */
+/** Выполняет размещение очередей карт каждого поля*/
 FieldManager.prototype.placeQueuedCards = function(){
 	this.forEachField(function(field){
 		field.placeQueuedCards();
@@ -205,8 +198,8 @@ FieldManager.prototype.placeQueuedCards = function(){
 };
 
 /** Меняет размеры и устанавливает позицию полей в соотстветсвии с 
- * {@link FieldBuilder#positions} и {@link FieldBuilder#dimensions}
- */
+* {@link FieldBuilder#positions} и {@link FieldBuilder#dimensions}
+*/
 FieldManager.prototype.resizeFields = function(){
 	if(!this.networkCreated)
 		return;
@@ -218,14 +211,14 @@ FieldManager.prototype.resizeFields = function(){
 	});
 };
 
-/** Ресетит поля */
+/** Ресетит поля*/
 FieldManager.prototype.resetFields = function(){
 	this.forEachField(function(field){
 		field.reset();
 	});
 };
 
-/** Уничтожает поля */
+/** Уничтожает поля*/
 FieldManager.prototype.resetNetwork = function(){
 	this.forEachField(function(field){
 		field.destroy();
@@ -237,14 +230,14 @@ FieldManager.prototype.resetNetwork = function(){
 
 //ДЕБАГ
 
-/** Обновляет дебаг каждого поля */
+/** Обновляет дебаг каждого поля*/
 FieldManager.prototype.updateDebug = function(){
 	this.forEachField(function(field, si){
 		field.updateDebug();
 	});
 };
 
-/** Переключает режим дебага в каждом поле */
+/** Переключает режим дебага в каждом поле*/
 FieldManager.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	this.forEachField(function(field, si){
@@ -256,9 +249,9 @@ FieldManager.prototype.toggleDebugMode = function(){
 };
 
 /**
- * Добавляет поле
- * @deprecated Поля создаются автоматически при помощи {@link FieldBuilder}
- */
+* Добавляет поле
+* @deprecated Поля создаются автоматически при помощи {@link FieldBuilder}
+*/
 FieldManager.prototype.addField = function(options){
 	if(!options)
 		options = {};

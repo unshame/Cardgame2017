@@ -1,18 +1,18 @@
 /**
- * Модуль, отвечает за общение между клиентом и сервером.
- * Основан на Eureca.Client.
- * По готовности клиента, меняет статус игры на `play`.
- * @class
+* Модуль, отвечает за общение между клиентом и сервером.
+* Основан на Eureca.Client.
+* По готовности клиента, меняет статус игры на `play`.
+* @class
 */
 
 var ConnectionManager = function(isInDebugMode){
 
 	/**
-	 * A nodejs transparent bidirectional RPC.
-	 * @external Eureca
-	 * @version 0.7.1
-	 * @see {@link http://eureca.io/}
-	 */
+	* A nodejs transparent bidirectional RPC.
+	* @external Eureca
+	* @version 0.7.1
+	* @see {@link http://eureca.io/}
+	*/
 	Eureca.Client.call(this);
 
 	this.proxy = null;

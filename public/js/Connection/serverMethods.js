@@ -1,7 +1,7 @@
 /**
- * Методы для общения с сервером
- * @namespace serverMethods
- */
+* Методы для общения с сервером
+* @namespace serverMethods
+*/
 
 window.serverMethods = {
 

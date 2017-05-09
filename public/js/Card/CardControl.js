@@ -1,7 +1,7 @@
 /**
- * Модуль, отвечающий за перетаскивание карт
- * @class
- */
+* Модуль, отвечающий за перетаскивание карт
+* @class
+*/
 
 var CardControl = function(isInDebugMode){
 
@@ -263,11 +263,11 @@ CardControl.prototype.cardThrow = function(){
 }
 
 /*
- * Сохраняет текущее время и позицию карты.
- * @param  {number} curTime текущее время
- * @param  {number} maxTime позиции, запомненные больше этого времени назад, будут удалены
- * @see {@link https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53|Источник кода}
- */
+* Сохраняет текущее время и позицию карты.
+* @param  {number} curTime текущее время
+* @param  {number} maxTime позиции, запомненные больше этого времени назад, будут удалены
+* @see {@link https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53|Источник кода}
+*/
 CardControl.prototype._savEinertia = function(curTime, maxTime){
 	var curX = this.card.sprite.x,
 		curY = this.card.sprite.y,
@@ -460,8 +460,8 @@ CardControl.prototype.updateCardPosition = function(curTime){
 	sTime = this.cardShiftEndTime - curTime;
 	if(sTime > 0){
 		sP = {
-			x: Math.round(this.cardShiftPosition.x / (this.cardShiftDuration/game.speed) * sTime), 
-			y: Math.round(this.cardShiftPosition.y / (this.cardShiftDuration/game.speed) * sTime)
+			x: Math.round(this.cardShiftPosition.x / (this.cardShiftDuration/game.speed)* sTime), 
+			y: Math.round(this.cardShiftPosition.y / (this.cardShiftDuration/game.speed)* sTime)
 		};
 	}
 	else{
@@ -507,7 +507,7 @@ CardControl.prototype.updateTrail = function(){
 	if(!this.trail.countLiving() || this.trail.parent == this.trailDefaultBase)
 		return;
 	this.trail.forEachAlive(function(p){
-		p.alpha = p.lifespan / this.trail.lifespan * 0.6;
+		p.alpha = p.lifespan / this.trail.lifespan* 0.6;
 	}, this);
 };
 

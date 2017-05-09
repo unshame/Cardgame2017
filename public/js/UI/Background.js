@@ -1,8 +1,8 @@
 /**
- * Фоновый слой игры
- * @class
- * @extends {Phaser.Group}
- */
+* Фоновый слой игры
+* @class
+* @extends {Phaser.Group}
+*/
 
 var Background = function(){
 	Phaser.Group.call(this, game);

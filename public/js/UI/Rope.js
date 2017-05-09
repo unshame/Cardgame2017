@@ -1,7 +1,7 @@
 /**
- * Конструктор фитиля-таймера
- * @class
- */
+* Конструктор фитиля-таймера
+* @class
+*/
 var Rope = function(){
 	var pixel = ui.newPixel();
 	Phaser.Sprite.call(this, game, 0, 0, pixel.generateTexture());
@@ -38,7 +38,7 @@ Rope.prototype.update = function(){
 		this.stop();
 	}
 	else{
-		this.height = left/this.duration * this.maxHeight;
+		this.height = left/this.duration* this.maxHeight;
 		if(left <= 5000 && this.tint != ui.colors.red)
 			this.tint = ui.colors.red;
 	}

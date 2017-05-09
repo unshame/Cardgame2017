@@ -1,11 +1,11 @@
 /**
- * Модуль, создающий сетку по размеру карт для расположения элементов игры.
- * @class
- * @param {object} options 		 Опции, используемые при создании сетки
- * @param {number} [options.density=4] сколько клеток умещается в карте по одной оси
- * @param {number} [options.thickness=1] ширина линий сетки для дебага
- * @param {boolean} [options.debug=false] нужно ли выводить дебаг информацию
- */
+* Модуль, создающий сетку по размеру карт для расположения элементов игры.
+* @class
+* @param {object} options 		 Опции, используемые при создании сетки
+* @param {number} [options.density=4] сколько клеток умещается в карте по одной оси
+* @param {number} [options.thickness=1] ширина линий сетки для дебага
+* @param {boolean} [options.debug=false] нужно ли выводить дебаг информацию
+*/
 
 var Grid = function(options){
 
@@ -18,100 +18,100 @@ var Grid = function(options){
 	}
 
 	/**
-	 * Сколько клеток умещается в карте по одной оси.
-	 * @param Grid#density 
-	 * @type {number}
-	 */
+	* Сколько клеток умещается в карте по одной оси.
+	* @type {number}
+	*/
 	this.density = this.options.density;
 
 	/**
-	 * Отступ сетки от правого верхнего угла `{x, y}`.
-	 * @param Grid#offset 
-	 * @type {object}
-	 */
+	* Отступ сетки от правого верхнего угла `{x, y}`.
+	* @type {object}
+	*/
 	this.offset = {x: 0, y:0};
 	
 	/**
-	 * Количество колонок сетки.
-	 * @param Grid#numCols 
-	 * @type {number}
-	 */
+	* Количество колонок сетки.
+	* @type {number}
+	*/
 	this.numCols = 0;
 
 	/**
-	 * Количество строк сетки.
-	 * @param Grid#numRows 
-	 * @type {number}
-	 */
+	* Количество строк сетки.
+	* @type {number}
+	*/
 	this.numRows = 0;
 
 	/**
-	 * Ширина сетки.
-	 * @param Grid#width 
-	 * @type {number}
-	 */
+	* Ширина сетки.
+	* @type {number}
+	*/
 	this.width = 0;
 
 	/**
-	 * Высота сетки.
-	 * @param Grid#height 
-	 * @type {number}
-	 */
+	* Высота сетки.
+	* @type {number}
+	*/
 	this.height = 0;
 
 	/**
-	 * Ширина линий сетки для дебага.
-	 * @param Grid#thickness 
-	 * @type {number}
-	 */
+	* Высота сетки.
+	* @type {number}
+	*/
+	this.cellWidth = 0;
+
+	/**
+	* Высота сетки.
+	* @type {number}
+	*/
+	this.cellHeight = 0;
+
+	/**
+	* Ширина линий сетки для дебага.
+	* @type {number}
+	*/
 	this.thickness = this.options.thickness;
 
 	/**
-	 * Нужно ли выводить дебаг информацию.
-	 * @param Grid#isInDebugMode 
-	 * @type {boolean}
-	 * @see  {@link Grid#toggleDebugMode}
-	 * @see  {@link Grid#drawDebug}
-	 */
+	* Нужно ли выводить дебаг информацию.
+	* @type {boolean}
+	* @see  {@link Grid#toggleDebugMode}
+	* @see  {@link Grid#drawDebug}
+	*/
 	this.isInDebugMode = this.options.debug;
 
 	/**
-	 * Текстура дебаг сетки.
-	 * @param Grid#gridTexture 
-	 * @type {PIXI.Texture}
-	 */
+	* Текстура дебаг сетки.
+	* @type {PIXI.Texture}
+	*/
 	this.gridTexture = null;
 
 	/**
-	 * Дебаг сетка.
-	 * @param Grid#gridTexture 
-	 * @type {Phaser.TileSprite}
-	 */
+	* Дебаг сетка.
+	* @type {Phaser.TileSprite}
+	*/
 	this.grid = null;
 
 	/**
-	 * Группа спрайтов, подсвечивающих клетки, возвращенные из `{@link Grid#at}`,
-	 * если сетка в режиме дебага.
-	 * @param Grid#highlights 
-	 * @type {Phaser.Group}
-	 */
+	* Группа спрайтов, подсвечивающих клетки, возвращенные из `{@link Grid#at}`,
+	* если сетка в режиме дебага.
+	* @type {Phaser.Group}
+	*/
 	this.highlights = null;
 
 	/**
-	 * Дебаг рамка.
-	 * @param Grid#border 
-	 * @type {Phaser.Graphics}
-	 */
+	* Дебаг рамка.
+	* @type {Phaser.Graphics}
+	*/
 	this.border = null;
 
 	this.draw();
 };
 
 /**
- * Получить опции по умолчанию (см. {@link Grid|Grid options}).
- * @static
- * @return {object} Опции по умолчанию.
- */
+* Получить опции по умолчанию (см. {@link Grid|Grid options}).
+* @static
+* @return {object} Опции по умолчанию.
+*/
 Grid.getDefaultOptions = function(){
 	var options = {
 		density:4,		//плотность сетки (масштаб - 1:density)
@@ -122,8 +122,8 @@ Grid.getDefaultOptions = function(){
 };
 
 /**
- * Рисует или уничтожает сетку с рамкой по размеру карт
- */
+* Расчитывает размеры сетки. Рисует сетку, если `{@link Grid#isInDebugMode}`.
+*/
 Grid.prototype.draw = function(){
 
 	if(this.border){
@@ -161,17 +161,17 @@ Grid.prototype.draw = function(){
 };
 
 /**
- * Возвращает координаты ячейки.
- * @param  {number} [col=0]    колонка ячейки
- * @param  {number} [row=0]   строка ячейки
- * @param  {number} [offsetX=0] отступ слева
- * @param  {number} [offsetY=0] отступ сверху
- * @param  {string} [align='top left']   Выравнивание, если считать выравниваемый объект
- * картой в вертикальном положении.  
- * Формат аналогичен css `background-align`.
- * Если указать только вертикальное выравнивание, горизонтальное будет `center`.
- * @return {object}         Координаты `{x, y}`
- */
+* Возвращает координаты ячейки.
+* @param  {number} [col=0]    колонка ячейки
+* @param  {number} [row=0]   строка ячейки
+* @param  {number} [offsetX=0] отступ слева
+* @param  {number} [offsetY=0] отступ сверху
+* @param  {string} [align='top left']   Выравнивание, если считать выравниваемый объект
+* картой в вертикальном положении.  
+* Формат аналогичен css `background-align`.
+* Если указать только вертикальное выравнивание, горизонтальное будет `center`.
+* @return {object}         Координаты `{x, y}`
+*/
 Grid.prototype.at = function(col, row, offsetX, offsetY, align){
 
 	if(typeof col != 'number' || isNaN(col))
@@ -248,19 +248,20 @@ Grid.prototype.at = function(col, row, offsetX, offsetY, align){
 };
 
 /**
- * Переключает вывод дебаг информации.
- */
+* Переключает вывод дебаг информации.
+*/
 Grid.prototype.toggleDebugMode = function(){
 	this.isInDebugMode = !this.isInDebugMode;
 	this.draw();
 };
 
 /**
- * Рисует сетку для дебага.
- * @param  {object} offset отступ от края `{x, y}`
- * @param  {number} width  ширина
- * @param  {number} height высота
- */
+* Рисует сетку для дебага.
+* @private
+* @param  {object} offset отступ от края `{x, y}`
+* @param  {number} width  ширина
+* @param  {number} height высота
+*/
 Grid.prototype._drawDebug = function(offset, width, height){
 	var screenWidth = game.screenWidth,
 		screenHeight = game.screenHeight,

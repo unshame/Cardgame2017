@@ -1,46 +1,46 @@
 /**
- * Заменяет курсор на спрайт.  
- * @class
- * @extends {Phaser.Sprite}
- * @listens document.mouseleave
- * @listens document.mouseenter
- */
+* Заменяет курсор на спрайт.  
+* @class
+* @extends {Phaser.Sprite}
+* @listens document.mouseleave
+* @listens document.mouseenter
+*/
 
 var Cursor = function(textureName){
 
 	Phaser.Sprite.call(this, game, -32, -32, textureName);
 
 	/**
-	 * Ширина курсора.
-	 * @param Cursor#width
-	 * @type {number}
-	 * @default 32
-	 */
+	* Ширина курсора.
+	* @param Cursor#width
+	* @type {number}
+	* @default 32
+	*/
 	this.width = 32;
 	
 	/**
-	 * Высота курсора.
-	 * @param Cursor#height
-	 * @type {number}
-	 * @default 32
-	 */
+	* Высота курсора.
+	* @param Cursor#height
+	* @type {number}
+	* @default 32
+	*/
 	this.height = 32;
 
 	/**
-	 * Находится ли курсор внутри окна.
-	 * @param Cursor#isInGame
-	 * @type {boolean}
-	 * @default true
-	 */
+	* Находится ли курсор внутри окна.
+	* @param Cursor#isInGame
+	* @type {boolean}
+	* @default true
+	*/
 	this.isInGame = true;
 
 	/**
-	 * Инициализирован ли курсор.
-	 * Курсор инициализирован, если он сдвинулся с позиции `{x: 0, y: 0}`.
-	 * @param Cursor#initialized
-	 * @type {boolean}
-	 * @default false
-	 */
+	* Инициализирован ли курсор.
+	* Курсор инициализирован, если он сдвинулся с позиции `{x: 0, y: 0}`.
+	* @param Cursor#initialized
+	* @type {boolean}
+	* @default false
+	*/
 	this.initialized = false;
 
 	this.name = 'cursor';
@@ -56,9 +56,9 @@ Cursor.prototype = Object.create(Phaser.Sprite.prototype);
 Cursor.prototype.constructor = Cursor;
 
 /**
- * Обновляет позицию и внешний вид курсора.
- * @param  {boolean} [cursorIsInGame=Cursor#isInGame] находится ли уазатель пользователя в окне
- */
+* Обновляет позицию и внешний вид курсора.
+* @param  {boolean} [cursorIsInGame=Cursor#isInGame] находится ли уазатель пользователя в окне
+*/
 Cursor.prototype.update = function(cursorIsInGame){
 
 	if(!Phaser.Device.desktop)
