@@ -214,6 +214,61 @@ Field.prototype.resize = function(width, height, shouldPlace){
 
 	this.area.width = width + this.margin*2,
 	this.area.height = height + this.margin*2;
+	var total = Math.max(2500, width);
+	var extra = (total - width)/2;
+	var a = {
+		x: -extra,
+		y: height
+	};
+	var b = {
+		x: extra + width,
+		y: height
+	}
+	var c = {
+		x: width/2,
+		y: 0
+	}
+	function CalculateCircleCenter(A,B,C)
+	{
+	    var yDelta_a = B.y - A.y;
+	    var xDelta_a = B.x - A.x;
+	    var yDelta_b = C.y - B.y;
+	    var xDelta_b = C.x - B.x;
+
+	    center = {};
+
+	    var aSlope = yDelta_a / xDelta_a;
+	    var bSlope = yDelta_b / xDelta_b;
+
+	    center.x = (aSlope*bSlope*(A.y - C.y) + bSlope*(A.x + B.x) - aSlope*(B.x+C.x) )/(2* (bSlope-aSlope) );
+	    center.y = -1*(center.x - (A.x+B.x)/2)/aSlope +  (A.y+B.y)/2;
+	    return new Phaser.Point(center.x, center.y);
+
+
+	}
+	var center = CalculateCircleCenter(a, c, b);
+	var radius = center.y;
+	if(this.graphics)
+		this.graphics.destroy();
+	
+
+	// graphics.lineStyle(2, 0xffd900, 1);
+	var x = this.base.x;
+	var y = this.base.y;
+	if(this.id == playerManager.pid){
+		this.area.height *= 1.5;
+		this.graphics = game.make.graphics(0, 0);
+		this.graphics.alpha = 0.35;
+		
+		window.graphics = this.graphics;
+		this.graphics.lineStyle(4, 0xffffff, 1);
+		this.graphics.beginFill(0xFFFFFF, 1);
+		this.graphics.drawCircle(center.x, center.y, radius*2)
+		this.base.add(this.graphics);
+	}
+
+	this.circleCenter = center;
+	this.circleRadius = radius;
 
 	if(shouldPlace)
 		this.placeCards();
@@ -237,10 +292,12 @@ Field.prototype.setPlayability = function(playable){
 * @param {string} [linkedFieldId=null]      связанное поле, используется `{@link cardControl#cardMoveToField}`
 */
 Field.prototype.setHighlight = function(on, tint, linkedFieldId){
-	this.area.visible = (on || this.isInDebugMode) ? true : false;
-	this.area.tint = on ? (tint || ui.colors.orange) : ui.colors.white;
+	var plane = this.graphics || this.area;
+	if(!this.graphics)
+		plane.visible = (on || this.isInDebugMode) ? true : false;
+	plane.tint = on ? (tint || ui.colors.orange) : ui.colors.white;
 	this.linkedField = fieldManager.fields[linkedFieldId] || null;
-	this.area.alpha = on ? 0.55 : 0.35;
+	plane.alpha = on ? 0.55 : 0.15;
 	this.isHighlighted = on;
 };
 
@@ -489,6 +546,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	var areaWidth = (this.axis == 'vertical') ?  this.area.height : this.area.width;
 	var areaHeight = (this.axis == 'vertical') ? this.area.width : this.area.height;
 	var angle = 0;
+
 	if(this.axis == 'vertical')
 		angle += 90;
 	if(this.flipped)
@@ -551,6 +609,9 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	//указываем сдвиг карты от курсора
 	if(this.focusedCard && cardWidth*(this.cards.length - 1) > areaActiveWidth){		
 		shift = cardWidth*(1 + this.focusedScaleDiff/2) - cardSpacing;
+		if(this.id == playerManager.pid){
+			shift -= 5;
+		}
 	}
 
 	//Создаем массив задержек в зависимости от направления поля
@@ -784,8 +845,18 @@ Field.prototype._moveCard = function(
 	}
 
 	//Устанавливаем поворот карты
-	if(card.fieldId == 'BOTTOM')
+
+
+	if(this.id == playerManager.pid){
+		var toCenter = this.circleCenter.x - x + skinManager.skin.width 
+		angle = Math.acos(toCenter/this.circleRadius) - Math.PI/2;
+		angle *= (180 / Math.PI);
+		y = this.base.y + this.circleCenter.y + skinManager.skin.height/2 + 10 - Math.sqrt(Math.pow(this.circleRadius, 2) - toCenter*toCenter);
+	}
+	else if(card.fieldId == 'BOTTOM'){
 		angle = Math.abs(angle - 90);
+	}
+	
 	card.rotateTo(angle, this.moveTime, delay);
 
 	//Запускаем перемещение карты
