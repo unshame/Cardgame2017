@@ -119,8 +119,8 @@ Button.prototype.enable = function(){
 
 	if(this.label){
 		this.label.alpha = 1;
-		if(this.isdown){
-			this.isdown = false;
+		if(this.isDown){
+			this.isDown = false;
 			this.updatePosition();
 		}
 	}
@@ -135,9 +135,9 @@ Button.prototype.disable = function(){
 
 	if(this.label){
 		this.label.alpha = 0.55;
-		if(!this.isdown){
+		if(!this.isDown){
 			this.label.y += this.label.downOffset;
-			this.isdown = true;
+			this.isDown = true;
 		}
 	}
 };
@@ -160,7 +160,7 @@ Button.prototype.updatePosition = function(position){
 			this.label.x++;
 			this.label.y -= this.label.downOffset/2;
 		}
-		if(this.isdown)
+		if(this.isDown)
 			this.label.y += this.label.downOffset;
 	}
 };
@@ -169,12 +169,12 @@ Button.prototype.updatePosition = function(position){
 //при изменении состоянии кнопки
 Button.prototype.changeStateFrame = function (state) {
 	if(this.label && this.inputEnabled){
-		if(state != 'Down' && this.isdown){
-			this.isdown = false;
+		if(state != 'Down' && this.isDown){
+			this.isDown = false;
 			this.updatePosition();
 		}
-		else if(state == 'Down' && !this.isdown){
-			this.isdown = true;
+		else if(state == 'Down' && !this.isDown){
+			this.isDown = true;
 			this.label.y += this.label.downOffset;
 		}
 	}
@@ -196,7 +196,7 @@ Button.prototype.cursorIsOver = function(){
 		gx = this.group.x;
 		gyTop = gyBottom = this.group.y;
 	}
-	if(this.label && this.isdown){
+	if(this.label && this.isDown){
 		gyTop += 5;
 	}
 	return Phaser.Rectangle.containsRaw(
@@ -204,7 +204,7 @@ Button.prototype.cursorIsOver = function(){
 		gyTop + this.y,
 		this.width,
 		this.height,
-		game.input.x
+		game.input.x,
 		game.input.y
 	);
 };

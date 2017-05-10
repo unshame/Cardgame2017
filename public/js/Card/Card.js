@@ -389,14 +389,19 @@ Card.prototype.setBase = function(x, y, resetMover){
 * Устанавливает позицию базы карты, сохраняя относительный сдвиг спрайта и хвоста.
 * @param {number} x  позиция по горизонтали
 * @param {number} y  позиция по вертикали
+* @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
 */
-Card.prototype.setBasePreserving = function(x, y){
+Card.prototype.setBasePreserving = function(x, y, resetMover){
+
+	if(typeof resetMover == 'undefined')
+		resetMover = true;
+
 	var shiftX = x - this.base.x,
 		shiftY = y - this.base.y,
 		newX = this.sprite.x - shiftX,
 		newY = this.sprite.y - shiftY;
-	this.setBase(x, y, false);
-	this.setRelativePosition(newX, newY, false);
+	this.setBase(x, y, resetMover);
+	this.setRelativePosition(newX, newY, resetMover);
 
 	//Смещаем хвост карты
 	if(cardControl.trail.parent == this.base){
@@ -483,6 +488,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		shouldRebase = false;
 	if(bringToTopOn === undefined)
 		bringToTopOn = BRING_TO_TOP_ON.INIT;
+	if(time < 0 || isNaN(time))
+		time = 0;
 
 	this._bringToTopOn = bringToTopOn;
 
@@ -494,10 +501,20 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	//Меняем позицию базы карты перед началом анимации
 	//и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась
 	if(shouldRebase){
-		this.setBasePreserving(destination.base.x, destination.base.y);
+		this.setBasePreserving(destination.base.x, destination.base.y, false);
 	}
 
 	this._startMover(destination.sprite.x, destination.sprite.y, time, delay, shouldRebase, easing);
+};
+
+/**
+* Плавно возвращает карту на базу.
+* @see  {@link Card#moveTo}
+* @param  {number} time           - время перемещения
+* @param  {number} delay          - задержка перед перемещением
+*/
+Card.prototype.returnToBase = function(time, delay){
+	this.moveTo(0, 0, time || 0, delay || 0, true);
 };
 
 /**
@@ -573,27 +590,10 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 		return;
 	}
 
+	//Проверяем и останавливаем текущий мувер
 	if(this.mover){
-		var moverData = this.mover.timeline[this.mover.current],
-			endPosition = moverData && moverData.vEnd;
-
-		//Не перезапускаем твин, если нет задержки и пункт назначения не изменился
-		if(!shouldRebase && endPosition && endPosition.x == x && endPosition.y == y && moverData.delay == delay){
-			this.updateValue();
-			if(this._bringToTopOn == BRING_TO_TOP_ON.START)
-				this.bringToTop();
-			return;
-		}
-
-		//Уменьшаем время движения, если твин уже в процессе, чтобы уменьшить заторможенность карт,
-		//когда они несколько раз меняют направление движения (игрок проносит курсор над рукой)
-		//Ограничиваем минимальное время половиной заданного, чтобы карты резко не прыгали
-		if(!delay){		
-			time = Math.max(moverData.duration*game.speed - moverData.dt*game.speed, time/2);
-		}
-
-		//Останавливаем существующий твин
-		this.mover.stop();
+		time = this._tryResetMover();
+		if(time < 0) return;
 	}
 
 	//Запускаем новый твин
@@ -629,13 +629,39 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 };
 
 /**
-* Плавно возвращает карту на базу.
-* @see  {@link Card#moveTo}
-* @param  {number} time           - время перемещения
-* @param  {number} delay          - задержка перед перемещением
+* Останавливает мувер, если время, позиция или задержка изменились.
+* Возвращает уменьшенное время, если они остались прежними.
+* @private
+* @param  {number} x              	 позиция по горизонтали
+* @param  {number} y              	 позиция по вертикали
+* @param  {number} time           	 время перемещения
+* @param  {number} delay          	 задержка перед перемещением
+* @param  {boolean} shouldRebase    нужно ли перемещать базу карты или только карту 
+* @return {number} Возвращает оставшееся время или -1, если мувер не был остановлен.
 */
-Card.prototype.returnToBase = function(time, delay){
-	this.moveTo(0, 0, time || 0, delay || 0, true);
+Card.prototype._tryResetMover = function(x, y, time, delay, shouldRebase){
+	var moverData = this.mover.timeline[this.mover.current],
+		endPosition = moverData && moverData.vEnd;
+
+	//Не перезапускаем твин, если нет задержки и пункт назначения не изменился
+	if(!shouldRebase && endPosition && endPosition.x == x && endPosition.y == y && moverData.delay == delay){
+		this.updateValue();
+		if(this._bringToTopOn == BRING_TO_TOP_ON.START)
+			this.bringToTop();
+		return -1;
+	}
+
+	//Уменьшаем время движения, если твин уже в процессе, чтобы уменьшить заторможенность карт,
+	//когда они несколько раз меняют направление движения (игрок проносит курсор над рукой)
+	//Ограничиваем минимальное время половиной заданного, чтобы карты резко не прыгали
+	if(!delay){		
+		time = Math.max(moverData.duration*game.speed - moverData.dt*game.speed, time/2);
+	}
+
+	//Останавливаем существующий твин
+	this.mover.stop();
+
+	return time;
 };
 
 
