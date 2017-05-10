@@ -964,7 +964,7 @@ Card.prototype.destroy = function() {
 	else{
 		alphaTween.to({alpha: 0}, time, Phaser.Easing.Linear.None, true);
 		scaleTween.to({x: 0.6, y: 0.6}, time, Phaser.Easing.Linear.None, true);
-		alphaTween.onComplete.addOnce(this.destroyNow, this);
+		alphaTween.onComplete.addOnce(this._destroyNow, this);
 	}
 };
 
