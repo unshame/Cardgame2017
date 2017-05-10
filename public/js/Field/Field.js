@@ -175,8 +175,8 @@ Field.prototype.setBase = function(x, y, shouldPlace){
 	if(shouldPlace === undefined)
 		shouldPlace = false;
 
-	this.base.x = this.options.x = x;
-	this.base.y = this.options.y = y;
+	this.base.x = this.options.x = Math.round(x);
+	this.base.y = this.options.y = Math.round(y);
 
 	if(shouldPlace)
 		this.placeCards();
@@ -262,8 +262,8 @@ Field.prototype._createCircle = function(width, height){
 	this.circle.clear();		
 
 	this.circle.alpha = this.alpha;	
-	this.circle.lineStyle(4, 0xffffff, 1);
-	this.circle.beginFill(0xFFFFFF, 1);
+	this.circle.lineStyle(4, ui.colors.lightBlue, 1);
+	this.circle.beginFill(ui.colors.lightBlue, 1);
 
 	var cos = (total - extra + this.base.x + this.area.height) / 2 / radius,
 		angle1 = Math.acos(cos),
@@ -841,6 +841,10 @@ Field.prototype._moveCard = function(
 	//Устанавливаем сдвиг для козыря в колоде
 	if(card.fieldId == 'BOTTOM' && this.cards.length > 1){
 		leftMargin += skinManager.skin.trumpOffset;
+	}
+
+	if(this.type == 'TABLE'){
+		leftMargin += this.area.width/2 - this.margin - this.minActiveSpace/2 - skinManager.skin.width/2;
 	}
 
 	//Сдвиг поднятых карт

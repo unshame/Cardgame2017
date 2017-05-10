@@ -19,7 +19,9 @@ var UI = function(){
 		orange: 0xFF8300,
 		green: 0x68C655,
 		red: 0xC93F3F,
-		white: 0xFeFeFe
+		white: 0xFeFeFe,
+		lightGray: 0xC6C6C6,
+		lightBlue: 0x0072C4
 	};
 
 	/*
@@ -82,7 +84,7 @@ UI.prototype.addButtons = function(){
 					0,
 					grid.numRows - grid.density - 1,
 					0,
-					-height/2
+					0
 				).y
 			};
 		},
@@ -102,7 +104,7 @@ UI.prototype.addButtons = function(){
 				grid.numCols - grid.density*1.5 - 1,
 				grid.numRows - grid.density - 1,
 				-width/2,
-				-height/2
+				0
 			);
 		},
 		action: game.toggleDebugMode,
