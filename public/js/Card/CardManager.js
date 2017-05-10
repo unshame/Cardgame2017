@@ -8,7 +8,7 @@
 * @class
 */
 
-var CardManager = function(isInDebugMode){
+var CardManager = function(inDebugMode){
 	this.cards = {};
 	this.cardsGroup = game.add.group();
 	this.cardsGroup.name = 'cards';
@@ -22,7 +22,7 @@ var CardManager = function(isInDebugMode){
 	}
 	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
 
-	this.isInDebugMode = isInDebugMode || false;
+	this.inDebugMode = inDebugMode || false;
 };
 
 CardManager.prototype.createCards = function(cards){
@@ -34,7 +34,7 @@ CardManager.prototype.createCards = function(cards){
 				id: c.cid,
 				suit: c.suit,
 				value: c.value,
-				debug: this.isInDebugMode
+				debug: this.inDebugMode
 			};
 			this.addCard(options);
 		}
@@ -62,7 +62,7 @@ CardManager.prototype.cursorIsOverACard = function(){
 		if(!this.cards.hasOwnProperty(ci))
 			continue;
 		var card = this.cards[ci];
-		if(card.cursorIsOver() && card.isDraggable){
+		if(card.cursorIsOver() && card.draggable){
 			return card;
 		}
 	}
@@ -126,10 +126,10 @@ CardManager.prototype.updateDebug = function(){
 };
 
 CardManager.prototype.toggleDebugMode = function(){
-	this.isInDebugMode = !this.isInDebugMode;
+	this.inDebugMode = !this.inDebugMode;
 	for(var ci in this.cards){
 		if(this.cards.hasOwnProperty(ci))
-			this.cards[ci].isInDebugMode = this.isInDebugMode;
+			this.cards[ci].inDebugMode = this.inDebugMode;
 	}
 };
 

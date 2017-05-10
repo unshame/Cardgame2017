@@ -77,7 +77,7 @@ var Grid = function(options){
 	* @see  {@link Grid#toggleDebugMode}
 	* @see  {@link Grid#drawDebug}
 	*/
-	this.isInDebugMode = this.options.debug;
+	this.inDebugMode = this.options.debug;
 
 	/**
 	* Текстура дебаг сетки.
@@ -122,7 +122,7 @@ Grid.getDefaultOptions = function(){
 };
 
 /**
-* Расчитывает размеры сетки. Рисует сетку, если `{@link Grid#isInDebugMode}`.
+* Расчитывает размеры сетки. Рисует сетку, если `{@link Grid#inDebugMode}`.
 */
 Grid.prototype.draw = function(){
 
@@ -155,7 +155,7 @@ Grid.prototype.draw = function(){
 	this.width = screenWidth - offset.x*2;
 	this.height = screenHeight - offset.y*2;
 
-	if(this.isInDebugMode){
+	if(this.inDebugMode){
 		this._drawDebug(offset, width, height);
 	}
 };
@@ -251,7 +251,7 @@ Grid.prototype.at = function(col, row, offsetX, offsetY, align){
 * Переключает вывод дебаг информации.
 */
 Grid.prototype.toggleDebugMode = function(){
-	this.isInDebugMode = !this.isInDebugMode;
+	this.inDebugMode = !this.inDebugMode;
 	this.draw();
 };
 

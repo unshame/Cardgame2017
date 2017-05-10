@@ -31,7 +31,7 @@ var Card = function (options) {
 	* Выводить ли дебаг информацию
 	* @type {boolean}
 	*/
-	this.isInDebugMode = this.options.debug;
+	this.inDebugMode = this.options.debug;
 
 	/**
 	* Можно ли перетаскивать карту
@@ -39,7 +39,7 @@ var Card = function (options) {
 	* @default false
 	* @see  Card#setDraggability
 	*/
-	this.isDraggable = false;
+	this.draggable = false;
 
 	/**
 	* Играбильна ли карта
@@ -47,7 +47,7 @@ var Card = function (options) {
 	* @default false
 	* @see  Card#setPlayability
 	*/
-	this.isPlayable = false;
+	this.playable = false;
 
 	/**
 	* Говорит {@link Card#field}, что карту нужно поднять
@@ -299,7 +299,7 @@ Card.prototype.setValue = function(suit, value, animate){
 * @param {boolean} draggable - значение перетаскиваемости
 */
 Card.prototype.setDraggability = function(draggable){	
-	this.isDraggable = draggable;
+	this.draggable = draggable;
 };
 
 /**
@@ -314,7 +314,7 @@ Card.prototype.setPlayability = function(playable, tint){
 	else{
 		this._glowStop();
 	}
-	this.isPlayable = playable;
+	this.playable = playable;
 };
 
 
@@ -978,7 +978,7 @@ Card.prototype.update = function() {
 * Обновляет позицию дебаг информации.
 */
 Card.prototype.updateDebug = function(){
-	if(!this.isInDebugMode)
+	if(!this.inDebugMode)
 		return;
 
 	var x = this.base.x + this.sprite.x - this.skin.width/2;

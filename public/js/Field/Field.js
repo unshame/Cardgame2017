@@ -97,16 +97,16 @@ var Field = function(options){
 
 	this.area = game.add.sprite(0, 0, pixel.generateTexture());
 	this.area.alpha = this.alpha;
-	this.area.visible = this.isInDebugMode;
+	this.area.visible = this.inDebugMode;
 	this.base.add(this.area);
 	fieldManager.fieldsGroup.add(this.base);
 
-	this.isHighlighted = false;
+	this.highlighted = false;
 
 	this.resize(this.options.width, this.options.height);
 	
 	this.debugActiveSpace = new Phaser.Rectangle();
-	this.isInDebugMode = this.options.debug;
+	this.inDebugMode = this.options.debug;
 	this.specialId = this.options.specialId;
 };
 
@@ -312,18 +312,18 @@ Field.prototype.setPlayability = function(playable){
 /**
 * Устанавливает подсветку поля. По умолчанию зависит от того,
 * включен ли дебаг поля.
-* @param {boolean} [on=Field#isInDebugMode] подствечивать ли поле
+* @param {boolean} [on=Field#inDebugMode] подствечивать ли поле
 * @param {number} [tint=ui.colors.white]    цвет подсветки
 * @param {string} [linkedFieldId=null]      связанное поле, используется `{@link cardControl#cardMoveToField}`
 */
 Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 	var plane = this.curved ? this.circle : this.area;
 	if(!this.curved)
-		plane.visible = (on || this.isInDebugMode) ? true : false;
+		plane.visible = (on || this.inDebugMode) ? true : false;
 	plane.tint = on ? (tint || ui.colors.orange) : ui.colors.white;
 	this.linkedField = fieldManager.fields[linkedFieldId] || null;
 	plane.alpha = on ? 0.55 : this.alpha;
-	this.isHighlighted = on;
+	this.highlighted = on;
 };
 
 //СОРТИРОВКА
@@ -663,7 +663,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 
 	//Дебаг отображение активно используемого пространства
-	if(this.isInDebugMode){
+	if(this.inDebugMode){
 		this._setDebugActiveSpace(requiredActiveWidth, cardHeight, leftMargin, topMargin, shift);
 	}
 
@@ -1123,7 +1123,7 @@ Field.prototype._setDebugActiveSpace = function(activeWidth, cardHeight, leftMar
 * Обновляет дебаг
 */
 Field.prototype.updateDebug = function(){
-	if(!this.isInDebugMode)
+	if(!this.inDebugMode)
 		return;
 
 	var x, y;
@@ -1160,8 +1160,8 @@ Field.prototype.updateDebug = function(){
 * Переключает режим дебага
 */
 Field.prototype.toggleDebugMode = function(){
-	this.isInDebugMode = !this.isInDebugMode;
-	this.area.visible = this.isInDebugMode;
-	if(!this.isInDebugMode)
+	this.inDebugMode = !this.inDebugMode;
+	this.area.visible = this.inDebugMode;
+	if(!this.inDebugMode)
 		game.debug.reset();
 };

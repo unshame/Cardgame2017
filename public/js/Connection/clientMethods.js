@@ -29,7 +29,7 @@ window.clientMethods = {
 
 	meetOpponents: function(opponents){
 		connection.resetTimer();
-		if(connection.isInDebugMode)
+		if(connection.inDebugMode)
 			console.log(opponents);
 	},
 
@@ -37,7 +37,7 @@ window.clientMethods = {
 		connection.resetTimer();
 
 		actionHandler.handlePossibleActions(newActions, time, timeSent);
-		if(connection.isInDebugMode)
+		if(connection.inDebugMode)
 			console.log(newActions);
 	},
 
@@ -49,19 +49,19 @@ window.clientMethods = {
 		ui.actionButtons.getByName('action').disable();
 		var delay = actionHandler.executeAction(action);
 		connection.responseTimer = setTimeout(connection.server.sendResponse, !delay && 1 || (delay/game.speed + 300));
-		if(connection.isInDebugMode)
+		if(connection.inDebugMode)
 			console.log(action);
 	},
 
 	recieveNotification: function(note, actions){
 		connection.resetTimer();
 		actionHandler.handleNotification(note, actions);
-		if(connection.isInDebugMode)
+		if(connection.inDebugMode)
 			console.log(note, actions);
 	},
 
 	handleLateness: function(){
-		if(connection.isInDebugMode)
+		if(connection.inDebugMode)
 			console.log('Too late');
 	}
 };

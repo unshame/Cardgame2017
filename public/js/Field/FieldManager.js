@@ -3,10 +3,10 @@
 * Добавляет и удаляет карты из полей, предоставляет методы для работы с полями.  
 * Создает {@link FieldBuilder}, который создает поля и карты.
 * @class
-* @param {Boolean} [isInDebugMode] - Отображать ли дебаг информацию {@link FieldManager#toggleDebugMode}
+* @param {Boolean} [inDebugMode] - Отображать ли дебаг информацию {@link FieldManager#toggleDebugMode}
 */
 
-var FieldManager = function(isInDebugMode){
+var FieldManager = function(inDebugMode){
 
 	/**
 	* Созданы ли поля
@@ -46,7 +46,7 @@ var FieldManager = function(isInDebugMode){
 	* @type {bollean}
 	* @see  FieldManager#toggleDebugMode
 	*/
-	this.isInDebugMode = isInDebugMode;
+	this.inDebugMode = inDebugMode;
 
 	/**
 	* Создает поля для менеджера
@@ -239,9 +239,9 @@ FieldManager.prototype.updateDebug = function(){
 
 /** Переключает режим дебага в каждом поле*/
 FieldManager.prototype.toggleDebugMode = function(){
-	this.isInDebugMode = !this.isInDebugMode;
+	this.inDebugMode = !this.inDebugMode;
 	this.forEachField(function(field, si){
-		if(field.isInDebugMode != this.isInDebugMode)
+		if(field.inDebugMode != this.inDebugMode)
 			field.toggleDebugMode();
 	});
 	if(actionHandler.possibleActions && actionHandler.possibleActions.length)

@@ -3,12 +3,12 @@
 * @class
 */
 
-var Game = function(minWidth, minHeight, speed, isInDebugMode){
+var Game = function(minWidth, minHeight, speed, inDebugMode){
 
 	this.speed = speed || 1;
 	this.minWidth = minWidth || 1024;
 	this.minHeight = minHeight || 768;
-	this.isInDebugMode = isInDebugMode || false;
+	this.inDebugMode = inDebugMode || false;
 	
 	/**
 	* Обработчик действий сервера
@@ -73,7 +73,7 @@ Game.prototype.calculateScreenSize = function(){
 		multWidth = width/minWidth,
 		multHeight = height/minHeight;
 
-	if(this.isInDebugMode){
+	if(this.inDebugMode){
 		console.log(
 			'width:', width,
 			'height:', height
@@ -235,19 +235,19 @@ Game.prototype.addVisibilityChangeListener = function(){
 //Переключение дебага
 Game.prototype.toggleDebugMode = function(){
 
-	this.isInDebugMode = !this.isInDebugMode;
+	this.inDebugMode = !this.inDebugMode;
 
-	if(grid.isInDebugMode != this.isInDebugMode)
+	if(grid.inDebugMode != this.inDebugMode)
 		grid.toggleDebugMode();
 
-	if(cardControl.isInDebugMode != this.isInDebugMode)
+	if(cardControl.inDebugMode != this.inDebugMode)
 		cardControl.toggleDebugMode();
 
-	if(fieldManager.isInDebugMode != this.isInDebugMode)
+	if(fieldManager.inDebugMode != this.inDebugMode)
 		fieldManager.toggleDebugMode();
 
-	if(cardManager.isInDebugMode != this.isInDebugMode)
+	if(cardManager.inDebugMode != this.inDebugMode)
 		cardManager.toggleDebugMode();
 
-	isInDebugMode = this.isInDebugMode;
+	inDebugMode = this.inDebugMode;
 };

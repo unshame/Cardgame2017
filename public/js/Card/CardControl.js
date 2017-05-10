@@ -3,9 +3,9 @@
 * @class
 */
 
-var CardControl = function(isInDebugMode){
+var CardControl = function(inDebugMode){
 
-	this.isInDebugMode = isInDebugMode || false;
+	this.inDebugMode = inDebugMode || false;
 
 	this.card = null;
 	this.pointer = null;
@@ -33,10 +33,10 @@ CardControl.prototype.cardClick = function(card, pointer){
 	if(pointer.button == 1 || pointer.button == 4)
 		console.log(card);
 
-	if(!card.isDraggable || this.card && this.card != card || !this.card && card.field && card.field.uninteractibleTimer)
+	if(!card.draggable || this.card && this.card != card || !this.card && card.field && card.field.uninteractibleTimer)
 		return;
 
-	if(this.isInDebugMode)
+	if(this.inDebugMode)
 		console.log('Card control: Clicked', card.id);
 
 	if(this.card){
@@ -52,7 +52,7 @@ CardControl.prototype.cardUnclick = function(card){
 	if(!this.card || this.card != card)
 		return;
 
-	if(this.isInDebugMode)
+	if(this.inDebugMode)
 		console.log('Card control: Unclicked', card.id);
 
 	if(!this.pointer.withinGame){
@@ -78,7 +78,7 @@ CardControl.prototype.cardPickup = function(card, pointer){
 		return;
 	}
 
-	if(this.isInDebugMode)
+	if(this.inDebugMode)
 		console.log('Card control: Picked up', this.card.id);
 
 	if(this.inertiaHistory.length)
@@ -122,7 +122,7 @@ CardControl.prototype.cardPutDown = function(){
 		return;
 	}
 
-	if(this.isInDebugMode)
+	if(this.inDebugMode)
 		console.log('Card control: Putting down', this.card.id);
 
 	var field = this.cardOnValidField();
@@ -192,7 +192,7 @@ CardControl.prototype.cardReturn = function(){
 		return;
 	}
 
-	if(this.isInDebugMode)
+	if(this.inDebugMode)
 		console.log('Card control: Returning', this.card.id, 'to base');
 
 	this.setTrailResetTimer();
@@ -317,17 +317,17 @@ CardControl.prototype.cardPointerInbound = function(){
 
 //Проверка корректности позиции карты (возащает false или поля)
 CardControl.prototype.cardOnValidField = function(){
-	if(!this.card.isPlayable)
+	if(!this.card.playable)
 		return false;
 
 	var fields = fieldManager.forEachField(function(field, si){
-		if(field.isHighlighted && field.cardIsInside(this.card, false)){
+		if(field.highlighted && field.cardIsInside(this.card, false)){
 			return field;
 		}
 	}, this);
 	if(!fields.length){
 		fields = fieldManager.forEachField(function(field, si){
-			if(field.isHighlighted && field.cardIsInside(this.card, false, true)){
+			if(field.highlighted && field.cardIsInside(this.card, false, true)){
 				return field;
 			}
 		}, this);
@@ -434,7 +434,7 @@ CardControl.prototype.updateCard = function(){
 	}
 
 	//Возвращаем карту по нажатию правой кнопки или если она была перевернута
-	if(this.pointer.rightButton.isDown || !this.card.isDraggable || !this.pointer.withinGame){
+	if(this.pointer.rightButton.isDown || !this.card.draggable || !this.pointer.withinGame){
 		//Если у карты включена физика, кидаем ее, иначе - возвращаем
 		if(this.card.sprite.body)
 			this.cardThrow();
@@ -516,7 +516,7 @@ CardControl.prototype.updateTrail = function(){
 //Ресет модуля
 CardControl.prototype.reset = function(reason){
 
-	if(this.isInDebugMode)
+	if(this.inDebugMode)
 		console.log('Card control: Reset' + (reason ? ': ' + reason : ''));
 
 	this.trailReset(true);
@@ -529,7 +529,7 @@ CardControl.prototype.reset = function(reason){
 
 //Рисует дебаг хвоста
 CardControl.prototype.updateDebug = function(){
-	if(!this.isInDebugMode)
+	if(!this.inDebugMode)
 		return;
 
 	//База хвоста
@@ -579,8 +579,8 @@ CardControl.prototype.updateDebug = function(){
 
 //Переключает дебаг
 CardControl.prototype.toggleDebugMode = function(){
-	this.isInDebugMode = !this.isInDebugMode;
-	if(!this.isInDebugMode){
+	this.inDebugMode = !this.inDebugMode;
+	if(!this.inDebugMode){
 		console.log('Card control: Debug mode OFF');
 		game.debug.reset();
 	}

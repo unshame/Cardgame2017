@@ -46,7 +46,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		direction: 'backward',
 		reversed: true,
 		delayTime: 50,
-		debug: manager.isInDebugMode
+		debug: manager.inDebugMode
 	});
 	manager.cardsToRemove.DECK = [];
 
@@ -67,7 +67,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		addTo: 'back',
 		type: 'DISCARD_PILE',
 		id: 'DISCARD_PILE',
-		debug: manager.isInDebugMode
+		debug: manager.inDebugMode
 	});
 	manager.cardsToRemove.DISCARD_PILE = [];
 
@@ -91,7 +91,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 			type: 'TABLE',
 			id: 'TABLE' + i,
 			specialId: i,
-			debug: manager.isInDebugMode
+			debug: manager.inDebugMode
 		});
 		manager.fields[id] = tableField;
 		manager.table.push(tableField);
@@ -110,7 +110,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		type: 'HAND',
 		id: playerManager.pid,
 		specialId: playerManager.pi,
-		debug: manager.isInDebugMode
+		debug: manager.inDebugMode
 	});
 	manager.cardsToRemove[playerManager.pid] = [];
 
@@ -139,7 +139,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 			id: p.id,
 			name: p.name,
 			specialId: this.dimensions[p.id].specialId,
-			debug: manager.isInDebugMode
+			debug: manager.inDebugMode
 		});
 		manager.cardsToRemove[p.id] = [];
 		oi++;

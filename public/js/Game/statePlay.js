@@ -48,7 +48,7 @@ window.statePlay = {
 		fieldManager.updateDebug();
 		cardManager.updateDebug();
 
-		if(game.isInDebugMode)
+		if(game.inDebugMode)
 			game.debug.text(game.time.fps, 2, 14, "#00ff00");
 	},
 

@@ -16,7 +16,7 @@ var Rope = function(){
 
 	this.startTime = 0;
 	this.duration = 0;
-	this.isBurning = false;
+	this.burning = false;
 	this.maxHeight = game.screenHeight;
 
 };
@@ -29,11 +29,11 @@ Rope.prototype.constructor = Rope;
  */
 Rope.prototype.update = function(){
 	var now = new Date().getTime(),
-		isBurning = false;
-	if(!this.isBurning && this.startTime && this.startTime < now)
-		isBurning = true;
+		burning = false;
+	if(!this.burning && this.startTime && this.startTime < now)
+		burning = true;
 
-	else if(!this.isBurning)
+	else if(!this.burning)
 		return;
 	var endTime = this.duration + this.startTime,
 		left = endTime - now;
@@ -56,11 +56,11 @@ Rope.prototype.start = function(duration, start){
 	if(!duration || isNaN(duration))
 		return false;
 
-	if(this.isBurning)
+	if(this.burning)
 		this.stop();
 
 	var now = new Date().getTime();
-	this.isBurning = true;
+	this.burning = true;
 	this.startTime = start ? (now + start) : now; 
 	this.duration = duration;
 	this.height = this.maxHeight;
@@ -70,7 +70,7 @@ Rope.prototype.start = function(duration, start){
  * Останавливает таймер.
  */
 Rope.prototype.stop = function(){
-	this.isBurning = false;
+	this.burning = false;
 	this.height = 0;
 	this.startTime = 0;
 	this.duration = 0;

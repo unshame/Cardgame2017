@@ -5,7 +5,7 @@
 * @class
 */
 
-var ConnectionManager = function(isInDebugMode){
+var ConnectionManager = function(inDebugMode){
 
 	/**
 	* A nodejs transparent bidirectional RPC.
@@ -27,7 +27,7 @@ var ConnectionManager = function(isInDebugMode){
 	this.on('error', this.handleError.bind(this));
 
 	this.responseTimer = null;
-	this.isInDebugMode = isInDebugMode || false;
+	this.inDebugMode = inDebugMode || false;
 };
 
 ConnectionManager.prototype = Object.create(Eureca.Client.prototype);

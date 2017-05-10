@@ -28,11 +28,11 @@ var Cursor = function(textureName){
 
 	/**
 	* Находится ли курсор внутри окна.
-	* @param Cursor#isInGame
+	* @param Cursor#inGame
 	* @type {boolean}
 	* @default true
 	*/
-	this.isInGame = true;
+	this.inGame = true;
 
 	/**
 	* Инициализирован ли курсор.
@@ -57,25 +57,25 @@ Cursor.prototype.constructor = Cursor;
 
 /**
 * Обновляет позицию и внешний вид курсора.
-* @param  {boolean} [cursorIsInGame=Cursor#isInGame] находится ли уазатель пользователя в окне
+* @param  {boolean} [cursorinGame=Cursor#inGame] находится ли уазатель пользователя в окне
 */
-Cursor.prototype.update = function(cursorIsInGame){
+Cursor.prototype.update = function(cursorinGame){
 
 	if(!Phaser.Device.desktop)
 		return;
 
 	this.initialized = this.unitialized || (game.input.x !== 0 || game.input.y !== 0);
 
-	if(cursorIsInGame !== undefined)
-		this.isInGame = cursorIsInGame;
-	if((!this.isInGame || game.paused || !this.initialized) && this.alive){
+	if(cursorinGame !== undefined)
+		this.inGame = cursorinGame;
+	if((!this.inGame || game.paused || !this.initialized) && this.alive){
 		this.kill();
 		game.canvas.style.cursor = "default";
 	}
-	else if(this.isInGame && !game.paused && this.initialized && !this.alive){
+	else if(this.inGame && !game.paused && this.initialized && !this.alive){
 		this.reset();
 	}
-	if(!this.isInGame || game.paused || !this.initialized)
+	if(!this.inGame || game.paused || !this.initialized)
 		return;
 
 	game.canvas.style.cursor = "none";
