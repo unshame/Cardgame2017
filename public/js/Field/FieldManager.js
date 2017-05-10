@@ -126,7 +126,7 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, noDelay){
 			}
 		}
 		else{
-			console.error('Field Manager: Card', cid, 'not found');
+			console.error('Field manager: Card', cid, 'not found');
 		}
 	}
 	return field.addCards(cardsToPlace, noDelay);

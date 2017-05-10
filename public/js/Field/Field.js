@@ -495,6 +495,7 @@ Field.prototype.addCards = function(newCards, noDelay){
 	else{
 		this._appendCards(newCards);
 		this._sortCards();
+		this.setUninteractibleTimer(newCards.length * this.delayTime);
 		return this.placeCards(newCards, BRING_TO_TOP_ON.START, noDelay);
 	}
 };

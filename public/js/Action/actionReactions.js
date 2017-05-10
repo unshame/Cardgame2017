@@ -159,7 +159,7 @@ window.actionReactions = {
 			});
 		}
 		var field = fieldManager.fields[action.pid];
-		delay = fieldManager.moveCards(field, cards, true);
+		delay = fieldManager.moveCards(field, cards);
 		return delay;
 	},
 
