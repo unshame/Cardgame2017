@@ -1,61 +1,51 @@
-# Cardgame2017
+Развернул тестовую версию на хостинге - [durak.herokuapp.com](https://durak.herokuapp.com/).
 
-Развернул тестовую версию на хостинге - https://durak.herokuapp.com/
+## Установка  
 
-## Установка
-1. Зарегистрироваться на сайте и скинуть мне название аккаунта     
-1. Установить GitHub Desktop https://desktop.github.com/  
-2. Авторизоваться в нем
-2. Клонировать репозиторий в GitShell (идет с GitHub Desktop): git clone https://github.com/unshame/Cardgame2017.git  
-3. Установить node.js https://nodejs.org/en/  
+2. Клонировать `git clone https://github.com/unshame/Cardgame2017.git`    
+3. Установить [node.js](https://nodejs.org/en/)     
 4. Установить необходимые библиотеки через Node.js command prompt в папку с репозиторием:  
-  * cd директорияУстановкиРепозитория  
-  * npm i
+    * `cd директорияУстановкиРепозитория`  
+    * `npm i`  
 5. Запустуть сервер через Node.js command prompt: 
-  * node server.js  
-7. В браузере открыть localhost:5000
+    * `node server`    
+7. В браузере открыть `localhost:5000`  
 8. Должно быть так:   
-![Test](https://i.imgur.com/ywqZVu5.png  "Test")  
+![Test](https://i.imgur.com/U5ECBIX.png  "Test")  
 И если нажать F12:  
 ![DevConsole](https://i.imgur.com/HyQXwbl.png "F12 Developer Console")  
-  
-## Полезные команды в консоли:  
-* isInDebugMode = true - включает лог сообщений от сервера (см. картинку выше)  
-* controller.toggleDebugMode() - переключает дебаг при перетаскивании карт  
-* spotManager.toggleDebugMode() - переключает дебаг полей карт
-* Средний клик на карте, потом в консоли Chrome правый клик на появившейся строчке -> Store as global var, чтобы получить прямой доступ к карте
+9. `npm run setupDev` установит глобальные модули для герерации отчетов по коду и документации (см. ниже).
 
-## Скины:  
-* skinManager.setSkin('modern') - по дефолту
-* skinManager.setSkin('classic') - "классический" скин
-* skinManager.setSkin('familiar') - лучше даже не пробовать
+## Полезные команды в консоли  
+* `connection.isInDebugMode = true` - включает лог сообщений от сервера (как показано выше) 
+* `cardControl.toggleDebugMode()` - переключает дебаг при перетаскивании карт  
+* `fieldmanager.toggleDebugMode()` - переключает дебаг полей карт
+* `cardManager.toggleDebugMode()` - дебаг карт
+* `grid.toggleDebugMode()` - дебаг сетки
+* `game.toggleDebugMode()` или кнопка Debug - дебаг всего
+* Средний клик на карте, потом в консоли Chrome правый клик на появившейся строчке -> `Store as global var`, чтобы получить прямой доступ к карте
 
-## Что сделано clientside:  
-* Конструктор карт (Card)  
-* Конструктор полей карт (Spot)  
-* Частично контроллер (Controller)
-* Частично менеджер полей (SpotManager)  
-* Частично менеджер скинов (SkinManager)  
+## Скины  
+`skinManager.setSkin(skinName)`  
+skinName: `modern`, `classic`, `familiar`, `abstract`, `uno`.
 
-## Что нужно сделать clientside:  
-* AppManager  
-* ConnectionManager
+## Документация  
+`npm run makeDoc` генерирует документацию из комментариев в папке doc при помощи [JSDoc](http://usejsdoc.org/).
+Тестовая версия загружена на [durak.heroku.com/doc/client/](https://durak.heroku.com/doc/client/).
+
+## Валидация кода  
+`npm run report` создает отчеты по коду в папке report при помощи [plato](https://github.com/es-analysis/plato). Там можно посмотреть ошибки линтинга и сложность кода.  
+
+## Что нужно сделать clientside  
+* Доделать все существующие модули  
 * LobbyManager  
-* GameManager  
-* UI  
-* Chat  
+* UI   
+* Документация  
 
-## Диаграмма устройства сервера
-![Server UML](https://rawgit.com/unshame/Cardgame2017/master/docs/ServerUML.svg)
-
-## Что сделано serverside:  
-* Конструктор игры (Game)  
-
-## Что нужно сделать serverside:
+## Что нужно сделать serverside  
+* Доделать существующие модули 
 * Конструктор лобби (Lobby)  
 * Менеджер лобби (LobbyManager\LobbyBrowser)  
-* Менеджер сервера и соединения с игроками (Server)  
-* Конструктор чата (Chat)  
 
 ## P.S.
 Я у себя локально мерджнул проект с базовым репозиторием для разворота приложения на heroku.com, а потом оказалось, что тот репозиторий копировался вместе со всеми коммитами. Из-за этого тут теперь коммиты с 2012 года.
