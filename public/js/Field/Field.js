@@ -1027,16 +1027,14 @@ Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){
 		addY = skinManager.skin.height/2;
 	}
 
-	if(
-		!card ||
-		card.base.x + card.sprite.x < this.base.x + this.margin - spacing - addX ||
-		card.base.x + card.sprite.x > this.base.x + this.area.width - this.margin + spacing + addX ||
-		card.base.y + card.sprite.y < this.base.y + this.margin - addY ||
-		card.base.y + card.sprite.y > this.base.y + this.area.height - this.margin + addY
-	)
-		return false;
-	else
-		return true;
+	return card && Phaser.Rectangle.containsRaw(
+		this.base.x + this.margin - spacing - addX,
+		this.base.y + this.margin - addY,
+		this.area.width,
+		this.area.height,
+		card.base.x + card.sprite.x,
+		card.base.y + card.sprite.y
+	);
 };
 
 
