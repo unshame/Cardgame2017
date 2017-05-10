@@ -58,8 +58,7 @@ class GamePlayers extends GamePlayersBase{
 			p.recieveGameInfo(
 				send.cards && cardsToSend[pid],
 				send.players && playersToSend,
-				send.suit && game.cards.trumpSuit,
-				send.discard && game.discardPile.length
+				send.suit && game.cards.trumpSuit
 			);
 		}	
 
@@ -74,8 +73,7 @@ class GamePlayers extends GamePlayersBase{
 		this.gameStateNotify([player], {
 			cards: true,
 			players: true,
-			suit: true,
-			discard: true
+			suit: true
 		});
 	}
 

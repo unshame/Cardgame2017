@@ -36,8 +36,7 @@ class GameStates{
 				{
 					cards: true,
 					players: true,
-					suit: false,
-					discard: false
+					suit: false
 				}
 			);
 	}

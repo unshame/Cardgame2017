@@ -92,27 +92,36 @@ class GameCards extends BetterArray{
 					cardsToSend[pid].push(newCard);
 				}		
 			});
+
+			//Сброс
+			this.discardPile.forEach((c) => {
+				let newCard = c.info;
+				newCard.suit = null;
+				newCard.value = null;
+				cardsToSend[pid].push(newCard);
+			});
 		});
 
 		return cardsToSend;
 	}
 
 	//Обнуляет карты
-	reset(){
+	reset(soft){
 
 		//Убираем уже существующие карты
-		this.length = 0;
+		if(!soft)
+			this.length = 0;
 
-		//Колода (id карт)
+		//Колода
 		this.deck = new BetterArray();
 		
-		//Стопка сброса (id карт)
+		//Стопка сброса
 		this.discardPile = [];
 		
 		//Руки игроков (объекты с id карт по id игроков)		
 		this.hands = {};			
 
-		//Поля (стол) (объекты с id карт)
+		//Поля (стол)
 		this.table.length = 0;
 		this.table.length = this.table.maxLength;		
 		this.table.fullLength = this.table.zeroDiscardLength;
@@ -131,23 +140,26 @@ class GameCards extends BetterArray{
 	make(){
 		const game = this.game;
 
-		//Значения карт
-		this.values = [];
+		if(!this.length){
 
-		//Задаем количество карт и минимальное значение карты
-		if(game.players.length > 3){
-			this.lowestValue = 2;
-			this.numOfCards = 52;
-		}
-		else{
-			this.lowestValue = 6;
-			this.numOfCards = 36;
-		}
+			//Значения карт
+			this.values = [];
+		
+			//Задаем количество карт и минимальное значение карты
+			if(game.players.length > 3){
+				this.lowestValue = 2;
+				this.numOfCards = 52;
+			}
+			else{
+				this.lowestValue = 6;
+				this.numOfCards = 36;
+			}
 
-		//Задаем значения карт
-		for (let i = this.lowestValue; i <= this.maxValue; i++) {
-			this.values.push(i);
-		}	
+			//Задаем значения карт
+			for (let i = this.lowestValue; i <= this.maxValue; i++) {
+				this.values.push(i);
+			}	
+		}
 
 		//Создаем руки
 		game.players.forEach((p) => {
@@ -155,7 +167,13 @@ class GameCards extends BetterArray{
 		});
 
 		//Создаем колоду
-		this.makeDeck();
+		if(!this.length)
+			this.makeDeck();
+		else
+			this.shuffle();
+
+		//Запоминаем козырь
+		this.findTrumpCard();
 
 		//Добавляем указатели на элементы игре
 		game.deck = this.deck;
@@ -177,8 +195,25 @@ class GameCards extends BetterArray{
 		});
 
 		//Перемешиваем колоду
+		this.deck.shuffle();		
+	}
+
+	shuffle(){
+
+		this.forEach((c) => {
+			c.field = 'DECK';
+			this.deck.push(c);
+		});
+
+		//Перемешиваем колоду
 		this.deck.shuffle();
-		
+
+		//Перемешиваем id карт
+		this.shuffleKey('id');
+	}
+
+	//Находит козырную карту
+	findTrumpCard(){
 		//Находим первый попавшийся не туз и кладем его на дно колоды, это наш козырь
 		for(let ci = 0; ci < this.deck.length; ci++){
 

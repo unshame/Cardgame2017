@@ -29,6 +29,22 @@ class BetterArray extends Array{
 		}
 	}
 
+	shuffleKey(key){
+		let currentIndex = this.length,
+			temporaryValue,
+			randomIndex;
+
+		while (0 !== currentIndex) {
+
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex -= 1;
+
+			temporaryValue = this[currentIndex][key];
+			this[currentIndex][key] = this[randomIndex][key];
+			this[randomIndex][key] = temporaryValue;
+		}
+	}
+
 	//Возвращает объект по значениям переданного ключа
 	//Пропускает элементы без заданных ключей и с пустыми ключами
 	byKey(key){

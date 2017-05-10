@@ -97,7 +97,7 @@ class Game{
 		this.players.resetGame();
 
 		//Ресет карт
-		this.cards.reset();
+		this.cards.reset(true);
 
 		//Счетчик пропущенных ходов
 		this.skipCounter = 0;
@@ -212,6 +212,8 @@ class Game{
 		);
 		utils.stats.line += 2;
 
+
+
 		for(let pi = 0; pi < this.players.length; pi++){
 			let p = this.players[pi];
 			let pid = p.id;
@@ -223,6 +225,13 @@ class Game{
 		//Увеличиваем счетчик ходов, меняем стадию игры на первую атаку и продолжаем ход
 		this.turnNumber++;	
 
+		this.players.notify({
+			message: 'TURN_STARTED',
+			attacker: this.players.attacker.id,
+			defender: this.players.defender.id,
+			ally: this.players.ally ? this.players.ally.id : null,
+			turn: this.turnNumber
+		});
 		this.setNextTurnStage('INITIAL_ATTACK');	
 		this.continue();
 	}

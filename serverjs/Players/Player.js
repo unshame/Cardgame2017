@@ -29,7 +29,7 @@ class Player{
 			this.sendInstantResponse();
 	}
 
-	recieveGameInfo(cards, players, trumpSuit, numDiscarded){
+	recieveGameInfo(cards, players, trumpSuit){
 		let action = {
 			type: 'GAME_INFO',
 			cards: cards || [],
@@ -38,8 +38,6 @@ class Player{
 		if(trumpSuit || trumpSuit === 0)
 			action.trumpSuit = trumpSuit;
 
-		if(numDiscarded || numDiscarded === 0)
-			action.numDiscarded = numDiscarded;	
 		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
 		else if(!this.connected)
