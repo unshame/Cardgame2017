@@ -116,3 +116,43 @@ Phaser.Particles.Arcade.Emitter.prototype.emitParticle = function (x, y, key, fr
     return true;
 
 };
+
+//disableVisibilityChange = true по умолчанию
+var PhaserStage = Phaser.Stage.prototype;
+Phaser.Stage = function (game) {
+
+    this.game = game;
+
+    PIXI.DisplayObjectContainer.call(this);
+
+    this.name = '_stage_root';
+
+    this.disableVisibilityChange = true;
+
+    this.exists = true;
+
+    this.worldTransform = new PIXI.Matrix();
+
+    this.stage = this;
+
+    this.currentRenderOrderID = 0;
+
+    this._hiddenVar = 'hidden';
+
+    this._onChange = null;
+
+    this._bgColor = { r: 0, g: 0, b: 0, a: 0, color: 0, rgba: '#000000' };
+
+    if (!this.game.transparent)
+    {
+        this._bgColor.a = 1;
+    }
+
+    if (game.config)
+    {
+        this.parseConfig(game.config);
+    }
+
+};
+
+Phaser.Stage.prototype = PhaserStage;
