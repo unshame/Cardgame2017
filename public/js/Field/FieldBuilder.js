@@ -98,6 +98,18 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		manager.cardsToRemove[id] = [];
 	}
 
+	manager.fields['dummy'] = new Field({
+		x: this.positions.dummy.x,
+		y: this.positions.dummy.y,
+		width: this.dimensions.dummy.width,
+		height: this.dimensions.dummy.height,
+		margin: this.offsets.dummy,
+		type: 'dummy',
+		id: 'dummy',
+		debug: manager.inDebugMode
+	});
+	manager.cardsToRemove['dummy'] = [];
+
 	//Player hand
 	manager.fields[playerManager.pid] = new Field({
 		x:this.positions[playerManager.pid].x,
@@ -164,8 +176,9 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 	//Отступы
 	this.offsets = {
 		DECK: 22,					//Колода		
-		DISCARD_PILE: 22,			//Стопка сброса		
+		DISCARD_PILE: 22,			//Стопка сброса	
 		player: 10,				//Поле игрока пока не известен id игрока
+		dummy: 4,	
 		table: 4,				//Первое поле на столе		
 		opponent: [10, 10, 10]	//Первые поля соперника
 	};
@@ -217,8 +230,8 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 		extraSpace = (tableCells* grid.cellWidth)/this.tableOrder.length - minTableSpace,
 		tableWidth;
 	if(extraSpace > 0){
-		this.offsets.table = extraSpace/4;
-		this.tableOffset = extraSpace/2;
+		this.offsets.table = this.offsets.dummy = extraSpace/4;
+		this.tableOffset = tableOffset = extraSpace/2;
 		tableWidth = (tableCells* grid.cellWidth - extraSpace/2* (this.tableOrder.length - 1)) / this.tableOrder.length;
 	}
 	else{
@@ -243,8 +256,13 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 		},
 
 		table: {
-			width: tableWidth
-			//height:
+			width: tableWidth,
+			height: (grid.density + 1) * grid.cellHeight
+		},
+
+		dummy: {
+			width: tableWidth*this.tableOrder.length + this.offsets.table*2*(this.tableOrder.length-1),
+			height: (grid.density + 1) * grid.cellHeight
 		},
 
 		//Размер первого поля соперника
@@ -286,7 +304,7 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 		),
 		table: grid.at(
 			this.opponentPlacement[0] ? 1 + grid.density : 1,
-			halfRows,
+			halfRows - 1,
 			-this.offsets.table,
 			-this.offsets.table,
 			'middle left'
@@ -312,6 +330,7 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 			),
 		]
 	};
+	this.positions.dummy = this.positions.table;
 
 	//Выравниваем некоторые поля по левому краю
 	this.positions.DECK.x -= skinManager.skin.height;
@@ -333,7 +352,7 @@ FieldBuilder.prototype._calculateSpecificSizes = function(){
 
 		this.positions[id] = {x: x, y: y};
 		this.offsets[id] = this.offsets.table;
-		this.dimensions[id] = {width: width};		
+		this.dimensions[id] = {width: width, height: this.dimensions.table.height};		
 		this._notEnoughSpace(id, 'table');
 	}
 

@@ -197,6 +197,22 @@ FieldManager.prototype.placeQueuedCards = function(){
 	});
 };
 
+FieldManager.prototype.checkCompleteHighlight = function(){
+	var color = null;
+	for(var fid in this.table){
+		if(!this.table.hasOwnProperty(fid))
+			continue;
+		var f = this.table[fid];
+		if(!f.highlighted){
+			return;
+		}
+	}
+	this.forEachField(function(f){
+		f.setVisibility(false);
+	});
+	this.fields.dummy.setHighlight(true, ui.colors.orange)
+};
+
 /** Меняет размеры и устанавливает позицию полей в соотстветсвии с 
 * {@link FieldBuilder#positions} и {@link FieldBuilder#dimensions}
 */

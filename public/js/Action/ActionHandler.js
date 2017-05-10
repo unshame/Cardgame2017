@@ -112,12 +112,13 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai],
-			tint = action.type == 'ATTACK' ? ui.colors.green : ui.colors.orange;
+			tint = ui.colors.orange;
 		if(action.cid && game.cards[action.cid]){
 			game.cards[action.cid].setPlayability(true, tint);
 			fieldManager.fields[action.field].setHighlight(true, tint, action.linkedField);
 		}
 	}
+	fieldManager.checkCompleteHighlight();
 };
 
 ActionHandler.prototype.executeTimedAction = function(){

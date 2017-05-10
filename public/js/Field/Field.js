@@ -221,8 +221,8 @@ Field.prototype.resize = function(width, height, shouldPlace){
 		}
 	}
 
-	this.area.width = width + this.margin*2,
-	this.area.height = height + this.margin*2;
+	this.area.width = Math.round(width + this.margin*2),
+	this.area.height = Math.round(height + this.margin*2);
 	
 	if(this.curved){
 		this._createCircle(this.area.width, this.area.height);
@@ -262,8 +262,8 @@ Field.prototype._createCircle = function(width, height){
 	this.circle.clear();		
 
 	this.circle.alpha = this.alpha;	
-	this.circle.lineStyle(4, ui.colors.lightBlue, 1);
-	this.circle.beginFill(ui.colors.lightBlue, 1);
+	this.circle.lineStyle(4, ui.colors.white, 1);
+	this.circle.beginFill(ui.colors.white, 1);
 
 	var cos = (total - extra + this.base.x + this.area.height) / 2 / radius,
 		angle1 = Math.acos(cos),
@@ -313,18 +313,22 @@ Field.prototype.setPlayability = function(playable){
 * Устанавливает подсветку поля. По умолчанию зависит от того,
 * включен ли дебаг поля.
 * @param {boolean} [on=Field#inDebugMode] подствечивать ли поле
-* @param {number} [tint=ui.colors.white]    цвет подсветки
+* @param {number} [tint=ui.colors.lightBlue]    цвет подсветки
 * @param {string} [linkedFieldId=null]      связанное поле, используется `{@link cardControl#cardMoveToField}`
 */
 Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 	var plane = this.curved ? this.circle : this.area;
-	if(!this.curved)
-		plane.visible = (on || this.inDebugMode) ? true : false;
-	plane.tint = on ? (tint || ui.colors.orange) : ui.colors.white;
+	this.setVisibility(on);
+	plane.tint = on ? (tint || ui.colors.orange) : ui.colors.lightBlue;
 	this.linkedField = fieldManager.fields[linkedFieldId] || null;
-	plane.alpha = on ? 0.55 : this.alpha;
+	plane.alpha = on ? 0.35 : this.alpha;
 	this.highlighted = on;
 };
+
+Field.prototype.setVisibility = function(visible){
+	var plane = this.curved ? this.circle : this.area;
+	plane.visible = visible || this.inDebugMode || this.curved;
+}
 
 //СОРТИРОВКА
 
@@ -948,6 +952,7 @@ Field.prototype.removeCards = function(cardsToRemove){
 				this.focusedCard = null;
 			this.cards.splice(i, 1);
 			card.field = null;
+			card.fieldId = null;
 			this.angles[card.id] = null;
 		}
 	}
