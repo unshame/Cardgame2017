@@ -53,7 +53,6 @@ CardManager.prototype.reset = function(){
 	for(var cid in this.cards){
 		if(this.cards.hasOwnProperty(cid)){
 			this.cards[cid].destroy();
-			delete this.cards[cid];
 		}
 	}
 };

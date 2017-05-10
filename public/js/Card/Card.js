@@ -921,6 +921,7 @@ Card.prototype.destroy = function() {
 		scaleTween = game.add.tween(this.sprite.scale);
 	if(cardControl.card == this)
 		cardControl.reset();
+	delete cardManager.cards[this.id];
 	this.setDraggability(false);
 	this.setPlayability(false);
 	if(this.mover)
@@ -937,7 +938,6 @@ Card.prototype.destroy = function() {
 	alphaTween.onComplete.addOnce(function(){
 		this.base.removeAll(true);
 		this.base.destroy();
-		delete cardManager.cards[this.id];
 	}, this);
 };
 

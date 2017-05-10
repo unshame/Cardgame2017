@@ -180,6 +180,8 @@ CardControl.prototype.cardMoveToField = function(newField){
 		field.setPlayability(false);
 	}
 	card.setPlayability(false);
+
+	actionHandler.possibleActions = null;
 };
 
 //Возвращает карту на базу
@@ -222,7 +224,7 @@ CardControl.prototype.cardThrow = function(){
 		curTime = game.time.time;
 
 	//Находим среднюю скорость перемещения карты
-	this._savEinertia(curTime, 100);
+	this._saveInertia(curTime, 100);
 	for(var i = 0; i < this.inertiaHistory.length; i++){
 		counted++;
 		dx += this.inertiaHistory[i][1];
@@ -268,7 +270,7 @@ CardControl.prototype.cardThrow = function(){
 * @param  {number} maxTime позиции, запомненные больше этого времени назад, будут удалены
 * @see {@link https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53|Источник кода}
 */
-CardControl.prototype._savEinertia = function(curTime, maxTime){
+CardControl.prototype._saveInertia = function(curTime, maxTime){
 	var curX = this.card.sprite.x,
 		curY = this.card.sprite.y,
 		distance = {
@@ -479,7 +481,7 @@ CardControl.prototype.updateCardAngle = function(curTime){
 
 	var maxAngle = this.cardMaxMoveAngle;
 
-	this._savEinertia(curTime, 300);
+	this._saveInertia(curTime, 300);
 	
 	//Вычисляем угол из средней длины вектора инерции
 	var totalDistance = 0;
