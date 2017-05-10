@@ -19,7 +19,7 @@ var UI = function(){
 		orange: 0xFF8300,
 		green: 0x68C655,
 		red: 0xC93F3F,
-		white: 0xFFFFFF
+		white: 0xFeFeFe
 	};
 
 	/*
