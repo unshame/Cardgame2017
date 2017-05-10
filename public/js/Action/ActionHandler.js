@@ -25,6 +25,7 @@ ActionHandler.prototype.executeAction = function(action){
 
 	if(action.type == 'GAME_INFO' && action.players.length){
 		playerManager.savePlayers(action.players);
+		cardManager.disablePhysics();
 		fieldManager.resetNetwork();
 		fieldManager.builder.createFieldNetwork();
 		action.type = 'CARDS';
@@ -133,14 +134,14 @@ ActionHandler.prototype.executeTimedAction = function(){
 		this.timedAction = this.timedActionTimeout = null;
 };
 
-ActionHandler.prototype.setTimedAction = function(callback, context, delay){
+ActionHandler.prototype.setTimedAction = function(callback, delay, context, args){
 	this.executeTimedAction();
 
 	//console.log('action set')
 
 	this.timedAction = function(){
 		//console.log('action executed')
-		callback.call(context);
+		callback.apply(context, args || []);
 		this.timedAction = this.timedActionTimeout = null;
 	};
 

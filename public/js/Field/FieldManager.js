@@ -67,7 +67,7 @@ var FieldManager = function(inDebugMode){
 * @param {number} 		[cardsInfo.value=0]	- значение карты
 * @return {number} Время до начала движения последней перемещаемой карты
 */
-FieldManager.prototype.queueCards = function(cardsInfo){
+FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
 
 	var delay = 0;
 	for(var ci = 0; ci < cardsInfo.length; ci++){
@@ -87,7 +87,7 @@ FieldManager.prototype.queueCards = function(cardsInfo){
 			var fieldId = card.fieldId;
 			if(fieldId == 'BOTTOM')
 				fieldId = 'DECK';
-			delay = this.fields[fieldId].queueCards([card], delay);
+			delay = this.fields[fieldId].queueCards([card], noDelay ? 0 : delay);
 		}
 		else{
 			console.warn('Field manager: Card', c.cid, 'already on field', (c.field || c.pid));
@@ -132,6 +132,61 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, noDelay){
 	return field.addCards(cardsToPlace, noDelay);
 };
 
+FieldManager.prototype.showTrumpCards = function(cards, pid){
+	
+	//Показываем козырные карты
+	for(var ci = 0; ci < cards.length; ci++){
+		var c = cards[ci];
+		card = game.cards[c.cid];
+
+		if(!card){
+			console.error('Action handler: Card', c.cid, 'not found');
+			continue;
+		}
+
+		if(pid != c.pid)
+			this.fields[c.pid].setHighlight(true, ui.colors.red);
+
+		card.raised = true;
+
+		if(card.field.id != playerManager.pid){	
+			card.presetValue(c.suit, c.value);	
+		}
+		card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);
+	}		
+
+	//Выделяем поле игрока с наибольшим козырем
+	this.fields[pid].setHighlight(true, ui.colors.green);
+
+	var delay = 3000/game.speed;
+	actionHandler.setTimedAction(this.hideTrumpCards, delay, this, [cards]);
+	return delay + 500;
+};
+
+//Прячем козырные карты
+FieldManager.prototype.hideTrumpCards = function(cards){
+	if(!cards || !cards.length)
+		return;
+		
+	for(var ci = 0; ci < cards.length; ci++){
+		var c = cards[ci];
+		card = game.cards[c.cid];	
+
+		if(!card){
+			console.error('Action handler: Card', c.cid, 'not found');
+			continue;
+		}
+
+		this.fields[c.pid].setHighlight(false);		
+
+		card.raised = false;
+
+		if(card.field.id != playerManager.pid){					
+			card.presetValue(null, null);
+		}
+		card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);
+	}			
+}
 
 //FOR EACH FIELD
 

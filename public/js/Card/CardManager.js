@@ -12,6 +12,7 @@ var CardManager = function(inDebugMode){
 	this.cards = {};
 	this.cardsGroup = game.add.group();
 	this.cardsGroup.name = 'cards';
+	this.physicsEnabled = false;
 	game.cards = this.cards;
 	game.cardsGroup = this.cardsGroup;
 	this.emitter = game.add.emitter(game.world.centerX, -skinManager.skin.height, 100);
@@ -106,7 +107,42 @@ CardManager.prototype.forceSetValues = function(){
 			card.setValue(card.suit, card.value, false);
 		}
 	}
+};
 
+CardManager.prototype.enablePhysics = function(makeDraggable){
+
+	//Ставим стопку сброса по центру экрана (for fun)
+	var position = grid.at(4, Math.floor(grid.numRows/2)-1, 0, 0, 'middle left'),
+		field = fieldManager.fields.DISCARD_PILE;
+	field.axis = 'horizontal';
+	field.direction = 'forward';
+	field.forcedSpace = false;
+	field.resize((grid.numCols-8)*grid.cellWidth)
+	field.setBase(position.x, position.y, true);
+
+	for(var cid in this.cards){
+		if(!this.cards.hasOwnProperty(cid))
+			continue;
+		var card = this.cards[cid];
+		if(makeDraggable)
+			card.setDraggability(true);
+		else
+			card.setDraggability(false);
+		game.physics.arcade.enable(card.sprite);
+	}
+	this.physicsEnabled = true;
+};
+
+CardManager.prototype.disablePhysics = function(){
+
+	for(var cid in this.cards){
+		if(!this.cards.hasOwnProperty(cid))
+			continue;
+		var card = this.cards[cid];
+		if(card.sprite.body)
+			card.sprite.body.destroy()
+	}
+	this.physicsEnabled = false;
 };
 
 CardManager.prototype.update = function(){
@@ -208,26 +244,3 @@ CardManager.prototype.getCard = function(except){
 		card = null;
 	return card;
 };
-
-CardManager.prototype.enablePhysics = function(makeDraggable){
-
-	//Ставим стопку сброса по центру экрана (for fun)
-	var position = grid.at(4, Math.floor(grid.numRows/2)-1, 0, 0, 'middle left'),
-		field = fieldManager.fields.DISCARD_PILE;
-	field.axis = 'horizontal';
-	field.direction = 'forward';
-	field.forcedSpace = false;
-	field.resize((grid.numCols-8)*grid.cellWidth)
-	field.setBase(position.x, position.y, true);
-
-	for(var cid in this.cards){
-		if(!this.cards.hasOwnProperty(cid))
-			continue;
-		var card = this.cards[cid];
-		if(makeDraggable)
-			card.setDraggability(true);
-		else
-			card.setDraggability(false);
-		game.physics.arcade.enable(card.sprite);
-	}
-}

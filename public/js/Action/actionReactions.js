@@ -18,64 +18,11 @@ window.actionReactions = {
 	* @memberof actionReactions
 	*/
 	TRUMP_CARDS: function(action){
-		var delay = 0, card;
 		if(!action.cards || !action.cards.length)
-			return 0;
+			return 0;		
 
-		delay = 3000/game.speed;
-
-		//Показываем козырные карты
-		for(var ci = 0; ci < action.cards.length; ci++){
-			var c = action.cards[ci];
-			card = game.cards[c.cid];
-
-			if(!card){
-				console.error('Action handler: Card', c.cid, 'not found');
-				continue;
-			}
-
-			if(action.pid != c.pid)
-				fieldManager.fields[c.pid].setHighlight(true, ui.colors.red);
-
-			card.raised = true;
-
-			if(card.field.id != playerManager.pid){	
-				card.presetValue(c.suit, c.value);	
-			}
-			card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);
-		}		
-
-		//Выделяем поле игрока с наибольшим козырем
-		fieldManager.fields[action.pid].setHighlight(true, ui.colors.green);
-
-		//Прячем козырные карты
-		function hideTrumpCards(){
-			if(!action.cards || !action.cards.length)
-				return;
-			
-			var cards = this.action.cards;			
-			for(var ci = 0; ci < cards.length; ci++){
-				var c = cards[ci];
-				card = game.cards[c.cid];	
-
-				if(!card){
-					console.error('Action handler: Card', c.cid, 'not found');
-					continue;
-				}
-
-				fieldManager.fields[c.pid].setHighlight(false);		
-
-				card.raised = false;
-
-				if(card.field.id != playerManager.pid){					
-					card.presetValue(null, null);
-				}
-				card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);
-			}			
-		}
-		this.setTimedAction(hideTrumpCards, this, delay);
-
-		delay += 500;
+		var delay = fieldManager.showTrumpCards(action.cards.slice(), action.pid);
+		
 		return delay;
 	},
 
@@ -96,24 +43,11 @@ window.actionReactions = {
 
 		fieldManager.resetFields();
 		cardControl.reset();
-		cardManager.reset();
 		cardManager.createCards(action.cards);
 
-		var delay = fieldManager.queueCards(action.cards);
+		var delay = fieldManager.queueCards(action.cards, action.trumpSuit ? true : false);
 		fieldManager.removeMarkedCards();
 		fieldManager.placeQueuedCards();
-		if(action.numDiscarded){
-			var discardCards = [];
-			for (var i = 0; i < action.numDiscarded; i++) {
-				var id = 'discarded_'+i;
-				var options = {
-					id: id
-				};
-				cardManager.addCard(options);
-				discardCards.push(game.cards[id]);
-			}
-			fieldManager.fields.DISCARD_PILE.addCards(discardCards);
-		}
 		return delay;
 	},
 
@@ -150,16 +84,8 @@ window.actionReactions = {
 		var delay = 0;
 		if(!action.cards)
 			return delay;
-		var cards = [];
-		for(var i = 0; i < action.cards.length; i++){
-			cards.push({
-				cid: action.cards[i].cid,
-				suit: action.cards[i].suit,
-				value: action.cards[i].value
-			});
-		}
 		var field = fieldManager.fields[action.pid];
-		delay = fieldManager.moveCards(field, cards);
+		delay = fieldManager.moveCards(field, action.cards.slice());
 		return delay;
 	},
 

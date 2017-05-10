@@ -128,7 +128,7 @@ CardControl.prototype.cardPutDown = function(){
 	var field = this.cardOnValidField();
 
 	//У карты включена физика, бросаем ее
-	if(this.card.sprite.body){
+	if(cardManager.physicsEnabled && this.card.sprite.body){
 		this.cardThrow();
 	}
 	//Карта находится над валидным полем, перемещаем ее
@@ -436,7 +436,7 @@ CardControl.prototype.updateCard = function(){
 	//Возвращаем карту по нажатию правой кнопки или если она была перевернута
 	if(this.pointer.rightButton.isDown || !this.card.draggable || !this.pointer.withinGame){
 		//Если у карты включена физика, кидаем ее, иначе - возвращаем
-		if(this.card.sprite.body)
+		if(cardManager.physicsEnabled && this.card.sprite.body)
 			this.cardThrow();
 		else
 			this.cardReturn();
