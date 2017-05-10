@@ -592,7 +592,7 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 
 	//Проверяем и останавливаем текущий мувер
 	if(this.mover){
-		time = this._tryResetMover();
+		time = this._tryResetMover(x, y, time, delay, shouldRebase);
 		if(time < 0) return;
 	}
 
