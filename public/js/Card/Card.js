@@ -957,13 +957,23 @@ Card.prototype.destroy = function() {
 		this.flipper.stop();
 	if(this.field)
 		this.field.removeCard(this);
-	alphaTween.to({alpha: 0}, time, Phaser.Easing.Linear.None, true);
-	scaleTween.to({x: 0.6, y: 0.6}, time, Phaser.Easing.Linear.None, true);
 
-	alphaTween.onComplete.addOnce(function(){
-		this.base.removeAll(true);
-		this.base.destroy();
-	}, this);
+	if(game.paused){
+		this._destroyNow();
+	}
+	else{
+		alphaTween.to({alpha: 0}, time, Phaser.Easing.Linear.None, true);
+		scaleTween.to({x: 0.6, y: 0.6}, time, Phaser.Easing.Linear.None, true);
+		alphaTween.onComplete.addOnce(this.destroyNow, this);
+	}
+};
+
+/**
+ * Удаляет карту из игры сразу.
+ */
+Card.prototype._destroyNow = function() {
+	this.base.removeAll(true);
+	this.base.destroy();
 };
 
 /**
