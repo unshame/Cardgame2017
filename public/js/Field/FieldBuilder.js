@@ -237,7 +237,7 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 
 		//Поле игрока пока не известен id игрока
 		player: {
-			width: (grid.numCols - 2)*grid.cellWidth,
+			width: (grid.numCols - 8)*grid.cellWidth,
 			//height: 
 		},
 
@@ -278,8 +278,8 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 			-this.offsets.DISCARD_PILE
 		),
 		player: grid.at(
-			1,
-			grid.numRows - grid.density - 1,
+			4,
+			grid.numRows - grid.density + 1,
 			-this.offsets.player,
 			-this.offsets.player
 		),
