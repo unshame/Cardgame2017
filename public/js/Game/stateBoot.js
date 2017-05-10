@@ -21,6 +21,9 @@ window.stateBoot = {
 	* @memberof stateBoot
 	*/
 	preload: function(){
+
+		console.log('Preloading');
+
 		//Фон
 		game.load.image('wood_light', 'assets/backgrounds/wood_light.png');
 		game.load.image('wood_dark', 'assets/backgrounds/wood_dark.png');
@@ -78,6 +81,8 @@ window.stateBoot = {
 	*/
 	init: function(){
 
+		console.log('Starting up');
+		
 		/**
 		* Счетчик тиков загрузки ассетов.
 		* @member preloadCounter
@@ -92,14 +97,24 @@ window.stateBoot = {
 		*/
 		this.loadCounter = 0;
 
-		/**
-		* Контейнер с текстом загрузки.
-		* @member loadtextDOM
-		* @memberof stateBoot
-		*/
 		this.loadtextDOM = document.getElementById('loading-text');
 		var loading = document.getElementById('loading');
-		loading.style.backgroundImage = 'url("assets/loading.gif")'
+		loading.style.backgroundImage = 'url("assets/loading.gif")';
+	},
+
+	/**
+	* Обновляет загрузочный текст.
+	* @param  {string} text       загрузочный текст
+	* @param  {string} counterKey название счетчика загрузки
+	*/
+	updateLoadText: function(text, counterKey){
+		if(this[counterKey] > 30)
+			this[counterKey] = 0;
+		for(var i = 0; i < this[counterKey]; i++){
+			text += '.';
+		}
+		this.loadtextDOM.innerHTML = text;
+		this[counterKey]++;
 	},
 
 	/**
@@ -121,32 +136,21 @@ window.stateBoot = {
 	},
 
 	/**
-	* Обновляет загрузочный текст.
-	* @memberof stateBoot
-	* @param  {string} text       загрузочный текст
-	* @param  {string} counterKey название счетчика загрузки
-	*/
-	updateLoadText: function(text, counterKey){
-		if(this[counterKey] > 30)
-			this[counterKey] = 0;
-		for(var i = 0; i < this[counterKey]; i++){
-			text += '.';
-		}
-		this.loadtextDOM.innerHTML = text;
-		this[counterKey]++;
-	},
-
-	/**
-	* Выполняется после загрузки ассетов, инициализирует соединение с сервером.
+	* Выполняется после загрузки ассетов, инициализирует игру и соединение с сервером.
 	* @memberof stateBoot
 	*/
 	create: function(){
+
+		game.initialize();
+		console.log('Initialized');
+		console.log('Connecting');
 		/**
 		* Менеджер соединения с сервером
 		* @type {ConnectionManager}
 		* @global
 		*/
 		window.connection = new ConnectionManager();
+
 	},
 
 	/**
@@ -155,14 +159,5 @@ window.stateBoot = {
 	*/
 	postResize: function(){
 
-	},
-
-	/**
-	* Выполняется по окончании загрузки и подключения к серверу.
-	* Убирает загрузочный текст.
-	* @memberof stateBoot
-	*/
-	shutdown: function(){
-		this.loadtextDOM.innerHTML = '';
 	}
 };

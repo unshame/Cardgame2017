@@ -9,6 +9,7 @@ var Game = function(minWidth, minHeight, speed, inDebugMode){
 	this.minWidth = minWidth || 1024;
 	this.minHeight = minHeight || 768;
 	this.inDebugMode = inDebugMode || false;
+	this.initialized = false;
 	
 	/**
 	* Обработчик действий сервера
@@ -118,8 +119,6 @@ Game.prototype.initialize = function(){
 	//Антиалиасинг
 	//Phaser.Canvas.setImageRenderingCrisp(game.canvas);
 
-	this.stage.disableVisibilityChange  = true;	
-
 	/**
 	* Фон
 	* @type {Background}
@@ -156,8 +155,6 @@ Game.prototype.initialize = function(){
 	window.cardControl = new CardControl();
 
 	ui.initialize();
-
-	document.getElementById('loading').style.display = 'none';
 
 	this.addVisibilityChangeListener();
 };

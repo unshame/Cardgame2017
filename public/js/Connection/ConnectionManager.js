@@ -34,9 +34,9 @@ ConnectionManager.prototype = Object.create(Eureca.Client.prototype);
 ConnectionManager.prototype.constructor = ConnectionManager;
 
 ConnectionManager.prototype.bindProxy = function(proxy){
-	console.log('Ready');
+	console.log('Connection ready');
 	this.proxy = proxy;
-	game.state.start('play');
+	game.state.start('play', false);
 };
 
 ConnectionManager.prototype.handleConnection = function(){

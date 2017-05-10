@@ -18,11 +18,13 @@ window.statePlay = {
 	key: 'play',
 
 	/**
-	* Выполняется после соединения с сервером, инициализирует игру.
+	* Выполняется после соединения с сервером.
+	* Убирает загрузочный экран.
 	* @memberof statePlay
 	*/
 	create: function(){
-		game.initialize();
+		console.log('Game ready');
+		document.getElementById('loading').style.display = 'none';
 	},
 
 	/**
