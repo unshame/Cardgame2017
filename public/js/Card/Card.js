@@ -898,15 +898,14 @@ Card.prototype._cursorOut = function(sprite){
 * @return {boolean}
 */
 Card.prototype.cursorIsOver = function(){
-	if(
-		game.input.x < this.base.x + this.sprite.x - this.sprite.width/2 ||
-		game.input.x > this.base.x + this.sprite.x + this.sprite.width/2 ||
-		game.input.y < this.base.y + this.sprite.y - this.sprite.height/2 ||
-		game.input.y > this.base.y + this.sprite.y + this.sprite.height/2
-	)
-		return false;
-	else
-		return true;
+	return Phaser.Rectangle.containsRaw(
+		this.base.x + this.sprite.x - this.sprite.width/2,
+		this.base.y + this.sprite.y - this.sprite.height/2,
+		this.sprite.width,
+		this.sprite.height,
+		game.input.x,
+		game.input.y
+	);
 };
 
 

@@ -199,16 +199,12 @@ Button.prototype.cursorIsOver = function(){
 	if(this.label && this.isdown){
 		gyTop += 5;
 	}
-
-	if(
-		game.input.x < gx + this.x ||
-		game.input.x > gx + this.x + this.width ||
-		game.input.y < gyTop + this.y ||
-		game.input.y > gyBottom + this.y + this.height
-	){
-		return false;
-	}
-	else return true;
-
-
+	return Phaser.Rectangle.containsRaw(
+		gx + this.x,
+		gyTop + this.y,
+		this.width,
+		this.height,
+		game.input.x
+		game.input.y
+	);
 };
