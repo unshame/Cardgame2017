@@ -31,7 +31,7 @@ skinName: `modern`, `classic`, `familiar`, `abstract`, `uno`.
 
 ## Документация  
 `npm run makeDoc` генерирует документацию из комментариев в папке doc при помощи [JSDoc](http://usejsdoc.org/).
-Тестовая версия загружена на [durak.heroku.com/doc/client/](https://durak.heroku.com/doc/client/).
+Тестовая версия загружена на [durak.herokuapp.com/doc/client/](https://durak.herokuapp.com/doc/client/).
 
 ## Валидация кода  
 `npm run report` создает отчеты по коду в папке report при помощи [plato](https://github.com/es-analysis/plato). Там можно посмотреть ошибки линтинга и сложность кода.  
