@@ -106,6 +106,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		minActiveSpace: this.minActiveSpaces.player,
 		margin:this.offsets.player,
 		texture: 'field',
+		curved: true,
 		type: 'HAND',
 		id: playerManager.pid,
 		specialId: playerManager.pi,
@@ -189,7 +190,7 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 	var tableCells = this.tableCells = this.opponentPlacement[0] ? Math.round(grid.numCols - 4 - grid.density* 1.5) : grid.numCols - 2,
 		tableOffset = this.tableOffset = this.offsets.table* 2,
 
-		numRows = Math.round(grid.numRows - grid.density*2 + halfDensity - 4),
+		numRows = Math.round(grid.numRows - grid.density*2 + halfDensity - 2),
 		opponentCells = this.opponentCells = [
 			numRows,
 			grid.numCols - grid.density*4 - 2,
@@ -281,11 +282,11 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 			4,
 			grid.numRows - grid.density + 1,
 			-this.offsets.player,
-			-this.offsets.player
+			-this.offsets.player - grid.cellHeight/2
 		),
 		table: grid.at(
 			this.opponentPlacement[0] ? 1 + grid.density : 1,
-			halfRows - 1,
+			halfRows,
 			-this.offsets.table,
 			-this.offsets.table,
 			'middle left'
@@ -293,7 +294,7 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 		opponent: [
 			grid.at(
 				halfDensity + 1,
-				grid.numRows - grid.density - 2,
+				grid.numRows - grid.density,
 				-this.offsets.opponent[0],
 				-this.offsets.opponent[0]
 			),

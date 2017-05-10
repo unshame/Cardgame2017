@@ -80,7 +80,7 @@ UI.prototype.addButtons = function(){
 				x: game.screenWidth/2 - width/2,
 				y: grid.at(
 					0,
-					grid.numRows - grid.density - 2,
+					grid.numRows - grid.density - 1,
 					0,
 					-height/2
 				).y
@@ -100,7 +100,7 @@ UI.prototype.addButtons = function(){
 		position: function(width, height){
 			return grid.at(
 				grid.numCols - grid.density*1.5 - 1,
-				grid.numRows - grid.density - 2,
+				grid.numRows - grid.density - 1,
 				-width/2,
 				-height/2
 			);

@@ -70,6 +70,9 @@ var Field = function(options){
 	this.delayTime = this.options.delayTime;
 
 	this.randomAngle = this.options.randomAngle;
+	this.curved = this.options.curved;
+
+	this.alpha = this.options.alpha;
 
 	if(this.focusable && this.axis == 'vertical'){
 		this.focusable = false;
@@ -82,13 +85,18 @@ var Field = function(options){
 	this.base = game.add.group();
 	this.setBase(this.options.x, this.options.y);
 
+	if(this.curved){
+		this.circle = game.make.graphics(0, 0);
+		this.base.add(this.circle);
+	}
+
 	this.minActiveSpace = this.options.minActiveSpace;
 
 	//Текстура для дебага и область поля
 	var pixel = ui.newPixel();
 
 	this.area = game.add.sprite(0, 0, pixel.generateTexture());
-	this.area.alpha = 0.35;
+	this.area.alpha = this.alpha;
 	this.area.visible = this.isInDebugMode;
 	this.base.add(this.area);
 	fieldManager.fieldsGroup.add(this.base);
@@ -138,10 +146,11 @@ Field.getDefaultOptions = function(){
 		addTo: 'front',		//В какой конец поля добавляются карты (front - в конец, back - в начало)
 		reversed: false,	//Карты добавляются начиная с последней
 		flipped: false,		//Карты распологаются повернутыми на 180 градусов
-		randomAngle: false,
+		randomAngle: false,	//Нужно ли класть карты в поле под случайным углом
+		curved: false,	//Является ли поле выгнутым
 
 		texture: null,
-		alpha: 0.35,
+		alpha: 0.15,
 
 		debug: false,
 		specialId: null		//ID в группе полей для дебага
@@ -214,65 +223,81 @@ Field.prototype.resize = function(width, height, shouldPlace){
 
 	this.area.width = width + this.margin*2,
 	this.area.height = height + this.margin*2;
-	var total = Math.max(2500, width);
-	var extra = (total - width)/2;
-	var a = {
-		x: -extra,
-		y: height
-	};
-	var b = {
-		x: extra + width,
-		y: height
-	}
-	var c = {
-		x: width/2,
-		y: 0
-	}
-	function CalculateCircleCenter(A,B,C)
-	{
-	    var yDelta_a = B.y - A.y;
-	    var xDelta_a = B.x - A.x;
-	    var yDelta_b = C.y - B.y;
-	    var xDelta_b = C.x - B.x;
-
-	    center = {};
-
-	    var aSlope = yDelta_a / xDelta_a;
-	    var bSlope = yDelta_b / xDelta_b;
-
-	    center.x = (aSlope*bSlope*(A.y - C.y) + bSlope*(A.x + B.x) - aSlope*(B.x+C.x) )/(2* (bSlope-aSlope) );
-	    center.y = -1*(center.x - (A.x+B.x)/2)/aSlope +  (A.y+B.y)/2;
-	    return new Phaser.Point(center.x, center.y);
-
-
-	}
-	var center = CalculateCircleCenter(a, c, b);
-	var radius = center.y;
-	if(this.graphics)
-		this.graphics.destroy();
 	
-
-	// graphics.lineStyle(2, 0xffd900, 1);
-	var x = this.base.x;
-	var y = this.base.y;
-	if(this.id == playerManager.pid){
-		this.area.height *= 1.5;
-		this.graphics = game.make.graphics(0, 0);
-		this.graphics.alpha = 0.35;
-		
-		window.graphics = this.graphics;
-		this.graphics.lineStyle(4, 0xffffff, 1);
-		this.graphics.beginFill(0xFFFFFF, 1);
-		this.graphics.drawCircle(center.x, center.y, radius*2)
-		this.base.add(this.graphics);
+	if(this.curved){
+		this._createCircle(this.area.width, this.area.height);
 	}
+
+	if(shouldPlace){
+		this.placeCards();
+	}
+};
+
+/**
+* Считает и запоминает радиус и центр окружности по ширине и высоте поля и
+* рисует видимую часть окружности. 
+* @private
+* @param  {number} width  ширина поля
+* @param  {number} height высота поля
+*/
+Field.prototype._createCircle = function(width, height){
+	var total = Math.max(2500, width),	//ширина квадрата, в который точно помещается окружность
+		extra = (total - width)/2,		//на сколько окружность выходит за пределы экрана
+		a = {
+			x: -extra,
+			y: height
+		},
+		b = {
+			x: extra + width,
+			y: height
+		},
+		c = {
+			x: width/2,
+			y: 0
+		};
+
+	var center = this._calculateCircleCenter(a, c, b);
+	var radius = center.y;
+
+	this.circle.clear();		
+
+	this.circle.alpha = this.alpha;	
+	this.circle.lineStyle(4, 0xffffff, 1);
+	this.circle.beginFill(0xFFFFFF, 1);
+
+	var cos = (total - extra + this.base.x + this.area.height) / 2 / radius,
+		angle1 = Math.acos(cos),
+		angle2 = Math.acos(-cos);
+
+	this.circle.arc(center.x, center.y, radius, -angle1, -angle2, true);
 
 	this.circleCenter = center;
 	this.circleRadius = radius;
-
-	if(shouldPlace)
-		this.placeCards();
 };
+
+/**
+* Считает центр круга по трем точкам. Взято со stackoverflow.
+* @private
+* @param  {object} a точка a `{x, y}`
+* @param  {object} b точка b `{x, y}`
+* @param  {object} c точка c `{x, y}`
+* @return {Phaser.Point}   Возвращает центр круга.
+*/
+Field.prototype._calculateCircleCenter = function(a, b, c){
+	var yDelta_a = b.y - a.y,
+		xDelta_a = b.x - a.x,
+		yDelta_b = c.y - b.y,
+		xDelta_b = c.x - b.x,
+		x, y;
+
+	var aSlope = yDelta_a / xDelta_a,
+		bSlope = yDelta_b / xDelta_b;
+
+	x = (aSlope*bSlope*(a.y - c.y) + bSlope*(a.x + b.x) - aSlope*(b.x+c.x) )/(2* (bSlope-aSlope) );
+	y = -1*(x - (a.x+b.x)/2)/aSlope +  (a.y+b.y)/2;
+
+	return new Phaser.Point(x, y);
+}
 
 /**
 * Устанавливает играбильность всех карт в поле.
@@ -292,12 +317,12 @@ Field.prototype.setPlayability = function(playable){
 * @param {string} [linkedFieldId=null]      связанное поле, используется `{@link cardControl#cardMoveToField}`
 */
 Field.prototype.setHighlight = function(on, tint, linkedFieldId){
-	var plane = this.graphics || this.area;
-	if(!this.graphics)
+	var plane = this.curved ? this.circle : this.area;
+	if(!this.curved)
 		plane.visible = (on || this.isInDebugMode) ? true : false;
 	plane.tint = on ? (tint || ui.colors.orange) : ui.colors.white;
 	this.linkedField = fieldManager.fields[linkedFieldId] || null;
-	plane.alpha = on ? 0.55 : 0.15;
+	plane.alpha = on ? 0.55 : this.alpha;
 	this.isHighlighted = on;
 };
 
@@ -609,13 +634,14 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	//указываем сдвиг карты от курсора
 	if(this.focusedCard && cardWidth*(this.cards.length - 1) > areaActiveWidth){		
 		shift = cardWidth*(1 + this.focusedScaleDiff/2) - cardSpacing;
-		if(this.id == playerManager.pid){
+		//Уменьшаем сдвиг для карт в выгнутом поле
+		if(this.curved){
 			shift -= 5;
 		}
 	}
 
 	//Создаем массив задержек в зависимости от направления поля
-	var delayArray = this._createDelayArray();
+	var delayArray = this._createDelayArray(noDelay);
 
 	//Передвигаем карты
 	var i = this.direction == 'backward' ? this.cards.length - 1 : 0,
@@ -672,14 +698,8 @@ Field.prototype.rotateCards = function(){
 		angle += 180;
 
 	for(var i = 0; i < this.cards.length; i++){
-		var card = this.cards[i];	
-
-		if(this.randomAngle && typeof this.angles[card.id] == 'number')
-			angle = this.angles[card.id];
-		else if(card.fieldId == 'BOTTOM')
-			angle = Math.abs(angle - 90);
-		
-		card.rotateTo(angle, this.moveTime, 0);
+		var card = this.cards[i];
+		this._rotateCard(card, angle, card.base.x, card.base.y, 0);
 	}
 };
 
@@ -794,28 +814,27 @@ Field.prototype._moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
 	delayArray, delayIndex, increaseDelayIndex, bringToTopOn
 ){
+
+	//Задержка
 	var delay = delayArray[index];
 	if(delay === null || delay === undefined){
 		delay = this.delayTime*delayIndex;
 	}
 
-	if(this.randomAngle){
-		angle = this.angles[card.id] || 0;		
+	//Сдвиг текущей карты
+	if(this.focusedCard && index != focusedIndex){
+		shift = (index < focusedIndex) ? -shift : shift;	
+	}
+	else {
+		shift = 0;
 	}
 
-	//Сдвиг текущей карты
-	card.setScale(1);
-	if(this.focusedCard){
-		if(index != focusedIndex){
-			shift = (index < focusedIndex) ? -shift : shift;				
-		}
-		else{
-			card.setScale(1 + this.focusedScaleDiff);
-			shift = 0;
-		}
+	//Масштаб карты
+	if(this.focusedCard && index == focusedIndex){
+		card.setScale(1 + this.focusedScaleDiff);
 	}
 	else{
-		shift = 0;
+		card.setScale(1);
 	}
 
 	//Устанавливаем сдвиг для козыря в колоде
@@ -823,6 +842,7 @@ Field.prototype._moveCard = function(
 		leftMargin += skinManager.skin.trumpOffset;
 	}
 
+	//Сдвиг поднятых карт
 	var bottomMargin = card.raised ? this.raisedHeight : 0;
 	if(this.flipped && this.axis == 'horizontal' || !this.flipped && this.axis == 'vertical')
 		bottomMargin = -bottomMargin;
@@ -831,9 +851,10 @@ Field.prototype._moveCard = function(
 	//к предыдущим картам, позиции базы поля и сдвига от курсора
 	var x = leftMargin + cardSpacing*index + shift;
 
-	//Вертикальная позиция
+	//Вертикальная позиция состоит из двига сверху - сдвиг снизу
 	var y = topMargin - bottomMargin;
 
+	//Абсолютная позиция 
 	if(this.axis == 'vertical'){
 		var temp = x;
 		x = y + this.base.x;
@@ -844,20 +865,8 @@ Field.prototype._moveCard = function(
 		y += this.base.y;
 	}
 
-	//Устанавливаем поворот карты
-
-
-	if(this.id == playerManager.pid){
-		var toCenter = this.circleCenter.x - x + skinManager.skin.width 
-		angle = Math.acos(toCenter/this.circleRadius) - Math.PI/2;
-		angle *= (180 / Math.PI);
-		y = this.base.y + this.circleCenter.y + skinManager.skin.height/2 + 10 - Math.sqrt(Math.pow(this.circleRadius, 2) - toCenter*toCenter);
-	}
-	else if(card.fieldId == 'BOTTOM'){
-		angle = Math.abs(angle - 90);
-	}
-	
-	card.rotateTo(angle, this.moveTime, delay);
+	//Запускаем поворот карты
+	y = this._rotateCard(card, angle, x, y, delay);
 
 	//Запускаем перемещение карты
 	if(cardControl.card != card){
@@ -880,6 +889,35 @@ Field.prototype._moveCard = function(
 	if(increaseDelayIndex)
 		delayIndex++;
 	return delayIndex;
+};
+
+/**
+* Поворачивает карту и считает корректированную позицию по оси y.
+* @private
+* @param  {Card}   card  карта
+* @param  {number} angle угол
+* @param  {number} x     позиция по x
+* @param  {number} y     позиция по y
+* @param  {number} delay время задержки
+* @return {number}       Возвращает откорректированную позицию по оси y.
+*/
+Field.prototype._rotateCard = function(card, angle, x, y, delay){
+	if(this.curved){
+		var toCenter = this.circleCenter.x - x + skinManager.skin.width;
+		angle = Math.acos(toCenter/this.circleRadius) - Math.PI/2;
+		angle*= (180 / Math.PI);
+		y = this.base.y + this.circleCenter.y + skinManager.skin.height/2 + 10 - Math.sqrt(Math.pow(this.circleRadius, 2) - toCenter*toCenter);
+	}
+	else if(this.randomAngle){
+		angle = this.angles[card.id] || 0;
+	}
+	else if(card.fieldId == 'BOTTOM'){
+		angle = Math.abs(angle - 90);
+	}	
+
+	card.rotateTo(angle, this.moveTime, delay);
+
+	return y;
 };
 
 //УДАЛЕНИЕ КАРТ ИЗ ПОЛЯ
