@@ -879,10 +879,13 @@ Field.prototype._moveCard = function(
 
 	//Проверяем перетаскиваемость карты для тех случаев, когда карта была перемещена
 	//без использования presetField метода
-	if(this.type == 'HAND' && this.id == game.pid && !card.draggable)
-		card.setDraggability(true);
-	else if(card.draggable)
+	if(this.type == 'HAND' && this.id == game.pid){
+		if(!card.draggable)
+			card.setDraggability(true);
+	}
+	else if(card.draggable){
 		card.setDraggability(false);
+	}
 
 	//Добавляем задержку передвижения, если указаны новые карты или
 	//если необходимо задерживать смещенные карты
@@ -902,15 +905,20 @@ Field.prototype._moveCard = function(
 * @return {number}       Возвращает откорректированную позицию по оси y.
 */
 Field.prototype._rotateCard = function(card, angle, x, y, delay){
+
+	//Находим угол и сдвигаем y, если поле выгнутое
 	if(this.curved){
-		var toCenter = this.circleCenter.x - x + skinManager.skin.width;
+		var toCenter = this.circleCenter.x - x + skinManager.skin.width,
+			distance = Math.sqrt(Math.pow(this.circleRadius, 2) - toCenter*toCenter);
 		angle = Math.acos(toCenter/this.circleRadius) - Math.PI/2;
-		angle*= (180 / Math.PI);
-		y = this.base.y + this.circleCenter.y + skinManager.skin.height/2 + 10 - Math.sqrt(Math.pow(this.circleRadius, 2) - toCenter*toCenter);
+		angle *= (180 / Math.PI);
+		y = this.base.y + this.circleCenter.y + skinManager.skin.height/2 + 10 - distance;
 	}
+	//Берем сохраненный угол, если поле со случайными углами
 	else if(this.randomAngle){
 		angle = this.angles[card.id] || 0;
 	}
+	//Поворачиваем карту, если она на дне колоды
 	else if(card.fieldId == 'BOTTOM'){
 		angle = Math.abs(angle - 90);
 	}	
