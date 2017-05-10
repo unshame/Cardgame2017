@@ -259,9 +259,7 @@ CardControl.prototype.cardThrow = function(){
 	this.inertiaHistory = [];
 	this.setTrailResetTimer();
 
-	setTimeout(function(){
-		card.destroy();
-	}, 1000);
+	card.destroy(1000);
 }
 
 /*

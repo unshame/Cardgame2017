@@ -940,7 +940,9 @@ Card.prototype.cursorIsOver = function(){
 /**
 * Полностью удаляет карту из игры с анимацией.
 */
-Card.prototype.destroy = function() {
+Card.prototype.destroy = function(delay) {
+	if(delay === undefined)
+		delay = 0;
 	var time = 1000,
 		alphaTween = game.add.tween(this.sprite),
 		scaleTween = game.add.tween(this.sprite.scale);
@@ -962,8 +964,8 @@ Card.prototype.destroy = function() {
 		this._destroyNow();
 	}
 	else{
-		alphaTween.to({alpha: 0}, time, Phaser.Easing.Linear.None, true);
-		scaleTween.to({x: 0.6, y: 0.6}, time, Phaser.Easing.Linear.None, true);
+		alphaTween.to({alpha: 0}, time, Phaser.Easing.Linear.None, true, delay);
+		scaleTween.to({x: 0.6, y: 0.6}, time, Phaser.Easing.Linear.None, true, delay);
 		alphaTween.onComplete.addOnce(this._destroyNow, this);
 	}
 };
