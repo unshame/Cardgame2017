@@ -46,7 +46,7 @@ window.actionReactions = {
 		cardControl.reset();
 		cardManager.createCards(action.cards, true);
 
-		var delay = fieldManager.queueCards(action.cards, action.trumpSuit ? true : false);
+		var delay = fieldManager.queueCards(action.cards, action.trumpSuit || action.trumpSuit === 0 ? true : false);
 		fieldManager.removeMarkedCards();
 		fieldManager.placeQueuedCards();
 		return delay;
