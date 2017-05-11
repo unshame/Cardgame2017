@@ -661,15 +661,20 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 
 		var card = this.cards[i];	
-		var increaseDelayIndex = (newCards && ~newCards.indexOf(card));
+		var localDelayIndex = delayIndex;
 
 		if(newCards && !~newCards.indexOf(card))
-			delayIndex = 0;
+			localDelayIndex = 0;
 
-		delayIndex = this._moveCard(
+		this._moveCard(
 			card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
-			delayArray, delayIndex, increaseDelayIndex, bringToTopOn
+			delayArray, localDelayIndex, bringToTopOn
 		);
+
+		//Добавляем задержку передвижения, если указаны новые карты или
+		//если необходимо задерживать смещенные карты
+		if(newCards && ~newCards.indexOf(card))
+			delayIndex++;
 	}
 
 	//Поднимаем карту контроллера наверх
@@ -821,13 +826,11 @@ Field.prototype._calculateCardSpacing = function(activeWidth){
 * @param  {number} focusedIndex        индекс выделенной карты в поле
 * @param  {number[]} delayArray        массив задержек карт
 * @param  {number} delayIndex          индекс задержки карты
-* @param  {boolean} increaseDelayIndex нужно ли увеличивать индекс задержки в конце выполнения функции
 * @param  {BRING_TO_TOP_ON} bringToTopOn       когда поднимать карту на передний план
-* @return {number}                   Возвращает индекс задержки следующей карты. 
 */
 Field.prototype._moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
-	delayArray, delayIndex, increaseDelayIndex, bringToTopOn
+	delayArray, delayIndex, bringToTopOn
 ){
 
 	//Задержка
@@ -905,12 +908,6 @@ Field.prototype._moveCard = function(
 	else if(card.draggable){
 		card.setDraggability(false);
 	}
-
-	//Добавляем задержку передвижения, если указаны новые карты или
-	//если необходимо задерживать смещенные карты
-	if(increaseDelayIndex)
-		delayIndex++;
-	return delayIndex;
 };
 
 /**
