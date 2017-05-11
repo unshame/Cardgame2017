@@ -125,15 +125,15 @@ CardControl.prototype.cardPutDown = function(){
 	if(this.inDebugMode)
 		console.log('Card control: Putting down', this.card.id);
 
-	var field = this.cardOnValidField();
+	var fields = this.cardOnValidField();
 
 	//У карты включена физика, бросаем ее
 	if(cardManager.physicsEnabled && this.card.sprite.body){
 		this.cardThrow();
 	}
 	//Карта находится над валидным полем, перемещаем ее
-	else if(field && !this.pointer.rightButton.isDown){
-		this.cardMoveToField(field);
+	else if(fields && !this.pointer.rightButton.isDown){
+		this.cardMoveToField(fields);
 	}
 	//Возвращаем карту на свое поле\базу
 	else{
@@ -142,14 +142,21 @@ CardControl.prototype.cardPutDown = function(){
 };
 
 //Перемещает карту в новое поле
-CardControl.prototype.cardMoveToField = function(newField){
+CardControl.prototype.cardMoveToField = function(newFields){
 
 	if(!this.card){
 		console.warn('Card control: cardMoveToField called but no Card assigned.');
 		return;
 	}
 
-	var success = connection.server.sendAction(newField, this.card);
+	var newField, 
+		success = false;
+	for(var i = 0; i < newFields.length; i++){
+		newField = newFields[i];
+		success = connection.server.sendAction(newField, this.card);
+		console.log(newField)
+		if (success) break;
+	}
 
 	if(!success){
 		this.cardReturn();
@@ -333,9 +340,7 @@ CardControl.prototype.cardOnValidField = function(){
 		}, this);
 	}
 	if(fields.length){
-		if(fields.length > 1)
-			console.warn('Card control: Card is over more than 1 valid field');
-		return fields[0];
+		return fields;
 	}
 	return false;
 };
