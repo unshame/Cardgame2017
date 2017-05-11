@@ -159,5 +159,14 @@ window.stateBoot = {
 	*/
 	postResize: function(){
 
-	}
+	},
+
+	/** 
+	* Выполняется по окончании загрузки и подключения к серверу. 
+	* Убирает загрузочный текст. 
+	* @memberof stateBoot 
+	*/ 
+	shutdown: function(){ 
+		this.loadtextDOM.innerHTML = ''; 
+	} 
 };

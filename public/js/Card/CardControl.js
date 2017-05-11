@@ -73,7 +73,7 @@ CardControl.prototype.cardPickup = function(card, pointer){
 	this.card = card;
 	this.pointer = pointer;
 	
-	if(!this.cardPointerInbound() || (this.pointer.isMouse && !this.pointer.leftButton.isDown)){
+	if(!this.cardPointerInbound() && !cardManager.physicsEnabled || (this.pointer.isMouse && !this.pointer.leftButton.isDown)){
 		this.reset('clicked out of bounds or wrong mouse button');
 		return;
 	}

@@ -129,6 +129,10 @@ CardManager.prototype.enablePhysics = function(makeDraggable){
 		else
 			card.setDraggability(false);
 		game.physics.arcade.enable(card.sprite);
+		card.sprite.body.velocity = {x: Math.random()*50 - 25, y: Math.random()*50 - 25};
+		card.sprite.body.drag = {x: Math.random()*25, y: Math.random()*25};
+		card.sprite.body.angularVelocity = Math.random()*20 - 10;
+		card.sprite.body.angularDrag = Math.random()*5;
 	}
 	this.physicsEnabled = true;
 };

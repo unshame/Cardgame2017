@@ -95,7 +95,7 @@ var Field = function(options){
 	//Текстура для дебага и область поля
 	var pixel = ui.newPixel();
 
-	this.area = game.add.sprite(0, 0, pixel.generateTexture());
+	this.area = game.add.image(0, 0, pixel.generateTexture());
 	this.area.alpha = this.alpha;
 	this.area.visible = this.inDebugMode;
 	this.base.add(this.area);

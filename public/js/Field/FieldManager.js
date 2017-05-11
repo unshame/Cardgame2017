@@ -181,6 +181,10 @@ FieldManager.prototype.hideTrumpCards = function(cards){
 
 		card.raised = false;
 
+		if(!card.field){
+			continue;
+		}
+
 		if(card.field.id != playerManager.pid){					
 			card.presetValue(null, null);
 		}
