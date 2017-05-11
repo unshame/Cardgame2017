@@ -417,7 +417,7 @@ Card.prototype.bringToTop = function(fixController){
 	if(fixController === undefined)
 		fixController = true;
 	game.cardsGroup.bringToTop(this.base);
-	if(fixController && cardControl.card)
+	if(fixController && cardControl.card && cardControl.card != this)
 		game.cardsGroup.bringToTop(cardControl.card.base);
 };
 

@@ -663,6 +663,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 		var card = this.cards[i];	
 		var localDelayIndex = delayIndex;
 
+		//Не нужно задерживать карты, которые уже находятся в поле
 		if(newCards && !~newCards.indexOf(card))
 			localDelayIndex = 0;
 
@@ -679,8 +680,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 	//Поднимаем карту контроллера наверх
 	if(cardControl.card)
-		game.cardsGroup.bringToTop(cardControl.card.base);
-
+		cardControl.card.bringToTop(false);
 
 	//Дебаг отображение активно используемого пространства
 	if(this.inDebugMode){
