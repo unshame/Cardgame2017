@@ -41,14 +41,28 @@ window.actionReactions = {
 	*/
 	CARDS: function(action){
 
+		cardManager.emitterStop();
 		fieldManager.resetFields();
 		cardControl.reset();
-		cardManager.createCards(action.cards);
+		cardManager.createCards(action.cards, true);
 
 		var delay = fieldManager.queueCards(action.cards, action.trumpSuit ? true : false);
 		fieldManager.removeMarkedCards();
 		fieldManager.placeQueuedCards();
 		return delay;
+	},
+
+	/**
+	* Раскрытие значений карт
+	* @param {object} action - Обрабатываемое действие
+	* @param {object[]} action.cards - Информация о картах
+	* @param {string} action.cards[].cid - id карты
+	* @param {number} action.cards[].suit - масть карты
+	* @param {number} action.cards[].value - значение карты
+	* @memberof actionReactions
+	*/
+	REVEAL: function(action){
+		fieldManager.revealCards(action.cards);
 	},
 
 	/**

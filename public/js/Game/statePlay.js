@@ -24,8 +24,9 @@ window.statePlay = {
 	*/
 	create: function(){
 		console.log('Game ready');
+		ui.layers.loadLabels();
 		document.getElementById('loading').style.display = 'none';
-		cardManager.throwCardsStart(0, 50, 10, 2000, 20, 1);
+		cardManager.emitterStart(0, 50, 10, 2000, 20, 1);
 	},
 
 	/**
@@ -72,7 +73,7 @@ window.statePlay = {
 		ui.updatePosition();
 
 		if(cardManager.emitter.on)
-			cardManager.throwCardsStart();
+			cardManager.emitterStart();
 
 		document.getElementById('loading').style.display = 'none';
 	}

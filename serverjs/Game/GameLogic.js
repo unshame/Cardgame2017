@@ -124,6 +124,12 @@ class Game{
 		//Создаем карты, поля и колоду
 		this.cards.make();
 
+		let note = {
+			message: 'GAME_STARTED',
+			index: this.index	 
+		};
+		this.players.notify(note);
+
 		//Начинаем игру
 		this.continue();
 	}
@@ -148,6 +154,8 @@ class Game{
 		let actionDecline = {
 			type: 'DECLINE'
 		};
+
+		this.players.gameStateNotify(this.players, {cards: true}, true, 'REVEAL', true);
 
 		this.reset();
 		
@@ -230,7 +238,7 @@ class Game{
 			attacker: this.players.attacker.id,
 			defender: this.players.defender.id,
 			ally: this.players.ally ? this.players.ally.id : null,
-			turn: this.turnNumber
+			index: this.turnNumber
 		});
 		this.setNextTurnStage('INITIAL_ATTACK');	
 		this.continue();

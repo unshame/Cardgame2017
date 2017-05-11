@@ -29,11 +29,14 @@ class Player{
 			this.sendInstantResponse();
 	}
 
-	recieveGameInfo(cards, players, trumpSuit){
+	recieveGameInfo(cards, players, trumpSuit, type, noResponse){
 		let action = {
-			type: 'GAME_INFO',
+			type: type,
 			cards: cards || [],
-			players: players || []
+			players: players || [],
+			turnIndex: this.game.turnNumber,
+			gameIndex: this.game.index,
+			noResponse: noResponse || false
 		};
 		if(trumpSuit || trumpSuit === 0)
 			action.trumpSuit = trumpSuit;

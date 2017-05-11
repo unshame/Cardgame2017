@@ -33,7 +33,7 @@ class GamePlayers extends GamePlayersBase{
 	//ОПОВЕЩЕНИЕ ИГРОКОВ
 
 	//Оповещает игроков о состоянии игры
-	gameStateNotify(players, send){
+	gameStateNotify(players, send, reveal, type, noResponse){
 
 		const game = this.game;
 		let playersToSend = null;
@@ -45,7 +45,7 @@ class GamePlayers extends GamePlayersBase{
 
 		//Карты
 		if(send.cards)
-			cardsToSend = game.cards.getInfo();
+			cardsToSend = game.cards.getInfo(reveal);
 
 		//Игроки
 		if(send.players)
@@ -58,7 +58,9 @@ class GamePlayers extends GamePlayersBase{
 			p.recieveGameInfo(
 				send.cards && cardsToSend[pid],
 				send.players && playersToSend,
-				send.suit && game.cards.trumpSuit
+				send.suit && game.cards.trumpSuit,
+				type || 'GAME_INFO',
+				noResponse
 			);
 		}	
 

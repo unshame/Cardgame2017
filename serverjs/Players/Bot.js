@@ -28,8 +28,9 @@ class Bot extends Player{
 	}
 
 
-	recieveGameInfo(cards){
-		setTimeout(() => {this.sendResponse();},Math.random()*fakeDescisionTimer);
+	recieveGameInfo(cards, players, trumpSuit, type, noResponse){
+		if(!noResponse)
+			setTimeout(() => {this.sendResponse();},Math.random()*fakeDescisionTimer);
 	}
 
 	recieveDeals(deals){

@@ -15,6 +15,24 @@ window.notificationReactions = {
 	},
 
 	/**
+	* Начало хода
+	* @memberOf notificationReactions
+	* @param {object} note сообщение
+	*/
+	TURN_STARTED: function(note){
+
+	},
+
+	/**
+	* Начало игры
+	* @memberOf notificationReactions
+	* @param {object} note сообщение
+	*/
+	GAME_STARTED: function(note){
+		console.log(note.index)
+	},
+
+	/**
 	* Окончание хода
 	* @memberOf notificationReactions
 	* @param {object} note сообщение
@@ -38,8 +56,21 @@ window.notificationReactions = {
 	* 		]
 	*/
 	GAME_ENDED: function(note, actions){
+
+		//Ставим стопку сброса по центру экрана
+		var position = grid.at(4, Math.floor(grid.numRows/2)-1, 0, 0, 'middle left'),
+			field = fieldManager.fields.DISCARD_PILE;
+			
+		if(field){
+			field.axis = 'horizontal';
+			field.direction = 'forward';
+			field.forcedSpace = false;
+			field.resize((grid.numCols-8)*grid.cellWidth);
+			field.setBase(position.x, position.y, true);
+		}
+
 		if(note.results && note.results.winners && ~note.results.winners.indexOf(game.pid)){
-			cardManager.throwCardsStart(300, 500, 100, false, 100, 10);
+			cardManager.emitterStart(300, 500, 100, false, 100, 10);
 			cardManager.enablePhysics(false);
 		}
 		else{

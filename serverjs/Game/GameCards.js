@@ -38,7 +38,7 @@ class GameCards extends BetterArray{
 		return tableField;
 	}
 
-	getInfo(){
+	getInfo(reveal){
 
 		let cardsToSend = {};
 
@@ -53,7 +53,7 @@ class GameCards extends BetterArray{
 				let newCard = card.info;
 
 				//Игроки знают только о значении карты на дне колоды
-				if(card.field != 'BOTTOM'){
+				if(card.field != 'BOTTOM' && !reveal){
 					newCard.value = null;
 					newCard.suit = null;			
 				} 
@@ -70,7 +70,7 @@ class GameCards extends BetterArray{
 				hand.forEach((card) => {
 					let newCard = card.info;
 
-					if(card.field != pid){
+					if(card.field != pid && !reveal){
 						newCard.value = null;
 						newCard.suit = null;			
 					} 
@@ -96,8 +96,10 @@ class GameCards extends BetterArray{
 			//Сброс
 			this.discardPile.forEach((c) => {
 				let newCard = c.info;
-				newCard.suit = null;
-				newCard.value = null;
+				if(!reveal){
+					newCard.suit = null;
+					newCard.value = null;
+				}
 				cardsToSend[pid].push(newCard);
 			});
 		});

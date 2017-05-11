@@ -23,6 +23,14 @@ window.clientMethods = {
 			console.log('Reconnected to', pid);
 			game.pid = pid;
 		}
+		else{
+			cardManager.reset();
+			cardManager.emitterStop();
+			fieldManager.resetNetwork();
+			ui.rope.stop();
+			ui.actionButtons.getByName('action').disable();
+			ui.cornerButtons.getByName('queueUp').show();
+		}
 		playerManager.pid = game.pid;
 		connection.proxy.requestGameInfo();
 	},
@@ -45,10 +53,11 @@ window.clientMethods = {
 		ui.cornerButtons.getByName('queueUp').hide();
 		connection.resetTimer();
 		ui.rope.stop();
-		cardManager.throwCardsStop();
 		ui.actionButtons.getByName('action').disable();
 		var delay = actionHandler.executeAction(action);
-		connection.responseTimer = setTimeout(connection.server.sendResponse, !delay && 1 || (delay/game.speed + 300));
+		if(!action.noResponse){
+			connection.responseTimer = setTimeout(connection.server.sendResponse, !delay && 1 || (delay/game.speed + 300));
+		}
 		if(connection.inDebugMode)
 			console.log(action);
 	},

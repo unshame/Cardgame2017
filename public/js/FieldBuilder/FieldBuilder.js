@@ -29,7 +29,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 	this._calculateSizes();
 
 	//Deck
-	manager.fields.DECK = new Field({
+	manager.addField({
 		x: this.positions.DECK.x,
 		y: this.positions.DECK.y,
 		minActiveSpace: this.minActiveSpaces.DECK,
@@ -48,10 +48,9 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		delayTime: 50,
 		debug: manager.inDebugMode
 	});
-	manager.cardsToRemove.DECK = [];
 
 	//Discard pile
-	manager.fields.DISCARD_PILE = new Field({
+	manager.addField({
 		x: this.positions.DISCARD_PILE.x,
 		y: this.positions.DISCARD_PILE.y,
 		minActiveSpace: this.minActiveSpaces.DISCARD_PILE,
@@ -69,12 +68,11 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		id: 'DISCARD_PILE',
 		debug: manager.inDebugMode
 	});
-	manager.cardsToRemove.DISCARD_PILE = [];
 
 	//Table
 	for(i = 0; i < this.tableOrder.length; i++){
 		id = 'TABLE' + i;
-		var tableField = new Field({
+		manager.addField({
 			x: this.positions[id].x,
 			y: this.positions[id].y,
 			width: this.dimensions[id].width,
@@ -89,16 +87,13 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 			focusable:false,
 			sorted:false,
 			type: 'TABLE',
-			id: 'TABLE' + i,
+			id: id,
 			specialId: i,
 			debug: manager.inDebugMode
 		});
-		manager.fields[id] = tableField;
-		manager.table.push(tableField);
-		manager.cardsToRemove[id] = [];
 	}
 
-	manager.fields['dummy'] = new Field({
+	manager.addField({
 		x: this.positions.dummy.x,
 		y: this.positions.dummy.y,
 		width: this.dimensions.dummy.width,
@@ -108,10 +103,9 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		id: 'dummy',
 		debug: manager.inDebugMode
 	});
-	manager.cardsToRemove['dummy'] = [];
 
 	//Player hand
-	manager.fields[playerManager.pid] = new Field({
+	manager.addField({
 		x:this.positions[playerManager.pid].x,
 		y:this.positions[playerManager.pid].y,
 		width:this.dimensions.player.width,
@@ -124,7 +118,6 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		specialId: playerManager.pi,
 		debug: manager.inDebugMode
 	});
-	manager.cardsToRemove[playerManager.pid] = [];
 
 	//Opponents
 	i =  playerManager.pi + 1;
@@ -133,7 +126,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 		i = 0;
 	while(i != playerManager.pi){
 		var p = players[i];
-		manager.fields[p.id] = new Field({
+		manager.addField({
 			x: this.positions[p.id].x,
 			y: this.positions[p.id].y,
 			width: this.dimensions[p.id].width,
@@ -153,7 +146,6 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 			specialId: this.dimensions[p.id].specialId,
 			debug: manager.inDebugMode
 		});
-		manager.cardsToRemove[p.id] = [];
 		oi++;
 		i++;
 		if(i >= players.length)
