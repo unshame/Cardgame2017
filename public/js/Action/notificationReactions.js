@@ -1,4 +1,4 @@
-/*
+/**
 * Действия, выполняемые в ответ на сообщения от сервера
 * Выполняются в контексте ActionHandler
 * @namespace notificationReactions
@@ -6,15 +6,18 @@
 
 window.notificationReactions = {
 
-	/*
-	* 	SIMULATING - в игре остались только боты, игра симулируется в ускоренном режиме
+	/**
+	* В игре остались только боты, игра симулируется в ускоренном режиме
+	* @memberOf notificationReactions
 	*/
 	SIMULATING: function(){
 
 	},
 
-	/*
-	* 	TURN_ENDED - окончание хода
+	/**
+	* Окончание хода
+	* @memberOf notificationReactions
+	* @param {object} note сообщение
 	*/
 	TURN_ENDED: function(note){
 

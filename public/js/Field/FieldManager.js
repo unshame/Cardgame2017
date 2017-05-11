@@ -137,7 +137,7 @@ FieldManager.prototype.showTrumpCards = function(cards, pid){
 	//Показываем козырные карты
 	for(var ci = 0; ci < cards.length; ci++){
 		var c = cards[ci];
-		card = game.cards[c.cid];
+		var card = game.cards[c.cid];
 
 		if(!card){
 			console.error('Action handler: Card', c.cid, 'not found');
@@ -170,7 +170,7 @@ FieldManager.prototype.hideTrumpCards = function(cards){
 		
 	for(var ci = 0; ci < cards.length; ci++){
 		var c = cards[ci];
-		card = game.cards[c.cid];	
+		var card = game.cards[c.cid];	
 
 		if(!card){
 			console.error('Action handler: Card', c.cid, 'not found');
@@ -190,7 +190,7 @@ FieldManager.prototype.hideTrumpCards = function(cards){
 		}
 		card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);
 	}			
-}
+};
 
 //FOR EACH FIELD
 
@@ -257,7 +257,6 @@ FieldManager.prototype.placeQueuedCards = function(){
 };
 
 FieldManager.prototype.checkCompleteHighlight = function(){
-	var color = null;
 	for(var fid in this.table){
 		if(!this.table.hasOwnProperty(fid))
 			continue;
@@ -269,7 +268,7 @@ FieldManager.prototype.checkCompleteHighlight = function(){
 	this.forEachField(function(f){
 		f.setVisibility(false);
 	});
-	this.fields.dummy.setHighlight(true, ui.colors.orange)
+	this.fields.dummy.setHighlight(true, ui.colors.orange);
 };
 
 /** Меняет размеры и устанавливает позицию полей в соотстветсвии с 

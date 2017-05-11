@@ -243,8 +243,6 @@ Game.prototype.toggleDebugMode = function(){
 
 	if(cardManager.inDebugMode != this.inDebugMode)
 		cardManager.toggleDebugMode();
-	
-	this.time.advancedTiming = this.inDebugMode;
 
-	inDebugMode = this.inDebugMode;
+	this.time.advancedTiming = this.inDebugMode;
 };

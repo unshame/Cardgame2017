@@ -14,10 +14,10 @@
 ![Test](https://i.imgur.com/U5ECBIX.png  "Test")  
 И если нажать F12:  
 ![DevConsole](https://i.imgur.com/HyQXwbl.png "F12 Developer Console")  
-9. `npm run setupDev` установит глобальные модули для герерации отчетов по коду и документации (см. ниже).
+9. `npm run dev` установит глобальные модули для герерации отчетов по коду и документации (см. ниже).
 
 ## Полезные команды в консоли  
-* `connection.isInDebugMode = true` - включает лог сообщений от сервера (как показано выше) 
+* `connection.inDebugMode = true` - включает лог сообщений от сервера (как показано выше) 
 * `cardControl.toggleDebugMode()` - переключает дебаг при перетаскивании карт  
 * `fieldmanager.toggleDebugMode()` - переключает дебаг полей карт
 * `cardManager.toggleDebugMode()` - дебаг карт
@@ -30,7 +30,7 @@
 skinName: `modern`, `classic`, `familiar`, `abstract`, `uno`.
 
 ## Документация  
-`npm run makeDoc` генерирует документацию из комментариев в папке doc при помощи [JSDoc](http://usejsdoc.org/).
+`npm run doc` генерирует документацию из комментариев в папке doc при помощи [JSDoc](http://usejsdoc.org/).
 Тестовая версия загружена на [durak.herokuapp.com/doc/client/](https://durak.herokuapp.com/doc/client/).
 
 ## Валидация кода  

@@ -8,9 +8,9 @@
   "main": "server.js",
   "scripts": {
     "server": "node server.js",
-    "setupDev": "npm install plato -g && npm install jsdoc -g",
-    "report": "plato -d report/client --jshint .jshintrc -t \"Durak: Client Javascript Report\" ./public/js/*.js ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc -t \"Durak: Server Javascript Report\" ./serverjs/*.js ./serverjs/**/*.js ./server.js",
-    "makeDoc": "jsdoc -c ./doc/config.json -d ./doc/client/ ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ ./serverjs/"  
+    "dev": "npm install plato -g && npm install jsdoc -g",
+    "report": "plato -d report/client --jshint .jshintrc -t \"Durak: Client Javascript Report\" ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc -t \"Durak: Server Javascript Report\" ./serverjs/**/*.js ./server.js",
+    "doc": "jsdoc -c ./doc/config.json -d ./doc/client/ ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ ./serverjs/"  
   },
   "dependencies": {
     "engine.io": "2.0.1",

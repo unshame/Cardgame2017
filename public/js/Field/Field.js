@@ -304,7 +304,7 @@ Field.prototype._calculateCircleCenter = function(a, b, c){
 	y = -1*(x - (a.x+b.x)/2)/aSlope +  (a.y+b.y)/2;
 
 	return new Phaser.Point(x, y);
-}
+};
 
 /**
 * Устанавливает играбильность всех карт в поле.
@@ -335,7 +335,7 @@ Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 Field.prototype.setVisibility = function(visible){
 	var plane = this.curved ? this.circle : this.area;
 	plane.visible = visible || this.inDebugMode || this.curved;
-}
+};
 
 //СОРТИРОВКА
 

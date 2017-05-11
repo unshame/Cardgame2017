@@ -49,6 +49,8 @@
     "Background": true,
     "background": true,
     "UILayers": true,
+    "statePlay": true,
+    "stateBoot": true,
 
     "BRING_TO_TOP_ON": true
   },

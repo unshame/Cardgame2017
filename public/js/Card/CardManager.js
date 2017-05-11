@@ -106,7 +106,7 @@ CardManager.prototype._applySkinToEmitter = function(){
 	this.emitter.forEach(function(p){
 		p.loadTexture(skinManager.skin.sheetName);
 	}, this);
-}
+};
 
 CardManager.prototype.forceSetValues = function(){
 	for(var ci in this.cards){
@@ -122,11 +122,14 @@ CardManager.prototype.enablePhysics = function(makeDraggable){
 	//Ставим стопку сброса по центру экрана (for fun)
 	var position = grid.at(4, Math.floor(grid.numRows/2)-1, 0, 0, 'middle left'),
 		field = fieldManager.fields.DISCARD_PILE;
-	field.axis = 'horizontal';
-	field.direction = 'forward';
-	field.forcedSpace = false;
-	field.resize((grid.numCols-8)*grid.cellWidth)
-	field.setBase(position.x, position.y, true);
+		
+	if(field){
+		field.axis = 'horizontal';
+		field.direction = 'forward';
+		field.forcedSpace = false;
+		field.resize((grid.numCols-8)*grid.cellWidth);
+		field.setBase(position.x, position.y, true);
+	}
 
 	for(var cid in this.cards){
 		if(!this.cards.hasOwnProperty(cid))
@@ -152,7 +155,7 @@ CardManager.prototype.disablePhysics = function(){
 			continue;
 		var card = this.cards[cid];
 		if(card.sprite.body)
-			card.sprite.body.destroy()
+			card.sprite.body.destroy();
 	}
 	this.physicsEnabled = false;
 };
@@ -233,7 +236,7 @@ CardManager.prototype.throwCardsStop = function(){
 			tween.start();
 			tween.onComplete.addOnce(function(){
 				this.visible = false;
-			}, p)
+			}, p);
 		}
 	}, this);
 };
@@ -243,7 +246,7 @@ CardManager.prototype.throwCardsRestart = function(){
 		return;
 	this.throwCardsStop();
 	this.emitter.on = true;
-}
+};
 
 //Возвращает несколько карт в массиве
 //Если не указать num, возвратит все карты

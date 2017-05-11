@@ -58,7 +58,7 @@ CardControl.prototype.cardUnclick = function(card){
 	if(!this.pointer.withinGame){
 		this.cardReturn();
 	}
-	else if(!this.cardPointerInbound() || !this.cardClickTimer || !this.pointer.isMouse){
+	else if(!this.cardPointerInbound() || !this.cardClickTimer || !this.pointer.isMouse || cardManager.physicsEnabled && this.card.sprite.body){
 		this.cardPutDown();
 	}
 };
@@ -154,7 +154,7 @@ CardControl.prototype.cardMoveToField = function(newFields){
 	for(var i = 0; i < newFields.length; i++){
 		newField = newFields[i];
 		success = connection.server.sendAction(newField, this.card);
-		console.log(newField)
+		console.log(newField);
 		if (success) break;
 	}
 
@@ -267,7 +267,7 @@ CardControl.prototype.cardThrow = function(){
 	this.setTrailResetTimer();
 
 	card.destroy(1000);
-}
+};
 
 /*
 * Сохраняет текущее время и позицию карты.
@@ -287,7 +287,7 @@ CardControl.prototype._saveInertia = function(curTime, maxTime){
 		this.inertiaHistory.shift();
 	}
 	this.inertiaHistory.push([curTime, distance.x, distance.y]);
-}
+};
 
 //ТАЙМЕР НАЖАТИЯ
 
