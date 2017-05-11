@@ -663,6 +663,9 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 		var card = this.cards[i];	
 		var increaseDelayIndex = (newCards && ~newCards.indexOf(card));
 
+		if(newCards && !~newCards.indexOf(card))
+			delayIndex = 0;
+
 		delayIndex = this._moveCard(
 			card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
 			delayArray, delayIndex, increaseDelayIndex, bringToTopOn
