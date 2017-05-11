@@ -238,6 +238,8 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 		tableWidth = (tableCells* grid.cellWidth - tableOffset* (this.tableOrder.length - 1)) / this.tableOrder.length;
 	}
 
+	var playerNumCols = Math.min((grid.numCols - 8), 40);
+
 	//Размеры полей (по умолчанию равны размерам карты)
 	this.dimensions = {
 		DECK:{
@@ -251,7 +253,7 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 
 		//Поле игрока пока не известен id игрока
 		player: {
-			width: (grid.numCols - 8)*grid.cellWidth,
+			width: playerNumCols*grid.cellWidth,
 			//height: 
 		},
 
@@ -297,7 +299,7 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 			-this.offsets.DISCARD_PILE
 		),
 		player: grid.at(
-			4,
+			(grid.numCols - playerNumCols)/2,
 			grid.numRows - grid.density + 1,
 			-this.offsets.player,
 			-this.offsets.player - grid.cellHeight/2

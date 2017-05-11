@@ -74,7 +74,7 @@ UI.prototype.addButtons = function(){
 		color: 'grey',
 		size: 'wide',
 		textColor: 'black',
-		group: this.actionButtons
+		group: this.cornerButtons
 	});
 	new Button({
 		position: function(width, height){

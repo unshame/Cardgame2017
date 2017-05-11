@@ -105,7 +105,7 @@ SkinManager.prototype.setSkin = function(skinName){
 
 //Применяет скин
 SkinManager.prototype.applySkin = function(){
-	cardManager.applySkin();
+	cardManager.applySkin();	
 	cardControl.trailApplySkin();
 	grid.draw();
 	fieldManager.resizeFields();

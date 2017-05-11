@@ -106,8 +106,6 @@ Game.prototype.calculateScreenSize = function(){
 //Инициализация игры
 Game.prototype.initialize = function(){
 
-	this.time.advancedTiming = true;
-
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 	this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
@@ -245,6 +243,8 @@ Game.prototype.toggleDebugMode = function(){
 
 	if(cardManager.inDebugMode != this.inDebugMode)
 		cardManager.toggleDebugMode();
+	
+	this.time.advancedTiming = this.inDebugMode;
 
 	inDebugMode = this.inDebugMode;
 };

@@ -25,6 +25,7 @@ window.statePlay = {
 	create: function(){
 		console.log('Game ready');
 		document.getElementById('loading').style.display = 'none';
+		cardManager.throwCardsStart(0, 50, 10, 2000, 20, 1);
 	},
 
 	/**

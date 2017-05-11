@@ -22,6 +22,7 @@ var CardManager = function(inDebugMode){
 		frames.push(i);
 	}
 	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
+	this.particleFadeTime = 500;
 
 	this.inDebugMode = inDebugMode || false;
 };
@@ -95,10 +96,17 @@ CardManager.prototype.applySkin = function(){
 		}
 	}
 	this.emitter.minParticleScale = this.emitter.maxParticleScale = skinManager.skin.scale;
+	if(this.emitter.on){
+		this.throwCardsRestart();
+		setTimeout(this._applySkinToEmitter.bind(this), this.particleFadeTime);
+	}
+};
+
+CardManager.prototype._applySkinToEmitter = function(){
 	this.emitter.forEach(function(p){
 		p.loadTexture(skinManager.skin.sheetName);
 	}, this);
-};
+}
 
 CardManager.prototype.forceSetValues = function(){
 	for(var ci in this.cards){
@@ -218,7 +226,24 @@ CardManager.prototype.throwCardsStop = function(){
 	if(this.emitter.on){
 		this.emitter.on = false;
 	}
+	this.emitter.forEachAlive(function(p){
+		if(p.visible){
+			var tween = game.add.tween(p);
+			tween.to({alpha: 0}, this.particleFadeTime);
+			tween.start();
+			tween.onComplete.addOnce(function(){
+				this.visible = false;
+			}, p)
+		}
+	}, this);
 };
+
+CardManager.prototype.throwCardsRestart = function(){
+	if(!this.emitter.on)
+		return;
+	this.throwCardsStop();
+	this.emitter.on = true;
+}
 
 //Возвращает несколько карт в массиве
 //Если не указать num, возвратит все карты

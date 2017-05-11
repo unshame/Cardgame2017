@@ -104,6 +104,13 @@ var Field = function(options){
 	this.highlighted = false;
 
 	this.resize(this.options.width, this.options.height);
+
+	if(this.curved){
+		var tween = game.add.tween(this.circle.position);
+		this.circle.y = this.area.height;
+		tween.to({y: 0}, this.moveTime/game.speed, Phaser.Easing.Quadratic.Out);
+		tween.start();
+	}
 	
 	this.debugActiveSpace = new Phaser.Rectangle();
 	this.inDebugMode = this.options.debug;
@@ -917,7 +924,7 @@ Field.prototype._rotateCard = function(card, angle, x, y, delay){
 
 	//Находим угол и сдвигаем y, если поле выгнутое
 	if(this.curved){
-		var toCenter = this.circleCenter.x - x + skinManager.skin.width,
+		var toCenter = this.circleCenter.x - x + this.base.x,
 			distance = Math.sqrt(Math.pow(this.circleRadius, 2) - toCenter*toCenter);
 		angle = Math.acos(toCenter/this.circleRadius) - Math.PI/2;
 		angle *= (180 / Math.PI);
@@ -1030,8 +1037,8 @@ Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){
 	return card && Phaser.Rectangle.containsRaw(
 		this.base.x + this.margin - spacing - addX,
 		this.base.y + this.margin - addY,
-		this.area.width,
-		this.area.height,
+		this.area.width + addX*2 + spacing*2,
+		this.area.height + addY*2,
 		card.base.x + card.sprite.x,
 		card.base.y + card.sprite.y
 	);

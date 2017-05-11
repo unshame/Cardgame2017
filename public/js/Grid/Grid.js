@@ -147,7 +147,7 @@ Grid.prototype.draw = function(){
 	
 	var offset = this.offset = {
 		x: Math.round(screenWidth%width/2),
-		y: Math.round(screenHeight%height/2)
+		y: Math.round(screenHeight%height)
 	};
 
 	this.numCols = Math.floor(screenWidth/width);
@@ -292,9 +292,9 @@ Grid.prototype._drawDebug = function(offset, width, height){
 	border.lineStyle(x, color, alpha);
 	border.moveTo(screenWidth - x/2 + thickness/2, 0);
 	border.lineTo(screenWidth - x/2 + thickness/2, screenHeight);
-	border.lineStyle(y, color, alpha);
-	border.moveTo(screenWidth, screenHeight - y/2 + thickness/2);
-	border.lineTo(0,screenHeight - y/2 + thickness/2);
+	//border.lineStyle(y, color, alpha);
+	//border.moveTo(screenWidth, screenHeight - y/2 + thickness/2);
+	//border.lineTo(0,screenHeight - y/2 + thickness/2);
 	border.lineStyle(x, color, alpha);
 	border.moveTo(x/2 - thickness/2, screenHeight);
 	border.lineTo(x/2 - thickness/2,0);

@@ -42,7 +42,7 @@ window.clientMethods = {
 	},
 
 	recieveCompleteAction: function(action){
-		ui.actionButtons.getByName('queueUp').hide();
+		ui.cornerButtons.getByName('queueUp').hide();
 		connection.resetTimer();
 		ui.rope.stop();
 		cardManager.throwCardsStop();

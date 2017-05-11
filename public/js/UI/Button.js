@@ -190,20 +190,21 @@ Button.prototype.cursorIsOver = function(){
 		return false;
 
 	var gx = 0,
-		gyTop = 0, 
-		gyBottom = 0;
+		gy = 0, 
+		yFix = 0;
 	if(this.group){
 		gx = this.group.x;
-		gyTop = gyBottom = this.group.y;
+		gy = this.group.y;
 	}
 	if(this.label && this.isDown){
-		gyTop += 5;
+		gy += 5;
+		yFix += 5;
 	}
 	return Phaser.Rectangle.containsRaw(
 		gx + this.x,
-		gyTop + this.y,
+		gy + this.y,
 		this.width,
-		this.height,
+		this.height - yFix,
 		game.input.x,
 		game.input.y
 	);
