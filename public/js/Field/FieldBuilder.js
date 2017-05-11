@@ -253,7 +253,7 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 
 		//Поле игрока пока не известен id игрока
 		player: {
-			width: playerNumCols*grid.cellWidth,
+			width: playerNumCols*grid.cellWidth
 			//height: 
 		},
 
