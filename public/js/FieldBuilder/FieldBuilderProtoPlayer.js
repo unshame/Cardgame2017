@@ -1,7 +1,7 @@
 FieldBuilder.prototype._calcGenPlayerSizes = function(){
 
 	/* Константы */
-	this.offsets.player = 10;
+	this.offsets.player = 12;
 	this.minActiveSpaces.player = this.minActiveSpace;
 	/*--*/
 

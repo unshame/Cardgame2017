@@ -165,7 +165,7 @@ Field.prototype._moveCard = function(
 	}
 
 	//Запускаем поворот карты
-	y = this._rotateCard(card, angle, x, y, delay);
+	y = this._rotateCard(card, angle, x, y, delay, topMargin - bottomMargin);
 
 	//Запускаем перемещение карты
 	if(cardControl.card != card){
@@ -197,15 +197,15 @@ Field.prototype._moveCard = function(
 * @param  {number} delay время задержки
 * @return {number}       Возвращает откорректированную позицию по оси y.
 */
-Field.prototype._rotateCard = function(card, angle, x, y, delay){
+Field.prototype._rotateCard = function(card, angle, x, y, delay, margin){
 
 	//Находим угол и сдвигаем y, если поле выгнутое
-	if(this.curved){
+	if(this.areaType == 'curved'){
 		var toCenter = this.circleCenter.x - x + this.base.x,
 			distance = Math.sqrt(Math.pow(this.circleRadius, 2) - toCenter*toCenter);
 		angle = Math.acos(toCenter/this.circleRadius) - Math.PI/2;
 		angle *= (180 / Math.PI);
-		y = this.base.y + this.circleCenter.y + skinManager.skin.height/2 + 10 - distance;
+		y = this.base.y + this.circleCenter.y - distance + margin;
 	}
 	//Берем сохраненный угол, если поле со случайными углами
 	else if(this.randomAngle){
