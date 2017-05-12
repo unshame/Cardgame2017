@@ -63,7 +63,7 @@ FieldBuilder.prototype._calcSpecTableSizes = function(){
 		ti = inRow;
 
 	this.positions.dummy.y = y;
-	this.dimensions.dummy.height = height * mult;
+	this.dimensions.dummy.height = height * mult + grid.cellHeight * (mult-1);
 	
 	this.tableOrder = this.possibleTableOrders[inRow - 1];
 
@@ -72,7 +72,7 @@ FieldBuilder.prototype._calcSpecTableSizes = function(){
 			ti = inRow;
 			ci = 0;
 			ri++;
-			y += height;
+			y += height + grid.cellHeight;
 		}
 		var id = 'TABLE' + this.tableOrder[i];
 		var x = firstX + (width + offset)*ci;
