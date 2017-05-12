@@ -60,6 +60,7 @@ FieldBuilder.prototype.adjustFieldNetwork = function(){
 	this.calcSizes();
 	this._buildOpponentFields();
 	this._buildDiscardField();
+	this._buildTableFields();
 };
 
 FieldBuilder.prototype.calcSizes = function(){

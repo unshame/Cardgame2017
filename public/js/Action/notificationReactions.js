@@ -120,10 +120,6 @@ window.notificationReactions = {
 		if(actions){
 			this.handlePossibleActions(actions, note.time, note.timeSent);
 		}
-	},
-
-	TABLE_EXPANDED: function(note){
-		fieldManager.unlockField(note.id);
 	}
 
 };

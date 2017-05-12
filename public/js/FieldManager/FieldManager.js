@@ -100,24 +100,39 @@ FieldManager.prototype.unlockField = function(id){
 	if(!field || !field.icon)
 		return;
 	
-	field.setHighlight(true);
-	field.setVisibility(true);
-	field.highlighted = false;
 	field.icon.visible = true;
 	field.iconShouldHide = false;
+	field.icon.alpha = 1;
+
+	var spinDelay = 300/game.speed,
+		spinTime = 1300/game.speed;
+
+
+		field.setHighlight(true);
+		field.highlighted = false;
+
 	var tween = game.add.tween(field.icon);
-	tween.to({alpha: 0, angle: 360}, 1000, Phaser.Easing.Quadratic.Out, false, 500);
-	tween.onStart.addOnce(function(){
-		if(field && field.icon){
-			field.icon.loadTexture('unlock');
-		}
-	})
+	tween.to({alpha: 0, angle: 720}, spinTime - 300, Phaser.Easing.Quadratic.In, false, spinDelay);
+
+	setTimeout(function(){
+		if(!field || !field.icon) return;
+		field.icon.loadTexture('unlock');
+	}, spinDelay/3)
+
 	tween.onComplete.addOnce(function(){
-		if(field && field.icon){
-			field.icon.destroy();
-			field.icon = null;
-			field.setVisibility(false);
-		}
+		if(!field || !field.icon) return;
+		field.icon.destroy();
+		field.icon = null;
+
+		setTimeout(function(){
+			if(field){
+				field.setVisibility(false);
+			}
+		}, 300);
+
 	}, this);
-	tween.start();
+
+	tween.start();			
+
+	return spinDelay + spinTime - 300/game.speed;
 };

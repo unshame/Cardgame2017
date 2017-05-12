@@ -133,7 +133,7 @@ Field.prototype._moveCard = function(
 	}
 
 	//Устанавливаем сдвиг для козыря в колоде
-	if(card.fieldId == 'BOTTOM' && this.cards.length > 1){
+	if(card.fieldId == 'BOTTOM'){
 		leftMargin += skinManager.skin.trumpOffset;
 	}
 

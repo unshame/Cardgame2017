@@ -152,6 +152,9 @@ window.actionReactions = {
 		}
 		var field = fieldManager.fields.DISCARD_PILE;
 		delay = fieldManager.moveCards(field, cards);
+		if(action.unlockedField){
+			delay += fieldManager.unlockField(action.unlockedField);
+		}
 		return delay;
 	},
 
