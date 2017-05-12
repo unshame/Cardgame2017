@@ -212,8 +212,8 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 		DECK: 22,					//Колода		
 		DISCARD_PILE: 22,			//Стопка сброса	
 		player: 10,				//Поле игрока пока не известен id игрока
-		dummy: 4,	
-		table: 4,				//Первое поле на столе		
+		dummy: 0,	
+		table: 0,				//Первое поле на столе		
 		opponent: [10, 10, 10]	//Первые поля соперника
 	};
 
@@ -353,7 +353,7 @@ FieldBuilder.prototype._calculateGeneralSizes = function(){
 		this._calculateGeneralTableSizes(counter);
 		counter = Math.ceil(counter/2);
 	}
-	while(this._notEnoughSpace('', 'table', null, true) && counter > 1);
+	while(this._notEnoughSpace(null, 'table', null, true, true) && counter > 1);
 
 	this.tablesInRow = tablesInRow;
 };
@@ -371,7 +371,7 @@ FieldBuilder.prototype._calculateGeneralTableSizes = function(numOfTables){
 	var minTableSpace = skinManager.skin.width + this.minActiveSpaces.table,
 		extraSpace = (tableCells* grid.cellWidth)/numOfTables - minTableSpace,
 		tableWidth;
-	if(extraSpace > 0){
+	if(extraSpace > 0 && numOfTables == this.tableOrder.length){
 		this.offsets.table = this.offsets.dummy = extraSpace/4;
 		this.tableOffset = tableOffset = extraSpace/2;
 		tableWidth = (tableCells* grid.cellWidth - extraSpace/2* (numOfTables - 1)) / numOfTables;
@@ -380,13 +380,14 @@ FieldBuilder.prototype._calculateGeneralTableSizes = function(numOfTables){
 		tableWidth = (tableCells* grid.cellWidth - tableOffset* (numOfTables - 1)) / numOfTables;
 	}
 
+	var addedCell = numOfTables == this.tableOrder.length ? 1 : 0;
+
 	this.dimensions.table = {
 		width: tableWidth,
-		height: (grid.density + 1) * grid.cellHeight
+		height: (grid.density + addedCell) * grid.cellHeight
 	};
 	this.dimensions.dummy = {
-		width: tableWidth*numOfTables + this.offsets.table*2*(numOfTables-1),
-		height: (grid.density + 1) * grid.cellHeight
+		width: tableWidth*numOfTables + this.offsets.table*2*(numOfTables-1)
 	};
 
 	this.positions.table = grid.at(
@@ -408,9 +409,10 @@ FieldBuilder.prototype._calculateSpecificSizes = function(){
 
 	//Table
 	var width = this.dimensions.table.width,
-		height = this.dimensions.table.height,
 		mult = Math.ceil(this.tableOrder.length/this.tablesInRow),
+		height = this.dimensions.table.height,
 		y = this.positions.table.y - (mult - 1) * (height / 2),
+		ci = 0,
 		ri = 0,
 		ti = this.tablesInRow;
 
@@ -420,29 +422,29 @@ FieldBuilder.prototype._calculateSpecificSizes = function(){
 	var tableOrders = [	
 		[4, 2, 0, 1, 3, 5],
 		[2, 3, 0, 1, 4, 5],
-		[3, 0, 2, 4, 1, 5],
+		[5, 1, 3, 4, 0, 2],
 		null,
 		null,
 		[4, 2, 0, 1, 3, 5]
 	];
 
-	console.log(this.tableOrder.length)
 	this.tableOrder = tableOrders[this.tablesInRow - 1];
 	for(i = 0; i < this.tableOrder.length; i++){
-		if(ti == 0){
+		if(ti === 0){
 			ti = this.tablesInRow;
-			ri = 0;
+			ci = 0;
+			ri++;
 			y += height;
 		}
 		id = 'TABLE' + this.tableOrder[i];
-		x = this.positions.table.x + (width + tableOffset)*ri;
+		x = this.positions.table.x + (width + tableOffset)*ci;
 
 		this.positions[id] = {x: x, y: y};
 		this.offsets[id] = this.offsets.table;
 		this.dimensions[id] = {width: width, height: height};		
-		this._notEnoughSpace(id, 'table');
+		this._notEnoughSpace(id, 'table', null, false, true);
 		ti--;
-		ri++;
+		ci++;
 	}
 
 	//Player
@@ -556,7 +558,7 @@ FieldBuilder.prototype._countOpponentPlacement = function(n){
 
 
 //Выводит предупреждение в консоль, если ширина меньше ширины одной карты
-FieldBuilder.prototype._notEnoughSpace = function(id, ref, index, silent){
+FieldBuilder.prototype._notEnoughSpace = function(id, ref, index, silent, noHeight, noWidth){
 	var isArray = typeof index == 'number',
 		width = isArray ? this.dimensions[ref][index].width : this.dimensions[ref].width,
 		height = isArray ? this.dimensions[ref][index].height : this.dimensions[ref].height,
@@ -565,10 +567,10 @@ FieldBuilder.prototype._notEnoughSpace = function(id, ref, index, silent){
 		requiredHeight = skinManager.skin.height + minActiveSpace,
 		str = null;
 
-	if((width || width === 0) && width < requiredWidth){
+	if(!noWidth && (width || width === 0) && width < requiredWidth){
 		str = ['Field builder: Not enough space for field', id, '(', width, '<', requiredWidth, ')\n'];
 	}
-	else if((height || height === 0) && height < requiredHeight){
+	else if(!noHeight && (height || height === 0) && height < requiredHeight){
 		str = ['Field builder: Not enough space for field', id, '(', height, '<', requiredHeight, ')\n'];
 	}
 

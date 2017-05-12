@@ -29,7 +29,7 @@ window.notificationReactions = {
 	* @param {object} note сообщение
 	*/
 	GAME_STARTED: function(note){
-		console.log(note.index)
+		
 	},
 
 	/**

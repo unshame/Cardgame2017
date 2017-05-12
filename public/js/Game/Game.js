@@ -7,7 +7,7 @@ var Game = function(minWidth, minHeight, speed, inDebugMode){
 
 	this.speed = speed || 1;
 	this.minWidth = minWidth || 1024;
-	this.minHeight = minHeight || 768;
+	this.minHeight = minHeight || 820;
 	this.inDebugMode = inDebugMode || false;
 	this.initialized = false;
 
@@ -70,9 +70,6 @@ Game.prototype.calculateScreenSize = function(){
 		minWidth = this.minWidth,
 		minHeight = this.minHeight;
 
-	if(width <= 1400){
-		minHeight = 960;
-	}
 		
 	var diffWidth = minWidth - width,
 		diffHeight = minHeight - height,
