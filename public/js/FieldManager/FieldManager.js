@@ -62,8 +62,9 @@ FieldManager.prototype.addField = function(options){
 	}
 	this.fields[options.id] = field;
 
-	if(options.type == 'TABLE')
+	if(options.type == 'TABLE'){
 		this.table.push(field);
+	}
 };
 
 //FieldManagerProtoCard

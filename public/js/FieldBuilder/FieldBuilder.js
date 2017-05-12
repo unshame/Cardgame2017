@@ -56,6 +56,8 @@ FieldBuilder.prototype.adjustFieldNetwork = function(){
 		return;
 	}
 
+	manager.table.length = 0;
+
 	this.opponentPlacement = this._countOpponentPlacement(players.length - 1);
 	this.calcSizes();
 	this._buildOpponentFields();
