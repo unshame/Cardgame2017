@@ -3,6 +3,7 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 	/* Константы */
 	this.offsets.table = 0;
 	this.minActiveSpaces.table = skinManager.skin.trumpOffset;
+	this.offsets.dummy = 0;
 	/*--*/
 
 	var halfRows = Math.floor(grid.numRows / 2),

@@ -62,6 +62,9 @@ FieldManager.prototype.resetHighlights = function(){
 	this.forEachField(function(field){
 		field.setHighlight(false);
 		field.validCards.length = 0;
+		if(field.icon && field.iconShouldHide){
+			field.icon.visible = false;
+		}
 	});
 	this.resetPopOut();
 	var field = this.fields[playerManager.pid];
@@ -88,6 +91,9 @@ FieldManager.prototype.highlightMarkedFields = function(){
 	if(allMarked){
 		this.forEachField(function(f){
 			f.setVisibility(false);
+			if(f.icon && f.iconShouldHide){
+				f.icon.visible = true;
+			}
 		});
 		this.fields.dummy.setHighlight(true, ui.colors.orange);
 	}

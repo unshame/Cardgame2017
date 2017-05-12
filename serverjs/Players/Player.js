@@ -38,8 +38,12 @@ class Player{
 			gameIndex: this.game.index,
 			noResponse: noResponse || false
 		};
-		if(trumpSuit || trumpSuit === 0)
+		if(this.game.cards.table.fullLength == this.game.cards.table.maxLength){
+			action.unlockedField = 'TABLE' + (this.game.cards.table.fullLength - 1);
+		}
+		if(trumpSuit || trumpSuit === 0){
 			action.trumpSuit = trumpSuit;
+		}
 
 		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);

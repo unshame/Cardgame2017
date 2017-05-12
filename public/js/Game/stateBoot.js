@@ -41,6 +41,10 @@ window.stateBoot = {
 		//Для тестов
 		game.load.image('testParticle', 'assets/test_particle.png');
 
+		game.load.image('lock', 'assets/lock.png');
+		game.load.image('unlock', 'assets/unlock.png');
+		game.load.spritesheet('suits', 'assets/suits.png', 140, 190, 4);
+
 		//Кнопки
 		game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 50, 4);
 		game.load.spritesheet('button_grey_small', 'assets/buttons/grey_small.png', 49, 49, 4);

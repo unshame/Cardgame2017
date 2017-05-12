@@ -58,15 +58,13 @@ window.notificationReactions = {
 	GAME_ENDED: function(note, actions){
 
 		//Ставим стопку сброса по центру экрана
-		var position = grid.at(4, Math.floor(grid.numRows/2)-1, 0, 0, 'middle left'),
-			field = fieldManager.fields.DISCARD_PILE;
+		var discard = fieldManager.fields.DISCARD_PILE,
+			dummy = fieldManager.fields.dummy;
 			
-		if(field){
-			field.axis = 'horizontal';
-			field.direction = 'forward';
-			field.forcedSpace = false;
-			field.resize((grid.numCols-8)*grid.cellWidth);
-			field.setBase(position.x, position.y, true);
+		if(discard && dummy){
+			var cards = discard.cards.slice();
+			discard.removeAllCards();
+			dummy.addCards(cards, true);
 		}
 
 		if(note.results && note.results.winners && ~note.results.winners.indexOf(game.pid)){
@@ -122,9 +120,11 @@ window.notificationReactions = {
 		if(actions){
 			this.handlePossibleActions(actions, note.time, note.timeSent);
 		}
+	},
+
+	TABLE_EXPANDED: function(note){
+		fieldManager.unlockField(note.id);
 	}
-
-
 
 };
 

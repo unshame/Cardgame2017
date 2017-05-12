@@ -88,3 +88,36 @@ FieldManager.prototype.toggleDebugMode = function(){
 	if(actionHandler.possibleActions && actionHandler.possibleActions.length)
 		actionHandler.highlightPossibleActions(actionHandler.possibleActions);
 };
+
+FieldManager.prototype.setTrumpSuit = function(suit){
+	var icon = this.fields.DECK.icon;
+	icon.frame = suit;
+	icon.visible = true;
+}
+
+FieldManager.prototype.unlockField = function(id){
+	var field = this.fields[id];
+	if(!field || !field.icon)
+		return;
+	
+	field.setHighlight(true);
+	field.setVisibility(true);
+	field.highlighted = false;
+	field.icon.visible = true;
+	field.iconShouldHide = false;
+	var tween = game.add.tween(field.icon);
+	tween.to({alpha: 0, angle: 360}, 1000, Phaser.Easing.Quadratic.Out, false, 500);
+	tween.onStart.addOnce(function(){
+		if(field && field.icon){
+			field.icon.loadTexture('unlock');
+		}
+	})
+	tween.onComplete.addOnce(function(){
+		if(field && field.icon){
+			field.icon.destroy();
+			field.icon = null;
+			field.setVisibility(false);
+		}
+	}, this);
+	tween.start();
+};

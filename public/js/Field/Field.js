@@ -35,6 +35,10 @@ var Field = function(options){
 	this.id = this.options.id;
 	this.name = this.options.name;
 
+	this.iconTexture = this.options.icon;
+	this.iconOffset = this.options.iconOffset;
+	this.iconShouldHide = this.options.iconShouldHide;
+
 	this.axis = this.options.axis;
 	if(!~['vertical', 'horizontal'].indexOf(this.axis))
 		this.axis = defaultOptions.axis;
@@ -79,14 +83,6 @@ var Field = function(options){
 
 	this.alpha = this.options.alpha;
 
-	if(this.focusable && this.axis == 'vertical'){
-		this.focusable = false;
-		console.warn(
-			'Field', this.type, this.id, 'set to focusable and ' + this.axis,
-			'. This is not supported, focusable defaulted to false\n', this
-		);
-	}
-
 	this.base = game.add.group();
 	this.setBase(this.options.x, this.options.y);
 	if(this.areaType == 'curved'){
@@ -103,6 +99,13 @@ var Field = function(options){
 	this.area.alpha = this.alpha;
 	this.area.visible = this.inDebugMode;
 	this.base.add(this.area);
+
+	if(this.iconTexture){
+		this.icon = game.add.image(0, 0, this.iconTexture);
+		this.icon.frame = this.options.frame;
+		this.icon.anchor.set(0.5, 0.5);
+		this.base.add(this.icon);
+	}
 	fieldManager.fieldsGroup.add(this.base);
 
 	this.highlighted = false;
@@ -162,7 +165,11 @@ Field.getDefaultOptions = function(){
 		randomAngle: false,	//Нужно ли класть карты в поле под случайным углом
 		areaType: 'plain',	//Является ли поле выгнутым
 
-		texture: null,
+		icon: null,
+		frame: 0,
+		iconOffset: {x: 0, y:0},
+		iconShouldHide: false,
+
 		alpha: 0.15,
 
 		debug: false,

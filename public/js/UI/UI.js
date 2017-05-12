@@ -84,7 +84,7 @@ UI.prototype.addButtons = function(){
 					0,
 					grid.numRows - grid.density - 1,
 					0,
-					0
+					5
 				).y
 			};
 		},
@@ -104,7 +104,7 @@ UI.prototype.addButtons = function(){
 				grid.numCols - grid.density*1.5 - 1,
 				grid.numRows - grid.density - 1,
 				-width/2,
-				0
+				5
 			);
 		},
 		action: game.toggleDebugMode,

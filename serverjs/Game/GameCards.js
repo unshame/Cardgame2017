@@ -370,6 +370,10 @@ class GameCards extends BetterArray{
 			if(this.table.fullLength < this.table.maxLength){
 				this.table.fullLength = this.table.maxLength;
 				utils.log('First discard, field expanded to', this.table.fullLength);
+				this.game.players.notify({
+					message: 'TABLE_EXPANDED',
+					id: 'TABLE' + (this.table.fullLength - 1)}
+				);
 			}
 
 			return action;

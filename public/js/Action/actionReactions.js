@@ -45,10 +45,17 @@ window.actionReactions = {
 		fieldManager.resetFields();
 		cardControl.reset();
 		cardManager.createCards(action.cards, true);
-
-		var delay = fieldManager.queueCards(action.cards, action.trumpSuit || action.trumpSuit === 0 ? true : false);
+		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
+		var delay = fieldManager.queueCards(action.cards, hasTrumpSuit ? true : false);
+		if(hasTrumpSuit){
+			fieldManager.setTrumpSuit(action.trumpSuit);
+		}
 		fieldManager.removeMarkedCards();
 		fieldManager.placeQueuedCards();
+		if(action.unlockedField){
+			fieldManager.unlockField(action.unlockedField);
+		}
+
 		return delay;
 	},
 

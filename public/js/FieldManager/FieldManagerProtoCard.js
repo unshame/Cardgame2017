@@ -102,8 +102,12 @@ FieldManager.prototype.showTrumpCards = function(cards, pid){
 			continue;
 		}
 
-		if(pid != c.pid)
+		if(pid != c.pid){
 			this.fields[c.pid].setHighlight(true, ui.colors.red);
+		}
+		else{
+			fieldManager.setTrumpSuit(c.cid);
+		}
 
 		card.raised = true;
 

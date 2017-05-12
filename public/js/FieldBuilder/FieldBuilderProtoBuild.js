@@ -23,6 +23,7 @@ FieldBuilder.prototype._buildTableFields = function(){
 	
 	for(var i = 0; i < this.tableOrder.length; i++){
 		var id = 'TABLE' + i;
+		var icon = i == this.tableOrder.length - 1 ? 'lock' : null;
 		manager.addField({
 			x: this.positions[id].x,
 			y: this.positions[id].y,
@@ -37,7 +38,9 @@ FieldBuilder.prototype._buildTableFields = function(){
 			horizontalAlign: 'left',
 			texture: 'field',
 			focusable:false,
-			sorted:false,
+			icon: icon,
+			iconShouldHide: true,
+			sorted: false,
 			type: 'TABLE',
 			id: id,
 			specialId: i,
@@ -107,6 +110,8 @@ FieldBuilder.prototype._buildDeckField = function(){
 		focusable:false,
 		forcedSpace: 0.5,
 		texture: 'field',
+		icon: 'suits',
+		iconOffset: {x: 0, y: skinManager.skin.trumpOffset + skinManager.skin.height/2 - 20 - skinManager.skin.width / 2},
 		sorted: false,
 		type: 'DECK',
 		id: 'DECK',
@@ -116,6 +121,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 		delayTime: 50,
 		debug: manager.inDebugMode
 	});
+	manager.fields.DECK.icon.visible = false;
 };
 
 //Discard pile

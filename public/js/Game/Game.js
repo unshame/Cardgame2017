@@ -6,7 +6,7 @@
 var Game = function(minWidth, minHeight, speed, inDebugMode){
 
 	this.speed = speed || 1;
-	this.minWidth = minWidth || 1024;
+	this.minWidth = minWidth || 1050;
 	this.minHeight = minHeight || 820;
 	this.inDebugMode = inDebugMode || false;
 	this.initialized = false;
