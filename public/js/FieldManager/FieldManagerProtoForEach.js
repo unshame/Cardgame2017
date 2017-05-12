@@ -101,4 +101,5 @@ FieldManager.prototype.resetNetwork = function(){
 	});
 	this.fields = {};
 	this.table = [];
+	this.networkCreated = false;
 };

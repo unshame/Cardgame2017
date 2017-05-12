@@ -52,10 +52,14 @@ var FieldManager = function(inDebugMode){
 * Добавляет поле
 */
 FieldManager.prototype.addField = function(options){
-	if(!options)
+	if(!options){
 		options = {};
+	}
 
 	var field = new Field(options);
+	if(this.fields[options.id]){
+		this.fields[options.id].destroy();
+	}
 	this.fields[options.id] = field;
 
 	if(options.type == 'TABLE')

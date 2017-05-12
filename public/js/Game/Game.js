@@ -10,7 +10,7 @@ var Game = function(minWidth, minHeight, speed, inDebugMode){
 	this.minHeight = minHeight || 768;
 	this.inDebugMode = inDebugMode || false;
 	this.initialized = false;
-	
+
 	/**
 	* Обработчик действий сервера
 	* @type {ActionHandler}
@@ -68,11 +68,17 @@ Game.prototype.calculateScreenSize = function(){
 	var width = window.innerWidth,
 		height = window.innerHeight,
 		minWidth = this.minWidth,
-		minHeight = this.minHeight,
-		diffWidth = minWidth - width,
+		minHeight = this.minHeight;
+
+	if(width <= 1400){
+		minHeight = 960;
+	}
+		
+	var diffWidth = minWidth - width,
 		diffHeight = minHeight - height,
 		multWidth = width/minWidth,
 		multHeight = height/minHeight;
+
 
 	if(this.inDebugMode){
 		console.log(

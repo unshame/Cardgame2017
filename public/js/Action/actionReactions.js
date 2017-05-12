@@ -39,7 +39,7 @@ window.actionReactions = {
 	* @return {number} Время до начала добавления последней карты
 	* @memberof actionReactions
 	*/
-	CARDS: function(action){
+	GAME_INFO: function(action){
 
 		cardManager.emitterStop();
 		fieldManager.resetFields();

@@ -26,9 +26,12 @@ ActionHandler.prototype.executeAction = function(action){
 	if(action.type == 'GAME_INFO' && action.players.length){
 		playerManager.savePlayers(action.players);
 		cardManager.disablePhysics();
-		fieldManager.resetNetwork();
-		fieldManager.builder.createFieldNetwork();
-		action.type = 'CARDS';
+		if(fieldManager.networkCreated){
+			fieldManager.builder.adjustFieldNetwork();
+		}
+		else{
+			fieldManager.builder.createFieldNetwork();
+		}
 	}
 
 	this.action = action;
