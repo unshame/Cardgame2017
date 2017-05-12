@@ -24,6 +24,7 @@ var Field = function(options){
 
 	this.cards = [];
 	this.cardsToRemove = [];
+	this.validCards = [];
 	this.delays = {};
 	this.queuedCards = [];
 	this.angles = {};
@@ -71,7 +72,10 @@ var Field = function(options){
 	this.delayTime = this.options.delayTime;
 
 	this.randomAngle = this.options.randomAngle;
-	this.curved = this.options.curved;
+
+	this.areaType = this.options.areaType;
+	if(!~['plain', 'curved', 'glowing'].indexOf(this.areaType))
+		this.areaType = defaultOptions.areaType;
 
 	this.alpha = this.options.alpha;
 
@@ -85,8 +89,7 @@ var Field = function(options){
 
 	this.base = game.add.group();
 	this.setBase(this.options.x, this.options.y);
-
-	if(this.curved){
+	if(this.areaType == 'curved'){
 		this.circle = game.make.graphics(0, 0);
 		this.base.add(this.circle);
 	}
@@ -103,10 +106,12 @@ var Field = function(options){
 	fieldManager.fieldsGroup.add(this.base);
 
 	this.highlighted = false;
+	this.marked = false;
+	this.poppedOut = false;
 
 	this.resize(this.options.width, this.options.height);
 
-	if(this.curved){
+	if(this.areaType == 'curved'){
 		var tween = game.add.tween(this.circle.position);
 		this.circle.y = this.area.height;
 		tween.to({y: 0}, this.moveTime/game.speed, Phaser.Easing.Quadratic.Out);
@@ -155,7 +160,7 @@ Field.getDefaultOptions = function(){
 		reversed: false,	//Карты добавляются начиная с последней
 		flipped: false,		//Карты распологаются повернутыми на 180 градусов
 		randomAngle: false,	//Нужно ли класть карты в поле под случайным углом
-		curved: false,	//Является ли поле выгнутым
+		areaType: 'plain',	//Является ли поле выгнутым
 
 		texture: null,
 		alpha: 0.15,

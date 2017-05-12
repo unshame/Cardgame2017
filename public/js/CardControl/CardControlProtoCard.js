@@ -28,11 +28,16 @@ CardControl.prototype._updateCard = function(){
 
 	this._updateCardPosition(curTime);
 	this._updateCardAngle(curTime);
-	if(this._cardOnValidField()){
-		this.card.setScale(1);
+	var fields = this._cardOnValidField();
+	if(fields){
+		this.card.setScale(1 + fields[0].focusedScaleDiff);
+		if(~fields[0].validCards.indexOf(this.card)){
+			fieldManager.popOutField(fields[0]);
+		}
 	}
 	else{
 		this.card.setScale(1.1);
+		fieldManager.resetPopOut();
 	}
 	return true;
 };

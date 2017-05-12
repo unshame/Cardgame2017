@@ -115,13 +115,8 @@ CardControl.prototype.cardMoveToField = function(newFields){
 		value: card.value
 	}], true);
 
-	fieldManager.forEachField(function(field, si){
-		field.setHighlight(false);
-	});
+	fieldManager.resetHighlights();
 
-	if(field){
-		field.setPlayability(false);
-	}
 	card.setPlayability(false);
 
 	actionHandler.possibleActions = null;

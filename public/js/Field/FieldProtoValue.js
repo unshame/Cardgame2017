@@ -10,6 +10,20 @@ Field.prototype.setPlayability = function(playable){
 	}
 };
 
+Field.prototype.highlightLastCard = function(highlight){
+	if(!this.cards.length)
+		return;
+
+	var i = 0;
+	for(; i < this.cards.length; i++){
+		this.cards[i].setHighlight(false);
+	}
+	if(highlight){
+		i = this.direction == 'backward' ? 0 : this.cards.length - 1;
+		this.cards[i].setHighlight(highlight);
+	}
+};
+
 /**
 * Устанавливает подсветку поля. По умолчанию зависит от того,
 * включен ли дебаг поля.
@@ -18,17 +32,60 @@ Field.prototype.setPlayability = function(playable){
 * @param {string} [linkedFieldId=null]      связанное поле, используется `{@link cardControl#cardMoveToField}`
 */
 Field.prototype.setHighlight = function(on, tint, linkedFieldId){
-	var plane = this.curved ? this.circle : this.area;
+	this.highlighted = on;
+
+	var plane;
+	switch(this.areaType){
+		case 'plain': 
+		plane = this.area;
+		break;
+
+		case 'curved':
+		plane = this.circle;
+		break;
+
+		case 'glowing':
+		if(this.cards.length){
+			this.setVisibility(false);
+			this.highlightLastCard(on);
+			return;
+		}
+		plane = this.area;
+		break;
+	}
+
 	this.setVisibility(on);
 	plane.tint = on ? (tint || ui.colors.orange) : ui.colors.lightBlue;
-	this.linkedField = fieldManager.fields[linkedFieldId] || null;
 	plane.alpha = on ? 0.35 : this.alpha;
-	this.highlighted = on;
+	this.linkedField = fieldManager.fields[linkedFieldId] || null;
 };
 
 Field.prototype.setVisibility = function(visible){
-	var plane = this.curved ? this.circle : this.area;
-	plane.visible = visible || this.inDebugMode || this.curved;
+	var plane;
+	switch(this.areaType){
+		case 'plain': 
+		plane = this.area;
+		break;
+
+		case 'curved':
+		plane = this.circle;
+		break;
+
+		case 'glowing':
+		plane = this.area;
+		break;
+	}
+	plane.visible = visible || this.inDebugMode || this.areaType == 'curved';
+};
+
+Field.prototype.popOut = function(popped){
+	if(popped == this.poppedOut)
+		return;
+	this.poppedOut = popped;
+	var scale = popped ? 1 + this.focusedScaleDiff : 1;
+	for(var i = 0; i < this.cards.length; i++){
+		this.cards[i].setScale(scale);
+	}
 };
 
 //СОРТИРОВКА

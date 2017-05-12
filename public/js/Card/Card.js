@@ -280,6 +280,7 @@ Card.prototype.destroy = function(delay) {
 	delete cardManager.cards[this.id];
 	this.setDraggability(false);
 	this.setPlayability(false);
+	this.setHighlight(false);
 	if(this.mover)
 		this.mover.stop();
 	if(this.rotator)

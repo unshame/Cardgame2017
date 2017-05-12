@@ -58,19 +58,52 @@ FieldManager.prototype.placeQueuedCards = function(){
 	});
 };
 
-FieldManager.prototype.checkCompleteHighlight = function(){
+FieldManager.prototype.resetHighlights = function(){
+	this.forEachField(function(field){
+		field.setHighlight(false);
+		field.validCards.length = 0;
+	});
+	this.resetPopOut();
+	var field = this.fields[playerManager.pid];
+	for(var ci = 0; ci < field.cards.length; ci++){
+		field.cards[ci].setPlayability(false);
+		field.cards[ci].setHighlight(false);
+	}
+}
+
+FieldManager.prototype.highlightMarkedFields = function(){
+	var allMarked = true;
 	for(var fid in this.table){
 		if(!this.table.hasOwnProperty(fid))
 			continue;
 		var f = this.table[fid];
-		if(!f.highlighted){
-			return;
+		if(!f.marked){
+			allMarked = false;
+		}
+		else{
+			f.marked = false;
+			f.highlighted = true;
 		}
 	}
+	if(allMarked){
+		this.forEachField(function(f){
+			f.setVisibility(false);
+		});
+		this.fields.dummy.setHighlight(true, ui.colors.orange);
+	}
+};
+
+FieldManager.prototype.popOutField = function(field){
 	this.forEachField(function(f){
-		f.setVisibility(false);
+		f.popOut(false);
 	});
-	this.fields.dummy.setHighlight(true, ui.colors.orange);
+	field.popOut(true);
+};
+
+FieldManager.prototype.resetPopOut = function(){
+	this.forEachField(function(field){
+		field.popOut(false);
+	});
 };
 
 /** Меняет размеры и устанавливает позицию полей в соотстветсвии с 
@@ -79,7 +112,7 @@ FieldManager.prototype.checkCompleteHighlight = function(){
 FieldManager.prototype.resizeFields = function(){
 	if(!this.networkCreated)
 		return;
-	this.builder._calculateSizes();
+	this.builder.calcSizes();
 	this.forEachField(function(field, si){
 		field.margin = this.builder.offsets[si];
 		field.setBase(this.builder.positions[si].x, this.builder.positions[si].y);

@@ -109,6 +109,9 @@ Card.prototype.setDraggability = function(draggable){
 * @param {number} [tint=ui.colors.orange] - цвет свечения карты
 */
 Card.prototype.setPlayability = function(playable, tint){
+	if(this.highlighted)
+		this.highlighted = false;
+
 	if(playable){
 		this._glowStart(0.25, 0.75, 1500, 500, tint || ui.colors.orange);
 	}
@@ -116,4 +119,17 @@ Card.prototype.setPlayability = function(playable, tint){
 		this._glowStop();
 	}
 	this.playable = playable;
+};
+
+Card.prototype.setHighlight = function(highlighted, tint){
+	if(this.playable)
+		this.playable = false;
+
+	if(highlighted){
+		this._glowStart(0.5, 0.75, 1500, 0, tint || ui.colors.orange);
+	}
+	else{
+		this._glowStop();
+	}
+	this.highlighted = highlighted;
 };

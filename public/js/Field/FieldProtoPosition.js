@@ -62,8 +62,8 @@ Field.prototype.resize = function(width, height, shouldPlace){
 
 	this.area.width = Math.round(width + this.margin*2),
 	this.area.height = Math.round(height + this.margin*2);
-	
-	if(this.curved){
+
+	if(this.areaType == 'curved'){
 		this._createCircle(this.area.width, this.area.height);
 	}
 

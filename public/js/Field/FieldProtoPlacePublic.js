@@ -82,7 +82,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	if(this.focusedCard && cardWidth*(this.cards.length - 1) > areaActiveWidth){		
 		shift = cardWidth*(1 + this.focusedScaleDiff/2) - cardSpacing;
 		//Уменьшаем сдвиг для карт в выгнутом поле
-		if(this.curved){
+		if(this.areaType == 'curved'){
 			shift -= 5;
 		}
 	}

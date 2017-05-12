@@ -34,8 +34,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 
 
 	this.opponentPlacement = this._countOpponentPlacement(players.length - 1);
-	this._calcGenSizes();	
-	this._calcSpecSizes();
+	this.calcSizes();
 
 	this._buildDeckField();
 	this._buildDiscardField();
@@ -58,11 +57,15 @@ FieldBuilder.prototype.adjustFieldNetwork = function(){
 	}
 
 	this.opponentPlacement = this._countOpponentPlacement(players.length - 1);
-	this._calcGenSizes();
-	this._calcSpecSizes();
+	this.calcSizes();
 	this._buildOpponentFields();
 	this._buildDiscardField();
 };
+
+FieldBuilder.prototype.calcSizes = function(){
+	this._calcGenSizes();
+	this._calcSpecSizes();
+}
 
 //FieldBuilderProtoBuild
 
@@ -104,6 +107,7 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 
 	this.offsets.DECK = 22;
 	this.minActiveSpaces.DECK = numOfCards/2;
+	this.dimensions.DECK = {};
 	this.positions.DECK = grid.at(
 		grid.density + 3,
 		-halfDensity,
@@ -113,6 +117,7 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 
 	this.offsets.DISCARD_PILE = 22;
 	this.minActiveSpaces.DISCARD_PILE = numOfCards/2;
+	this.dimensions.DISCARD_PILE = {};
 	this.positions.DISCARD_PILE = grid.at(
 		grid.numCols - grid.density - 3,
 		-halfDensity,

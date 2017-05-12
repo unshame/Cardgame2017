@@ -41,14 +41,7 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
-	fieldManager.forEachField(function(field){
-		field.setHighlight(false);
-	});
-
-	var field = fieldManager.fields[playerManager.pid];
-	for(var ci = 0; ci < field.cards.length; ci++){
-		field.cards[ci].setPlayability(false);
-	}
+	fieldManager.resetHighlights();
 
 	cardManager.resetRaised();
 
@@ -107,29 +100,27 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 	this.possibleActions = actions;
 	
-	fieldManager.forEachField(function(field){
-		field.setHighlight(false);
-		for(var ci = 0; ci < field.cards.length; ci++){
-			field.cards[ci].setPlayability(false);
-		}
-	});
+	fieldManager.resetHighlights();
 
 	for(var ai = 0; ai < actions.length; ai++){
-		var action = actions[ai],
-			tint = ui.colors.orange;
+		var action = actions[ai];
 		if(action.cid && game.cards[action.cid]){
-			game.cards[action.cid].setPlayability(true, tint);
-			fieldManager.fields[action.field].setHighlight(true, tint, action.linkedField);
+			var field = fieldManager.fields[action.field],
+				card = game.cards[action.cid];
+			card.setPlayability(true);
+			field.marked = true;
+			if(action.type == 'DEFENSE'){
+				field.validCards.push(card);
+				field.setHighlight(true, null, action.linkedField);
+			}
 		}
 	}
-	fieldManager.checkCompleteHighlight();
+	fieldManager.highlightMarkedFields();
 };
 
 ActionHandler.prototype.executeTimedAction = function(){
 	if(!this.timedAction)
 		return;
-
-	//console.log('action force executed')
 
 	clearTimeout(this.timedActionTimeout);
 	this.timedAction();
@@ -140,10 +131,7 @@ ActionHandler.prototype.executeTimedAction = function(){
 ActionHandler.prototype.setTimedAction = function(callback, delay, context, args){
 	this.executeTimedAction();
 
-	//console.log('action set')
-
 	this.timedAction = function(){
-		//console.log('action executed')
 		callback.apply(context, args || []);
 		this.timedAction = this.timedActionTimeout = null;
 	};
