@@ -94,13 +94,19 @@ FieldManager.prototype.setTrumpSuit = function(suit){
 	var icon = this.fields.DECK.icon;
 	icon.frame = suit;
 	icon.visible = true;
-}
+};
 
 FieldManager.prototype.unlockField = function(id){
 	var field = this.fields[id];
 	if(!field || !field.icon)
 		return;
 	
+	if(game.paused){
+		field.icon.destroy();
+		field.icon = null;
+		return;
+	}
+
 	field.icon.visible = true;
 	field.iconShouldHide = false;
 	field.icon.alpha = 1;
@@ -108,9 +114,8 @@ FieldManager.prototype.unlockField = function(id){
 	var spinDelay = 300/game.speed,
 		spinTime = 1300/game.speed;
 
-
-		field.setHighlight(true);
-		field.highlighted = false;
+	field.setHighlight(true);
+	field.highlighted = false;
 
 	var tween = game.add.tween(field.icon);
 	tween.to({alpha: 0, angle: 720}, spinTime - 300, Phaser.Easing.Quadratic.In, false, spinDelay);
@@ -118,7 +123,7 @@ FieldManager.prototype.unlockField = function(id){
 	setTimeout(function(){
 		if(!field || !field.icon) return;
 		field.icon.loadTexture('unlock');
-	}, spinDelay/3)
+	}, spinDelay/3);
 
 	tween.onComplete.addOnce(function(){
 		if(!field || !field.icon) return;
@@ -145,4 +150,4 @@ FieldManager.prototype.swapFields = function(field1, field2){
 	field2.id = field1.id;
 	field1.id = tempId;
 	return field2;	
-}
+};

@@ -106,7 +106,7 @@ CardControl.prototype.cardMoveToField = function(newFields){
 	this.pointer = null;
 
 	if(newField.linkedField){
-		if(newField.icon){
+		if(newField.icon || newField.cards.length){
 			newField = newField.linkedField;
 		}
 		else{
