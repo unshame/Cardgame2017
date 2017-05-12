@@ -110,7 +110,7 @@ CardControl.prototype.cardMoveToField = function(newFields){
 			newField = newField.linkedField;
 		}
 		else{
-			newField = fieldManager.swapFields(newField, newField.linkedField);
+			fieldManager.swapFields(newField, newField.linkedField);
 		}
 	}
 
