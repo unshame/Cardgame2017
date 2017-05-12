@@ -102,12 +102,17 @@ CardControl.prototype.cardMoveToField = function(newFields){
 	this._setTrailResetTimer();
 
 	var card = this.card;
-	var field = card.field;
 	this.card = null;
 	this.pointer = null;
 
-	if(newField.linkedField)
-		newField = newField.linkedField;
+	if(newField.linkedField){
+		if(newField.icon){
+			newField = newField.linkedField;
+		}
+		else{
+			newField = fieldManager.swapFields(newField, newField.linkedField);
+		}
+	}
 
 	fieldManager.moveCards(newField, [{
 		cid: card.id,

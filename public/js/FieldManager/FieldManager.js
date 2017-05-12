@@ -137,3 +137,12 @@ FieldManager.prototype.unlockField = function(id){
 
 	return spinDelay + spinTime - 300/game.speed;
 };
+
+FieldManager.prototype.swapFields = function(field1, field2){
+	var tempId = field2.id;
+	this.fields[tempId] = field1;
+	this.fields[field1.id] = field2;
+	field2.id = field1.id;
+	field1.id = tempId;
+	return field2;	
+}

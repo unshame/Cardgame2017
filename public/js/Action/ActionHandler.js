@@ -113,6 +113,9 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 				field.validCards.push(card);
 				field.setHighlight(true, null, action.linkedField);
 			}
+			else{
+				field.linkedField = fieldManager.fields[action.linkedField] || null;
+			}
 		}
 	}
 	fieldManager.highlightMarkedFields();
