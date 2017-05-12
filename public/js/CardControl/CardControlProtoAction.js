@@ -91,7 +91,6 @@ CardControl.prototype.cardMoveToField = function(newFields){
 	for(var i = 0; i < newFields.length; i++){
 		newField = newFields[i];
 		success = connection.server.sendAction(newField, this.card);
-		console.log(newField);
 		if (success) break;
 	}
 

@@ -26,7 +26,7 @@ Field.prototype.removeCards = function(cardsToRemove){
 
 Field.prototype.removeMarkedCards = function(){
 	this.removeCards(this.cardsToRemove);
-}
+};
 
 /**
 * Удаляет все карты из поля.

@@ -52,7 +52,7 @@ FieldManager.prototype.revealCards = function(cardsInfo){
 			continue;
 		}
 	}
-}
+};
 
 /**
 * Перемещает карты в соответствующие поля
