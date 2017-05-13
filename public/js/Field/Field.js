@@ -178,14 +178,14 @@ Field.getDefaultOptions = function(){
 	return options;
 };
 
-//FieldPosition
-//FieldValue
-//FieldQueue
-//FieldAdd
-//FieldDelete
-//FieldPlacePrivate
-//FieldPlacePublic
-//FieldPlaceCursor
+//@include:FieldPosition
+//@include:FieldValue
+//@include:FieldQueue
+//@include:FieldAdd
+//@include:FieldDelete
+//@include:FieldPlacePrivate
+//@include:FieldPlacePublic
+//@include:FieldPlaceCursor
 
 //БУЛЕВЫ ФУНКЦИИ
 
