@@ -67,29 +67,6 @@ FieldManager.prototype.addField = function(options){
 	}
 };
 
-//FieldManagerCard
-//FieldManagerForEach
-
-//ДЕБАГ
-
-/** Обновляет дебаг каждого поля*/
-FieldManager.prototype.updateDebug = function(){
-	this.forEachField(function(field, si){
-		field.updateDebug();
-	});
-};
-
-/** Переключает режим дебага в каждом поле*/
-FieldManager.prototype.toggleDebugMode = function(){
-	this.inDebugMode = !this.inDebugMode;
-	this.forEachField(function(field, si){
-		if(field.inDebugMode != this.inDebugMode)
-			field.toggleDebugMode();
-	});
-	if(actionHandler.possibleActions && actionHandler.possibleActions.length)
-		actionHandler.highlightPossibleActions(actionHandler.possibleActions);
-};
-
 FieldManager.prototype.setTrumpSuit = function(suit){
 	var icon = this.fields.DECK.icon;
 	icon.frame = suit;
@@ -150,4 +127,27 @@ FieldManager.prototype.swapFields = function(field1, field2){
 	field2.id = field1.id;
 	field1.id = tempId;
 	return field2;	
+};
+
+//@include:FieldManagerCard
+//@include:FieldManagerForEach
+
+//ДЕБАГ
+
+/** Обновляет дебаг каждого поля*/
+FieldManager.prototype.updateDebug = function(){
+	this.forEachField(function(field, si){
+		field.updateDebug();
+	});
+};
+
+/** Переключает режим дебага в каждом поле*/
+FieldManager.prototype.toggleDebugMode = function(){
+	this.inDebugMode = !this.inDebugMode;
+	this.forEachField(function(field, si){
+		if(field.inDebugMode != this.inDebugMode)
+			field.toggleDebugMode();
+	});
+	if(actionHandler.possibleActions && actionHandler.possibleActions.length)
+		actionHandler.highlightPossibleActions(actionHandler.possibleActions);
 };

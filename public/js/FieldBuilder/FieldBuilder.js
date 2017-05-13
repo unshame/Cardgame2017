@@ -99,9 +99,9 @@ FieldBuilder.prototype._calcSpecSizes = function(){
 	this._calcSpecOpponentSizes();
 };
 
-//FieldBuilderTable
-//FieldBuilderPlayer
-//FieldBuilderOpponent
+//@include:FieldBuilderTable
+//@include:FieldBuilderPlayer
+//@include:FieldBuilderOpponent
 
 //Размеры для колоды и стопки сброса
 FieldBuilder.prototype._calcDeckDiscardSizes = function(){

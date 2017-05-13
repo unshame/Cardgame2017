@@ -196,11 +196,11 @@ Card.getDefaultOptions = function(){
 	return options;
 };
 
-//CardValue
-//CardPosition
-//CardMover
-//CardSkin
-//CardGlow
+//@include:CardValue
+//@include:CardPosition
+//@include:CardMover
+//@include:CardSkin
+//@include:CardGlow
 
 //СОБЫТИЯ
 

@@ -101,9 +101,9 @@ CardControl.prototype._cardOnValidField = function(){
 	return false;
 };
 
-//CardControlAction
-//CardControlCard
-//CardControlTrail
+//@include:CardControlAction
+//@include:CardControlCard
+//@include:CardControlTrail
 
 //Обновление контроллера
 CardControl.prototype.update = function(){
@@ -126,4 +126,4 @@ CardControl.prototype.reset = function(reason){
 	this.pointer = null;
 };
 
-//CardControlDebug
+//@include:CardControlDebug
