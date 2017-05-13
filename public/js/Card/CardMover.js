@@ -151,6 +151,7 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	//Ресет твина по окончанию
 	this.mover.onComplete.addOnce(function(){
 		this.mover = null;
+		this.updateValue();
 		if(this._bringToTopOn == BRING_TO_TOP_ON.END || this._bringToTopOn == BRING_TO_TOP_ON.END_ALL){
 			if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.END)
 				this.bringToTop();
