@@ -67,8 +67,8 @@ FieldManager.prototype.addField = function(options){
 	}
 };
 
-//FieldManagerProtoCard
-//FieldManagerProtoForEach
+//FieldManagerCard
+//FieldManagerForEach
 
 //ДЕБАГ
 

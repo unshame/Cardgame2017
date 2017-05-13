@@ -178,14 +178,14 @@ Field.getDefaultOptions = function(){
 	return options;
 };
 
-//FieldProtoPosition
-//FieldProtoValue
-//FieldProtoQueue
-//FieldProtoAdd
-//FieldProtoDelete
-//FieldProtoPlacePrivate
-//FieldProtoPlacePublic
-//FieldProtoPlaceCursor
+//FieldPosition
+//FieldValue
+//FieldQueue
+//FieldAdd
+//FieldDelete
+//FieldPlacePrivate
+//FieldPlacePublic
+//FieldPlaceCursor
 
 //БУЛЕВЫ ФУНКЦИИ
 

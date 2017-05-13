@@ -172,7 +172,7 @@ CardManager.prototype.toggleDebugMode = function(){
 	}
 };
 
-//CardManagerProtoEmitter
+//CardManagerEmitter
 
 //ТЕСТОВЫЕ ФУНКЦИИ
 

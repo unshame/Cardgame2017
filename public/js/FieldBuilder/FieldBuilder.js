@@ -70,7 +70,7 @@ FieldBuilder.prototype.calcSizes = function(){
 	this._calcSpecSizes();
 }
 
-//FieldBuilderProtoBuild
+//FieldBuilderBuild
 
 //Обобщенные (General) размеры
 FieldBuilder.prototype._calcGenSizes = function(){
@@ -99,9 +99,9 @@ FieldBuilder.prototype._calcSpecSizes = function(){
 	this._calcSpecOpponentSizes();
 };
 
-//FieldBuilderProtoTable
-//FieldBuilderProtoPlayer
-//FieldBuilderProtoOpponent
+//FieldBuilderTable
+//FieldBuilderPlayer
+//FieldBuilderOpponent
 
 //Размеры для колоды и стопки сброса
 FieldBuilder.prototype._calcDeckDiscardSizes = function(){
