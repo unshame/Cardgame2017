@@ -28,7 +28,7 @@ CardManager.prototype.emitterStart = function(minSpeed, maxSpeed, sway, interval
 		return Math.abs((-1* b + Math.sqrt(Math.pow(b, 2) - (4* a* c))) / (2* a));
 	}
 	
-	var lifespan = solveQuadtraticEq(this.emitter.gravity/2, minSpeed, -(game.screenHeight + skinManager.skin.height*2))*1000;
+	var lifespan = solveQuadtraticEq(this.emitter.gravity/2, minSpeed*game.speed, -(game.screenHeight + skinManager.skin.height*2))*1000;
 	if(interval === false)
 		interval = lifespan/this.emitter.maxParticles;
 	this.emitter.interval = interval;
