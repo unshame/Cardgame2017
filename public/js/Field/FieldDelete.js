@@ -13,8 +13,12 @@ Field.prototype.removeCards = function(cardsToRemove){
 				this.focusedCard = null;
 			this.cards.splice(i, 1);
 			card.field = null;
-			card.fieldId = null;
+			if(card.fieldId == this.id)
+				card.fieldId = null;
 			this._angles[card.id] = null;
+		}
+		else{
+			console.warn('Card not found in', this.id, ':', card.id, card.field, card.fieldId);
 		}
 	}
 	if(this.cards.length){
@@ -29,6 +33,7 @@ Field.prototype.removeCards = function(cardsToRemove){
  */
 Field.prototype.removeMarkedCards = function(){
 	this.removeCards(this.cardsToRemove);
+	this.cardsToRemove.length = 0;
 };
 
 /**

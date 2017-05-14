@@ -64,7 +64,7 @@ window.notificationReactions = {
 		if(discard && dummy){
 			var cards = discard.cards.slice();
 			discard.removeAllCards();
-			dummy.addCards(cards, BRING_TO_TOP_ON.START, true);
+			dummy.addCards(cards, BRING_TO_TOP_ON.NEVER, true);
 		}
 
 		if(note.results && note.results.winners && ~note.results.winners.indexOf(game.pid)){

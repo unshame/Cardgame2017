@@ -79,7 +79,9 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDe
 			card.presetValue(suit, value);
 			var fieldChanged = card.presetField(field.id);
 			if(fieldChanged){
-				card.field && card.field.removeCard(card);
+				if(card.field){
+					card.field.removeCard(card);
+				}
 				cardsToPlace.push(card);
 			}
 		}
