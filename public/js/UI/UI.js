@@ -139,7 +139,9 @@ UI.prototype.addButtons = function(){
 				y: game.screenHeight - 15 - height
 			};
 		},
-		action: function(){console.log('menu');},
+		action: function(){
+			background.nextTexture();
+		},
 		icon: 'menu',
 		color: 'orange',
 		name: 'options',
