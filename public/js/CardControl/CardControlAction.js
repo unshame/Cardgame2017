@@ -135,8 +135,14 @@ CardControl.prototype.cardReturn = function(){
 		return;
 	}
 
-	if(this.inDebugMode)
+	if(cardManager.physicsEnabled && this.card.sprite.body){
+		this.cardThrow();
+		return;
+	}
+
+	if(this.inDebugMode){
 		console.log('Card control: Returning', this.card.id, 'to base');
+	}
 
 	this._setTrailResetTimer();
 
