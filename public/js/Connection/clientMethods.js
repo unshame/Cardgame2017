@@ -25,7 +25,7 @@ window.clientMethods = {
 		}
 		else{
 			cardManager.reset();
-			cardManager.emitterStop();
+			cardManager.emitterStart(0, 50, 10, 2000, 20, 1);
 			fieldManager.resetNetwork();
 			ui.rope.stop();
 			ui.actionButtons.getByName('action').disable();
