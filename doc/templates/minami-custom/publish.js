@@ -355,14 +355,37 @@ function buildNav(members) {
 
   if (members.globals.length) {
     nav.push(buildNavHeading(linkto('global', 'Globals')))
-
+    members.globals.sort(function(a,b){
+      var kinda = a.kind,
+        kindb = b.kind,
+        namea = a.name.toUpperCase(),
+        nameb = b.name.toUpperCase();
+      if(kinda == 'function')
+        kinda = 'method';
+      if(kindb == 'function')
+        kindb = 'method';
+      if(kinda < kindb){
+        return -1;
+      }
+      else if(kinda > kindb){
+        return 1;
+      }
+      else if(namea < nameb){
+        return -1;
+      }
+      else if(namea > nameb){
+        return 1;
+      }
+      else return 0;
+    });
     members.globals.forEach(function (item) {
-      if (item.kind !== "typedef" && !hasOwnProp.call(seen, item.longname)) {
+      if (!hasOwnProp.call(seen, item.longname)) {
         nav.push(buildNavItem(buildNavType(item.kind, linkto(item.longname, item.name))))
       }
 
       seen[item.longname] = true
     })
+
   }
 
   return nav.join('')
