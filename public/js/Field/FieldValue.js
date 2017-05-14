@@ -60,6 +60,10 @@ Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 	this.linkedField = fieldManager.fields[linkedFieldId] || null;
 };
 
+/**
+ * Устанавливает видимость подсветки поля.
+ * @param {boolean} visible видимость
+ */
 Field.prototype.setVisibility = function(visible){
 	var plane;
 	switch(this.areaType){
@@ -78,6 +82,10 @@ Field.prototype.setVisibility = function(visible){
 	plane.visible = visible || this.inDebugMode || this.areaType == 'curved';
 };
 
+/**
+ * Увеличивает или восстанавливает масштаб всех карт в поле.
+ * @param  {boolean} popped нужно ли увеличить или восстановить масштаб
+ */
 Field.prototype.popOut = function(popped){
 	if(popped == this.poppedOut)
 		return;

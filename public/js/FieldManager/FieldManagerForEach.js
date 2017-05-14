@@ -1,7 +1,7 @@
 //FOR EACH FIELD
 
 /**
-* Выполняет callback для каждого поля из {@link FieldManager#fields}
+* Выполняет callback для каждого поля из {@link FieldManager#fields}. 
 * @param {function} callback - Вызываемая функция
 * @param {function} context - Контекст вызываваемой функции
 * @return {any[]} Возвращенные переданной функцей значения
@@ -19,7 +19,7 @@ FieldManager.prototype.forEachField = function(callback, context){
 	return returnedValues;
 };
 
-/** Удаляет карты {@link Field#cardsToRemove} из соответсвующих полей*/
+/** Удаляет карты {@link Field#cardsToRemove} из соответсвующих полей. */
 FieldManager.prototype.removeMarkedCards = function(){
 	this.forEachField(function(field, si){
 		field.removeMarkedCards();
@@ -27,7 +27,7 @@ FieldManager.prototype.removeMarkedCards = function(){
 };
 
 /** 
-* Заставляет каждое поле разместить все карты
+* Заставляет каждое поле разместить все карты. 
 * @param  {BRING_TO_TOP_ON} bringToTopOn - Когда поднимать карту на передний план
 * @param  {boolean} noDelay - Говорит полю, что перемещение не нужно задерживать
 */
@@ -37,27 +37,28 @@ FieldManager.prototype.placeCards = function(bringToTopOn, noDelay){
 	});
 };
 
-/** Заставляет каждое поле повернуть все карты*/
+/** Заставляет каждое поле повернуть все карты. */
 FieldManager.prototype.rotateCards = function(){
 	this.forEachField(function(field){
 		field.rotateCards();
 	});
 };
 
-/** Заставляет каждое поле присвоить правильный z-index всем картам*/
+/** Заставляет каждое поле присвоить правильный z-index всем картам. */
 FieldManager.prototype.zAlignCards = function(){
 	this.forEachField(function(field){
 		field.zAlignCards();
 	});
 };
 
-/** Выполняет размещение очередей карт каждого поля*/
-FieldManager.prototype.placeQueuedCards = function(){
+/** Выполняет размещение очередей карт каждого поля. */
+FieldManager.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 	this.forEachField(function(field){
-		field.placeQueuedCards();
+		field.placeQueuedCards(bringToTopOn, noDelay);
 	});
 };
 
+/** Убирает подсветку всех полей и карт и восстанавливает масштаб картв полях. */
 FieldManager.prototype.resetHighlights = function(){
 	this.forEachField(function(field){
 		field.setHighlight(false);
@@ -74,6 +75,7 @@ FieldManager.prototype.resetHighlights = function(){
 	}
 }
 
+/** Подсвечивает поля с `marked == true`. */
 FieldManager.prototype.highlightMarkedFields = function(){
 	var allMarked = true;
 	for(var fid in this.table){
@@ -99,13 +101,16 @@ FieldManager.prototype.highlightMarkedFields = function(){
 	}
 };
 
+/** 
+* Увеличивает масштаб карт в поле, восстанавливает масштаб во всех остальных полях.
+* @param {Field} field поле
+*/
 FieldManager.prototype.popOutField = function(field){
-	this.forEachField(function(f){
-		f.popOut(false);
-	});
+	this.resetPopOut();
 	field.popOut(true);
 };
 
+/** Восстанавливает масштаб во всех полях */
 FieldManager.prototype.resetPopOut = function(){
 	this.forEachField(function(field){
 		field.popOut(false);
@@ -113,7 +118,7 @@ FieldManager.prototype.resetPopOut = function(){
 };
 
 /** Меняет размеры и устанавливает позицию полей в соотстветсвии с 
-* {@link FieldBuilder#positions} и {@link FieldBuilder#dimensions}
+* {@link FieldBuilder#positions} и {@link FieldBuilder#dimensions}.
 */
 FieldManager.prototype.resizeFields = function(){
 	if(!this.networkCreated)
@@ -126,14 +131,14 @@ FieldManager.prototype.resizeFields = function(){
 	});
 };
 
-/** Ресетит поля*/
+/** Ресетит поля.*/
 FieldManager.prototype.resetFields = function(){
 	this.forEachField(function(field){
 		field.reset();
 	});
 };
 
-/** Уничтожает поля*/
+/** Уничтожает поля.*/
 FieldManager.prototype.resetNetwork = function(){
 	this.forEachField(function(field){
 		field.destroy();

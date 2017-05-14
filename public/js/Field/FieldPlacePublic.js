@@ -3,7 +3,7 @@
 /**
 * Размещает карты в поле.
 * @param  {Card[]} [newCards=null]       только что добавленные карты, они будут перемещены в поле по очереди
-* @param  {BRING_TO_TOP_ON} bringToTopOn когда поднимать карту на передний план
+* @param  {BRING_TO_TOP_ON} [bringToTopOn] когда поднимать карту на передний план
 * @param  {boolean} [noDelay=false]      все карты будут перемещены без задержки
 * @return {number}              Возвращает задержку следующей карты.
 */
@@ -129,7 +129,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 /**
 * Размещает одну карту в поле.
-* @param  {Card[]} [newCards=null]       только что добавленная карта, они будут перемещены в поле по очереди
+* @param  {Card[]} [card=null]       только что добавленная карта, они будут перемещены в поле по очереди
 * @param  {BRING_TO_TOP_ON} bringToTopOn когда поднимать карту на передний план
 * @param  {boolean} [noDelay=false]      все карты будут перемещены без задержки
 * @return {number}              Возвращает задержку следующей карты.

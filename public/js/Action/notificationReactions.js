@@ -64,7 +64,7 @@ window.notificationReactions = {
 		if(discard && dummy){
 			var cards = discard.cards.slice();
 			discard.removeAllCards();
-			dummy.addCards(cards, true);
+			dummy.addCards(cards, BRING_TO_TOP_ON.START, true);
 		}
 
 		if(note.results && note.results.winners && ~note.results.winners.indexOf(game.pid)){
@@ -115,7 +115,7 @@ window.notificationReactions = {
 				value: card.value
 			};
 			var field = fieldManager.fields[playerManager.pid];
-			fieldManager.moveCards(field, [cardInfo]);
+			fieldManager.moveCards(field, [cardInfo], BRING_TO_TOP_ON.END_ALL);
 		}
 		if(actions){
 			this.handlePossibleActions(actions, note.time, note.timeSent);

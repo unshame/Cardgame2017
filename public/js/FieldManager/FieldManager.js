@@ -67,12 +67,20 @@ FieldManager.prototype.addField = function(options){
 	}
 };
 
+/**
+ * Устанавливает козырь колоде.
+ * @param {number} suit козырь
+ */
 FieldManager.prototype.setTrumpSuit = function(suit){
 	var icon = this.fields.DECK.icon;
 	icon.frame = suit;
 	icon.visible = true;
 };
 
+/**
+ * Убирает визуальный замок с поля.
+ * @param  {string} id id поля
+ */
 FieldManager.prototype.unlockField = function(id){
 	var field = this.fields[id];
 	if(!field || !field.icon)
@@ -120,13 +128,17 @@ FieldManager.prototype.unlockField = function(id){
 	return spinDelay + spinTime - 300/game.speed;
 };
 
+/**
+ * Меняет местами два поля
+ * @param  {Field} field1 первое поле
+ * @param  {Field} field2 второе поле
+ */
 FieldManager.prototype.swapFields = function(field1, field2){
 	var tempId = field2.id;
 	this.fields[tempId] = field1;
 	this.fields[field1.id] = field2;
 	field2.id = field1.id;
 	field1.id = tempId;
-	return field2;	
 };
 
 //@include:FieldManagerCard
@@ -134,14 +146,14 @@ FieldManager.prototype.swapFields = function(field1, field2){
 
 //ДЕБАГ
 
-/** Обновляет дебаг каждого поля*/
+/** Обновляет дебаг каждого поля */
 FieldManager.prototype.updateDebug = function(){
 	this.forEachField(function(field, si){
 		field.updateDebug();
 	});
 };
 
-/** Переключает режим дебага в каждом поле*/
+/** Переключает режим дебага в каждом поле */
 FieldManager.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
 	this.forEachField(function(field, si){

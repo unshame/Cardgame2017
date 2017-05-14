@@ -20,8 +20,11 @@ CardManager.prototype.toggleDebugMode = function(){
 
 //ТЕСТОВЫЕ ФУНКЦИИ
 
-//Возвращает несколько карт в массиве
-//Если не указать num, возвратит все карты
+/**
+ * Возвращает несколько карт в массиве.
+ * @param {number} [num=this.cards.length] желаемое количество карт
+ * @param {Card[]} [except] игнорируемые карты
+ */
 CardManager.prototype.getCards = function(num, except){
 	if(!num)
 		num = this.cards.length;
@@ -39,7 +42,10 @@ CardManager.prototype.getCards = function(num, except){
 	return crds;
 };
 
-//Возвращает одну карту, которая не входит в except
+/**
+ * Возвращает одну карту, которая не входит в `except`.
+ * @param {Card[]} [except] игнорируемые карты
+ */
 CardManager.prototype.getCard = function(except){
 	var card = this.getCards(1, except);
 	if(card.length)

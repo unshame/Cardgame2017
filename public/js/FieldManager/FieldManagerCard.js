@@ -1,13 +1,13 @@
 //РАЗМЕЩЕНИЕ КАРТ
 
 /**
-* Добавляет карты в очередь соответствующим полям
+* Добавляет карты в очередь соответствующим полям.
 * @param {object} 		cardsInfo 			- Информация о перемещаемых картах
 * @param {string} 		cardsInfo.cid 		- id карты
 * @param {string} 		cardsInfo.pid/field - id игрока/поля
 * @param {(number|null)} [cardsInfo.suit=null] - масть карты
 * @param {number} 		[cardsInfo.value=0]	- значение карты
-* @return {number} Время до начала движения последней перемещаемой карты
+* @return {number} Время до начала движения последней перемещаемой карты.
 */
 FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
 
@@ -40,6 +40,13 @@ FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
 	return delay;
 };
 
+/**
+* Устанавливает значения карт без переноса в другое поле.
+* @param {object} 		cardsInfo 			- Информация о картах
+* @param {string} 		cardsInfo.cid 		- id карты
+* @param {(number|null)} [cardsInfo.suit=null] - масть карты
+* @param {number} [cardsInfo.value=0] - значение карты
+*/
 FieldManager.prototype.revealCards = function(cardsInfo){
 	for(var ci = 0; ci < cardsInfo.length; ci++){
 		var c = cardsInfo[ci];
@@ -55,7 +62,7 @@ FieldManager.prototype.revealCards = function(cardsInfo){
 };
 
 /**
-* Перемещает карты в соответствующие поля
+* Перемещает карты в соответствующие поля.
 * @param {Field} field - Поле, в которое происходит перемещение
 * @param {object} cardsInfo - Информация о перемещаемых картах
 * @param {string} cardsInfo.cid - id карты
@@ -64,7 +71,7 @@ FieldManager.prototype.revealCards = function(cardsInfo){
 * @param {boolean} [noDelay=false] - Говорит полю, что перемещение не нужно задерживать
 * @return {number} Время до начала движения последней перемещаемой карты
 */
-FieldManager.prototype.moveCards = function(field, cardsInfo, noDelay){
+FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDelay){
 	if(!cardsInfo.length)
 		return 0;
 
@@ -87,14 +94,23 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, noDelay){
 			console.error('Field manager: Card', cid, 'not found');
 		}
 	}
-	return field.addCards(cardsToPlace, noDelay);
+	return field.addCards(cardsToPlace, bringToTopOn, noDelay);
 };
 
-FieldManager.prototype.showTrumpCards = function(cards, pid){
+/**
+* Показывает козырные карты.
+* @param {object} cardsInfo 	Информация о картах
+* @param {string} cardsInfo.cid id карты
+* @param {string} cardsInfo.pid id игрока
+* @param {(number|null)} [cardsInfo.suit=null] - масть карты
+* @param {number} [cardsInfo.value=0] - значение карты
+* @param {string} pid   		id игрока с наименьшей картой
+* @return {number}      Время показа карт.
+*/
+FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 	
-	//Показываем козырные карты
-	for(var ci = 0; ci < cards.length; ci++){
-		var c = cards[ci];
+	for(var ci = 0; ci < cardsInfo.length; ci++){
+		var c = cardsInfo[ci];
 		var card = game.cards[c.cid];
 
 		if(!card){
@@ -121,17 +137,22 @@ FieldManager.prototype.showTrumpCards = function(cards, pid){
 	this.fields[pid].setHighlight(true, ui.colors.green);
 
 	var delay = 3000/game.speed;
-	actionHandler.setTimedAction(this.hideTrumpCards, delay, this, [cards]);
+	actionHandler.setTimedAction(this.hideTrumpCards, delay, this, [cardsInfo]);
 	return delay + 500;
 };
 
-//Прячем козырные карты
-FieldManager.prototype.hideTrumpCards = function(cards){
-	if(!cards || !cards.length)
+/**
+* Прячет козырные карты.
+* @param {object} cardsInfo 	Информация о картах
+* @param {string} cardsInfo.cid id карты
+* @param {string} cardsInfo.pid id игрока
+*/
+FieldManager.prototype.hideTrumpCards = function(cardsInfo){
+	if(!cardsInfo || !cardsInfo.length)
 		return;
 		
-	for(var ci = 0; ci < cards.length; ci++){
-		var c = cards[ci];
+	for(var ci = 0; ci < cardsInfo.length; ci++){
+		var c = cardsInfo[ci];
 		var card = game.cards[c.cid];	
 
 		if(!card){

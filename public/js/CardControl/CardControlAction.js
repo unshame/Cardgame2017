@@ -118,7 +118,7 @@ CardControl.prototype.cardMoveToField = function(newFields){
 		cid: card.id,
 		suit: card.suit,
 		value: card.value
-	}], true);
+	}], BRING_TO_TOP_ON.START, true);
 
 	fieldManager.resetHighlights();
 

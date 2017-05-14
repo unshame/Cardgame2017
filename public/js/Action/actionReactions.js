@@ -51,7 +51,7 @@ window.actionReactions = {
 			fieldManager.setTrumpSuit(action.trumpSuit);
 		}
 		fieldManager.removeMarkedCards();
-		fieldManager.placeQueuedCards();
+		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START);
 		if(action.unlockedField){
 			fieldManager.unlockField(action.unlockedField);
 		}
@@ -86,7 +86,7 @@ window.actionReactions = {
 	DRAW: function(action){
 		var delay = fieldManager.queueCards(action.cards);
 		fieldManager.removeMarkedCards();
-		fieldManager.placeQueuedCards();
+		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START);
 		return delay;
 	},
 
@@ -106,7 +106,7 @@ window.actionReactions = {
 		if(!action.cards)
 			return delay;
 		var field = fieldManager.fields[action.pid];
-		delay = fieldManager.moveCards(field, action.cards.slice());
+		delay = fieldManager.moveCards(field, action.cards.slice(), BRING_TO_TOP_ON.START);
 		return delay;
 	},
 

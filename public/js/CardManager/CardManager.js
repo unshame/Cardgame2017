@@ -1,15 +1,37 @@
 /**
-* Менеджер карт
+* Менеджер карт.
 * @class
+* @param {boolean} inDebugMode выводит ли менеджер дебаг информацию
 */
-
 var CardManager = function(inDebugMode){
+
+	/**
+	 * Карты по id.
+	 * @type {Object<Card>}
+	 */
 	this.cards = {};
+
+	/**
+	 * Phaser группа карт.
+	 * @type {Phaser.Group}
+	 */
 	this.cardsGroup = game.add.group();
 	this.cardsGroup.name = 'cards';
-	this.physicsEnabled = false;
+
 	game.cards = this.cards;
 	game.cardsGroup = this.cardsGroup;
+
+	/**
+	 * Включена ли физика карт.
+	 * @type {Boolean}
+	 * @default false
+	 */
+	this.physicsEnabled = false;
+
+	/**
+	 * Эмиттер карт.
+	 * @type {Phaser.Emitter}
+	 */
 	this.emitter = game.add.emitter(game.world.centerX, -skinManager.skin.height, 100);
 	this.emitter.name = 'partyEmitter';
 	var frames = [];
@@ -19,15 +41,26 @@ var CardManager = function(inDebugMode){
 	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
 	this.particleFadeTime = 500;
 
+	/**
+	 * Выводит ли менеджер дебаг информацию.
+	 * @type {boolean}
+	 */
 	this.inDebugMode = inDebugMode || false;
 
 	window.getCards = this.getCards.bind(this);
 	window.getCard = this.getCard.bind(this);
 };
 
-CardManager.prototype.createCards = function(cards){
-	for(var ci = 0; ci < cards.length; ci++){
-		var c = cards[ci];
+/**
+ * Создает карты.
+ * @param {object} 		cardsInfo 			- Информация о перемещаемых картах.
+ * @param {string} 		cardsInfo.cid 		- id карты
+ * @param {(number|null)} [cardsInfo.suit=null] - масть карты
+ * @param {number} [cardsInfo.value=0] - значение карты
+ */
+CardManager.prototype.createCards = function(cardsInfo){
+	for(var ci = 0; ci < cardsInfo.length; ci++){
+		var c = cardsInfo[ci];
 		var card = this.cards[c.cid];
 		if(!card){
 			var options = {
@@ -36,12 +69,20 @@ CardManager.prototype.createCards = function(cards){
 				value: c.value,
 				debug: this.inDebugMode
 			};
-			this.addCard(options);
+			this.createCard(options);
+		}
+		else{
+			card.setValue(c.suit, c.value);
+			card.fieldId = null;
 		}
 	}
 };
 
-CardManager.prototype.addCard = function(options){
+/**
+ * Добавляет карту.
+ * @param {object} options параметры карты
+ */
+CardManager.prototype.createCard = function(options){
 	if(!options || typeof options != 'object' || !options.id){
 		console.error('Card manager: incorrect options', options);
 		return;
@@ -49,6 +90,7 @@ CardManager.prototype.addCard = function(options){
 	this.cards[options.id] = new Card(options);
 };
 
+/** Уничтожает все карты. */
 CardManager.prototype.reset = function(){
 	for(var cid in this.cards){
 		if(this.cards.hasOwnProperty(cid)){
@@ -57,6 +99,10 @@ CardManager.prototype.reset = function(){
 	}
 };
 
+/**
+ * Находится ли курсор над одной из карт с `draggable == true`.
+ * @return {(Card|boolean)} Возращает найденную карту или `false`.
+ */
 CardManager.prototype.cursorIsOverACard = function(){
 	for(var ci in this.cards){
 		if(!this.cards.hasOwnProperty(ci))
@@ -69,6 +115,7 @@ CardManager.prototype.cursorIsOverACard = function(){
 	return false;
 };
 
+/** Возвращает карты с `raised == true` на место. */
 CardManager.prototype.resetRaised = function(){
 	var raised = false;
 	for(var ci in this.cards){
@@ -85,6 +132,7 @@ CardManager.prototype.resetRaised = function(){
 	fieldManager.placeCards();
 };
 
+/** Применяет скин ко всем картам и эмиттеру карт. */
 CardManager.prototype.applySkin = function(){
 	for(var ci in this.cards){
 		if(this.cards.hasOwnProperty(ci)){
@@ -100,12 +148,16 @@ CardManager.prototype.applySkin = function(){
 	}
 };
 
+/** Применяет скин к эмиттеру карт.
+* @private
+*/
 CardManager.prototype._applySkinToEmitter = function(){
 	this.emitter.forEach(function(p){
 		p.loadTexture(skinManager.skin.sheetName);
 	}, this);
 };
 
+/** Устанавливает текущие значения всем картам без анимации. */
 CardManager.prototype.forceSetValues = function(){
 	for(var ci in this.cards){
 		if(this.cards.hasOwnProperty(ci)){
@@ -115,6 +167,10 @@ CardManager.prototype.forceSetValues = function(){
 	}
 };
 
+/**
+ * Включает физику карт.
+ * @param  {boolean} makeDraggable нужно ли делать карты перетаскиваемыми
+ */
 CardManager.prototype.enablePhysics = function(makeDraggable){
 
 	for(var cid in this.cards){
@@ -134,6 +190,7 @@ CardManager.prototype.enablePhysics = function(makeDraggable){
 	this.physicsEnabled = true;
 };
 
+/** Выключает физику карт. */
 CardManager.prototype.disablePhysics = function(){
 
 	for(var cid in this.cards){
@@ -146,6 +203,7 @@ CardManager.prototype.disablePhysics = function(){
 	this.physicsEnabled = false;
 };
 
+/** Выполняет `update` каждой карты. */
 CardManager.prototype.update = function(){
 	for(var ci in this.cards){
 		if(!this.cards.hasOwnProperty(ci))

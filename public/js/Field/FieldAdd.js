@@ -3,21 +3,28 @@
 
 /**
 * Добавляет карты в поле.
-* @param {Card[]} newCards - добавляемые карты
-* @param {boolean} noDelay  - убирает время ожидание перед добавлением карт
+* @param {Card[]} newCards добавляемые карты
+* @param  {BRING_TO_TOP_ON} [bringToTopOn=BRING_TO_TOP_ON.START] когда поднимать карты на передний план
+* @param {boolean} [noDelay=false]  убирает время ожидания перед добавлением карт
 * @return {number} Время добавления
 */
-Field.prototype.addCards = function(newCards, noDelay){
+Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
 
 	if(!newCards.length)
 		return;
+
+	if(bringToTopOn === undefined)
+		bringToTopOn = BRING_TO_TOP_ON.START;
+	if(this.sorted){
+		bringToTopOn = BRING_TO_TOP_ON.END_ALL;
+	}
 
 	if(this.queuedCards.length){
 		var lastQueuedCard = this.queuedCards[this.queuedCards.length - 1];
 		var delay = this.delays[lastQueuedCard.id] || 0;
 		delay += this.delayTime;
 		this.queueCards(newCards, delay);
-		this.placeQueuedCards();
+		this.placeQueuedCards(bringToTopOn, noDelay);
 		delay += (this.queuedCards.length - 1)*this.delayTime;
 		return delay;
 	}
@@ -25,18 +32,19 @@ Field.prototype.addCards = function(newCards, noDelay){
 		this._appendCards(newCards);
 		this._sortCards();
 		this.setUninteractibleTimer(newCards.length * this.delayTime);
-		return this.placeCards(newCards, BRING_TO_TOP_ON.START, noDelay);
+		return this.placeCards(newCards, bringToTopOn, noDelay);
 	}
 };
 
 /**
 * Добавляет одну карту в поле.
 * @param {Card} card - добавляемая карта
+* @param  {BRING_TO_TOP_ON} [bringToTopOn] когда поднимать карту на передний план
 * @return {number} Время добавления
 * @see {@link Field#addCards}
 */
-Field.prototype.addCard = function(card){
-	return this.addCards([card]);
+Field.prototype.addCard = function(card, bringToTopOn){
+	return this.addCards([card], bringToTopOn);
 };
 
 /**

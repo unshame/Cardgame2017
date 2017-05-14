@@ -1,4 +1,3 @@
-
 //ОЧЕРЕДЬ
 
 /**
@@ -49,22 +48,24 @@ Field.prototype.queueCards = function(newCards, delay){
 
 /**
 * Размещает карты из очереди.
-* @see  {@link Field#queueCards}
+* @param {BRING_TO_TOP_ON} [bringToTopOn=BRING_TO_TOP_ON.START] когда поднимать карты на передний план
+* @param {boolean} [noDelay=false]  убирает время ожидания перед добавлением карт
+* @see   {@link Field#queueCards}
 */
-Field.prototype.placeQueuedCards = function(){
+Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 	if(!this.queuedCards.length)
 		return;
 	
 	this._appendCards(this.queuedCards);
-	var bringToTopOn; 
-	if(this.type == 'DECK')
-		bringToTopOn = BRING_TO_TOP_ON.INIT;
-	else if(this.sorted)
-		bringToTopOn = BRING_TO_TOP_ON.END_ALL;
-	else
+
+	if(bringToTopOn === undefined){
 		bringToTopOn = BRING_TO_TOP_ON.START;
+	}
+	if(this.sorted){
+		bringToTopOn = BRING_TO_TOP_ON.END_ALL;
+	}
 	this._sortCards();
-	this.placeCards(null, bringToTopOn);
+	this.placeCards(null, bringToTopOn, noDelay);
 	this.setUninteractibleTimer(this.expectedDelay);
 	this.queuedCards = [];
 	this.delays = {};
