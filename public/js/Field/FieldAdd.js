@@ -19,13 +19,13 @@ Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
 		bringToTopOn = BRING_TO_TOP_ON.END_ALL;
 	}
 
-	if(this.queuedCards.length){
-		var lastQueuedCard = this.queuedCards[this.queuedCards.length - 1];
-		var delay = this.delays[lastQueuedCard.id] || 0;
+	if(this._queuedCards.length){
+		var lastQueuedCard = this._queuedCards[this._queuedCards.length - 1];
+		var delay = this._delays[lastQueuedCard.id] || 0;
 		delay += this.delayTime;
 		this.queueCards(newCards, delay);
 		this.placeQueuedCards(bringToTopOn, noDelay);
-		delay += (this.queuedCards.length - 1)*this.delayTime;
+		delay += (this._queuedCards.length - 1)*this.delayTime;
 		return delay;
 	}
 	else{
@@ -48,8 +48,8 @@ Field.prototype.addCard = function(card, bringToTopOn){
 };
 
 /**
-* Добавляет карты в `{@link Field#cards}`.
-* Вычисляет и сохраняет угол карты в `{@link Field#angles}`, если указан `{@link Field#randomAngle}`.
+* Добавляет карты в {@link Field#cards}.
+* Вычисляет и сохраняет угол карты в {@link Field#_angles}, если указан {@link Field#randomAngle}.
 * @private
 * @param  {Card[]} cards карты для добавления
 */
@@ -63,8 +63,8 @@ Field.prototype._appendCards = function(cards){
 	if(this.randomAngle){		
 		for(ci = 0; ci < this.cards.length; ci++){
 			card = this.cards[ci];
-			if(typeof this.angles[card.id] == 'number')
-				lastAngle = this.angles[card.id];
+			if(typeof this._angles[card.id] == 'number')
+				lastAngle = this._angles[card.id];
 		}
 	}
 
@@ -83,7 +83,7 @@ Field.prototype._appendCards = function(cards){
 				addedAngle = -addedAngle;
 			}
 			lastAngle += addedAngle;
-			this.angles[card.id] = lastAngle;
+			this._angles[card.id] = lastAngle;
 		}
 	}
 };

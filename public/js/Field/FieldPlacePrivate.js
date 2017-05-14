@@ -64,7 +64,7 @@ Field.prototype._createDelayArray = function(noDelay){
 
 	for(; i >= 0 && i < this.cards.length; i += iter){
 
-		var localDelay = noDelay ? 0 : this.delays[this.cards[i].id]; 
+		var localDelay = noDelay ? 0 : this._delays[this.cards[i].id]; 
 
 		delayArray.push(localDelay);
 	}
@@ -209,7 +209,7 @@ Field.prototype._rotateCard = function(card, angle, x, y, delay, margin){
 	}
 	//Берем сохраненный угол, если поле со случайными углами
 	else if(this.randomAngle){
-		angle = this.angles[card.id] || 0;
+		angle = this._angles[card.id] || 0;
 	}
 	//Поворачиваем карту, если она на дне колоды
 	else if(card.fieldId == 'BOTTOM'){

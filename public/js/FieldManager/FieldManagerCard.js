@@ -2,11 +2,9 @@
 
 /**
 * Добавляет карты в очередь соответствующим полям.
-* @param {object} 		cardsInfo 			- Информация о перемещаемых картах
-* @param {string} 		cardsInfo.cid 		- id карты
-* @param {string} 		cardsInfo.pid/field - id игрока/поля
-* @param {(number|null)} [cardsInfo.suit=null] - масть карты
-* @param {number} 		[cardsInfo.value=0]	- значение карты
+* @param {CardInfo[]} cardsInfo информация о перемещаемых картах
+* @param {boolean} [noDelay=false] Обнуляет задержку карт.
+* Рекомендуется использовать `noDelay` в {@link FieldManager#placeQueuedCards} вместо указания здесь.
 * @return {number} Время до начала движения последней перемещаемой карты.
 */
 FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
@@ -42,10 +40,7 @@ FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
 
 /**
 * Устанавливает значения карт без переноса в другое поле.
-* @param {object} 		cardsInfo 			- Информация о картах
-* @param {string} 		cardsInfo.cid 		- id карты
-* @param {(number|null)} [cardsInfo.suit=null] - масть карты
-* @param {number} [cardsInfo.value=0] - значение карты
+* @param {CardInfo[]} cardsInfo информация о картах
 */
 FieldManager.prototype.revealCards = function(cardsInfo){
 	for(var ci = 0; ci < cardsInfo.length; ci++){
@@ -64,10 +59,8 @@ FieldManager.prototype.revealCards = function(cardsInfo){
 /**
 * Перемещает карты в соответствующие поля.
 * @param {Field} field - Поле, в которое происходит перемещение
-* @param {object} cardsInfo - Информация о перемещаемых картах
-* @param {string} cardsInfo.cid - id карты
-* @param {(number|null)} [cardsInfo.suit=null] - масть карты
-* @param {number} [cardsInfo.value=0] - значение карты
+* @param {CardInfo[]} cardsInfo информация о перемещаемых картах
+* @param {BRING_TO_TOP_ON} [bringToTopOn] когда поднимать карту на передний план 
 * @param {boolean} [noDelay=false] - Говорит полю, что перемещение не нужно задерживать
 * @return {number} Время до начала движения последней перемещаемой карты
 */
@@ -99,11 +92,7 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDe
 
 /**
 * Показывает козырные карты.
-* @param {object} cardsInfo 	Информация о картах
-* @param {string} cardsInfo.cid id карты
-* @param {string} cardsInfo.pid id игрока
-* @param {(number|null)} [cardsInfo.suit=null] - масть карты
-* @param {number} [cardsInfo.value=0] - значение карты
+* @param {CardInfo[]} cardsInfo информация о картах
 * @param {string} pid   		id игрока с наименьшей картой
 * @return {number}      Время показа карт.
 */
@@ -143,9 +132,7 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 
 /**
 * Прячет козырные карты.
-* @param {object} cardsInfo 	Информация о картах
-* @param {string} cardsInfo.cid id карты
-* @param {string} cardsInfo.pid id игрока
+* @param {CardInfo[]} cardsInfo информация о картах
 */
 FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 	if(!cardsInfo || !cardsInfo.length)

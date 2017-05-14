@@ -15,17 +15,17 @@ Field.prototype.queueCards = function(newCards, delay){
 
 	//Если задержка не указана, используем задержку последней карты в очереди
 	if(typeof delay != 'number' || isNaN(delay)){
-		var lastQueuedCard = this.queuedCards[this.queuedCards.length - 1];
+		var lastQueuedCard = this._queuedCards[this._queuedCards.length - 1];
 		if(lastQueuedCard)
-			delay = this.delays[lastQueuedCard.id] || 0;
+			delay = this._delays[lastQueuedCard.id] || 0;
 		else
 			delay = 0;
 	}
 
 	//Устанавливаем задержку для всех карт, равную задержке первой карты в очереди
 	for(ci = 0; ci < this.cards.length; ci++){
-		if(this.delays[this.cards[ci].id] === undefined)
-			this.delays[this.cards[ci].id] = delay;
+		if(this._delays[this.cards[ci].id] === undefined)
+			this._delays[this.cards[ci].id] = delay;
 	}
 
 	//Устанавливаем задержку для кард в очереди, увеличивая каждую следующую
@@ -36,8 +36,8 @@ Field.prototype.queueCards = function(newCards, delay){
 		//возвращаем перетаскиваемую карту
 		if(cardControl.card && cardControl.card.field && cardControl.card.field == card.field)
 			cardControl.cardReturn();
-		this.queuedCards.push(card);
-		this.delays[card.id] = delay;
+		this._queuedCards.push(card);
+		this._delays[card.id] = delay;
 		delay += this.delayTime;
 	}
 
@@ -53,10 +53,10 @@ Field.prototype.queueCards = function(newCards, delay){
 * @see   {@link Field#queueCards}
 */
 Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
-	if(!this.queuedCards.length)
+	if(!this._queuedCards.length)
 		return;
 	
-	this._appendCards(this.queuedCards);
+	this._appendCards(this._queuedCards);
 
 	if(bringToTopOn === undefined){
 		bringToTopOn = BRING_TO_TOP_ON.START;
@@ -67,8 +67,8 @@ Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 	this._sortCards();
 	this.placeCards(null, bringToTopOn, noDelay);
 	this.setUninteractibleTimer(this.expectedDelay);
-	this.queuedCards = [];
-	this.delays = {};
+	this._queuedCards = [];
+	this._delays = {};
 	this.expectedDelay = 0;
 };
 
@@ -78,7 +78,7 @@ Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 * @see  {@link Field#placeQueuedCards}
 */
 Field.prototype.resetQueue = function(){
-	this.queuedCards = [];
-	this.delays = {};
+	this._queuedCards = [];
+	this._delays = {};
 	this.expectedDelay = 0;
 };

@@ -39,6 +39,11 @@ var CardManager = function(inDebugMode){
 		frames.push(i);
 	}
 	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
+
+	/**
+	 * Время пропадания партиклей эмиттера, когда он остановлен.
+	 * @type {Number}
+	 */
 	this.particleFadeTime = 500;
 
 	/**
@@ -47,16 +52,23 @@ var CardManager = function(inDebugMode){
 	 */
 	this.inDebugMode = inDebugMode || false;
 
+	/**
+	 * @method
+	 * @global
+	 * @see {@link CardManager#getCards}
+	 */
 	window.getCards = this.getCards.bind(this);
+	/**
+	 * @method
+	 * @global
+	 * @see {@link CardManager#getCard}
+	 */
 	window.getCard = this.getCard.bind(this);
 };
 
 /**
  * Создает карты.
- * @param {object} 		cardsInfo 			- Информация о перемещаемых картах.
- * @param {string} 		cardsInfo.cid 		- id карты
- * @param {(number|null)} [cardsInfo.suit=null] - масть карты
- * @param {number} [cardsInfo.value=0] - значение карты
+ * @param {CardInfo[]} cardsInfo информация о перемещаемых картах.
  */
 CardManager.prototype.createCards = function(cardsInfo){
 	for(var ci = 0; ci < cardsInfo.length; ci++){

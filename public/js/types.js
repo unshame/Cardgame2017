@@ -12,10 +12,15 @@
 * @global
 */
 window.BRING_TO_TOP_ON = {
+	/** Никогда. */
 	NEVER: 0,
+	/** При инициализации (до задержки). */
 	INIT: 1,
+	/** При старте (после задержки). */
 	START: 2,
+	/** В конце движения. */
 	END: 3,
+	/** В конце движения, все карты в поле поднимаются на верх. */
 	END_ALL: 4
 };
 
@@ -29,3 +34,11 @@ window.BRING_TO_TOP_ON = {
 */
 //DisplayObject
 
+/**
+ * Информация о карте.
+ * @typedef {object} CardInfo
+ * @property {string} cid id карты
+ * @property {string} [pid/field] id игрока/поля
+ * @property {(number|null)} [suit] - масть карты
+ * @property {number} [value] - значение карты
+ */

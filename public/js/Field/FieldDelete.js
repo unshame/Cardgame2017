@@ -14,7 +14,7 @@ Field.prototype.removeCards = function(cardsToRemove){
 			this.cards.splice(i, 1);
 			card.field = null;
 			card.fieldId = null;
-			this.angles[card.id] = null;
+			this._angles[card.id] = null;
 		}
 	}
 	if(this.cards.length){
@@ -24,6 +24,9 @@ Field.prototype.removeCards = function(cardsToRemove){
 	}
 };
 
+/**
+ * Удаляет карты из `{@link Field#cardsToRemove}`.
+ */
 Field.prototype.removeMarkedCards = function(){
 	this.removeCards(this.cardsToRemove);
 };

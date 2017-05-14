@@ -46,12 +46,12 @@ window.actionReactions = {
 		cardControl.reset();
 		cardManager.createCards(action.cards, true);
 		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
-		var delay = fieldManager.queueCards(action.cards, hasTrumpSuit ? true : false);
+		var delay = fieldManager.queueCards(action.cards);
 		if(hasTrumpSuit){
 			fieldManager.setTrumpSuit(action.trumpSuit);
 		}
 		fieldManager.removeMarkedCards();
-		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START);
+		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, hasTrumpSuit ? true : false);
 		if(action.unlockedField){
 			fieldManager.unlockField(action.unlockedField);
 		}

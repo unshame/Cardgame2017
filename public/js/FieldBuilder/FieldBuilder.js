@@ -1,5 +1,5 @@
 /**
-* Модуль, создающий поля для FieldManager
+* Модуль, создающий поля для {@link FieldManager}.
 * @class
 */
 
