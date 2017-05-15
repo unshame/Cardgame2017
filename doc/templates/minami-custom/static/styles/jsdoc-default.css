@@ -715,10 +715,17 @@ dl.param-type {
 article>div{
   padding-left: 20px;
 }
-article>div h4 {
+article>div h4, .subsection-links {
   margin-left: -20px;
 }
 
 article>div h5, article>div .description {
   margin-left: -10px;
+}
+
+.subsection-links code{
+  padding: 0 7px;
+  line-height: 26px;
+  display: inline-block;
+  margin: 6px 6px 6px 0;
 }

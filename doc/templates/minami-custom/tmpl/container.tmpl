@@ -128,9 +128,12 @@
         if (members && members.length && members.forEach) {
     ?>
         <h3 class="subsection-title" id="members">Members</h3>
-        <?js members.forEach(function(p) { ?>
-            <?js= self.partial('list.tmpl', p) ?>
-        <?js }); ?>
+
+        <div class="subsection-links">
+            <?js members.forEach(function(p) { ?>
+                <?js= self.partial('list.tmpl', p) ?>
+            <?js }); ?>
+        </div>
 
         <?js members.forEach(function(p) { ?>
             <?js= self.partial('members.tmpl', p) ?>
@@ -142,9 +145,12 @@
         if (methods && methods.length && methods.forEach) {
     ?>
         <h3 class="subsection-title" id="methods">Methods</h3>
-        <?js methods.forEach(function(p) { ?>
-            <?js= self.partial('list.tmpl', p) ?>
-        <?js }); ?>
+
+        <div class="subsection-links">        
+            <?js methods.forEach(function(p) { ?>
+                <?js= self.partial('list.tmpl', p) ?>
+            <?js }); ?>
+        </div>
 
         <?js methods.forEach(function(m) { ?>
             <?js= self.partial('method.tmpl', m) ?>
@@ -156,9 +162,12 @@
         if (typedefs && typedefs.length && typedefs.forEach) {
     ?>
         <h3 class="subsection-title" id="typedefs">Type Definitions</h3>
-        <?js typedefs.forEach(function(p) { ?>
-            <?js= self.partial('list.tmpl', p) ?>
-        <?js }); ?>
+
+        <div class="subsection-links">        
+            <?js typedefs.forEach(function(p) { ?>
+                <?js= self.partial('list.tmpl', p) ?>
+            <?js }); ?>
+        </div>
 
         <?js typedefs.forEach(function(e) {
                 if (e.signature) {
