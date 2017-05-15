@@ -711,3 +711,14 @@ dl.param-type {
 .nav-item-name.subsection{
     font-size: 14px;
 }
+
+article>div{
+  padding-left: 20px;
+}
+article>div h4 {
+  margin-left: -20px;
+}
+
+article>div h5, article>div .description {
+  margin-left: -10px;
+}

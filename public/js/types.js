@@ -2,11 +2,10 @@
  * Энумераторы и фиктивные типы данных для JSDoc.
  */
 
-
 //ENUMS
 
 /**
-* В какой момент должна быть поднята карта
+* В какой момент должна быть поднята карта.
 * @readonly
 * @enum {number}
 * @global
@@ -42,3 +41,4 @@ window.BRING_TO_TOP_ON = {
  * @property {(number|null)} [suit] - масть карты
  * @property {number} [value] - значение карты
  */
+//CardInfo

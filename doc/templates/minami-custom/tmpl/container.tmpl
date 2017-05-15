@@ -128,6 +128,9 @@
         if (members && members.length && members.forEach) {
     ?>
         <h3 class="subsection-title" id="members">Members</h3>
+        <?js members.forEach(function(p) { ?>
+            <?js= self.partial('list.tmpl', p) ?>
+        <?js }); ?>
 
         <?js members.forEach(function(p) { ?>
             <?js= self.partial('members.tmpl', p) ?>
@@ -139,6 +142,9 @@
         if (methods && methods.length && methods.forEach) {
     ?>
         <h3 class="subsection-title" id="methods">Methods</h3>
+        <?js methods.forEach(function(p) { ?>
+            <?js= self.partial('list.tmpl', p) ?>
+        <?js }); ?>
 
         <?js methods.forEach(function(m) { ?>
             <?js= self.partial('method.tmpl', m) ?>
@@ -149,7 +155,10 @@
         var typedefs = self.find({kind: 'typedef', memberof: isGlobalPage ? {isUndefined: true} : doc.longname});
         if (typedefs && typedefs.length && typedefs.forEach) {
     ?>
-        <h3 class="subsection-title">Type Definitions</h3>
+        <h3 class="subsection-title" id="typedefs">Type Definitions</h3>
+        <?js typedefs.forEach(function(p) { ?>
+            <?js= self.partial('list.tmpl', p) ?>
+        <?js }); ?>
 
         <?js typedefs.forEach(function(e) {
                 if (e.signature) {
@@ -170,6 +179,10 @@
         if (events && events.length && events.forEach) {
     ?>
         <h3 class="subsection-title">Events</h3>
+
+        <?js events.forEach(function(p) { ?>
+            <?js= self.partial('list.tmpl', p) ?>
+        <?js }); ?>
 
         <?js events.forEach(function(e) { ?>
             <?js= self.partial('method.tmpl', e) ?>
