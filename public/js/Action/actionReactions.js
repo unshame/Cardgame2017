@@ -70,6 +70,7 @@ window.actionReactions = {
 	*/
 	REVEAL: function(action){
 		fieldManager.revealCards(action.cards);
+		return 0;
 	},
 
 	/**
