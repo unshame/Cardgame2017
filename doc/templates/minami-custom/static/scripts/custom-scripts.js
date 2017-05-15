@@ -60,10 +60,6 @@ $(function () {
 			highlight(container, target, shouldScroll);
 	}
 
-	//Подсветка элемента при загрузке страницы
-	var currentHash = document.location.hash.substr(1);
-	highlightCurrent(currentHash);
-
 	$(document).scroll(function () {
 		var lastHash, 
 			lastDistance = Infinity,
@@ -125,6 +121,10 @@ $(function () {
 	if(typedefs.size()){
 		addLinks(typedefs, navbar, li, className, 'typedefs', 'type-typedef', 'Type definitions');
 	}
+
+	//Подсветка элемента при загрузке страницы
+	var currentHash = document.location.hash.substr(1);
+	highlightCurrent(currentHash);
 
 });
 
