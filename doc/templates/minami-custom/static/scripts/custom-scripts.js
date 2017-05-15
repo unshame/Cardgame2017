@@ -167,11 +167,11 @@ function highlight(container, target, shouldScroll){
 	}
 }
 
+//Добавляет ссылки на разделы в поковую панель
 function addLinks(header, navbar, li, className, id, type, text){
 	var div = $('<div class="members-list">');
 	li.append('<strong><a href="#' + id + '">' + text + '</a></strong> ');
 	header.after(div);
-
 	if(className){
 		var nav = $('<li>').addClass('nav-item').css('display', 'list-item');
 		nav.html('<span class="nav-item-name subsection"><a href="' + className + '.html#' + id + '">' + text + '</a></span>');
