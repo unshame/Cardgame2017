@@ -103,17 +103,21 @@ Field.prototype._createCircle = function(width, height){
 	var center = this._calculateCircleCenter(a, c, b);
 	var radius = center.y;
 
-	this.circle.clear();		
+	var circle = game.make.bitmapData(game.screenWidth, this.area.height);
+	circle.ctx.beginPath();
+	circle.ctx.arc(center.x + this.base.x, center.y, radius,2 * Math.PI, 0); 
+	circle.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+	circle.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+	circle.ctx.lineWidth = 4;
+	circle.ctx.fill();
+	circle.ctx.stroke();
+	game.cache.addBitmapData('circle_' + this.id, circle);
+	
+	this.circle.kill();
+	this.circle.loadTexture(game.cache.getBitmapData('circle_' + this.id));
+	this.circle.reset();
 
-	this.circle.alpha = this.alpha;	
-	this.circle.lineStyle(4, ui.colors.white, 1);
-	this.circle.beginFill(ui.colors.white, 1);
-
-	var cos = (total - extra + this.base.x + this.area.height) / 2 / radius,
-		angle1 = Math.acos(cos),
-		angle2 = Math.acos(-cos);
-
-	this.circle.arc(center.x, center.y, radius, -angle1, -angle2, true);
+	this.circle.x = - this.base.x;
 
 	this.circleCenter = center;
 	this.circleRadius = radius;

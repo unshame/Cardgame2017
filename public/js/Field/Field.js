@@ -285,7 +285,7 @@ var Field = function(options){
 		 * Полугруглая поверхность поля, если `{@link Field#areaType} == 'curved'`.
 		 * @type {Phaser.Graphics}
 		 */
-		this.circle = game.make.graphics(0, 0);
+		this.circle = game.add.image(0, 0);
 		this.base.add(this.circle);
 	}
 
@@ -405,7 +405,7 @@ Field.getDefaultOptions = function(){
 		iconOffset: {x: 0, y:0},
 		iconShouldHide: false,
 
-		alpha: 0.15,
+		alpha: 0.25,
 
 		debug: false,
 		specialId: null
