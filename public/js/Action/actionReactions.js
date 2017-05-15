@@ -46,7 +46,7 @@ window.actionReactions = {
 		cardControl.reset();
 		cardManager.createCards(action.cards);
 		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
-		var delay = fieldManager.queueCards(action.cards);
+		var delay = fieldManager.queueCards(action.cards, hasTrumpSuit ? true : false);
 		if(hasTrumpSuit){
 			fieldManager.setTrumpSuit(action.trumpSuit);
 		}

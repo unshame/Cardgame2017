@@ -111,11 +111,9 @@ Field.prototype._createCircle = function(width, height){
 	circle.ctx.lineWidth = 4;
 	circle.ctx.fill();
 	circle.ctx.stroke();
-	game.cache.addBitmapData('circle_' + this.id, circle);
-	
-	this.circle.kill();
-	this.circle.loadTexture(game.cache.getBitmapData('circle_' + this.id));
-	this.circle.reset();
+	var id = 'circle_' + this.id;
+	game.cache.addBitmapData(id, circle);	
+	this.circle.loadTexture(game.cache.getBitmapData(id));
 
 	this.circle.x = - this.base.x;
 
