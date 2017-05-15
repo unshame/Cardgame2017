@@ -60,10 +60,6 @@ $(function () {
 			highlight(container, target, shouldScroll);
 	}
 
-	//Подсветка элемента при загрузке страницы
-	var currentHash = document.location.hash.substr(1);
-	highlightCurrent(currentHash);
-
 	$(document).scroll(function () {
 		var lastHash, 
 			lastDistance = Infinity,
@@ -126,6 +122,10 @@ $(function () {
 		addLinks(typedefs, navbar, li, className, 'typedefs', 'type-typedef', 'Type definitions');
 	}
 
+	//Подсветка элемента при загрузке страницы
+	var currentHash = document.location.hash.substr(1);
+	highlightCurrent(currentHash);
+
 });
 
 //Подсвечивает элемент в боковой панели
@@ -167,7 +167,7 @@ function highlight(container, target, shouldScroll){
 	}
 }
 
-//Добавляет ссылки на разделы в поковую панель
+//Добавляет ссылки на разделы в боковую панель
 function addLinks(header, navbar, li, className, id, type, text){
 	var div = $('<div class="members-list">');
 	li.append('<strong><a href="#' + id + '">' + text + '</a></strong> ');
