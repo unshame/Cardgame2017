@@ -30,7 +30,7 @@ Card.prototype.presetValue = function(suit, value){
 /** 
 * Устанавливает заданные ранее значения и переворачивает карту.
 */
-Card.prototype.updateValue = function(){
+Card.prototype.applyValue = function(){
 	if(!this._valueChanged)
 		return;
 
@@ -81,7 +81,7 @@ Card.prototype.setValue = function(suit, value, animate){
 
 	if(animate && !game.paused){
 		this.presetValue(suit, value);
-		this.updateValue();
+		this.applyValue();
 	}
 	else if(suit === null){
 		this.suit = null;

@@ -113,7 +113,7 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 */
 Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	if(game.paused){
-		this.updateValue();
+		this.applyValue();
 		this.setRelativePosition(x, y);
 		if(this.mover){
 			this.mover.stop();
@@ -143,7 +143,7 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 
 	//Переворачиваем карту, когда начинается движение
 	this.mover.onStart.addOnce(function(){
-		this.updateValue();
+		this.applyValue();
 		if(this._bringToTopOn == BRING_TO_TOP_ON.START)
 			this.bringToTop();
 	}, this);
@@ -151,7 +151,7 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	//Ресет твина по окончанию
 	this.mover.onComplete.addOnce(function(){
 		this.mover = null;
-		this.updateValue();
+		this.applyValue();
 		if(this._bringToTopOn == BRING_TO_TOP_ON.END || this._bringToTopOn == BRING_TO_TOP_ON.END_ALL){
 			if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.END)
 				this.bringToTop();
@@ -178,7 +178,7 @@ Card.prototype._tryResetMover = function(x, y, time, delay, shouldRebase){
 
 	//Не перезапускаем твин, если нет задержки и пункт назначения не изменился
 	if(!shouldRebase && endPosition && endPosition.x == x && endPosition.y == y && moverData.delay == delay){
-		this.updateValue();
+		this.applyValue();
 		if(this._bringToTopOn == BRING_TO_TOP_ON.START)
 			this.bringToTop();
 		return -1;

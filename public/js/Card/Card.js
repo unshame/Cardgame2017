@@ -163,7 +163,7 @@ var Card = function (options) {
 	/**
 	* Время переворота карты
 	* @type {number}
-	* @see {@link Card#updateValue}
+	* @see {@link Card#applyValue}
 	*/
 	this.flipTime = this.options.flipTime;
 

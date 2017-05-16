@@ -8,11 +8,7 @@ window.actionReactions = {
 	/**
 	* Наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них
 	* @param {object} action - Обрабатываемое действие
-	* @param {object[]} action.cards - Информация о козырных картах
-	* @param {string} action.cards[].cid - id карты
-	* @param {string} action.cards[].pid - id игрока
-	* @param {number} action.cards[].suit - масть карты
-	* @param {number} action.cards[].value - значение карты
+	* @param {CardInfo[]} action.cards - Информация о козырных картах
 	* @param {string} action.pid - id игрока с наименьшим козырем
 	* @return {number} Время выполнения действия
 	* @memberof actionReactions
@@ -29,11 +25,7 @@ window.actionReactions = {
 	/**
 	* Карты, присутствующие в игре
 	* @param {object} action - Обрабатываемое действие
-	* @param {object[]} action.cards - Информация о картах
-	* @param {string} action.cards[].cid - id карты
-	* @param {string} action.cards[].field - id поля карты
-	* @param {number} [action.cards[].suit] - масть карты
-	* @param {number} [action.cards[].value] - значение карты
+	* @param {CardInfo[]} action.cards - Информация о картах
 	* @param {number} [action.numDiscarded] - Количество карт в стопке сброса
 	* @param {number} [action.trumpSuit] - Масть козырных карт
 	* @return {number} Время до начала добавления последней карты
@@ -62,10 +54,7 @@ window.actionReactions = {
 	/**
 	* Раскрытие значений карт
 	* @param {object} action - Обрабатываемое действие
-	* @param {object[]} action.cards - Информация о картах
-	* @param {string} action.cards[].cid - id карты
-	* @param {number} action.cards[].suit - масть карты
-	* @param {number} action.cards[].value - значение карты
+	* @param {CardInfo[]} action.cards - Информация о картах
 	* @memberof actionReactions
 	*/
 	REVEAL: function(action){
@@ -76,11 +65,7 @@ window.actionReactions = {
 	/**
 	* Раздача карт
 	* @param {object} action - Обрабатываемое действие
-	* @param {object[]} action.cards - Информация о картах
-	* @param {string} action.cards[].cid - id карты
-	* @param {string} action.cards[].pid - id игрока, который получает карту
-	* @param {number} [action.cards[].suit] - масть карты
-	* @param {number} [action.cards[].value] - значение карты
+	* @param {CardInfo[]} action.cards - Информация о картах
 	* @return {number} Время до начала добавления последней карты
 	* @memberof actionReactions
 	*/
@@ -94,10 +79,7 @@ window.actionReactions = {
 	/**
 	* Игрок либо хочет взять, либо уже берет карты, зависит от присутствия action.cards
 	* @param {object} action - Обрабатываемое действие
-	* @param {object[]} [action.cards] - Информация о картах
-	* @param {string} action.cards[].cid - id карты
-	* @param {number} [action.cards[].suit] - масть карты
-	* @param {number} [action.cards[].value] - значение карты
+	* @param {CardInfo[]} [action.cards] - Информация о картах
 	* @param {string} action.pid - id берущего игрока	 
 	* @return {number} Время выполнения действия
 	* @memberof actionReactions
