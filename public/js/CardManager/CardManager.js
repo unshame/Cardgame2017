@@ -170,7 +170,7 @@ CardManager.prototype._applySkinToEmitter = function(){
 };
 
 /** Устанавливает текущие значения всем картам без анимации. */
-CardManager.prototype.forceSetValues = function(){
+CardManager.prototype.forceApplyValues = function(){
 	for(var ci in this.cards){
 		if(this.cards.hasOwnProperty(ci)){
 			var card = this.cards[ci]; 

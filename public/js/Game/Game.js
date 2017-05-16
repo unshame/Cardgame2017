@@ -188,7 +188,7 @@ Game.prototype.visibilityChangeListener = function(){
 		actionHandler.possibleActions && actionHandler.highlightPossibleActions(actionHandler.possibleActions);
 		fieldManager.rotateCards();
 		fieldManager.zAlignCards();
-		cardManager.forceSetValues();
+		cardManager.forceApplyValues();
 	}
 
 	function pause(){

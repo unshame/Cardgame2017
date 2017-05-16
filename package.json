@@ -29,7 +29,6 @@
   },
   "homepage": "https://github.com/unshame/Cardgame2017#readme",
   "devDependencies": {
-    "tui-jsdoc-template": "^1.1.0"
   },
   "author": "UnShame"
 }
