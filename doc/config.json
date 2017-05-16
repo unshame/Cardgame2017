@@ -2,7 +2,6 @@
 	"opts": {
 	    "template": "./doc/templates/minami-custom",        
 	    "recurse": true, 
-	    "private": true,
 	    "readme": "./README.md"
 	},
 	"plugins": [
