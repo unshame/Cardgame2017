@@ -58,8 +58,6 @@ Card.prototype.setBase = function(x, y, resetMover){
 		this.mover = null;
 	}
 
-	this.sprite.x += this.base.x - x;
-	this.sprite.y += this.base.y - y;
 	this.base.x = x;
 	this.base.y = y;
 	this.update();
