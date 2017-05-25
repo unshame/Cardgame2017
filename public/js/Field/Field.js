@@ -212,7 +212,7 @@ var Field = function(options, style, iconStyle){
 	this.setBase(this.style.x, this.style.y);
 	if(this.style.area == 'curved'){
 		/**
-		 * Полугруглая поверхность поля, если `{@link Field#areaType} == 'curved'`.
+		 * Полугруглая поверхность поля, если `style.area == 'curved'`.
 		 * @type {Phaser.Graphics}
 		 */
 		this.circle = game.add.image(0, 0);
