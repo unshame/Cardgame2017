@@ -8,14 +8,14 @@
 */
 Field.prototype.setBase = function(x, y, shouldPlace){
 	if(x === null || x === undefined)
-		x = this.options.x;
+		x = this.style.x;
 	if(y === null || y === undefined)
-		y = this.options.y;
+		y = this.style.y;
 	if(shouldPlace === undefined)
 		shouldPlace = false;
 
-	this.base.x = this.options.x = Math.round(x);
-	this.base.y = this.options.y = Math.round(y);
+	this.base.x = this.style.x = Math.round(x);
+	this.base.y = this.style.y = Math.round(y);
 
 	if(shouldPlace)
 		this.placeCards();
@@ -29,30 +29,30 @@ Field.prototype.setBase = function(x, y, shouldPlace){
 */
 Field.prototype.resize = function(width, height, shouldPlace){
 	if(width === null || width === undefined)
-		width = this.options.width;
+		width = this.style.width;
 	else
-		this.options.width = width;
+		this.style.width = width;
 
 	if(height === null || height === undefined)
-		height = this.options.height;
+		height = this.style.height;
 	else
-		this.options.height = height;
+		this.style.height = height;
 
 	if(shouldPlace === undefined)
 		shouldPlace = false;
 
-	if(this.axis == 'vertical'){
+	if(this.style.axis == 'vertical'){
 		if(width < skinManager.skin.height){
 			width = skinManager.skin.height;
 		}
 
-		if(height < skinManager.skin.width + this.minActiveSpace){
-			height = skinManager.skin.width + this.minActiveSpace;
+		if(height < skinManager.skin.width + this.style.minActiveSpace){
+			height = skinManager.skin.width + this.style.minActiveSpace;
 		}
 	}
 	else{
-		if(width < skinManager.skin.width + this.minActiveSpace){
-			width = skinManager.skin.width + this.minActiveSpace;
+		if(width < skinManager.skin.width + this.style.minActiveSpace){
+			width = skinManager.skin.width + this.style.minActiveSpace;
 		}
 
 		if(height < skinManager.skin.height){
@@ -60,15 +60,15 @@ Field.prototype.resize = function(width, height, shouldPlace){
 		}
 	}
 
-	this.area.width = Math.round(width + this.margin*2),
-	this.area.height = Math.round(height + this.margin*2);
+	this.area.width = Math.round(width + this.style.padding*2),
+	this.area.height = Math.round(height + this.style.padding*2);
 
 	if(this.icon){
-		this.icon.x = this.area.width/2 + this.iconOffset.x;
-		this.icon.y = this.area.height/2 + this.iconOffset.y;
+		this.icon.x = this.area.width/2 + this.iconStyle.offset.x;
+		this.icon.y = this.area.height/2 + this.iconStyle.offset.y;
 	}
 
-	if(this.areaType == 'curved'){
+	if(this.style.area == 'curved'){
 		this._createCircle(this.area.width, this.area.height);
 	}
 

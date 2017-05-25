@@ -12,7 +12,7 @@
 Field.prototype._setDebugActiveSpace = function(activeWidth, cardHeight, leftMargin, topMargin, shift){
 	this._debugActiveSpace.x = this.base.x;
 	this._debugActiveSpace.y = this.base.y;
-	if(this.axis == 'vertical'){
+	if(this.style.axis == 'vertical'){
 		this._debugActiveSpace.x += topMargin - cardHeight/2;
 		this._debugActiveSpace.y += leftMargin - shift;
 		this._debugActiveSpace.width = cardHeight;

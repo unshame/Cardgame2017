@@ -33,7 +33,7 @@ Field.prototype.setUninteractibleTimer = function(time){
 * или поле не выделяет карты при наведении
 */
 Field.prototype.focusOnCard = function(card, pointer, forced){
-	if(!card || !~this.cards.indexOf(card) || !forced && (!this.focusable || !this.cardIsInside(card) || !pointer.isMouse))
+	if(!card || !~this.cards.indexOf(card) || !forced && (!this.style.focusable || !this.cardIsInside(card) || !pointer.isMouse))
 		return;
 
 	this.focusedCard = card;
@@ -53,7 +53,7 @@ Field.prototype.focusOffCard = function(card, forced){
 		!~this.cards.indexOf(card) ||
 		!this.focusedCard ||
 		!forced && (
-			!this.focusable ||
+			!this.style.focusable ||
 			!this.cardIsInside(this.focusedCard, false) ||
 			card != this.focusedCard ||
 			~this.cards.indexOf(cardControl.card)

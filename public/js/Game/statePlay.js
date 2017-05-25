@@ -4,17 +4,13 @@
 * и обновлении игрового цикла.  
 * Добавляется в `game.state`.  
 * @namespace statePlay
+* @property {string} key='play' Название состояния
 * @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
 * @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
 */
 
 window.statePlay = {
 
-	/**
-	* Название состояния.
-	* @default 'play'
-	* @memberof statePlay
-	*/
 	key: 'play',
 
 	/**

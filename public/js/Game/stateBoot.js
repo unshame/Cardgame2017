@@ -5,15 +5,14 @@
 * @namespace stateBoot
 * @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
 * @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
+* @property {string} key='boot' Название состояния
+* @property {number} preloadCounter=0 Счетчик тиков загрузки ассетов.
+* @property {number} loadCounter=0 Счетчик тиков подключения к серверу.
 */
 
 window.stateBoot = {
 
-	/**
-	* Название состояния.
-	* @default 'boot'
-	* @memberof stateBoot
-	*/
+
 	key: 'boot',
 
 	/**
@@ -85,20 +84,9 @@ window.stateBoot = {
 	*/
 	init: function(){
 
-		console.log('Starting up');
-		
-		/**
-		* Счетчик тиков загрузки ассетов.
-		* @member preloadCounter
-		* @memberof stateBoot
-		*/
-		this.preloadCounter = 0;
+		console.log('Starting up');		
 
-		/**
-		* Счетчик тиков подключения к серверу.
-		* @member loadCounter
-		* @memberof stateBoot
-		*/
+		this.preloadCounter = 0;
 		this.loadCounter = 0;
 
 		this.loadtextDOM = document.getElementById('loading-text');

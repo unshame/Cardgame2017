@@ -15,7 +15,7 @@ Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
 
 	if(bringToTopOn === undefined)
 		bringToTopOn = BRING_TO_TOP_ON.START;
-	if(this.sorted){
+	if(this.style.sortable){
 		bringToTopOn = BRING_TO_TOP_ON.END_ALL;
 	}
 
@@ -57,10 +57,10 @@ Field.prototype._appendCards = function(cards){
 
 	var card, ci,
 		addedAngle,
-		lastAngle = this.randomAngle ? Math.floor(Math.random()*10)* (Math.random() > 0.5 ? 1 : -1) - 12 : undefined;
+		lastAngle = this.style.randomAngle ? Math.floor(Math.random()*10)* (Math.random() > 0.5 ? 1 : -1) - 12 : undefined;
 
 	//Находим угол последней карты
-	if(this.randomAngle){		
+	if(this.style.randomAngle){		
 		for(ci = 0; ci < this.cards.length; ci++){
 			card = this.cards[ci];
 			if(typeof this._angles[card.id] == 'number')
@@ -71,15 +71,15 @@ Field.prototype._appendCards = function(cards){
 	for(ci = 0; ci < cards.length; ci++){
 		card = cards[ci];
 		card.field = this;
-		if(this.addTo == 'front')
+		if(this.style.addTo == 'front')
 			this.cards.push(card);
 		else
 			this.cards.unshift(card);
 
 		//Сохраняем новый угол карты
-		if(this.randomAngle){
+		if(this.style.randomAngle){
 			addedAngle = (Math.floor(Math.random()*5) + 8);
-			if(this.randomAngle == 'bi' && Math.random() > 0.5 || this.randomAngle != 'bi' && this.direction == 'backward'){
+			if(this.style.randomAngle == 'bi' && Math.random() > 0.5 || this.style.randomAngle != 'bi' && this.style.direction == 'backward'){
 				addedAngle = -addedAngle;
 			}
 			lastAngle += addedAngle;

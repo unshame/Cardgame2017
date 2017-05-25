@@ -49,14 +49,14 @@ var FieldManager = function(inDebugMode){
 };
 
 /**
-* Добавляет поле
-*/
-FieldManager.prototype.addField = function(options){
-	if(!options){
-		options = {};
-	}
+ * Добавляет поле.
+ * @param {object} [options] опции поля
+ * @param {object} [style] стиль поля
+ * @param {object} [iconStyle] стиль иконки поля
+ */
+FieldManager.prototype.addField = function(options, style, iconStyle){
 
-	var field = new Field(options);
+	var field = new Field(options, style, iconStyle);
 	if(this.fields[options.id]){
 		this.fields[options.id].destroy();
 	}
@@ -93,7 +93,7 @@ FieldManager.prototype.unlockField = function(id){
 	}
 
 	field.icon.visible = true;
-	field.iconShouldHide = false;
+	field.iconStyle.shouldHide = false;
 	field.icon.alpha = 1;
 
 	var spinDelay = 300/game.speed,

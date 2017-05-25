@@ -61,7 +61,7 @@ Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 	if(bringToTopOn === undefined){
 		bringToTopOn = BRING_TO_TOP_ON.START;
 	}
-	if(this.sorted){
+	if(this.style.sortable){
 		bringToTopOn = BRING_TO_TOP_ON.END_ALL;
 	}
 	this._sortCards();
@@ -78,7 +78,7 @@ Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 * @see  {@link Field#placeQueuedCards}
 */
 Field.prototype.resetQueue = function(){
-	this._queuedCards = [];
+	this._queuedCards.length = 0;
 	this._delays = {};
 	this.expectedDelay = 0;
 };

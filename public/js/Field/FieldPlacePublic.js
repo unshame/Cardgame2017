@@ -15,26 +15,26 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 		noDelay = false;
 
 	//Размеры и угол поля
-	var areaWidth = (this.axis == 'vertical') ?  this.area.height : this.area.width;
-	var areaHeight = (this.axis == 'vertical') ? this.area.width : this.area.height;
+	var areaWidth = (this.style.axis == 'vertical') ?  this.area.height : this.area.width;
+	var areaHeight = (this.style.axis == 'vertical') ? this.area.width : this.area.height;
 	var angle = 0;
 
-	if(this.axis == 'vertical')
+	if(this.style.axis == 'vertical')
 		angle += 90;
-	if(this.flipped)
+	if(this.style.flipped)
 		angle += 180;
 
 	//Размеры карт, ширина включает отступ между картами
-	var cardWidth = skinManager.skin.width + this.padding*2;
+	var cardWidth = skinManager.skin.width + this.style.spacing*2;
 	var cardHeight = skinManager.skin.height;
 
 	//Активная ширина поля
-	var areaActiveWidth = areaWidth - cardWidth - this.margin*2;
+	var areaActiveWidth = areaWidth - cardWidth - this.style.padding*2;
 
 	//Необходимая ширина для размещения карт
 	var requiredActiveWidth = this.cards.length - 1;
-	if(this.forcedSpace)
-		requiredActiveWidth*= this.forcedSpace;
+	if(this.style.forcedSpace)
+		requiredActiveWidth*= this.style.forcedSpace;
 	else
 		requiredActiveWidth*= cardWidth;
 
@@ -42,8 +42,8 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	if(requiredActiveWidth > areaActiveWidth){
 
 		//Когда карты с отступом не вмещаются в поле, мы убираем отступ
-		areaActiveWidth += this.padding*2;
-		cardWidth -= this.padding*2;
+		areaActiveWidth += this.style.spacing*2;
+		cardWidth -= this.style.spacing*2;
 
 		requiredActiveWidth = areaActiveWidth;
 	}
@@ -80,9 +80,9 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	//Если курсор находится над одной из карт и карты не вмещаются в поле,
 	//указываем сдвиг карты от курсора
 	if(this.focusedCard && cardWidth*(this.cards.length - 1) > areaActiveWidth){		
-		shift = cardWidth*(1 + this.focusedScaleDiff/2) - cardSpacing;
+		shift = cardWidth*(1 + this.scaleDiff/2) - cardSpacing;
 		//Уменьшаем сдвиг для карт в выгнутом поле
-		if(this.areaType == 'curved'){
+		if(this.style.area == 'curved'){
 			shift -= 5;
 		}
 	}
@@ -91,8 +91,8 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	var delayArray = this._createDelayArray(noDelay);
 
 	//Передвигаем карты
-	var i = this.direction == 'backward' ? this.cards.length - 1 : 0,
-		iterator = this.direction == 'backward' ? -1 : 1;
+	var i = this.style.direction == 'backward' ? this.cards.length - 1 : 0,
+		iterator = this.style.direction == 'backward' ? -1 : 1;
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 
 		var card = this.cards[i];	
@@ -147,9 +147,9 @@ Field.prototype.placeCard = function(card, bringToTopOn, noDelay){
 */
 Field.prototype.rotateCards = function(){
 	var angle = 0;
-	if(this.axis == 'vertical')
+	if(this.style.axis == 'vertical')
 		angle += 90;
-	if(this.flipped)
+	if(this.style.flipped)
 		angle += 180;
 
 	for(var i = 0; i < this.cards.length; i++){
@@ -164,8 +164,8 @@ Field.prototype.rotateCards = function(){
 * которые не перемещаются в данный момент.
 */
 Field.prototype.zAlignCards = function(checkMover){
-	var i = this.direction == 'backward' ? this.cards.length - 1 : 0;
-	var iterator = this.direction == 'backward' ? -1 : 1;
+	var i = this.style.direction == 'backward' ? this.cards.length - 1 : 0;
+	var iterator = this.style.direction == 'backward' ? -1 : 1;
 
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 		var card = this.cards[i];

@@ -68,7 +68,7 @@ FieldBuilder.prototype.adjustFieldNetwork = function(){
 FieldBuilder.prototype.calcSizes = function(){
 	this._calcGenSizes();
 	this._calcSpecSizes();
-}
+};
 
 //FieldBuilderBuild
 

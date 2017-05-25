@@ -19,7 +19,7 @@ Field.prototype.highlightLastCard = function(highlight){
 		this.cards[i].setHighlight(false);
 	}
 	if(highlight){
-		i = this.direction == 'backward' ? 0 : this.cards.length - 1;
+		i = this.style.direction == 'backward' ? 0 : this.cards.length - 1;
 		this.cards[i].setHighlight(highlight);
 	}
 };
@@ -35,7 +35,7 @@ Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 	this.highlighted = on;
 
 	var plane;
-	switch(this.areaType){
+	switch(this.style.area){
 		case 'plain': 
 		plane = this.area;
 		break;
@@ -56,7 +56,7 @@ Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 
 	this.setVisibility(on);
 	plane.tint = on ? (tint || ui.colors.orange) : ui.colors.lightBlue;
-	plane.alpha = on ? 0.35 : this.alpha;
+	plane.alpha = on ? 0.35 : this.style.alpha;
 	this.linkedField = fieldManager.fields[linkedFieldId] || null;
 };
 
@@ -66,7 +66,7 @@ Field.prototype.setHighlight = function(on, tint, linkedFieldId){
  */
 Field.prototype.setVisibility = function(visible){
 	var plane;
-	switch(this.areaType){
+	switch(this.style.area){
 		case 'plain': 
 		plane = this.area;
 		break;
@@ -79,7 +79,20 @@ Field.prototype.setVisibility = function(visible){
 		plane = this.area;
 		break;
 	}
-	plane.visible = visible || this.inDebugMode || this.areaType == 'curved';
+	plane.visible = visible || this.inDebugMode || this.style.area == 'curved';
+};
+
+/**
+ * Устанавливает видимость иконки поля.
+ * @param {boolean} visible видимость
+ */
+Field.prototype.setIconVisibility = function(visible){
+	if(!this.icon)
+		return;
+
+	if(!visible && this.iconStyle.shouldHide || visible && !this.icon.visible){
+		this.icon.visible = visible;
+	}
 };
 
 /**
@@ -90,7 +103,7 @@ Field.prototype.popOut = function(popped){
 	if(popped == this.poppedOut)
 		return;
 	this.poppedOut = popped;
-	var scale = popped ? 1 + this.focusedScaleDiff : 1;
+	var scale = popped ? 1 + this.scaleDiff : 1;
 	for(var i = 0; i < this.cards.length; i++){
 		this.cards[i].setScale(scale);
 	}
@@ -103,7 +116,7 @@ Field.prototype.popOut = function(popped){
 * @private
 */
 Field.prototype._sortCards = function(){
-	if(this.sorted)
+	if(this.style.sortable)
 		this.cards.sort(this._compareCards);
 };
 

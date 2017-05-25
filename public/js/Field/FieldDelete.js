@@ -54,14 +54,6 @@ Field.prototype.removeCard = function(cardToRemove){
 };
 
 /**
-* Ресет поля. На данный момент только удаляет все карты из поля.
-* @see  {@link Field#removeAllCards}
-*/
-Field.prototype.reset = function(){
-	this.removeAllCards();
-};
-
-/**
 * Полностью уничтожает поле, убирае все карты предварительно.
 */
 Field.prototype.destroy = function(){
