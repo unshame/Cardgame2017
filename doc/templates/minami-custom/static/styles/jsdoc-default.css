@@ -729,3 +729,13 @@ article>div h5, article>div .description {
   display: inline-block;
   margin: 6px 6px 6px 0;
 }
+
+td.name {
+  width: 100px;
+}
+td.type {
+  width: 100px;
+}
+td.default {
+  width: 100px;
+}
