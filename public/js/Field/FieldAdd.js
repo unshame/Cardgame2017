@@ -55,35 +55,54 @@ Field.prototype.addCard = function(card, bringToTopOn){
 */
 Field.prototype._appendCards = function(cards){
 
-	var card, ci,
-		addedAngle,
-		lastAngle = this.style.randomAngle ? Math.floor(Math.random()*10)* (Math.random() > 0.5 ? 1 : -1) - 12 : undefined;
+	if(!cards || !cards.length)
+		return;
 
-	//Находим угол последней карты
+	var	angle;
 	if(this.style.randomAngle){		
-		for(ci = 0; ci < this.cards.length; ci++){
-			card = this.cards[ci];
-			if(typeof this._angles[card.id] == 'number')
-				lastAngle = this._angles[card.id];
+		angle = this._getLastAngle();
+		if(angle === null){
+			angle = Math.floor(Math.random()*10) * (cards[0].sprite.angle >= 0 ? 1 : -1) - 12;
 		}
 	}
 
-	for(ci = 0; ci < cards.length; ci++){
-		card = cards[ci];
+	for(var ci = 0; ci < cards.length; ci++){
+		var card = cards[ci];
 		card.field = this;
-		if(this.style.addTo == 'front')
+		if(this.style.addTo == 'front'){
 			this.cards.push(card);
-		else
+		}
+		else{
 			this.cards.unshift(card);
+		}
 
 		//Сохраняем новый угол карты
 		if(this.style.randomAngle){
-			addedAngle = (Math.floor(Math.random()*5) + 8);
-			if(this.style.randomAngle == 'bi' && Math.random() > 0.5 || this.style.randomAngle != 'bi' && this.style.direction == 'backward'){
+			var addedAngle = (Math.floor(Math.random()*5) + 8);
+			if(
+				this.style.randomAngle == 'bi' && Math.random() > 0.5 || 
+				this.style.randomAngle != 'bi' && this.style.direction == 'backward'
+			){
 				addedAngle = -addedAngle;
 			}
-			lastAngle += addedAngle;
-			this._angles[card.id] = lastAngle;
+			angle += addedAngle;
+			this._angles[card.id] = angle;
 		}
 	}
 };
+
+/**
+ * Возвращает угол последней карты в поле.
+ * @private
+ * @return {(number|null)} Угол последней карты или `null`.
+ */
+Field.prototype._getLastAngle = function(){
+	var lastAngle = null;	
+	for(var ci = 0; ci < this.cards.length; ci++){
+		var card = this.cards[ci];
+		if(this._angles[card.id] !== undefined){
+			lastAngle = this._angles[card.id];
+		}
+	}
+	return lastAngle;
+}
