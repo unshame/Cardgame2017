@@ -1,6 +1,6 @@
 /*
- * Энумераторы и фиктивные типы данных для JSDoc.
- */
+* Энумераторы и фиктивные типы данных для JSDoc.
+*/
 
 //ENUMS
 
@@ -34,11 +34,11 @@ window.BRING_TO_TOP_ON = {
 //DisplayObject
 
 /**
- * Информация о карте.
- * @typedef {object} CardInfo
- * @property {string} cid id карты
- * @property {string} [pid/field] id игрока/поля
- * @property {(number|null)} [suit] - масть карты
- * @property {number} [value] - значение карты
- */
+* Информация о карте.
+* @typedef {object} CardInfo
+* @property {string} cid id карты
+* @property {string} [pid/field] id игрока/поля
+* @property {(number|null)} [suit] - масть карты
+* @property {number} [value] - значение карты
+*/
 //CardInfo

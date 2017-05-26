@@ -67,9 +67,9 @@ var CardManager = function(inDebugMode){
 };
 
 /**
- * Создает карты.
- * @param {CardInfo[]} cardsInfo информация о перемещаемых картах.
- */
+* Создает карты.
+* @param {CardInfo[]} cardsInfo информация о перемещаемых картах.
+*/
 CardManager.prototype.createCards = function(cardsInfo){
 	for(var ci = 0; ci < cardsInfo.length; ci++){
 		var c = cardsInfo[ci];
@@ -91,9 +91,9 @@ CardManager.prototype.createCards = function(cardsInfo){
 };
 
 /**
- * Добавляет карту.
- * @param {object} options параметры карты
- */
+* Добавляет карту.
+* @param {object} options параметры карты
+*/
 CardManager.prototype.createCard = function(options){
 	if(!options || typeof options != 'object' || !options.id){
 		console.error('Card manager: incorrect options', options);
@@ -112,9 +112,9 @@ CardManager.prototype.reset = function(){
 };
 
 /**
- * Находится ли курсор над одной из карт с `draggable == true`.
- * @return {(Card|boolean)} Возращает найденную карту или `false`.
- */
+* Находится ли курсор над одной из карт с `draggable == true`.
+* @return {(Card|boolean)} Возращает найденную карту или `false`.
+*/
 CardManager.prototype.cursorIsOverACard = function(){
 	for(var ci in this.cards){
 		if(!this.cards.hasOwnProperty(ci))
@@ -180,9 +180,9 @@ CardManager.prototype.forceApplyValues = function(){
 };
 
 /**
- * Включает физику карт.
- * @param  {boolean} makeDraggable нужно ли делать карты перетаскиваемыми
- */
+* Включает физику карт.
+* @param  {boolean} makeDraggable нужно ли делать карты перетаскиваемыми
+*/
 CardManager.prototype.enablePhysics = function(makeDraggable){
 
 	for(var cid in this.cards){

@@ -21,11 +21,11 @@ CardManager.prototype.toggleDebugMode = function(){
 //ТЕСТОВЫЕ ФУНКЦИИ
 
 /**
- * Возвращает несколько карт, которые не входят в `except`.
- * @param {number} [num=this.cards.length] желаемое количество карт
- * @param {Card[]} [except] игнорируемые карты
- * @return {Card[]} Карты.
- */
+* Возвращает несколько карт, которые не входят в `except`.
+* @param {number} [num=this.cards.length] желаемое количество карт
+* @param {Card[]} [except] игнорируемые карты
+* @return {Card[]} Карты.
+*/
 CardManager.prototype.getCards = function(num, except){
 	if(!num)
 		num = this.cards.length;
@@ -44,10 +44,10 @@ CardManager.prototype.getCards = function(num, except){
 };
 
 /**
- * Возвращает одну карту, которая не входит в `except`.
- * @param {Card[]} [except] игнорируемые карты
- * @return {Card} Карта.
- */
+* Возвращает одну карту, которая не входит в `except`.
+* @param {Card[]} [except] игнорируемые карты
+* @return {Card} Карта.
+*/
 CardManager.prototype.getCard = function(except){
 	var card = this.getCards(1, except);
 	if(card.length)

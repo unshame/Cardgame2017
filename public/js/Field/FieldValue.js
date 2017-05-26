@@ -61,9 +61,9 @@ Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 };
 
 /**
- * Устанавливает видимость подсветки поля.
- * @param {boolean} visible видимость
- */
+* Устанавливает видимость подсветки поля.
+* @param {boolean} visible видимость
+*/
 Field.prototype.setVisibility = function(visible){
 	var plane;
 	switch(this.style.area){
@@ -83,9 +83,9 @@ Field.prototype.setVisibility = function(visible){
 };
 
 /**
- * Устанавливает видимость иконки поля.
- * @param {boolean} visible видимость
- */
+* Устанавливает видимость иконки поля.
+* @param {boolean} visible видимость
+*/
 Field.prototype.setIconVisibility = function(visible){
 	if(!this.icon)
 		return;
@@ -96,9 +96,9 @@ Field.prototype.setIconVisibility = function(visible){
 };
 
 /**
- * Увеличивает или восстанавливает масштаб всех карт в поле.
- * @param  {boolean} popped нужно ли увеличить или восстановить масштаб
- */
+* Увеличивает или восстанавливает масштаб всех карт в поле.
+* @param  {boolean} popped нужно ли увеличить или восстановить масштаб
+*/
 Field.prototype.popOut = function(popped){
 	if(popped == this.poppedOut)
 		return;

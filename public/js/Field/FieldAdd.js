@@ -92,10 +92,10 @@ Field.prototype._appendCards = function(cards){
 };
 
 /**
- * Возвращает угол последней карты в поле.
- * @private
- * @return {(number|null)} Угол последней карты или `null`.
- */
+* Возвращает угол последней карты в поле.
+* @private
+* @return {(number|null)} Угол последней карты или `null`.
+*/
 Field.prototype._getLastAngle = function(){
 	var lastAngle = null;	
 	for(var ci = 0; ci < this.cards.length; ci++){

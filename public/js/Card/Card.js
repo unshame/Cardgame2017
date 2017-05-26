@@ -301,9 +301,9 @@ Card.prototype.destroy = function(delay) {
 };
 
 /**
- * Удаляет карту из игры сразу.
- * @private
- */
+* Удаляет карту из игры сразу.
+* @private
+*/
 Card.prototype._destroyNow = function() {
 	this.base.removeAll(true);
 	this.base.destroy();

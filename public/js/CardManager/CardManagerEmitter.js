@@ -1,14 +1,14 @@
 /**
- * Запускает эмиттер карт. Предварительно останавливает эмиттер, если он уже запущен.  
- * Не указанные параметры остаются с предыдущего запуска.
- * @param  {number} [minSpeed] минимальная вертикальная скорость партиклей
- * @param  {number} [maxSpeed] максимальная вертикальная скорость партиклей
- * @param  {number} [sway]     максимальная скорость по горизонтали
- * @param  {(number|boolean)} [interval] Интервал между спавном партиклей.
- * `false` рассчитывает интервал на основе времени жизни и максимального кол-ва партиклей.
- * @param  {number} [rotation] максимальная скорость поворота партиклей
- * @param  {number} [gravity]  вертикальное ускорение партиклей
- */
+* Запускает эмиттер карт. Предварительно останавливает эмиттер, если он уже запущен.  
+* Не указанные параметры остаются с предыдущего запуска.
+* @param  {number} [minSpeed] минимальная вертикальная скорость партиклей
+* @param  {number} [maxSpeed] максимальная вертикальная скорость партиклей
+* @param  {number} [sway]     максимальная скорость по горизонтали
+* @param  {(number|boolean)} [interval] Интервал между спавном партиклей.
+* `false` рассчитывает интервал на основе времени жизни и максимального кол-ва партиклей.
+* @param  {number} [rotation] максимальная скорость поворота партиклей
+* @param  {number} [gravity]  вертикальное ускорение партиклей
+*/
 CardManager.prototype.emitterStart = function(minSpeed, maxSpeed, sway, interval, rotation, gravity){
 
 	this.emitterStop();
@@ -48,8 +48,8 @@ CardManager.prototype.emitterStart = function(minSpeed, maxSpeed, sway, interval
 };
 
 /**
- * Останавливает эмиттер карт.
- */
+* Останавливает эмиттер карт.
+*/
 CardManager.prototype.emitterStop = function(){
 	if(this.emitter.on){
 		this.emitter.on = false;
@@ -67,8 +67,8 @@ CardManager.prototype.emitterStop = function(){
 };
 
 /**
- * Перезапускает эмиттер карт с текущими настройками.
- */
+* Перезапускает эмиттер карт с текущими настройками.
+*/
 CardManager.prototype.emitterRestart = function(){
 	if(!this.emitter.on)
 		return;

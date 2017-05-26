@@ -5,8 +5,8 @@
 * Основные компоненты: {@link Field#base}, {@link Field#area}, {@link Field#circle}, {@link Field#icon}, {@link Field#cards}.  
 * Карты добавляются в поле двумя методами:  
 *
-** {@link Field#queueCards} -> {@link Field#placeQueuedCards}  
-** {@link Field#addCards}  
+* {@link Field#queueCards} -> {@link Field#placeQueuedCards}  
+* {@link Field#addCards}  
 *
 * Использование второго метода до финализации первого добавляет карты в очередь и запускает очередь  
 * `.queueCards(c1)` -> `.addCards(c2)` => `.queueCards(c1)` -> `.queueCards(c2)` -> `.placeQueuedCards()`   

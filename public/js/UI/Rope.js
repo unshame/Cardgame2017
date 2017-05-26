@@ -25,8 +25,8 @@ Rope.prototype = Object.create(Phaser.Sprite.prototype);
 Rope.prototype.constructor = Rope;
 
 /**
- * Обновляет прогресс таймера.
- */
+* Обновляет прогресс таймера.
+*/
 Rope.prototype.update = function(){
 	var now = new Date().getTime(),
 		burning = false;
@@ -48,10 +48,10 @@ Rope.prototype.update = function(){
 };
 
 /**
- * Запускает таймер.
- * @param  {number} duration время таймера
- * @param  {number} start    через сколько времени начинать отсчет 
- */
+* Запускает таймер.
+* @param  {number} duration время таймера
+* @param  {number} start    через сколько времени начинать отсчет 
+*/
 Rope.prototype.start = function(duration, start){
 	if(!duration || isNaN(duration))
 		return false;
@@ -67,8 +67,8 @@ Rope.prototype.start = function(duration, start){
 };
 
 /**
- * Останавливает таймер.
- */
+* Останавливает таймер.
+*/
 Rope.prototype.stop = function(){
 	this.burning = false;
 	this.height = 0;
@@ -78,8 +78,8 @@ Rope.prototype.stop = function(){
 };
 
 /**
- * Обновляет позицию таймера.
- */
+* Обновляет позицию таймера.
+*/
 Rope.prototype.updatePosition = function(){
 	this.maxHeight = this.y = game.screenHeight;
 };

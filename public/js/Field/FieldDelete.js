@@ -29,8 +29,8 @@ Field.prototype.removeCards = function(cardsToRemove){
 };
 
 /**
- * Удаляет карты из `{@link Field#cardsToRemove}`.
- */
+* Удаляет карты из `{@link Field#cardsToRemove}`.
+*/
 Field.prototype.removeMarkedCards = function(){
 	this.removeCards(this.cardsToRemove);
 	this.cardsToRemove.length = 0;

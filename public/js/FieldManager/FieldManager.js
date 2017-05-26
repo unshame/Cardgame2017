@@ -49,11 +49,11 @@ var FieldManager = function(inDebugMode){
 };
 
 /**
- * Добавляет поле.
- * @param {object} [options] опции поля
- * @param {object} [style] стиль поля
- * @param {object} [iconStyle] стиль иконки поля
- */
+* Добавляет поле.
+* @param {object} [options] опции поля
+* @param {object} [style] стиль поля
+* @param {object} [iconStyle] стиль иконки поля
+*/
 FieldManager.prototype.addField = function(options, style, iconStyle){
 
 	var field = new Field(options, style, iconStyle);
@@ -68,9 +68,9 @@ FieldManager.prototype.addField = function(options, style, iconStyle){
 };
 
 /**
- * Устанавливает козырь колоде.
- * @param {number} suit козырь
- */
+* Устанавливает козырь колоде.
+* @param {number} suit козырь
+*/
 FieldManager.prototype.setTrumpSuit = function(suit){
 	var icon = this.fields.DECK.icon;
 	icon.frame = suit;
@@ -78,9 +78,9 @@ FieldManager.prototype.setTrumpSuit = function(suit){
 };
 
 /**
- * Убирает визуальный замок с поля.
- * @param  {string} id id поля
- */
+* Убирает визуальный замок с поля.
+* @param  {string} id id поля
+*/
 FieldManager.prototype.unlockField = function(id){
 	var field = this.fields[id];
 	if(!field || !field.icon)
@@ -129,10 +129,10 @@ FieldManager.prototype.unlockField = function(id){
 };
 
 /**
- * Меняет местами два поля
- * @param  {Field} field1 первое поле
- * @param  {Field} field2 второе поле
- */
+* Меняет местами два поля
+* @param  {Field} field1 первое поле
+* @param  {Field} field2 второе поле
+*/
 FieldManager.prototype.swapFields = function(field1, field2){
 	var tempId = field2.id;
 	this.fields[tempId] = field1;
