@@ -64,7 +64,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 	//Отступ между картами
 	var cardSpacing = this._calculateCardSpacing(requiredActiveWidth);
-	this.cardSpacing = cardSpacing;	
+	this._cardSpacing = cardSpacing;	
 
 	//Проверка выделенной карты
 	if(

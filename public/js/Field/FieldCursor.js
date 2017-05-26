@@ -3,15 +3,17 @@
 /**
 * Запускает таймер, во время которого карты не реагируют на курсор.
 * @param {number} time время таймера
+* @private
 */
-Field.prototype.setUninteractibleTimer = function(time){
+Field.prototype._setUninteractibleTimer = function(time){
 
 	if(!time || typeof time != 'number' || isNaN(time))
 		return;
 
-	if(this.uninteractibleTimer){
-		clearTimeout(this.uninteractibleTimer);
-		this.uninteractibleTimer = null;
+	if(this._uninteractibleTimer){
+		clearTimeout(this._uninteractibleTimer);
+		this._uninteractibleTimer = null;
+		this.interactible = true;
 	}
 
 	if(game.paused)
@@ -19,10 +21,13 @@ Field.prototype.setUninteractibleTimer = function(time){
 
 	function makeInteracible(){
 		this.zAlignCards();
-		this.uninteractibleTimer = null;
+		this._uninteractibleTimer = null;
+		this.interactible = true;
 	}
 
-	this.uninteractibleTimer = setTimeout(makeInteracible.bind(this), time/game.speed);
+	this.interactible = false;
+
+	this._uninteractibleTimer = setTimeout(makeInteracible.bind(this), time/game.speed);
 };
 
 /**
@@ -37,7 +42,7 @@ Field.prototype.focusOnCard = function(card, pointer, forced){
 		return;
 
 	this.focusedCard = card;
-	if(!this.uninteractibleTimer || forced){
+	if(!this._uninteractibleTimer || forced){
 		this.placeCards(null, BRING_TO_TOP_ON.INIT);
 	}
 };
@@ -62,6 +67,6 @@ Field.prototype.focusOffCard = function(card, forced){
 		return;
 
 	this.focusedCard = null;
-	if(!this.uninteractibleTimer || forced)
+	if(!this._uninteractibleTimer || forced)
 		this.placeCards(null, BRING_TO_TOP_ON.INIT);
 };

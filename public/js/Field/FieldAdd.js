@@ -31,7 +31,7 @@ Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
 	else{
 		this._appendCards(newCards);
 		this._sortCards();
-		this.setUninteractibleTimer(newCards.length * this.delayTime);
+		this._setUninteractibleTimer(newCards.length * this.delayTime);
 		return this.placeCards(newCards, bringToTopOn, noDelay);
 	}
 };

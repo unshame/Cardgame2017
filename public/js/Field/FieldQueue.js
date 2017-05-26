@@ -41,8 +41,8 @@ Field.prototype.queueCards = function(newCards, delay){
 		delay += this.delayTime;
 	}
 
-	//Запоминаем задержку для uninteractibleTimer
-	this.expectedDelay = delay;
+	//Запоминаем задержку для _uninteractibleTimer
+	this._expectedDelay = delay;
 	return delay;
 };
 
@@ -66,10 +66,10 @@ Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 	}
 	this._sortCards();
 	this.placeCards(null, bringToTopOn, noDelay);
-	this.setUninteractibleTimer(this.expectedDelay);
+	this._setUninteractibleTimer(this._expectedDelay);
 	this._queuedCards = [];
 	this._delays = {};
-	this.expectedDelay = 0;
+	this._expectedDelay = 0;
 };
 
 /**
@@ -80,5 +80,5 @@ Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 Field.prototype.resetQueue = function(){
 	this._queuedCards.length = 0;
 	this._delays = {};
-	this.expectedDelay = 0;
+	this._expectedDelay = 0;
 };

@@ -33,7 +33,7 @@ CardControl.prototype.cardClick = function(card, pointer){
 	if(pointer.button == 1 || pointer.button == 4)
 		console.log(card);
 
-	if(!card.draggable || this.card && this.card != card || !this.card && card.field && card.field.uninteractibleTimer)
+	if(!card.draggable || this.card && this.card != card || !this.card && card.field && !card.field.interactible)
 		return;
 
 	if(this.inDebugMode)

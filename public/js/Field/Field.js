@@ -150,6 +150,26 @@ var Field = function(options, style, iconStyle){
 	this._angles = {};
 
 	/**
+	 * Ожидаемая задержка для установки {@link Field#_uninteractibleTimer}
+	 * @private
+	 * @type {Number}
+	 */
+	this._expectedDelay = 0;
+
+	/**
+	 * Таймер {@link Field#_setUninteractibleTimer}
+	 * @private
+	 */
+	this._uninteractibleTimer = null;
+
+	/**
+	 * Расчитанное расстояние между картами для {@link Field#cardIsInside}
+	 * @private
+	 * @type {Number}
+	 */
+	this._cardSpacing = 0;
+
+	/**
 	 * Выделенная карта.
 	 * @type {Card}
 	 */
@@ -250,6 +270,13 @@ var Field = function(options, style, iconStyle){
 	 * @default  false
 	 */
 	this.highlighted = false;
+
+	/**
+	 * Интерактивно ли поле.
+	 * @type {Boolean}
+	 * @default  true
+	 */
+	this.interactible = false;
 
 	/**
 	 * Нужно ли подсвечивать поле.
@@ -375,7 +402,7 @@ Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){
 
 	var spacing = 0;
 	if(includeSpacing)
-		spacing = skinManager.skin.width - this.cardSpacing;
+		spacing = skinManager.skin.width - this._cardSpacing;
 
 	var addX = 0,
 		addY = 0;
