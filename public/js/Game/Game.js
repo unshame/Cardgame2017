@@ -112,12 +112,12 @@ Game.prototype.calculateScreenSize = function(){
 Game.prototype.initialize = function(){
 	this.onPause.add(function(){
 		if(this.inDebugMode)
-			console.log('Game: paused internally')
+			console.log('Game: paused internally');
 	}, this);
 
 	this.onResume.add(function(){
 		if(this.inDebugMode)
-			console.log('Game: unpaused internally')
+			console.log('Game: unpaused internally');
 	}, this);
 
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;

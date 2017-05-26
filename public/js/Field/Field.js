@@ -67,46 +67,7 @@
 
 var Field = function(options, style, iconStyle){
 
-	var defaultConfig = Field.getDefaultOptions();
-
-	/**
-	 * Настройки поля.
-	 * @type {object}
-	 */
-	this.options = defaultConfig.options;
-	/**
-	 * Внешний вид поля.
-	 * @type {object}
-	 */
-	this.style = defaultConfig.style;
-	/**
-	 * Внешний вид иконки поля.
-	 * @type {object}
-	 */
-	this.iconStyle = defaultConfig.iconStyle;
-
-	var o;
-	if(options){
-		for(o in defaultConfig.options){
-			if(options.hasOwnProperty(o) && options[o] !== undefined){
-				this.options[o] = options[o];
-			}
-		}
-	}
-	if(style){
-		for(o in defaultConfig.style){
-			if(style.hasOwnProperty(o) && style[o] !== undefined){
-				this.style[o] = style[o];
-			}
-		}
-	}
-	if(iconStyle){
-		for(o in defaultConfig.iconStyle){
-			if(iconStyle.hasOwnProperty(o) && iconStyle[o] !== undefined){
-				this.iconStyle[o] = iconStyle[o];
-			}
-		}
-	}
+	this._applyOptions(options, style, iconStyle);
 
 	/**
 	 * Карты поля.
@@ -373,6 +334,56 @@ Field.getDefaultOptions = function(){
 	return config;
 };
 
+/**
+* Совмещает переданные опции со стандартными и сохраняет их, как свойства объекта.
+* @private
+* @param {object} [options] Настройки поля.
+* @param {object} [style] Внешний вид поля.
+* @param {object} [iconStyle] Внешний вид иконки поля.
+*/
+Field.prototype._applyOptions = function(options, style, iconStyle){
+	var defaultConfig = Field.getDefaultOptions();
+
+	/**
+	 * Настройки поля.
+	 * @type {object}
+	 */
+	this.options = defaultConfig.options;
+	/**
+	 * Внешний вид поля.
+	 * @type {object}
+	 */
+	this.style = defaultConfig.style;
+	/**
+	 * Внешний вид иконки поля.
+	 * @type {object}
+	 */
+	this.iconStyle = defaultConfig.iconStyle;
+
+	var o;
+	if(options){
+		for(o in defaultConfig.options){
+			if(options.hasOwnProperty(o) && options[o] !== undefined){
+				this.options[o] = options[o];
+			}
+		}
+	}
+	if(style){
+		for(o in defaultConfig.style){
+			if(style.hasOwnProperty(o) && style[o] !== undefined){
+				this.style[o] = style[o];
+			}
+		}
+	}
+	if(iconStyle){
+		for(o in defaultConfig.iconStyle){
+			if(iconStyle.hasOwnProperty(o) && iconStyle[o] !== undefined){
+				this.iconStyle[o] = iconStyle[o];
+			}
+		}
+	}
+};
+
 //@include:FieldPosition
 //@include:FieldValue
 //@include:FieldQueue
@@ -382,8 +393,6 @@ Field.getDefaultOptions = function(){
 //@include:FieldPlacePublic
 //@include:FieldPlaceCursor
 //@include:FieldPlaceDebug
-
-//БУЛЕВЫ ФУНКЦИИ
 
 /**
 * Проверяет нахождение карты внутри поля (по координатам).

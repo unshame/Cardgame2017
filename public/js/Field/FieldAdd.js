@@ -105,4 +105,4 @@ Field.prototype._getLastAngle = function(){
 		}
 	}
 	return lastAngle;
-}
+};
