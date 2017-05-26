@@ -41,8 +41,11 @@ window.statePlay = {
 	* @memberof statePlay
 	*/
 	render: function(){
-		if(game.stage.disableVisibilityChange && game.paused)
+		if(game.stage.disableVisibilityChange && game.paused && !game.pausedByViewChange){
 			game.paused = false;
+			if(game.inDebugMode)
+				console.log('Game: unpaused forced');
+		}
 
 		cardControl.updateDebug();
 		fieldManager.updateDebug();

@@ -10,6 +10,7 @@ var Game = function(minWidth, minHeight, speed, inDebugMode){
 	this.minHeight = minHeight || 820;
 	this.inDebugMode = inDebugMode || false;
 	this.initialized = false;
+	this.pausedByViewChange = false;
 
 	/**
 	* Обработчик действий сервера
@@ -59,6 +60,7 @@ var Game = function(minWidth, minHeight, speed, inDebugMode){
 		Phaser.CANVAS, 
 		'cardgame'
 	);
+
 };
 
 Game.prototype = Object.create(Phaser.Game.prototype);
@@ -108,6 +110,15 @@ Game.prototype.calculateScreenSize = function(){
 
 //Инициализация игры
 Game.prototype.initialize = function(){
+	this.onPause.add(function(){
+		if(this.inDebugMode)
+			console.log('Game: paused internally')
+	}, this);
+
+	this.onResume.add(function(){
+		if(this.inDebugMode)
+			console.log('Game: unpaused internally')
+	}, this);
 
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 	this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -193,12 +204,18 @@ Game.prototype.visibilityChangeListener = function(){
 
 	function pause(){
 		this.paused = true;	
+		this.pausedByViewChange = true;
+		if(this.inDebugMode)
+			console.log('Game: paused by visibility change');
 	}
 
 	if (!document[this.hiddenValue]) {
 
 		//Снимаем игру с паузы
 		this.paused = false;
+		this.pausedByViewChange = false;
+		if(this.inDebugMode)
+			console.log('Game: unpaused by visibility change');
 		if(this.pauseTimeout){
 			clearTimeout(this.pauseTimeout);
 			this.pauseTimeout = null;
