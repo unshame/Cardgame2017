@@ -29,7 +29,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	var cardHeight = skinManager.skin.height;
 
 	//Активная ширина поля
-	var areaActiveWidth = areaWidth - cardWidth - this.style.padding*2;
+	var areaActiveWidth = areaWidth - cardWidth - this.style.padding*2 - this.style.margin*2;
 
 	//Необходимая ширина для размещения карт
 	var requiredActiveWidth = this.cards.length - 1;

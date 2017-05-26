@@ -56,7 +56,7 @@ Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 
 	this.setVisibility(on);
 	plane.tint = on ? (tint || ui.colors.orange) : ui.colors.lightBlue;
-	plane.alpha = on ? 0.35 : this.style.alpha;
+	plane.alpha = on ? this.style.alpha : 0.15;
 	this.linkedField = fieldManager.fields[linkedFieldId] || null;
 };
 

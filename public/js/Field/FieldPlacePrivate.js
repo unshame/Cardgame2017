@@ -12,7 +12,8 @@
 * @return {object}                     Возвращает отступы `{top, left}`
 */
 Field.prototype._calculateMargin = function(requiredActiveWidth, areaActiveWidth, areaWidth, areaHeight, cardWidth, cardHeight){
-	var leftMargin = cardWidth/2 + this.style.padding;
+	var offset = this.style.margin + this.style.padding;
+	var leftMargin = cardWidth/2 + offset;
 	var topMargin = 0;
 	//Если ширина карт меньше ширины поля, устанавливаем отступ
 	//По умолчанию отступ слева уже указан
@@ -22,7 +23,7 @@ Field.prototype._calculateMargin = function(requiredActiveWidth, areaActiveWidth
 			leftMargin = (areaWidth - requiredActiveWidth)/2;
 			break;
 		case 'right':
-			leftMargin = areaWidth - requiredActiveWidth - cardWidth/2 - this.style.padding;
+			leftMargin = areaWidth - requiredActiveWidth - cardWidth/2 - offset;
 			break;
 		}
 	}
@@ -32,12 +33,12 @@ Field.prototype._calculateMargin = function(requiredActiveWidth, areaActiveWidth
 
 	//Выравнивание по верхнему краю
 	case 'top':
-		topMargin = this.style.padding + cardHeight/2;
+		topMargin = offset + cardHeight/2;
 		break;
 
 	//Выравнивание по нижнему краю
 	case 'bottom':
-		topMargin = areaHeight - this.style.padding - cardHeight/2;
+		topMargin = areaHeight - offset - cardHeight/2;
 		break;
 
 	//Выравнивание по центру
@@ -138,7 +139,7 @@ Field.prototype._moveCard = function(
 	}
 
 	if(this.type == 'TABLE'){
-		leftMargin += this.area.width/2 - this.style.padding - this.style.minActiveSpace/2 - skinManager.skin.width/2;
+		leftMargin += this.area.width/2 - this.style.padding - this.style.margin - this.style.minActiveSpace/2 - skinManager.skin.width/2;
 	}
 
 	//Сдвиг поднятых карт

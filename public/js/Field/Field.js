@@ -27,7 +27,8 @@
 * @param {number} style.y=0	{@link Field#base} позиция по вертикали
 * @param {number} style.width=0	{@link Field#area} ширина поверхности
 * @param {number} style.height=0 {@link Field#area} высота поверхности
-* @param {number} style.padding=10 Отступ по краям поля.
+* @param {number} style.margin=0 Отступ от края поля до видимого края поля.
+* @param {number} style.padding=10 Отступ от видимого края поля до карт внутри.
 * @param {number} style.spacing=10 Отступ между картами.
 * @param {number} style.minActiveSpace=fieldManager.builder.minActiveSpace Минимальная ширина\высота для расположения карт.
 * @param {number} style.raisedOffset=skinManager.skin.height/2 	На сколько поднимать карты с `raised == true`
@@ -54,7 +55,9 @@
 * @param {boolean} style.flipped=false	Карты распологаются повернутыми на 180 градусов
 * @param {(boolean|string)} style.randomAngle=false Нужно ли класть карты в поле под случайным углом.  
 *                                                   Значения: `false, true, 'bi'`
-* @param {number} style.alpha=0.15 Прозрачность поля в дебаг режиме.
+* @param {number} style.alpha=0.35 Прозрачность поля.
+* @param {number} style.corner=5 Радиус закругленного угла.
+* @param {number} style.border=4 Ширина рамки.
 *
 * @param {object} [iconStyle] Внешний вид иконки поля. {@link Field#iconStyle} {@link Field#icon} 
 * @param {string} iconStyle.texture=null текстура иконки	
@@ -207,7 +210,7 @@ var Field = function(options, style, iconStyle){
 	 * Поверхность поля.
 	 * @type {Phaser.Image}
 	 */
-	this.area = game.add.image(0, 0, pixel.generateTexture());
+	this.area = game.add.image(0, 0);
 	this.area.alpha = this.style.alpha;
 	this.area.visible = this.inDebugMode;
 	this.base.add(this.area);
@@ -302,6 +305,7 @@ Field.getDefaultOptions = function(){
 			height: 0,
 
 			padding: 10,
+			margin: 0,
 			spacing: 10,
 			minActiveSpace: fieldManager.builder.minActiveSpace,	
 			raisedOffset: skinManager.skin.height/2,	
@@ -321,7 +325,9 @@ Field.getDefaultOptions = function(){
 			randomAngle: false,	
 			
 			area: 'plain',	
-			alpha: 0.25
+			alpha: 0.35,
+			corner: 5,
+			border: 4
 		},
 		iconStyle: {
 			texture: null,
@@ -421,8 +427,8 @@ Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){
 	}
 
 	return card && Phaser.Rectangle.containsRaw(
-		this.base.x + this.style.padding - spacing - addX,
-		this.base.y + this.style.padding - addY,
+		this.base.x - spacing - addX,
+		this.base.y - addY,
 		this.area.width + addX*2 + spacing*2,
 		this.area.height + addY*2,
 		card.base.x + card.sprite.x,

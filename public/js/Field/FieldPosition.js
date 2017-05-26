@@ -41,40 +41,80 @@ Field.prototype.resize = function(width, height, shouldPlace){
 	if(shouldPlace === undefined)
 		shouldPlace = false;
 
+	var margin = this.style.margin;
+
 	if(this.style.axis == 'vertical'){
-		if(width < skinManager.skin.height){
-			width = skinManager.skin.height;
+		if(width - margin*2 < skinManager.skin.height){
+			width = skinManager.skin.height + margin*2;
 		}
 
-		if(height < skinManager.skin.width + this.style.minActiveSpace){
-			height = skinManager.skin.width + this.style.minActiveSpace;
+		if(height - margin*2 < skinManager.skin.width + this.style.minActiveSpace){
+			height = skinManager.skin.width + this.style.minActiveSpace + margin*2;
 		}
 	}
 	else{
-		if(width < skinManager.skin.width + this.style.minActiveSpace){
-			width = skinManager.skin.width + this.style.minActiveSpace;
+		if(width - margin*2 < skinManager.skin.width + this.style.minActiveSpace){
+			width = skinManager.skin.width + this.style.minActiveSpace + margin*2;
 		}
 
-		if(height < skinManager.skin.height){
-			height = skinManager.skin.height;
+		if(height - margin*2 < skinManager.skin.height){
+			height = skinManager.skin.height + margin*2;
 		}
 	}
 
-	this.area.width = Math.round(width + this.style.padding*2),
-	this.area.height = Math.round(height + this.style.padding*2);
+	width = Math.round(width + this.style.padding*2),
+	height = Math.round(height + this.style.padding*2);
+
+	this._createArea(width, height);
 
 	if(this.icon){
-		this.icon.x = this.area.width/2 + this.iconStyle.offset.x;
-		this.icon.y = this.area.height/2 + this.iconStyle.offset.y;
+		this.icon.x = width/2 + this.iconStyle.offset.x;
+		this.icon.y = height/2 + this.iconStyle.offset.y;
 	}
 
 	if(this.style.area == 'curved'){
-		this._createCircle(this.area.width, this.area.height);
-	}
+		this._createCircle(width, height);
+	}	
 
 	if(shouldPlace){
 		this.placeCards();
 	}
+};
+
+/**
+ * Запоминает размеры поля и рисует прямоугольник с закругленными углами.
+ * @private
+ * @param  {number} width  ширина поля
+ * @param  {number} height высота поля
+ */
+Field.prototype._createArea = function(width, height){
+	var radius = this.style.corner,
+		lineWidth = this.style.border,
+		x = this.style.margin + lineWidth/2,
+		y = this.style.margin + lineWidth/2;
+		
+	var area = game.make.bitmapData(width, height);
+	width -= x*2;
+	height -= y*2;
+	area.ctx.beginPath();
+	area.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+	area.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+	area.ctx.lineWidth = lineWidth;
+	area.ctx.moveTo(x + radius, y);
+	area.ctx.lineTo(x + width - radius, y);
+	area.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+	area.ctx.lineTo(x + width, y + height - radius);
+	area.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+	area.ctx.lineTo(x + radius, y + height);
+	area.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+	area.ctx.lineTo(x, y + radius);
+	area.ctx.quadraticCurveTo(x, y, x + radius, y);
+	area.ctx.fill();
+	area.ctx.stroke();
+
+	var id = 'area_' + this.id;
+	game.cache.addBitmapData(id, area);	
+	this.area.loadTexture(game.cache.getBitmapData(id));
 };
 
 /**
@@ -103,19 +143,20 @@ Field.prototype._createCircle = function(width, height){
 	var center = this._calculateCircleCenter(a, c, b);
 	var radius = center.y;
 
-	var circle = game.make.bitmapData(game.screenWidth, this.area.height);
+	var circle = game.make.bitmapData(game.screenWidth, height);
 	circle.ctx.beginPath();
 	circle.ctx.arc(center.x + this.base.x, center.y, radius,2 * Math.PI, 0); 
 	circle.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
 	circle.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-	circle.ctx.lineWidth = 4;
+	circle.ctx.lineWidth = this.style.border;
 	circle.ctx.fill();
 	circle.ctx.stroke();
+
 	var id = 'circle_' + this.id;
 	game.cache.addBitmapData(id, circle);	
 	this.circle.loadTexture(game.cache.getBitmapData(id));
 
-	this.circle.x = - this.base.x;
+	this.circle.x = -this.base.x;
 
 	this.circleCenter = center;
 	this.circleRadius = radius;
