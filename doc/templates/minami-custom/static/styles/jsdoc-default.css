@@ -736,6 +736,9 @@ td.name {
 td.type {
   width: 125px;
 }
+td.attributes {
+  width: 100px;
+}
 td.default {
   width: 100px;
   max-width:175px;
