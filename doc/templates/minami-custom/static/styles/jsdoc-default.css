@@ -719,7 +719,7 @@ article>div h4, .subsection-links {
   margin-left: -20px;
 }
 
-article>div h5, article>div .description {
+article>div h5, article>div div.description {
   margin-left: -10px;
 }
 
@@ -734,8 +734,10 @@ td.name {
   width: 100px;
 }
 td.type {
-  width: 100px;
+  width: 125px;
 }
 td.default {
   width: 100px;
+  max-width:175px;
+  word-wrap: break-word;
 }
