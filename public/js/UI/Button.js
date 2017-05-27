@@ -7,7 +7,7 @@ var Button = function(options){
 
 	this.options = Button.getDefaultOptions();
 	for(var o in options){
-		if(options.hasOwnProperty(o))
+		if(options.hasOwnProperty(o) && options[o] !== undefined)
 			this.options[o] = options[o];
 	}
 
