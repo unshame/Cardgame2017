@@ -148,6 +148,8 @@ var Card = function (options) {
 	*/
 	this._bringToTopOn = BRING_TO_TOP_ON.NEVER;
 
+	this._delayed = false;
+
 	/**
 	* Масть карты
 	* @type {number}

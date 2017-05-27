@@ -128,6 +128,8 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 		if(time < 0) return;
 	}
 
+	this._delayed = true;
+
 	//Запускаем новый твин
 	this.mover = game.add.tween(this.sprite);
 	this.mover.to(
@@ -143,20 +145,30 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 
 	//Переворачиваем карту, когда начинается движение
 	this.mover.onStart.addOnce(function(){
+		this._delayed = false;
 		this.applyValue();
-		if(this._bringToTopOn == BRING_TO_TOP_ON.START)
-			this.bringToTop();
+		if(this._bringToTopOn == BRING_TO_TOP_ON.START || this._bringToTopOn == BRING_TO_TOP_ON.START_ALL){
+			if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.START){
+				this.bringToTop();
+			}
+			else{
+				this.field.zAlignCards(true, this);
+			}
+		}
 	}, this);
 
 	//Ресет твина по окончанию
 	this.mover.onComplete.addOnce(function(){
+		this._delayed = false;
 		this.mover = null;
 		this.applyValue();
 		if(this._bringToTopOn == BRING_TO_TOP_ON.END || this._bringToTopOn == BRING_TO_TOP_ON.END_ALL){
-			if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.END)
+			if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.END){
 				this.bringToTop();
-			else
-				this.field.zAlignCards(true);
+			}
+			else{
+				this.field.zAlignCards(true, this);
+			}
 		}
 	}, this);
 };

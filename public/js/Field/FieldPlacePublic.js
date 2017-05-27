@@ -160,16 +160,19 @@ Field.prototype.rotateCards = function(){
 
 /**
 * Устанавливает z-index карт.
-* @param  {boolean} [checkMover] если true, то будут подняты только карты,
-* которые не перемещаются в данный момент.
+* @param  {boolean} [checkDelay] если `true`, то будут подняты только карты,
+* которые не ожидают перемещения.
+* @param {Card} [forcedCard] Карта, которая поднимается,
+* даже если `checkDelay == true` и она движется 
 */
-Field.prototype.zAlignCards = function(checkMover){
+Field.prototype.zAlignCards = function(checkDelay, forcedCard){
 	var i = this.style.direction == 'backward' ? this.cards.length - 1 : 0;
 	var iterator = this.style.direction == 'backward' ? -1 : 1;
 
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 		var card = this.cards[i];
-		if(!checkMover || !card.mover)
+		if(!checkDelay || !card._delayed || card == forcedCard){
 			card.bringToTop(false);
+		}
 	}
 };

@@ -62,7 +62,7 @@ Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 		bringToTopOn = BRING_TO_TOP_ON.START;
 	}
 	if(this.style.sortable){
-		bringToTopOn = BRING_TO_TOP_ON.END_ALL;
+		bringToTopOn = BRING_TO_TOP_ON.START_ALL;
 	}
 	this._sortCards();
 	this.placeCards(null, bringToTopOn, noDelay);
