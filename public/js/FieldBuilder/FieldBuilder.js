@@ -14,16 +14,12 @@ var FieldBuilder = function(manager){
 
 	this.minActiveSpace = 10;
 
-	this.possibleTableOrders = [	
-		[4, 2, 0, 1, 3, 5],		//никогда не понадобится
-		[2, 3, 0, 1, 4, 5],		//никогда не понадобится
-		[3, 1, 4, 2, 0, 5],		//3x2
-		null,					//невозможно
-		null,					//невозможно
-		[4, 2, 0, 1, 3, 5]		//6x1
-	];
-	this.tableOrder = [];
-	this.tableOrder.length = 6;
+	this.possibleTableOrders = {	
+		3: [3, 1, 4, 2, 0, 5],		//3x2
+		6: [4, 2, 0, 1, 3, 5]		//6x1
+	};
+	this.tableOrder = null;
+	this.tableAmount = 6;
 };
 
 //Создает поля
@@ -31,7 +27,6 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 
 	var manager = this.manager,
 		players = playerManager.players;
-
 
 	this.opponentPlacement = this._countOpponentPlacement(players.length - 1);
 	this.calcSizes();
@@ -82,7 +77,7 @@ FieldBuilder.prototype._calcGenSizes = function(){
 	this._calcGenOpponentSizes();
 
 	//Стол
-	var counter = this.tableOrder.length;
+	var counter = this.tableAmount;
 	do{
 		this.tablesInRow = counter;
 		this._calcGenTableSizes(counter);

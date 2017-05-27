@@ -20,7 +20,7 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 		extraSpace = (tableCells * grid.cellWidth) / numOfTables - minTableSpace,
 		tableWidth;
 
-	if(extraSpace > 0 && numOfTables == this.tableOrder.length){
+	if(extraSpace > 0 && numOfTables == this.tableAmount){
 		this.offsets.table = this.offsets.dummy = extraSpace / 4;
 		this.tableOffset = tableOffset = extraSpace / 2;
 		tableWidth = (tableCells * grid.cellWidth - extraSpace / 2 * (numOfTables - 1)) / numOfTables;
@@ -29,7 +29,7 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 		tableWidth = (tableCells * grid.cellWidth - tableOffset * (numOfTables - 1)) / numOfTables;
 	}
 
-	var addedCell = numOfTables == this.tableOrder.length ? 1 : 0;
+	var addedCell = numOfTables == this.tableAmount ? 1 : 0;
 
 	this.dimensions.table = {
 		width: tableWidth,
@@ -53,7 +53,7 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 FieldBuilder.prototype._calcSpecTableSizes = function(){
 	var offset = this.tableOffset,
  		inRow = this.tablesInRow,
- 		total = this.tableOrder.length,
+ 		total = this.tableAmount,
 		width = this.dimensions.table.width,
 		height = this.dimensions.table.height,
 		mult = Math.ceil(total/inRow),
@@ -66,7 +66,7 @@ FieldBuilder.prototype._calcSpecTableSizes = function(){
 	this.positions.dummy.y = y;
 	this.dimensions.dummy.height = height * mult + grid.cellHeight * (mult-1);
 	
-	this.tableOrder = this.possibleTableOrders[inRow - 1];
+	this.tableOrder = this.possibleTableOrders[inRow];
 
 	for(var i = 0; i < total; i++){
 		if(ti === 0){

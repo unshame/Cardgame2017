@@ -22,9 +22,9 @@ FieldBuilder.prototype._buildPlayerField = function(){
 FieldBuilder.prototype._buildTableFields = function(){
 	var manager = this.manager;
 	
-	for(var i = 0; i < this.tableOrder.length; i++){
+	for(var i = 0; i < this.tableAmount; i++){
 		var id = 'TABLE' + i;
-		var icon = i == this.tableOrder.length - 1 ? 'lock' : null;
+		var icon = i == this.tableAmount - 1 ? 'lock' : null;
 		manager.addField({
 			type: 'TABLE',
 			id: id,
