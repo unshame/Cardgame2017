@@ -34,6 +34,9 @@ CardControl.prototype._updateCard = function(){
 		if(~fields[0].validCards.indexOf(this.card)){
 			fieldManager.popOutField(fields[0]);
 		}
+		else{
+			fieldManager.resetPopOut();
+		}
 	}
 	else{
 		this.card.setScale(1.1);

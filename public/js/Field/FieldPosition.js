@@ -2,9 +2,9 @@
 
 /**
 * Устанавливает позицию поля.
-* @param {number} x            по горизонтали
-* @param {number} y            по вертикали
-* @param {boolean} shouldPlace нужно ли размещать карты после установки
+* @param {number} [x=this.style.x]            по горизонтали
+* @param {number} [y=this.style.y]            по вертикали
+* @param {boolean} [shouldPlace=false] нужно ли размещать карты после установки
 */
 Field.prototype.setBase = function(x, y, shouldPlace){
 	if(x === null || x === undefined)
@@ -23,11 +23,11 @@ Field.prototype.setBase = function(x, y, shouldPlace){
 
 /**
 * Устанавливает размер поля.
-* @param  {number} width        ширина
-* @param  {number} height       высота
-* @param  {boolean} shouldPlace нужно ли размещать карты после установки
+* @param  {number} [width=this.style.width] ширина
+* @param  {number} [height=this.style.height] высота
+* @param  {boolean} [shouldPlace=false] нужно ли размещать карты после установки
 */
-Field.prototype.resize = function(width, height, shouldPlace){
+Field.prototype.setSize = function(width, height, shouldPlace){
 	if(width === null || width === undefined)
 		width = this.style.width;
 	else
@@ -184,4 +184,14 @@ Field.prototype._calculateCircleCenter = function(a, b, c){
 	y = -1*(x - (a.x+b.x)/2)/aSlope +  (a.y+b.y)/2;
 
 	return new Phaser.Point(x, y);
+};
+
+/** Анимирует появление поля */
+Field.prototype._animateAppearance = function(){
+	if(this.style.area == 'curved'){
+		var tween = game.add.tween(this.circle.position);
+		this.circle.y = this.area.height;
+		tween.to({y: 0}, this.moveTime/game.speed, Phaser.Easing.Quadratic.Out);
+		tween.start();
+	}
 };

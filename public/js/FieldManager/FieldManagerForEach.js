@@ -124,7 +124,7 @@ FieldManager.prototype.resizeFields = function(){
 	this.forEachField(function(field, si){
 		field.margin = this.builder.offsets[si];
 		field.setBase(this.builder.positions[si].x, this.builder.positions[si].y);
-		field.resize(this.builder.dimensions[si].width, this.builder.dimensions[si].height, true);
+		field.setSize(this.builder.dimensions[si].width, this.builder.dimensions[si].height, true);
 	});
 };
 

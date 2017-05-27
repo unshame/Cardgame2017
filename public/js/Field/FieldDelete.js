@@ -53,12 +53,9 @@ Field.prototype.removeCard = function(cardToRemove){
 	this.removeCards([cardToRemove]);
 };
 
-/**
-* Полностью уничтожает поле, убирае все карты предварительно.
-*/
+/** Полностью уничтожает поле, убирает все карты предварительно. */
 Field.prototype.destroy = function(){
 	this.removeAllCards();
-	this.area.kill();
 	this.base.removeAll(true);
-	game.world.removeChild(this.base);
+	this.base.destroy();
 };

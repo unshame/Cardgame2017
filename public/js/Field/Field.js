@@ -203,9 +203,6 @@ var Field = function(options, style, iconStyle){
 		this.base.add(this.circle);
 	}
 
-	//Текстура для дебага и область поля.
-	var pixel = ui.newPixel();
-
 	/**
 	 * Поверхность поля.
 	 * @type {Phaser.Image}
@@ -256,14 +253,9 @@ var Field = function(options, style, iconStyle){
 	 */
 	this.poppedOut = false;
 
-	this.resize(this.style.width, this.style.height);
+	this.setSize(this.style.width, this.style.height);
 
-	if(this.style.area == 'curved'){
-		var tween = game.add.tween(this.circle.position);
-		this.circle.y = this.area.height;
-		tween.to({y: 0}, this.moveTime/game.speed, Phaser.Easing.Quadratic.Out);
-		tween.start();
-	}
+	this._animateAppearance();
 	
 	/**
 	 * Размер активного места поля для дебага.
