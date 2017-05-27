@@ -122,7 +122,7 @@ FieldManager.prototype.resizeFields = function(){
 		return;
 	this.builder.calcSizes();
 	this.forEachField(function(field, si){
-		field.margin = this.builder.offsets[si];
+		field.style.padding = this.builder.offsets[si];
 		field.setBase(this.builder.positions[si].x, this.builder.positions[si].y);
 		field.setSize(this.builder.dimensions[si].width, this.builder.dimensions[si].height, true);
 	});
