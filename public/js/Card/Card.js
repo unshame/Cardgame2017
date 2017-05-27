@@ -148,6 +148,12 @@ var Card = function (options) {
 	*/
 	this._bringToTopOn = BRING_TO_TOP_ON.NEVER;
 
+	/**
+	 * Ожидает ли карта перемещения.
+	 * @private
+	 * @type {Boolean}
+	 * @default false
+	 */
 	this._delayed = false;
 
 	/**
