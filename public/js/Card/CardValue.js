@@ -36,9 +36,9 @@ Card.prototype.applyValue = function(){
 
 	this._valueChanged = false;
 
-	if(this.flipper){
-		this.flipper.stop();
-		this.flipper = null;
+	if(this._flipper){
+		this._flipper.stop();
+		this._flipper = null;
 	}
 
 	if(game.paused){
@@ -46,22 +46,22 @@ Card.prototype.applyValue = function(){
 		return;
 	}
 
-	this.flipper = game.add.tween(this.sprite.scale);
-	this.flipper.to({x: 0}, (this.flipTime/game.speed)/2);
-	this.flipper.to({x: this.skin.scale}, (this.flipTime/game.speed)/2);
+	this._flipper = game.add.tween(this.sprite.scale);
+	this._flipper.to({x: 0}, (this.flipTime/game.speed)/2);
+	this._flipper.to({x: this.skin.scale}, (this.flipTime/game.speed)/2);
 
 	if(this.suit === null){
-		this.flipper.onChildComplete.addOnce(function(){
+		this._flipper.onChildComplete.addOnce(function(){
 			this.sprite.frame = this.skin.cardbackFrame;
 		}, this);
 		this.setDraggability(false);
 	}
 	else{
-		this.flipper.onChildComplete.addOnce(function(){
+		this._flipper.onChildComplete.addOnce(function(){
 			this.sprite.frame =  this.skin.firstValueFrame + this.suit*13 + this.value - 2;
 		}, this);
 	}
-	this.flipper.start();
+	this._flipper.start();
 };
 
 /**

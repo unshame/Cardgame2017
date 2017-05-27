@@ -23,7 +23,7 @@ var Card = function (options) {
 	//Options
 	this.options = Card.getDefaultOptions();
 	for(var o in options){
-		if(options.hasOwnProperty(o))
+		if(options.hasOwnProperty(o) && options[o] !== undefined)
 			this.options[o] = options[o];
 	}
 
@@ -94,15 +94,17 @@ var Card = function (options) {
 	* Твин увеличения яркости свечения карты
 	* @type {Phaser.Tween}
 	* @default null
+	* @private
 	*/
-	this.glowIncreaser = null;
+	this._glowIncreaser = null;
 
 	/**
 	* Твин уменьшения яркости свечения карты
 	* @type {Phaser.Tween}
 	* @default null
+	* @private
 	*/
-	this.glowDecreaser = null;
+	this._glowDecreaser = null;
 
 	/**
 	* Группа, содержащая спрайт и свечение карты (база карты)
@@ -116,7 +118,8 @@ var Card = function (options) {
 	game.cardsGroup.add(this.base);  
 
 	/**
-	* Твин передвижения карты
+	* Твин передвижения карты.
+	* По его существованию определяется, передвигается ли карта.
 	* @type {Phaser.Tween}
 	* @default null
 	*/
@@ -125,14 +128,16 @@ var Card = function (options) {
 	* Твин вращения карты
 	* @type {Phaser.Tween}
 	* @default null
+	* @private
 	*/
-	this.rotator = null;
+	this._rotator = null;
 	/**
 	* Твин переворота карты
 	* @type {Phaser.Tween}
 	* @default null
+	* @private
 	*/
-	this.flipper = null;
+	this._flipper = null;
 
 	/**
 	* Когда карта будет перемещена вверх группы  
@@ -283,10 +288,10 @@ Card.prototype.destroy = function(delay) {
 	this.setHighlight(false);
 	if(this.mover)
 		this.mover.stop();
-	if(this.rotator)
-		this.rotator.stop();
-	if(this.flipper)
-		this.flipper.stop();
+	if(this._rotator)
+		this._rotator.stop();
+	if(this._flipper)
+		this._flipper.stop();
 	if(this.field)
 		this.field.removeCard(this);
 

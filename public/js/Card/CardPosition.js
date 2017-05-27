@@ -122,9 +122,9 @@ Card.prototype.presetField = function(fieldId){
 * @param {number} angle угол поворота
 */
 Card.prototype.setAngle = function(angle){
-	if(this.rotator){
-		this.rotator.stop();
-		this.rotator = null;
+	if(this._rotator){
+		this._rotator.stop();
+		this._rotator = null;
 	}
 
 	this.sprite.angle = angle;

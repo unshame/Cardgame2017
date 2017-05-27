@@ -212,9 +212,9 @@ Card.prototype.rotateTo = function(angle, time, delay, easing){
 	var newAngle = this._calculateCorrectAngle(angle);
 
 	if(newAngle === false){
-		if(this.rotator){
-			this.rotator.stop();
-			this.rotator = null;
+		if(this._rotator){
+			this._rotator.stop();
+			this._rotator = null;
 		}
 		return;
 	}
@@ -262,13 +262,13 @@ Card.prototype._calculateCorrectAngle = function(angle){
 Card.prototype._startRotator = function(angle, time, delay, easing){
 
 	//Останавливаем твин, если он есть и угол поворота изменился
-	if(this.rotator){
-		var rotatorData = this.rotator.timeline[this.rotator.current];
+	if(this._rotator){
+		var rotatorData = this._rotator.timeline[this._rotator.current];
 		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle && rotatorData.delay == delay && !game.paused)
 			return;
 
-		this.rotator.stop();
-		this.rotator = null;
+		this._rotator.stop();
+		this._rotator = null;
 	}
 
 	//Создаем и запускаем твин или поворачиваем карту если игра остановлена
@@ -276,8 +276,8 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 		this.setAngle(angle);
 	}
 	else{
-		this.rotator = game.add.tween(this.sprite);
-		this.rotator.to(
+		this._rotator = game.add.tween(this.sprite);
+		this._rotator.to(
 			{
 				angle: angle
 			},
@@ -288,8 +288,8 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 		);
 
 		//Ресет твина по окончанию
-		this.rotator.onComplete.addOnce(function(){
-			this.rotator = null;
+		this._rotator.onComplete.addOnce(function(){
+			this._rotator = null;
 		}, this);
 	}
 };

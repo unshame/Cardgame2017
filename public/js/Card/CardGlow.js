@@ -18,8 +18,8 @@ Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color)
 	if(game.paused)
 		return;
 
-	this.glowDecreaser = game.add.tween(this.glow);
-	this.glowDecreaser.to(
+	this._glowDecreaser = game.add.tween(this.glow);
+	this._glowDecreaser.to(
 		{alpha: minGlow}, 
 		speed/game.speed, 
 		Phaser.Easing.Linear.None, 
@@ -27,8 +27,8 @@ Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color)
 		Math.floor(Math.random()*(delayRange/game.speed || 0))
 	);
 
-	this.glowIncreaser = game.add.tween(this.glow);
-	this.glowIncreaser.to(
+	this._glowIncreaser = game.add.tween(this.glow);
+	this._glowIncreaser.to(
 		{alpha: maxGlow},
 		speed/game.speed, 
 		Phaser.Easing.Linear.None, 
@@ -36,15 +36,15 @@ Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color)
 		Math.floor(Math.random()*(delayRange/game.speed || 0))
 	);
 
-	this.glowIncreaser.onComplete.add(function(){
-		if(this.glow.visible && this.glowDecreaser)
-			this.glowDecreaser.start();
+	this._glowIncreaser.onComplete.add(function(){
+		if(this.glow.visible && this._glowDecreaser)
+			this._glowDecreaser.start();
 	},this);
-	this.glowDecreaser.onComplete.add(function(){
-		if(this.glow.visible && this.glowIncreaser)
-			this.glowIncreaser.start();
+	this._glowDecreaser.onComplete.add(function(){
+		if(this.glow.visible && this._glowIncreaser)
+			this._glowIncreaser.start();
 	},this);
-	this.glowDecreaser.start();
+	this._glowDecreaser.start();
 };
 
 /**
@@ -52,13 +52,13 @@ Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color)
 * @private
 */
 Card.prototype._glowStop = function(){
-	if(this.glowIncreaser){
-		this.glowIncreaser.stop();
-		this.glowIncreaser = null;
+	if(this._glowIncreaser){
+		this._glowIncreaser.stop();
+		this._glowIncreaser = null;
 	}
-	if(this.glowDecreaser){
-		this.glowDecreaser.stop();
-		this.glowDecreaser = null;
+	if(this._glowDecreaser){
+		this._glowDecreaser.stop();
+		this._glowDecreaser = null;
 	}
 	if(this.glow.visible){
 		this.glow.kill();
