@@ -68,16 +68,19 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 	var newBaseY = relativeToBase ? y + this.base.y : y;
 
 	//Предупреждаем о том, что карта вышла за пределы экрана
-	if(newBaseX < -this.skin.width/2 || newBaseX > game.screenWidth + this.skin.width/2 || newBaseY < -this.skin.height/2 || newBaseY > game.screenHeight + this.skin.height/2)
-		console.warn(
-			'Moving card', this.id, 'out of the screen (' + newBaseX + ', ' + newBaseY + ')\n',
-			this
-		);
-
+	if(!Phaser.Rectangle.containsRaw(
+			-this.skin.width/2,
+			-this.skin.height/2,
+			game.screenWidth + this.skin.width,
+			game.screenHeight + this.skin.height,
+			newBaseX,
+			newBaseY
+	)){
+		console.warn('Moving card', this.id, 'out of screen (' + newBaseX + ', ' + newBaseY + ')\n', this);
+	}
 	//Нет смысла менять базу, если координаты не изменились
 	if(shouldRebase && newBaseX == this.base.x && newBaseY == this.base.y)
 		shouldRebase = false;
-
 
 	if(shouldRebase){
 		//Мы будем двигать карту к новой позиции базы
@@ -128,7 +131,9 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 		if(time < 0) return;
 	}
 
-	this._delayed = true;
+	if(delay){
+		this._delayed = true;
+	}
 
 	//Запускаем новый твин
 	this.mover = game.add.tween(this.sprite);
@@ -143,34 +148,43 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 		(delay/game.speed) || 0
 	);
 
-	//Переворачиваем карту, когда начинается движение
-	this.mover.onStart.addOnce(function(){
-		this._delayed = false;
-		this.applyValue();
-		if(this._bringToTopOn == BRING_TO_TOP_ON.START || this._bringToTopOn == BRING_TO_TOP_ON.START_ALL){
-			if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.START){
-				this.bringToTop();
-			}
-			else{
-				this.field.zAlignCards(true, this);
-			}
-		}
-	}, this);
+	this.mover.onStart.addOnce(this._onMoveStart, this);
+	this.mover.onComplete.addOnce(this._onMoveComplete, this);
+};
 
-	//Ресет твина по окончанию
-	this.mover.onComplete.addOnce(function(){
-		this._delayed = false;
-		this.mover = null;
-		this.applyValue();
-		if(this._bringToTopOn == BRING_TO_TOP_ON.END || this._bringToTopOn == BRING_TO_TOP_ON.END_ALL){
-			if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.END){
-				this.bringToTop();
-			}
-			else{
-				this.field.zAlignCards(true, this);
-			}
+/** 
+* Выполняется по началу движения карты 
+* @private
+*/
+Card.prototype._onMoveStart = function(){
+	this._delayed = false;
+	this.applyValue();
+	if(this._bringToTopOn == BRING_TO_TOP_ON.START || this._bringToTopOn == BRING_TO_TOP_ON.START_ALL){
+		if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.START){
+			this.bringToTop();
 		}
-	}, this);
+		else{
+			this.field.zAlignCards(true, this);
+		}
+	}
+};
+
+/** 
+* Выполняется по окончанию движения карты 
+* @private
+*/
+Card.prototype._onMoveComplete = function(){
+	this._delayed = false;
+	this.mover = null;
+	this.applyValue();
+	if(this._bringToTopOn == BRING_TO_TOP_ON.END || this._bringToTopOn == BRING_TO_TOP_ON.END_ALL){
+		if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.END){
+			this.bringToTop();
+		}
+		else{
+			this.field.zAlignCards(true, this);
+		}
+	}
 };
 
 /**
