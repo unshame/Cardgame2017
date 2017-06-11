@@ -14,6 +14,7 @@ FieldBuilder.prototype._buildPlayerField = function(){
 		width:this.dimensions.player.width,
 		minActiveSpace: this.minActiveSpaces.player,
 		padding:this.offsets.player,
+		draggable: true,
 		area: 'curved'
 	});
 };
@@ -44,7 +45,7 @@ FieldBuilder.prototype._buildTableFields = function(){
 			randomAngle: true,
 			padding: this.offsets.table,
 			area: 'glowing',
-			horizontalAlign: 'left'
+			horizontalAlign: 'centerLeft'
 		},
 		{
 			texture: icon,
@@ -54,7 +55,7 @@ FieldBuilder.prototype._buildTableFields = function(){
 	}
 
 	manager.addField({
-		type: 'dummy',
+		type: 'DUMMY',
 		id: 'dummy',
 		debug: manager.inDebugMode
 	},

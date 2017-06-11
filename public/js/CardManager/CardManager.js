@@ -158,6 +158,9 @@ CardManager.prototype.applySkin = function(){
 		this.emitterRestart();
 		setTimeout(this._applySkinToEmitter.bind(this), this.particleFadeTime);
 	}
+	else{
+		this._applySkinToEmitter(this);
+	}
 };
 
 /** Применяет скин к эмиттеру карт.

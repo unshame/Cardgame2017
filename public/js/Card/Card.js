@@ -68,6 +68,7 @@ var Card = function (options) {
 	* @type {Field}
 	*/
 	this.field = null;
+	this.fieldId = null;
 	this.presetField(this.options.fieldId);
 
 	/**
@@ -187,6 +188,8 @@ var Card = function (options) {
 	*/
 	this.skin = this.options.skin;
 	this.applySkin();
+
+	Object.seal(this);
 };
 
 /** 

@@ -28,6 +28,8 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 	var manager = this.manager,
 		players = playerManager.players;
 
+	manager.table.length = 0;
+
 	this.opponentPlacement = this._countOpponentPlacement(players.length - 1);
 	this.calcSizes();
 

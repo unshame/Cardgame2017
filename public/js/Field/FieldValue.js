@@ -10,6 +10,10 @@ Field.prototype.setPlayability = function(playable){
 	}
 };
 
+/**
+ * Подсвечивает последнюю карту.
+ * @param  {boolean} highlight включить ли подсветку
+ */
 Field.prototype.highlightLastCard = function(highlight){
 	if(!this.cards.length)
 		return;

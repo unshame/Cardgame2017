@@ -62,7 +62,7 @@ Field.prototype.setSize = function(width, height, shouldPlace){
 		}
 	}
 
-	width = Math.round(width + this.style.padding*2),
+	width = Math.round(width + this.style.padding*2);
 	height = Math.round(height + this.style.padding*2);
 
 	this._createArea(width, height);
@@ -186,7 +186,10 @@ Field.prototype._calculateCircleCenter = function(a, b, c){
 	return new Phaser.Point(x, y);
 };
 
-/** Анимирует появление поля */
+/** 
+* Анимирует появление поля
+* @private
+*/
 Field.prototype._animateAppearance = function(){
 	if(this.style.area == 'curved'){
 		var tween = game.add.tween(this.circle.position);

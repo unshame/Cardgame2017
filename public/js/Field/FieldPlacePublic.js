@@ -34,9 +34,9 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	//Необходимая ширина для размещения карт
 	var requiredActiveWidth = this.cards.length - 1;
 	if(this.style.forcedSpace)
-		requiredActiveWidth*= this.style.forcedSpace;
+		requiredActiveWidth *= this.style.forcedSpace;
 	else
-		requiredActiveWidth*= cardWidth;
+		requiredActiveWidth *= cardWidth;
 
 	//Ширина карт не может быть больше активной ширины поля
 	if(requiredActiveWidth > areaActiveWidth){

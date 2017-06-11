@@ -84,13 +84,13 @@ CardControl.prototype._cardOnValidField = function(){
 		return false;
 
 	var fields = fieldManager.forEachField(function(field, si){
-		if(field.highlighted && field.cardIsInside(this.card, false) && field.type != 'dummy'){
+		if(field.highlighted && field.cardIsInside(this.card, false) && field.type != 'DUMMY'){
 			return field;
 		}
 	}, this);
 	if(!fields.length){
 		fields = fieldManager.forEachField(function(field, si){
-			if(field.highlighted && field.cardIsInside(this.card, false, true) && field.type != 'dummy'){
+			if(field.highlighted && field.cardIsInside(this.card, false, true) && field.type != 'DUMMY'){
 				return field;
 			}
 		}, this);

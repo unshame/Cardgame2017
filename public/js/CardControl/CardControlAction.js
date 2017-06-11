@@ -154,6 +154,11 @@ CardControl.prototype.cardReturn = function(){
 
 	this.card = null;
 	this.pointer = null;
+
+	if(card.raised){
+		card.raised = false;
+	}
+
 	if(card.field){
 		if(!stillInbound)
 			card.field.focusedCard = null;

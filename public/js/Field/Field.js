@@ -36,9 +36,10 @@
 * 
 * @param {boolean} style.focusable=true Нужно ли сдвигать карты при наведении
 * @param {boolean} style.sortable=true Нужно ли сортировать карты 
+* @param {boolean} style.draggable=false Можно ли перетаскивать карты в этом поле
 * 
 * @param {string} style.horizontalAlign='center' Горизонтальное выравнивание поля.  
-*                                                Значения: `'left', 'center', 'right'`
+*                                                Значения: `'left', 'center', 'right', 'centerLeft'`
 * @param {string} style.verticalAlign='middle' Вертикальное выравнивание поля.  
 *                                              Значения: `'top', 'middle', 'bottom'`
 * 
@@ -270,6 +271,7 @@ var Field = function(options, style, iconStyle){
 	 */
 	this.inDebugMode = this.options.debug;
 
+	Object.seal(this);
 };
 
 /**
@@ -305,6 +307,7 @@ Field.getDefaultOptions = function(){
 
 			focusable: true,	
 			sortable: true,	
+			draggable: false,
 
 			horizontalAlign: 'center',	
 			verticalAlign: 'middle',		

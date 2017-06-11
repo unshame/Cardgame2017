@@ -25,6 +25,9 @@ Field.prototype._calculateMargin = function(requiredActiveWidth, areaActiveWidth
 		case 'right':
 			leftMargin = areaWidth - requiredActiveWidth - cardWidth/2 - offset;
 			break;
+		case 'centerLeft':
+			leftMargin += this.area.width/2 - this.style.padding - this.style.margin - this.style.minActiveSpace/2 - skinManager.skin.width/2;
+			break;
 		}
 	}
 
@@ -138,10 +141,6 @@ Field.prototype._moveCard = function(
 		leftMargin += skinManager.skin.trumpOffset;
 	}
 
-	if(this.type == 'TABLE'){
-		leftMargin += this.area.width/2 - this.style.padding - this.style.margin - this.style.minActiveSpace/2 - skinManager.skin.width/2;
-	}
-
 	//Сдвиг поднятых карт
 	var bottomMargin = card.raised ? this.style.raisedOffset : 0;
 	if(this.style.flipped && this.style.axis == 'horizontal' || !this.style.flipped && this.style.axis == 'vertical')
@@ -173,13 +172,12 @@ Field.prototype._moveCard = function(
 		card.moveTo(x, y, this.moveTime, delay, false, true, bringToTopOn);
 	}
 	else{
-		cardControl.trailShift(card.base.x - x, card.base.y - y);	
-		card.setBase(x, y);
+		card.setBasePreserving(x, y);
 	}
 
 	//Проверяем перетаскиваемость карты для тех случаев, когда карта была перемещена
 	//без использования presetField метода
-	if(this.type == 'HAND' && this.id == game.pid){
+	if(this.style.draggable){
 		if(!card.draggable)
 			card.setDraggability(true);
 	}
