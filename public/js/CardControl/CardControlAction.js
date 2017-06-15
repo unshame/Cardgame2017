@@ -18,8 +18,8 @@ CardControl.prototype.cardPickup = function(card, pointer){
 	if(this.inDebugMode)
 		console.log('Card control: Picked up', this.card.id);
 
-	if(this.inertiaHistory.length)
-		this.inertiaHistory = [];
+	if(this._inertiaHistory.length)
+		this._inertiaHistory = [];
 	this.cardLastX = this.card.sprite.x;
 	this.cardLastY = this.card.sprite.y;
 
@@ -146,8 +146,8 @@ CardControl.prototype.cardReturn = function(){
 
 	this._setTrailResetTimer();
 
-	if(this.inertiaHistory.length)
-		this.inertiaHistory = [];
+	if(this._inertiaHistory.length)
+		this._inertiaHistory = [];
 
 	var card = this.card;
 	var stillInbound = this._cardPointerInbound();
@@ -162,7 +162,7 @@ CardControl.prototype.cardReturn = function(){
 	if(card.field){
 		if(!stillInbound)
 			card.field.focusedCard = null;
-		card.field.placeCard(card, BRING_TO_TOP_ON.END, true);
+		card.field.placeCards([card], BRING_TO_TOP_ON.END, true);
 	}
 	else{
 		card.returnToBase(this.cardReturnTime, 0);
@@ -178,10 +178,10 @@ CardControl.prototype.cardThrow = function(){
 
 	//Находим среднюю скорость перемещения карты
 	this._saveInertia(curTime, 100);
-	for(var i = 0; i < this.inertiaHistory.length; i++){
+	for(var i = 0; i < this._inertiaHistory.length; i++){
 		counted++;
-		dx += this.inertiaHistory[i][1];
-		dy += this.inertiaHistory[i][2];
+		dx += this._inertiaHistory[i][1];
+		dy += this._inertiaHistory[i][2];
 	}
 	dx /= counted;
 	dy /= counted;
@@ -209,7 +209,7 @@ CardControl.prototype.cardThrow = function(){
 	card.setScale(1);
 	card.setDraggability(false);
 
-	this.inertiaHistory = [];
+	this._inertiaHistory = [];
 	this._setTrailResetTimer();
 
 	card.destroy(1000);

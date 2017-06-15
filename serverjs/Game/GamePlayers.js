@@ -76,7 +76,9 @@ class GamePlayers extends GamePlayersBase{
 			cards: true,
 			players: true,
 			suit: true
-		});
+		},
+		false,
+		'GAME_INFO_UPDATE');
 	}
 
 	//Оповещает игроков об оппонентах

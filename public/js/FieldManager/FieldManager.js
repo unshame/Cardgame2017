@@ -71,10 +71,14 @@ FieldManager.prototype.addField = function(options, style, iconStyle){
 * Устанавливает козырь колоде.
 * @param {number} suit козырь
 */
-FieldManager.prototype.setTrumpSuit = function(suit){
+FieldManager.prototype.setTrumpSuit = function(suit, delay){
+	if(delay === undefined)
+		delay = 1000;
 	var icon = this.fields.DECK.icon;
-	icon.frame = suit;
-	icon.visible = true;
+	setTimeout(function(){
+		icon.frame = suit;
+		icon.visible = true;
+	}, delay/game.speed);
 };
 
 /**
@@ -160,6 +164,5 @@ FieldManager.prototype.toggleDebugMode = function(){
 		if(field.inDebugMode != this.inDebugMode)
 			field.toggleDebugMode();
 	});
-	if(actionHandler.possibleActions && actionHandler.possibleActions.length)
-		actionHandler.highlightPossibleActions(actionHandler.possibleActions);
+	actionHandler.highlightPossibleActions();
 };

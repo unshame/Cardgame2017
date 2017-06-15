@@ -31,19 +31,36 @@ window.actionReactions = {
 	* @return {number} Время до начала добавления последней карты
 	* @memberof actionReactions
 	*/
-	GAME_INFO: function(action){
+	GAME_INFO: function(action, noDelay){
+
+		if(action.players.length){
+			playerManager.savePlayers(action.players);
+			cardManager.disablePhysics();
+			if(fieldManager.networkCreated){
+				fieldManager.builder.adjustFieldNetwork();
+			}
+			else{
+				fieldManager.builder.createFieldNetwork();
+			}
+			fieldManager.resetHighlights();
+		}
+
+		if(!fieldManager.networkCreated){
+			console.error('Action handler: field network hasn\'t been created');
+			return;
+		}
 
 		cardManager.emitterStop();
 		fieldManager.resetFields();
 		cardControl.reset();
 		cardManager.createCards(action.cards);
 		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
-		var delay = fieldManager.queueCards(action.cards, hasTrumpSuit ? true : false);
+		var delay = fieldManager.queueCards(action.cards, noDelay ? true : false);
 		if(hasTrumpSuit){
-			fieldManager.setTrumpSuit(action.trumpSuit);
+			fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? 0 : 1000);
 		}
 		fieldManager.removeMarkedCards();
-		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, hasTrumpSuit ? true : false);
+		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, noDelay ? true : false);
 		if(action.unlockedField){
 			fieldManager.unlockField(action.unlockedField);
 		}
@@ -168,3 +185,7 @@ window.actionReactions = {
 * @memberof actionReactions
 */
 actionReactions['ATTACK'] = actionReactions['DEFENSE'];
+
+actionReactions['GAME_INFO_UPDATE'] = function(action){
+	actionReactions['GAME_INFO'].call(this, action, true);
+}

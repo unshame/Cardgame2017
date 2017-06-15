@@ -25,7 +25,7 @@ var CardControl = function(inDebugMode){
 
 	this.cardMoveThreshold = 2;
 	this.cardMaxMoveAngle = 30;
-	this.inertiaHistory = [];
+	this._inertiaHistory = [];
 };
 
 //Обрабатывает нажатие на карту

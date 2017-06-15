@@ -104,13 +104,13 @@ FieldManager.prototype.highlightMarkedFields = function(){
 */
 FieldManager.prototype.popOutField = function(field){
 	this.resetPopOut();
-	field.popOut(true);
+	field.setPopOut(true);
 };
 
 /** Восстанавливает масштаб во всех полях */
 FieldManager.prototype.resetPopOut = function(){
 	this.forEachField(function(field){
-		field.popOut(false);
+		field.setPopOut(false);
 	});
 };
 
@@ -144,3 +144,12 @@ FieldManager.prototype.resetNetwork = function(){
 	this.table = [];
 	this.networkCreated = false;
 };
+
+/** Восстанавливает порядок полей стола */
+FieldManager.prototype.resetTableOrder = function(){
+	for(var ti = 0; ti < this.table.length; ti++){
+		var table = this.table[ti];
+		table.id = table.savedId;
+		this.fields[table.id] = table;
+	}
+}

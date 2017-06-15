@@ -25,7 +25,7 @@ Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
 		delay += this.delayTime;
 		this.queueCards(newCards, delay);
 		this.placeQueuedCards(bringToTopOn, noDelay);
-		delay += (this._queuedCards.length - 1)*this.delayTime;
+		delay += (this._queuedCards.length - 1) * this.delayTime;
 		return delay;
 	}
 	else{
@@ -34,17 +34,6 @@ Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
 		this._setUninteractibleTimer(newCards.length * this.delayTime);
 		return this.placeCards(newCards, bringToTopOn, noDelay);
 	}
-};
-
-/**
-* Добавляет одну карту в поле.
-* @param {Card} card - добавляемая карта
-* @param  {BRING_TO_TOP_ON} [bringToTopOn] когда поднимать карту на передний план
-* @return {number} Время добавления
-* @see {@link Field#addCards}
-*/
-Field.prototype.addCard = function(card, bringToTopOn){
-	return this.addCards([card], bringToTopOn);
 };
 
 /**
@@ -81,7 +70,7 @@ Field.prototype._appendCards = function(cards){
 			var addedAngle = (Math.floor(Math.random()*5) + 8);
 			if(
 				this.style.randomAngle == 'bi' && Math.random() > 0.5 || 
-				this.style.randomAngle != 'bi' && this.style.direction == 'backward'
+				this.style.randomAngle == 'uni' && this.style.direction == 'backward'
 			){
 				addedAngle = -addedAngle;
 			}

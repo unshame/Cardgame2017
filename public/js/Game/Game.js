@@ -3,7 +3,7 @@
 * @class
 */
 
-var Game = function(minWidth, minHeight, speed, inDebugMode){
+var Game = function(speed, minWidth, minHeight, inDebugMode){
 
 	this.speed = speed || 1;
 	this.minWidth = minWidth || 1050;
@@ -11,6 +11,7 @@ var Game = function(minWidth, minHeight, speed, inDebugMode){
 	this.inDebugMode = inDebugMode || false;
 	this.initialized = false;
 	this.pausedByViewChange = false;
+	this.defaultMoveTime = 300;
 
 	/**
 	* Обработчик действий сервера
@@ -57,7 +58,7 @@ var Game = function(minWidth, minHeight, speed, inDebugMode){
 		this,
 		this.screenWidth,
  		this.screenHeight, 
-		Phaser.CANVAS, 
+		Phaser.WEbGL, 
 		'cardgame'
 	);
 
@@ -196,7 +197,7 @@ Game.prototype.updateCoordinatesDebounce = function(){
 Game.prototype.visibilityChangeListener = function(){
 
 	function correct(){
-		actionHandler.possibleActions && actionHandler.highlightPossibleActions(actionHandler.possibleActions);
+		actionHandler.highlightPossibleActions();
 		fieldManager.rotateCards();
 		fieldManager.zAlignCards();
 		cardManager.forceApplyValues();

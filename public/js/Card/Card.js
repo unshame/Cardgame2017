@@ -304,7 +304,7 @@ Card.prototype.destroy = function(delay) {
 	if(this._flipper)
 		this._flipper.stop();
 	if(this.field)
-		this.field.removeCard(this);
+		this.field.removeCards([this]);
 
 	if(game.paused){
 		this._destroyNow();

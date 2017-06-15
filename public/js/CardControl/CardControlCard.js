@@ -74,10 +74,10 @@ CardControl.prototype._updateCardAngle = function(curTime){
 	
 	//Вычисляем угол из средней длины вектора инерции
 	var totalDistance = 0;
-	for(var i = 0; i < this.inertiaHistory.length; i++){
-		totalDistance += this.inertiaHistory[i][1];
+	for(var i = 0; i < this._inertiaHistory.length; i++){
+		totalDistance += this._inertiaHistory[i][1];
 	}
-	var angle = totalDistance / this.inertiaHistory.length / 1.25;
+	var angle = totalDistance / this._inertiaHistory.length / 1.25;
 	if(angle !== 0){
 			angle -= angle > 0 ? Math.min(angle, this.cardMoveThreshold) : Math.max(angle, -this.cardMoveThreshold);
 	}
@@ -107,8 +107,8 @@ CardControl.prototype._saveInertia = function(curTime, maxTime){
 			y: curY - this.cardLastY
 		};
 
-	while(this.inertiaHistory.length && curTime - this.inertiaHistory[0][0] > maxTime) {
-		this.inertiaHistory.shift();
+	while(this._inertiaHistory.length && curTime - this._inertiaHistory[0][0] > maxTime) {
+		this._inertiaHistory.shift();
 	}
-	this.inertiaHistory.push([curTime, distance.x, distance.y]);
+	this._inertiaHistory.push([curTime, distance.x, distance.y]);
 };

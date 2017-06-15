@@ -14,6 +14,8 @@ FieldBuilder.prototype._buildPlayerField = function(){
 		width:this.dimensions.player.width,
 		minActiveSpace: this.minActiveSpaces.player,
 		padding:this.offsets.player,
+		sortable: true,
+		focusable: true,
 		draggable: true,
 		area: 'curved'
 	});
@@ -40,9 +42,7 @@ FieldBuilder.prototype._buildTableFields = function(){
 			minActiveSpace: this.minActiveSpaces.table, 
 			forcedSpace: this.minActiveSpaces.table, 
 			spacing:0,
-			focusable:false,
-			sortable: false,
-			randomAngle: true,
+			randomAngle: 'uni',
 			padding: this.offsets.table,
 			area: 'glowing',
 			horizontalAlign: 'centerLeft'
@@ -64,7 +64,8 @@ FieldBuilder.prototype._buildTableFields = function(){
 		y: this.positions.dummy.y,
 		width: this.dimensions.dummy.width,
 		height: this.dimensions.dummy.height,
-		padding: this.offsets.dummy
+		padding: this.offsets.dummy,
+		sortable: false
 	});
 };
 
@@ -92,8 +93,6 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			height: this.dimensions[p.id].height,
 			minActiveSpace: this.minActiveSpaces[p.id],
 			padding:this.offsets[p.id],
-			sortable:false,
-			focusable:false,
 			axis: this.dimensions[p.id].axis,
 			flipped: this.dimensions[p.id].flipped,
 			direction: this.dimensions[p.id].direction,
@@ -122,8 +121,6 @@ FieldBuilder.prototype._buildDeckField = function(){
 		horizontalAlign: 'right',
 		spacing: 0,
 		padding: this.offsets.DECK,
-		sortable: false,
-		focusable: false,
 		forcedSpace: 0.5,
 		axis: 'vertical',
 		direction: 'backward',
@@ -150,8 +147,6 @@ FieldBuilder.prototype._buildDiscardField = function(){
 		minActiveSpace: this.minActiveSpaces.DISCARD_PILE,
 		spacing:0,
 		padding: this.offsets.DISCARD_PILE,
-		focusable:false,
-		sortable: false,
 		forcedSpace: 0.5,
 		horizontalAlign: 'right',
 		axis: 'vertical',

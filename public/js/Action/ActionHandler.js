@@ -8,7 +8,6 @@ var ActionHandler = function(reactions){
 
 	this.actionReactions = window.actionReactions;
 	this.notificationReactions = window.notificationReactions;
-	this.action = null;
 	this.possibleActions = null;
 
 	this.timedAction = null;
@@ -25,27 +24,10 @@ ActionHandler.prototype.executeAction = function(action){
 
 	var delay = 0;
 
-	if(action.type == 'GAME_INFO' && action.players.length){
-		playerManager.savePlayers(action.players);
-		cardManager.disablePhysics();
-		if(fieldManager.networkCreated){
-			fieldManager.builder.adjustFieldNetwork();
-		}
-		else{
-			fieldManager.builder.createFieldNetwork();
-		}
+	if(fieldManager.networkCreated){
+		fieldManager.resetHighlights();
+		cardManager.resetRaised();
 	}
-
-	this.action = action;
-
-	if(!fieldManager.networkCreated){
-		console.error('Action handler: field network hasn\'t been created');
-		return;
-	}
-
-	fieldManager.resetHighlights();
-
-	cardManager.resetRaised();
 
 	var reaction = this.actionReactions[action.type];
 	if(!reaction){
@@ -60,15 +42,16 @@ ActionHandler.prototype.executeAction = function(action){
 ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent){
 
 	var actionTypes = actions.map(function(a){return a.type;});
+	var button = ui.actionButtons.getByName('action');
 	if(~actionTypes.indexOf('SKIP')){
 		this.realAction = 'SKIP';
-		ui.actionButtons.getByName('action').label.setText('Skip');
-		ui.actionButtons.getByName('action').enable();
+		button.label.setText('Skip');
+		button.enable();
 	}
 	else if(~actionTypes.indexOf('TAKE')){
 		this.realAction = 'TAKE';
-		ui.actionButtons.getByName('action').label.setText('Take');
-		ui.actionButtons.getByName('action').enable();
+		button.label.setText('Take');
+		button.enable();
 	}
 
 	var currentTime = new Date();
@@ -76,7 +59,7 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 	if(time)
 		ui.rope.start(time - 1000);
 
-	this.highlightPossibleActions(actions, time, timeSent);
+	this.highlightPossibleActions(actions);
 };
 
 ActionHandler.prototype.handleNotification = function(note, actions){
@@ -92,6 +75,17 @@ ActionHandler.prototype.handleNotification = function(note, actions){
 //Подсвечивает карты, которыми можно ходить
 ActionHandler.prototype.highlightPossibleActions = function(actions){
 
+	if(!actions && !this.possibleActions){
+		return;
+	}
+
+	if(actions){
+		this.possibleActions = actions;
+	}
+	else{
+		actions = this.possibleActions;
+	};
+
 	this.executeTimedAction();
 
 	if(!fieldManager.networkCreated){
@@ -99,8 +93,6 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 		return;
 	}
 
-	this.possibleActions = actions;
-	
 	fieldManager.resetHighlights();
 
 	for(var ai = 0; ai < actions.length; ai++){

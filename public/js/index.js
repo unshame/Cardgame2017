@@ -21,11 +21,11 @@ function printLayers(){
 }
 
 /**
- * Переносит самую левую карты в руке игрока на стол с задержкой.
- * @param  {number} [i=0] id поля стола
- * @param {number} [delay=3000] задержка
- * @global
- */
+* Переносит самую левую карты в руке игрока на стол с задержкой.
+* @param  {number} [i=0] id поля стола
+* @param {number} [delay=3000] задержка
+* @global
+*/
 function moveFirstPlayerCardToTable(i, delay){
 	if(delay === undefined)
 		delay = 3000;

@@ -13,36 +13,36 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 
 	//Кол-во колонок и отступы для рук противников и мест на столе
 	var opponentNumRows = Math.round(grid.numRows - grid.density*2 + halfDensity - 2),
-		opponentCells = this.opponentCells = [
+		_opponentCells = this._opponentCells = [
 			opponentNumRows,
 			grid.numCols - grid.density*4 - 2,
 			opponentNumRows
 		],
-		opponentsOffset = this.opponentsOffset = [
+		_opponentsOffset = this._opponentsOffset = [
 			(grid.cellHeight + this.offsets.opponent[0]* 2 ),
 			(grid.cellWidth + this.offsets.opponent[1]* 2 ),
 			(grid.cellHeight + this.offsets.opponent[2]* 2 )
 		];
 
-	for(var i = 0; i < opponentCells.length; i++){
-		if(opponentCells[i] <= 0){
-			console.warn('Field builder: Negative amount of columns for field opponent[', i, '] (', opponentCells[i], '), defaulting to 0\n', this);
-			opponentCells[i] = 0;
+	for(var i = 0; i < _opponentCells.length; i++){
+		if(_opponentCells[i] <= 0){
+			console.warn('Field builder: Negative amount of columns for field opponent[', i, '] (', _opponentCells[i], '), defaulting to 0\n', this);
+			_opponentCells[i] = 0;
 		}
 	}
 
 	this.dimensions.opponent = [
 		{
 			//width: , 
-			height: (opponentCells[0]* grid.cellHeight - opponentsOffset[0]* (this.opponentPlacement[0] - 1)) / this.opponentPlacement[0]
+			height: (_opponentCells[0]* grid.cellHeight - _opponentsOffset[0]* (this._opponentPlacement[0] - 1)) / this._opponentPlacement[0]
 		},
 		{
-			width: (opponentCells[1]* grid.cellWidth - opponentsOffset[1]* (this.opponentPlacement[1] - 1)) / this.opponentPlacement[1]
+			width: (_opponentCells[1]* grid.cellWidth - _opponentsOffset[1]* (this._opponentPlacement[1] - 1)) / this._opponentPlacement[1]
 			//height: 
 		},
 		{
 			//width: , 
-			height: (opponentCells[2]* grid.cellHeight - opponentsOffset[2]* (this.opponentPlacement[2] - 1)) / this.opponentPlacement[2]
+			height: (_opponentCells[2]* grid.cellHeight - _opponentsOffset[2]* (this._opponentPlacement[2] - 1)) / this._opponentPlacement[2]
 		}
 	];
 
@@ -74,13 +74,13 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 //Размеры для полей противников
 FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 	var players = playerManager.players,
-		opponentsOffset = this.opponentsOffset,
+		_opponentsOffset = this._opponentsOffset,
 		i = playerManager.pi + 1,	//индекс первого противника по кругу после игрока
 		oi = 0,	//Счетчик размещенных полей
 		pi = 0;	//Индекс позиции для размещения
 
 	var dimensions = this.dimensions.opponent,
-		placement = this.opponentPlacement.map(function(v){
+		placement = this._opponentPlacement.map(function(v){
 			return v;
 		}),
 
@@ -91,13 +91,13 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 		addTo = ['back', 'front', 'front'],
 		xs = [
 			0,
-			dimensions[1].width + opponentsOffset[1],
+			dimensions[1].width + _opponentsOffset[1],
 			0
 		],
 		ys = [
-			-(dimensions[0].height + opponentsOffset[0]),
+			-(dimensions[0].height + _opponentsOffset[0]),
 			0,
-			dimensions[2].height + opponentsOffset[2]
+			dimensions[2].height + _opponentsOffset[2]
 		];
 
 	if(i >= players.length)

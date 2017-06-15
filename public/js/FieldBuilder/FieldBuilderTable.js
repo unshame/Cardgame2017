@@ -7,26 +7,26 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 	/*--*/
 
 	var halfRows = Math.floor(grid.numRows / 2),
-		tableCells = this.tableCells = this.opponentPlacement[0] ? Math.round(grid.numCols - 4 - grid.density* 1.5) : grid.numCols - 2,
-		tableOffset = this.tableOffset = this.offsets.table* 2;
+		_tableCells = this._tableCells = this._opponentPlacement[0] ? Math.round(grid.numCols - 4 - grid.density* 1.5) : grid.numCols - 2,
+		_tableOffset = this._tableOffset = this.offsets.table* 2;
 
-	if(tableCells <= 0){
-		console.warn('Field builder: Negative amount of columns for field table (', tableCells, '), defaulting to 0\n', this);
-		tableCells = 0;
+	if(_tableCells <= 0){
+		console.warn('Field builder: Negative amount of columns for field table (', _tableCells, '), defaulting to 0\n', this);
+		_tableCells = 0;
 	}
 
 	//Пытаемся выровнять поля стола по центру
 	var minTableSpace = skinManager.skin.width + this.minActiveSpaces.table,
-		extraSpace = (tableCells * grid.cellWidth) / numOfTables - minTableSpace,
+		extraSpace = (_tableCells * grid.cellWidth) / numOfTables - minTableSpace,
 		tableWidth;
 
 	if(extraSpace > 0 && numOfTables == this.tableAmount){
 		this.offsets.table = this.offsets.dummy = extraSpace / 4;
-		this.tableOffset = tableOffset = extraSpace / 2;
-		tableWidth = (tableCells * grid.cellWidth - extraSpace / 2 * (numOfTables - 1)) / numOfTables;
+		this._tableOffset = _tableOffset = extraSpace / 2;
+		tableWidth = (_tableCells * grid.cellWidth - extraSpace / 2 * (numOfTables - 1)) / numOfTables;
 	}
 	else{
-		tableWidth = (tableCells * grid.cellWidth - tableOffset * (numOfTables - 1)) / numOfTables;
+		tableWidth = (_tableCells * grid.cellWidth - _tableOffset * (numOfTables - 1)) / numOfTables;
 	}
 
 	var addedCell = numOfTables == this.tableAmount ? 1 : 0;
@@ -40,7 +40,7 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 	};
 
 	this.positions.table = grid.at(
-		this.opponentPlacement[0] ? 1 + grid.density : 1,
+		this._opponentPlacement[0] ? 1 + grid.density : 1,
 		halfRows - 1,
 		-this.offsets.table,
 		-this.offsets.table,
@@ -51,7 +51,7 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 };
 
 FieldBuilder.prototype._calcSpecTableSizes = function(){
-	var offset = this.tableOffset,
+	var offset = this._tableOffset,
  		inRow = this.tablesInRow,
  		total = this.tableAmount,
 		width = this.dimensions.table.width,

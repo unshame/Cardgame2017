@@ -16,7 +16,7 @@
 * @param {string} options.type='GENERIC' {@link Field#type}	
 * @param {string} options.name=null {@link Field#name}	
 * 
-* @param {number} options.moveTime=300 {@link Field#moveTime}	
+* @param {number} options.moveTime=game.defaultMoveTime {@link Field#moveTime}	
 * @param {number} options.delayTime=100 {@link Field#delayTime}	
 * @param {number} options.scaleDiff=0.025 {@link Field#scaleDiff}
 * @param {boolean} options.debug=false {@link Field#inDebugMode}	
@@ -34,8 +34,8 @@
 * @param {number} style.raisedOffset=skinManager.skin.height/2 	На сколько поднимать карты с `raised == true`
 * @param {(boolean|number)} style.forcedSpace=false Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать заданное значение.
 * 
-* @param {boolean} style.focusable=true Нужно ли сдвигать карты при наведении
-* @param {boolean} style.sortable=true Нужно ли сортировать карты 
+* @param {boolean} style.focusable=false Нужно ли сдвигать карты при наведении
+* @param {boolean} style.sortable=false Нужно ли сортировать карты 
 * @param {boolean} style.draggable=false Можно ли перетаскивать карты в этом поле
 * 
 * @param {string} style.horizontalAlign='center' Горизонтальное выравнивание поля.  
@@ -55,7 +55,9 @@
 * @param {boolean} style.reversed=false Карты добавляются начиная с последней
 * @param {boolean} style.flipped=false	Карты распологаются повернутыми на 180 градусов
 * @param {(boolean|string)} style.randomAngle=false Нужно ли класть карты в поле под случайным углом.  
-*                                                   Значения: `false, true, 'bi'`
+*                                                   Значения: `false, 'uni', 'bi'`  
+*                                                   `'uni'` - карты поворачиваются по направлению поля   
+*                                                   `'bi'` - карты поворачиваются в случайную сторону
 * @param {number} style.alpha=0.35 Прозрачность поля.
 * @param {number} style.corner=5 Радиус закругленного угла.
 * @param {number} style.border=4 Ширина рамки.
@@ -160,6 +162,12 @@ var Field = function(options, style, iconStyle){
 	this.id = this.options.id;
 
 	/**
+	 * Запомненное id поля для временной замены 
+	 * @type {string}
+	 */
+	this.savedId = this.id;
+
+	/**
 	 * Специальное id поля для полей, пренадлежащих одной группе.
 	 * @type {number}
 	 */
@@ -198,7 +206,7 @@ var Field = function(options, style, iconStyle){
 	if(this.style.area == 'curved'){
 		/**
 		 * Полукруглая поверхность поля, если `style.area == 'curved'`.
-		 * @type {Phaser.Graphics}
+		 * @type {Phaser.Image}
 		 */
 		this.circle = game.add.image(0, 0);
 		this.base.add(this.circle);
@@ -281,7 +289,7 @@ Field.getDefaultOptions = function(){
 	var config = {
 		options: {
 
-			moveTime: 300,
+			moveTime: game.defaultMoveTime,
 			delayTime: 100,		
 			scaleDiff: 0.025,
 
@@ -305,8 +313,8 @@ Field.getDefaultOptions = function(){
 			raisedOffset: skinManager.skin.height/2,	
 			forcedSpace: false,	
 
-			focusable: true,	
-			sortable: true,	
+			focusable: false,	
+			sortable: false,	
 			draggable: false,
 
 			horizontalAlign: 'center',	

@@ -38,10 +38,9 @@ $(function () {
 	var container = $('body>nav');
 
 	//Показываем элементы боковой панели, относящиеся к текущему классу или global
-	if(className)
+	if(className){
 	  $('.nav-item.' + className).show();
-	else
-	  $('.nav-item.global').show();
+	}
 
 	//Находит и подсвечивает элемент в боковой панели в соответствии с текущим хэшем 
 	function highlightCurrent(hash){

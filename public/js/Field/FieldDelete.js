@@ -42,15 +42,7 @@ Field.prototype.removeMarkedCards = function(){
 */
 Field.prototype.removeAllCards = function(){
 	this.removeCards(this.cards);
-};
-
-/**
-* Удаляет одну карту из поля.
-* @param  {Card} cardToRemove карта для удаления
-* @see  {@link Field#removeCards}
-*/
-Field.prototype.removeCard = function(cardToRemove){
-	this.removeCards([cardToRemove]);
+	this.cardsToRemove.length = 0;
 };
 
 /** Полностью уничтожает поле, убирает все карты предварительно. */

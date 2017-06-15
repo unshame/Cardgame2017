@@ -95,6 +95,7 @@ UILayers.prototype.positionLayers = function(){
 /**
 * Вызывает `updatePosition` у всех элементов слоя.
 * @param {DisplayObject} layer слой
+* @private
 */
 UILayers.prototype._positionElementsInLayer = function(layer){
 	layer.forEach(function(el){

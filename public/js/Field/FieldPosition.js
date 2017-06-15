@@ -82,11 +82,11 @@ Field.prototype.setSize = function(width, height, shouldPlace){
 };
 
 /**
- * Запоминает размеры поля и рисует прямоугольник с закругленными углами.
- * @private
- * @param  {number} width  ширина поля
- * @param  {number} height высота поля
- */
+* Запоминает размеры поля и рисует прямоугольник с закругленными углами.
+* @private
+* @param  {number} width  ширина поля
+* @param  {number} height высота поля
+*/
 Field.prototype._createArea = function(width, height){
 	var radius = this.style.corner,
 		lineWidth = this.style.border,

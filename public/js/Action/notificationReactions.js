@@ -38,7 +38,7 @@ window.notificationReactions = {
 	* @param {object} note сообщение
 	*/
 	TURN_ENDED: function(note){
-
+		fieldManager.resetTableOrder();
 	},
 
 	/*
@@ -59,22 +59,32 @@ window.notificationReactions = {
 
 		//Ставим стопку сброса по центру экрана
 		var discard = fieldManager.fields.DISCARD_PILE,
-			dummy = fieldManager.fields.dummy;
+			dummy = fieldManager.fields.dummy, 
+			won = note.results && note.results.winners && ~note.results.winners.indexOf(game.pid)
+			delay = 0;
 			
 		if(discard && dummy){
 			var cards = discard.cards.slice();
 			discard.removeAllCards();
-			dummy.addCards(cards, BRING_TO_TOP_ON.START, true);
+			delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);
+			delay += game.defaultMoveTime;
 		}
 
-		if(note.results && note.results.winners && ~note.results.winners.indexOf(game.pid)){
-			cardManager.emitterStart(300, 500, 100, false, 100, 10);
-			cardManager.enablePhysics(false);
-		}
-		else{
-			cardManager.enablePhysics(true);
-		}
-		fieldManager.resetFields();
+		setTimeout(function(){
+			dummy.placeQueuedCards();
+			fieldManager.resetFields();
+		}, game.defaultMoveTime);
+
+		setTimeout(function(){
+			if(won){
+				cardManager.emitterStart(300, 500, 100, false, 100, 10);
+				cardManager.enablePhysics(false);
+			}
+			else{
+				cardManager.enablePhysics(true);
+			}
+		}, delay + 100);
+		
 	},
 
 	/*

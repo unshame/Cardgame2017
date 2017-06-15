@@ -11,9 +11,9 @@ Field.prototype.setPlayability = function(playable){
 };
 
 /**
- * Подсвечивает последнюю карту.
- * @param  {boolean} highlight включить ли подсветку
- */
+* Подсвечивает последнюю карту.
+* @param  {boolean} highlight включить ли подсветку
+*/
 Field.prototype.highlightLastCard = function(highlight){
 	if(!this.cards.length)
 		return;
@@ -33,7 +33,7 @@ Field.prototype.highlightLastCard = function(highlight){
 * включен ли дебаг поля.
 * @param {boolean} [on=Field#inDebugMode] подствечивать ли поле
 * @param {number} [tint=ui.colors.lightBlue]    цвет подсветки
-* @param {string} [linkedFieldId=null]      связанное поле, используется `{@link cardControl#cardMoveToField}`
+* @param {string} [linkedFieldId=null]      связанное поле, используется `{@link CardControl#cardMoveToField}`
 */
 Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 	this.highlighted = on;
@@ -103,14 +103,15 @@ Field.prototype.setIconVisibility = function(visible){
 * Увеличивает или восстанавливает масштаб всех карт в поле.
 * @param  {boolean} popped нужно ли увеличить или восстановить масштаб
 */
-Field.prototype.popOut = function(popped){
+Field.prototype.setPopOut = function(popped){
 	if(popped == this.poppedOut)
 		return;
 	this.poppedOut = popped;
 	var scale = popped ? 1 + this.scaleDiff : 1;
-	for(var i = 0; i < this.cards.length; i++){
-		this.cards[i].setScale(scale);
+	for(var i = 0; i < this.cards.length - 1; i++){
+		this.cards[i].setScale(1);
 	}
+	this.cards[this.cards.length - 1].setScale(scale);
 };
 
 //СОРТИРОВКА

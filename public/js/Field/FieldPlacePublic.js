@@ -19,10 +19,12 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	var areaHeight = (this.style.axis == 'vertical') ? this.area.width : this.area.height;
 	var angle = 0;
 
-	if(this.style.axis == 'vertical')
+	if(this.style.axis == 'vertical'){
 		angle += 90;
-	if(this.style.flipped)
+	}
+	if(this.style.flipped){
 		angle += 180;
+	}
 
 	//Размеры карт, ширина включает отступ между картами
 	var cardWidth = skinManager.skin.width + this.style.spacing*2;
@@ -33,10 +35,12 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 	//Необходимая ширина для размещения карт
 	var requiredActiveWidth = this.cards.length - 1;
-	if(this.style.forcedSpace)
+	if(this.style.forcedSpace){
 		requiredActiveWidth *= this.style.forcedSpace;
-	else
+	}
+	else{
 		requiredActiveWidth *= cardWidth;
+	}
 
 	//Ширина карт не может быть больше активной ширины поля
 	if(requiredActiveWidth > areaActiveWidth){
@@ -67,10 +71,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	this._cardSpacing = cardSpacing;	
 
 	//Проверка выделенной карты
-	if(
-		cardControl.card && 
-		cardControl.card != this.focusedCard
-	){
+	if(cardControl.card && cardControl.card != this.focusedCard){
 		this.focusedCard = null;
 	}
 
@@ -99,8 +100,9 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 		var localDelayIndex = delayIndex;
 
 		//Не нужно задерживать карты, которые уже находятся в поле
-		if(newCards && !~newCards.indexOf(card))
+		if(newCards && !~newCards.indexOf(card)){
 			localDelayIndex = 0;
+		}
 
 		this._moveCard(
 			card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
@@ -109,13 +111,15 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 		//Добавляем задержку передвижения, если указаны новые карты или
 		//если необходимо задерживать смещенные карты
-		if(newCards && ~newCards.indexOf(card))
+		if(newCards && ~newCards.indexOf(card)){
 			delayIndex++;
+		}
 	}
 
 	//Поднимаем карту контроллера наверх
-	if(cardControl.card)
+	if(cardControl.card){
 		cardControl.card.bringToTop(false);
+	}
 
 	//Дебаг отображение активно используемого пространства
 	if(this.inDebugMode){
@@ -128,29 +132,16 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 };
 
 /**
-* Размещает одну карту в поле.
-* @param  {Card[]} [card=null]       только что добавленная карта, они будут перемещены в поле по очереди
-* @param  {BRING_TO_TOP_ON} bringToTopOn когда поднимать карту на передний план
-* @param  {boolean} [noDelay=false]      все карты будут перемещены без задержки
-* @return {number}              Возвращает задержку следующей карты.
-* @see  {@link Field#placeCards}
-*/
-Field.prototype.placeCard = function(card, bringToTopOn, noDelay){
-	var i = this.cards.indexOf(card);
-	if(!~i)
-		return;
-	return this.placeCards([card], bringToTopOn, noDelay);
-};
-
-/**
 * Поворачивает все карты.
 */
 Field.prototype.rotateCards = function(){
 	var angle = 0;
-	if(this.style.axis == 'vertical')
+	if(this.style.axis == 'vertical'){
 		angle += 90;
-	if(this.style.flipped)
+	}
+	if(this.style.flipped){
 		angle += 180;
+	}
 
 	for(var i = 0; i < this.cards.length; i++){
 		var card = this.cards[i];
@@ -172,7 +163,7 @@ Field.prototype.zAlignCards = function(checkDelay, forcedCard){
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 		var card = this.cards[i];
 		if(!checkDelay || !card._delayed || card == forcedCard){
-			card.bringToTop(false);
+			card.bringToTop();
 		}
 	}
 };

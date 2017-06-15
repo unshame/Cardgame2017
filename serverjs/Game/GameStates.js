@@ -36,8 +36,10 @@ class GameStates{
 				{
 					cards: true,
 					players: true,
-					suit: false
-				}
+					suit: true
+				},
+				false,
+				'GAME_INFO'
 			);
 	}
 

@@ -1,28 +1,94 @@
 /**
 * Модуль, создающий поля для {@link FieldManager}.
+* @param {FieldManager} manager Менеджер полей, для которого рассчитываются размеры.
 * @class
 */
 
 var FieldBuilder = function(manager){
 
+	/**
+	 * Ссылка на менеджер полей
+	 * @type {FieldManager}
+	 */
 	this.manager = manager;
 
+	/**
+	 * Отступы полей
+	 * @type {Object<number>}
+	 */
 	this.offsets = {};
+
+	/**
+	 * Минимальные ширины для размещения карт
+	 * @type {Object<number>}
+	 */
 	this.minActiveSpaces = {};
+
+	/**
+	 * Рассчитанные позиции полей
+	 * @type {Object<Object>}
+	 */
 	this.positions = {};
+
+	/**
+	 * Рассчитанные размеры полей
+	 * @type {Object<Object>}
+	 */
 	this.dimensions = {};
 
+	/**
+	 * Стандартный минимальный размер для размещения карт
+	 * @type {Number}
+	 */
 	this.minActiveSpace = 10;
 
 	this.possibleTableOrders = {	
 		3: [3, 1, 4, 2, 0, 5],		//3x2
 		6: [4, 2, 0, 1, 3, 5]		//6x1
 	};
+
+	/**
+	 * Последовательность полей стола
+	 * @type {array}
+	 */
 	this.tableOrder = null;
+
+	/**
+	 * Количество полей стола
+	 * @type {Number}
+	 */
 	this.tableAmount = 6;
+
+	/**
+	 * Кол-во полей стола в строке
+	 * @type {Number}
+	 */
+	this.tablesInRow = 0;
+
+	/**
+	 * Отступ между полями стола
+	 * @type {Number}
+	 * @private
+	 */
+	this._tableOffset = 0;
+
+	/**
+	 * Кол-во клеток, занимаемые полями стола
+	 * @type {Number}
+	 * @private
+	 */
+	this._tableCells = 0;
+	
+	this._opponentCells = null;
+
+	this._opponentPlacement = null;
+
+	this._opponentsOffset = null;	
+
+	Object.seal(this);
 };
 
-//Создает поля
+/** Создает поля */
 FieldBuilder.prototype.createFieldNetwork = function(){
 
 	var manager = this.manager,
@@ -30,7 +96,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 
 	manager.table.length = 0;
 
-	this.opponentPlacement = this._countOpponentPlacement(players.length - 1);
+	this._opponentPlacement = this._countOpponentPlacement(players.length - 1);
 	this.calcSizes();
 
 	this._buildDeckField();
@@ -42,7 +108,7 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 	manager.networkCreated = true;
 };
 
-//Правит поля
+/** Правит поля */
 FieldBuilder.prototype.adjustFieldNetwork = function(){
 
 	var manager = this.manager,
@@ -55,7 +121,7 @@ FieldBuilder.prototype.adjustFieldNetwork = function(){
 
 	manager.table.length = 0;
 
-	this.opponentPlacement = this._countOpponentPlacement(players.length - 1);
+	this._opponentPlacement = this._countOpponentPlacement(players.length - 1);
 	this.calcSizes();
 	this._buildOpponentFields();
 	this._buildDiscardField();
@@ -69,7 +135,10 @@ FieldBuilder.prototype.calcSizes = function(){
 
 //FieldBuilderBuild
 
-//Обобщенные (General) размеры
+/**
+* Обобщенные (General) размеры
+* @private
+*/
 FieldBuilder.prototype._calcGenSizes = function(){
 
 	//Игрок
@@ -88,7 +157,10 @@ FieldBuilder.prototype._calcGenSizes = function(){
 	while(this._notEnoughSpace(null, 'table', null, true, true) && counter > 1);
 };
 
-//Размеры для каждого поля (Specific)
+/**
+* Размеры для каждого поля (Specific)
+* @private
+*/
 FieldBuilder.prototype._calcSpecSizes = function(){
 	this._calcDeckDiscardSizes();
 	this._calcSpecTableSizes();
@@ -100,7 +172,10 @@ FieldBuilder.prototype._calcSpecSizes = function(){
 //@include:FieldBuilderPlayer
 //@include:FieldBuilderOpponent
 
-//Размеры для колоды и стопки сброса
+/**
+* Размеры для колоды и стопки сброса
+* @private
+*/
 FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 	var numOfCards = playerManager.players.length > 3 ? 52 : 36,
 		halfDensity = Math.floor(grid.density / 2);
@@ -128,7 +203,11 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 	this.positions.DECK.x -= skinManager.skin.height;
 };
 
-//Выводит предупреждение в консоль, если ширина меньше ширины одной карты
+/**
+* Выводит предупреждение в консоль, если ширина меньше ширины одной карты
+* @private
+* @return {boolean}         Меньше ли ширина\высота.
+*/
 FieldBuilder.prototype._notEnoughSpace = function(id, ref, index, silent, noHeight, noWidth){
 	var isArray = typeof index == 'number',
 		width = isArray ? this.dimensions[ref][index].width : this.dimensions[ref].width,

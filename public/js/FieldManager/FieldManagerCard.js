@@ -80,7 +80,7 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDe
 			var fieldChanged = card.presetField(field.id);
 			if(fieldChanged){
 				if(card.field){
-					card.field.removeCard(card);
+					card.field.removeCards([card]);
 				}
 				cardsToPlace.push(card);
 			}
@@ -111,9 +111,6 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 
 		if(pid != c.pid){
 			this.fields[c.pid].setHighlight(true, ui.colors.red);
-		}
-		else{
-			fieldManager.setTrumpSuit(c.suit);
 		}
 
 		card.raised = true;
