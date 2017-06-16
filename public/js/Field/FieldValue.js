@@ -116,7 +116,7 @@ Field.prototype.setIconVisibility = function(visible){
 };
 
 /**
-* Увеличивает или восстанавливает масштаб всех карт в поле.
+* Увеличивает или восстанавливает масштаб последней карты в поле.
 * @param  {boolean} popped нужно ли увеличить или восстановить масштаб
 */
 Field.prototype.setPopOut = function(popped){
