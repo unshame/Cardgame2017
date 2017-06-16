@@ -101,17 +101,13 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 			var field = fieldManager.fields[action.field],
 				card = game.cards[action.cid];
 			card.setPlayability(true);
-			field.marked = true;
+			field.setOwnPlayability(true, action.linkedField);
 			if(action.type == 'DEFENSE'){
-				field.validCards.push(card);
-				field.setHighlight(true, null, action.linkedField);
-			}
-			else{
-				field.linkedField = fieldManager.fields[action.linkedField] || null;
+				field.validCards.push(card);				
 			}
 		}
 	}
-	fieldManager.highlightMarkedFields();
+	fieldManager.tryHighlightDummy();
 };
 
 ActionHandler.prototype.executeTimedAction = function(){

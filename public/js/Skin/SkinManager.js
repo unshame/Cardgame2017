@@ -24,6 +24,8 @@ SkinManager.prototype.addSkin = function(options){
 	if(!options)
 		options = {};
 
+	skin.color = options.color || ui.colors.lightBlue;
+
 	skin.frameWidth = options.width || 140;
 	skin.frameHeight = options.height || 190;
 
@@ -109,6 +111,7 @@ SkinManager.prototype.applySkin = function(){
 	cardControl.trailApplySkin();
 	grid.draw();
 	fieldManager.resizeFields();
+	actionHandler.highlightPossibleActions();
 };
 
 //Устанавливает рубашку карт

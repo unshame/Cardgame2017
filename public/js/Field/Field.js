@@ -242,18 +242,18 @@ var Field = function(options, style, iconStyle){
 	this.highlighted = false;
 
 	/**
+	 * Можно ли играть карты на это поле.
+	 * @type {Boolean}
+	 * @default  false
+	 */
+	this.playable = false;
+
+	/**
 	 * Интерактивно ли поле.
 	 * @type {Boolean}
 	 * @default  true
 	 */
 	this.interactible = false;
-
-	/**
-	 * Нужно ли подсвечивать поле.
-	 * @type {Boolean}
-	 * @default  false
-	 */
-	this.marked = false;
 
 	/**
 	 * Увеличен ли масштаб поля

@@ -53,6 +53,7 @@ skins.push({
 
 //Uno
 skins.push({
+	color: 0x68C655,
 	width: 140,
 	height: 196,
 	name: 'uno',

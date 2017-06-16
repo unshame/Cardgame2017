@@ -103,8 +103,7 @@ FieldManager.prototype.unlockField = function(id){
 	var spinDelay = 300/game.speed,
 		spinTime = 1300/game.speed;
 
-	field.setHighlight(true);
-	field.highlighted = false;
+	field.setOwnHighlight(true);
 
 	var tween = game.add.tween(field.icon);
 	tween.to({alpha: 0, angle: 720}, spinTime - 300, Phaser.Easing.Quadratic.In, false, spinDelay);
@@ -121,7 +120,7 @@ FieldManager.prototype.unlockField = function(id){
 
 		setTimeout(function(){
 			if(field){
-				field.setVisibility(false);
+				field.setOwnHighlight(false);
 			}
 		}, 300);
 

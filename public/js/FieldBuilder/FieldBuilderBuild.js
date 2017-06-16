@@ -24,6 +24,20 @@ FieldBuilder.prototype._buildPlayerField = function(){
 //Table
 FieldBuilder.prototype._buildTableFields = function(){
 	var manager = this.manager;
+
+	manager.addField({
+		type: 'DUMMY',
+		id: 'dummy',
+		debug: manager.inDebugMode
+	},
+	{
+		x: this.positions.dummy.x,
+		y: this.positions.dummy.y,
+		width: this.dimensions.dummy.width,
+		height: this.dimensions.dummy.height,
+		padding: this.offsets.dummy,
+		sortable: false
+	});
 	
 	for(var i = 0; i < this.tableAmount; i++){
 		var id = 'TABLE' + i;
@@ -53,20 +67,6 @@ FieldBuilder.prototype._buildTableFields = function(){
 			visible: false
 		});
 	}
-
-	manager.addField({
-		type: 'DUMMY',
-		id: 'dummy',
-		debug: manager.inDebugMode
-	},
-	{
-		x: this.positions.dummy.x,
-		y: this.positions.dummy.y,
-		width: this.dimensions.dummy.width,
-		height: this.dimensions.dummy.height,
-		padding: this.offsets.dummy,
-		sortable: false
-	});
 };
 
 //Opponents

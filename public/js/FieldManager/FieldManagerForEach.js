@@ -58,43 +58,35 @@ FieldManager.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 	});
 };
 
-/** Убирает подсветку всех полей и карт и восстанавливает масштаб картв полях. */
+/** Убирает подсветку всех полей и карт и восстанавливает масштаб карт в полях. */
 FieldManager.prototype.resetHighlights = function(){
 	this.forEachField(function(field){
-		field.setHighlight(false);
+		field.setPopOut(false);
+		field.setOwnPlayability(false);
 		field.validCards.length = 0;
 		field.setIconVisibility(false);
-
+		field.setCardsPlayability(false);
 	});
-	this.resetPopOut();
-	var field = this.fields[playerManager.pid];
-	for(var ci = 0; ci < field.cards.length; ci++){
-		field.cards[ci].setPlayability(false);
-		field.cards[ci].setHighlight(false);
-	}
 };
 
-/** Подсвечивает поля с `marked == true`. */
-FieldManager.prototype.highlightMarkedFields = function(){
+/** Подсвечивает dummy поле, если все поля стола играбильны. */
+FieldManager.prototype.tryHighlightDummy = function(){
 	var allMarked = true;
 	for(var fid in this.table){
 		if(!this.table.hasOwnProperty(fid))
 			continue;
 		var f = this.table[fid];
-		if(!f.marked){
+		if(!f.playable){
 			allMarked = false;
-		}
-		else{
-			f.marked = false;
-			f.highlighted = true;
+			break;
 		}
 	}
 	if(allMarked){
 		this.forEachField(function(f){
-			f.setVisibility(false);
+			f.setOwnHighlight(false);
 			f.setIconVisibility(true);
 		});
-		this.fields.dummy.setHighlight(true, ui.colors.orange);
+		this.fields.dummy.setOwnHighlight(true);
 	}
 };
 

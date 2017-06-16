@@ -110,7 +110,7 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 		}
 
 		if(pid != c.pid){
-			this.fields[c.pid].setHighlight(true, ui.colors.red);
+			this.fields[c.pid].setOwnHighlight(true, ui.colors.red);
 		}
 
 		card.raised = true;
@@ -122,7 +122,7 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 	}		
 
 	//Выделяем поле игрока с наибольшим козырем
-	this.fields[pid].setHighlight(true, ui.colors.green);
+	this.fields[pid].setOwnHighlight(true, ui.colors.green);
 
 	var delay = 3000/game.speed;
 	actionHandler.setTimedAction(this.hideTrumpCards, delay, this, [cardsInfo]);
@@ -146,7 +146,7 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 			continue;
 		}
 
-		this.fields[c.pid].setHighlight(false);		
+		this.fields[c.pid].setOwnHighlight(false);		
 
 		card.raised = false;
 

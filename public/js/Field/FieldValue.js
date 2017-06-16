@@ -4,9 +4,19 @@
 * Устанавливает играбильность всех карт в поле.
 * @param {boolean} playable играбильность карт
 */
-Field.prototype.setPlayability = function(playable){
+Field.prototype.setCardsPlayability = function(playable){
 	for(var ci = 0; ci < this.cards.length; ci++){
 		this.cards[ci].setPlayability(playable);
+	}
+};
+
+/**
+* Устанавливает подсветку всех карт в поле.
+* @param {boolean} highlight подсветка карт
+*/
+Field.prototype.setCardsHighlight = function(highlight){
+	for(var ci = 0; ci < this.cards.length; ci++){
+		this.cards[ci].setHighlight(highlight);
 	}
 };
 
@@ -14,14 +24,11 @@ Field.prototype.setPlayability = function(playable){
 * Подсвечивает последнюю карту.
 * @param  {boolean} highlight включить ли подсветку
 */
-Field.prototype.highlightLastCard = function(highlight){
+Field.prototype.setLastCardHighlight = function(highlight){
 	if(!this.cards.length)
 		return;
 
-	var i = 0;
-	for(; i < this.cards.length; i++){
-		this.cards[i].setHighlight(false);
-	}
+	this.setCardsHighlight(false);
 	if(highlight){
 		i = this.style.direction == 'backward' ? 0 : this.cards.length - 1;
 		this.cards[i].setHighlight(highlight);
@@ -33,9 +40,8 @@ Field.prototype.highlightLastCard = function(highlight){
 * включен ли дебаг поля.
 * @param {boolean} [on=Field#inDebugMode] подствечивать ли поле
 * @param {number} [tint=ui.colors.lightBlue]    цвет подсветки
-* @param {string} [linkedFieldId=null]      связанное поле, используется `{@link CardControl#cardMoveToField}`
 */
-Field.prototype.setHighlight = function(on, tint, linkedFieldId){
+Field.prototype.setOwnHighlight = function(on, tint){
 	this.highlighted = on;
 
 	var plane;
@@ -51,7 +57,7 @@ Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 		case 'glowing':
 		if(this.cards.length){
 			this.setVisibility(false);
-			this.highlightLastCard(on);
+			this.setLastCardHighlight(on);
 			return;
 		}
 		plane = this.area;
@@ -59,10 +65,20 @@ Field.prototype.setHighlight = function(on, tint, linkedFieldId){
 	}
 
 	this.setVisibility(on);
-	plane.tint = on ? (tint || ui.colors.orange) : ui.colors.lightBlue;
+	plane.tint = on ? (tint || ui.colors.orange) : skinManager.skin.color;
 	plane.alpha = on ? this.style.alpha : 0.15;
-	this.linkedField = fieldManager.fields[linkedFieldId] || null;
 };
+
+/**
+* Устанавливает возможность играть карты на поле и подсветку.
+* @param {boolean} playable играбильность           
+* @param {string} [linkedFieldId=null] связанное поле, используется `{@link CardControl#cardMoveToField}`
+*/
+Field.prototype.setOwnPlayability = function(playable, linkedFieldId){
+	this.playable = playable;
+	this.setOwnHighlight(playable, ui.colors.orange);
+	this.linkedField = fieldManager.fields[linkedFieldId] || null;
+}
 
 /**
 * Устанавливает видимость подсветки поля.
