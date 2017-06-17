@@ -62,7 +62,7 @@ window.actionReactions = {
 		fieldManager.removeMarkedCards();
 		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, noDelay ? true : false);
 		if(action.unlockedField){
-			fieldManager.unlockField(action.unlockedField);
+			fieldManager.unlockField(action.unlockedField, noDelay);
 		}
 
 		return delay;

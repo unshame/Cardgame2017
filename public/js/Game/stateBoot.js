@@ -141,7 +141,7 @@ window.stateBoot = {
 		* @type {ConnectionManager}
 		* @global
 		*/
-		window.connection = new ConnectionManager();
+		window.connection = new ConnectionManager(game.inDebugMode, window.serverMethods, window.clientMethods);
 
 	},
 

@@ -84,13 +84,14 @@ FieldManager.prototype.setTrumpSuit = function(suit, delay){
 /**
 * Убирает визуальный замок с поля.
 * @param  {string} id id поля
+* @param  {boolean} [noAnimation] отключает анимацию
 */
-FieldManager.prototype.unlockField = function(id){
+FieldManager.prototype.unlockField = function(id, noAnimation){
 	var field = this.fields[id];
 	if(!field || !field.icon)
 		return;
 	
-	if(game.paused){
+	if(game.paused || noAnimation){
 		field.icon.destroy();
 		field.icon = null;
 		return;
@@ -109,17 +110,17 @@ FieldManager.prototype.unlockField = function(id){
 	tween.to({alpha: 0, angle: 720}, spinTime - 300, Phaser.Easing.Quadratic.In, false, spinDelay);
 
 	setTimeout(function(){
-		if(!field || !field.icon) return;
+		if(!field.icon) return;
 		field.icon.loadTexture('unlock');
 	}, spinDelay/3);
 
 	tween.onComplete.addOnce(function(){
-		if(!field || !field.icon) return;
+		if(!field.icon) return;
 		field.icon.destroy();
 		field.icon = null;
 
 		setTimeout(function(){
-			if(field){
+			if(!field.playable){
 				field.setOwnHighlight(false);
 			}
 		}, 300);

@@ -5,7 +5,7 @@
 * @class
 */
 
-var ConnectionManager = function(inDebugMode){
+var ConnectionManager = function(inDebugMode, serverMethods, clientMethods){
 
 	/**
 	* A nodejs transparent bidirectional RPC.
@@ -16,8 +16,8 @@ var ConnectionManager = function(inDebugMode){
 	Eureca.Client.call(this);
 
 	this.proxy = null;
-	this.server = window.serverMethods;
-	this.exports = window.clientMethods;
+	this.server = serverMethods;
+	this.exports = clientMethods;
 
 	this.on('ready', this.bindProxy.bind(this));
 	this.on('connect', this.handleConnection.bind(this));

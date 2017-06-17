@@ -51,3 +51,12 @@ Field.prototype.destroy = function(){
 	this.base.removeAll(true);
 	this.base.destroy();
 };
+
+/**
+* Ресет поля. Убирает все карты из поля и очереди.
+*/
+Field.prototype.reset = function(){
+	this.validCards.length = 0;
+	this.resetQueue();
+	this.removeAllCards();
+};

@@ -438,12 +438,3 @@ Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){
 		card.base.y + card.sprite.y
 	);
 };
-
-/**
-* Ресет поля. Убирает все карты из поля и очереди.
-*/
-Field.prototype.reset = function(){
-	this.validCards.length = 0;
-	this.resetQueue();
-	this.removeAllCards();
-};
