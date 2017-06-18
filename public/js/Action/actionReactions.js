@@ -57,7 +57,7 @@ window.actionReactions = {
 		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
 		var delay = fieldManager.queueCards(action.cards, noDelay ? true : false);
 		if(hasTrumpSuit){
-			fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? 0 : 1000);
+			fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? game.defaultMoveTime : 1000);
 		}
 		fieldManager.removeMarkedCards();
 		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, noDelay ? true : false);

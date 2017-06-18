@@ -79,8 +79,6 @@ var FieldBuilder = function(manager){
 	 */
 	this._tableCells = 0;
 	
-	this._opponentCells = null;
-
 	this._opponentPlacement = null;
 
 	this._opponentsOffset = null;	

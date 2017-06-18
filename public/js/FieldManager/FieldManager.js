@@ -107,7 +107,7 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 	field.setOwnHighlight(true);
 
 	var tween = game.add.tween(field.icon);
-	tween.to({alpha: 0, angle: 720}, spinTime - 300, Phaser.Easing.Quadratic.In, false, spinDelay);
+	tween.to({alpha: 0, angle: 720}, spinTime - 300/game.speed, Phaser.Easing.Quadratic.In, false, spinDelay);
 
 	setTimeout(function(){
 		if(!field.icon) return;
@@ -166,3 +166,15 @@ FieldManager.prototype.toggleDebugMode = function(){
 	});
 	actionHandler.highlightPossibleActions();
 };
+
+/** Применяет скин к полям */
+FieldManager.prototype.applySkin = function(){
+	this.resizeFields();
+	var deck = this.fields.DECK;
+	if(deck && deck.icon && skinManager.skin.hasSuits){
+		var frame = deck.icon.frame;
+		deck.icon.loadTexture(skinManager.skin.suitsName);
+		deck.icon.scale.set(skinManager.skin.scale, skinManager.skin.scale);
+		deck.icon.frame = frame;
+	}
+}

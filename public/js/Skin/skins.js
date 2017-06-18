@@ -84,5 +84,6 @@ skins.push({
 	trumpOffset: 32,
 	trailWidth: 35,
 	trailHeight: 35,
-	scale: 1
+	scale: 1,
+	hasSuits: false
 });

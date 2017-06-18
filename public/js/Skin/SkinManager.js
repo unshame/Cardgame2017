@@ -121,6 +121,10 @@ SkinManager.prototype.addSkin = function(options){
 	skin.trailPath 		 = 'assets/skins/' + options.name + '/trails.png';
 	skin.trailName 		 = options.name + 'Trail';
 
+	skin.hasSuits 		 = options.hasSuits === undefined ? true : options.hasSuits;
+	skin.suitsPath 		 = 'assets/skins/' + options.name + '/suits.png';
+	skin.suitsName 		 = options.name + 'Suits';
+
 	skin.loaded = false;
 
 	this.skins[skin.name] = skin;
@@ -160,6 +164,15 @@ SkinManager.prototype.loadSkin = function(skinName, apply){
 		skin.trailHeight, 
 		4
 	);
+	if(skin.hasSuits){
+		game.load.spritesheet(
+			skin.suitsName,
+			skin.suitsPath,
+			skin.frameWidth,
+			skin.frameHeight, 
+			4
+		);
+	}
 	if(apply){
 		game.load.onLoadComplete.addOnce(this.applySkin, this);
 	}
@@ -194,7 +207,7 @@ SkinManager.prototype.applySkin = function(){
 	cardManager.applySkin();
 	cardControl.trailApplySkin();
 	grid.draw();
-	fieldManager.resizeFields();
+	fieldManager.applySkin();
 	actionHandler.highlightPossibleActions();
 	background.setTexture(this.skin.background);
 };

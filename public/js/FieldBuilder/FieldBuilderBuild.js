@@ -108,6 +108,15 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 //Deck
 FieldBuilder.prototype._buildDeckField = function(){
 	var manager = this.manager;
+	var iconStyle;
+	if(skinManager.skin.hasSuits){
+		iconStyle = {
+			texture: skinManager.skin.suitsName,
+			scale: skinManager.skin.scale,
+			offset: {x: 0, y: skinManager.skin.trumpOffset + skinManager.skin.height/2 - 20 - skinManager.skin.width / 2},
+			visible: false
+		}
+	}
 	manager.addField({
 		type: 'DECK',
 		id: 'DECK',
@@ -126,11 +135,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 		direction: 'backward',
 		reversed: true
 	},
-	{
-		texture: 'suits',
-		offset: {x: 0, y: skinManager.skin.trumpOffset + skinManager.skin.height/2 - 20 - skinManager.skin.width / 2},
-		visible: false
-	});
+	iconStyle);
 };
 
 //Discard pile

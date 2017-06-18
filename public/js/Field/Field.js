@@ -65,6 +65,7 @@
 * @param {object} [iconStyle] Внешний вид иконки поля. {@link Field#iconStyle} {@link Field#icon} 
 * @param {string} iconStyle.texture=null текстура иконки	
 * @param {number} iconStyle.frame=0 кадр текстуры иконки
+* @param {number} iconStyle.scale=1 масштаб текстуры иконки
 * @param {object} iconStyle.offset={x:0,y:0} отступ иконки `{x, y}`
 * @param {boolean} iconStyle.shouldHide=false нужно ли прятать иконку
 * @param {boolean} iconStyle.visible=true спрятана ли иконка по умолчанию
@@ -230,6 +231,7 @@ var Field = function(options, style, iconStyle){
 		this.icon.frame = this.iconStyle.frame;
 		this.icon.visible = this.iconStyle.visible;
 		this.icon.anchor.set(0.5, 0.5);
+		this.icon.scale.set(this.iconStyle.scale, this.iconStyle.scale);
 		this.base.add(this.icon);
 	}
 	fieldManager.fieldsGroup.add(this.base);
@@ -335,6 +337,7 @@ Field.getDefaultOptions = function(){
 		iconStyle: {
 			texture: null,
 			frame: 0,
+			scale: 1,
 			offset: {x: 0, y:0},
 			shouldHide: false,
 			visible: true

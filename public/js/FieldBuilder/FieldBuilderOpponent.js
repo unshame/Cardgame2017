@@ -13,7 +13,7 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 
 	//Кол-во колонок и отступы для рук противников и мест на столе
 	var opponentNumRows = Math.round(grid.numRows - grid.density*2 + halfDensity - 2),
-		_opponentCells = this._opponentCells = [
+		opponentCells = [
 			opponentNumRows,
 			grid.numCols - grid.density*4 - 2,
 			opponentNumRows
@@ -24,25 +24,25 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 			(grid.cellHeight + this.offsets.opponent[2]* 2 )
 		];
 
-	for(var i = 0; i < _opponentCells.length; i++){
-		if(_opponentCells[i] <= 0){
-			console.warn('Field builder: Negative amount of columns for field opponent[', i, '] (', _opponentCells[i], '), defaulting to 0\n', this);
-			_opponentCells[i] = 0;
+	for(var i = 0; i < opponentCells.length; i++){
+		if(opponentCells[i] <= 0){
+			console.warn('Field builder: Negative amount of columns for field opponent[', i, '] (', opponentCells[i], '), defaulting to 0\n', this);
+			opponentCells[i] = 0;
 		}
 	}
 
 	this.dimensions.opponent = [
 		{
 			//width: , 
-			height: (_opponentCells[0]* grid.cellHeight - _opponentsOffset[0]* (this._opponentPlacement[0] - 1)) / this._opponentPlacement[0]
+			height: (opponentCells[0]* grid.cellHeight - _opponentsOffset[0]* (this._opponentPlacement[0] - 1)) / this._opponentPlacement[0]
 		},
 		{
-			width: (_opponentCells[1]* grid.cellWidth - _opponentsOffset[1]* (this._opponentPlacement[1] - 1)) / this._opponentPlacement[1]
+			width: (opponentCells[1]* grid.cellWidth - _opponentsOffset[1]* (this._opponentPlacement[1] - 1)) / this._opponentPlacement[1]
 			//height: 
 		},
 		{
 			//width: , 
-			height: (_opponentCells[2]* grid.cellHeight - _opponentsOffset[2]* (this._opponentPlacement[2] - 1)) / this._opponentPlacement[2]
+			height: (opponentCells[2]* grid.cellHeight - _opponentsOffset[2]* (this._opponentPlacement[2] - 1)) / this._opponentPlacement[2]
 		}
 	];
 
