@@ -19,9 +19,9 @@ var Background = function(){
 		'wood_dark'
 	];
 
-	this.surface = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, 'blue');
+	this.surface = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, skinManager.skin.background);
 	this.surface.name = 'surface';
-	this.surface.textureName = 'blue';
+	this.surface.textureName = skinManager.skin.background;
 	this.add(this.surface);
 };
 

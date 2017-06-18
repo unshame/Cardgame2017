@@ -170,6 +170,8 @@ Game.prototype.initialize = function(){
 	ui.initialize();
 
 	this.addVisibilityChangeListener();
+
+	this.initialized = true;
 };
 
 //Выполняется по окончании дебаунса изменения размера экрана

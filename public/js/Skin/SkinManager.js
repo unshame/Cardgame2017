@@ -174,6 +174,9 @@ SkinManager.prototype.setSkin = function(skinName){
 	if(!this.skins[skinName]){
 		return;
 	}
+	if(this.skinToSet){
+		this.skinToSet = null;
+	}
 	this.skin = this.skins[skinName];
 	if(!this.skin.loaded){
 		this.loadSkin(skinName, true);
@@ -185,6 +188,9 @@ SkinManager.prototype.setSkin = function(skinName){
 
 /** Применяет текущий установленный {@link SkinManager#skin} скин. */
 SkinManager.prototype.applySkin = function(){
+	if(!game.initialized){
+		return;
+	}
 	cardManager.applySkin();
 	cardControl.trailApplySkin();
 	grid.draw();
@@ -199,7 +205,7 @@ SkinManager.prototype.applySkin = function(){
 */
 SkinManager.prototype.setCardback = function(i){
 	if(isNaN(i) || i >= this.skin.cardbackPossibleFrames.length || i < 0){
-		console.log('Invalid cardback index');
+		console.log('SkinManager: Invalid cardback index');
 		return;
 	}
 	this.skin.cardbackFrame = this.skin.cardbackPossibleFrames[i];
