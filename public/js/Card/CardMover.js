@@ -132,7 +132,7 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	}
 
 	if(delay){
-		this._delayed = true;
+		this.delayed = true;
 	}
 
 	//Запускаем новый твин
@@ -157,7 +157,7 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 * @private
 */
 Card.prototype._onMoveStart = function(){
-	this._delayed = false;
+	this.delayed = false;
 	this.applyValue();
 	if(this._bringToTopOn == BRING_TO_TOP_ON.START || this._bringToTopOn == BRING_TO_TOP_ON.START_ALL){
 		if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.START){
@@ -174,7 +174,7 @@ Card.prototype._onMoveStart = function(){
 * @private
 */
 Card.prototype._onMoveComplete = function(){
-	this._delayed = false;
+	this.delayed = false;
 	this.mover = null;
 	this.applyValue();
 	if(this._bringToTopOn == BRING_TO_TOP_ON.END || this._bringToTopOn == BRING_TO_TOP_ON.END_ALL){

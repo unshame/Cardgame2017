@@ -151,11 +151,10 @@ var Card = function (options) {
 
 	/**
 	 * Ожидает ли карта перемещения.
-	 * @private
 	 * @type {Boolean}
 	 * @default false
 	 */
-	this._delayed = false;
+	this.delayed = false;
 
 	/**
 	* Масть карты

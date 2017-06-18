@@ -34,6 +34,8 @@ Background.prototype.updateSize = function(){
 };
 
 Background.prototype.setTexture = function(textureName){
+	if(textureName == this.surface.textureName)
+		return;
 	var fakebg = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, this.surface.textureName);
 	this.addChildAt(fakebg, 1);
 	this.surface.loadTexture(textureName);

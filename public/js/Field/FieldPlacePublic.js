@@ -162,7 +162,7 @@ Field.prototype.zAlignCards = function(checkDelay, forcedCard){
 
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 		var card = this.cards[i];
-		if(!checkDelay || !card._delayed || card == forcedCard){
+		if(!checkDelay || !card.delayed || card == forcedCard){
 			card.bringToTop();
 		}
 	}
