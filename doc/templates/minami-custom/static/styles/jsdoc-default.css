@@ -120,7 +120,7 @@ blockquote {
 #main {
   float: right;
   min-width: 360px;
-  width: calc(100% - 275px);
+  width: calc(100% - 250px);
   padding: 0 30px 20px 30px;
 }
 
@@ -222,7 +222,7 @@ section {
 nav {
   float: left;
   display: block;
-  width: 275px;
+  width: 250px;
   background: #fff;
   overflow: auto;
   position: fixed;
@@ -740,4 +740,13 @@ td.default {
   width: 100px;
   max-width:175px;
   word-wrap: break-word;
+}
+
+.nav-item-name{
+  display: inline-block;
+  max-width: 186px;
+}
+nav {
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }

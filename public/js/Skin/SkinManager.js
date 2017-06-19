@@ -23,9 +23,12 @@ var SkinManager = function(skinToSet){
 	 * @prop {number} trumpOffset сдвиг для отображения масти карты 
 	 * @prop {number} color цвет, соответствующий скину
 	 * 
+	 * @prop {boolean} hasSuits есть ли графика отображения козырной масти
+	 * 
 	 * @prop {string} sheetName имя текстуры карт
 	 * @prop {string} glowSheetName имя текстуры свечения карт
 	 * @prop {string} trailName имя текстуры хвоста карт
+	 * @prop {string} suitsName имя текстуры отображения козырной масти
 	 */
 	this.skin = null;
 
@@ -56,6 +59,7 @@ SkinManager.prototype.addSkins = function(skins){
 *                              графика карт - `cards.png`  
 *                              графика свечения карт - `glow.png`  
 *                      		   графика хвоста карт - `trails.png`  
+*                      		   графика отображения козырной масти - `suits.png`  
 *                      		   
 * @param {number} options.width реальная ширина карты (и ширина кадра графики карты)
 * @param {number} options.height реальная высота карты (и высота кадра графики карты)
@@ -76,6 +80,7 @@ SkinManager.prototype.addSkins = function(skins){
 * 
 * @param {number} [options.trumpOffset=0] сдвиг для отображения масти карты 
 * 
+* @param {boolean} [options.hasSuits=true] есть ли графика отображения козырной масти
 * @param {string} [options.background='blue'] какой фон соответствует этому скину
 * @param {number} [options.color=ui.colors.lightBlue] цвет, соответствующий скину
 */
