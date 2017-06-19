@@ -10,7 +10,21 @@ var CardEmitter = function(){
 	 * @private
 	 * @type {Number}
 	 */
-	this._fadeTime = 500;
+	this.fadeTime = 500;
+
+	/**
+	 * Смещение партиклей в сторону
+	 * @private
+	 * @type {Number}
+	 */
+	this.sway = 0;
+
+	/**
+	 * Интервал спавна партиклей.
+	 * @private
+	 * @type {Number}
+	 */
+	this.interval = 0;
 
 	Phaser.Particles.Arcade.Emitter.call(this, game, game.world.centerX, -skinManager.skin.height, 100);
 	this.name = 'partyEmitter';
@@ -85,7 +99,7 @@ CardEmitter.prototype.stop = function(){
 	this.forEachAlive(function(p){
 		if(p.visible){
 			var tween = game.add.tween(p);
-			tween.to({alpha: 0}, this._fadeTime);
+			tween.to({alpha: 0}, this.fadeTime/game.speed);
 			tween.start();
 			tween.onComplete.addOnce(function(){
 				this.visible = false;
@@ -111,7 +125,7 @@ CardEmitter.prototype.applySkin = function(){
 	this.minParticleScale = this.maxParticleScale = skinManager.skin.scale;
 	if(this.on){
 		this.restart();
-		setTimeout(this._applySkinToEmitter.bind(this), this._fadeTime);
+		setTimeout(this._applySkinToEmitter.bind(this), this.fadeTime/game.speed);
 	}
 	else{
 		this._applySkinToEmitter(this);
