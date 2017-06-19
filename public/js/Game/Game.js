@@ -58,7 +58,7 @@ var Game = function(speed, minWidth, minHeight, inDebugMode){
 		this,
 		this.screenWidth,
  		this.screenHeight, 
-		Phaser.WEbGL, 
+		Phaser.CANVAS, 
 		'cardgame'
 	);
 
@@ -159,6 +159,13 @@ Game.prototype.initialize = function(){
 	* @global
 	*/
 	window.cardManager = new CardManager();
+
+	/**
+	* Эмиттер карт
+	* @type {CardEmitter}
+	* @global
+	*/
+	window.cardEmitter = new CardEmitter();
 
 	/**
 	* Контроллер карт

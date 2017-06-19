@@ -22,7 +22,7 @@ window.statePlay = {
 		console.log('Game ready');
 		ui.layers.loadLabels();
 		document.getElementById('loading').style.display = 'none';
-		cardManager.emitterStart(0, 50, 10, 2000, 20, 1);
+		cardEmitter.start(0, 50, 10, 2000, 20, 1);
 	},
 
 	/**
@@ -71,8 +71,7 @@ window.statePlay = {
 
 		ui.updatePosition();
 
-		if(cardManager.emitter.on)
-			cardManager.emitterStart();
+		cardEmitter.restart();
 
 		document.getElementById('loading').style.display = 'none';
 	}

@@ -210,6 +210,7 @@ SkinManager.prototype.applySkin = function(){
 		return;
 	}
 	cardManager.applySkin();
+	cardEmitter.applySkin();
 	cardControl.trailApplySkin();
 	grid.draw();
 	fieldManager.applySkin();

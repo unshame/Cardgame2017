@@ -50,7 +50,7 @@ window.actionReactions = {
 			return;
 		}
 
-		cardManager.emitterStop();
+		cardEmitter.stop();
 		fieldManager.resetFields();
 		cardControl.reset();
 		cardManager.createCards(action.cards);

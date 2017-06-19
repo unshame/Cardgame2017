@@ -77,7 +77,7 @@ window.notificationReactions = {
 
 		setTimeout(function(){
 			if(won){
-				cardManager.emitterStart(300, 500, 100, false, 100, 10);
+				cardEmitter.start(300, 500, 100, false, 100, 10);
 				cardManager.enablePhysics(false);
 			}
 			else{

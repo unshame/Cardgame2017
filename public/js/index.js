@@ -35,3 +35,17 @@ function moveFirstPlayerCardToTable(i, delay){
 		fieldManager.moveCards(fieldManager.fields['TABLE' + (i || 0)], [ci]);
 	}, delay);
 }
+
+
+/**
+ * @method
+ * @global
+ * @see {@link CardManager#getCards}
+ */
+window.getCards = CardManager.getCards.bind(CardManager);
+/**
+ * @method
+ * @global
+ * @see {@link CardManager#getCard}
+ */
+window.getCard = CardManager.getCard.bind(CardManager);

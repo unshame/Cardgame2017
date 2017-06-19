@@ -3,7 +3,7 @@
 * Создает и обновляет позиции всех элементов интерфейса: кнопки, курсор и таймер.
 * Создает менеджер слоев интерфейса {@link UILayers} и добавляет элементы интерфейса, 
 * а также существующие группы в него:
-* `fieldManager.fieldsGroup` `cardManager.cardsGroup` `cardManager.emitter`.
+* `fieldManager.fieldsGroup` `cardManager.cardsGroup` `cardEmitter`.
 * Также, переключает полноэкранный режим {@link UI#toggleFullScreen}.
 * @class
 */
@@ -48,7 +48,7 @@ UI.prototype.initialize = function(){
 
 	this.layers.addExistingLayer(fieldManager.fieldsGroup, 2);
 	this.layers.addExistingLayer(cardManager.cardsGroup, 3);
-	this.layers.addExistingLayer(cardManager.emitter, 4);
+	this.layers.addExistingLayer(cardEmitter, 4);
 
 	this.layers.positionLayers();
 };

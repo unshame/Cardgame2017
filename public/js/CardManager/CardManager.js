@@ -29,41 +29,10 @@ var CardManager = function(inDebugMode){
 	this.physicsEnabled = false;
 
 	/**
-	 * Эмиттер карт.
-	 * @type {Phaser.Emitter}
-	 */
-	this.emitter = game.add.emitter(game.world.centerX, -skinManager.skin.height, 100);
-	this.emitter.name = 'partyEmitter';
-	var frames = [];
-	for(var i = 0; i < 52; i++){
-		frames.push(i);
-	}
-	this.emitter.makeParticles(skinManager.skin.sheetName, frames);
-
-	/**
-	 * Время пропадания партиклей эмиттера, когда он остановлен.
-	 * @type {Number}
-	 */
-	this.particleFadeTime = 500;
-
-	/**
 	 * Выводит ли менеджер дебаг информацию.
 	 * @type {boolean}
 	 */
 	this.inDebugMode = inDebugMode || false;
-
-	/**
-	 * @method
-	 * @global
-	 * @see {@link CardManager#getCards}
-	 */
-	window.getCards = this.getCards.bind(this);
-	/**
-	 * @method
-	 * @global
-	 * @see {@link CardManager#getCard}
-	 */
-	window.getCard = this.getCard.bind(this);
 };
 
 /**
@@ -153,23 +122,6 @@ CardManager.prototype.applySkin = function(){
 			card.applySkin();
 		}
 	}
-	this.emitter.minParticleScale = this.emitter.maxParticleScale = skinManager.skin.scale;
-	if(this.emitter.on){
-		this.emitterRestart();
-		setTimeout(this._applySkinToEmitter.bind(this), this.particleFadeTime);
-	}
-	else{
-		this._applySkinToEmitter(this);
-	}
-};
-
-/** Применяет скин к эмиттеру карт.
-* @private
-*/
-CardManager.prototype._applySkinToEmitter = function(){
-	this.emitter.forEach(function(p){
-		p.loadTexture(skinManager.skin.sheetName);
-	}, this);
 };
 
 /** Устанавливает текущие значения всем картам без анимации. */
@@ -227,5 +179,4 @@ CardManager.prototype.update = function(){
 	}
 };
 
-//@include:CardManagerEmitter
 //@include:CardManagerDebug
