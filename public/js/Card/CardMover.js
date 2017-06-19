@@ -12,7 +12,7 @@
 * @param  {BRING_TO_TOP_ON} [bringToTopOn=BRING_TO_TOP_ON.INIT]   - когда поднимать карту на передний план 
 * @param  {functon} [easing=Phaser.Easing.Quadratic.Out] - функция плавности
 */
-Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn, easing){
+Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn, easing, sound){
 
 	if(relativeToBase === undefined)
 		relativeToBase = false;
@@ -36,7 +36,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		this.setBasePreserving(destination.base.x, destination.base.y, false);
 	}
 
-	this._startMover(destination.sprite.x, destination.sprite.y, time, delay, shouldRebase, easing);
+	this._startMover(destination.sprite.x, destination.sprite.y, time, delay, shouldRebase, easing, sound);
 };
 
 /**
@@ -114,7 +114,7 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 * @param  {boolean} shouldRebase    нужно ли перемещать базу карты или только карту 
 * @param  {functon} easing 		 функция плавности
 */
-Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
+Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing, sound){
 	if(game.paused){
 		this.applyValue();
 		this.setRelativePosition(x, y);
@@ -148,7 +148,7 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 		(delay/game.speed) || 0
 	);
 
-	this.mover.onStart.addOnce(this._onMoveStart, this);
+	this.mover.onStart.addOnce(this._onMoveStart.bind(this, shouldRebase && sound), this);
 	this.mover.onComplete.addOnce(this._onMoveComplete, this);
 };
 
@@ -156,8 +156,11 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 * Выполняется по началу движения карты 
 * @private
 */
-Card.prototype._onMoveStart = function(){
+Card.prototype._onMoveStart = function(sound){
 	this.delayed = false;
+	if(sound){ 
+	  fx.play('flip' + Math.floor(Math.random()*11));  
+	} 
 	this.applyValue();
 	if(this._bringToTopOn == BRING_TO_TOP_ON.START || this._bringToTopOn == BRING_TO_TOP_ON.START_ALL){
 		if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.START){

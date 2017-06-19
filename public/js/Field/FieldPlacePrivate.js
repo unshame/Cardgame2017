@@ -111,7 +111,7 @@ Field.prototype._calculateCardSpacing = function(activeWidth){
 */
 Field.prototype._moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
-	delayArray, delayIndex, bringToTopOn
+	delayArray, delayIndex, bringToTopOn, sound
 ){
 
 	//Задержка
@@ -169,7 +169,7 @@ Field.prototype._moveCard = function(
 
 	//Запускаем перемещение карты
 	if(cardControl.card != card){
-		card.moveTo(x, y, this.moveTime, delay, false, true, bringToTopOn);
+		card.moveTo(x, y, this.moveTime, delay, false, true, bringToTopOn, undefined, sound);
 	}
 	else{
 		card.setBasePreserving(x, y);

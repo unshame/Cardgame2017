@@ -171,6 +171,20 @@ Game.prototype.initialize = function(){
 
 	this.addVisibilityChangeListener();
 
+	fx = game.add.audio('sfx'); 
+	fx.allowMultiple = true; 
+	fx.addMarker('flip0', 0, 0.7, 0.3); 
+	fx.addMarker('flip1', 0.7, 0.5, 0.3); 
+	fx.addMarker('flip2', 1.2, 0.8, 0.3); 
+	fx.addMarker('flip3', 2, 0.6, 0.3); 
+	fx.addMarker('flip4', 2.6, 0.5, 0.3); 
+	fx.addMarker('flip5', 3.1, 0.4, 0.3); 
+	fx.addMarker('flip6', 4.5, 0.4, 0.3); 
+	fx.addMarker('flip7', 4.9, 0.4, 0.3); 
+	fx.addMarker('flip8', 5.5, 0.4, 0.3); 
+	fx.addMarker('flip9', 6.3, 0.4, 0.3); 
+	fx.addMarker('flip10', 6.9, 0.5, 0.3); 
+
 	this.initialized = true;
 };
 

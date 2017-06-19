@@ -56,6 +56,8 @@ window.stateBoot = {
 		game.load.spritesheet('cursor_yellow', 'assets/cursors/yellow.png', 128, 128, 3);
 		game.load.spritesheet('cursor_orange', 'assets/cursors/orange.png', 128, 128, 3);
 
+		game.load.audio('sfx', 'assets/sounds/cardPlace.ogg'); 
+
 		/**
 		* Google WebFont Loader  
 		*  

@@ -98,6 +98,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 		var card = this.cards[i];	
 		var localDelayIndex = delayIndex;
+		var sound = ~this._queuedCards.indexOf(card) || newCards && ~newCards.indexOf(card);
 
 		//Не нужно задерживать карты, которые уже находятся в поле
 		if(newCards && !~newCards.indexOf(card)){
@@ -106,7 +107,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 		this._moveCard(
 			card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
-			delayArray, localDelayIndex, bringToTopOn
+			delayArray, localDelayIndex, bringToTopOn, sound
 		);
 
 		//Добавляем задержку передвижения, если указаны новые карты или
