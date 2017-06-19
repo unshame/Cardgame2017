@@ -158,15 +158,14 @@ UI.prototype.updatePosition = function(){
 };
 
 UI.prototype.toggleFullScreen = function(){
+	game.shouldUpdateFast = true;
 	if (game.scale.isFullScreen){
 		this.cornerButtons.getByName('fullscreen').label.frame = 0;
-		game.shouldUpdateFast = true;
-	    game.scale.stopFullScreen();
+		game.scale.stopFullScreen();
 	}
 	else{
 		this.cornerButtons.getByName('fullscreen').label.frame = 1;
-		game.shouldUpdateFast = true;
-	    game.scale.startFullScreen();
+		game.scale.startFullScreen();
 	}
 };
 

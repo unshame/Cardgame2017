@@ -2,7 +2,9 @@
 * Создает и управляет "слоями" интерфейса. Слоем может быть любой `{@link DisplayObject}`.  
 * Обновляет z-index и позиции элементов слоев, загружает текст кнопок после загрузки шрифтов.  
 * Все слои добавляются в `game.world.children`. Существующие слои должны быть там же.
-* z-index - индекс элемента в `game.world.children`. 
+* z-index - индекс элемента в `game.world.children`.  
+* z-index >= 0 - начиная с низа  
+* z-index < 0 - начиная с верха (-1 - самый верхний слой)
 * @class
 */
 var UILayers = function(){
@@ -16,7 +18,7 @@ var UILayers = function(){
 
 /**
 * Создает новую `Phaser.Group` группу и добавляет ее как слой.
-* @param {number} i                   z-index слоя
+* @param {number} i                   z-index слоя  
 * @param {string} name                имя слоя, должно быть уникальным
 * @param {boolean} [checkCursorOverlap=false] Устанавливает `checkCursorOverlap` созданной группе.
 * Указывает, нужно ли проверять эту группу в `{@link UILayers#cursorIsOverAnElement}`. 

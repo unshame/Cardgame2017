@@ -72,7 +72,7 @@ $(function () {
 			var top = window.pageYOffset;
 			var distance = top - $(this).offset().top;
 			var hash = $(this).attr('id');
-			if (distance >= -18 && distance < lastDistance) {
+			if (distance >= -50 && distance < lastDistance) {
 				lastHash = hash;
 				lastDistance = distance;
 			}
