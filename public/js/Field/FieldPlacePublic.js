@@ -84,7 +84,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 		shift = cardWidth*(1 + this.scaleDiff/2) - cardSpacing;
 		//Уменьшаем сдвиг для карт в выгнутом поле
 		if(this.style.area == 'curved'){
-			shift -= 5;
+			shift = Math.max(0, shift - 5);
 		}
 	}
 
