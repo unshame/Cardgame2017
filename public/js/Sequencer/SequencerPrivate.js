@@ -120,6 +120,7 @@ Sequencer.prototype._abortFinishing = function(){
 /**
  * Возвращает специальные варианты 6 основных методов (`start, append, abort, finish, skip, unskip`),
  * которые позволяют правильно обрабатывать вложенные списки.
+ * @private
  * @return {object}
  */
 Sequencer.prototype._getMethods = function(){
