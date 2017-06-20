@@ -60,31 +60,51 @@ window.notificationReactions = {
 		//Ставим стопку сброса по центру экрана
 		var discard = fieldManager.fields.DISCARD_PILE,
 			dummy = fieldManager.fields.dummy, 
-			won = note.results && note.results.winners && ~note.results.winners.indexOf(game.pid)
+			won = note.results && note.results.winners && ~note.results.winners.indexOf(game.pid),
 			delay = 0;
 			
-		if(discard && dummy){
-			var cards = discard.cards.slice();
-			discard.removeAllCards();
-			delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);
-			delay += game.defaultMoveTime;
+		if(!discard || !dummy){
+			return;
 		}
 
-		setTimeout(function(){
-			dummy.placeQueuedCards();
-			fieldManager.resetFields();
-		}, game.defaultMoveTime);
+		var cards = discard.cards.slice();
 
-		setTimeout(function(){
-			if(won){
-				cardEmitter.start(300, 500, 100, false, 100, 10);
-				cardManager.enablePhysics(false);
+		gameSeq.start(function(){	
+			delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);
+			delay += game.defaultMoveTime;		
+			discard.removeAllCards();
+		}, game.defaultMoveTime)
+		.then(function(seq){
+			dummy.placeQueuedCards();
+			if(!won){
+				seq.abort();
+				seq.start(function(){
+					fieldManager.resetFields();
+				}, delay)
+				.then(function(){
+					cardManager.enablePhysics(true);
+				})
 			}
-			else{
-				cardManager.enablePhysics(true);
+		}, function(){return delay})
+		.then(function(){
+			for(var ci = 0; ci < dummy.cards.length; ci++){
+				var card = dummy.cards[ci],
+					x = card.sprite.x + card.base.x + (10*(ci - dummy.cards.length/2)),
+					time = Math.random()*game.defaultMoveTime + 500;
+				card.moveTo(x, -200, time, 0, false, true);
+				card.rotateTo(Math.random()*360 - 180, time);
 			}
-		}, delay + 100);
-		
+		}, game.defaultMoveTime + 500)
+		.then(function(){
+			for(var ci = 0; ci < dummy.cards.length; ci++){
+				var card = dummy.cards[ci];
+				card.field = null;
+				card.destroy(0, true);
+			}
+			fieldManager.resetFields();
+			cardEmitter.start(300, 500, 100, false, 100, 10);
+			cardManager.enablePhysics(false);
+		});
 	},
 
 	/*

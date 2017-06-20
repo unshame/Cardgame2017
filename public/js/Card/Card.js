@@ -283,9 +283,11 @@ Card.prototype.cursorIsOver = function(){
 
 /**
 * Полностью удаляет карту из игры с анимацией.
+* @param {number} [delay=0] задержка перед удалением
+* @param {boolean} [now] убирает анимацию удаления и игнорирует задержку
 */
-Card.prototype.destroy = function(delay) {
-	if(delay === undefined)
+Card.prototype.destroy = function(delay, now) {
+	if(delay === undefined || now)
 		delay = 0;
 	var time = 1000,
 		alphaTween = game.add.tween(this.sprite),
@@ -305,7 +307,7 @@ Card.prototype.destroy = function(delay) {
 	if(this.field)
 		this.field.removeCards([this]);
 
-	if(game.paused){
+	if(game.paused || now){
 		this._destroyNow();
 	}
 	else{

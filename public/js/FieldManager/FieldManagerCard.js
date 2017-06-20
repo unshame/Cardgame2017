@@ -123,10 +123,6 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 
 	//Выделяем поле игрока с наибольшим козырем
 	this.fields[pid].setOwnHighlight(true, ui.colors.green);
-
-	var delay = 3000/game.speed;
-	actionHandler.setTimedAction(this.hideTrumpCards, delay, this, [cardsInfo]);
-	return delay + 500;
 };
 
 /**

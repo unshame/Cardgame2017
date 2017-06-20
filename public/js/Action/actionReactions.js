@@ -17,9 +17,17 @@ window.actionReactions = {
 		if(!action.cards || !action.cards.length)
 			return 0;		
 
-		var delay = fieldManager.showTrumpCards(action.cards.slice(), action.pid);
-		
-		return delay;
+		var cardsInfo = action.cards.slice(),
+			pid = action.pid;
+
+		gameSeq.start(function(){
+			fieldManager.showTrumpCards(cardsInfo, pid);
+		}, 3000/game.speed, 0, fieldManager)
+		.then(function(){
+			fieldManager.hideTrumpCards(cardsInfo);
+		}, 500, fieldManager);
+
+		return gameSeq.duration;
 	},
 
 	/**

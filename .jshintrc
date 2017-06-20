@@ -51,6 +51,8 @@
     "UILayers": true,
     "statePlay": true,
     "stateBoot": true,
+    "Sequencer": true,
+    "gameSeq": true,
 
     "BRING_TO_TOP_ON": true
   },

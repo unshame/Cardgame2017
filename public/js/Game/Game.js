@@ -13,6 +13,8 @@ var Game = function(speed, minWidth, minHeight, inDebugMode){
 	this.pausedByViewChange = false;
 	this.defaultMoveTime = 300;
 
+	window.gameSeq = new Sequencer();
+
 	/**
 	* Обработчик действий сервера
 	* @type {ActionHandler}

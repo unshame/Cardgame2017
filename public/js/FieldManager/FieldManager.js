@@ -101,35 +101,38 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 	field.iconStyle.shouldHide = false;
 	field.icon.alpha = 1;
 
-	var spinDelay = 300/game.speed,
-		spinTime = 1300/game.speed;
+	var lockDelay = 100/game.speed,
+		spinDelay = 300/game.speed,
+		spinTime = 1000/game.speed;
 
-	field.setOwnHighlight(true);
+	var tween = game.add.tween(field.icon);	
 
-	var tween = game.add.tween(field.icon);
-	tween.to({alpha: 0, angle: 720}, spinTime - 300/game.speed, Phaser.Easing.Quadratic.In, false, spinDelay);
-
-	setTimeout(function(){
-		if(!field.icon) return;
+	gameSeq.start(function(){
+		field.setOwnHighlight(true);
+		tween.to({alpha: 0, angle: 720}, spinTime - lockDelay, Phaser.Easing.Quadratic.In, false, spinDelay);
+		tween.start();	
+	}, lockDelay)
+	.then(function(seq){
+		if(!field.icon){
+			seq.abort();
+		}
 		field.icon.loadTexture('unlock');
-	}, spinDelay/3);
-
-	tween.onComplete.addOnce(function(){
-		if(!field.icon) return;
+	}, spinTime + spinDelay - lockDelay)
+	.then(function(seq){
+		if(!field.icon){
+			seq.abort();
+		}
+		tween.stop();
 		field.icon.destroy();
 		field.icon = null;
+	}, lockDelay)
+	.then(function(){
+		if(!field.playable){
+			field.setOwnHighlight(false);
+		}
+	});
 
-		setTimeout(function(){
-			if(!field.playable){
-				field.setOwnHighlight(false);
-			}
-		}, 300);
-
-	}, this);
-
-	tween.start();			
-
-	return spinDelay + spinTime - 300/game.speed;
+	return gameSeq.duration - 500;
 };
 
 /**

@@ -68,7 +68,8 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 	var newBaseY = relativeToBase ? y + this.base.y : y;
 
 	//Предупреждаем о том, что карта вышла за пределы экрана
-	if(!Phaser.Rectangle.containsRaw(
+	if(this.inDebugMode &&
+		!Phaser.Rectangle.containsRaw(
 			-this.skin.width/2,
 			-this.skin.height/2,
 			game.screenWidth + this.skin.width,

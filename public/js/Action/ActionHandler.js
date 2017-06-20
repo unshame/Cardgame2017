@@ -20,7 +20,7 @@ var ActionHandler = function(reactions){
 
 ActionHandler.prototype.executeAction = function(action){
 
-	this.executeTimedAction();
+	gameSeq.finish();
 
 	var delay = 0;
 
@@ -86,7 +86,7 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 		actions = this.possibleActions;
 	};
 
-	this.executeTimedAction();
+	gameSeq.finish();
 
 	if(!fieldManager.networkCreated){
 		console.error('Action handler: field network hasn\'t been created');
@@ -108,25 +108,4 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 		}
 	}
 	fieldManager.tryHighlightDummy();
-};
-
-ActionHandler.prototype.executeTimedAction = function(){
-	if(!this.timedAction)
-		return;
-
-	clearTimeout(this.timedActionTimeout);
-	this.timedAction();
-	if(this.timedAction || this.timedActionTimeout)
-		this.timedAction = this.timedActionTimeout = null;
-};
-
-ActionHandler.prototype.setTimedAction = function(callback, delay, context, args){
-	this.executeTimedAction();
-
-	this.timedAction = function(){
-		callback.apply(context, args || []);
-		this.timedAction = this.timedActionTimeout = null;
-	};
-
-	this.timedActionTimeout = setTimeout(this.timedAction.bind(this), delay);
 };

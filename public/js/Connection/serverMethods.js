@@ -42,7 +42,7 @@ window.serverMethods = {
 	},
 
 	sendResponse: function(){
-		actionHandler.executeTimedAction();
+		gameSeq.finish();
 		actionHandler.possibleActions = null;
 		connection.proxy.recieveResponse();
 		connection.resetTimer();

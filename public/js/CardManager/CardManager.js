@@ -33,6 +33,19 @@ var CardManager = function(inDebugMode){
 	 * @type {boolean}
 	 */
 	this.inDebugMode = inDebugMode || false;
+
+	/**
+	 * @method
+	 * @global
+	 * @see {@link CardManager#getCards}
+	 */
+	window.getCards = this.getCards.bind(this);
+	/**
+	 * @method
+	 * @global
+	 * @see {@link CardManager#getCard}
+	 */
+	window.getCard = this.getCard.bind(this);
 };
 
 /**

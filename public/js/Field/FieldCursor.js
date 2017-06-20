@@ -10,8 +10,6 @@ Field.prototype._setUninteractibleTimer = function(time){
 	if(!time || typeof time != 'number' || isNaN(time))
 		return;
 
-	time += this.moveTime;
-
 	if(this._uninteractibleTimer){
 		clearTimeout(this._uninteractibleTimer);
 		this._uninteractibleTimer = null;
