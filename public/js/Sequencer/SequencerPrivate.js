@@ -1,12 +1,18 @@
-/** 
+/**
  * Добавляет действие в список.
  * @private
+ * @param {object} step     
+ * @param {function} action   
+ * @param {(number|function)} duration 
+ * @param {any} context  
+ * @return {object}
  */
 Sequencer.prototype._add = function(step, action, duration, context){
 	if(!this.inProgress){
 		console.warn('Sequencer: adding step to an expired sequence', this);
 		return this._dummyStep;
 	}
+
 	if(typeof duration != 'function'){
 		if(duration < 0 || isNaN(duration)){
 			duration = 0;
@@ -65,6 +71,11 @@ Sequencer.prototype._add = function(step, action, duration, context){
 /** 
  * Запускает новый список, предварительно завершив предыдущий, сохраняя статус завершения.
  * @private
+ * @param {function}
+ * @param {(number|function)} duration
+ * @param {number} delay
+ * @param {any} context
+ * @return {object} 
  */
 Sequencer.prototype._startFinishing = function(action, duration, delay, context){
 	var finishing = this._finishing;
@@ -76,30 +87,34 @@ Sequencer.prototype._startFinishing = function(action, duration, delay, context)
 		this._finishing = true;
 	}
 
-	var seq = this.start(action, duration, delay, context);
+	var step = this.start(action, duration, delay, context);
 
 	//Восстанавливаем статус завершения, если он не был установлен
 	if(!finishing){
 		this._finishing = false;
 	}
-	return seq;
+	return step;
 };
 
 /** 
  * Добавляет действие в конец текущего списка или запускает новый, сохраняя статус завершения.
  * @private
+ * @param {function}
+ * @param {(number|function)} duration
+ * @param {any} context
+ * @return {object} 
  */
 Sequencer.prototype._appendFinishing = function(action, duration, context){	
 	var finishing = this._finishing;
 
-	var seq = this.append(action, duration, context);
+	var step = this.append(action, duration, context);
 
 	//Продолжаем завершение действий, если статус завершения был установлен.
 	if(finishing && !this._finishing){
 		this.finish();
 	}
 
-	return seq;
+	return step;
 };
 
 /**
@@ -118,10 +133,11 @@ Sequencer.prototype._abortFinishing = function(){
 };
 
 /**
- * Возвращает специальные варианты 6 основных методов (`start, append, abort, finish, skip, unskip`),
+ * Возвращает специальные варианты основных методов,
  * которые позволяют правильно обрабатывать вложенные списки.
  * @private
- * @return {object}
+ * @return {object<function>}
+ * `{start, append, abort, finish, skip, unskip}`
  */
 Sequencer.prototype._getMethods = function(){
 	return {
@@ -131,5 +147,5 @@ Sequencer.prototype._getMethods = function(){
 		finish: this.finish.bind(this),
 		skip: this.skip.bind(this),
 		unskip: this.unskip.bind(this)
-	}
+	};
 };

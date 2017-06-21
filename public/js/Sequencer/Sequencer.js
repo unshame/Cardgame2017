@@ -92,11 +92,39 @@ var Sequencer = function(){
 	 */
 	this._finishing = false;
 
+	/**
+	 * Таймаут текущего действия.
+	 * @type {number}
+	 * @private
+	 */
 	this._timeout = null;
+
+	/**
+	 * Кол-во пропускаемых действий.
+	 * @type {Number}
+	 * @private
+	 */
 	this._shouldSkip = 0;
+
+	/**
+	 * Следующее действие.
+	 * @type {function}
+	 * @private
+	 */
 	this._nextAction = null;
+
+	/**
+	 * Текущий элемент списка
+	 * @type {object}
+	 * @private
+	 */
 	this._currentStep = null;
 
+	/**
+	 * Пустой элемент списка, чтобы вызов `then` не крашил игру.
+	 * @type {Object}
+	 * @private
+	 */
 	this._dummyStep = {
 		then: function(){},
 		duration: 0
@@ -106,8 +134,8 @@ var Sequencer = function(){
 /**
  * Запускает новый список, предварительно завершив предыдущий. 
  * @param  {function} action первое действие, выполняется сразу
- * @param  {number} duration время выполнения действия
- * @param {(number|function)} delay задержка выполнения первого действия в списке  
+ * @param  {(number|function)} duration время выполнения действия
+ * @param {number} delay задержка выполнения первого действия в списке  
  *                                  может быть функцией, в котором случае задержка будет
  *                                  просчитана в момент выполнения действия и не будет 
  *                                  добавлена в {@link Sequencer#duration}
@@ -119,22 +147,26 @@ var Sequencer = function(){
  * `wrapper` - действие, создаваемое через `then`.
  */
 Sequencer.prototype.start = function(action, duration, delay, context){	
-	if(isNaN(delay)){
+	if(isNaN(delay) || delay < 0){
 		delay = 0;
 	}
 	if(this.inProgress){
 		this.finish();
 	}
+
 	this.inProgress = true;
 	this._shouldSkip = 0;
+
 	//Добавляем первое действие в список
 	var step = {},
 		newStep = this._add(step, action, duration, context);
+
 	//Выполняем первое действие с заданной задержкой
 	this.duration += delay;
 	newStep.duration += delay;
 	this._nextAction = step.wrapper.bind(this);
 	this._timeout = setTimeout(this._nextAction, delay);
+
 	return newStep;
 };
 
@@ -160,9 +192,9 @@ Sequencer.prototype.append = function(action, duration, context){
 	}
 	else{
 		var skips = this._shouldSkip;
-		var seq = this.start(action, duration, context);
+		var step = this.start(action, duration, context);
 		this._shouldSkip = skips;
-		return seq;
+		return step;
 	}
 };
 
