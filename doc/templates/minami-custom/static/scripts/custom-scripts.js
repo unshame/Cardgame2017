@@ -3,6 +3,7 @@ var firstScroll = true;	//Скролл при загрузке страницы 
 $(function () {
 	$('body>footer').css('margin-top', window.innerHeight - $('body>footer').outerHeight() - 70);
 
+	var currentHash;
 	var shouldScroll = true;
 	var navbar = $('body>nav');
 	var timeout = null;
@@ -43,7 +44,10 @@ $(function () {
 	}
 
 	//Находит и подсвечивает элемент в боковой панели в соответствии с текущим хэшем 
-	function highlightCurrent(hash){
+	function highlightCurrent(hash, forced){
+		if(!forced && parseInt(navbar.css('left')) < 0){
+			return;
+		}
 		var link = className + '.html#' + hash;
 		var target = $('body>nav a[href="' + link + '"]');
 		if(!target.size()){
@@ -121,8 +125,16 @@ $(function () {
 		addLinks(typedefs, navbar, li, className, 'typedefs', 'type-typedef', 'Type definitions');
 	}
 
+	//Фикс кнопки переключения панели
+	var trigger = $('#nav-trigger');
+	trigger.click(function(){
+		setTimeout(function(){
+			highlightCurrent(currentHash, true);
+		}, 100);
+	});
+
 	//Подсветка элемента при загрузке страницы
-	var currentHash = document.location.hash.substr(1);
+	currentHash = document.location.hash.substr(1);
 	highlightCurrent(currentHash);
 
 });
