@@ -187,11 +187,11 @@ Sequencer.prototype.start = function(action, duration, delay, context){
  */
 Sequencer.prototype.append = function(action, duration, context){
 	if(this.inProgress){
-		return this._add(this._currentStep, action, duration, 0, context);
+		return this._add(this._currentStep, action, duration, context);
 	}
 	else{
 		var skips = this._shouldSkip;
-		var step = this.start(action, duration, context);
+		var step = this.start(action, duration, 0, context);
 		this._shouldSkip = skips;
 		return step;
 	}
