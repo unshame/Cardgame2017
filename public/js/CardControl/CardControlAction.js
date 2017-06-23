@@ -162,7 +162,7 @@ CardControl.prototype.cardReturn = function(){
 	if(card.field){
 		if(!stillInbound)
 			card.field.focusedCard = null;
-		card.field.placeCards([card], BRING_TO_TOP_ON.END, true);
+		card.field.placeCards([card], BRING_TO_TOP_ON.END_ALL, true);
 	}
 	else{
 		card.returnToBase(this.cardReturnTime, 0);
