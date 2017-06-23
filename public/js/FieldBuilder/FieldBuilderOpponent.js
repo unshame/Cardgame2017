@@ -26,7 +26,9 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 
 	for(var i = 0; i < opponentCells.length; i++){
 		if(opponentCells[i] <= 0){
-			console.warn('Field builder: Negative amount of columns for field opponent[', i, '] (', opponentCells[i], '), defaulting to 0\n', this);
+			if(this.manager.inDebugMode){
+				console.warn('Field builder: Negative amount of columns for field opponent[', i, '] (', opponentCells[i], '), defaulting to 0\n', this);
+			}
 			opponentCells[i] = 0;
 		}
 	}

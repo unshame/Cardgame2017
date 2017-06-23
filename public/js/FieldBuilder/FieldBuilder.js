@@ -215,13 +215,15 @@ FieldBuilder.prototype._notEnoughSpace = function(id, ref, index, silent, noHeig
 		requiredHeight = skinManager.skin.height + minActiveSpace,
 		str = null;
 
-	if(!noWidth && (width || width === 0) && width < requiredWidth){
-		str = ['Field builder: Not enough space for field', id, '(', width, '<', requiredWidth, ')\n'];
+	if(this.manager.inDebugMode){
+		if(!noWidth && (width || width === 0) && width < requiredWidth){
+			str = ['Field builder: Not enough space for field', id, '(', width, '<', requiredWidth, ')\n'];
+		}
+		else if(!noHeight && (height || height === 0) && height < requiredHeight){
+			str = ['Field builder: Not enough space for field', id, '(', height, '<', requiredHeight, ')\n'];
+		}
 	}
-	else if(!noHeight && (height || height === 0) && height < requiredHeight){
-		str = ['Field builder: Not enough space for field', id, '(', height, '<', requiredHeight, ')\n'];
-	}
-
+	
 	if(str){
 		if(!silent){
 			str.push(this.manager.fields[id]);
