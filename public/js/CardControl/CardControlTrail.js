@@ -62,7 +62,7 @@ CardControl.prototype._updateTrail = function(){
 	if(this.trail.countLiving() && this.trail.parent != this.trailDefaultBase){
 		
 		this.trail.forEachAlive(function(p){
-			p.alpha = p.lifespan / this.trail.lifespan* 0.6;
+			p.alpha = p.lifespan / this.trail.lifespan;
 		}, this);
 	}
 };

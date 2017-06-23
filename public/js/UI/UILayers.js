@@ -22,6 +22,7 @@ var UILayers = function(){
 * @param {string} name                имя слоя, должно быть уникальным
 * @param {boolean} [checkCursorOverlap=false] Устанавливает `checkCursorOverlap` созданной группе.
 * Указывает, нужно ли проверять эту группу в `{@link UILayers#cursorIsOverAnElement}`. 
+* @return {Phaser.Group} Созданный слой.
 */
 UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 	var layer = game.add.group();
@@ -39,6 +40,7 @@ UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 * @param {number} i                   z-index слоя
 * @param {boolean} [checkCursorOverlap=false] Устанавливает `checkCursorOverlap` слою.
 * Указывает, нужно ли проверять эту группу в `{@link UILayers#cursorIsOverAnElement}`. 
+* @return {DisplayObject} Добавленный слой.
 */
 UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 	layer.index = i;

@@ -17,6 +17,7 @@ var CardControl = function(inDebugMode){
 	this.trailDefaultBase.add(this.trail);
 	this.trail.gravity = 0;
 	this.trail.lifespan = 600;
+	this.trail.alpha = 0.6;
 	this.trail.interval = 20;	//Свойство используется модулем, а не движком
 	this.trail.maxParticles = Math.ceil(this.trail.lifespan / this.trail.interval);
 	this.cardShiftDuration = 100;
