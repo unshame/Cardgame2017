@@ -139,8 +139,17 @@ UI.prototype.addButtons = function(){
 				y: game.screenHeight - 15 - height
 			};
 		},
-		action: function(){
-			background.nextTexture();
+		action: function(button, pointer){
+			if(pointer.isMouse && pointer.button != 0){
+				skinManager.setSkin('uno');
+			}
+			else if(skinManager.skin.name == 'modern'){
+				skinManager.setSkin('classic');
+			}
+			else{
+				skinManager.setSkin('modern');
+			}
+
 		},
 		icon: 'menu',
 		color: 'orange',

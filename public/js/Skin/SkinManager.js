@@ -15,6 +15,7 @@ var SkinManager = function(skinToSet){
 	/**
 	 * Текущий скин. Далее указаны свойства, которые полезны за пределами этого модуля.
 	 * @type {Object}
+	 * @prop {string} name название скина
 	 * @prop {number} width ширина карты
 	 * @prop {number} height высота карты
 	 * @prop {number} scale масштаб карты

@@ -93,7 +93,13 @@ Field.prototype._createArea = function(width, height){
 		x = this.style.margin + lineWidth/2,
 		y = this.style.margin + lineWidth/2;
 		
-	var area = game.make.bitmapData(width, height);
+	var area = this._bitmapArea;
+	if(!area){
+		area = game.make.bitmapData(width, height);
+	}
+	else{
+		area.clear();		
+	}
 	width -= x*2;
 	height -= y*2;
 	area.ctx.beginPath();
@@ -111,10 +117,10 @@ Field.prototype._createArea = function(width, height){
 	area.ctx.quadraticCurveTo(x, y, x + radius, y);
 	area.ctx.fill();
 	area.ctx.stroke();
+	area.update();
 
-	var id = 'area_' + this.id;
-	game.cache.addBitmapData(id, area);	
-	this.area.loadTexture(game.cache.getBitmapData(id));
+	this.area.loadTexture(area);
+	this._bitmapArea = area;
 };
 
 /**
@@ -143,7 +149,13 @@ Field.prototype._createCircle = function(width, height){
 	var center = this._calculateCircleCenter(a, c, b);
 	var radius = center.y;
 
-	var circle = game.make.bitmapData(game.screenWidth, height);
+	var circle = this._bitmapCircle;
+	if(!circle){
+		circle = game.make.bitmapData(game.screenWidth, height);
+	}
+	else{
+		circle.clear();		
+	}
 	circle.ctx.beginPath();
 	circle.ctx.arc(center.x + this.base.x, center.y, radius,2 * Math.PI, 0); 
 	circle.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
@@ -151,10 +163,9 @@ Field.prototype._createCircle = function(width, height){
 	circle.ctx.lineWidth = this.style.border;
 	circle.ctx.fill();
 	circle.ctx.stroke();
-
-	var id = 'circle_' + this.id;
-	game.cache.addBitmapData(id, circle);	
-	this.circle.loadTexture(game.cache.getBitmapData(id));
+	circle.update();
+	this.circle.loadTexture(circle);
+	this._bitmapCircle = circle;
 
 	this.circle.x = -this.base.x;
 

@@ -47,6 +47,12 @@ Field.prototype.removeAllCards = function(){
 
 /** Полностью уничтожает поле, убирает все карты предварительно. */
 Field.prototype.destroy = function(){
+	if(this._bitmapCircle){
+		this._bitmapCircle.destroy();
+	}
+	if(this._bitmapArea){
+		this._bitmapArea.destroy();
+	}
 	this.removeAllCards();
 	this.base.removeAll(true);
 	this.base.destroy();
