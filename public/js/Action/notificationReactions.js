@@ -68,7 +68,8 @@ window.notificationReactions = {
 		}
 
 		var cards = discard.cards.slice();
-
+		discard.reset();
+		
 		gameSeq.start(function(){	
 			delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);
 			delay += game.defaultMoveTime;		
@@ -80,10 +81,8 @@ window.notificationReactions = {
 				seq.abort();
 				seq.start(function(){
 					fieldManager.resetFields();
-				}, delay)
-				.then(function(){
 					cardManager.enablePhysics(true);
-				})
+				}, 0, delay - game.defaultMoveTime);
 			}
 		}, function(){return delay})
 		.then(function(){
