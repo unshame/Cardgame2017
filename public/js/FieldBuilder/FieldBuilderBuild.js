@@ -133,7 +133,8 @@ FieldBuilder.prototype._buildDeckField = function(){
 		forcedSpace: 0.5,
 		axis: 'vertical',
 		direction: 'backward',
-		reversed: true
+		addTo: 'back',
+		adjust: false
 	},
 	iconStyle);
 };
@@ -156,6 +157,7 @@ FieldBuilder.prototype._buildDiscardField = function(){
 		horizontalAlign: 'right',
 		axis: 'vertical',
 		direction: 'backward',
-		addTo: 'back'
+		addTo: 'back',
+		adjust: false
 	});
 };

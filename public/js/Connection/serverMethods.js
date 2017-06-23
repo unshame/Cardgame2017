@@ -46,5 +46,9 @@ window.serverMethods = {
 		actionHandler.possibleActions = null;
 		connection.proxy.recieveResponse();
 		connection.resetTimer();
+	},
+	
+	reconnect: function(){
+		connection.proxy.reconnectClient(connection.id);
 	}
 };

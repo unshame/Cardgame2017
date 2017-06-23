@@ -16,6 +16,7 @@ window.clientMethods = {
 			playerManager.pid = pid;
 		}
 		localStorage.setItem('durak_id', connId);
+		connection.id = connId;
 	},
 
 	updateId: function(pid){
