@@ -49,6 +49,6 @@ window.serverMethods = {
 	},
 	
 	reconnect: function(){
-		connection.proxy.reconnectClient(connection.id);
+		connection.proxy.requestGameInfo();
 	}
 };

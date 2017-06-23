@@ -24,6 +24,13 @@ ActionHandler.prototype.executeAction = function(action){
 
 	var delay = 0;
 
+	if(cardManager.physicsEnabled){
+		cardManager.disablePhysics();
+		connection.server.reconnect();
+		action.noResponse = true;
+		return;
+	}
+
 	if(fieldManager.networkCreated){
 		fieldManager.resetHighlights();
 		cardManager.resetRaised();
