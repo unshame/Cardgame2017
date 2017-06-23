@@ -20,13 +20,15 @@ FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
 		}
 		else{
 			console.error('Field manager: Card', c.cid, 'not found');
-			continue;
+			connection.server.reconnect();
+			return;
 		}
 		if(fieldChanged){
 			if(card.field){
 				card.field.cardsToRemove.push(card);
 			}
 			var fieldId = card.fieldId;
+			console.log(fieldId)
 			if(fieldId == 'BOTTOM')
 				fieldId = 'DECK';
 			delay = this.fields[fieldId].queueCards([card], noDelay ? 0 : delay);
@@ -50,8 +52,9 @@ FieldManager.prototype.revealCards = function(cardsInfo){
 			card.setValue(c.suit, c.value);		
 		}
 		else{
-			console.warn('Field manager: Card', c.cid, 'not found');
-			continue;
+			console.error('Field manager: Card', c.cid, 'not found');
+			connection.server.reconnect();
+			return;
 		}
 	}
 };
@@ -73,11 +76,12 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDe
 		var cid = cardsInfo[i].cid,
 			suit = cardsInfo[i].suit,
 			value = cardsInfo[i].value, 
+			fieldId = cardsInfo[i].field,
 			card = game.cards[cid];
 		
 		if(card){
 			card.presetValue(suit, value);
-			var fieldChanged = card.presetField(field.id);
+			var fieldChanged = card.presetField(fieldId || field.id);
 			if(fieldChanged){
 				if(card.field){
 					card.field.removeCards([card]);
@@ -87,6 +91,8 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDe
 		}
 		else{
 			console.error('Field manager: Card', cid, 'not found');
+			connection.server.reconnect();
+			return;
 		}
 	}
 	return field.addCards(cardsToPlace, bringToTopOn, noDelay);
@@ -105,8 +111,9 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 		var card = game.cards[c.cid];
 
 		if(!card){
-			console.error('Action handler: Card', c.cid, 'not found');
-			continue;
+			console.error('Field manager: Card', c.cid, 'not found');
+			connection.server.reconnect();
+			return;
 		}
 
 		if(pid != c.pid){
@@ -138,7 +145,8 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 		var card = game.cards[c.cid];	
 
 		if(!card){
-			console.error('Action handler: Card', c.cid, 'not found');
+			console.error('Field manager: Card', c.cid, 'not found');
+			connection.server.reconnect();
 			continue;
 		}
 

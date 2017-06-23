@@ -16,7 +16,7 @@
  * @example
  * // Сначала создается обработчик
  * var seq = new Sequencer();
- * // В функциях будут доступны 6 основные метода обработчика:
+ * // В функциях будут доступны основные методы обработчика:
  * // abort(), finish(), start(), append(), skip(), unskip()
  * func1(s){
  * }
@@ -27,8 +27,7 @@
  *    .then(func3, 500, context3);
  * // func1 сразу -> func2 через 1000 -> func3 через 1500
  * // seq.duration == 3000
- * @example
- * //Вызов методов из действий:
+ * @example <caption>Вызов методов из действий</caption>
  * //action1 выполнится
  * function action0(s){
  * 	s.abort()

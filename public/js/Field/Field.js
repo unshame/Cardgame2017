@@ -58,6 +58,7 @@
 *                                                   Значения: `false, 'uni', 'bi'`  
 *                                                   `'uni'` - карты поворачиваются по направлению поля   
 *                                                   `'bi'` - карты поворачиваются в случайную сторону
+* @param {boolean} style.adjust=true нужно ли пытаться двигать карты, которые уже находятся в поле, при добавлении новых
 * @param {number} style.alpha=0.35 Прозрачность поля.
 * @param {number} style.corner=5 Радиус закругленного угла.
 * @param {number} style.border=4 Ширина рамки.
@@ -328,6 +329,7 @@ Field.getDefaultOptions = function(){
 			reversed: false,	
 			flipped: false,		
 			randomAngle: false,	
+			adjust: true,
 			
 			area: 'plain',	
 			alpha: 0.35,

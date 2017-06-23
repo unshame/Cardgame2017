@@ -80,7 +80,7 @@ window.notificationReactions = {
 				seq.abort();
 				seq.start(function(){
 					fieldManager.resetFields();
-				}, delay)
+				}, delay - game.defaultMoveTime)
 				.then(function(){
 					cardManager.enablePhysics(true);
 				})
@@ -94,16 +94,17 @@ window.notificationReactions = {
 				card.moveTo(x, -200, time, 0, false, true);
 				card.rotateTo(Math.random()*360 - 180, time);
 			}
+			cards = dummy.cards.slice();
+			fieldManager.resetFields();
+			cardManager.enablePhysics(false, dummy.cards);
 		}, game.defaultMoveTime + 500)
 		.then(function(){
-			for(var ci = 0; ci < dummy.cards.length; ci++){
-				var card = dummy.cards[ci];
+			for(var ci = 0; ci < cards.length; ci++){
+				var card = cards[ci];
 				card.field = null;
 				card.destroy(0, true);
 			}
-			fieldManager.resetFields();
 			cardEmitter.start(300, 500, 100, false, 100, 10);
-			cardManager.enablePhysics(false);
 		});
 	},
 

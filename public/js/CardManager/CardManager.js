@@ -66,7 +66,7 @@ CardManager.prototype.createCards = function(cardsInfo){
 			this.createCard(options);
 		}
 		else{
-			card.setValue(c.suit, c.value);
+			card.presetValue(c.suit, c.value);
 			card.fieldId = null;
 		}
 	}
@@ -151,10 +151,10 @@ CardManager.prototype.forceApplyValues = function(){
 * Включает физику карт.
 * @param  {boolean} makeDraggable нужно ли делать карты перетаскиваемыми
 */
-CardManager.prototype.enablePhysics = function(makeDraggable){
+CardManager.prototype.enablePhysics = function(makeDraggable, except){
 
 	for(var cid in this.cards){
-		if(!this.cards.hasOwnProperty(cid))
+		if(!this.cards.hasOwnProperty(cid) || except && except.indexOf && ~except.indexOf(card))
 			continue;
 		var card = this.cards[cid];
 		if(makeDraggable)

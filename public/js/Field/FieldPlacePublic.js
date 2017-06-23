@@ -98,16 +98,19 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 		var card = this.cards[i];	
 		var localDelayIndex = delayIndex;
+		var isNew = !newCards && !this._queuedCards.length || ~this._queuedCards.indexOf(card) || newCards && ~newCards.indexOf(card);
 
 		//Не нужно задерживать карты, которые уже находятся в поле
 		if(newCards && !~newCards.indexOf(card)){
 			localDelayIndex = 0;
 		}
 
-		this._moveCard(
-			card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
-			delayArray, localDelayIndex, bringToTopOn
-		);
+		if(this.style.adjust || isNew){
+			this._moveCard(
+				card, i, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
+				delayArray, localDelayIndex, bringToTopOn
+			);
+		}
 
 		//Добавляем задержку передвижения, если указаны новые карты или
 		//если необходимо задерживать смещенные карты

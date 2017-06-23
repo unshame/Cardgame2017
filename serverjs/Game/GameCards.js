@@ -57,7 +57,7 @@ class GameCards extends BetterArray{
 					newCard.value = null;
 					newCard.suit = null;			
 				} 
-				cardsToSend[pid].push(newCard);
+				cardsToSend[pid].unshift(newCard);
 			});
 
 			//Руки
