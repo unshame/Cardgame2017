@@ -66,111 +66,13 @@ var animTest = {
 	}
 }
 
-var intervals = [];
-
-var duration = 500;
-var interval = 15;
-var interval2 = 100;
-
-function cardGoRound(c, i, ri, minTime, info, offset, height, hx){
-	c.field && c.field.removeCards([c]);
-	c.fieldId = null;
-	var cx = hx + height/2 - skinManager.skin.width;
-	var cy = height/2 + offset;
-	//c.setPosition(cx, game.screenHeight + c.sprite.height*2);
-	var seq = new Sequencer();
-	var delay = interval*i;	
-	var end = minTime + ri*interval2 - delay;
-	var da = -0.009 + 0.005*Math.random();
-	var rot;
-	seq.start(function(){
-		c.moveTo(cx, cy, duration, delay, false, true, BRING_TO_TOP_ON.START, Phaser.Easing.Circular.In);
-		c.rotateTo(0, duration, delay);
-	}, duration + delay)
-	.then(function(){
-		if(c.mover){
-			c.mover.stop();
-			c.mover = null;
-		}
-		c.setBasePreserving(hx, cy);
-		c.setPosition(cx, cy);
-		var x = 0, y = 0;		
-		var prevTime = Date.now();
-		var distance = Math.sqrt(c.sprite.x*c.sprite.x + c.sprite.y*c.sprite.y);
-		rot = setInterval(function(){
-			var dt = Date.now() - prevTime;
-			var angle = da * dt;
-			prevTime = Date.now();
-			var t = angle + Math.atan2(c.sprite.y - y, c.sprite.x - x);
-			c.sprite.x = x + distance * Math.cos(t);
-			c.sprite.y = y + distance * Math.sin(t);
-			c.sprite.rotation = t + Math.PI;
-		}, 30);
-		intervals.push(rot);
-	}, end)
-	.then(function(){
-		clearInterval(rot);
-		fieldManager.moveCards(fieldManager.fields.DECK, [info]);
-	});
-}
-
-function clearInts(){
-	intervals.forEach(function(int){
-		clearInterval(int);
-	})
-	intervals.length = 0
-}
-
-function goRound(cards){
-	var offset = grid.cellHeight*2 + grid.offset.y;
-	var height = fieldManager.fields[game.pid].base.y - offset;
-	var hx = game.screenWidth/2;
-	clearInts();
-	cards = cards.slice();
-	var scards = shuffle(cards.slice());
-	var i = 0;
-	var len = cards.length;
-	var minTime = interval * len + 1500;
-
-	var totalTime = minTime + cards.length*interval2 + cards.length*interval;
-	var trail = game.add.emitter(hx, height/2 + offset);
-	background.add(trail);
-	var fader;
-	trail.lifespan = 1500;
-	gameSeq.start(function(){
-		trail.width = trail.height = height/2 - skinManager.skin.width*1.5;
-		trail.makeParticles(skinManager.skin.trailName, [0, 1, 2, 3]);
-		trail.gravity = 0;
-		trail.interval = 20;
-		trail.maxParticles = Math.ceil(trail.lifespan / trail.interval);
-		trail.start(false, trail.lifespan, trail.interval);
-		trail.alpha = 0.6;
-		fader = setInterval(function(){
-			trail.forEachAlive(function(p){
-				p.alpha = p.lifespan / trail.lifespan;
-			});
-		}, 30)
-	}, totalTime - duration - trail.lifespan, duration)
-	.then(function(){
-		trail.on = false;
-	}, trail.lifespan)
-	.then(function(){
-		clearInterval(fader);
-		trail.destroy();
-	})
-
-	for(var i = 0; i < cards.length; i++){
-		var c = cardManager.cards[scards[i].cid];
-		var info = scards[i];
-
-		c.presetValue(null, 0);
-		cardGoRound(c, i, cards.indexOf(info), minTime, info, offset, height, hx);
-	}
-	return totalTime + 500;
-}
-
-
-function shuffle(a){
+/**
+ * Fisher–Yates Shuffle
+ * @param  {array} a массив для сортировки
+ * @global
+ * @return {array}   отсортированный массив (тот же, что и на входе)
+ */
+function shuffleArray(a){
 	let currentIndex = a.length,
 		temporaryValue,
 		randomIndex;
@@ -188,11 +90,4 @@ function shuffle(a){
 		a[randomIndex] = temporaryValue;
 	}
 	return a;
-}
-
-function check(oldCards){
-	var cards = fieldManager.fields.DECK.cards;
-	for(var i = 0; i < cards.length; i++){
-		console.log(oldCards.indexOf(cards[i]))
-	}
 }

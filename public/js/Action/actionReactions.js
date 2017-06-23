@@ -31,11 +31,12 @@ window.actionReactions = {
 	},
 
 	/**
-	* Карты, присутствующие в игре
+	* Информация об игре.
 	* @param {object} action - Обрабатываемое действие
 	* @param {CardInfo[]} action.cards - Информация о картах
 	* @param {number} [action.numDiscarded] - Количество карт в стопке сброса
 	* @param {number} [action.trumpSuit] - Масть козырных карт
+	* @param {boolean} [noDelay=false] - нужно ли анимировать раздачу карт
 	* @return {number} Время до начала добавления последней карты
 	* @memberof actionReactions
 	*/
@@ -70,7 +71,7 @@ window.actionReactions = {
 			fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, noDelay ? true : false);
 		}
 		else{
-			delay = goRound(action.cards);
+			delay = fieldManager.fancyShuffleCards(action.cards);
 		}		
 		if(hasTrumpSuit){
 			fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? game.defaultMoveTime : delay);
@@ -84,9 +85,24 @@ window.actionReactions = {
 	},
 
 	/**
+	 * Информация об игре при переподключении к игре.
+	 * @param {object} action {@link actionReactions.GAME_INFO}
+	 * @return {number} Время выполнения действия
+	 * @memberof actionReactions
+	 */
+	GAME_INFO_UPDATE: function(action){
+		var text = game.add.text(ui.rope.width + 10, game.screenHeight - 50, 'Reconnected', {fill: 'white'}, ui.cornerButtons);
+		setTimeout(function(){
+			text.destroy();
+		}, 2000);
+		return actionReactions['GAME_INFO'].call(this, action, true);
+	},
+
+	/**
 	* Раскрытие значений карт
 	* @param {object} action - Обрабатываемое действие
 	* @param {CardInfo[]} action.cards - Информация о картах
+	* @return {number} Время выполнения действия (0)
 	* @memberof actionReactions
 	*/
 	REVEAL: function(action){
@@ -200,7 +216,3 @@ window.actionReactions = {
 * @memberof actionReactions
 */
 actionReactions['ATTACK'] = actionReactions['DEFENSE'];
-
-actionReactions['GAME_INFO_UPDATE'] = function(action){
-	actionReactions['GAME_INFO'].call(this, action, true);
-}
