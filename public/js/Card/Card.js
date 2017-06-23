@@ -140,6 +140,8 @@ var Card = function (options) {
 	*/
 	this._flipper = null;
 
+	this._revolveInfo = null;
+
 	/**
 	* Когда карта будет перемещена вверх группы  
 	* @private
@@ -328,9 +330,9 @@ Card.prototype._destroyNow = function() {
 
 /**
 * Обновление карты.  
-* На данный момент только обновляет позицию свечения.
 */
 Card.prototype.update = function() {
+	this._revolve();
 	this._glowUpdatePosition();
 };
 
