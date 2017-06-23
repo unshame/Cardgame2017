@@ -165,9 +165,9 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 };
 
 FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
-	var duration = 500;
-	var interval = 15;
-	var interval2 = 100;
+	var duration = 500/game.speed;
+	var interval = 15/game.speed;
+	var interval2 = 50/game.speed;
 	var offset = grid.cellHeight*2 + grid.offset.y;
 	var height = this.fields[game.pid].base.y - offset;
 	var hx = game.screenWidth/2;
@@ -176,22 +176,23 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 	var shuffledCardsInfo = shuffleArray(cardsInfo.slice());
 	var i = 0;
 	var len = cardsInfo.length;
-	var minTime = interval * len + 1500;
+	var minTime = interval * len + duration + 1000/game.speed;
 
-	var totalTime = minTime + cardsInfo.length*interval2 + cardsInfo.length*interval;
 	var trail = game.add.emitter(hx, height/2 + offset);
+	trail.lifespan = 1000/game.speed;
 	background.add(trail);
 	var fader;
-	trail.lifespan = 1500;
+
+	var totalTime = (minTime + len*interval2 + trail.lifespan)*game.speed;
 
 	function revolveCard(i, seq){
 		var c = cardManager.cards[shuffledCardsInfo[i].cid];
 		var rc = cardManager.cards[cardsInfo[i].cid];
 		var info = cardsInfo[i];
 		var delay = interval*i;	
-		var da = -0.009 + 0.005*Math.random();
+		var da = (-0.009 + 0.005*Math.random())*game.speed;
 		c.presetValue(null, 0);
-		c.moveTo(cx, cy, duration, delay, false, true, BRING_TO_TOP_ON.START, Phaser.Easing.Circular.In);
+		c.moveTo(cx, cy, duration*game.speed, delay*game.speed, false, true, BRING_TO_TOP_ON.START, Phaser.Easing.Cubic.In);
 		c.revolveAround(hx, cy, da);
 		seq.append(function(){
 			rc.stopRevolving();
@@ -208,7 +209,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 			trail.width = trail.height = height/2 - skinManager.skin.width*1.5;
 			trail.makeParticles(skinManager.skin.trailName, [0, 1, 2, 3]);
 			trail.gravity = 0;
-			trail.interval = 20;
+			trail.interval = 10;
 			trail.maxParticles = Math.ceil(trail.lifespan / trail.interval);
 			trail.start(false, trail.lifespan, trail.interval);
 			trail.alpha = 0.6;
@@ -217,7 +218,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 					p.alpha = p.lifespan / trail.lifespan;
 				});
 			}, 30)
-		}, minTime - duration)
+		}, minTime - duration);
 		for(var i = 0; i < cardsInfo.length; i++){
 			revolveCard.call(this, i, seq)
 		}
@@ -229,5 +230,5 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 			trail.destroy();
 		})
 	}, duration, 0, this);
-	return totalTime + 500;
+	return totalTime;
 }
