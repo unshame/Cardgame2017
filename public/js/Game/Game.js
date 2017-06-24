@@ -3,11 +3,13 @@
 * @class
 */
 
-var Game = function(speed, minWidth, minHeight, inDebugMode){
+var Game = function(speed, inDebugMode){
 
 	this.speed = speed || 1;
-	this.minWidth = minWidth || 1050;
-	this.minHeight = minHeight || 820;
+	this.minWidth =  1050;
+	this.minHeight = 820;
+	this.minWidthPortrait = 800;
+	this.minHeightPortrait = 1150;
 	this.inDebugMode = inDebugMode || false;
 	this.initialized = false;
 	this.pausedByViewChange = false;
@@ -72,9 +74,23 @@ Game.prototype.constructor = Game;
 Game.prototype.calculateScreenSize = function(){
 	var width = window.innerWidth,
 		height = window.innerHeight,
-		minWidth = this.minWidth,
-		minHeight = this.minHeight;
+		minWidth, minHeight;
 
+	if(width < height){
+		minWidth = this.minWidthPortrait;
+		minHeight = this.minHeightPortrait;
+	}
+	else{
+		minWidth = this.minWidth;
+		minHeight = this.minHeight;
+	}
+
+	if(width*(minHeight/minWidth) > height){
+		minWidth = 0;
+	}
+	else{
+		minHeight = 0;
+	}
 		
 	var diffWidth = minWidth - width,
 		diffHeight = minHeight - height,
