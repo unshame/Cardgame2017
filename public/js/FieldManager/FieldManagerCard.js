@@ -165,23 +165,26 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 };
 
 FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
-	var duration = 500/game.speed;
-	var interval = 15/game.speed;
-	var interval2 = 50/game.speed;
-	var offset = grid.cellHeight*2 + grid.offset.y;
-	var height = this.fields[game.pid].base.y - offset;
-	var hx = game.screenWidth/2;
-	var cx = hx + height/2 - skinManager.skin.width;
-	var cy = height/2 + offset;
-	var shuffledCardsInfo = shuffleArray(cardsInfo.slice());
-	var i = 0;
-	var len = cardsInfo.length;
-	var minTime = interval * len + duration + 1000/game.speed;
+	var duration = 500/game.speed,
+		interval = 15/game.speed,
+		interval2 = 50/game.speed,
+		offset = grid.cellHeight*2 + grid.offset.y,
+		height = this.fields[game.pid].base.y - offset,
+		hx = game.screenWidth/2,
+		cx = hx + height/2 - skinManager.skin.width,
+		cy = height/2 + offset,
+		shuffledCardsInfo = shuffleArray(cardsInfo.slice()),
+		len = cardsInfo.length,
+		minTime = interval * len + duration + 1000/game.speed;
 
-	var trail = game.add.emitter(hx, height/2 + offset);
+	var trail = cardControl.trail;
+	trail.position.x = hx;
+	trail.position.y = height/2 + offset;
 	trail.lifespan = 1000/game.speed;
+	trail.interval = 10;
+	trail.maxParticles = Math.ceil(trail.lifespan / trail.interval);
+	trail.makeParticles(skinManager.skin.trailName, [0, 1, 2, 3]);
 	background.add(trail);
-	var fader;
 
 	var totalTime = (minTime + len*interval2 + trail.lifespan)*game.speed;
 
@@ -207,28 +210,17 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 	gameSeq.start(function(seq){
 		seq.append(function(){
 			trail.width = trail.height = height/2 - skinManager.skin.width*1.5;
-			trail.makeParticles(skinManager.skin.trailName, [0, 1, 2, 3]);
-			trail.gravity = 0;
-			trail.interval = 10;
-			trail.maxParticles = Math.ceil(trail.lifespan / trail.interval);
 			trail.start(false, trail.lifespan, trail.interval);
-			trail.alpha = 0.6;
-			fader = setInterval(function(){
-				trail.forEachAlive(function(p){
-					p.alpha = p.lifespan / trail.lifespan;
-				});
-			}, 30)
 		}, minTime - duration);
 		for(var i = 0; i < cardsInfo.length; i++){
-			revolveCard.call(this, i, seq)
+			revolveCard.call(this, i, seq);
 		}
 		seq.append(function(){
 			trail.on = false;
 		}, trail.lifespan)
 		.then(function(){
-			clearInterval(fader);
-			trail.destroy();
-		})
+			cardControl.trailReset();
+		});
 	}, duration, 0, this);
 	return totalTime;
-}
+};

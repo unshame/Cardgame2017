@@ -16,6 +16,11 @@ CardControl.prototype.trailReset = function(soft){
 			p.kill();
 		}
 	}, this);
+	this.trail.gravity = 0;
+	this.trail.lifespan = 600;
+	this.trail.alpha = 0.6;
+	this.trail.interval = 20;	//Свойство используется модулем, а не движком
+	this.trail.maxParticles = Math.ceil(this.trail.lifespan / this.trail.interval);
 	this.trail.position = {x: 0, y: 0};
 	this.trailDefaultBase.add(this.trail);
 };
@@ -65,6 +70,18 @@ CardControl.prototype._updateTrail = function(){
 			p.alpha = p.lifespan / this.trail.lifespan;
 		}, this);
 	}
+	if(this.trialShouldReappend && !this.trailResetTimer && this.card){
+		this.trialReappend();
+		this.trialShouldReappend = false;
+	}
+};
+
+CardControl.prototype.trialReappend = function(){
+	this.card.base.addAt(this.trail, 0);
+	this.trail._frames = this.card.suit;
+	this.trail.minParticleSpeed.setTo(-skinManager.skin.width, -skinManager.skin.height);
+	this.trail.maxParticleSpeed.setTo(skinManager.skin.width, skinManager.skin.height);
+	this.lastParticleTime = game.time.time;
 };
 
 //ТАЙМЕР РЕСЕТА ХВОСТА

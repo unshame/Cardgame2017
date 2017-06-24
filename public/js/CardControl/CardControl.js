@@ -14,16 +14,10 @@ var CardControl = function(inDebugMode){
 	this.trailDefaultBase = game.add.group();
 	this.trail.makeParticles(skinManager.skin.trailName, 0);
 	this.trailDefaultBase.name = 'trail';
-	this.trailDefaultBase.add(this.trail);
-	this.trail.gravity = 0;
-	this.trail.lifespan = 600;
-	this.trail.alpha = 0.6;
-	this.trail.interval = 20;	//Свойство используется модулем, а не движком
-	this.trail.maxParticles = Math.ceil(this.trail.lifespan / this.trail.interval);
+	this.trailReset();
 	this.cardShiftDuration = 100;
 	this.cardReturnTime = 200;
 	this.cardClickMaxDelay = 200;
-
 	this.cardMoveThreshold = 2;
 	this.cardMaxMoveAngle = 30;
 	this._inertiaHistory = [];
@@ -109,9 +103,12 @@ CardControl.prototype._cardOnValidField = function(){
 //Обновление контроллера
 CardControl.prototype.update = function(){
 	var shouldUpdateTrail = this._updateCard();
-	if(shouldUpdateTrail){
+	if(shouldUpdateTrail && !this.trialShouldReappend){
 		var curTime = game.time.time;
 		this._trailSpawnParticle(curTime);
+	}
+	else if(!shouldUpdateTrail){
+		this.trialShouldReappend = false;
 	}
 	this._updateTrail();
 };
