@@ -86,12 +86,14 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 		return;
 	}
 
+	var cardHolding = cardControl.card;
+
 	if(actions){
 		this.possibleActions = actions;
 	}
 	else{
 		actions = this.possibleActions;
-	};
+	}
 
 	gameSeq.finish();
 
@@ -104,11 +106,11 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
-		if(action.cid && game.cards[action.cid]){
-			var field = fieldManager.fields[action.field],
-				card = game.cards[action.cid];
+		var card = game.cards[action.cid];
+		var field = fieldManager.fields[action.field];
+		if(action.cid && card && (!cardHolding || (cardHolding == card || cardHolding.value == card.value && action.type != 'DEFENSE'))){
 			card.setPlayability(true);
-			field.setOwnPlayability(true, action.linkedField);
+			field.setOwnPlayability(action.type, action.linkedField);
 			if(action.type == 'DEFENSE'){
 				field.validCards.push(card);				
 			}

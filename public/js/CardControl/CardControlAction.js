@@ -24,17 +24,13 @@ CardControl.prototype.cardPickup = function(card, pointer){
 	this.cardLastY = this.card.sprite.y;
 
 	this._setCardClickTimer();
-	this.trailReset();
-	this.card.base.addAt(this.trail, 0);
+	this.trialShouldReappend = true;
+
 	this.card.setAngle(0);
-
-	this.trail._frames = this.card.suit;
-	this.trail.minParticleSpeed.setTo(-skinManager.skin.width, -skinManager.skin.height);
-	this.trail.maxParticleSpeed.setTo(skinManager.skin.width, skinManager.skin.height);
-	this.lastParticleTime = game.time.time;
-
 	this._cardSetPathToCursor();
 	game.cardsGroup.bringToTop(this.card.base);
+
+	actionHandler.highlightPossibleActions();
 };
 
 //Устанавливает путь и время смещения карты к курсору
@@ -167,6 +163,8 @@ CardControl.prototype.cardReturn = function(){
 	else{
 		card.returnToBase(this.cardReturnTime, 0);
 	}
+
+	actionHandler.highlightPossibleActions();
 };
 
 //Кидает карту

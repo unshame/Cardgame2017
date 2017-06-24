@@ -83,6 +83,8 @@ FieldManager.prototype.tryHighlightDummy = function(){
 	}
 	if(allMarked){
 		this.forEachField(function(f){
+			if(f.playable != 'ATTACK')
+				return;
 			f.setOwnHighlight(false);
 			f.setIconVisibility(true);
 		});
