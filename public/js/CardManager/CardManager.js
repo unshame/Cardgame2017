@@ -154,6 +154,7 @@ CardManager.prototype.forceApplyValues = function(){
 CardManager.prototype.enablePhysics = function(makeDraggable, except){
 
 	for(var cid in this.cards){
+		//jshint forin:false
 		if(!this.cards.hasOwnProperty(cid) || except && except.indexOf && ~except.indexOf(card))
 			continue;
 		var card = this.cards[cid];

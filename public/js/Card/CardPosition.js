@@ -160,16 +160,16 @@ Card.prototype._revolve = function(){
 	this.sprite.x = x + distance * Math.cos(t);
 	this.sprite.y = y + distance * Math.sin(t);
 	this.sprite.rotation = t + Math.PI;
-}
+};
 
 Card.prototype.revolveAround = function(x, y, speed){
 	this._revolveInfo = {
 		x: x,
 		y: y,
 		speed: speed
-	}
-}
+	};
+};
 
 Card.prototype.stopRevolving = function(){
 	this._revolveInfo = null;
-}
+};

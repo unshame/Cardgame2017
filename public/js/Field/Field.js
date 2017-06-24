@@ -247,8 +247,8 @@ var Field = function(options, style, iconStyle){
 	this.highlighted = false;
 
 	/**
-	 * Можно ли играть карты на это поле.
-	 * @type {Boolean}
+	 * Можно ли играть карты на это поле и тип действия.
+	 * @type {(string|boolean)}
 	 * @default  false
 	 */
 	this.playable = false;

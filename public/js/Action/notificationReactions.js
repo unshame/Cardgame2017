@@ -84,7 +84,7 @@ window.notificationReactions = {
 					cardManager.enablePhysics(true);
 				}, 0, delay - game.defaultMoveTime);
 			}
-		}, function(){return delay})
+		}, function(){return delay;})
 		.then(function(){
 			for(var ci = 0; ci < dummy.cards.length; ci++){
 				var card = dummy.cards[ci],

@@ -30,7 +30,7 @@ Field.prototype.setLastCardHighlight = function(highlight){
 
 	this.setCardsHighlight(false);
 	if(highlight){
-		i = this.style.direction == 'backward' ? 0 : this.cards.length - 1;
+		var i = this.style.direction == 'backward' ? 0 : this.cards.length - 1;
 		this.cards[i].setHighlight(highlight);
 	}
 };
@@ -71,14 +71,14 @@ Field.prototype.setOwnHighlight = function(on, tint){
 
 /**
 * Устанавливает возможность играть карты на поле и подсветку.
-* @param {boolean} playable играбильность           
+* @param {(string|boolean);} playable играбильность и тип применимого действия         
 * @param {string} [linkedFieldId=null] связанное поле, используется `{@link CardControl#cardMoveToField}`
 */
 Field.prototype.setOwnPlayability = function(playable, linkedFieldId){
 	this.playable = playable;
 	this.setOwnHighlight(playable, ui.colors.orange);
 	this.linkedField = fieldManager.fields[linkedFieldId] || null;
-}
+};
 
 /**
 * Устанавливает видимость подсветки поля.
@@ -100,6 +100,7 @@ Field.prototype.setVisibility = function(visible){
 		break;
 	}
 	plane.visible = visible || this.inDebugMode || this.style.area == 'curved';
+	this.setIconVisibility(visible);
 };
 
 /**

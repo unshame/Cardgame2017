@@ -180,4 +180,4 @@ FieldManager.prototype.applySkin = function(){
 		deck.icon.scale.set(skinManager.skin.scale, skinManager.skin.scale);
 		deck.icon.frame = frame;
 	}
-}
+};

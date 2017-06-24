@@ -130,7 +130,7 @@ CardEmitter.prototype.applySkin = function(){
 	else{
 		this._applySkinToEmitter(this);
 	}
-}
+};
 
 /** 
 * Применяет скин к эмиттеру карт.

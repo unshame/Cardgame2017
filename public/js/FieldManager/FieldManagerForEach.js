@@ -146,4 +146,4 @@ FieldManager.prototype.resetTableOrder = function(){
 		table.id = table.savedId;
 		this.fields[table.id] = table;
 	}
-}
+};

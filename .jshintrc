@@ -53,6 +53,12 @@
     "stateBoot": true,
     "Sequencer": true,
     "gameSeq": true,
+    "cardEmitter": true,
+    "CardEmitter": true,
+
+    "shuffleArray": true,
+    "getCards": true,
+    "getCard": true,
 
     "BRING_TO_TOP_ON": true
   },

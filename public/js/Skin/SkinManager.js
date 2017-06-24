@@ -109,8 +109,7 @@ SkinManager.prototype.addSkin = function(options){
  
 	skin.numOfFrames 	 = options.numOfFrames || 53;
 	skin.firstValueFrame = options.firstValueFrame || 0;
-	skin.cardbackPossibleFrames 
-						 = options.cardbackPossibleFrames || [52];
+	skin.cardbackPossibleFrames = options.cardbackPossibleFrames || [52];
 	skin.cardbackFrame 	 = options.cardbackFrame || skin.cardbackPossibleFrames[0];
  
 	skin.trumpOffset 	 = options.trumpOffset || 0;

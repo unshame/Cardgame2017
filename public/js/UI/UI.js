@@ -140,7 +140,7 @@ UI.prototype.addButtons = function(){
 			};
 		},
 		action: function(button, pointer){
-			if(pointer.isMouse && pointer.button != 0){
+			if(pointer.isMouse && pointer.button !== 0){
 				skinManager.setSkin('uno');
 			}
 			else if(skinManager.skin.name == 'modern'){
