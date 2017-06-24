@@ -99,6 +99,7 @@ Field.prototype._createArea = function(width, height){
 	}
 	else{
 		area.clear();		
+		area.resize(width, height);
 	}
 	width -= x*2;
 	height -= y*2;
@@ -155,6 +156,7 @@ Field.prototype._createCircle = function(width, height){
 	}
 	else{
 		circle.clear();		
+		circle.resize(game.screenWidth, height);
 	}
 	circle.ctx.beginPath();
 	circle.ctx.arc(center.x + this.base.x, center.y, radius,2 * Math.PI, 0); 
