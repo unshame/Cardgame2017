@@ -324,6 +324,8 @@ Card.prototype.destroy = function(delay, now) {
 * @private
 */
 Card.prototype._destroyNow = function() {
+	if(cardControl.card == this)
+		cardControl.reset();
 	this.base.removeAll(true);
 	this.base.destroy();
 };

@@ -178,8 +178,9 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 		minTime = interval * len + duration + 1000/game.speed;
 
 	var trail = cardControl.trail;
-	trail.position.x = hx;
-	trail.position.y = height/2 + offset;
+	cardControl.trailReset();
+	trail.x = hx;
+	trail.y = height/2 + offset;
 	trail.lifespan = 1000/game.speed;
 	trail.interval = 10;
 	trail.maxParticles = Math.ceil(trail.lifespan / trail.interval);
