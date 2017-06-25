@@ -80,9 +80,9 @@ UI.prototype.addButtons = function(){
 		position: function(width, height){
 			return {
 				x: game.screenWidth/2 - width/2,
-				y: grid.at(
+				y: game.scale.cellAt(
 					0,
-					grid.numRows - grid.density - 1,
+					game.scale.numRows - game.scale.density - 1,
 					0,
 					5
 				).y
@@ -100,9 +100,9 @@ UI.prototype.addButtons = function(){
 	});
 	new Button({
 		position: function(width, height){
-			return grid.at(
-				grid.numCols - grid.density*1.5 - 1,
-				grid.numRows - grid.density - 1,
+			return game.scale.cellAt(
+				game.scale.numCols - game.scale.density*1.5 - 1,
+				game.scale.numRows - game.scale.density - 1,
 				-width/2,
 				5
 			);

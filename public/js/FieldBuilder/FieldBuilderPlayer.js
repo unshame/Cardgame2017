@@ -5,17 +5,17 @@ FieldBuilder.prototype._calcGenPlayerSizes = function(){
 	this.minActiveSpaces.player = this.minActiveSpace;
 	/*--*/
 
-	var playerNumCols = Math.min((grid.numCols - 8), 40);
+	var playerNumCols = Math.min((game.scale.numCols - 8), 40);
 
 	this.dimensions.player = {
-		width: playerNumCols*grid.cellWidth
+		width: playerNumCols*game.scale.cellWidth
 	};
 
-	this.positions.player = grid.at(
-		(grid.numCols - playerNumCols)/2,
-		grid.numRows - grid.density + 1,
+	this.positions.player = game.scale.cellAt(
+		(game.scale.numCols - playerNumCols)/2,
+		game.scale.numRows - game.scale.density + 1,
 		-this.offsets.player,
-		-this.offsets.player - grid.cellHeight/2
+		-this.offsets.player - game.scale.cellHeight/2
 	);
 
 

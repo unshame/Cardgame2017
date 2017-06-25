@@ -6,14 +6,17 @@
 var Game = function(speed, inDebugMode){
 
 	this.speed = speed || 1;
-	this.minWidth =  1050;
-	this.minHeight = 820;
-	this.minWidthPortrait = 800;
-	this.minHeightPortrait = 1150;
 	this.inDebugMode = inDebugMode || false;
 	this.initialized = false;
 	this.pausedByViewChange = false;
 	this.defaultMoveTime = 300;
+
+	/**
+	 * Находится ли игра в горизонтальном положении, 
+	 * рассчитывается только по размеру экрана.
+	 * @type {Boolean}
+	 */
+	this.isRawLandscape = true;
 
 	window.gameSeq = new Sequencer();
 
@@ -38,10 +41,15 @@ var Game = function(speed, inDebugMode){
 	*/
 	window.ui = new UI();
 
-	window.addEventListener('resize', this.updateCoordinatesDebounce.bind(this));
-	window.addEventListener('orientationchange', this.updateCoordinatesDebounce.bind(this));
+	/**
+	* Менеджер скинов
+	* @type {SkinManager}
+	* @global
+	*/
+	window.skinManager = new SkinManager('modern');
 
-	this.calculateScreenSize();
+	window.addEventListener('resize', this._updateCoordinatesDebounce.bind(this));
+	window.addEventListener('orientationchange', this._updateCoordinatesDebounce.bind(this));
 
 	/**
 	* HTML5 2D WebGL graphics library with canvas fallback. Используется {@link external:Phaser|Phaser'ом} для рендеринга.   
@@ -71,62 +79,6 @@ var Game = function(speed, inDebugMode){
 Game.prototype = Object.create(Phaser.Game.prototype);
 Game.prototype.constructor = Game;
 
-Game.prototype.calculateScreenSize = function(){
-	var width = window.innerWidth,
-		height = window.innerHeight,
-		minWidth, minHeight;
-
-	if(width < height){
-		minWidth = this.minWidthPortrait;
-		minHeight = this.minHeightPortrait;
-	}
-	else{
-		minWidth = this.minWidth;
-		minHeight = this.minHeight;
-	}
-
-	if(width*(minHeight/minWidth) > height){
-		minWidth = 0;
-	}
-	else{
-		minHeight = 0;
-	}
-		
-	var diffWidth = minWidth - width,
-		diffHeight = minHeight - height,
-		multWidth = width/minWidth,
-		multHeight = height/minHeight;
-
-
-	if(this.inDebugMode){
-		console.log(
-			'width:', width,
-			'height:', height
-		);
-		console.log(
-			'diffWidth:', diffWidth,
-			'diffHeight:', diffHeight
-		);
-		console.log(
-			'multWidth:', multWidth,
-			'multHeight:', multHeight
-		);
-	}
-	/**
-	* Ширина игры без учета масштаба
-	* @param Game#screenWidth
-	* @type {number}
-	*/
-	this.screenWidth = 	Math.max(width, minWidth);
-	this.screenHeight = Math.max(height, minHeight);
-	if(diffWidth > 0){
-		this.screenHeight /= multWidth;
-	}
-	if(diffHeight > 0){
-		this.screenWidth /= multHeight;
-	}
-};
-
 //Инициализация игры
 Game.prototype.initialize = function(){
 	this.onPause.add(function(){
@@ -137,12 +89,12 @@ Game.prototype.initialize = function(){
 	this.onResume.add(function(){
 		if(this.inDebugMode)
 			console.log('Game: unpaused internally');
-	}, this);
+	}, this);	
 
 	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 	this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
 
-	this.scale.setGameSize(this.screenWidth, this.screenHeight);
+	this.scale.updateGameSize();
 
 	//Отключаем контекстное меню
 	this.canvas.oncontextmenu = function (e) {e.preventDefault();};
@@ -156,13 +108,6 @@ Game.prototype.initialize = function(){
 	* @global
 	*/
 	window.background = new Background();	
-
-	/**
-	* Сетка
-	* @type {Grid}
-	* @global
-	*/
-	window.grid = new Grid({debug: false});	
 	
 	/**
 	* Менеджер полей
@@ -194,7 +139,7 @@ Game.prototype.initialize = function(){
 
 	ui.initialize();
 
-	this.addVisibilityChangeListener();
+	this._addVisibilityChangeListener();
 
 	this.initialized = true;
 };
@@ -202,14 +147,14 @@ Game.prototype.initialize = function(){
 //Выполняется по окончании дебаунса изменения размера экрана
 Game.prototype.updateCoordinates = function(){
 	this.shouldUpdateFast = false;
-	this.calculateScreenSize();
+	this.scale.updateGameSize();
 	var state = this.state.getCurrentState();
 	state.postResize();
 	this.dimensionsUpdateTimeout = null;
 };
 
 //Выполняется при изменении размера экрана
-Game.prototype.updateCoordinatesDebounce = function(){
+Game.prototype._updateCoordinatesDebounce = function(){
 	if(this.dimensionsUpdateTimeout){
 		clearTimeout(this.dimensionsUpdateTimeout);
 	}
@@ -221,7 +166,7 @@ Game.prototype.updateCoordinatesDebounce = function(){
 };
 
 //Выполняется, когда вкладка переходит на задний/передний план
-Game.prototype.visibilityChangeListener = function(){
+Game.prototype._visibilityChangeListener = function(){
 
 	function correct(){
 		actionHandler.highlightPossibleActions();
@@ -260,7 +205,7 @@ Game.prototype.visibilityChangeListener = function(){
 };
 
 //Добавляет листенер изменения видимости вкладки в зависимости от браузера
-Game.prototype.addVisibilityChangeListener = function(){
+Game.prototype._addVisibilityChangeListener = function(){
 	var visibilityChange; 
 	if (typeof document.hidden !== "undefined") {
 		this.hiddenValue = "hidden";
@@ -272,7 +217,7 @@ Game.prototype.addVisibilityChangeListener = function(){
 		this.hiddenValue = "webkitHidden";
 		visibilityChange = "webkitvisibilitychange";
 	}
-	document.addEventListener(visibilityChange, this.visibilityChangeListener.bind(this), false);
+	document.addEventListener(visibilityChange, this._visibilityChangeListener.bind(this), false);
 };
 
 //Переключение дебага
@@ -280,8 +225,8 @@ Game.prototype.toggleDebugMode = function(){
 
 	this.inDebugMode = !this.inDebugMode;
 
-	if(grid.inDebugMode != this.inDebugMode)
-		grid.toggleDebugMode();
+	if(this.scale.inDebugMode != this.inDebugMode)
+		this.scale.toggleDebugMode();
 
 	if(cardControl.inDebugMode != this.inDebugMode)
 		cardControl.toggleDebugMode();
@@ -295,5 +240,6 @@ Game.prototype.toggleDebugMode = function(){
 	this.time.advancedTiming = this.inDebugMode;
 };
 
+//@include:GameOverride
 //@include:stateBoot
 //@include:statePlay

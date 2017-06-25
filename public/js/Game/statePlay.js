@@ -61,11 +61,8 @@ window.statePlay = {
 	* @memberof statePlay
 	*/
 	postResize: function(){
-		game.scale.setGameSize(game.screenWidth, game.screenHeight);
 
 		background.updateSize();
-
-		grid.draw();
 
 		fieldManager.resizeFields();
 

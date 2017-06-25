@@ -6,8 +6,8 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 	this.offsets.dummy = 0;
 	/*--*/
 
-	var halfRows = Math.floor(grid.numRows / 2),
-		tableCells = this._tableCells = this._opponentPlacement[0] ? Math.round(grid.numCols - 4 - grid.density* 1.5) : grid.numCols - 2,
+	var halfRows = Math.floor(game.scale.numRows / 2),
+		tableCells = this._tableCells = this._opponentPlacement[0] ? Math.round(game.scale.numCols - 4 - game.scale.density* 1.5) : game.scale.numCols - 2,
 		tableOffset = this._tableOffset = this.offsets.table* 2;
 
 	if(tableCells <= 0){
@@ -19,30 +19,30 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 
 	//Пытаемся выровнять поля стола по центру
 	var minTableSpace = skinManager.skin.width + this.minActiveSpaces.table,
-		extraSpace = (tableCells * grid.cellWidth) / numOfTables - minTableSpace,
+		extraSpace = (tableCells * game.scale.cellWidth) / numOfTables - minTableSpace,
 		tableWidth;
 
 	if(extraSpace > 0 && numOfTables == this.tableAmount){
 		this.offsets.table = this.offsets.dummy = extraSpace / 4;
 		this._tableOffset = tableOffset = extraSpace / 2;
-		tableWidth = (tableCells * grid.cellWidth - extraSpace / 2 * (numOfTables - 1)) / numOfTables;
+		tableWidth = (tableCells * game.scale.cellWidth - extraSpace / 2 * (numOfTables - 1)) / numOfTables;
 	}
 	else{
-		tableWidth = (tableCells * grid.cellWidth - tableOffset * (numOfTables - 1)) / numOfTables;
+		tableWidth = (tableCells * game.scale.cellWidth - tableOffset * (numOfTables - 1)) / numOfTables;
 	}
 
 	var addedCell = numOfTables == this.tableAmount ? 1 : 0;
 
 	this.dimensions.table = {
 		width: tableWidth,
-		height: (grid.density + addedCell) * grid.cellHeight
+		height: (game.scale.density + addedCell) * game.scale.cellHeight
 	};
 	this.dimensions.dummy = {
 		width: tableWidth*numOfTables + this.offsets.table * 2 * (numOfTables-1)
 	};
 
-	this.positions.table = grid.at(
-		this._opponentPlacement[0] ? 1 + grid.density : 1,
+	this.positions.table = game.scale.cellAt(
+		this._opponentPlacement[0] ? 1 + game.scale.density : 1,
 		halfRows - 1,
 		-this.offsets.table,
 		-this.offsets.table,
@@ -66,7 +66,7 @@ FieldBuilder.prototype._calcSpecTableSizes = function(){
 		ti = inRow;
 
 	this.positions.dummy.y = y;
-	this.dimensions.dummy.height = height * mult + grid.cellHeight * (mult-1);
+	this.dimensions.dummy.height = height * mult + game.scale.cellHeight * (mult-1);
 	
 	this.tableOrder = this.possibleTableOrders[inRow];
 
@@ -75,7 +75,7 @@ FieldBuilder.prototype._calcSpecTableSizes = function(){
 			ti = inRow;
 			ci = 0;
 			ri++;
-			y += height + grid.cellHeight;
+			y += height + game.scale.cellHeight;
 		}
 		var id = 'TABLE' + this.tableOrder[i];
 		var x = firstX + (width + offset)*ci;

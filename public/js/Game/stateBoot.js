@@ -68,12 +68,6 @@ window.stateBoot = {
 		*/
 		game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
-		/**
-		* Менеджер скинов
-		* @type {SkinManager}
-		* @global
-		*/
-		window.skinManager = new SkinManager('modern');
 		skinManager.addSkins(window.skins);
 	},
 

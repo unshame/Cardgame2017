@@ -209,10 +209,10 @@ SkinManager.prototype.applySkin = function(){
 	if(!game.initialized){
 		return;
 	}
+	game.updateCoordinates();
 	cardManager.applySkin();
 	cardEmitter.applySkin();
 	cardControl.trailApplySkin();
-	grid.draw();
 	fieldManager.applySkin();
 	actionHandler.highlightPossibleActions();
 	background.setTexture(this.skin.background);

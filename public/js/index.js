@@ -10,7 +10,7 @@
 //@include:FieldBuilder
 //@include:FieldManager
 //@include:Game
-//@include:Grid
+//@include:ScaleManager
 //@include:PlayerManager
 //@include:Sequencer
 //@include:SkinManager

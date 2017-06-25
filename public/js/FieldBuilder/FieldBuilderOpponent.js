@@ -9,19 +9,19 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 	];
 	/*--*/
 
-	var halfDensity = Math.floor(grid.density / 2);
+	var halfDensity = Math.floor(game.scale.density / 2);
 
 	//Кол-во колонок и отступы для рук противников и мест на столе
-	var opponentNumRows = Math.round(grid.numRows - grid.density*2 + halfDensity - 2),
+	var opponentNumRows = Math.round(game.scale.numRows - game.scale.density*2 + halfDensity - 2),
 		opponentCells = [
 			opponentNumRows,
-			grid.numCols - grid.density*4 - 2,
+			game.scale.numCols - game.scale.density*4 - 2,
 			opponentNumRows
 		],
 		_opponentsOffset = this._opponentsOffset = [
-			(grid.cellHeight + this.offsets.opponent[0]* 2 ),
-			(grid.cellWidth + this.offsets.opponent[1]* 2 ),
-			(grid.cellHeight + this.offsets.opponent[2]* 2 )
+			(game.scale.cellHeight + this.offsets.opponent[0]* 2 ),
+			(game.scale.cellWidth + this.offsets.opponent[1]* 2 ),
+			(game.scale.cellHeight + this.offsets.opponent[2]* 2 )
 		];
 
 	for(var i = 0; i < opponentCells.length; i++){
@@ -36,35 +36,35 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 	this.dimensions.opponent = [
 		{
 			//width: , 
-			height: (opponentCells[0]* grid.cellHeight - _opponentsOffset[0]* (this._opponentPlacement[0] - 1)) / this._opponentPlacement[0]
+			height: (opponentCells[0]* game.scale.cellHeight - _opponentsOffset[0]* (this._opponentPlacement[0] - 1)) / this._opponentPlacement[0]
 		},
 		{
-			width: (opponentCells[1]* grid.cellWidth - _opponentsOffset[1]* (this._opponentPlacement[1] - 1)) / this._opponentPlacement[1]
+			width: (opponentCells[1]* game.scale.cellWidth - _opponentsOffset[1]* (this._opponentPlacement[1] - 1)) / this._opponentPlacement[1]
 			//height: 
 		},
 		{
 			//width: , 
-			height: (opponentCells[2]* grid.cellHeight - _opponentsOffset[2]* (this._opponentPlacement[2] - 1)) / this._opponentPlacement[2]
+			height: (opponentCells[2]* game.scale.cellHeight - _opponentsOffset[2]* (this._opponentPlacement[2] - 1)) / this._opponentPlacement[2]
 		}
 	];
 
 	//Позиции полей
 	this.positions.opponent = [
-		grid.at(
+		game.scale.cellAt(
 			halfDensity + 1,
-			grid.numRows - grid.density,
+			game.scale.numRows - game.scale.density,
 			-this.offsets.opponent[0],
 			-this.offsets.opponent[0]
 		),
-		grid.at(
-			Math.floor(grid.density*2) + 1,
+		game.scale.cellAt(
+			Math.floor(game.scale.density*2) + 1,
 			-halfDensity,
 			-this.offsets.opponent[1],
 			-this.offsets.opponent[1]
 		),
-		grid.at(
-			grid.numCols - halfDensity - 1,
-			grid.density,
+		game.scale.cellAt(
+			game.scale.numCols - halfDensity - 1,
+			game.scale.density,
 			-this.offsets.opponent[0],
 			-this.offsets.opponent[0]
 		),
