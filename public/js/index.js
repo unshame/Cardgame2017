@@ -1,5 +1,9 @@
 //Entry point
 
+//@include:fonts
+//@include:loc
+//@include:types
+
 //@include:ActionHandler
 //@include:Card
 //@include:CardControl

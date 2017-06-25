@@ -419,8 +419,8 @@ Field.prototype._applyOptions = function(options, style, iconStyle){
 //@include:FieldDelete
 //@include:FieldPlacePrivate
 //@include:FieldPlacePublic
-//@include:FieldPlaceCursor
-//@include:FieldPlaceDebug
+//@include:FieldCursor
+//@include:FieldDebug
 
 /**
 * Проверяет нахождение карты внутри поля (по координатам).

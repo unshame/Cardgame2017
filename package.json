@@ -30,6 +30,9 @@
   },
   "homepage": "https://github.com/unshame/Cardgame2017#readme",
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-file": "^0.3.0",
+    "gulp-uglify": "^3.0.0"
   },
   "author": "UnShame"
 }

@@ -168,6 +168,7 @@ FieldBuilder.prototype._calcSpecSizes = function(){
 	this._calcSpecOpponentSizes();
 };
 
+//@include:FieldBuilderBuild
 //@include:FieldBuilderTable
 //@include:FieldBuilderPlayer
 //@include:FieldBuilderOpponent

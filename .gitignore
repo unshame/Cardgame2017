@@ -11,9 +11,9 @@ npm-debug.log
 Dockerfile
 docker-compose.yml
 
-logs/
-!logs/.gitkeep
+logs/*.txt
 
 report/
 doc/client
 doc/server
+prod/
