@@ -170,6 +170,11 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
  * @return {number}           Время анимации.
  */
 FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
+	if(game.paused){
+		var delay = fieldManager.queueCards(cardsInfo);
+		fieldManager.placeQueuedCards();
+		return delay;
+	}
 	var duration = 500/game.speed,
 		interval = 15/game.speed,
 		interval2 = 50/game.speed,
@@ -184,13 +189,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 
 	var trail = cardControl.trail;
 	cardControl.trailReset();
-	trail.x = hx;
-	trail.y = height/2 + offset;
 	trail.lifespan = 1000/game.speed;
-	trail.interval = 10;
-	trail.maxParticles = Math.ceil(trail.lifespan / trail.interval);
-	trail.makeParticles(skinManager.skin.trailName, [0, 1, 2, 3]);
-	background.add(trail);
 
 	var totalTime = (minTime + len*interval2 + trail.lifespan)*game.speed;
 
@@ -215,6 +214,13 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 
 	gameSeq.start(function(seq){
 		seq.append(function(){
+			trail.x = hx;
+			trail.y = height/2 + offset;
+			trail.lifespan = 1000/game.speed;
+			trail.interval = 10;
+			trail.maxParticles = Math.ceil(trail.lifespan / trail.interval);
+			trail.makeParticles(skinManager.skin.trailName, [0, 1, 2, 3]);
+			background.add(trail);
 			trail.width = trail.height = height/2 - skinManager.skin.width*1.5;
 			trail.start(false, trail.lifespan, trail.interval);
 		}, minTime - duration);

@@ -302,7 +302,7 @@ Card.prototype.destroy = function(delay, now) {
 		alphaTween = game.add.tween(this.sprite),
 		scaleTween = game.add.tween(this.sprite.scale);
 	if(cardControl.card == this)
-		cardControl.reset();
+		cardControl.reset('card destroyed');
 	delete cardManager.cards[this.id];
 	this.setDraggability(false);
 	this.setPlayability(false);
@@ -332,8 +332,10 @@ Card.prototype.destroy = function(delay, now) {
 */
 Card.prototype._destroyNow = function() {
 	if(cardControl.card == this)
-		cardControl.reset();
-	this.base.removeAll(true);
+		cardControl.reset('card destroyed');
+	this.sprite.destroy();
+	this.glow.destroy();
+	this.base.removeAll();
 	this.base.destroy();
 };
 
