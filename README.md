@@ -10,7 +10,7 @@
     * `npm i`  
 9. Установить модули для разработки: `npm run dev`  
 Это установит gulp, jsdoc и plato (об этом далее).
-5. Запустуть сервер через Node.js command prompt: `node server`    
+5. Запустить сервер через Node.js command prompt: `node server`    
 7. В браузере открыть `localhost:5000`  
 8. Должно быть так:   
 ![Test](https://i.imgur.com/U5ECBIX.png  "Test")  
