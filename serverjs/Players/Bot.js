@@ -11,7 +11,7 @@ const
 var fakeDescisionTimer = 1;
 
 class Bot extends Player{
-	constructor(randomNames){
+	constructor(randomNames, brain){
 		super();
 		this.id = 'bot_' + utils.generateId();
 		this.type = 'bot';
@@ -25,6 +25,8 @@ class Bot extends Player{
 		else{
 			this.name = this.id;
 		}
+		this.wins = 0;
+		this.brain = brain;
 	}
 
 
@@ -42,7 +44,36 @@ class Bot extends Player{
 	}
 
 	recieveValidActions(actions){
-		this.sendRandomAction(actions);
+		if(!this.brain){
+			this.sendRandomAction(actions);
+			return;
+		}
+		let game = this.game;
+		let choice;
+		let allIn = !!game.deck.length;
+		for(let i = 0; i < actions.length; i++){
+			let a = actions[i];
+			if(a.type == 'ATTACK' && game.players.defender == this){
+				choice = a;
+				break;
+			}
+			if(!choice){
+				choice = a;
+				continue;
+			}
+			if(choice.suit == game.trumpSuit && a.suit != game.trumpSuit){
+				choice = a;
+				continue;
+			}
+			if(choice.suit != game.trumpSuit && a.suit == game.trumpSuit){
+				continue;
+			}
+			if(choice.value < a.value){
+				choice = a;
+				continue;
+			}
+		}
+		setTimeout(() => {this.sendResponse(choice)}, Math.random()*fakeDescisionTimer)
 	}
 
 	recieveCompleteAction(action){

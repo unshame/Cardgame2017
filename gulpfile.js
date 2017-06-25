@@ -159,14 +159,15 @@ gulp.task('build', () => {
 gulp.task('addtags', () => {
 
 	// Добавляем библиотеки к тегам
-	let tags = addLibraryTags('', [
+	let libs = addLibraryTags('', [
 		'lib/phaser.js',
 		'lib/phaser.override.js'
 	]); 
 
 	// Создаем теги из скриптов
-	tags = includeReferenced(path.join(publicPath, '/js'), 'index', true, 'public\\');
+	let tags = includeReferenced(path.join(publicPath, '/js'), 'index', true, 'public\\');
 	tags = addLibraryTags(tags, 'js/index.js');
+	tags = libs + tags;
 
 	// Замена обратных слешей на прямые
 	tags = tags.replace(/\\/g, '/');

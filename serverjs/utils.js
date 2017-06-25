@@ -38,16 +38,16 @@ exports.log = function(){
 		if(logLine.length)
 			logLine += ' ';
 		logLine += String(arg);
-		if(stats.isInDebugMode){
+		//if(stats.isInDebugMode){
 			if(logSLine.length)
 				logSLine += ' ';
 			logSLine += '%s';
-		}
+		//}
 	}
 	logLine += "\n";
 	logStream.write(logLine);
-	if(stats.isInDebugMode){
-		let args = Array.prototype.slice.call(arguments);
+	let args = Array.prototype.slice.call(arguments);
+	if(stats.isInDebugMode || (args[0] + '').includes('ERROR')){
 		args.unshift(logSLine);
 		console.log.apply(this, args);	
 	}

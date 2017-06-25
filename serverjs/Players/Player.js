@@ -86,7 +86,7 @@ class Player{
 		}
 
 		//Функции для дебага
-		//this.sendRandomAction(actions);
+		this.sendRandomAction(actions);
 		//this.sendTakeOrSkipAction(actions);
 	}
 
@@ -141,7 +141,7 @@ class Player{
 			let action = actions[0];
 			setTimeout(() => {
 				this.sendResponse(action);
-			},1000);
+			},1);
 		}
 	}
 
