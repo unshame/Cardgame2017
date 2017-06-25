@@ -478,11 +478,11 @@ class Game{
 		//Проверка действия
 		if( !~ai ){
 			utils.log(
-				'ERROR: Invalid action 1',
+				'ERROR: Invalid action',
 				player.id,
 				incomingAction && incomingAction.type,
 				incomingAction,
-				this.validActions.length
+				this.validActions
 			);
 			return null;
 		}
