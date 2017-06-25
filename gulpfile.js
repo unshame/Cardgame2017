@@ -15,8 +15,11 @@ const reportPath = './report';
 
 // Рекурсивно заменяет строку //@include:file в контенте указанного файла
 // на контент соответствующих файлов.
+// Если указать tags, то вместо замены контента файлов, возвратит тэги со
+// ссылками на файлы для вставки в index.html (<script src=""></script>).
+// addSelf - нужно ли добавлять сам файл в теги
 // Возвращает полученную строку.
-function includeReferenced(dir, fileName){
+function includeReferenced(dir, fileName, tags, base, addSelf){
 
 	let dirPath = path.join(dir, fileName);
 	let filePath = dirPath + '.js';
@@ -33,9 +36,27 @@ function includeReferenced(dir, fileName){
 	}
 
 	if(content){
-		// Вызываем эту же функцию для каждого нахождения //@include:.*
-		content = content.replace(/^\/\/@include:(.*)$/gm, (m, p1) => {
-			return includeReferenced(dir, p1);
+		if(tags && typeof tags != 'string'){
+			tags = '';
+		}
+
+		// Добавляем текущий файл к тегам
+		if(typeof tags == 'string' && addSelf){
+			let baselessDir = dir.replace(base, '');
+			tags = addLibraryTags(tags, path.join(baselessDir, fileName + '.js'));
+		}
+
+		// Вызывает includeReferenced для каждого нахождения //@include:.*,
+		// либо для сбора тегов
+		let regex = /^\/\/@include:(.*)$/gm;
+		content = content.replace(regex, (m, p1) => {
+			if(typeof tags == 'string'){
+				tags = includeReferenced(dir, p1, tags || true, base, true);
+				return;
+			}
+			else{
+				return includeReferenced(dir, p1);
+			}
 		});
 	}
 	else{
@@ -45,32 +66,46 @@ function includeReferenced(dir, fileName){
 
 	console.log(path.join(dir, fileName + '.js'));
 
-	return content;
+	return tags || content;
 }
 
 // Заменяет код обернутый в <!-- dev --><!-- \/dev --> в devName на код из prodName в папке dir.
 // Возвращает строку после замены.
-function replaceDevCode(dir, devName, prodName){
+function replaceDevCode(dir, devName, prodName, content){
 
 	let devFile = path.join(dir, devName);
-	let prodFile = path.join(dir, prodName);
+	let prodFile = prodName ? path.join(dir, prodName) : null;
 
-	if(!fs.existsSync(devFile) || !fs.existsSync(prodFile)){
+	if(!fs.existsSync(devFile) || prodName && !fs.existsSync(prodFile)){
 		console.warn('Either file not found', devFile, prodName);
 		return '';
 	}
 
 	let devContent = fs.readFileSync(devFile, "utf8");
-	let prodContent = fs.readFileSync(prodFile, "utf8");
+	let prodContent = prodFile ? fs.readFileSync(prodFile, "utf8") : null;
 
-	if(!devContent || !prodContent){
+	if(!devContent || prodName && !prodContent){
 		console.warn('Either file empty', devFile, prodName);
 		return '';
 	}
 
 	// Замена контекнта
-	devContent = devContent.replace(/<!-- dev -->[\s\S]*<!-- \/dev -->/g, prodContent);
+	devContent = devContent.replace(/(<!-- dev -->)[\s\S]*(<!-- \/dev -->)/g, content ? '$1' + content + '\n$2' : prodContent);
 	return devContent;
+}
+
+// Добавляет html script теги к строке с адресами из массива, в конец или в начало.
+// Возвращает строку
+function addLibraryTags(tags, libs){
+	if(!(libs instanceof Array)){
+		libs = [libs];
+	}
+
+	libs.forEach(function(lib) {
+		tags += '\n<script src="' + lib + '"></script>';
+	});
+
+	return tags;
 }
 
 // Таск создания версии для heroku
@@ -118,4 +153,36 @@ gulp.task('build', () => {
 		], 
 		{ "base" : "." })
 		.pipe(gulp.dest('prod/public'));
+});
+
+// Добавляет html скрипт теги в index.html
+gulp.task('addtags', () => {
+
+	// Добавляем библиотеки к тегам
+	let tags = addLibraryTags('', [
+		'lib/phaser.js',
+		'lib/phaser.override.js'
+	]); 
+
+	// Создаем теги из скриптов
+	tags = includeReferenced(path.join(publicPath, '/js'), 'index', true, 'public\\');
+	tags = addLibraryTags(tags, 'js/index.js');
+
+	// Замена обратных слешей на прямые
+	tags = tags.replace(/\\/g, '/');
+
+	// Заменяем существующие теги в контенте index.html на новые
+	let indexContent = replaceDevCode(publicPath, 'index.html', null, tags);
+	let indexPath = path.join(publicPath, 'index.html');
+
+	// Перезаписываем index.html
+	fs.truncate(indexPath, 0, function() {
+		fs.writeFile(indexPath, indexContent, function (err) {
+			if (err) {
+				return console.log("Error writing file: " + err);
+			}
+		});
+	});
+
+	console.log(tags);
 });
