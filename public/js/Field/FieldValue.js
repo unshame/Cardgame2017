@@ -71,7 +71,7 @@ Field.prototype.setOwnHighlight = function(on, tint){
 
 /**
 * Устанавливает возможность играть карты на поле и подсветку.
-* @param {(string|boolean);} playable играбильность и тип применимого действия         
+* @param {(string|boolean)} playable играбильность и тип применимого действия         
 * @param {string} [linkedFieldId=null] связанное поле, используется `{@link CardControl#cardMoveToField}`
 */
 Field.prototype.setOwnPlayability = function(playable, linkedFieldId){

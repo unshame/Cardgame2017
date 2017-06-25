@@ -164,6 +164,11 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 	}			
 };
 
+/**
+ * Анимирует перемешивание карт, добавляя карты в колоду по окончании анимации.
+ * @param  {CardInfo[]} cardsInfo информация о картах
+ * @return {number}           Время анимации.
+ */
 FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 	var duration = 500/game.speed,
 		interval = 15/game.speed,

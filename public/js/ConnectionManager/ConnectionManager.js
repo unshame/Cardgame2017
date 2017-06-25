@@ -65,3 +65,6 @@ ConnectionManager.prototype.resetTimer = function(){
 		this.responseTimer = null;
 	}
 };
+
+//@include:clientMethods
+//@include:serverMethods

@@ -1,5 +1,21 @@
 //Entry point
 
+//@include:ActionHandler
+//@include:Card
+//@include:CardControl
+//@include:CardEmitter
+//@include:CardManager
+//@include:ConnectionManager
+//@include:Field
+//@include:FieldBuilder
+//@include:FieldManager
+//@include:Game
+//@include:Grid
+//@include:PlayerManager
+//@include:Sequencer
+//@include:SkinManager
+//@include:UI
+
 /**
 * Игра
 * @type {Game}

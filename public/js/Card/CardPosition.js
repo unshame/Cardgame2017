@@ -142,34 +142,3 @@ Card.prototype.setScale = function(scale){
 		this.glow.scale.setTo(scale, scale);
 	}
 };
-
-
-Card.prototype._revolve = function(){
-	if(!this._revolveInfo || this.mover)
-		return;
-
-	var dt = game.time.elapsed,
-		angle = this._revolveInfo.speed * dt,
-		x = this._revolveInfo.x - this.base.x,
-		y = this._revolveInfo.y - this.base.y,
-		cx = this.sprite.x,
-		cy = this.sprite.y,
-		distance = Math.sqrt(Math.pow(cx - x, 2) + Math.pow(cy - y, 2)),
-		t = angle + Math.atan2(cy - y, cx - x);
-	
-	this.sprite.x = x + distance * Math.cos(t);
-	this.sprite.y = y + distance * Math.sin(t);
-	this.sprite.rotation = t + Math.PI;
-};
-
-Card.prototype.revolveAround = function(x, y, speed){
-	this._revolveInfo = {
-		x: x,
-		y: y,
-		speed: speed
-	};
-};
-
-Card.prototype.stopRevolving = function(){
-	this._revolveInfo = null;
-};

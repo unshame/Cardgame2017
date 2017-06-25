@@ -118,3 +118,6 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 	}
 	fieldManager.tryHighlightDummy();
 };
+
+//@include:actionReactions
+//@include:notificationReactions

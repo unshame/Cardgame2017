@@ -234,3 +234,5 @@ SkinManager.prototype.setCardback = function(i){
 		}
 	}
 };
+
+//@include:skins

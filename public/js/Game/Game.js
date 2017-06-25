@@ -294,3 +294,6 @@ Game.prototype.toggleDebugMode = function(){
 
 	this.time.advancedTiming = this.inDebugMode;
 };
+
+//@include:stateBoot
+//@include:statePlay

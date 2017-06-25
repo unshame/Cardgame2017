@@ -186,3 +186,10 @@ UI.prototype.newPixel = function(){
 	pixel.endFill();
 	return pixel;
 };
+
+//@include:UILayers
+//@include:Background
+//@include:Button
+//@include:Rope
+//@include:Menu
+//@include:Cursor

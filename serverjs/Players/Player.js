@@ -156,6 +156,7 @@ class Player{
 
 	reconnect(){
 		this.connected = true;
+		this.afk = false;
 		if(this.game)
 			this.game.players.gameStateNotifyOnReconnect(this);
 	}

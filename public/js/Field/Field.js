@@ -212,6 +212,12 @@ var Field = function(options, style, iconStyle){
 		 */
 		this.circle = game.add.image(0, 0);
 		this.base.add(this.circle);
+
+		/**
+		 * BitmapData полукруглой поверхности поля.
+		 * @type {Phaser.BitmapData}
+		 * @private
+		 */
 		this._bitmapCircle = null;
 	}
 
@@ -223,6 +229,12 @@ var Field = function(options, style, iconStyle){
 	this.area.alpha = this.style.alpha;
 	this.area.visible = this.inDebugMode;
 	this.base.add(this.area);
+
+	/**
+	 * BitmapData поверхности поля.
+	 * @type {Phaser.BitmapData}
+	 * @private
+	 */
 	this._bitmapArea = null;
 
 	if(this.iconStyle.texture){

@@ -140,6 +140,12 @@ var Card = function (options) {
 	*/
 	this._flipper = null;
 
+	/**
+	 * Информация для вращения карты вокруг точки.
+	 * @type {object}
+	 * @default null
+	 * @private
+	 */
 	this._revolveInfo = null;
 
 	/**
@@ -216,6 +222,7 @@ Card.getDefaultOptions = function(){
 //@include:CardValue
 //@include:CardPosition
 //@include:CardMover
+//@include:CardRotator
 //@include:CardSkin
 //@include:CardGlow
 
