@@ -53,9 +53,11 @@ var CardManager = function(inDebugMode){
 * @param {CardInfo[]} cardsInfo информация о перемещаемых картах.
 */
 CardManager.prototype.createCards = function(cardsInfo){
-	for(var ci = 0; ci < cardsInfo.length; ci++){
-		var c = cardsInfo[ci];
+	var ids = [];
+	for(var i = 0; i < cardsInfo.length; i++){
+		var c = cardsInfo[i];
 		var card = this.cards[c.cid];
+		ids.push(c.cid);
 		if(!card){
 			var options = {
 				id: c.cid,
@@ -68,6 +70,14 @@ CardManager.prototype.createCards = function(cardsInfo){
 		else{
 			card.presetValue(c.suit, c.value);
 			card.fieldId = null;
+		}
+	}
+	for(var ci in this.cards){
+		if(!this.cards.hasOwnProperty(ci)){
+			return;
+		}
+		if(!~ids.indexOf(ci)){
+			this.cards[ci].destroy();
 		}
 	}
 };
