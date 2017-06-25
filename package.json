@@ -8,6 +8,8 @@
   "main": "server.js",
   "scripts": {
     "game": "node server --transfer",
+    "prod": "node prod/server --transfer",
+    "heroku": "cd prod && heroku local",
     "dev": "npm i && npm install plato -g && npm install jsdoc -g",
     "report": "plato -d report/client --jshint .jshintrc -t \"Durak: Client Javascript Report\" ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc -t \"Durak: Server Javascript Report\" ./serverjs/**/*.js ./server.js",
     "doc": "jsdoc -c ./doc/config.json -d ./doc/client/ -p ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ -p ./serverjs/",
