@@ -158,10 +158,10 @@ Game.prototype._updateCoordinatesDebounce = function(){
 	if(this.dimensionsUpdateTimeout){
 		clearTimeout(this.dimensionsUpdateTimeout);
 	}
-	else if(!this.shouldUpdateFast){
+	else if(!this.shouldUpdateFast && !this.inDebugMode){
 		document.getElementById('loading').style.display = 'block';
 	}
-	var timeout = this.shouldUpdateFast ? 10 : 500;
+	var timeout = (this.shouldUpdateFast || this.inDebugMode) ? 10 : 500;
 	this.dimensionsUpdateTimeout = setTimeout(this.updateCoordinates.bind(this), timeout);
 };
 

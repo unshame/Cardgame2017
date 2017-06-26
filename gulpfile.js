@@ -70,6 +70,7 @@ function includeReferenced(dir, fileName, tags, base, addSelf){
 }
 
 // Заменяет код обернутый в <!-- dev --><!-- \/dev --> в devName на код из prodName в папке dir.
+// Если не задано prodName, заменяет код на content.
 // Возвращает строку после замены.
 function replaceDevCode(dir, devName, prodName, content){
 
@@ -90,7 +91,8 @@ function replaceDevCode(dir, devName, prodName, content){
 	}
 
 	// Замена контекнта
-	devContent = devContent.replace(/(<!-- dev -->)[\s\S]*(<!-- \/dev -->)/g, content ? '$1' + content + '\n$2' : prodContent);
+	let regex = /(<!-- dev -->)[\s\S]*(<!-- \/dev -->)/g;
+	devContent = devContent.replace(regex, content ? '$1' + content + '\n$2' : prodContent);
 	return devContent;
 }
 

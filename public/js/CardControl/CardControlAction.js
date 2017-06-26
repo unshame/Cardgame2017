@@ -20,8 +20,8 @@ CardControl.prototype.cardPickup = function(card, pointer){
 
 	if(this._inertiaHistory.length)
 		this._inertiaHistory = [];
-	this.cardLastX = this.card.sprite.x;
-	this.cardLastY = this.card.sprite.y;
+	this.cardLastX = this.card.base.x + this.card.sprite.x;
+	this.cardLastY = this.card.base.y + this.card.sprite.y;
 
 	this._setCardClickTimer();
 	this.trialShouldReappend = true;
