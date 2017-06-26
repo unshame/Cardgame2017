@@ -1,5 +1,9 @@
 //Перезапись существующих функций Phaser.Game.prototype
 
+/**
+ * Создает и бутит все модули игры.
+ * Перезапись `Phaser.Game.prototype.boot`.
+ */
 Game.prototype.boot = function(){
 
     if (this.isBooted)
@@ -18,7 +22,10 @@ Game.prototype.boot = function(){
 
     this.math = Phaser.Math;
 
-    //Свой ScaleManager вместо Phaser.ScaleManager
+    /**
+     * Менеджер размера и масштаба.
+     * @type {ScaleManager}
+     */
     this.scale = new ScaleManager({
         game: this,
     	width: this._width,

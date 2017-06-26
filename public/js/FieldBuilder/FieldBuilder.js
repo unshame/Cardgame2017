@@ -42,7 +42,7 @@ var FieldBuilder = function(manager){
 	 */
 	this.minActiveSpace = 10;
 
-	this.possibleTableOrders = {	
+	this._possibleTableOrders = {	
 		1: [4, 2, 0, 1, 3, 5],		//1x6
 		2: [2, 3, 0, 1, 4, 5],		//2x3
 		3: [3, 1, 4, 2, 0, 5],		//3x2

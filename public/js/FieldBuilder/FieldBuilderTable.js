@@ -68,7 +68,7 @@ FieldBuilder.prototype._calcSpecTableSizes = function(){
 	this.positions.dummy.y = y;
 	this.dimensions.dummy.height = height * mult + game.scale.cellHeight * (mult-1);
 	
-	this.tableOrder = this.possibleTableOrders[inRow];
+	this.tableOrder = this._possibleTableOrders[inRow];
 
 	for(var i = 0; i < total; i++){
 		if(ti === 0){

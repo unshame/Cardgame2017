@@ -255,6 +255,11 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 	this.game.screenHeight = screenHeight;
 };
 
+/**
+ * Расчитывает размеры сетки.
+ * @param  {number} screenWidth  ширина игры
+ * @param  {number} screenHeight высота игры
+ */
 ScaleManager.prototype._calculateGridSize = function(screenWidth, screenHeight){
 	var width = this.cellWidth,
 		height = this.cellHeight;

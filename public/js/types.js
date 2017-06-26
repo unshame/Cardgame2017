@@ -26,6 +26,24 @@ window.BRING_TO_TOP_ON = {
 };
 
 
+//EXTERNALS
+
+/**
+* HTML5 2D WebGL graphics library with canvas fallback. Используется {@link external:Phaser|Phaser'ом} для рендеринга.   
+* @external PIXI
+* @version 2.2.9
+* @see {@link https://phaser.io/docs/2.6.2/PIXI.html}
+* @see {@link http://www.pixijs.com/}
+*/
+
+/**
+* HTML5 game framework. Использует {@link external:PIXI|PIXI} для рендеринга.   
+* ![Phaser](https://camo.githubusercontent.com/41b3f653a9ad25ca565c9c4bcfcc13b6d778e329/687474703a2f2f7068617365722e696f2f696d616765732f6769746875622f6172636164652d6361622e706e67)
+* @external Phaser
+* @version 2.6.2
+* @see {@link https://phaser.io/docs/2.6.2/index}
+*/
+
 //TYPE DEFS
 
 /**

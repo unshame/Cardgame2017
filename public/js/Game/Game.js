@@ -1,14 +1,48 @@
 /**
 * Модуль, работающий с движком игры и инициализирующий все остальные модули
+* @param {number} [speed=1] скорость игры
+* @param {number} [inDebugMode=false] находится ли игры в дебаг режиме
 * @class
+* @extends {Phaser.Game}
+* @listens document.resize
+* @listens document.orientationchange
+* @listens document.visibilitychange
+* @see {@link http://phaser.io/docs/2.6.2/Phaser.Game.html}
 */
 
 var Game = function(speed, inDebugMode){
 
+	/**
+	 * Скорость игры.
+	 * @type {number}
+	 * @default 1
+	 */
 	this.speed = speed || 1;
+
+	/**
+	 * Находится ли игры в дебаг режиме.
+	 * @type {boolean}
+	 * @default false
+	 */
 	this.inDebugMode = inDebugMode || false;
+
+	/**
+	 * Инициализирована ли игра.
+	 * @type {Boolean}
+	 */
 	this.initialized = false;
+
+	/**
+	 * Была ли игра остановлена из-за потери видимости окна.
+	 * @type {Boolean}
+	 */
 	this.pausedByViewChange = false;
+
+	/**
+	 * Длительность перемещения карт по-умолчанию.
+	 * @type {Number}
+	 * @default 300
+	 */
 	this.defaultMoveTime = 300;
 
 	/**
@@ -18,31 +52,36 @@ var Game = function(speed, inDebugMode){
 	 */
 	this.isRawLandscape = true;
 
+	/**
+	 * Менеджер последовательностей игровых анимаций.
+	 * @type {Sequencer}
+	 * @global
+	 */
 	window.gameSeq = new Sequencer();
 
 	/**
-	* Обработчик действий сервера
+	* Обработчик действий сервера.
 	* @type {ActionHandler}
 	* @global
 	*/
 	window.actionHandler = new ActionHandler(window.reactions);
 
 	/**
-	* Менеджер игроков
+	* Менеджер игроков.
 	* @type {PlayerManager}
 	* @global
 	*/
 	window.playerManager = new PlayerManager();
 
 	/**
-	* Менеджер интерфейса
+	* Менеджер интерфейса.
 	* @type {UI}
 	* @global
 	*/
 	window.ui = new UI();
 
 	/**
-	* Менеджер скинов
+	* Менеджер скинов.
 	* @type {SkinManager}
 	* @global
 	*/
@@ -51,21 +90,6 @@ var Game = function(speed, inDebugMode){
 	window.addEventListener('resize', this._updateCoordinatesDebounce.bind(this));
 	window.addEventListener('orientationchange', this._updateCoordinatesDebounce.bind(this));
 
-	/**
-	* HTML5 2D WebGL graphics library with canvas fallback. Используется {@link external:Phaser|Phaser'ом} для рендеринга.   
-	* @external PIXI
-	* @version 2.2.9
-	* @see {@link https://phaser.io/docs/2.6.2/PIXI.html}
-	* @see {@link http://www.pixijs.com/}
-	*/
-	
-	/**
-	* HTML5 game framework. Использует {@link external:PIXI|PIXI} для рендеринга.   
-	* ![Phaser](https://camo.githubusercontent.com/41b3f653a9ad25ca565c9c4bcfcc13b6d778e329/687474703a2f2f7068617365722e696f2f696d616765732f6769746875622f6172636164652d6361622e706e67)
-	* @external Phaser
-	* @version 2.6.2
-	* @see {@link https://phaser.io/docs/2.6.2/index}
-	*/
 	Phaser.Game.call(
 		this,
 		this.screenWidth,
@@ -74,12 +98,18 @@ var Game = function(speed, inDebugMode){
 		'cardgame'
 	);
 
+	this._dimensionsUpdateTimeout = null;
+	this._pauseTimeout = null;
+	this._hiddenValue = null;
+
 };
 
 Game.prototype = Object.create(Phaser.Game.prototype);
 Game.prototype.constructor = Game;
 
-//Инициализация игры
+/**
+ * Инициализирет игру.
+ */
 Game.prototype.initialize = function(){
 	this.onPause.add(function(){
 		if(this.inDebugMode)
@@ -144,28 +174,37 @@ Game.prototype.initialize = function(){
 	this.initialized = true;
 };
 
-//Выполняется по окончании дебаунса изменения размера экрана
+/**
+ * Корректирует размеры игры в соответствии с размером окна.
+ */
 Game.prototype.updateCoordinates = function(){
 	this.shouldUpdateFast = false;
 	this.scale.updateGameSize();
 	var state = this.state.getCurrentState();
 	state.postResize();
-	this.dimensionsUpdateTimeout = null;
+	this._dimensionsUpdateTimeout = null;
 };
 
-//Выполняется при изменении размера экрана
+/**
+ * Запускает дебаунс корректировки размеров игры.
+ * @private
+ */
 Game.prototype._updateCoordinatesDebounce = function(){
-	if(this.dimensionsUpdateTimeout){
-		clearTimeout(this.dimensionsUpdateTimeout);
+	if(this._dimensionsUpdateTimeout){
+		clearTimeout(this._dimensionsUpdateTimeout);
 	}
 	else if(!this.shouldUpdateFast && !this.inDebugMode){
 		document.getElementById('loading').style.display = 'block';
 	}
 	var timeout = (this.shouldUpdateFast || this.inDebugMode) ? 10 : 500;
-	this.dimensionsUpdateTimeout = setTimeout(this.updateCoordinates.bind(this), timeout);
+	this._dimensionsUpdateTimeout = setTimeout(this.updateCoordinates.bind(this), timeout);
 };
 
-//Выполняется, когда вкладка переходит на задний/передний план
+/**
+ * Ставит и снимает игру с паузы в зависимости от видимости окна,
+ * корректирует элементы игры после снятия паузы.
+ * @private
+ */
 Game.prototype._visibilityChangeListener = function(){
 
 	function correct(){
@@ -182,16 +221,16 @@ Game.prototype._visibilityChangeListener = function(){
 			console.log('Game: paused by visibility change');
 	}
 
-	if (!document[this.hiddenValue]) {
+	if (!document[this._hiddenValue]) {
 
 		//Снимаем игру с паузы
 		this.paused = false;
 		this.pausedByViewChange = false;
 		if(this.inDebugMode)
 			console.log('Game: unpaused by visibility change');
-		if(this.pauseTimeout){
-			clearTimeout(this.pauseTimeout);
-			this.pauseTimeout = null;
+		if(this._pauseTimeout){
+			clearTimeout(this._pauseTimeout);
+			this._pauseTimeout = null;
 		}
 
 		//Ждем секунду, прежде чем откорректировать элементы игры, которые могли оказаться в неправильном положении
@@ -200,27 +239,30 @@ Game.prototype._visibilityChangeListener = function(){
 	}
 	else{
 		//Устанавливаем таймаут, после которого игра ставится на паузу
-		this.pauseTimeout = setTimeout(pause.bind(this), 10000);
+		this._pauseTimeout = setTimeout(pause.bind(this), 10000);
 	}
 };
 
-//Добавляет листенер изменения видимости вкладки в зависимости от браузера
+/**
+ * Добавляет листенер изменения видимости вкладки в зависимости от браузера.
+ * @private
+ */
 Game.prototype._addVisibilityChangeListener = function(){
 	var visibilityChange; 
 	if (typeof document.hidden !== "undefined") {
-		this.hiddenValue = "hidden";
+		this._hiddenValue = "hidden";
 		visibilityChange = "visibilitychange";
 	} else if (typeof document.msHidden !== "undefined") {
-		this.hiddenValue = "msHidden";
+		this._hiddenValue = "msHidden";
 		visibilityChange = "msvisibilitychange";
 	} else if (typeof document.webkitHidden !== "undefined") {
-		this.hiddenValue = "webkitHidden";
+		this._hiddenValue = "webkitHidden";
 		visibilityChange = "webkitvisibilitychange";
 	}
 	document.addEventListener(visibilityChange, this._visibilityChangeListener.bind(this), false);
 };
 
-//Переключение дебага
+/** Переключает дебаг всех элементов игры. */
 Game.prototype.toggleDebugMode = function(){
 
 	this.inDebugMode = !this.inDebugMode;
