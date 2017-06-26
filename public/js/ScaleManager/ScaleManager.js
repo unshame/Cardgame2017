@@ -35,6 +35,7 @@ var ScaleManager = function(options){
 	this._minRowsLandscape = this.options.minRowsLandscape;
 	this._minColsPortrait = this.options.minColsPortrait;
 	this._minRowsPortrait = this.options.minRowsPortrait;
+	this._cellRelationThreshold = this.options.cellRelationThreshold;
 
 	/**
 	* Сколько клеток умещается в карте по одной оси.
@@ -148,7 +149,8 @@ ScaleManager.getDefaultOptions = function(){
 		minColsLandscape:  28,
 		minRowsLandscape: 18,
 		minColsPortrait: 20,
-		minRowsPortrait: 23
+		minRowsPortrait: 23,
+		cellRelationThreshold: 2.5
 	};
 	return options;
 };
@@ -160,24 +162,30 @@ ScaleManager.getDefaultOptions = function(){
 ScaleManager.prototype.updateGameSize = function(){
 	this._calculateScreenSize();
 	this.setGameSize(this.game.screenWidth, this.game.screenHeight);
-	this._drawGrid();
+	this._drawDebugGrid();
 };
 
 /**
  * Расчитывает размеры игры.
  * @private
  */
-ScaleManager.prototype._calculateScreenSize = function(){
+ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 	this.cellWidth = Math.round(skinManager.skin.width/this.density);
 	this.cellHeight = Math.round(skinManager.skin.height/this.density);
 
 	var width = window.innerWidth/window.devicePixelRatio,
 		height = window.innerHeight/window.devicePixelRatio,
+		widthRel = width/height,
 		minWidth, minHeight;
 
-	if(width > height){
-		minWidth = this._minColsLandscape*this.cellWidth;
-		minHeight = this._minRowsLandscape*this.cellHeight;
+	if(widthRel >= 1){
+		if(reduceMinHeight){
+			minHeight = (this._minRowsLandscape - 2)*this.cellHeight;
+		}
+		else{
+			minHeight = this._minRowsLandscape*this.cellHeight;
+		}
+		minWidth = this._minColsLandscape*this.cellWidth
 		this.game.isRawLandscape = true;
 	}
 	else{
@@ -198,11 +206,31 @@ ScaleManager.prototype._calculateScreenSize = function(){
 		multWidth = width/minWidth,
 		multHeight = height/minHeight;
 
+	var screenWidth = Math.max(width, minWidth);
+	var screenHeight = Math.max(height, minHeight);
+	
+	if(diffWidth > 0){
+		screenHeight /= multWidth;
+	}
+	if(diffHeight > 0){
+		screenWidth /= multHeight;
+	}
+
+	this._calculateGridSize(screenWidth, screenHeight);
+
+	var cellRelation = this.numCols/this.numRows;
+
+	if(!reduceMinHeight && cellRelation >= this._cellRelationThreshold){
+		this._calculateScreenSize(true);
+		return;
+	}
 
 	if(this.inDebugMode){
+		console.log('====== Screensize =======');
 		console.log(
 			'width:', width,
-			'height:', height
+			'height:', height,
+			'relation:', widthRel
 		);
 		console.log(
 			'diffWidth:', diffWidth,
@@ -212,55 +240,34 @@ ScaleManager.prototype._calculateScreenSize = function(){
 			'multWidth:', multWidth,
 			'multHeight:', multHeight
 		);
+		console.log('====== Gridsize ======');		
+		console.log(
+			'numCols:', this.numCols,
+			'numRows:', this.numRows 
+		);
+		console.log(
+			'cell:', this.cellWidth, 'x', this.cellHeight
+		);
+		console.log('cell relation:', cellRelation, this._cellRelationThreshold);
 	}
-	this.game.screenWidth = Math.max(width, minWidth);
-	this.game.screenHeight = Math.max(height, minHeight);
-	if(diffWidth > 0){
-		this.game.screenHeight /= multWidth;
-	}
-	if(diffHeight > 0){
-		this.game.screenWidth /= multHeight;
-	}
+
+	this.game.screenWidth = screenWidth;
+	this.game.screenHeight = screenHeight;
 };
 
-/**
-* Расчитывает размеры сетки. Рисует сетку, если `{@link ScaleManager#inDebugMode}`.
- * @private
-*/
-ScaleManager.prototype._drawGrid = function(){
-
-	if(this._border){
-		this._border.destroy();
-		this._border = null;
-	}
-	if(this._debugGrid){
-		this._debugGrid.destroy();
-		this._debugGrid = null;
-	}
-	if(this._highlights){
-		this._highlights.destroy(true);
-		this._highlights = null;
-	}
-
-	var screenWidth = this.game.screenWidth,
-		screenHeight = this.game.screenHeight,
-		width = this.cellWidth,
+ScaleManager.prototype._calculateGridSize = function(screenWidth, screenHeight){
+	var width = this.cellWidth,
 		height = this.cellHeight;
 	
 	var offset = this.gridOffset = {
 		x: Math.round(screenWidth%width/2),
 		y: Math.round(screenHeight%height)
 	};
-
 	this.numCols = Math.floor(screenWidth/width);
 	this.numRows = Math.floor(screenHeight/height);
 	this.gridWidth = screenWidth - offset.x*2;
 	this.gridHeight = screenHeight - offset.y*2;
-
-	if(this.inDebugMode){
-		this._draw_debugGrid(offset, width, height);
-	}
-};
+}
 
 /**
 * Возвращает координаты ячейки.
@@ -354,7 +361,7 @@ ScaleManager.prototype.cellAt = function(col, row, offsetX, offsetY, align){
 */
 ScaleManager.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
-	this._drawGrid();
+	this._drawDebugGrid();
 };
 
 /**
@@ -364,19 +371,39 @@ ScaleManager.prototype.toggleDebugMode = function(){
 * @param  {number} width  ширина
 * @param  {number} height высота
 */
-ScaleManager.prototype._draw_debugGrid = function(offset, width, height){
+ScaleManager.prototype._drawDebugGrid = function(){
 	if(!this.game.initialized)
 		return;
 
+	if(this._border){
+		this._border.destroy();
+		this._border = null;
+	}
+	if(this._debugGrid){
+		this._debugGrid.destroy();
+		this._debugGrid = null;
+	}
+	if(this._highlights){
+		this._highlights.destroy(true);
+		this._highlights = null;
+	}
+
+	if(!this.inDebugMode)
+		return;
+
+	var offset = this.gridOffset,
+		width = this.cellWidth,
+		height = this.cellHeight;
+
 	var screenWidth = this.game.screenWidth,
 		screenHeight = this.game.screenHeight,
-		_debugGrid = this.game.make.graphics(0, 0),
+		debugGrid = this.game.make.graphics(0, 0),
 		thickness = this._thickness;
 
-	//_debugGrid.lineStyle(thickness, 0x2BC41D, 1);
-	_debugGrid.lineStyle(thickness, 0xffffff, 1);
-	_debugGrid.drawRect(0, 0, width-thickness, height-thickness);
-	this._gridTexture = _debugGrid.generateTexture();
+	//debugGrid.lineStyle(thickness, 0x2BC41D, 1);
+	debugGrid.lineStyle(thickness, 0xffffff, 1);
+	debugGrid.drawRect(0, 0, width-thickness, height-thickness);
+	this._gridTexture = debugGrid.generateTexture();
 	this._debugGrid = this.game.add.tileSprite(0, 0, screenWidth, screenHeight, this._gridTexture);
 	this._debugGrid.alpha = 0.3;
 
@@ -390,19 +417,19 @@ ScaleManager.prototype._draw_debugGrid = function(offset, width, height){
 		color = 0x000000,
 		alpha = 1;
 	
-	var _border = this._border = this.game.add.graphics(0, 0);
-	_border.lineStyle(y, color, alpha);
-	_border.moveTo(0, y/2 - thickness/2);
-	_border.lineTo(screenWidth, y/2 - thickness/2);
-	_border.lineStyle(x, color, alpha);
-	_border.moveTo(screenWidth - x/2 + thickness/2, 0);
-	_border.lineTo(screenWidth - x/2 + thickness/2, screenHeight);
-	//_border.lineStyle(y, color, alpha);
-	//_border.moveTo(screenWidth, screenHeight - y/2 + thickness/2);
-	//_border.lineTo(0,screenHeight - y/2 + thickness/2);
-	_border.lineStyle(x, color, alpha);
-	_border.moveTo(x/2 - thickness/2, screenHeight);
-	_border.lineTo(x/2 - thickness/2,0);
+	var border = this._border = this.game.add.graphics(0, 0);
+	border.lineStyle(y, color, alpha);
+	border.moveTo(0, y/2 - thickness/2);
+	border.lineTo(screenWidth, y/2 - thickness/2);
+	border.lineStyle(x, color, alpha);
+	border.moveTo(screenWidth - x/2 + thickness/2, 0);
+	border.lineTo(screenWidth - x/2 + thickness/2, screenHeight);
+	//border.lineStyle(y, color, alpha);
+	//border.moveTo(screenWidth, screenHeight - y/2 + thickness/2);
+	//border.lineTo(0,screenHeight - y/2 + thickness/2);
+	border.lineStyle(x, color, alpha);
+	border.moveTo(x/2 - thickness/2, screenHeight);
+	border.lineTo(x/2 - thickness/2,0);
 
 	background.add(this._debugGrid);
 	background.add(this._border);
