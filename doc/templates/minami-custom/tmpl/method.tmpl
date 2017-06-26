@@ -50,6 +50,12 @@ var self = this;
     <?js= this.partial('params.tmpl', params) ?>
 <?js } ?>
 
+<?js if (data.augments && data.augments.length) { ?>
+    <h5>Extends</h3>
+
+    <?js= self.partial('augments.tmpl', data) ?>
+<?js } ?>
+
 <?js if (data.kind !== 'module' && data.requires && data.requires.length) { ?>
 <h5>Requires:</h5>
 <ul><?js data.requires.forEach(function(r) { ?>
