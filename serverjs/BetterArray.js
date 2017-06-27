@@ -1,17 +1,10 @@
-/**
- * @module
- * @description {@link BetterArray}
- */
+'use strict';
 
-/**
- * Массив с дополнительными методами.
- * @alias BetterArray
- * @extends {Array}
- */
 class BetterArray extends Array{
 
 	/**
-	 * Создает массив
+ 	 * Массив с дополнительными методами.
+ 	 * @extends {Array}
 	 * @param  {...any} [arg] элементы массива
 	 */
 	constructor(...arg){
@@ -81,4 +74,8 @@ class BetterArray extends Array{
 
 }
 
+/**
+ * {@link BetterArray}
+ * @module
+ */
 module.exports = BetterArray;

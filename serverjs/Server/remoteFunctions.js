@@ -1,7 +1,19 @@
+/**
+ * @module
+ */
+
+/**
+ * Создает функции для вызова клиентами.
+ * @param  {Server} server сервер, которые вызвается клиентами
+ * @return {object<function>}        Копии функций, описанных ниже.
+ */
 module.exports = function(server){
 	return {
 
-		//Принимает выполненое действие от клиента
+		/**
+		 * Принимает выполненое действие от клиента
+		 * @param  {object} action действие
+		 */
 		recieveCompleteAction: function(action){
 			if(!action)
 				return;
@@ -9,13 +21,18 @@ module.exports = function(server){
 			player && player.sendResponse(action);
 		},
 
-		//Принимает пустой ответ от клиента
+		/**
+		 * Принимает пустой ответ от клиента
+		 */
 		recieveResponse: function(){
 			let player = server.players[this.connection.id];
 			player && player.sendResponse();
 		},
 
-		//Переподключает клиента к существующему экземпляру игрока
+		/**
+		 * Переподключает клиента к существующему экземпляру игрока
+		 * @param  {string} connId старый id клиента
+		 */
 		reconnectClient: function(connId){
 			var newConnId = this.connection.id;
 			let player = server.players[connId];
@@ -36,16 +53,20 @@ module.exports = function(server){
 			}
 		},
 
-		//Финализация переподключения игрока
-		//Запрашивает полную информацию об игре от игры и разрешает экземпляру
-		//игрока передавать информацию от игры клиенту
+		/**
+		 * Финализация переподключения игрока.
+		 * Запрашивает полную информацию об игре от игры и разрешает экземпляру
+		 * игрока передавать информацию от игры клиенту.
+		 */
 		requestGameInfo: function(){
 			let player = server.players[this.connection.id];
 			if(player)
 				player.reconnect();
 		},
 
-		//Добавляет игрока в очередь
+		/**
+		 * Добавляет игрока в очередь
+		 */
 		queueUp: function(){
 			let player = server.players[this.connection.id];
 			if(player){

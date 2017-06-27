@@ -64,7 +64,58 @@ skinName: `modern`, `classic`, `familiar`, `abstract`, `uno`.
 
 ### Документация  
 `npm run doc` генерирует документацию из комментариев в папке doc при помощи [JSDoc](http://usejsdoc.org/).
-Тестовая версия загружена на [durak.herokuapp.com/doc/client/](https://durak.herokuapp.com/doc/client/).
+Тестовая версия загружена на [durak.herokuapp.com/doc/client/](https://durak.herokuapp.com/doc/client/).  
+Шаблон документации классов на сервере:  
+
+    'use strict';
+
+    class Example extends OtherClass{
+    
+    	/**
+     	 * Описание класса.
+     	 * @extends {OtherClass}
+    	 * @param  {type} param
+    	 */
+    	constructor(param){
+    		super();
+    
+    		/**
+    		 * Описание свойства
+    		 * @type {type}
+    		 */
+    		this.param = param
+    	}
+
+
+    	/**
+    	 * Описание getterSetter.
+    	 * @type {type}
+    	 */
+    	get getterSetter(){
+
+    	}
+    	set getterSetter(value){
+
+    	}
+
+    	/**
+    	 * Описание readOnlyParam.
+    	 * @type {type}
+    	 * @readonly
+    	 */
+    	get readOnlyParam(){
+
+    	}
+    }
+
+    /**
+     * {@link Example}
+     * @module
+     */    
+    module.exports = Example;
+
+
+`@module` ставится внизу, чтобы заставить генератор добавить файл в список модулей, но не представлять класс, как свойство модуля (класс это и есть модуль).
 
 ### Валидация кода  
 `npm run report` создает отчеты по коду в папке report при помощи [plato](https://github.com/es-analysis/plato). Там можно посмотреть ошибки линтинга и сложность кода.  

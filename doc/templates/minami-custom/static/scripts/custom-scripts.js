@@ -44,7 +44,7 @@ $(function () {
 
 	//Заменяем слеши в классе
 	if(className){
-		className = className.replace('/','_');
+		className = className.replace(/\//g,'_');
 	}
 	if(className == 'Global'){
 		className = 'global';
@@ -54,7 +54,7 @@ $(function () {
 	//Заменяем слеши в классах элементов боковой панели
 	$('.nav-item').each(function(i){
 		var c = $(this).attr('class')
-		$(this).attr('class', c.replace('/', '_'));
+		$(this).attr('class', c.replace(/\//g, '_'));
 	})
 
 	//Показываем элементы боковой панели, относящиеся к текущему классу или global

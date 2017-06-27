@@ -28,3 +28,13 @@ let server = new Server({allow:[
 }, process.argv.slice(2));
 
 server.start();
+
+
+/**
+* Информация о карте.
+* @typedef {object} CardInfo
+* @property {string} cid id карты
+* @property {string} field id поля
+* @property {number} suit масть карты
+* @property {number} value значение карты
+*/
