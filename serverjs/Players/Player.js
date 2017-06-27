@@ -105,15 +105,11 @@ class Player{
 	recieveNotification(note, actions){
 		if(this.remote && this.connected)
 			this.remote.recieveNotification(note, actions);
-		else if(!this.connected)
-			this.sendInstantResponse();
 	}
 
 	handleLateness(){
 		if(this.remote && this.connected)
 			this.remote.handleLateness();
-		else if(!this.connected)
-			this.sendInstantResponse();
 	}
 
 	sendResponse(action){
