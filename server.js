@@ -5,7 +5,7 @@
 'use strict';
 
 /**
- * Враппер для require, всегда запрашивает модуль из папки /serverjs/
+ * Враппер для require, всегда запрашивает модуль из папки /serverjs/. 
  * @global
  * @param  {string} name Имя модуля в serverjs (Module) или путь к модулю там же (Folder/Subfolder.../Module).
  * @return {object}      Модуль.

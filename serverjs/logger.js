@@ -51,7 +51,7 @@ function getTimeStamp(full){
 }
 
 /**
- * Возвращает новый winston логгер.
+ * Создает новый winston логгер.
  * @param  {object} callingModule    `module` объект модуля, вызывающего эту функцию
  * @param  {string} [id]             id нового логгера
  * @param  {string} [level='notice'] уровень сообщений консоли

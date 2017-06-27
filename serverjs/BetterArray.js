@@ -1,5 +1,6 @@
 /**
  * @module
+ * @description {@link BetterArray}
  */
 
 /**
