@@ -1,17 +1,45 @@
-const winston = require('winston'),
-	path = require('path');
+/**
+ * @module
+ */
 
-let dirname = __dirname.split('\\');
-dirname.pop();
-dirname = dirname.join('\\');
+'use strict';
 
-function leadWithZeros(num, zeros){
-	zeros = zeros || 2;
-	return (Array(zeros).join("0") + num).slice(-zeros);
-}
+const winston = require('winston');
 
+/** 
+ * находится ли программа в режиме релиза
+ * @type {boolean}
+ */
 const inProd = process.env.PROD;
 
+/**
+ * Уровни логгера.
+ * @type {Object}
+ */
+let levels = {error: 0, warn: 1, notice: 2, info: 3, debug: 4};
+
+/**
+ * Цвета уровней логгера.
+ * @type {Object}
+ */
+let colors = {error: 'red', warn: 'yellow', notice: 'cyan', info: 'green', debug: 'magenta'};
+
+/**
+ * Добавляет нули перед числом до указанного кол-ва.
+ * @param  {number} num     число
+ * @param  {number} [len=2] желаемая длина строки длина
+ * @return {string}         Число в виде строки с желаемой длиной.
+ */
+function leadWithZeros(num, len){
+	len = len || 2;
+	return (Array(len).join("0") + num).slice(-len);
+}
+
+/**
+ * Форматирует текущее время.
+ * @param  {boolean} [full] нужно ли добавляеть дату или только время
+ * @return {string}      	Дата в формате `[DD-MM-YYYYt]HH:MM:SS:MMMM`.
+ */
 function getTimeStamp(full){
 	const d = new Date();
 	let date = leadWithZeros(d.getHours()) + ':' + leadWithZeros(d.getMinutes()) + ':' +
@@ -22,12 +50,16 @@ function getTimeStamp(full){
 	return date;
 }
 
-let levels = {error: 0, warn: 1, notice: 2, info: 3, debug: 4};
-let colors = {error: 'red', warn: 'yellow', notice: 'cyan', info: 'green', debug: 'magenta'};
-
+/**
+ * Возвращает новый winston логгер.
+ * @param  {object} callingModule    `module` объект модуля, вызывающего эту функцию
+ * @param  {string} [id]             id нового логгера
+ * @param  {string} [level='notice'] уровень сообщений консоли
+ * @return {winston.Logger}       	 Новый логгер.
+ */
 module.exports = function(callingModule, id, level) {
 	let name = callingModule.filename.split('\\').pop().replace('.js', '');
-	let filename = path.join(dirname, '/logs/' + name + (id ? '#' + id : '') + '-' + (getTimeStamp(true).replace(/[:-]/g,'')) + '.log');
+	let filename = './logs/' + name + (id ? '#' + id : '') + '-' + (getTimeStamp(true).replace(/[:-]/g,'')) + '.log';
 	let transports = [
 		new winston.transports.Console(
 		{	

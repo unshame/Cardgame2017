@@ -1,15 +1,27 @@
-/*
- * Массив с дополнительными методами
+/**
+ * @module
  */
 
+/**
+ * Массив с дополнительными методами.
+ * @alias BetterArray
+ * @extends {Array}
+ */
 class BetterArray extends Array{
+
+	/**
+	 * Создает массив
+	 * @param  {...any} [arg] элементы массива
+	 */
 	constructor(...arg){
 		super(...arg);
 	}
 
 	static get [Symbol.species]() { return Array; }
 
-	//Перемешивает массив
+	/**
+	 * Перемешивает массив (Fisher–Yates Shuffle).
+	 */
 	shuffle(){
 		let currentIndex = this.length,
 			temporaryValue,
@@ -29,6 +41,10 @@ class BetterArray extends Array{
 		}
 	}
 
+	/**
+	 * Перемешивает определенное свойство объектов массива (Fisher–Yates Shuffle).
+	 * @param  {string} key свойство
+	 */
 	shuffleKey(key){
 		let currentIndex = this.length,
 			temporaryValue,
@@ -45,8 +61,13 @@ class BetterArray extends Array{
 		}
 	}
 
-	//Возвращает объект по значениям переданного ключа
-	//Пропускает элементы без заданных ключей и с пустыми ключами
+	/**
+	 * Создает объект по значениям переданного ключа.  
+	 * `[{key: 'key1'}, {key: 'key2'}]` => `{key1: {key: 'key1'}, key2: {key: 'key2'}} `  
+	 * Пропускает элементы без заданных ключей и с пустыми ключами
+	 * @param  {string} key свойство
+	 * @return {object<any>} Объект по значениям ключа. 
+	 */
 	byKey(key){
 		let obj = {};
 		this.forEach((v) => {

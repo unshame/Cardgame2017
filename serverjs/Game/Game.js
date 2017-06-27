@@ -11,15 +11,15 @@
 'use strict';
 
 const 
-	generateId = require('../generateId'),
-	Bot = require('../Players/Bot'),
-	GameCards = require('./GameCards'),
-	GamePlayers = require('./GamePlayers'),
-	GameStates = require('./GameStates'),
-	GameTurnStages = require('./GameTurnStages'),
-	GameReactions = require('./GameReactions'),
-	GameDirectives = require('./GameDirectives'),
-	Log = require('../logger');
+	generateId = requirejs('generateId'),
+	Bot = requirejs('Players/Bot'),
+	GameCards = requirejs('Game/GameCards'),
+	GamePlayers = requirejs('Game/GamePlayers'),
+	GameStates = requirejs('Game/GameStates'),
+	GameTurnStages = requirejs('Game/GameTurnStages'),
+	GameReactions = requirejs('Game/GameReactions'),
+	GameDirectives = requirejs('Game/GameDirectives'),
+	Log = requirejs('logger');
 
 class Game{
 	constructor(players, canTransfer, debugMode){

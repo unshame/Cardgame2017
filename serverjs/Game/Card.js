@@ -1,4 +1,4 @@
-const generateId = require('../generateId');
+const generateId = requirejs('generateId');
 
 class Card{
 	constructor(suit, value, field){

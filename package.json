@@ -12,7 +12,7 @@
     "heroku": "cd prod && heroku local",
     "dev": "npm i --only=dev && npm install plato -g && npm install jsdoc -g && npm install gulp-cli -g",
     "report": "plato -d report/client --jshint .jshintrc -t \"Durak: Client Javascript Report\" ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc -t \"Durak: Server Javascript Report\" ./serverjs/**/*.js ./server.js",
-    "doc": "jsdoc -c ./doc/config.json -d ./doc/client/ -p ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ -p ./serverjs/",
+    "doc": "jsdoc -c ./doc/config.json -d ./doc/client/ -p ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ -p ./serverjs/ ./server.js",
     "docpublic": "jsdoc -c ./doc/config.json -d ./doc/client/ ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ ./serverjs/"
   },
   "dependencies": {

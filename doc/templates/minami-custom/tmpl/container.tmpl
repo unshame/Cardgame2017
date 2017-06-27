@@ -131,7 +131,8 @@
 
         <div class="subsection-links">
             <?js members.forEach(function(p) { ?>
-                <?js= self.partial('list.tmpl', p) ?>
+                 <?js= self.partial('list.tmpl', p) ?>
+
             <?js }); ?>
         </div>
 
@@ -147,14 +148,18 @@
         <h3 class="subsection-title" id="methods">Methods</h3>
 
         <div class="subsection-links">        
-            <?js methods.forEach(function(p) { ?>
+            <?js methods.forEach(function(p) {
+                if (!p.name.includes('module:')) { 
+            ?>
                 <?js= self.partial('list.tmpl', p) ?>
-            <?js }); ?>
+            <?js }}); ?>
         </div>
 
-        <?js methods.forEach(function(m) { ?>
+        <?js methods.forEach(function(m) { 
+                if (!m.name.includes('module:')) { 
+        ?>
             <?js= self.partial('method.tmpl', m) ?>
-        <?js }); ?>
+        <?js }}); ?>
     <?js } ?>
 
     <?js

@@ -34,13 +34,39 @@ $(function () {
 
 	var title = $('.page-title');
 	var className = title.attr('id');
-	if(className == 'Global')
+
+	//Заменяем слеши в классе
+	if(className){
+		className = className.replace('/','_');
+	}
+	if(className == 'Global'){
 		className = 'global';
-	var container = $('body>nav');
+	}
+	var container = $('body>nav');	
+
+	//Заменяем слеши в классах элементов боковой панели
+	$('.nav-item').each(function(i){
+		var c = $(this).attr('class')
+		$(this).attr('class', c.replace('/', '_'));
+	})
 
 	//Показываем элементы боковой панели, относящиеся к текущему классу или global
 	if(className){
 	  $('.nav-item.' + className).show();
+	}
+
+	function tryLink(className, hash, prefix){
+		if(!prefix){
+			prefix = '';
+		}
+		var link = className + '.html#' + hash;
+		var query1 = 'body>nav a[href="' + prefix + link + '"]';
+		var query2 = 'body>nav a[href="' + prefix + className + '.html"]';
+		var target = $(query1);
+		if(!target.size()){
+			target = $(query2);
+		}
+		return target;
 	}
 
 	//Находит и подсвечивает элемент в боковой панели в соответствии с текущим хэшем 
@@ -49,15 +75,15 @@ $(function () {
 			return;
 		}
 		var link = className + '.html#' + hash;
-		var target = $('body>nav a[href="' + link + '"]');
+		var target = tryLink(className, hash);
 		if(!target.size()){
-			target = $('body>nav a[href="' + className + '.html"]');
+			target = tryLink(className, hash, 'external-');
 		}
 		if(!target.size()){
-			target = $('body>nav a[href="external-' + className + '.html"]');
+			target = tryLink(className, hash, 'module-');
 		}
 		if(!target.size()){
-			target = $('body>nav a[href="global.html#' + hash + '"]');
+			target = tryLink(hash, '', 'global.html#');
 		}
 		if(target.size())
 			highlight(container, target, shouldScroll);

@@ -712,6 +712,9 @@ dl.param-type {
 article>div{
   padding-left: 20px;
 }
+article>div h2{
+  margin-left: -20px;
+}
 article>div h4, .subsection-links {
   margin-left: -20px;
 }

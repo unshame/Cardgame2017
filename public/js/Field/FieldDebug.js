@@ -32,21 +32,25 @@ Field.prototype._setDebugActiveSpace = function(activeWidth, cardHeight, leftMar
 Field.prototype.updateDebug = function(){
 	if(!this.inDebugMode)
 		return;
-
+	var ax = this.base.x + this.area.x;
+	var ay = this.base.y + this.area.y;
 	var x, y;
-	if(this.base.x < 0)
+	if(ax < 0)
 		x = 0;
-	else if(this.base.x + this.base.width > game.screenWidth)
+	else if(ax + this.area.width > game.screenWidth)
 		x = game.screenWidth - 300;
 	else
-		x = this.base.x;
+		x = ax;
 
-	if(this.base.y < 0)
-		y = this.base.height + this.base.y + 15;
-	else if(this.base.y > game.screenHeight)
+	if(ay < 0)
+		y = this.base.height + ay + 15;
+	else if(ay > game.screenHeight)
 		y = game.screenHeight;
 	else
-		y = this.base.y - 5;
+		y = ay - 5;
+
+	if(this.type == 'DUMMY')
+		y += this.area.height + 20;
 
 	var str;
 	if(this.type == this.id)
