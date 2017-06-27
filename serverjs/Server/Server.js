@@ -12,11 +12,12 @@ const
 	http = require('http'),
 	path = require('path'),
 	Eureca = require('eureca.io'),
-	minimist = require('minimist');
+	minimist = require('minimist'),
+	Log = require('../logger');
 
 //Игровые модули
 const 
-	Game = require(path.join(__dirname, rootPath, 'serverjs/Game/GameLogic')),
+	Game = require(path.join(__dirname, rootPath, 'serverjs/Game/Game')),
 	Bot = require(path.join(__dirname, rootPath, 'serverjs/Players/Bot')),
 	Player = require(path.join(__dirname, rootPath, 'serverjs/Players/Player')),
 	Tests = require(path.join(__dirname, rootPath, 'serverjs/Tests/GameTest')),
@@ -34,9 +35,13 @@ class Server extends Eureca.Server{
 			rndBots: Boolean(argv.r || argv.rnd || argv.random),
 			transfer: Boolean(process.env.TRANSFER || argv.transfer),
 			testing: argv.t || argv.test || argv.testing,
-			debug: Boolean(argv.d || argv.debug),
+			debug: argv.d || argv.debug,
 			port: process.env.PORT || Number(argv.port)
 		};
+
+		if(this.params.debug && typeof this.params.debug != 'string'){
+			this.params.debug = 'debug';
+		}
 
 		if(isNaN(this.params.port) || !this.params.port)
 			this.params.port = 5000;
@@ -45,7 +50,9 @@ class Server extends Eureca.Server{
 		if(isNaN(this.params.numPlayers) || !this.params.numPlayers)
 			this.params.numPlayers = 1;
 
-		console.log(
+		this.log = Log(module, null, this.params.debug);
+
+		this.log.notice(
 			'port=' + this.params.port,
 			'numBots=' + this.params.numBots,
 			'numPlayers=' + this.params.numPlayers,
@@ -55,8 +62,9 @@ class Server extends Eureca.Server{
 			'debug=' + this.params.debug
 		);
 
+
 		if(!this.params.testing){
-			console.log('Waiting for players:', this.params.numPlayers);
+			this.log.notice('Waiting for players:', this.params.numPlayers);
 		}
 
 		//express
@@ -99,7 +107,7 @@ class Server extends Eureca.Server{
 		//Подключаем клиента к экземпляру игрока	
 		let p = new Player(remote, conn.id);
 
-		console.log('New client %s (%s)\n', p.id, conn.id, conn.remoteAddress);
+		this.log.notice('New client %s (%s)', p.id, conn.id, conn.remoteAddress);
 
 		//Запускаем игру с ботами и игроком
 		this.players[conn.id] = p;
@@ -110,7 +118,7 @@ class Server extends Eureca.Server{
 		if(this.params.testing)
 			return;
 
-		console.log('Client disconnected ', conn.id);
+		this.log.notice('Client disconnected ', conn.id);
 
 		let removeId = conn.id;
 
@@ -148,7 +156,7 @@ class Server extends Eureca.Server{
 	//Запускает сервер
 	start(){
 		this.httpServer.listen(this.params.port, () => {
-			console.log('Node app is running on port', this.params.port);
+			this.log.notice('Node app is running on port', this.params.port);
 			if(this.params.testing){
 				Tests.runTest(this.params.numBots, this.params.testing, this.params.debug);
 			}
@@ -175,7 +183,7 @@ class Server extends Eureca.Server{
 					let bot = new Bot(randomNamesCopy);
 					this.newPlayers.push(bot);
 				}
-				console.log('Bots added:', numBots);
+				this.log.notice('Bots added:', numBots);
 			}
 
 			//Создаем игру, очищаем очередь
@@ -184,7 +192,7 @@ class Server extends Eureca.Server{
 		}
 		//иначе продолжаем ждать игроков
 		else{
-			console.log('Waiting for players:', this.params.numPlayers - this.newPlayers.length);
+			this.log.notice('Waiting for players:', this.params.numPlayers - this.newPlayers.length);
 		}
 	}
 

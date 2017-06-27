@@ -42,7 +42,7 @@ class GameTurnStages{
 
 		//Debug
 		if(!this.players.ally)
-			utils.log('ERROR: No ally assigned, but turn stage is SUPPORT');
+			this.log.error('No ally assigned, but turn stage is SUPPORT');
 
 		this.let('ATTACK', this.players.ally || this.players.attacker);
 		//Turn stage: DEFENSE

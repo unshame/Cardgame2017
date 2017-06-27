@@ -18,18 +18,21 @@ const
 	GameStates = require('./GameStates'),
 	GameTurnStages = require('./GameTurnStages'),
 	GameReactions = require('./GameReactions'),
-	GameDirectives = require('./GameDirectives');
+	GameDirectives = require('./GameDirectives'),
+	Log = require('../logger');
 
 class Game{
-	constructor(players, canTransfer, debugOn){
+	constructor(players, canTransfer, debugMode){
 		if(!players || !players.length){
-			utils.log('ERROR: Can\'t start a game without players');
+			log.error('Can\'t start a game without players');
+			return;
 		}
 
-		utils.stats.isInDebugMode = debugOn || false;
-
 		//Генерируем айди игры
-		this.id = 'game_' + utils.generateId();
+		var id = utils.generateId();
+		this.id = 'game_' + id;
+
+		this.log = Log(module, id, debugMode);
 
 		this.states = new GameStates(this);
 		this.turnStages = new GameTurnStages(this);
@@ -39,7 +42,7 @@ class Game{
 		//Добавляем бота, если игрок один
 		if(players.length < 2){
 			players.push(new Bot(['addedBot']));
-			utils.log('WARNING: Only one player at the start of the game, adding a bot');
+			log.warn('Only one player at the start of the game, adding a bot');
 		}
 		//Сохраняем ссылки на игроков локально
 		this.players = new GamePlayers(this, players.slice());
@@ -71,6 +74,7 @@ class Game{
 		};
 		this.actionDeadline = null;
 		this.timer = null;
+
 
 		//Запускаем игру
 		this.reset();
@@ -114,7 +118,7 @@ class Game{
 	//Подготовка к игре
 	start(){
 
-		utils.log('Game started', this.id, this.index);
+		this.log.notice('Game started', this.index);
 
 		this.states.current = 'SHOULD_START';
 
@@ -137,7 +141,7 @@ class Game{
 	//Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч
 	end(){
 
-		utils.log('Game ended', this.id, '\n\n');
+		this.log.info('Game ended', this.id, '\n\n');
 		utils.stats.line += 2;
 		
 		let results = Object.assign({}, this.result);
@@ -168,7 +172,7 @@ class Game{
 
 	//Перезапускает игру 
 	rematch(voteResults){
-		utils.log('Rematch');
+		this.log.info('Rematch');
 
 		//Оповещаем игроков о результате голосования
 		
@@ -185,7 +189,7 @@ class Game{
 		//Оповещаем игроков о результате голосования
 		this.players.notify(voteResults);
 
-		utils.log('No rematch');
+		this.log.info('No rematch');
 
 		//TODO: оповестить лобби
 	}
@@ -196,7 +200,7 @@ class Game{
 	//Сбрасываем счетчики и стадию игры
 	resetTurn(){
 
-		utils.log('Turn Ended', (Date.now() - this.turnStartTime)/1000);
+		this.log.info('Turn Ended', (Date.now() - this.turnStartTime)/1000);
 		
 		this.table.usedFields = 0;
 		this.skipCounter = 0;
@@ -210,22 +214,21 @@ class Game{
 
 	//Начинает ход
 	startTurn(){
-		utils.log(
-			'\nTurn',
+		this.log.info();
+		this.log.info(
+			'Turn %d %s => %s <= %s',
 			this.turnNumber,
 			this.players.attacker.name,
 			this.players.defender.name,
-			this.players.ally ? this.players.ally.name : null,
-			'\nCards in deck:', this.deck.length
+			this.players.ally ? this.players.ally.name : null
 		);
+		this.log.info('Cards in deck:', this.deck.length)
 		utils.stats.line += 2;
-
-
 
 		for(let pi = 0; pi < this.players.length; pi++){
 			let p = this.players[pi];
 			let pid = p.id;
-			utils.log(p.name, this.hands[pid].length);
+			this.log.info(p.name, this.hands[pid].length);
 		}
 
 		this.turnStartTime = Date.now();
@@ -265,7 +268,7 @@ class Game{
 
 		let state = this.states[this.states.current];
 		if(!state){
-			utils.log('ERROR: invalid game state', this.states.current);
+			this.log.error('invalid game state', this.states.current);
 			return;
 		}
 		state.call(this);
@@ -276,7 +279,7 @@ class Game{
 
 		let turnStage = this.turnStages[this.turnStages.next];
 		if(!turnStage){
-			utils.log('ERROR: Invalid turn stage', this.turnStages.next);
+			this.log.error('Invalid turn stage', this.turnStages.next);
 			return;
 		}
 		turnStage.call(this);
@@ -287,7 +290,7 @@ class Game{
 
 		let directive = this.directives[dirName];
 		if(!directive){
-			utils.log('ERROR: Invalid directive', dirName);
+			this.log.error('Invalid directive', dirName);
 			return;
 		}
 		directive.call(this, player);
@@ -329,7 +332,7 @@ class Game{
 			this.timer = setTimeout(this.timeOut.bind(this), duration);
 		}
 		else{
-			utils.log('ERROR: Set to wait for response but nobody to wait for');
+			this.log.error('Set to wait for response but nobody to wait for');
 			return;
 		}
 	}
@@ -343,7 +346,7 @@ class Game{
 			let name = playersWorking[pi].name;
 			names += name + ' ';
 		}
-		utils.log('Players timed out: ', names);
+		this.log.notice('Players timed out: ', names);
 
 		//Если есть действия, выполняем первое попавшееся действие
 		if(this.validActions.length && this.states.current == 'STARTED'){
@@ -366,7 +369,7 @@ class Game{
 		let pi = playersWorking.indexOf(player);
 		if(!~pi){
 			if(player.type != 'player' || !this.simulating)
-				utils.log('ERROR:', player.name, player.id, 'Late or uncalled response');
+				this.log.warn( player.name, player.id, 'Late or uncalled response');
 
 			//Сообщаем игроку, что действие пришло не вовремя
 			if(action){
@@ -382,13 +385,13 @@ class Game{
 			return;
 		}
 		if(this.validActions.length && !action){
-			utils.log('WARNING: Wating for action but no action recieved');
+			this.log.warn('Wating for action but no action recieved');
 			if(this.isStarted())
 				player.recieveValidActions(this.validActions.slice(), (this.actionDeadline - Date.now())/1000);
 			return;
 		}
 
-		//utils.log('Response from', player.id, action ? action : '');
+		//this.log.info('Response from', player.id, action ? action : '');
 
 		//Выполняем или сохраняем действие
 		let waitingForResponse = false;
@@ -477,8 +480,8 @@ class Game{
 
 		//Проверка действия
 		if( !~ai ){
-			utils.log(
-				'ERROR: Invalid action',
+			this.log.warn(
+				'Invalid action',
 				player.id,
 				incomingAction && incomingAction.type,
 				incomingAction,
@@ -490,7 +493,7 @@ class Game{
 		//Выполняем действие
 		let reaction = this.reactions[action.type];
 		if(!reaction){
-			utils.log('ERROR: Unknown action', action.type);
+			this.log.warn('Unknown action', action.type);
 			return;
 		}
 		action = reaction.call(this, player, action);
@@ -548,7 +551,7 @@ class Game{
 		let ai = this.validActions.indexOf(action);
 
 		if( !~ai ){
-			utils.log('ERROR: Invalid action', player.id, incomingAction.type, incomingAction);
+			this.log.warn('Invalid action', player.id, incomingAction.type, incomingAction);
 			return;
 		}
 
@@ -582,9 +585,9 @@ class Game{
 				numAccepted++;
 		}
 
-		utils.log(numAccepted, 'out of', this.players.length, 'voted for rematch');
+		this.log.info(numAccepted, 'out of', this.players.length, 'voted for rematch');
 		if(!allConnected)
-			utils.log('Some players disconnected');
+			this.log.info('Some players disconnected');
 
 		let results = [];
 		for(let pid in this.storedActions){
@@ -615,11 +618,11 @@ class Game{
 	//Записывает действие над картой в лог
 	logAction(card, actionType, from, to){
 		let playersById = this.players.byId;
-		utils.log(
-			card.suit, card.value, ':', 
+		this.log.debug(
+			'%s %s%s %s => %s',
 			actionType,
+			['♥', '♦', '♣', '♠'][card.suit], ['J', 'Q', 'K', 'A'][card.value - 11] || (card.value == 10 ? card.value : card.value + ' '),
 			playersById[from] ? playersById[from].name : from,
-			'=>',
 			playersById[to] ? playersById[to].name : to
 		);
 	}

@@ -50,11 +50,11 @@ module.exports = function(server){
 			let player = server.players[this.connection.id];
 			if(player){
 				if(player.game){
-					console.log('Player %s already in game %s', player.id, player.game.id);
+					server.log.notice('Player %s already in game %s', player.id, player.game.id);
 					return;
 				}
 				if(server.newPlayers.includes(player)){
-					console.log('Player %s already in queue', player.id);
+					server.log.notice('Player %s already in queue', player.id);
 					return;
 				}
 				server.addPlayerToQueue(player);

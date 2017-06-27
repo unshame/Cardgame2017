@@ -26,6 +26,7 @@ class GamePlayers extends GamePlayersBase{
 				active: true
 			}
 		);
+		this.log = game.log;
 	}
 
 	static get [Symbol.species]() { return Array; }
@@ -69,7 +70,7 @@ class GamePlayers extends GamePlayersBase{
 	//Передает полную информацию об игре игроку
 	gameStateNotifyOnReconnect(player){
 		if(!this.includes(player)){
-			utils.log('WARNING: Can\'t reconnect player that\'s not in this game', this.game.id, player.id);
+			this.log.warn('Can\'t reconnect player that\'s not in this game', this.game.id, player.id);
 			return;
 		}
 		this.gameStateNotify([player], {
@@ -224,7 +225,7 @@ class GamePlayers extends GamePlayersBase{
 						ai--;
 				}
 
-				utils.log(p.name, 'is out of the game');	
+				this.log.info(p.name, 'is out of the game');	
 
 			}
 		}
@@ -254,7 +255,7 @@ class GamePlayers extends GamePlayersBase{
 					p.score.wins++;
 					game.result.winners.push(p.id);
 
-					utils.log(p.name, 'is a winner');
+					this.log.info(p.name, 'is a winner');
 				}
 				
 			}
@@ -327,7 +328,7 @@ class GamePlayers extends GamePlayersBase{
 
 			this.findToGoNext(pi - 1);
 					
-			utils.log('Player to go first: ', this.attacker.name);
+			this.log.info('Player to go first: ', this.attacker.name);
 		}
 
 		//В противном случае, берем первого попавшегося игрока и начинаем ход
@@ -379,10 +380,10 @@ class GamePlayers extends GamePlayersBase{
 				p.score.losses++;
 				p.score.cardsWhenLost += this.game.hands[pid].length;
 
-				utils.log(p.name, 'is the loser');
+				this.log.info(p.name, 'is the loser');
 			}
 			else{
-				utils.log('Draw');
+				this.log.info('Draw');
 			}
 
 			return true;

@@ -11,7 +11,7 @@ npm-debug.log
 Dockerfile
 docker-compose.yml
 
-logs/*.txt
+logs/*.log
 
 report/
 doc/client

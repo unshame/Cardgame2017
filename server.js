@@ -2,6 +2,8 @@
  * Запускает сервер
  */
 
+'use strict';
+
 const Server = require(__dirname + '/serverjs/Server/Server');
 
 let server = new Server({allow:[

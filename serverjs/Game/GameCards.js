@@ -22,6 +22,8 @@ class GameCards extends BetterArray{
 		this.table.usedFields = 0;
 		this.table.maxLength = 6;
 		this.table.zeroDiscardLength = Math.max(this.table.maxLength - 1, 1);
+
+		this.log = game.log;
 	}
 	static get [Symbol.species]() { return Array; }
 
@@ -369,7 +371,7 @@ class GameCards extends BetterArray{
 			//После первого сброса на стол можно класть больше карт
 			if(this.table.fullLength < this.table.maxLength){
 				this.table.fullLength = this.table.maxLength;
-				utils.log('First discard, field expanded to', this.table.fullLength);
+				this.log.info('First discard, field expanded to', this.table.fullLength);
 				action.unlockedField = 'TABLE' + (this.table.fullLength - 1)
 			}
 

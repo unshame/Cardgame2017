@@ -1,5 +1,5 @@
 const
-	Game = require('../Game/GameLogic'),
+	Game = require('../Game/Game'),
 	TestBot = require('./TestBot');
 
 function runTest(numBots, duration, debug){

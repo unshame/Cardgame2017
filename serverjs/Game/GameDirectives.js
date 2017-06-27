@@ -26,7 +26,7 @@ class GameDirectives{
 			this.table.usedFields >= this.table.fullLength || 			
 			turnStage != 'FOLLOWUP' && !defHand.length
 		){
-			utils.log(
+			this.log.info(
 				this.table.usedFields >= this.table.fullLength && 'Field is full' ||
 				turnStage != 'FOLLOWUP' && !defHand.length && 'Defender has no cards'
 			);
@@ -35,7 +35,7 @@ class GameDirectives{
 			return;
 		}
 		else if(!hand.length){
-			utils.log('Attacker has no cards');
+			this.log.info('Attacker has no cards');
 			if(this.skipCounter < 2 && this.players.ally){
 				this.skipCounter++;
 				if(turnStage == 'FOLLOWUP')
@@ -127,7 +127,7 @@ class GameDirectives{
 
 		//Если ни одной карты не найдено, значит игрок успешно отбился, можно завершать ход
 		if(!defenseFields.length){
-			utils.log(player.name, 'successfully defended');
+			this.log.info(player.name, 'successfully defended');
 
 			this.setNextTurnStage('END');
 			this.continue();
@@ -242,7 +242,7 @@ class GameDirectives{
 
 		//Debug
 		default:
-			utils.log('ERROR: Invalid turnStage', lastTurnStage);
+			this.log.error('Invalid turnStage', lastTurnStage);
 			break;
 		}
 

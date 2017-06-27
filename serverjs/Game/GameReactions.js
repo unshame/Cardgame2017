@@ -26,7 +26,7 @@ class GameReactions{
 		else
 			str = 'attacks';
 
-		utils.log(player.name,  str);
+		this.log.info(player.name,  str);
 
 		card = cardsById[action.cid];
 		ci = this.hands[player.id].indexOf(card);
@@ -75,7 +75,7 @@ class GameReactions{
 		let tableFields = this.table.byKey('id');
 		let ci, card;
 
-		utils.log(player.name, 'defends');
+		this.log.info(player.name, 'defends');
 
 		card = cardsById[action.cid];
 		ci = this.hands[player.id].indexOf(card);
@@ -107,11 +107,11 @@ class GameReactions{
 
 		let activePlayers = this.players.active;
 
-		utils.log(player.name, 'skips turn');
+		this.log.info(player.name, 'skips turn');
 
 		//Debug
 		if(activePlayers.length > 2 && !this.players.ally){
-			utils.log('ERROR: More than 2 players but no ally assigned');
+			this.log.error('More than 2 players but no ally assigned');
 		}
 
 		//Если есть помогающий игрок
@@ -146,7 +146,7 @@ class GameReactions{
 
 						//Debug
 						else
-							utils.log('ERROR: Invalid action', action.type);
+							this.log.error('Invalid action', action.type);
 
 					}
 					break;
@@ -157,7 +157,7 @@ class GameReactions{
 
 	//Защищающийся берет карты
 	TAKE(player, action){
-		utils.log(player.name, "takes");
+		this.log.info(player.name, "takes");
 		this.skipCounter = 0;
 		this.setNextTurnStage('FOLLOWUP');
 		return action;

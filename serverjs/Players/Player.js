@@ -1,12 +1,16 @@
 'use strict';
 
-const utils = require('../utils');
+const utils = require('../utils'),
+	Log = require('../logger');
 
 class Player{
 
 	constructor(remote, connId, name){
-		this.id = 'player_' + utils.generateId();
+		let id = utils.generateId();
+		this.id = 'player_' + id;
 		this.type = 'player';
+
+		this.log = Log(module, id);
 
 		this.remote = remote;
 		this.connId = connId;
@@ -114,7 +118,7 @@ class Player{
 
 	sendResponse(action){
 		if(!this.game){
-			utils.log(this.id, 'No game has been assigned');
+			this.log.error(this.id, 'No game has been assigned');
 			return;
 		}
 		this.game.recieveResponse(this, action ? action : null);
