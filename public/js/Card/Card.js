@@ -189,6 +189,13 @@ var Card = function (options) {
 	this.flipTime = this.options.flipTime;
 
 	/**
+	 * Минимальное значение яркости карты при перевороте.
+	 * @private
+	 * @type {number}
+	 */
+	this._lowestTint = 0x666666;
+
+	/**
 	* Скин карты
 	* @type {object}
 	* @see {@link SkinManager}
@@ -211,7 +218,7 @@ Card.getDefaultOptions = function(){
 		y: game.screenHeight + 300,
 		suit:null,
 		value:0,
-		flipTime: 150,
+		flipTime: 250,
 		skin:skinManager.skin,
 		fieldId: null,
 		debug: false

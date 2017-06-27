@@ -46,9 +46,20 @@ Card.prototype.applyValue = function(){
 		return;
 	}
 
+	var duration = (this.flipTime/game.speed)/2,
+		highest = 0xffffff;
+
+	this.sprite.tint = highest;
+
 	this._flipper = game.add.tween(this.sprite.scale);
-	this._flipper.to({x: 0}, (this.flipTime/game.speed)/2);
-	this._flipper.to({x: this.skin.scale}, (this.flipTime/game.speed)/2);
+
+	this._flipper.to({x: 0, y: this.skin.scale*1.1}, duration);
+	this._flipper.to({x: this.skin.scale, y:this.skin.scale}, duration);
+
+	this._flipper.onUpdateCallback( this._updateTint.bind(this) );
+	this._flipper.onComplete.addOnce(function(){
+		this.sprite.tint = highest;
+	}, this);
 
 	if(this.suit === null){
 		this._flipper.onChildComplete.addOnce(function(){
@@ -63,6 +74,30 @@ Card.prototype.applyValue = function(){
 	}
 	this._flipper.start();
 };
+
+/**
+ * Обновляет тинт карты в соответствии с ее переворотом.
+ * @private
+ */
+Card.prototype._updateTint = function(){
+	var timeline, value,
+		step = 0x010101,
+		highest = 0xffffff,
+		lowest = this._lowestTint,
+		diff = highest - lowest;
+
+	if(this._flipper.current === 0){
+		timeline = this._flipper.timeline[0];
+		value = (1 - (timeline.dt/timeline.duration))*diff + lowest; 
+	}
+	else if(this._flipper.current === 1){			
+		timeline = this._flipper.timeline[1];
+		value = (timeline.dt/timeline.duration)*diff + lowest; 
+	}
+	if(value !== undefined){
+		this.sprite.tint = Math.floor(value/step)*step;
+	}
+}
 
 /**
 * Устанавливает значение карты сразу, с анимацией или без.
@@ -121,6 +156,11 @@ Card.prototype.setPlayability = function(playable, tint){
 	this.playable = playable;
 };
 
+/**
+ * Устанавливает подсветку карты.
+ * @param {boolean} highlighted включена ли подстветка
+ * @param {number} [tint=yi.colors.orange] цвет свечения карты
+ */
 Card.prototype.setHighlight = function(highlighted, tint){
 	if(this.playable)
 		this.playable = false;
