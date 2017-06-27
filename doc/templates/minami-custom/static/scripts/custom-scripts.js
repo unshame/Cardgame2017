@@ -3,6 +3,13 @@ var firstScroll = true;	//Скролл при загрузке страницы 
 $(function () {
 	$('body>footer').css('margin-top', window.innerHeight - $('body>footer').outerHeight() - 70);
 
+	if(document.location.href.includes('doc/server')){
+		$('#clientDocLink').show();
+	}
+	else{
+		$('#serverDocLink').show();
+	}
+
 	var currentHash;
 	var shouldScroll = true;
 	var navbar = $('body>nav');

@@ -752,3 +752,7 @@ td.default {
 nav {
   overflow-x: hidden;
 }
+
+.otherDocLink{
+  display: none;
+}

@@ -1,5 +1,6 @@
 Мультиплеерная карточная игра на [Phaser.js](https://phaser.io/), [Node.js](https://nodejs.org/) и [Eureca.io](http://eureca.io/).  
-Тестовая версия - [durak.herokuapp.com](https://durak.herokuapp.com/)
+Тестовая версия - [durak.herokuapp.com](https://durak.herokuapp.com/).  
+Документация (WIP) - [клиент](https://durak.herokuapp.com/doc/client), [сервер](https://durak.herokuapp.com/doc/server).
 
 ## Установка  
 

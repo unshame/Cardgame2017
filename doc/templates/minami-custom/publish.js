@@ -343,6 +343,8 @@ function buildNav(members) {
   var seenTutorials = {}
 
   nav.push(buildNavLink('home', '<a href="index.html">Home</a>'))
+  nav.push(buildNavLink('home', '<a id="clientDocLink" class="otherDocLink" href="../client/index.html">Switch to client doc</a>'))
+  nav.push(buildNavLink('home', '<a id="serverDocLink" class="otherDocLink" href="../server/index.html">Switch to server doc</a>'))
 
   nav = nav.concat(buildMemberNav(members.tutorials, "Tutorials", seenTutorials, linktoTutorial))
   nav = nav.concat(buildMemberNav(members.classes, "Classes", seen, linkto))
