@@ -40,7 +40,7 @@
     <?js } ?>
 </header> -->
 
-<article>
+<article class="<?js=doc.longname ? doc.longname.replace(':', '-') : 'global'?>" id="main-article">
     <div class="container-overview">
     <?js if (doc.kind === 'module' && doc.modules) { ?>
         <?js if (doc.description) { ?>

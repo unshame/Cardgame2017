@@ -429,6 +429,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
           displayName = item.name
         }
 
+        var memberName = item.longname.replace(':','-');
         displayName = displayName.replace(/^module:/g, "")
 
         if (itemHeading === 'Tutorials') {
@@ -441,8 +442,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
             if (method.inherited && conf.showInheritedInNav === false) {
               return
             }
-
-            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name)), displayName || null))
+            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name)), memberName))
           })
         }
         if (methods.length) {
@@ -451,7 +451,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
               return
             }
 
-            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name)), displayName || null))
+            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name)), memberName))
           })
         }
 
@@ -511,22 +511,14 @@ function buildNavHeading (content) {
  * @return {String}
  */
 function buildNavItem (itemContent, itemName) {
-  if(itemName == null)
+  if(!itemName)
     itemName = 'global';
-  if(itemName){
-    return [
-      '<li class="nav-item ' + itemName + '">',
-      itemContent,
-      '</li>'
-    ].join('')
-  }
-  else{
-    return [
-      '<li class="nav-item">',
-      itemContent,
-      '</li>'
-    ].join('')
-  }
+  return [
+    '<li class="nav-item ' + itemName + '">',
+    itemContent,
+    '</li>'
+  ].join('')
+
 }
 
 function buildNavType (type, typeLink) {

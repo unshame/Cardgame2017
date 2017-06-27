@@ -39,8 +39,8 @@ $(function () {
 		}, 0);
 	});
 
-	var title = $('.page-title');
-	var className = title.attr('id');
+	var title = $('#main-article');
+	var className = title.attr('class');
 
 	//Заменяем слеши в классе
 	if(className){
@@ -62,6 +62,7 @@ $(function () {
 	  $('.nav-item.' + className).show();
 	}
 
+	//Пытается найти элементы с определенной ссылкой (в основном не используется)
 	function tryLink(className, hash, prefix){
 		if(!prefix){
 			prefix = '';
@@ -83,12 +84,6 @@ $(function () {
 		}
 		var link = className + '.html#' + hash;
 		var target = tryLink(className, hash);
-		if(!target.size()){
-			target = tryLink(className, hash, 'external-');
-		}
-		if(!target.size()){
-			target = tryLink(className, hash, 'module-');
-		}
 		if(!target.size()){
 			target = tryLink(hash, '', 'global.html#');
 		}
