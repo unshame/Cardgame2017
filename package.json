@@ -19,7 +19,8 @@
     "engine.io": "2.0.1",
     "eureca.io": "0.6.42",
     "express": "4.13.3",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "winston": "^2.3.1"
   },
   "repository": {
     "type": "git",
