@@ -11,7 +11,7 @@
 'use strict';
 
 const 
-	utils = require('../utils'),
+	generateId = require('../generateId'),
 	Bot = require('../Players/Bot'),
 	GameCards = require('./GameCards'),
 	GamePlayers = require('./GamePlayers'),
@@ -29,7 +29,7 @@ class Game{
 		}
 
 		//Генерируем айди игры
-		var id = utils.generateId();
+		var id = generateId();
 		this.id = 'game_' + id;
 
 		this.log = Log(module, id, debugMode);
@@ -142,7 +142,6 @@ class Game{
 	end(){
 
 		this.log.info('Game ended', this.id, '\n\n');
-		utils.stats.line += 2;
 		
 		let results = Object.assign({}, this.result);
 		results.winners = this.result.winners.slice();
@@ -223,7 +222,6 @@ class Game{
 			this.players.ally ? this.players.ally.name : null
 		);
 		this.log.info('Cards in deck:', this.deck.length)
-		utils.stats.line += 2;
 
 		for(let pi = 0; pi < this.players.length; pi++){
 			let p = this.players[pi];

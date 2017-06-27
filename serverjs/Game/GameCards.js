@@ -4,7 +4,6 @@
 'use strict';
 
 const
-	utils = require('../utils'),
 	BetterArray = require('../BetterArray'),
 	Card = require('./Card');
 

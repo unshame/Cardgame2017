@@ -5,9 +5,6 @@
 
 'use strict';
 
-const 
-	utils = require('../utils');
-
 class GameReactions{
 
 	//Игрок походил

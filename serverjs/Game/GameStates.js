@@ -4,9 +4,6 @@
  */
 'use strict';
 
-const 
-	utils = require('../utils');
-
 class GameStates{
 	constructor(){
 		this.current = null;

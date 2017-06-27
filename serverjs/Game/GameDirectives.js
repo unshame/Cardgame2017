@@ -5,9 +5,6 @@
  */
 'use strict';
 
-const
-	utils = require('../utils');
-
 class GameDirectives{
 
 	//Отправляет атакующему возможные ходы

@@ -5,7 +5,7 @@
 'use strict';
 
 const
-	utils = require('../utils'),
+	generateId = require('../generateId'),
 	Player = require('./Player');
 
 var fakeDescisionTimer = 1;
@@ -13,7 +13,7 @@ var fakeDescisionTimer = 1;
 class Bot extends Player{
 	constructor(randomNames){
 		super();
-		this.id = 'bot_' + utils.generateId();
+		this.id = 'bot_' + generateId();
 		this.type = 'bot';
 		this.connected = true;
 

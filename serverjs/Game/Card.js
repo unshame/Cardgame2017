@@ -1,8 +1,8 @@
-const utils = require('../utils');
+const generateId = require('../generateId');
 
 class Card{
 	constructor(suit, value, field){
-		this.id = 'card_' + utils.generateId();
+		this.id = 'card_' + generateId();
 		this.suit = suit;
 		this.value = value;
 		this.field = field;

@@ -1,5 +1,4 @@
 const
-	utils = require('../utils'),
 	Bot = require('../Players/Bot');
 
 class TestBot extends Bot{
@@ -18,7 +17,7 @@ class TestBot extends Bot{
 		let types = actions.map(a => a.type),
 			attackIndex = types.indexOf('ATTACK'),
 			defenseIndex = types.indexOf('DEFENSE');
-		let lineNum = utils.stats.line;
+		let lineNum = 0;
 
 		if(this.tester.running && game.turnStages.current != 'FOLLOWUP' && game.turnStages.next == 'DEFENSE' && ~attackIndex && !~defenseIndex){
 			let defenseFields = 0;

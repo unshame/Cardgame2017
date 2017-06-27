@@ -1,16 +1,8 @@
 'use strict';
 
-const 
-	fs = require('fs'),
-	crypto = require('crypto');
+const crypto = require('crypto');
 
-var stats = {
-	line: 0,
-	isInDebugMode: true
-};
-exports.stats = stats;
-
-exports.generateId = function(){
+module.exports = function(){
 	let chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 	let howMany = 7;
 	let rnd = crypto.randomBytes(howMany),
@@ -22,8 +14,4 @@ exports.generateId = function(){
 	}
 
 	return value.join('');
-};
-var stats = {
-	line: 0,
-	isInDebugMode: true
 };

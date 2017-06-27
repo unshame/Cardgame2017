@@ -7,7 +7,6 @@
 'use strict';
 
 const
-	utils = require('../utils'),
 	GamePlayersBase = require('./GamePlayersBase.js');
 
 class GamePlayers extends GamePlayersBase{

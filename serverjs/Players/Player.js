@@ -1,12 +1,13 @@
 'use strict';
 
-const utils = require('../utils'),
+const 
+	generateId = require('../generateId'),
 	Log = require('../logger');
 
 class Player{
 
 	constructor(remote, connId, name){
-		let id = utils.generateId();
+		let id = generateId();
 		this.id = 'player_' + id;
 		this.type = 'player';
 
