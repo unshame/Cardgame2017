@@ -79,7 +79,7 @@ Card.prototype.setBasePreserving = function(x, y, resetMover){
 		newX = this.sprite.x - shiftX,
 		newY = this.sprite.y - shiftY;
 	this.setBase(x, y, resetMover);
-	this.setRelativePosition(newX, newY, resetMover);
+	this.setRelativePosition(newX, newY, false);
 
 	//Смещаем хвост карты
 	if(cardControl.trail.parent == this.base){

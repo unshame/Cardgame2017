@@ -404,6 +404,30 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
 
     nav.push(buildNavHeading(itemHeading))
 
+    items.sort(function(a, b){
+
+      var al = a.longname.match(/\//g);
+      var bl = b.longname.match(/\//g);
+      if(!al)
+        al = [];
+      if(!bl)
+        bl = [];
+      if(al > bl){
+        return 1;
+      }
+      else if(al < bl){
+        return -1;
+      }
+      
+      if(a.longname > b.longname){
+          return 1;
+      }
+      else if(a.longname < b.longname){
+          return -1;
+      }
+      return 0;
+    })
+
     items.forEach(function(item) {
       var methods = find({ kind: "function", memberof: item.longname })
       var members = find({ kind: "member", memberof: item.longname })
@@ -435,7 +459,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
         if (itemHeading === 'Tutorials') {
           nav.push(buildNavItem(linktoFn(item.longname, displayName)))
         } else {
-          nav.push(buildNavHeading(buildNavType(item.kind, linktoFn(item.longname, displayName))))
+          nav.push(buildNavHeading(buildNavType(item.kind, linktoFn(item.longname, displayName.replace('serverjs/','')))))
         }
         if (members.length) {
           members.forEach(function(method) {
