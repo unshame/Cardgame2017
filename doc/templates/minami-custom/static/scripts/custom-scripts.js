@@ -59,8 +59,9 @@ $(function () {
 
 	//Показываем элементы боковой панели, относящиеся к текущему классу или global
 	if(className){
-	  $('.nav-item.' + className).show();
+	  $('.nav-item.' + className.replace(/\./g, '_')).show();
 	}
+	  console.log($('.nav-item.' + className))
 
 	//Пытается найти элементы с определенной ссылкой (в основном не используется)
 	function tryLink(className, hash, prefix){
@@ -214,6 +215,6 @@ function addLinks(header, navbar, li, className, id, type, text){
 	if(className){
 		var nav = $('<li>').addClass('nav-item').css('display', 'list-item');
 		nav.html('<span class="nav-item-name subsection"><a href="' + className + '.html#' + id + '">' + text + '</a></span>');
-		navbar.find('.' + className + ' .' + type).eq(0).parent().before(nav);
+		navbar.find('.' + className.replace(/\./g, '_') + ' .' + type).eq(0).parent().before(nav);
 	}
 }

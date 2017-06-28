@@ -81,18 +81,6 @@ class GamePlayers extends GamePlayersBase{
 		'GAME_INFO_UPDATE');
 	}
 
-	//Оповещает игроков об оппонентах
-	opponentsNotify(){
-		let info = this.info;
-		if(!info.length)
-			return;
-			
-		for(let pi = 0; pi < this.length; pi++){
-			let p = this[pi];				
-			p.meetOpponents(info.slice());
-		}
-	}
-
 	//Оповещает игроков о раздаче карт
 	dealNotify(deals){
 		let cardsById = this.game.cards.byId;

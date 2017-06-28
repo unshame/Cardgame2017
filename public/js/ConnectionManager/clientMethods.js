@@ -36,12 +36,6 @@ window.clientMethods = {
 		connection.proxy.requestGameInfo();
 	},
 
-	meetOpponents: function(opponents){
-		connection.resetTimer();
-		if(connection.inDebugMode)
-			console.log(opponents);
-	},
-
 	recievePossibleActions: function(newActions, time, timeSent){	
 		connection.resetTimer();
 

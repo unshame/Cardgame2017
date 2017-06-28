@@ -27,13 +27,6 @@ class Player{
 		this.afk = false;
 	}
 
-	meetOpponents(opponents){
-		if(this.remote && this.connected)
-			this.remote.meetOpponents(opponents);
-		else if(!this.connected)
-			this.sendInstantResponse();
-	}
-
 	recieveGameInfo(cards, players, trumpSuit, type, noResponse){
 		let action = {
 			type: type,

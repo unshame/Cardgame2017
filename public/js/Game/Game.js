@@ -267,6 +267,8 @@ Game.prototype.toggleDebugMode = function(){
 
 	this.inDebugMode = !this.inDebugMode;
 
+	connection.inDebugMode = this.inDebugMode;
+
 	if(this.scale.inDebugMode != this.inDebugMode)
 		this.scale.toggleDebugMode();
 

@@ -453,7 +453,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
           displayName = item.name
         }
 
-        var memberName = item.longname.replace(':','-');
+        var memberName = item.longname.replace(':','-').replace(/\./g, '_');
         displayName = displayName.replace(/^module:/g, "")
 
         if (itemHeading === 'Tutorials') {

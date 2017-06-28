@@ -47,9 +47,6 @@ class Game{
 		//Сохраняем ссылки на игроков локально
 		this.players = new GamePlayers(this, players.slice());
 
-		//Сообщаем игрокам о соперниках
-		this.players.opponentsNotify();
-
 		//Карты
 		this.cards = new GameCards(this);
 

@@ -42,6 +42,8 @@ window.actionReactions = {
 	*/
 	GAME_INFO: function(action, noDelay){
 
+		cardManager.createCards(action.cards);
+		
 		if(action.players.length){
 			playerManager.savePlayers(action.players);
 			cardManager.disablePhysics();
@@ -62,7 +64,6 @@ window.actionReactions = {
 		cardEmitter.stop();
 		fieldManager.resetFields();
 		cardControl.reset();
-		cardManager.createCards(action.cards);
 		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
 		var delay;
 		if(noDelay){

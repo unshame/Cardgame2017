@@ -18,6 +18,8 @@ var CardManager = function(inDebugMode){
 	this.cardsGroup = game.add.group();
 	this.cardsGroup.name = 'cards';
 
+	this.numOfCards = 0;
+
 	game.cards = this.cards;
 	game.cardsGroup = this.cardsGroup;
 
@@ -92,6 +94,7 @@ CardManager.prototype.createCard = function(options){
 		return;
 	}
 	this.cards[options.id] = new Card(options);
+	this.numOfCards++;
 };
 
 /** Уничтожает все карты. */

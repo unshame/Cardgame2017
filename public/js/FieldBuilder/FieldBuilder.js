@@ -178,7 +178,7 @@ FieldBuilder.prototype._calcSpecSizes = function(){
 * @private
 */
 FieldBuilder.prototype._calcDeckDiscardSizes = function(){
-	var numOfCards = playerManager.players.length > 3 ? 52 : 36,
+	var numOfCards = cardManager.numOfCards,
 		halfDensity = Math.floor(game.scale.density / 2);
 
 	this.offsets.DECK = 22;
