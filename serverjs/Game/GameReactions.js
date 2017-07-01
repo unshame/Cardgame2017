@@ -53,8 +53,7 @@ class GameReactions{
 		}
 		else if(this.turnStages.current == 'DEFENSE'){
 			this.players.setOriginalAttackers([this.players.attacker]);
-			let currentAttackerIndex = activePlayers.indexOf(this.players.attacker);
-			this.players.findToGoNext(currentAttackerIndex);
+			this.players.findToGoNext();
 			this.setNextTurnStage('DEFENSE');	
 		}
 		else{
@@ -115,38 +114,38 @@ class GameReactions{
 		if(this.players.ally){
 			switch(this.turnStages.current){
 
-				//Если игра в режиме докладывания карт в догонку и только ходящий игрок походил,
-				//даем возможность другому игроку доложить карты
-				case 'FOLLOWUP':
-					if(!this.skipCounter){
-						this.skipCounter++;
-						this.setNextTurnStage('FOLLOWUP');
-					}
-					break;
-
-				//Атакующий не доложил карту, переходим к помогающему
-				case 'REPEATING_ATTACK':
+			//Если игра в режиме докладывания карт в догонку и только ходящий игрок походил,
+			//даем возможность другому игроку доложить карты
+			case 'FOLLOWUP':
+				if(!this.skipCounter){
 					this.skipCounter++;
-					this.setNextTurnStage('SUPPORT');
-					break;
+					this.setNextTurnStage('FOLLOWUP');
+				}
+				break;
 
-				default:
-					//Если кто-то из игроков еще не походил, даем ему возможность 
-					this.skipCounter++;
-					if(this.skipCounter < 2){
+			//Атакующий не доложил карту, переходим к помогающему
+			case 'REPEATING_ATTACK':
+				this.skipCounter++;
+				this.setNextTurnStage('SUPPORT');
+				break;
 
-						if(this.turnStages.current == 'SUPPORT')
-							this.setNextTurnStage('ATTACK');
+			default:
+				//Если кто-то из игроков еще не походил, даем ему возможность 
+				this.skipCounter++;
+				if(this.skipCounter < 2){
 
-						else if(this.turnStages.current == 'ATTACK')
-							this.setNextTurnStage('SUPPORT');
-
-						//Debug
-						else
-							this.log.error('Invalid action', action.type);
-
+					if(this.turnStages.current == 'SUPPORT'){
+						this.setNextTurnStage('ATTACK');
 					}
-					break;
+					else if(this.turnStages.current == 'ATTACK'){
+						this.setNextTurnStage('SUPPORT');
+					}
+					else{
+						this.log.error('Invalid action', action.type);
+					}
+
+				}
+				break;
 			}
 		}
 		return action;

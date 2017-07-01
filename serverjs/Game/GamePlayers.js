@@ -330,11 +330,12 @@ class GamePlayers extends GamePlayersBase{
 		return [minTCards, minTCard];
 	}
 
-	//Находит участников нового хода
-	findToGoNext(currentAttackerIndex){	
+	//Находит участников  хода
+	findToGoNext(){	
 
 		let activePlayers = this.active;
 
+		let currentAttackerIndex = activePlayers.indexOf(this.attacker);
 		let numInvolved = Math.min(activePlayers.length, 3);
 		let involved = [];
 		let i = currentAttackerIndex + 1;
@@ -356,26 +357,38 @@ class GamePlayers extends GamePlayersBase{
 
 		//Если осталось меньше двух игроков, завершаем игру
 		if(activePlayers.length < 2){		
-
-			//Находим проигравшего
-			if(activePlayers.length == 1){
-
-				let p = activePlayers[0];
-				let pid = p.id;
-
-				this.game.result.loser = pid;
-				p.score.losses++;
-				p.score.cardsWhenLost += this.game.hands[pid].length;
-
-				this.log.info(p.name, 'is the loser');
-			}
-			else{
-				this.log.info('Draw');
-			}
-
 			return true;
 		}
 		return false;
+	}
+
+	//Находим проигравшего
+	findLoser(){
+		
+		let activePlayers = this.active;
+
+		if(activePlayers.length == 1){
+
+			let p = activePlayers[0];
+			let pid = p.id;
+
+			this.game.result.loser = pid;
+			p.score.losses++;
+			p.score.cardsWhenLost += this.game.hands[pid].length;
+
+			this.log.info(p.name, 'is the loser');
+		}
+		else{
+			this.log.info('Draw');
+		}
+	}
+
+	logHandLengths(){
+		for(let pi = 0; pi < this.length; pi++){
+			let p = this[pi];
+			let pid = p.id;
+			this.log.info(p.name, this.game.hands[pid].length);
+		}
 	}
 
 }

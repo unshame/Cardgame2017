@@ -28,8 +28,7 @@ class GameDirectives{
 				turnStage != 'FOLLOWUP' && !defHand.length && 'Defender has no cards'
 			);
 			this.setNextTurnStage('DEFENSE');
-			this.continue();
-			return;
+			return true;
 		}
 		else if(!hand.length){
 			this.log.info('Attacker has no cards');
@@ -43,8 +42,7 @@ class GameDirectives{
 			else{
 				this.setNextTurnStage('DEFENSE');
 			}
-			this.continue();
-			return;
+			return true;
 		}
 
 		let actions = [];
@@ -98,6 +96,7 @@ class GameDirectives{
 		this.validActions = actions;
 		this.waitForResponse(this.timeouts.actionAttack, [player]);
 		player.recieveValidActions(actions.slice(), this.timeouts.actionAttack);	
+		return false;
 	}
 
 	//Отправляет защищающемуся возможные ходы
@@ -127,8 +126,7 @@ class GameDirectives{
 			this.log.info(player.name, 'successfully defended');
 
 			this.setNextTurnStage('END');
-			this.continue();
-			return;
+			return true;
 		}
 
 		//Узнаем, можно ли переводить
@@ -246,7 +244,7 @@ class GameDirectives{
 		this.waitForResponse(this.timeouts.actionDefend, [player]);
 		player.recieveValidActions(actions.slice(), this.timeouts.actionDefend);	
 
-		return;
+		return false;
 	}
 
 	//Игрок берет карты со стола
@@ -311,6 +309,7 @@ class GameDirectives{
 
 		this.waitForResponse(this.timeouts.take, this.players);
 		this.players.takeNotify(action);
+		return false;
 	}
 }
 

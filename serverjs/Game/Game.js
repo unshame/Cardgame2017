@@ -23,16 +23,17 @@ const
 
 class Game{
 	constructor(players, canTransfer, debugMode){
-		if(!players || !players.length){
-			log.error('Can\'t start a game without players');
-			return;
-		}
 
 		//Генерируем айди игры
 		var id = generateId();
 		this.id = 'game_' + id;
 
 		this.log = Log(module, id, debugMode);
+
+		if(!players || !players.length){
+			this.log.error('Can\'t start a game without players');
+			return;
+		}
 
 		this.states = new GameStates(this);
 		this.turnStages = new GameTurnStages(this);
@@ -42,7 +43,7 @@ class Game{
 		//Добавляем бота, если игрок один
 		if(players.length < 2){
 			players.push(new Bot(['addedBot']));
-			log.warn('Only one player at the start of the game, adding a bot');
+			this.log.warn('Only one player at the start of the game, adding a bot');
 		}
 		//Сохраняем ссылки на игроков локально
 		this.players = new GamePlayers(this, players.slice());
@@ -76,6 +77,12 @@ class Game{
 		//Запускаем игру
 		this.reset();
 		this.start();
+	}
+
+	//Запущена ли игра
+	//Игра не запущена, когда идет голосование о рестарте
+	get isStarted(){
+		return this.states.current != 'NOT_STARTED';
 	}
 
 
@@ -112,7 +119,7 @@ class Game{
 		this.turnStages.next = 'DEFAULT';
 	}
 
-	//Подготовка к игре
+	//Подготовка и начало игры
 	start(){
 
 		this.log.notice('Game started', this.index);
@@ -132,7 +139,7 @@ class Game{
 		this.players.notify(note);
 
 		//Начинаем игру
-		this.continue();
+		while(this.continue());
 	}
 
 	//Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч
@@ -218,13 +225,9 @@ class Game{
 			this.players.defender.name,
 			this.players.ally ? this.players.ally.name : null
 		);
-		this.log.info('Cards in deck:', this.deck.length)
+		this.log.info('Cards in deck:', this.deck.length);
 
-		for(let pi = 0; pi < this.players.length; pi++){
-			let p = this.players[pi];
-			let pid = p.id;
-			this.log.info(p.name, this.hands[pid].length);
-		}
+		this.players.logHandLengths();
 
 		this.turnStartTime = Date.now();
 
@@ -239,7 +242,6 @@ class Game{
 			index: this.turnNumber
 		});
 		this.setNextTurnStage('INITIAL_ATTACK');	
-		this.continue();
 	}
 
 
@@ -253,7 +255,8 @@ class Game{
 		this.turnStages.next = stage;
 	}
 
-	//Выбирает следующую стадию игры
+	//Выполняет следующую стадию игры
+	//Возвращает нужно ли продолжать игру, или ждать игроков
 	continue(){
 
 		/*this.players.notify({
@@ -264,31 +267,33 @@ class Game{
 		let state = this.states[this.states.current];
 		if(!state){
 			this.log.error('invalid game state', this.states.current);
-			return;
+			return false;
 		}
-		state.call(this);
+		return state.call(this);
 	}
 
-	//Выбирает следующую стадию хода
+	//Выполняет следующую стадию хода
+	//Возвращает нужно ли продолжать игру, или ждать игроков
 	doTurn(){
 
 		let turnStage = this.turnStages[this.turnStages.next];
 		if(!turnStage){
 			this.log.error('Invalid turn stage', this.turnStages.next);
-			return;
+			return false;
 		}
-		turnStage.call(this);
+		return turnStage.call(this);
 	}
 
 	//Позволяет игроку выполнить действие
+	//Возвращает нужно ли продолжать игру, или ждать игроков
 	let(dirName, player){
 
 		let directive = this.directives[dirName];
 		if(!directive){
 			this.log.error('Invalid directive', dirName);
-			return;
+			return false;
 		}
-		directive.call(this, player);
+		return directive.call(this, player);
 	}
 	
 
@@ -335,6 +340,7 @@ class Game{
 	//Выполняется по окончанию таймера ответа игроков 
 	//Выполняет случайное действие или продолжает игру
 	timeOut(){
+		this.timer = null;
 		let playersWorking = this.players.working;
 		let names = '';
 		for(let pi = 0; pi < playersWorking.length; pi++){
@@ -347,12 +353,11 @@ class Game{
 		if(this.validActions.length && this.states.current == 'STARTED'){
 			this.executeFirstAction();
 		}
-
 		//Иначе, обнуляем действующих игроков, возможные действия и продолжаем ход
 		else{
 			this.players.working = [];
 			this.validActions = [];
-			this.continue();
+			while(this.continue());
 		}	
 	}
 
@@ -381,7 +386,7 @@ class Game{
 		}
 		if(this.validActions.length && !action){
 			this.log.warn('Wating for action but no action recieved');
-			if(this.isStarted())
+			if(this.isStarted)
 				player.recieveValidActions(this.validActions.slice(), (this.actionDeadline - Date.now())/1000);
 			return;
 		}
@@ -403,7 +408,7 @@ class Game{
 			//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
 			if(!playersWorking.length){
 				clearTimeout(this.timer);
-				this.continue();
+				while(this.continue());
 			}
 		}
 	}
@@ -457,30 +462,39 @@ class Game{
 		return false;
 	}
 
-	//Обрабатывает полученное от игрока действие, возвращает исходящее действие
-	executeAction(player, incomingAction){
+	// Проверяет валидность действия
+	// ignored может быть 1 или массивом игнорируемых свойств действия
+	checkActionValidity(action, ignored){
 
-		let action;
-		this.validActions.forEach((validAction) => {
+		if(ignored && !ignored.indexOf){
+			ignored = [ignored];
+		}
+
+		outer:	// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/label
+		for(let i = 0; i < this.validActions.length; i++){
+			let validAction = this.validActions[i];
 			for(let k in validAction){
 				if(!validAction.hasOwnProperty(k))
 					continue;
-				if(validAction[k] != incomingAction[k]){
-					return;
+				if((!ignored || !~ignored.indexOf(k)) && validAction[k] != action[k]){
+					continue outer;
 				}
 			}
-			action = validAction;
-		});
-		let ai = this.validActions.indexOf(action);
+			return validAction;
+		};
+		return null;
+	}
+
+	//Обрабатывает полученное от игрока действие, возвращает исходящее действие
+	executeAction(player, incomingAction){
+
+		let action = this.checkActionValidity(incomingAction, 'linkedField');
 
 		//Проверка действия
-		if( !~ai ){
+		if( !action ){
 			this.log.warn(
-				'Invalid action',
-				player.id,
-				incomingAction && incomingAction.type,
-				incomingAction,
-				this.validActions
+				'Invalid action', player.id,
+				incomingAction && incomingAction.type, incomingAction, this.validActions
 			);
 			return null;
 		}
@@ -489,7 +503,7 @@ class Game{
 		let reaction = this.reactions[action.type];
 		if(!reaction){
 			this.log.warn('Unknown action', action.type);
-			return;
+			return null;
 		}
 		action = reaction.call(this, player, action);
 		action.pid = player.id;
@@ -534,19 +548,10 @@ class Game{
 	storeAction(player, incomingAction){
 
 		//Проверка действия
-		let action;
-		for(let ai = 0; ai < this.validActions.length; ai++){
-			let validAction = this.validActions[ai];
-			if(incomingAction.type == validAction.type){
-				action = validAction;
-				break;
-			}
-		}
+		let action = this.checkActionValidity(incomingAction);
 
-		let ai = this.validActions.indexOf(action);
-
-		if( !~ai ){
-			this.log.warn('Invalid action', player.id, incomingAction.type, incomingAction);
+		if( !action ){
+			this.log.warn('Invalid action', player.id, incomingAction.type, incomingAction, this.validActions);
 			return;
 		}
 
@@ -602,12 +607,6 @@ class Game{
 			note.successful = false;
 
 		return note;
-	}
-
-	//Запущена ли игра
-	//Игра не запущена, когда идет голосование о рестарте
-	isStarted(){
-		return this.states.current != 'NOT_STARTED';
 	}
 
 	//Записывает действие над картой в лог

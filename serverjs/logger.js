@@ -38,14 +38,14 @@ function leadWithZeros(num, len){
 /**
  * Форматирует текущее время.
  * @param  {boolean} [full] нужно ли добавляеть дату или только время
- * @return {string}      	Дата в формате `[DD-MM-YYYYt]HH:MM:SS:MMMM`.
+ * @return {string}      	Дата в формате `[DD-MM-YYt]HH:MM:SS:MMMM`.
  */
 function getTimeStamp(full){
 	const d = new Date();
 	let date = leadWithZeros(d.getHours()) + ':' + leadWithZeros(d.getMinutes()) + ':' +
 			   leadWithZeros(d.getSeconds()) + ':' + leadWithZeros(d.getMilliseconds(), 4);
 	if(full){
-		date = d.toLocaleDateString('RU-ru') + 't' + date;
+		date = leadWithZeros(d.getDate()) + leadWithZeros(d.getMonth()) + leadWithZeros(d.getYear()) + 't' + date;
 	}
 	return date;
 }
@@ -59,7 +59,7 @@ function getTimeStamp(full){
  */
 module.exports = function(callingModule, id, level) {
 	let name = callingModule.filename.split('\\').pop().replace('.js', '');
-	let filename = './logs/' + name + (id ? '#' + id : '') + '-' + (getTimeStamp(true).replace(/[:-]/g,'')) + '.log';
+	let filename = './logs/' + name + (id ? '#' + id : '') + '-' + (getTimeStamp(true).replace(/[|&;$%@"<>()+,\/:-]/g,'')) + '.log';
 	let transports = [
 		new winston.transports.Console(
 		{	

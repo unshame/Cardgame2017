@@ -41,7 +41,7 @@ module.exports = function(server){
 			//	отключен (может быть открыто несколько вкладок)
 			//	находится в игре
 			//	игра в процессе (не идет голосование за рестарт)
-			if(player && !player.connected && player.game && player.game.isStarted()){
+			if(player && !player.connected && player.game && player.game.isStarted){
 				server.players[newConnId] = player;
 				delete server.players[connId];
 				player.updateRemote(newConnId, server.clients[newConnId].remote);
