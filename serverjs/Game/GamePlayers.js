@@ -30,6 +30,90 @@ class GamePlayers extends GamePlayersBase{
 
 	static get [Symbol.species]() { return Array; }
 
+	//СТАТУСЫ
+
+	//Активные
+	get active(){
+		return this.getWith('active', true);
+	}
+	set active(players){
+		this.set('active', false);
+		if(players.length)
+			this.set('active', true, players);
+	}
+	setActive(players){
+		this.set('active', true, players);
+	}
+
+	//Неактивные
+	get inactive(){
+		return this.getWith('active', false);
+	}
+	set inactive(players){
+		this.set('active', true);
+		if(players.length)
+			this.set('active', false, players);
+	}
+	setInactive(players){
+		this.set('active', false, players);
+	}
+
+	//Действующие
+	get working(){
+		return this.getWith('working', true);
+	}
+	set working(players){
+		this.set('working', false);
+		if(players.length)
+			this.set('working', true, players);
+	}
+	setWorking(players){
+		this.set('working', true, players);
+	}
+
+	//Атакующие до перевода
+	get originalAttackers(){
+		return this.getWith('originalAttacker', (val) => !!val, true);
+	}
+	set originalAttackers(players){
+		this.set('originalAttacker', false);
+		this.setOriginalAttackers(players);
+	}
+	setOriginalAttackers(players){
+		this.setIncrementing('originalAttacker', players);
+	}
+
+	//РОЛИ
+	
+	get attackers(){
+		let attackers = this.getWith('role', 'attacker');
+		console.log(attackers.length)
+		if(attackers.length){
+			return this.getWith('roleIndex', (val) => !!val, true, attackers)
+		}
+		return [];
+	}
+	set attackers(players){
+		let attackers = this.getWith('role', 'attacker');
+		if(attackers.length){
+			this.set('role', null, attackers);
+			this.set('roleIndex', null, attackers);
+		}
+		this.set('role', 'attacker', players);
+		this.setIncrementing('roleIndex', players);
+	}
+	setAttacker(player){		
+		this.set('role', 'attacker', [player]);
+		this.setIncrementing('roleIndex', [player]);
+	}
+
+	get defender(){
+		return this.getWithRole('defender');
+	}
+	set defender(p){
+		this.setRole(p, 'defender');
+	}
+
 	//ОПОВЕЩЕНИЕ ИГРОКОВ
 
 	//Оповещает игроков о состоянии игры

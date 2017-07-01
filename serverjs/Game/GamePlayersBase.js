@@ -17,7 +17,6 @@ class GamePlayersBase extends BetterArray{
 	constructor(game, players, turnStartStatus, gameStartStatus){
 		super();
 		this.game = game;
-		this.roles = ['attacker', 'defender','ally'];
 		this.turnStartStatus = turnStartStatus;
 		this.gameStartStatus = gameStartStatus;
 		for(let i = 0; i < players.length; i++){
@@ -95,7 +94,6 @@ class GamePlayersBase extends BetterArray{
 	 * @status String - какой статус менять
 	 * @value * - на что менять статус
 	 * @players Player - у каких игроков менять статус
-	 * Сравнение через ==, так что можно передавать true и любое трушное значение подойдет
 	 */
 	set(status, value, players){
 
@@ -110,6 +108,17 @@ class GamePlayersBase extends BetterArray{
 			if(~pi){
 				let p = this[pi];
 				p[status] = value;
+			}
+		}
+	}
+
+	setIncrementing(status, players){
+		let last = this.getWith(status, (val) => !!val).length + 1;
+		if(players.length){
+			for(let pi = 0; pi < players.length; pi++){
+				let p = players[pi];
+				this.set(status, last, [p]);
+				last++;
 			}
 		}
 	}
@@ -160,65 +169,6 @@ class GamePlayersBase extends BetterArray{
 		return this.getWith(status, value, false, players)[0];
 	}
 
-	//Активные
-	get active(){
-		return this.getWith('active', true);
-	}
-	set active(players){
-		this.set('active', false);
-		if(players.length)
-			this.set('active', true, players);
-	}
-	setActive(players){
-		this.set('active', true, players);
-	}
-
-	//Неактивные
-	get inactive(){
-		return this.getWith('active', false);
-	}
-	set inactive(players){
-		this.set('active', true);
-		if(players.length)
-			this.set('active', false, players);
-	}
-	setInactive(players){
-		this.set('active', false, players);
-	}
-
-
-	//Действующие
-	get working(){
-		return this.getWith('working', true);
-	}
-	set working(players){
-		this.set('working', false);
-		if(players.length)
-			this.set('working', true, players);
-	}
-	setWorking(players){
-		this.set('working', true, players);
-	}
-
-	//Атакующие до перевода
-	get originalAttackers(){
-		return this.getWith('originalAttacker', (val) => !!val, true);
-	}
-	set originalAttackers(players){
-		this.set('originalAttacker', false);
-		this.setOriginalAttackers(players);
-	}
-	setOriginalAttackers(players){
-		let last = this.originalAttackers.length + 1;
-		if(players.length){
-			for(let pi = 0; pi < players.length; pi++){
-				let p = players[pi];
-				this.set('originalAttacker', last, [p]);
-				last++;
-			}
-		}
-	}
-
 	//Счеты
 	get scores(){
 		let scores = {};
@@ -228,7 +178,6 @@ class GamePlayersBase extends BetterArray{
 		}
 		return scores;
 	}
-
 
 	//РОЛИ
 
@@ -242,27 +191,6 @@ class GamePlayersBase extends BetterArray{
 
 		if(player)
 			this.set('role', role, [player]);
-	}
-
-	get attacker(){
-		return this.getWithRole('attacker');
-	}
-	set attacker(p){
-		this.setRole(p, 'attacker');
-	}
-
-	get defender(){
-		return this.getWithRole('defender');
-	}
-	set defender(p){
-		this.setRole(p, 'defender');
-	}
-
-	get ally(){
-		return this.getWithRole('ally');
-	}
-	set ally(p){
-		this.setRole(p, 'ally');
 	}
 }
 
