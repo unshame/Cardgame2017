@@ -20,9 +20,6 @@ var CardManager = function(inDebugMode){
 
 	this.numOfCards = 0;
 
-	game.cards = this.cards;
-	game.cardsGroup = this.cardsGroup;
-
 	/**
 	 * Включена ли физика карт.
 	 * @type {Boolean}
@@ -62,6 +59,9 @@ CardManager.prototype.createCards = function(cardsInfo){
 		ids.push(c.cid);
 		if(!card){
 			var options = {
+				game: game,
+				x: game.screenWidth / 2,
+				y: game.screenHeight + 300,
 				id: c.cid,
 				suit: c.suit,
 				value: c.value,
@@ -93,7 +93,9 @@ CardManager.prototype.createCard = function(options){
 		console.error('Card manager: incorrect options', options);
 		return;
 	}
-	this.cards[options.id] = new Card(options);
+	var card = new Card(options);
+	this.cards[options.id] = card;
+	this.cardsGroup.add(card.base);
 	this.numOfCards++;
 };
 

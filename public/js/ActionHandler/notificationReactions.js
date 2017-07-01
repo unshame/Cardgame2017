@@ -68,14 +68,11 @@ window.notificationReactions = {
 		}
 
 		var cards = discard.cards.slice();
-		discard.reset();
-		
-		gameSeq.start(function(){	
-			delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);
-			delay += game.defaultMoveTime;		
+		delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);
+		delay += game.defaultMoveTime;		
+
+		gameSeq.start(function(seq){
 			discard.removeAllCards();
-		}, game.defaultMoveTime)
-		.then(function(seq){
 			dummy.placeQueuedCards();
 			if(!won){
 				seq.abort();
@@ -84,7 +81,7 @@ window.notificationReactions = {
 					cardManager.enablePhysics(true);
 				}, 0, delay - game.defaultMoveTime);
 			}
-		}, function(){return delay;})
+		}, delay/game.speed, game.defaultMoveTime)
 		.then(function(){
 			for(var ci = 0; ci < dummy.cards.length; ci++){
 				var card = dummy.cards[ci],

@@ -64,7 +64,7 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 	//Останавливаем твин, если он есть и угол поворота изменился
 	if(this._rotator){
 		var rotatorData = this._rotator.timeline[this._rotator.current];
-		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle && rotatorData.delay == delay && !game.paused)
+		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle && rotatorData.delay == delay && !this.game.paused)
 			return;
 
 		this._rotator.stop();
@@ -72,19 +72,19 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 	}
 
 	//Создаем и запускаем твин или поворачиваем карту если игра остановлена
-	if(game.paused){
+	if(this.game.paused){
 		this.setAngle(angle);
 	}
 	else{
-		this._rotator = game.add.tween(this.sprite);
+		this._rotator = this.game.add.tween(this.sprite);
 		this._rotator.to(
 			{
 				angle: angle
 			},
-			time/game.speed || 0,
+			time/this.game.speed || 0,
 			easing || Phaser.Easing.Quadratic.Out,
 			true,
-			delay/game.speed || 0
+			delay/this.game.speed || 0
 		);
 
 		//Ресет твина по окончанию
@@ -106,7 +106,7 @@ Card.prototype._revolve = function(){
 	if(!this._revolveInfo || this.mover)
 		return;
 
-	var dt = game.time.elapsed,
+	var dt = this.game.time.elapsed,
 		angle = this._revolveInfo.speed * dt,
 		x = this._revolveInfo.x - this.base.x,
 		y = this._revolveInfo.y - this.base.y,

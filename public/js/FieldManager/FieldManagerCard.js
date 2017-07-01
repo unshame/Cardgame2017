@@ -12,8 +12,9 @@ FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
 	var delay = 0;
 	for(var ci = 0; ci < cardsInfo.length; ci++){
 		var c = cardsInfo[ci];
-		var card = game.cards[c.cid];
+		var card = cardManager.cards[c.cid];
 		var fieldChanged;
+
 		if(card){
 			card.presetValue(c.suit, c.value);		
 			fieldChanged = card.presetField(c.field || c.pid);
@@ -23,6 +24,7 @@ FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
 			connection.server.reconnect();
 			return;
 		}
+
 		if(fieldChanged){
 			if(card.field){
 				card.field.cardsToRemove.push(card);
@@ -30,11 +32,17 @@ FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
 			var fieldId = card.fieldId;
 			if(fieldId == 'BOTTOM')
 				fieldId = 'DECK';
+			var field = this.fields[fieldId];
+			if(!field){
+				console.error('Field manager: cannot queue card, field', fieldId, 'not found');
+				return 0;
+			}
 			delay = this.fields[fieldId].queueCards([card], noDelay ? 0 : delay);
 		}
 		else{
 			console.warn('Field manager: Card', c.cid, 'already on field', (c.field || c.pid));
 		}
+
 	}
 	return delay;
 };
@@ -46,9 +54,15 @@ FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
 FieldManager.prototype.revealCards = function(cardsInfo){
 	for(var ci = 0; ci < cardsInfo.length; ci++){
 		var c = cardsInfo[ci];
-		var card = game.cards[c.cid];
+		var card = cardManager.cards[c.cid];
 		if(card){
-			card.setValue(c.suit, c.value);		
+			
+			if(card.fieldId == 'DISCARD_PILE'){
+				card.presetValue(c.suit, c.value);
+				console.log(card.c, card.value)
+			}{
+				card.setValue(c.suit, c.value);						
+			}
 		}
 		else{
 			console.error('Field manager: Card', c.cid, 'not found');
@@ -67,8 +81,13 @@ FieldManager.prototype.revealCards = function(cardsInfo){
 * @return {number} Время до начала движения последней перемещаемой карты
 */
 FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDelay){
-	if(!cardsInfo.length)
+	if(!cardsInfo || !cardsInfo.length)
 		return 0;
+
+	if(!field || !this.fields[field.id]){
+		console.error('Field manager: cannot move cards to field', field);
+		return 0;
+	}
 
 	var cardsToPlace = [];
 	for(var i = 0; i < cardsInfo.length; i++){
@@ -76,7 +95,7 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDe
 			suit = cardsInfo[i].suit,
 			value = cardsInfo[i].value, 
 			fieldId = cardsInfo[i].field,
-			card = game.cards[cid];
+			card = cardManager.cards[cid];
 		
 		if(card){
 			card.presetValue(suit, value);
@@ -107,7 +126,7 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 	
 	for(var ci = 0; ci < cardsInfo.length; ci++){
 		var c = cardsInfo[ci];
-		var card = game.cards[c.cid];
+		var card = cardManager.cards[c.cid];
 
 		if(!card){
 			console.error('Field manager: Card', c.cid, 'not found');
@@ -116,7 +135,13 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 		}
 
 		if(pid != c.pid){
-			this.fields[c.pid].setOwnHighlight(true, ui.colors.red);
+			if(this.fields[c.pid]){
+				this.fields[c.pid].setOwnHighlight(true, ui.colors.red);
+			}
+			else{
+				console.error('Field manager: field', c.pid, 'not found');
+				continue;
+			}
 		}
 
 		card.raised = true;
@@ -128,7 +153,12 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 	}		
 
 	//Выделяем поле игрока с наибольшим козырем
-	this.fields[pid].setOwnHighlight(true, ui.colors.green);
+	if(this.fields[pid]){
+		this.fields[pid].setOwnHighlight(true, ui.colors.green);
+	}
+	else{
+		console.error('Field manager: field', pid, 'not found');
+	}
 };
 
 /**
@@ -141,7 +171,7 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 		
 	for(var ci = 0; ci < cardsInfo.length; ci++){
 		var c = cardsInfo[ci];
-		var card = game.cards[c.cid];	
+		var card = cardManager.cards[c.cid];	
 
 		if(!card){
 			console.error('Field manager: Card', c.cid, 'not found');
@@ -171,8 +201,8 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
  */
 FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 	if(game.paused){
-		var delay = fieldManager.queueCards(cardsInfo);
-		fieldManager.placeQueuedCards();
+		var delay = this.queueCards(cardsInfo);
+		this.placeQueuedCards();
 		return delay;
 	}
 	var duration = 500/game.speed,

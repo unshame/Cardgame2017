@@ -41,17 +41,17 @@ Card.prototype.applyValue = function(){
 		this._flipper = null;
 	}
 
-	if(game.paused){
+	if(this.game.paused){
 		this.setValue(this.suit, this.value, false);
 		return;
 	}
 
-	var duration = (this.flipTime/game.speed)/2,
+	var duration = (this.flipTime/this.game.speed)/2,
 		highest = 0xffffff;
 
 	this.sprite.tint = highest;
 
-	this._flipper = game.add.tween(this.sprite.scale);
+	this._flipper = this.game.add.tween(this.sprite.scale);
 
 	this._flipper.to({x: 0, y: this.skin.scale*1.1}, duration);
 	this._flipper.to({x: this.skin.scale, y:this.skin.scale}, duration);
@@ -114,7 +114,7 @@ Card.prototype.setValue = function(suit, value, animate){
 	if(animate === undefined)
 		animate = true;
 
-	if(animate && !game.paused){
+	if(animate && !this.game.paused){
 		this.presetValue(suit, value);
 		this.applyValue();
 	}

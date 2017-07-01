@@ -128,12 +128,13 @@ FieldBuilder.prototype.adjustFieldNetwork = function(){
 	this._buildTableFields();
 };
 
+/**
+ * Расчитывает размеры и позиции полей.
+ */
 FieldBuilder.prototype.calcSizes = function(){
 	this._calcGenSizes();
 	this._calcSpecSizes();
 };
-
-//FieldBuilderBuild
 
 /**
 * Обобщенные (General) размеры

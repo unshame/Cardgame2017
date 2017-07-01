@@ -15,25 +15,25 @@ Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color)
 
 	this.glow.tint = color || ui.colors.white;
 
-	if(game.paused)
+	if(this.game.paused)
 		return;
 
-	this._glowDecreaser = game.add.tween(this.glow);
+	this._glowDecreaser = this.game.add.tween(this.glow);
 	this._glowDecreaser.to(
 		{alpha: minGlow}, 
-		speed/game.speed, 
+		speed/this.game.speed, 
 		Phaser.Easing.Linear.None, 
 		false, 
-		Math.floor(Math.random()*(delayRange/game.speed || 0))
+		Math.floor(Math.random()*(delayRange/this.game.speed || 0))
 	);
 
-	this._glowIncreaser = game.add.tween(this.glow);
+	this._glowIncreaser = this.game.add.tween(this.glow);
 	this._glowIncreaser.to(
 		{alpha: maxGlow},
-		speed/game.speed, 
+		speed/this.game.speed, 
 		Phaser.Easing.Linear.None, 
 		false, 
-		Math.floor(Math.random()*(delayRange/game.speed || 0))
+		Math.floor(Math.random()*(delayRange/this.game.speed || 0))
 	);
 
 	this._glowIncreaser.onComplete.add(function(){

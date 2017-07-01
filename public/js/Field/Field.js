@@ -249,8 +249,7 @@ var Field = function(options, style, iconStyle){
 		this.icon.scale.set(this.iconStyle.scale, this.iconStyle.scale);
 		this.base.add(this.icon);
 	}
-	fieldManager.fieldsGroup.add(this.base);
-
+	
 	/**
 	 * Подсвечено ли поле.
 	 * @type {Boolean}
@@ -303,7 +302,7 @@ var Field = function(options, style, iconStyle){
 * Возвращает опции по умолчанию
 */
 Field.getDefaultOptions = function(){
-	var config = {
+	return {
 		options: {
 
 			moveTime: game.defaultMoveTime,
@@ -359,7 +358,6 @@ Field.getDefaultOptions = function(){
 			visible: true
 		}
 	};
-	return config;
 };
 
 /**

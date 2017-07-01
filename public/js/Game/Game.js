@@ -53,6 +53,13 @@ var Game = function(speed, inDebugMode){
 	this.isRawLandscape = true;
 
 	/**
+	* Менеджер полей
+	* @type {FieldManager}
+	* @global
+	*/
+	window.fieldManager = new FieldManager(this.inDebugMode);
+
+	/**
 	 * Менеджер последовательностей игровых анимаций.
 	 * @type {Sequencer}
 	 * @global
@@ -138,13 +145,6 @@ Game.prototype.initialize = function(){
 	* @global
 	*/
 	window.background = new Background();	
-	
-	/**
-	* Менеджер полей
-	* @type {FieldManager}
-	* @global
-	*/
-	window.fieldManager = new FieldManager(false);
 
 	/**
 	* Менеджер карт
@@ -166,6 +166,8 @@ Game.prototype.initialize = function(){
 	* @global
 	*/
 	window.cardControl = new CardControl();
+
+	fieldManager.initialize();
 
 	ui.initialize();
 

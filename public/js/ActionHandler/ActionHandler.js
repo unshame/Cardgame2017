@@ -106,7 +106,7 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
-		var card = game.cards[action.cid];
+		var card = cardManager.cards[action.cid];
 		var field = fieldManager.fields[action.field];
 		if(action.cid && card && (!cardHolding || (cardHolding == card || cardHolding.value == card.value && action.type != 'DEFENSE'))){
 			card.setPlayability(true);

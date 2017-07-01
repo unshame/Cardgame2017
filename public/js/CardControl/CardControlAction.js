@@ -28,7 +28,7 @@ CardControl.prototype.cardPickup = function(card, pointer){
 
 	this.card.setAngle(0);
 	this._cardSetPathToCursor();
-	game.cardsGroup.bringToTop(this.card.base);
+	cardManager.cardsGroup.bringToTop(this.card.base);
 
 	actionHandler.highlightPossibleActions();
 };

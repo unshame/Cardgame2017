@@ -25,8 +25,7 @@ var FieldManager = function(inDebugMode){
 	* Phaser группа полей
 	* @type {Phaser.Group}
 	*/
-	this.fieldsGroup = game.add.group();
-	this.fieldsGroup.name = 'fields';
+	this.fieldsGroup = null;
 
 	/**
 	* Поля стола
@@ -42,11 +41,27 @@ var FieldManager = function(inDebugMode){
 	this.inDebugMode = inDebugMode;
 
 	/**
+	 * Инициализирован ли модуль
+	 * @type {Boolean}
+	 */
+	this.initialized = false;
+
+	/**
 	* Создает поля для менеджера
 	* @type {FieldBuilder}
 	*/
 	this.builder = new FieldBuilder(this);
+
 };
+
+/**
+ * Создает Phaser группу для полей, инициализирует модуль.
+ */
+FieldManager.prototype.initialize = function(){
+	this.fieldsGroup = game.add.group();
+	this.fieldsGroup.name = 'fields';
+	this.initialized = true;
+}
 
 /**
 * Добавляет поле.
@@ -56,11 +71,17 @@ var FieldManager = function(inDebugMode){
 */
 FieldManager.prototype.addField = function(options, style, iconStyle){
 
+	if(!this.initialized){
+		console.error('Field manager: cannot add field, module uninitialized');
+		return;
+	}
+
 	var field = new Field(options, style, iconStyle);
 	if(this.fields[options.id]){
 		this.fields[options.id].destroy();
 	}
 	this.fields[options.id] = field;
+	this.fieldsGroup.add(field.base);
 
 	if(options.type == 'TABLE'){
 		this.table.push(field);
@@ -72,6 +93,10 @@ FieldManager.prototype.addField = function(options, style, iconStyle){
 * @param {number} suit козырь
 */
 FieldManager.prototype.setTrumpSuit = function(suit, delay){
+	if(!this.fields.DECK){
+		console.error('Field manager: cannot set trump suit, no DECK');
+		return;
+	}
 	if(delay === undefined)
 		delay = 1000;
 	var icon = this.fields.DECK.icon;
@@ -88,8 +113,10 @@ FieldManager.prototype.setTrumpSuit = function(suit, delay){
 */
 FieldManager.prototype.unlockField = function(id, noAnimation){
 	var field = this.fields[id];
-	if(!field || !field.icon)
+	if(!field || !field.icon){
+		console.error('Field manager: cannot unlock field', id, ', no such field or field has no icon');
 		return;
+	}
 	
 	if(game.paused || noAnimation){
 		field.icon.destroy();

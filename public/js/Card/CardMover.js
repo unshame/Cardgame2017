@@ -25,7 +25,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	this._bringToTopOn = bringToTopOn;
 
-	if(this._bringToTopOn == BRING_TO_TOP_ON.INIT || game.paused && this._bringToTopOn != BRING_TO_TOP_ON.NEVER)
+	if(this._bringToTopOn == BRING_TO_TOP_ON.INIT || this.game.paused && this._bringToTopOn != BRING_TO_TOP_ON.NEVER)
 		this.bringToTop();
 
 	var destination = this._calculateMoveCoordinates(x, y, relativeToBase, shouldRebase);
@@ -72,8 +72,8 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 		!Phaser.Rectangle.containsRaw(
 			-this.skin.width/2,
 			-this.skin.height/2,
-			game.screenWidth + this.skin.width,
-			game.screenHeight + this.skin.height,
+			this.game.screenWidth + this.skin.width,
+			this.game.screenHeight + this.skin.height,
 			newBaseX,
 			newBaseY
 	)){
@@ -116,7 +116,7 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 * @param  {functon} easing 		 функция плавности
 */
 Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
-	if(game.paused){
+	if(this.game.paused){
 		this.applyValue();
 		this.setRelativePosition(x, y);
 		if(this.mover){
@@ -137,16 +137,16 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	}
 
 	//Запускаем новый твин
-	this.mover = game.add.tween(this.sprite);
+	this.mover = this.game.add.tween(this.sprite);
 	this.mover.to(
 		{			
 			x: x,
 			y: y
 		},
-		(time/game.speed) || 0,
+		(time/this.game.speed) || 0,
 		easing || Phaser.Easing.Quadratic.Out,
 		true,
-		(delay/game.speed) || 0
+		(delay/this.game.speed) || 0
 	);
 
 	this.mover.onStart.addOnce(this._onMoveStart, this);
@@ -215,7 +215,7 @@ Card.prototype._tryResetMover = function(x, y, time, delay, shouldRebase){
 	//когда они несколько раз меняют направление движения (игрок проносит курсор над рукой)
 	//Ограничиваем минимальное время половиной заданного, чтобы карты резко не прыгали
 	if(!delay){		
-		time = Math.max(moverData.duration*game.speed - moverData.dt*game.speed, time/2);
+		time = Math.max(moverData.duration*this.game.speed - moverData.dt*this.game.speed, time/2);
 	}
 
 	//Останавливаем существующий твин

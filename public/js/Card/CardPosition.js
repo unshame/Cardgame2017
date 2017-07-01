@@ -89,14 +89,15 @@ Card.prototype.setBasePreserving = function(x, y, resetMover){
 
 /**
 * Поднимает карту наверх, опционально поднимает перетаскиваемую карту наверх.
-* @param {boolean} [fixController=true] нужно ли поднимать {@link CardControl#card} наверх
+* @param {boolean} [fixController=true] нужно ли поднимать {@link cardControl#card} наверх
 */
 Card.prototype.bringToTop = function(fixController){
 	if(fixController === undefined)
 		fixController = true;
-	game.cardsGroup.bringToTop(this.base);
-	if(fixController && cardControl.card && cardControl.card != this)
-		game.cardsGroup.bringToTop(cardControl.card.base);
+	this.base.parent.bringToTop(this.base);
+	if(fixController && cardControl.card && cardControl.card != this){
+		cardControl.card.bringToTop(false);
+	}
 };
 
 /**
@@ -108,7 +109,7 @@ Card.prototype.presetField = function(fieldId){
 		return false;
 	}
 	this.fieldId = fieldId;
-	if(fieldId == game.pid){
+	if(fieldId == this.game.pid){
 		this.setDraggability(true);
 	}
 	else{

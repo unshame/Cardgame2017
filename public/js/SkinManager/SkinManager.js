@@ -228,9 +228,9 @@ SkinManager.prototype.setCardback = function(i){
 		return;
 	}
 	this.skin.cardbackFrame = this.skin.cardbackPossibleFrames[i];
-	for(var ci in game.cards){
-		if(game.cards.hasOwnProperty(ci)){
-			game.cards[ci].applyCardback();
+	for(var ci in cardManager.cards){
+		if(cardManager.cards.hasOwnProperty(ci)){
+			cardManager.cards[ci].applyCardback();
 		}
 	}
 };

@@ -6,9 +6,10 @@
 * присвоенному полю ({@link Field}) и контроллеру карт ({@link CardControl}).
 * @class
 * @param {object} options 		 - Опции, используемые при создании карты
+* @param {Game} options.game игра, к которой пренадлежит карта
 * @param {string} options.id 	 - id карты
-* @param {number} [options.x=game.screenWidth/2] 	 - позиция по горизонтали
-* @param {number} [options.y=game.screenHeight+300] - позиция по вертикали
+* @param {number} [options.x=0] 	 - позиция по горизонтали
+* @param {number} [options.y=0] - позиция по вертикали
 * @param {(number|null)} [options.suit=null]  - масть карты
 * @param {number} [options.value=0] 		 - значение карты
 * @param {number} [options.flipTime=150] - время переворота карты
@@ -26,6 +27,8 @@ var Card = function (options) {
 		if(options.hasOwnProperty(o) && options[o] !== undefined)
 			this.options[o] = options[o];
 	}
+
+	this.game = this.options.game;
 
 	/**
 	* Выводить ли дебаг информацию
@@ -116,7 +119,6 @@ var Card = function (options) {
 	this.base.y = this.options.y;
 	this.base.add(this.glow);
 	this.base.add(this.sprite);
-	game.cardsGroup.add(this.base);  
 
 	/**
 	* Твин передвижения карты.
@@ -200,7 +202,7 @@ var Card = function (options) {
 	* @type {object}
 	* @see {@link SkinManager}
 	*/
-	this.skin = this.options.skin;
+	this.skin = this.options.skin || skinManager.skin;
 	this.applySkin();
 
 	Object.seal(this);
@@ -212,18 +214,18 @@ var Card = function (options) {
 * @return {object} опции по умолчанию
 */
 Card.getDefaultOptions = function(){
-	var options = {
+	return {
+		game: null,
 		id:null,
-		x: game.screenWidth / 2,
-		y: game.screenHeight + 300,
+		x: 0,
+		y: 0,
 		suit:null,
 		value:0,
 		flipTime: 250,
-		skin:skinManager.skin,
+		skin: null,
 		fieldId: null,
 		debug: false
 	};
-	return options;
 };
 
 //@include:CardValue
@@ -289,8 +291,8 @@ Card.prototype.cursorIsOver = function(){
 		this.base.y + this.sprite.y - this.sprite.height/2,
 		this.sprite.width,
 		this.sprite.height,
-		game.input.x,
-		game.input.y
+		this.game.input.x,
+		this.game.input.y
 	);
 };
 
@@ -306,8 +308,8 @@ Card.prototype.destroy = function(delay, now) {
 	if(delay === undefined || now)
 		delay = 0;
 	var time = 1000,
-		alphaTween = game.add.tween(this.sprite),
-		scaleTween = game.add.tween(this.sprite.scale);
+		alphaTween = this.game.add.tween(this.sprite),
+		scaleTween = this.game.add.tween(this.sprite.scale);
 	if(cardControl.card == this)
 		cardControl.reset('card destroyed');
 	delete cardManager.cards[this.id];
@@ -323,12 +325,12 @@ Card.prototype.destroy = function(delay, now) {
 	if(this.field)
 		this.field.removeCards([this]);
 
-	if(game.paused || now){
+	if(this.game.paused || now){
 		this._destroyNow();
 	}
 	else{
-		alphaTween.to({alpha: 0}, time/game.speed, Phaser.Easing.Linear.None, true, delay/game.speed);
-		scaleTween.to({x: 0.6, y: 0.6}, time/game.speed, Phaser.Easing.Linear.None, true, delay/game.speed);
+		alphaTween.to({alpha: 0}, time/this.game.speed, Phaser.Easing.Linear.None, true, delay/this.game.speed);
+		scaleTween.to({x: 0.6, y: 0.6}, time/this.game.speed, Phaser.Easing.Linear.None, true, delay/this.game.speed);
 		alphaTween.onComplete.addOnce(this._destroyNow, this);
 	}
 };
@@ -364,14 +366,14 @@ Card.prototype.updateDebug = function(){
 	var x = this.base.x + this.sprite.x - this.skin.width/2;
 	var y = this.base.y + this.sprite.y + this.skin.height/2 + 12;
 	if(this.suit || this.suit === 0){
-		game.debug.text(
+		this.game.debug.text(
 			getSuitStrings('EN')[this.suit] + ' ' + 
 			cardValueToString(this.value, 'EN'),
 			x, y 
 		);
 		y += 14;
 	}
-	game.debug.text(
+	this.game.debug.text(
 		Math.round(this.base.x + this.sprite.x) + ' ' + 
 		Math.round(this.base.y + this.sprite.y),
 		x, y 
