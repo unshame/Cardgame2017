@@ -275,9 +275,8 @@ class GameCards extends BetterArray{
 		const game = this.game;
 		const players = game.players;
 		let originalAttackers = players.originalAttackers;
-		let attacker = players.attacker;
+		let attackers = players.attackers;
 		let defender = players.defender;
-		let ally = players.ally;
 		let deals = [];
 
 		let sequence = [];
@@ -285,11 +284,12 @@ class GameCards extends BetterArray{
 			if(!sequence.includes(p))
 				sequence.push(p);
 		});
-		if(!sequence.includes(attacker))
-			sequence.push(attacker);
-
-		if(ally && !sequence.includes(ally))
-			sequence.push(ally);
+		
+		attackers.forEach((attacker) => {
+			if(!sequence.includes(attacker)){
+				sequence.push(attacker);
+			}
+		});
 
 		if(!sequence.includes(defender))
 			sequence.push(defender);

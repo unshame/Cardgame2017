@@ -87,7 +87,6 @@ class GamePlayers extends GamePlayersBase{
 	
 	get attackers(){
 		let attackers = this.getWith('role', 'attacker');
-		console.log(attackers.length)
 		if(attackers.length){
 			return this.getWith('roleIndex', (val) => !!val, true, attackers)
 		}
@@ -261,9 +260,10 @@ class GamePlayers extends GamePlayersBase{
 		const game = this.game;
 		let activePlayers = this.active;
 		let inactivePlayers = this.inactive;
+		let attackers = this.attackers;
 
 		//Current attacker index
-		let ai = activePlayers.indexOf(this.attacker);	
+		let ai = activePlayers.indexOf(attackers[0]);	
 
 		if(game.deck.length)
 			return ai;
@@ -281,8 +281,8 @@ class GamePlayers extends GamePlayersBase{
 				activePlayers.splice(pi,1);
 
 				//Находим предыдущего ходящего в сдвинутом массиве
-				let newai = activePlayers.indexOf(this.attacker);
-				if(activePlayers[ai] != this.attacker){	
+				let newai = activePlayers.indexOf(attackers[0]);
+				if(activePlayers[ai] != attackers[0]){	
 
 					//Если предыдущий ходящий был сдвинут, переставляем индекс на его новую позицию				
 					if(~newai)
@@ -344,10 +344,38 @@ class GamePlayers extends GamePlayersBase{
 		const game = this.game;
 		let activePlayers = this.active;
 
+		let [minTCards, minTCard] = this.findMinTrumpCards();
+
+		//Если есть хотя бы один козырь
+		if(minTCard){
+
+			//Находим игроков, учавствующих в первом ходе
+			let pid = minTCard.pid;
+			let pi = activePlayers.map(p => p.id).indexOf(pid);
+
+			this.findToGoNext(pi - 1);
+					
+			this.log.info('Player to go first: ', this.attackers[0].name);
+		}
+		//В противном случае, берем первого попавшегося игрока и начинаем ход
+		else{
+			let attackers = [this[0]];
+			if(this[2]){
+				attackers.push(this[2]);
+			}
+			this.attackers = attackers;
+			this.defender = this[1];
+		}
+		return [minTCards, minTCard];
+	}
+
+	//Находим минимальный козырь в каждой руке
+	findMinTrumpCards(){
+		const game = this.game;
+
 		let minTCards = [],
 			minTCard = null;
 
-		//Находим минимальный козырь в каждой руке
 		for(let pi = 0; pi < this.length; pi++){
 
 			let pid = this[pi].id;
@@ -376,8 +404,6 @@ class GamePlayers extends GamePlayersBase{
 				minTCards.push(minTCard);
 			}
 		}
-
-		//Если есть хотя бы один козырь
 		if(minTCards.length){
 			minTCard = {
 				pid: null,
@@ -392,34 +418,17 @@ class GamePlayers extends GamePlayersBase{
 					minTCard = minTCards[ci];
 				}
 			}
-
-			//Находим игроков, учавствующих в первом ходе
-			let pid = minTCard.pid;
-			let pi = activePlayers.map(p => p.id).indexOf(pid);
-
-			this.findToGoNext(pi - 1);
-					
-			this.log.info('Player to go first: ', this.attacker.name);
 		}
 
-		//В противном случае, берем первого попавшегося игрока и начинаем ход
-		else{
-			this.attacker = this[0];
-			this.defender = this[1];
-			if(this.length > 2)
-				this.ally = this[2];
-			else
-				this.ally = null;
-		}
 		return [minTCards, minTCard];
 	}
 
 	//Находит участников  хода
-	findToGoNext(){	
+	findToGoNext(currentAttackerIndex){	
 
 		let activePlayers = this.active;
+		let attackers = this.attackers;
 
-		let currentAttackerIndex = activePlayers.indexOf(this.attacker);
 		let numInvolved = Math.min(activePlayers.length, 3);
 		let involved = [];
 		let i = currentAttackerIndex + 1;
@@ -429,9 +438,12 @@ class GamePlayers extends GamePlayersBase{
 			involved.push(activePlayers[i]);
 			i++;
 		}
-		this.attacker = involved[0];
+		attackers = [involved[0]];
+		if(involved[2]){
+			attackers.push(involved[2]);
+		}
+		this.attackers = attackers;
 		this.defender = involved[1];
-		this.ally = involved[2] || null;
 	}
 
 	//Проверяет, остались ли игроки в игре и устанавливает проигравшего
@@ -467,7 +479,18 @@ class GamePlayers extends GamePlayersBase{
 		}
 	}
 
-	logHandLengths(){
+	logTurnStart(){
+		const game = this.game;
+		let attackers = this.attackers;
+		this.log.info();
+		this.log.info(
+			'Turn %d %s => %s <= %s',
+			game.turnNumber,
+			attackers[0].name,
+			this.defender.name,
+			attackers[1] ? attackers[1].name : ''
+		);
+		this.log.info('Cards in deck:', game.deck.length);
 		for(let pi = 0; pi < this.length; pi++){
 			let p = this[pi];
 			let pid = p.id;

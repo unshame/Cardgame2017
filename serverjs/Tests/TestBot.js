@@ -47,7 +47,8 @@ class TestBot extends Bot{
 			//Тест перевода игроку, у которого нет достаточного кол-ва карт, чтобы отбиться
 			this.tests++;
 			let usedFields = game.table.usedFields;
-			let handSize = game.hands[game.players.ally && game.players.ally.id || game.players.attacker.id].length;
+			let attackers = game.players.attackers;
+			let handSize = game.hands[attackers[1] && attackers[1].id || attackers[0].id].length;
 			if(handSize <= usedFields){
 				console.log('Test %s (transfer) failed on %s', this.tests, this.name);
 				console.log('%s cards to beat but %s cards in hand', usedFields + 1, handSize);
@@ -60,15 +61,15 @@ class TestBot extends Bot{
 			//Тест смены ролей игроков при переводе
 			this.tests++;
 			let before = [
-				game.players.attacker.name,
+				attackers[0].name,
 				game.players.defender.name
 			];
-			if(game.players.ally)
-				before.push(game.players.ally.name);
+			if(attackers[1])
+				before.push(attackers[1].name);
 			let expected = [];
 			let activePlayers = game.players.active;
 			let parties = activePlayers.length > 2 ? 3 : 2;
-			let ai = activePlayers.indexOf(game.players.attacker);
+			let ai = activePlayers.indexOf(attackers[0]);
 			for(let i = 0; i < parties; i++){
 				ai++;
 				if(ai >= activePlayers.length)
@@ -92,12 +93,13 @@ class TestBot extends Bot{
 			}
 
 			//Тест смены ролей игроков при переводе (продолжение)
+			attackers = game.players.attackers;
 			let result = [
-				game.players.attacker.name,
+				attackers[0].name,
 				game.players.defender.name
 			];
-			if(game.players.ally)
-				result.push(game.players.ally.name);
+			if(attackers[1])
+				result.push(attackers[1].name);
 			if(result.join() != expected.join()){
 				console.log('Test %s failed on %s', this.tests, this.name);
 				console.log('Before:  ', before);

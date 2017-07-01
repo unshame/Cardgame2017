@@ -19,36 +19,39 @@ class GameTurnStages{
 
 	//Первая атака
 	INITIAL_ATTACK(){
-		return this.let('ATTACK', this.players.attacker);
+		return this.let('ATTACK', this.players.attackers[0]);
 		//Turn stage: DEFENSE
 	}
 
 	//Атакующий игрок атакует повторно
 	REPEATING_ATTACK(){
-		return this.let('ATTACK', this.players.attacker);
+		return this.let('ATTACK', this.players.attackers[0]);
 		//Turn stage: DEFENSE
 	}
 
 	//Атакующий игрок атакует после помогающего игрока
 	ATTACK(){
-		return this.let('ATTACK', this.players.attacker);
+		return this.let('ATTACK', this.players.attackers[0]);
 		//Turn stage: DEFENSE
 	}
 
 	//Помогающий игрок атакует
 	SUPPORT(){
 
+		let attackers = this.players.attackers;
+
 		//Debug
-		if(!this.players.ally)
+		if(!attackers[1])
 			this.log.error('No ally assigned, but turn stage is SUPPORT');
 
-		return this.let('ATTACK', this.players.ally || this.players.attacker);
+		return this.let('ATTACK', attackers[1] || attackers[0]);
 		//Turn stage: DEFENSE
 	}
 
 	//Подкладывание карт в догонку
 	FOLLOWUP(){
-		return this.let('ATTACK', !this.skipCounter ? this.players.attacker : (this.players.ally || this.players.attacker));
+		let attackers = this.players.attackers;
+		return this.let('ATTACK', !this.skipCounter ? attackers[0] : (attackers[1] || attackers[0]));
 		//Turn stage: DEFENSE
 	}
 
@@ -94,8 +97,9 @@ class GameTurnStages{
 	ENDED(){
 
 		//Если защищающийся брал, сдвигаем айди, по которому будет искаться атакующий
-		if(this.playerTook)
-			this.players.attacker = this.players.defender;
+		if(this.playerTook){
+			this.players.attackers = [this.players.defender];
+		}
 
 		let currentAttackerIndex = this.players.findInactive();
 		this.resetTurn();

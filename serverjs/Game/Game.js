@@ -217,17 +217,7 @@ class Game{
 
 	//Начинает ход
 	startTurn(){
-		this.log.info();
-		this.log.info(
-			'Turn %d %s => %s <= %s',
-			this.turnNumber,
-			this.players.attacker.name,
-			this.players.defender.name,
-			this.players.ally ? this.players.ally.name : null
-		);
-		this.log.info('Cards in deck:', this.deck.length);
-
-		this.players.logHandLengths();
+		this.players.logTurnStart();
 
 		this.turnStartTime = Date.now();
 
@@ -236,9 +226,6 @@ class Game{
 
 		this.players.notify({
 			message: 'TURN_STARTED',
-			attacker: this.players.attacker.id,
-			defender: this.players.defender.id,
-			ally: this.players.ally ? this.players.ally.id : null,
 			index: this.turnNumber
 		});
 		this.setNextTurnStage('INITIAL_ATTACK');	

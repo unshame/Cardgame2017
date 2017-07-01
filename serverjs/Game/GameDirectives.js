@@ -32,7 +32,7 @@ class GameDirectives{
 		}
 		else if(!hand.length){
 			this.log.info('Attacker has no cards');
-			if(this.skipCounter < 2 && this.players.ally){
+			if(this.skipCounter < 2 && this.players.attackers[1]){
 				this.skipCounter++;
 				if(turnStage == 'FOLLOWUP')
 					this.setNextTurnStage('FOLLOWUP');
@@ -130,10 +130,11 @@ class GameDirectives{
 		}
 
 		//Узнаем, можно ли переводить
+		let attackers = this.players.attackers;
 		let canTransfer = 
 			this.canTransfer && 
 			this.hands[
-				this.players.ally && this.players.ally.id || this.players.attacker.id
+				attackers[1] && attackers[1].id || attackers[0].id
 			].length > this.table.usedFields;
 
 		let attackField = this.table[this.table.usedFields];

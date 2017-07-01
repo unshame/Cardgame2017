@@ -60,7 +60,7 @@ class GameStates{
 
 	//Находим игрока, делающего первый ход в игре или продолжаем ход
 	STARTED(){
-		if(!this.players.attacker){
+		if(!this.players.attackers.length){
 
 			let [minTCards, minTCard] = this.players.findToGoFirst();	
 

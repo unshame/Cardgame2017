@@ -52,8 +52,12 @@ class GameReactions{
 			this.setNextTurnStage('FOLLOWUP');
 		}
 		else if(this.turnStages.current == 'DEFENSE'){
-			this.players.setOriginalAttackers([this.players.attacker]);
-			this.players.findToGoNext();
+			let attackers = this.players.attackers;
+			this.players.setOriginalAttackers([attackers[0]]);
+
+			let currentAttackerIndex = activePlayers.indexOf(attackers[0]);
+			this.players.findToGoNext(currentAttackerIndex);
+			
 			this.setNextTurnStage('DEFENSE');	
 		}
 		else{
@@ -102,16 +106,17 @@ class GameReactions{
 	SKIP(player, action){
 
 		let activePlayers = this.players.active;
+		let attackers = this.players.attackers;
 
 		this.log.info(player.name, 'skips turn');
 
 		//Debug
-		if(activePlayers.length > 2 && !this.players.ally){
+		if(activePlayers.length > 2 && !attackers[1]){
 			this.log.error('More than 2 players but no ally assigned');
 		}
 
 		//Если есть помогающий игрок
-		if(this.players.ally){
+		if(attackers[1]){
 			switch(this.turnStages.current){
 
 			//Если игра в режиме докладывания карт в догонку и только ходящий игрок походил,
