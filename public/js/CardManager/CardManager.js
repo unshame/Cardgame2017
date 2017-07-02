@@ -52,8 +52,10 @@ var CardManager = function(inDebugMode){
 * @param {CardInfo[]} cardsInfo информация о перемещаемых картах.
 */
 CardManager.prototype.createCards = function(cardsInfo){
+	this.numOfCards = 0;
 	var ids = [];
 	for(var i = 0; i < cardsInfo.length; i++){
+		this.numOfCards++;
 		var c = cardsInfo[i];
 		var card = this.cards[c.cid];
 		ids.push(c.cid);
@@ -96,11 +98,11 @@ CardManager.prototype.createCard = function(options){
 	var card = new Card(options);
 	this.cards[options.id] = card;
 	this.cardsGroup.add(card.base);
-	this.numOfCards++;
 };
 
 /** Уничтожает все карты. */
 CardManager.prototype.reset = function(){
+	this.numOfCards = 0;
 	for(var cid in this.cards){
 		if(this.cards.hasOwnProperty(cid)){
 			this.cards[cid].destroy();

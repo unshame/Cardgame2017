@@ -7,6 +7,7 @@ window.clientMethods = {
 
 	setId: function(connId, pid){
 		connection.resetTimer();
+		gameSeq.finish();
 		game.pid = pid;
 		var oldId = localStorage.getItem('durak_id');
 		if(oldId){
