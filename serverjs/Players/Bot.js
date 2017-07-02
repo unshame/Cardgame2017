@@ -34,31 +34,41 @@ class Bot extends Player{
 
 
 	recieveGameInfo(cards, players, trumpSuit, type, noResponse){
-		if(!noResponse)
-			setTimeout(() => {this.sendResponse();},getDescisionTime());
+		if(!noResponse){
+			this.sendDelayedResponse();
+		}
 	}
 
 	recieveDeals(deals){
-		setTimeout(() => {this.sendResponse();},getDescisionTime());
+		this.sendDelayedResponse();
 	}
 
 	recieveMinTrumpCards(cards, winner){
-		setTimeout(() => {this.sendResponse();},getDescisionTime());
+		this.sendDelayedResponse();
 	}
 
 	recieveValidActions(actions){
-		setTimeout(() => {this.sendRandomAction(actions);},getDescisionTime());
+		setTimeout(() => {
+			this.sendRandomAction(actions);
+		}, getDescisionTime());
 	}
 
 	recieveCompleteAction(action){
 		if(!action.noResponse){
-			setTimeout(() => {this.sendResponse();},getDescisionTime());
+			this.sendDelayedResponse();
 		}
 	}
 
 	recieveNotification(note, actions){
-		if(actions)
-			setTimeout(() => {this.sendResponse(actions[0]);},getDescisionTime());
+		if(actions){
+			this.sendDelayedResponse(actions[0]);
+		}			
+	}
+
+	sendDelayedResponse(action){
+		setTimeout(() => {
+			this.sendResponse(action);
+		}, getDescisionTime());
 	}
 
 }
