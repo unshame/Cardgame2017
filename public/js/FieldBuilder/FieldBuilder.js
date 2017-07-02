@@ -89,7 +89,7 @@ var FieldBuilder = function(manager){
 };
 
 /** Создает поля */
-FieldBuilder.prototype.createFieldNetwork = function(){
+FieldBuilder.prototype.createFieldNetwork = function(lockedFields){
 
 	var manager = this.manager,
 		players = playerManager.players;
@@ -103,13 +103,13 @@ FieldBuilder.prototype.createFieldNetwork = function(){
 	this._buildDiscardField();
 	this._buildPlayerField();
 	this._buildOpponentFields();
-	this._buildTableFields();
+	this._buildTableFields(lockedFields);
 
 	manager.networkCreated = true;
 };
 
 /** Правит поля */
-FieldBuilder.prototype.adjustFieldNetwork = function(){
+FieldBuilder.prototype.adjustFieldNetwork = function(lockedFields){
 
 	var manager = this.manager,
 		players = playerManager.players;
@@ -125,7 +125,7 @@ FieldBuilder.prototype.adjustFieldNetwork = function(){
 	this.calcSizes();
 	this._buildOpponentFields();
 	this._buildDiscardField();
-	this._buildTableFields();
+	this._buildTableFields(lockedFields);
 };
 
 /**

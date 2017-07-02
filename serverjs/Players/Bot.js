@@ -11,7 +11,7 @@ const
 
 function getDescisionTime(){
 	let fakeTime = 1,
-		minTime = 1;
+		minTime = 500;
 	return Math.random()*fakeTime + minTime;
 }
 
@@ -33,8 +33,8 @@ class Bot extends Player{
 	}
 
 
-	recieveGameInfo(cards, players, trumpSuit, type, noResponse){
-		if(!noResponse){
+	recieveGameInfo(info){
+		if(!info.noResponse){
 			this.sendDelayedResponse();
 		}
 	}

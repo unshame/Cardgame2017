@@ -19,9 +19,9 @@ class GameDirectives{
 		let hand = this.hands[pid];
 		let defHand = this.hands[this.players.defender.id];
 
-		if(this.table.usedFields >= this.table.fullLength || turnStage != 'FOLLOWUP' && !defHand.length){
+		if(!this.cards.firstEmptyTable || turnStage != 'FOLLOWUP' && !defHand.length){
 
-			this.log.info(this.table.usedFields >= this.table.fullLength && 'Field is full' || 'Defender has no cards');
+			this.log.info(!this.firstEmptyTable && 'Field is full' || 'Defender has no cards');
 
 			this.setNextTurnStage('DEFENSE');
 			return true;

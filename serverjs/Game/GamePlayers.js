@@ -149,14 +149,18 @@ class GamePlayers extends GamePlayersBase{
 			let p = players[pi];
 			let pid = p.id;
 			p.recieveGameInfo(
-				send.cards && cardsToSend[pid],
-				send.players && playersToSend,
-				send.suit && game.cards.trumpSuit,
-				type || 'GAME_INFO',
-				noResponse
+				{
+					type: type || 'GAME_INFO',
+					cards: send.cards && cardsToSend[pid] || [],
+					players: send.players && playersToSend || [],
+					trumpSuit: send.suit && game.cards.trumpSuit || null,
+					lockedFields: game.cards.lockedFields,
+					turnIndex: game.turnNumber,
+					gameIndex: game.index,
+					noResponse: noResponse || false
+				}
 			);
 		}	
-
 	}
 
 	//Передает полную информацию об игре игроку
@@ -262,6 +266,18 @@ class GamePlayers extends GamePlayersBase{
 
 
 	//УПРАВЛЕНИЕ ИГРОКАМИ
+	
+	//Проверяет, остались ли игроки в игре и устанавливает проигравшего
+	get notEnoughActive(){
+
+		let activePlayers = this.active;
+
+		//Если осталось меньше двух игроков, завершаем игру
+		if(activePlayers.length < 2){		
+			return true;
+		}
+		return false;
+	}
 
 	//Устанавливает игроков, вышедших из игры
 	//Возвращает индекс текущего игрока
@@ -456,18 +472,6 @@ class GamePlayers extends GamePlayersBase{
 		this.defender = involved[1];
 	}
 
-	//Проверяет, остались ли игроки в игре и устанавливает проигравшего
-	notEnoughActive(){
-
-		let activePlayers = this.active;
-
-		//Если осталось меньше двух игроков, завершаем игру
-		if(activePlayers.length < 2){		
-			return true;
-		}
-		return false;
-	}
-
 	//Находим проигравшего
 	findLoser(){
 		
@@ -488,6 +492,8 @@ class GamePlayers extends GamePlayersBase{
 			this.log.info('Draw');
 		}
 	}
+
+	// ЛОГ
 
 	logTurnStart(){
 		const game = this.game;

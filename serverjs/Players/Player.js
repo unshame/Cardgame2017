@@ -27,26 +27,13 @@ class Player{
 		this.afk = false;
 	}
 
-	recieveGameInfo(cards, players, trumpSuit, type, noResponse){
-		let action = {
-			type: type,
-			cards: cards || [],
-			players: players || [],
-			turnIndex: this.game.turnNumber,
-			gameIndex: this.game.index,
-			noResponse: noResponse || false
-		};
-		if(this.game.cards.table.fullLength == this.game.cards.table.maxLength){
-			action.unlockedField = 'TABLE' + (this.game.cards.table.fullLength - 1);
+	recieveGameInfo(info){
+		if(this.remote && this.connected){
+			this.remote.recieveCompleteAction(info);
 		}
-		if(trumpSuit || trumpSuit === 0){
-			action.trumpSuit = trumpSuit;
-		}
-
-		if(this.remote && this.connected)
-			this.remote.recieveCompleteAction(action);
-		else if(!this.connected)
+		else if(!this.connected){
 			this.sendResponse();
+		}
 	}
 
 	recieveDeals(deals){

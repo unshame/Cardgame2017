@@ -105,7 +105,7 @@ class GameTurnStages{
 		this.resetTurn();
 		//Turn stage: null
 
-		if(!this.deck.length && this.players.notEnoughActive()){
+		if(!this.deck.length && this.players.notEnoughActive){
 			this.players.findLoser();
 			this.end();
 			return false;

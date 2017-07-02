@@ -50,10 +50,10 @@ window.actionReactions = {
 			playerManager.savePlayers(action.players);
 			cardManager.disablePhysics();
 			if(fieldManager.networkCreated){
-				fieldManager.builder.adjustFieldNetwork();
+				fieldManager.builder.adjustFieldNetwork(action.lockedFields);
 			}
 			else{
-				fieldManager.builder.createFieldNetwork();
+				fieldManager.builder.createFieldNetwork(action.lockedFields);
 			}
 		}
 
@@ -78,10 +78,6 @@ window.actionReactions = {
 		}		
 		if(hasTrumpSuit){
 			fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? game.defaultMoveTime : delay);
-		}
-
-		if(action.unlockedField){
-			fieldManager.unlockField(action.unlockedField, noDelay);
 		}
 
 		return delay;

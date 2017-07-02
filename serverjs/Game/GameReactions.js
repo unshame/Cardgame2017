@@ -91,12 +91,8 @@ class GameReactions{
 		action.value = card.value;
 		action.suit = card.suit;
 
-		for(let di = 0; di < this.table.length; di++){
-			let tableField = this.table[di];
-			if(tableField.attack && !tableField.defense){
-				this.setNextTurnStage('DEFENSE');
-				break;
-			}
+		if(this.cards.defenseFields.length){
+			this.setNextTurnStage('DEFENSE');
 		}
 
 		return action;

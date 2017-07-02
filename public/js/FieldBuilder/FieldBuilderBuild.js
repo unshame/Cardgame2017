@@ -22,7 +22,7 @@ FieldBuilder.prototype._buildPlayerField = function(){
 };
 
 //Table
-FieldBuilder.prototype._buildTableFields = function(){
+FieldBuilder.prototype._buildTableFields = function(lockedFields){
 	var manager = this.manager;
 
 	manager.addField({
@@ -41,7 +41,7 @@ FieldBuilder.prototype._buildTableFields = function(){
 	
 	for(var i = 0; i < this.tableAmount; i++){
 		var id = 'TABLE' + i;
-		var icon = i == this.tableAmount - 1 ? 'lock' : null;
+		var icon = ~lockedFields.indexOf(id) ? 'lock' : null;
 		manager.addField({
 			type: 'TABLE',
 			id: id,

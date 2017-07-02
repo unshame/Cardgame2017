@@ -17,12 +17,28 @@ class GameCards extends BetterArray{
 		this.maxValue = 14;
 		this.normalHandSize = 6;	
 
+		this.deck = new BetterArray();
+		this.discardPile = [];
+		this.hands = {};
+
 		this.table = new BetterArray();
 		this.table.usedFields = 0;
 		this.table.maxLength = 6;
+		this.table.fullLength = 0;
 		this.table.zeroDiscardLength = Math.max(this.table.maxLength - 1, 1);
 
+		this.values = [];
+		this.lowestValue = 0;
+		this.numOfCards = 0;
+		this.trumpSuit = null;
+
 		this.log = game.log;
+
+		//Добавляем указатели на элементы игре
+		game.deck = this.deck;
+		game.discardPile = this.discardPile;
+		game.table = this.table;
+		game.hands = this.hands;
 	}
 	static get [Symbol.species]() { return Array; }
 
@@ -33,8 +49,8 @@ class GameCards extends BetterArray{
 
 	//Возвращает первое свободное место на столе
 	get firstEmptyTable(){
-		let tableField = this.table.find((t) => {
-			return !t.attack && !t.defense;
+		let tableField = this.table.find((t, i) => {
+			return i < this.table.fullLength && !t.attack && !t.defense;
 		});
 		return tableField;
 	}
@@ -47,6 +63,14 @@ class GameCards extends BetterArray{
 			} 
 		});
 		return defenseFields;
+	}
+
+	get lockedFields(){
+		let lockedFields = [];
+		for(let i = this.table.fullLength; i < this.table.maxLength; i++){
+			lockedFields.push(this.table[i].id);
+		}
+		return lockedFields;
 	}
 
 	getInfo(reveal){
@@ -120,19 +144,23 @@ class GameCards extends BetterArray{
 
 	//Обнуляет карты
 	reset(soft){
+		const game = this.game;
 
 		//Убираем уже существующие карты
-		if(!soft)
+		if(!soft){
 			this.length = 0;
+		}
 
 		//Колода
-		this.deck = new BetterArray();
+		this.deck.length = 0;
 		
 		//Стопка сброса
-		this.discardPile = [];
+		this.discardPile.length = 0;
 		
 		//Руки игроков (объекты с id карт по id игроков)		
-		this.hands = {};			
+		Object.keys(this.hands).forEach((key) => {
+			delete this.hands[key];
+		});			
 
 		//Поля (стол)
 		this.table.length = 0;
@@ -156,7 +184,7 @@ class GameCards extends BetterArray{
 		if(!this.length){
 
 			//Значения карт
-			this.values = [];
+			this.values.length = 0;
 		
 			//Задаем количество карт и минимальное значение карты
 			if(game.players.length > 3){
@@ -180,19 +208,15 @@ class GameCards extends BetterArray{
 		});
 
 		//Создаем колоду
-		if(!this.length)
+		if(!this.length){
 			this.makeDeck();
-		else
+		}
+		else{
 			this.shuffle();
+		}
 
 		//Запоминаем козырь
 		this.findTrumpCard();
-
-		//Добавляем указатели на элементы игре
-		game.deck = this.deck;
-		game.discardPile = this.discardPile;
-		game.table = this.table;
-		game.hands = this.hands;
 	}
 
 	//Создает колоду
@@ -379,7 +403,7 @@ class GameCards extends BetterArray{
 
 			//После первого сброса на стол можно класть больше карт
 			if(this.table.fullLength < this.table.maxLength){
-				this.table.fullLength = this.table.maxLength;
+				this.table.fullLength++;
 				this.log.info('First discard, field expanded to', this.table.fullLength);
 				action.unlockedField = 'TABLE' + (this.table.fullLength - 1);
 			}
@@ -441,7 +465,7 @@ class GameCards extends BetterArray{
 
 				//Карты той же масти и большего значения, либо козыри, если битая карта не козырь,
 				//иначе - козырь большего значения
-				if(
+				if( 
 					card.suit == this.trumpSuit && otherCard.suit != this.trumpSuit ||
 					card.suit == otherCard.suit && card.value > otherCard.value
 				){			
