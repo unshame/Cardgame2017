@@ -39,6 +39,16 @@ class GameCards extends BetterArray{
 		return tableField;
 	}
 
+	get defenseFields(){
+		let defenseFields = [];
+		this.table.forEach((tableField) => {
+			if(tableField.attack && !tableField.defense){
+				defenseFields.push(tableField);
+			} 
+		});
+		return defenseFields;
+	}
+
 	getInfo(reveal){
 
 		let cardsToSend = {};
@@ -371,7 +381,7 @@ class GameCards extends BetterArray{
 			if(this.table.fullLength < this.table.maxLength){
 				this.table.fullLength = this.table.maxLength;
 				this.log.info('First discard, field expanded to', this.table.fullLength);
-				action.unlockedField = 'TABLE' + (this.table.fullLength - 1)
+				action.unlockedField = 'TABLE' + (this.table.fullLength - 1);
 			}
 
 			return action;
@@ -381,6 +391,177 @@ class GameCards extends BetterArray{
 		else{
 			return null;
 		}
+	}
+
+	getAttackActions(hand, actions){
+		//Находим значения карт, которые можно подбрасывать
+		let validValues = [];
+		this.table.forEach((tableField) => {
+			if(tableField.attack){
+				let card = tableField.attack;
+				validValues.push(card.value);
+			}
+			if(tableField.defense){
+				let card = tableField.defense;
+				validValues.push(card.value);
+			}
+		});
+
+		if(!validValues.length){
+			validValues = null; 
+		}
+
+		let emptyTable = this.firstEmptyTable;
+
+		//Выбираем подходящие карты из руки атакующего и собираем из них возможные действия
+		hand.forEach((card) => {
+			let cid = card.id;
+			if(!validValues || ~validValues.indexOf(card.value)){		
+				this.table.forEach((tableField) => {	
+					let action = {
+						type: 'ATTACK',
+						cid: cid,
+						field: tableField.id,
+						linkedField: emptyTable.id
+					};
+					actions.push(action);
+				});
+			}
+		});
+	}
+
+	getDefenseActions(hand, actions, defenseFields){
+
+		//Создаем список возможных действий защищающегося
+		defenseFields.forEach((defenseField) => {
+			let fid = defenseField.id;
+			hand.forEach((card) => {
+				let cid = card.id;
+				let otherCard = defenseField.attack;
+
+				//Карты той же масти и большего значения, либо козыри, если битая карта не козырь,
+				//иначе - козырь большего значения
+				if(
+					card.suit == this.trumpSuit && otherCard.suit != this.trumpSuit ||
+					card.suit == otherCard.suit && card.value > otherCard.value
+				){			
+					let action = {
+						type: 'DEFENSE',
+						cid: cid,
+						field: fid
+					};
+					actions.push(action);
+				}
+			});
+		});
+	}
+
+	getTransferActions(hand, actions, defenseFields){
+		//Узнаем, можно ли переводить
+		let attackers = this.game.players.attackers;
+		let canTransfer = 
+			this.hands[
+				attackers[1] && attackers[1].id || attackers[0].id
+			].length > this.table.usedFields;
+
+		let attackField = this.table[this.table.usedFields];
+
+		if(!canTransfer || !attackField)
+			return;
+
+		for(let fi = 0; fi < this.table.length; fi++){
+			let tableField = this.table[fi];
+			if(tableField.defense){
+				canTransfer = false;
+				break;
+			}
+		}
+
+		if(!canTransfer)
+			return;
+
+		let defenseActionFields = actions.map((action) => action.field);
+
+		let emptyTable = this.firstEmptyTable;
+
+		for(let di = 0; di < defenseFields.length; di++){
+			for(let ci = 0; ci < hand.length; ci++){
+				let card = hand[ci];
+				let cid = card.id;
+				let otherCard = defenseFields[di].attack;
+
+				if(card.value != otherCard.value)
+					continue;
+
+				//Все поля, которые уже не находятся в возможных действиях
+				for(let fi = 0; fi < this.table.length; fi++){	
+					let fid = this.table[fi].id;
+
+					if(defenseActionFields.includes(fid))
+						continue;
+
+					let action = {
+						type: 'ATTACK',
+						cid: cid,
+						field: fid,
+						linkedField: emptyTable.id
+					};
+					actions.push(action);
+				}
+			}
+		}
+	}
+
+	getDiscardAction(player){
+		let pid = player.id;
+		let cardsInfo = [];
+		let actionType = 'TAKE';
+
+		for(let fi = 0; fi < this.table.length; fi++){
+			let tableField = this.table[fi];
+
+			if(tableField.attack){
+
+				let card = tableField.attack;
+				this.game.logAction(card, actionType, card.field, pid);
+				card.field = pid;
+
+				this.hands[pid].push(tableField.attack);
+				tableField.attack = null;
+
+				let cardToSend = {
+					cid: card.id,
+					suit: card.suit,
+					value: card.value
+				};
+
+				cardsInfo.push(cardToSend);
+			}
+
+			if(tableField.defense){
+
+				let card = tableField.defense;
+				this.game.logAction(card, actionType, card.field, pid);
+				card.field = pid;
+
+				this.hands[pid].push(tableField.defense);
+				tableField.defense = null;
+
+				let cardToSend = {
+					cid: card.id,
+					suit: card.suit,
+					value: card.value
+				};
+
+				cardsInfo.push(cardToSend);
+			}
+
+		}
+		return {
+			type: actionType,
+			cards: cardsInfo,
+			pid: pid
+		};
 	}
 
 }

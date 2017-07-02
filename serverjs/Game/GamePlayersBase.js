@@ -31,13 +31,6 @@ class GamePlayersBase extends BetterArray{
 	push(p){
 		p.game = this.game;
 		this.setStatuses(p, this.gameStartStatus);
-		p.score = {
-			wins: 0,
-			losses: 0,
-			cardsWhenLost: 0
-		};
-		p.working = false;
-		p.active = true;
 		super.push(p);
 	}
 

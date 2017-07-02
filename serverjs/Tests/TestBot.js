@@ -77,47 +77,48 @@ class TestBot extends Bot{
 				expected.push(activePlayers[ai].name);
 			}
 			let active = activePlayers.slice();
+			
+			this.sendResponseWithCallback(action, () => {
 
-			this.sendResponse(action);
+				//Тест сохранения исходных атакующих
+				this.tester.transfers++;
+				let numOfTransfers = this.tester.transfers;
+				let numOfOriginalAttackers = this.game.players.originalAttackers.length;
+				if(numOfTransfers != numOfOriginalAttackers && numOfOriginalAttackers != active.length){
+					console.log('Test %s (transfer attacker saving) failed on %s', this.tests, this.name);
+					console.log('Transfers: %d but saved attackers: %d', numOfTransfers, numOfOriginalAttackers);
+					console.log('See line %s in log.txt for context', lineNum + 1);
+					console.log('----------------\n');
+					this.failedTests++;
+				}
 
-			//Тест сохранения исходных атакующих
-			this.tester.transfers++;
-			let numOfTransfers = this.tester.transfers;
-			let numOfOriginalAttackers = this.game.players.originalAttackers.length;
-			if(numOfTransfers != numOfOriginalAttackers && numOfOriginalAttackers != active.length){
-				console.log('Test %s (transfer attacker saving) failed on %s', this.tests, this.name);
-				console.log('Transfers: %d but saved attackers: %d', numOfTransfers, numOfOriginalAttackers);
-				console.log('See line %s in log.txt for context', lineNum + 1);
-				console.log('----------------\n');
-				this.failedTests++;
-			}
-
-			//Тест смены ролей игроков при переводе (продолжение)
-			attackers = game.players.attackers;
-			let result = [
-				attackers[0].name,
-				game.players.defender.name
-			];
-			if(attackers[1])
-				result.push(attackers[1].name);
-			if(result.join() != expected.join()){
-				console.log('Test %s failed on %s', this.tests, this.name);
-				console.log('Before:  ', before);
-				console.log('Expected:', expected);
-				console.log('After:   ', result);
-				console.log('Active:  ',
-					active.map((p) => {
-						return p.name;
-					}),
-					'=>',
-					activePlayers.map((p) => {
-						return p.name;
-					})
-				);
-				console.log('See line %s in log.txt for context', lineNum + 1);
-				console.log('----------------\n');
-				this.failedTests++;
-			}
+				//Тест смены ролей игроков при переводе (продолжение)
+				attackers = game.players.attackers;
+				let result = [
+					attackers[0].name,
+					game.players.defender.name
+				];
+				if(attackers[1])
+					result.push(attackers[1].name);
+				if(result.join() != expected.join()){
+					console.log('Test %s failed on %s', this.tests, this.name);
+					console.log('Before:  ', before);
+					console.log('Expected:', expected);
+					console.log('After:   ', result);
+					console.log('Active:  ',
+						active.map((p) => {
+							return p.name;
+						}),
+						'=>',
+						activePlayers.map((p) => {
+							return p.name;
+						})
+					);
+					console.log('See line %s in log.txt for context', lineNum + 1);
+					console.log('----------------\n');
+					this.failedTests++;
+				}
+			});
 		}
 		else{
 			super.recieveValidActions(actions);

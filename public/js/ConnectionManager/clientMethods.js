@@ -46,11 +46,10 @@ window.clientMethods = {
 
 	recieveCompleteAction: function(action){
 		ui.cornerButtons.getByName('queueUp').hide();
-		connection.resetTimer();
-		ui.rope.stop();
-		ui.actionButtons.getByName('action').disable();
+
 		var delay = actionHandler.executeAction(action);
 		if(!action.noResponse){
+			connection.resetTimer();
 			connection.responseTimer = setTimeout(connection.server.sendResponse, !delay && 1 || (delay/game.speed + 300));
 		}
 		if(connection.inDebugMode)

@@ -20,12 +20,14 @@ window.actionReactions = {
 		var cardsInfo = action.cards.slice(),
 			pid = action.pid;
 
+		fieldManager.resetHighlights();
+
 		gameSeq.start(function(){
 			fieldManager.showTrumpCards(cardsInfo, pid);
-		}, 3000/game.speed, 0, fieldManager)
+		}, 3000/game.speed, 0)
 		.then(function(){
 			fieldManager.hideTrumpCards(cardsInfo);
-		}, 500, fieldManager);
+		}, 500);
 
 		return gameSeq.duration;
 	},
@@ -53,7 +55,6 @@ window.actionReactions = {
 			else{
 				fieldManager.builder.createFieldNetwork();
 			}
-			fieldManager.resetHighlights();
 		}
 
 		if(!fieldManager.networkCreated){
@@ -62,6 +63,7 @@ window.actionReactions = {
 		}
 
 		cardEmitter.stop();
+		fieldManager.resetHighlights();
 		fieldManager.resetFields();
 		cardControl.reset();
 		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
@@ -107,6 +109,7 @@ window.actionReactions = {
 	* @memberof actionReactions
 	*/
 	REVEAL: function(action){
+		fieldManager.resetHighlights();
 		fieldManager.revealCards(action.cards);
 		return 0;
 	},
@@ -119,6 +122,7 @@ window.actionReactions = {
 	* @memberof actionReactions
 	*/
 	DRAW: function(action){
+		fieldManager.resetHighlights();
 		var delay = fieldManager.queueCards(action.cards);
 		fieldManager.removeMarkedCards();
 		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START);
@@ -137,6 +141,7 @@ window.actionReactions = {
 		var delay = 0;
 		if(!action.cards)
 			return delay;
+		fieldManager.resetHighlights();
 		var field = fieldManager.fields[action.pid];
 		delay = fieldManager.moveCards(field, action.cards.slice(), BRING_TO_TOP_ON.START);
 		return delay;
@@ -173,6 +178,7 @@ window.actionReactions = {
 	* @memberof actionReactions
 	*/
 	DISCARD: function(action){
+		fieldManager.resetHighlights();
 		var delay = 0;
 		var cards = [];
 		for(var i = 0; i < action.ids.length; i++){

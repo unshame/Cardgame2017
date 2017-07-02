@@ -46,7 +46,7 @@ class Player{
 		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
 		else if(!this.connected)
-			this.sendInstantResponse();
+			this.sendResponse();
 	}
 
 	recieveDeals(deals){
@@ -60,7 +60,7 @@ class Player{
 		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
 		else if(!this.connected)
-			this.sendInstantResponse();
+			this.sendResponse();
 	}
 
 	recieveMinTrumpCards(cards, winner){
@@ -72,7 +72,7 @@ class Player{
 		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
 		else if(!this.connected)
-			this.sendInstantResponse();
+			this.sendResponse();
 	}
 
 	recieveValidActions(actions, time){
@@ -92,8 +92,8 @@ class Player{
 	recieveCompleteAction(action){
 		if(this.remote && this.connected)
 			this.remote.recieveCompleteAction(action);
-		else if(!this.connected)
-			this.sendInstantResponse();
+		else if(!this.connected && !action.noResponse)
+			this.sendResponse();
 	}
 
 	recieveNotification(note, actions){
@@ -106,6 +106,7 @@ class Player{
 			this.remote.handleLateness();
 	}
 
+	// Синхронно посылает асинхронный ответ серверу
 	sendResponse(action){
 		if(!this.game){
 			this.log.error(this.id, 'No game has been assigned');
@@ -114,8 +115,18 @@ class Player{
 		this.game.recieveResponse(this, action ? action : null);
 	}
 
-	sendInstantResponse(){
-		setTimeout(() => {this.sendResponse();},0);
+	// Асинхронно посылает синхронный ответ серверу с коллбэком (для тестов)
+	sendResponseWithCallback(action, callback){
+		if(!this.game){
+			this.log.error(this.id, 'No game has been assigned');
+			return;
+		}
+		setTimeout(() => {
+			this.game.recieveResponseSync(this, action ? action : null);
+			if(callback){
+				callback();
+			}
+		},0);
 	}
 
 	sendRandomAction(actions){
@@ -125,17 +136,13 @@ class Player{
 		else
 			randomIndex = Math.floor(Math.random()*actions.length);
 		let action = actions[randomIndex];
-		setTimeout(() => {
-			this.sendResponse(action);
-		},1);
+		this.sendResponse(action);
 	}
 
 	sendTakeOrSkipAction(actions){
 		if(actions.length == 1 && (actions[0].type == 'TAKE' || actions[0].type == 'SKIP')){
 			let action = actions[0];
-			setTimeout(() => {
-				this.sendResponse(action);
-			},1000);
+			this.sendResponse(action);
 		}
 	}
 

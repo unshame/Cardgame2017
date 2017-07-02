@@ -30,6 +30,16 @@ class GamePlayers extends GamePlayersBase{
 
 	static get [Symbol.species]() { return Array; }
 
+	push(p){
+		p.score = {
+			wins: 0,
+			losses: 0,
+			cardsWhenLost: 0
+		};
+		p.working = false;
+		super.push(p);
+	}
+
 	//СТАТУСЫ
 
 	//Активные
@@ -496,6 +506,16 @@ class GamePlayers extends GamePlayersBase{
 			let pid = p.id;
 			this.log.info(p.name, this.game.hands[pid].length);
 		}
+	}
+
+	logTimeout(){
+		let playersWorking = this.working;
+		let names = '';
+		for(let pi = 0; pi < playersWorking.length; pi++){
+			let name = playersWorking[pi].name;
+			names += name + ' ';
+		}
+		this.log.notice('Players timed out: ', names);
 	}
 
 }

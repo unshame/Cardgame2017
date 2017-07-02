@@ -8,7 +8,12 @@ const
 	generateId = require('../generateId'),
 	Player = require('./Player');
 
-var fakeDescisionTimer = 1;
+
+function getDescisionTime(){
+	let fakeTime = 1,
+		minTime = 1;
+	return Math.random()*fakeTime + minTime;
+}
 
 class Bot extends Player{
 	constructor(randomNames){
@@ -30,28 +35,30 @@ class Bot extends Player{
 
 	recieveGameInfo(cards, players, trumpSuit, type, noResponse){
 		if(!noResponse)
-			setTimeout(() => {this.sendResponse();},Math.random()*fakeDescisionTimer);
+			setTimeout(() => {this.sendResponse();},getDescisionTime());
 	}
 
 	recieveDeals(deals){
-		setTimeout(() => {this.sendResponse();},Math.random()*fakeDescisionTimer);
+		setTimeout(() => {this.sendResponse();},getDescisionTime());
 	}
 
 	recieveMinTrumpCards(cards, winner){
-		setTimeout(() => {this.sendResponse();},Math.random()*fakeDescisionTimer);
+		setTimeout(() => {this.sendResponse();},getDescisionTime());
 	}
 
 	recieveValidActions(actions){
-		this.sendRandomAction(actions);
+		setTimeout(() => {this.sendRandomAction(actions);},getDescisionTime());
 	}
 
 	recieveCompleteAction(action){
-		setTimeout(() => {this.sendResponse();},Math.random()*fakeDescisionTimer);
+		if(!action.noResponse){
+			setTimeout(() => {this.sendResponse();},getDescisionTime());
+		}
 	}
 
 	recieveNotification(note, actions){
 		if(actions)
-			setTimeout(() => {this.sendResponse(actions[0]);},Math.random()*fakeDescisionTimer);
+			setTimeout(() => {this.sendResponse(actions[0]);},getDescisionTime());
 	}
 
 }

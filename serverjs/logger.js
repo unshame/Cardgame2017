@@ -16,13 +16,13 @@ const inProd = process.env.PROD;
  * Уровни логгера.
  * @type {Object}
  */
-let levels = {error: 0, warn: 1, notice: 2, info: 3, debug: 4};
+let levels = {error: 0, warn: 1, notice: 2, info: 3, debug: 4, silly: 5};
 
 /**
  * Цвета уровней логгера.
  * @type {Object}
  */
-let colors = {error: 'red', warn: 'yellow', notice: 'cyan', info: 'green', debug: 'magenta'};
+let colors = {error: 'red', warn: 'yellow', notice: 'cyan', info: 'green', debug: 'magenta', silly: 'blue'};
 
 /**
  * Добавляет нули перед числом до указанного кол-ва.
@@ -51,7 +51,9 @@ function getTimeStamp(full){
 }
 
 /**
- * Создает новый winston логгер.
+ * Создает новый winston логгер.  
+ * У логгера 6 уровней и функций для вывода в консоль: `error, warn, notice, info, debug, silly`.  
+ * В консоль будет выводиться переданный уровень, в файл выводятся уровни до и включай debug.
  * @param  {object} callingModule    `module` объект модуля, вызывающего эту функцию
  * @param  {string} [id]             id нового логгера
  * @param  {string} [level='notice'] уровень сообщений консоли
@@ -73,6 +75,7 @@ module.exports = function(callingModule, id, level) {
 	if(!inProd){
 		transports.push(new winston.transports.File(
 		{
+			level: 'debug',
 			filename: filename,
 			json: false, 
 			timestamp: getTimeStamp

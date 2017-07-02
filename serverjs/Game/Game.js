@@ -70,6 +70,7 @@ class Game{
 			actionDefend: 20,
 			afk: 5
 		};
+		this.completedAction = null;
 		this.actionDeadline = null;
 		this.timer = null;
 
@@ -197,6 +198,17 @@ class Game{
 		//TODO: оповестить лобби
 	}
 
+	//Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
+	trySimulating(){
+		let humanActivePlayer = this.players.getWithFirst('type', 'player', this.players.active);
+		if(!humanActivePlayer){
+			this.log.notice('Simulating');
+			let humanPlayers = this.players.getWith('type', 'player');
+			this.players.notify({message: 'SIMULATING'}, null, humanPlayers);
+			this.simulating = true;
+		}
+	}
+
 
 	//Методы хода
 
@@ -240,6 +252,7 @@ class Game{
 	setNextTurnStage(stage){
 		this.turnStages.current = this.turnStages.next;
 		this.turnStages.next = stage;
+		this.log.debug(stage);
 	}
 
 	//Выполняет следующую стадию игры
@@ -294,17 +307,19 @@ class Game{
 			this.timer = null;
 		}
 
-		//Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
-		if(!this.simulating){
-			let humanActivePlayer = this.players.getWithFirst('type', 'player', this.players.active);
-			if(!humanActivePlayer){
-				let humanPlayers = this.players.getWith('type', 'player');
-				this.players.notify({message: 'SIMULATING'}, null, humanPlayers);
-				this.simulating = true;
-			}
+		if(this.completedAction){
+			this.completedAction.noResponse = true;
+			this.players.completeActionNotify(this.completedAction);
+			this.completedAction = null;
 		}
-		if(this.simulating)
+
+		if(!this.simulating){
+			this.trySimulating();
+		}
+
+		if(this.simulating){
 			players = this.players.getWith('type', 'bot', false, players);
+		}
 
 		this.players.working = players;
 		if(players.length){
@@ -328,13 +343,7 @@ class Game{
 	//Выполняет случайное действие или продолжает игру
 	timeOut(){
 		this.timer = null;
-		let playersWorking = this.players.working;
-		let names = '';
-		for(let pi = 0; pi < playersWorking.length; pi++){
-			let name = playersWorking[pi].name;
-			names += name + ' ';
-		}
-		this.log.notice('Players timed out: ', names);
+		this.players.logTimeout();
 
 		//Если есть действия, выполняем первое попавшееся действие
 		if(this.validActions.length && this.states.current == 'STARTED'){
@@ -348,15 +357,25 @@ class Game{
 		}	
 	}
 
-	//Получает ответ от игрока
+	//Получает ответ от игрока асинхронно
 	recieveResponse(player, action){
+		setTimeout(() => {
+			this.recieveResponseSync(player, action);
+		}, 0);
+	}
+
+	//Получает ответ от игрока синхронно
+	recieveResponseSync(player, action){
 
 		//Проверяем валидность ответа
 		let playersWorking = this.players.working;
 		let pi = playersWorking.indexOf(player);
+
+		// Запоздавший или непредвиденный ответ
 		if(!~pi){
-			if(player.type != 'player' || !this.simulating)
+			if(player.type != 'player' || !this.simulating){
 				this.log.warn( player.name, player.id, 'Late or uncalled response');
+			}
 
 			//Сообщаем игроку, что действие пришло не вовремя
 			if(action){
@@ -371,14 +390,17 @@ class Game{
 			}
 			return;
 		}
+
+		// Ожидается действие, но действие не получено, перепосылаем действия
 		if(this.validActions.length && !action){
-			this.log.warn('Wating for action but no action recieved');
-			if(this.isStarted)
+			this.log.warn(player.name, 'Wating for action but no action recieved');
+			if(this.isStarted){
 				player.recieveValidActions(this.validActions.slice(), (this.actionDeadline - Date.now())/1000);
+			}
 			return;
 		}
 
-		//this.log.info('Response from', player.id, action ? action : '');
+		this.log.silly('Response from', player.id, action ? action : '');
 
 		//Выполняем или сохраняем действие
 		let waitingForResponse = false;
@@ -386,11 +408,15 @@ class Game{
 			waitingForResponse = this.processAction(player, action);
 		}
 
-		//Если мы не оповещали игроков и не ждем от них ответа
+		//Если мы не оповещали игроков и не ждем от них нового ответа
 		if(!waitingForResponse){
 			//Убираем игрока из списка действующих
-			playersWorking.splice(pi, 1);	
-			this.players.working = playersWorking;
+			playersWorking = this.players.working;
+			pi = playersWorking.indexOf(player);
+			if(~pi){
+				playersWorking.splice(pi, 1);	
+				this.players.working = playersWorking;
+			}
 
 			//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
 			if(!playersWorking.length){
@@ -399,6 +425,7 @@ class Game{
 			}
 		}
 	}
+
 
 	//Выполняет или сохраняет действие, оповещает игроков о результатах действия
 	//Возвращает ожидается ли ответ от игроков или нет
@@ -419,14 +446,21 @@ class Game{
 
 				//Убираем игрока из списка действующих (он там один)
 				this.players.working = [];
-				
-				//Сообщаем игрокам о действии
-				this.waitForResponse(this.timeouts.actionComplete, this.players);
-				this.players.completeActionNotify(outgoingAction);
-				
-			}
 
-			//Сообщаем игроку, что действие нелегально
+				this.completedAction = outgoingAction;
+				// Делаем один шаг в игре, чтобы узнать, нужно ли дать игрокам время на обработку выполненного действия
+				this.continue();
+
+				//Сообщаем игрокам о действии
+				//Если дальнейших действий пока нет, даем игрокам время на обработку выполненного времени
+				if(this.completedAction == outgoingAction){
+					this.completedAction = null;
+					this.waitForResponse(this.timeouts.actionComplete, this.players);
+					this.players.completeActionNotify(outgoingAction);
+				}			
+
+			}
+			// иначе сообщаем игроку, что действие нелегально
 			else{
 				this.players.notify(
 					{
@@ -449,7 +483,7 @@ class Game{
 		return false;
 	}
 
-	// Проверяет валидность действия
+	// Находит и возвращает локальную копию переданного действия или null
 	// ignored может быть 1 или массивом игнорируемых свойств действия
 	checkActionValidity(action, ignored){
 
@@ -588,10 +622,12 @@ class Game{
 			results: results
 		};
 
-		if(allConnected && numAccepted >= minAcceptedNeeded)
+		if(allConnected && numAccepted >= minAcceptedNeeded){
 			note.successful = true;
-		else
+		}
+		else{
 			note.successful = false;
+		}
 
 		return note;
 	}

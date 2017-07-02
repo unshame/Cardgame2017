@@ -59,7 +59,6 @@ FieldManager.prototype.revealCards = function(cardsInfo){
 			
 			if(card.fieldId == 'DISCARD_PILE'){
 				card.presetValue(c.suit, c.value);
-				console.log(card.c, card.value)
 			}{
 				card.setValue(c.suit, c.value);						
 			}
