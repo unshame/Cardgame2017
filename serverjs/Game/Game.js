@@ -37,12 +37,11 @@ class Game{
 			this.log.warn('Only %s players at the start of the game, adding a bot', players.length);
 		}
 
-		this.states = new GameStates();
+		this.states = new GameStates(this);
 		this.turnStages = new GameTurnStages(this);
 		this.actions = new GameActions(this);
 		this.reactions = new GameReactions();
 		this.directives = new GameDirectives();
-
 
 		//Сохраняем ссылки на игроков локально
 		this.players = new GamePlayers(this, players.slice());
@@ -73,7 +72,7 @@ class Game{
 	//Запущена ли игра
 	//Игра не запущена, когда идет голосование о рестарте
 	//Это не тоже самое, что game.states == 'STARTED'
-	get isGoing(){
+	get isRunning(){
 		return this.states.current != 'NOT_STARTED';
 	}
 
@@ -93,17 +92,10 @@ class Game{
 
 		this.simulating = !this.players.getWith('type', 'player').length;
 
-		//Ресет игроков
 		this.players.resetGame();
-
-		//Ресет карт
 		this.cards.reset(true);
-
-		//Счетчик пропущенных ходов
-		this.skipCounter = 0;
-
-		//Возможные действия игроков
 		this.actions.reset();
+		this.skipCounter = 0;
 
 		//Свойства хода
 		this.turnNumber = 1;
@@ -249,7 +241,7 @@ class Game{
 			this.log.error('invalid game state', this.states.current);
 			return false;
 		}
-		return state.call(this);
+		return state.call(this.states);
 	}
 
 	//Выполняет следующую стадию хода
@@ -261,7 +253,7 @@ class Game{
 			this.log.error('Invalid turn stage', this.turnStages.next);
 			return false;
 		}
-		return turnStage.call(this);
+		return turnStage.call(this.turnStages);
 	}
 
 	//Позволяет игроку выполнить действие

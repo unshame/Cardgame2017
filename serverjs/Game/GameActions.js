@@ -64,7 +64,7 @@ class Actions{
 		// Ожидается действие, но действие не получено, перепосылаем действия
 		if(this.valid.length && !action){
 			this.log.warn(player.name, 'Wating for action but no action recieved');
-			if(game.isGoing){
+			if(game.isRunning){
 				player.recieveValidActions(this.valid.slice(), (this.deadline - Date.now())/1000);
 			}
 			return;

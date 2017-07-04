@@ -1,36 +1,38 @@
 /*
  * Класс содержит действия, выполняемые при различных состояниях игры
- * Выполняются в контексте игры 
  */
 'use strict';
 
 class GameStates{
-	constructor(){
+	constructor(game){
+		this.game = game;
 		this.current = null;
 	}
 
 	//Проверяем, нужно ли перезапускать игру
 	NOT_STARTED(){
+		const game = this.game;
 		//Проверяем результаты голосования
-		let voteResults = this.actions.checkStored();
+		let voteResults = game.actions.checkStored();
 
 		//Если голосов хватает, запускаем игру
 		if(voteResults.successful){
-			this.rematch(voteResults);
+			game.rematch(voteResults);
 		}
 		//Иначе, не запускаем игру
 		else{
-			this.backToLobby(voteResults);	
+			game.backToLobby(voteResults);	
 		}
 		return false;
 	}
 
 	//Сообщаем игрокам о колоде и друг друге
 	SHOULD_START(){		
-		this.states.current = 'STARTING';
-		this.waitForResponse(this.actions.timeouts.gameStart, this.players);
-		this.players.gameStateNotify(
-			this.players,
+		const game = this.game;
+		this.current = 'STARTING';
+		game.waitForResponse(game.actions.timeouts.gameStart, game.players);
+		game.players.gameStateNotify(
+			game.players,
 			{
 				cards: true,
 				players: true,
@@ -44,15 +46,16 @@ class GameStates{
 
 	//Раздаем карты в начале игры
 	STARTING(){
-		this.states.current = 'STARTED';
-		let dealsOut = this.cards.dealStartingHands();
+		const game = this.game;
+		this.current = 'STARTED';
+		let dealsOut = game.cards.dealStartingHands();
 
 		if(dealsOut && dealsOut.length){
-			this.waitForResponse(this.actions.timeouts.deal, this.players);
-			this.players.dealNotify(dealsOut);
+			game.waitForResponse(game.actions.timeouts.deal, game.players);
+			game.players.dealNotify(dealsOut);
 		}
 		else{
-			this.log.error('Couldn\'t deal at the start of the game');
+			game.log.error('Couldn\'t deal at the start of the game');
 		}
 		return false;
 
@@ -60,26 +63,27 @@ class GameStates{
 
 	//Находим игрока, делающего первый ход в игре или продолжаем ход
 	STARTED(){
-		if(!this.players.attackers.length){
+		const game = this.game;
+		if(!game.players.attackers.length){
 
-			let [minTCards, minTCard] = this.players.findToGoFirst();	
+			let [minTCards, minTCard] = game.players.findToGoFirst();	
 
 			//Сообщаем игрокам о минимальных козырях
 			if(minTCard){				
-				this.waitForResponse(this.actions.timeouts.trumpCards, this.players);
-				this.players.minTrumpCardsNotify(minTCards, minTCard.pid);
+				game.waitForResponse(game.actions.timeouts.trumpCards, game.players);
+				game.players.minTrumpCardsNotify(minTCards, minTCard.pid);
 				return false;
 			}
 			//Иначе сообщаем об отсутствии козырей в руках
 			else{
-				this.players.notify({
+				game.players.notify({
 					message: 'NO_TRUMP_CARDS'
 				});
 				return true;
 			}
 		}
 		else{
-			return this.doTurn();	
+			return game.doTurn();	
 		}
 	}
 }

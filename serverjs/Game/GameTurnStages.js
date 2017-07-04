@@ -1,5 +1,6 @@
 /*
  * Класс содержит действия, выполняемые в различные стадии хода
+ * Выполняется в своем собственном контексте.
  */
 'use strict';
 
@@ -26,73 +27,83 @@ class GameTurnStages{
 	}
 
 
-	// Действия выполняются в контексте игры 
+	// Действия
 
 	//Начинаем ход
 	DEFAULT(){
-		this.startTurn();
+		this.game.startTurn();
 		//Turn stage: INITIAL_ATTACK
 		return true;
 	}
 
 	//Первая атака
 	INITIAL_ATTACK(){
-		return this.let('ATTACK', this.players.attackers[0]);
+		const game = this.game;
+		return game.let('ATTACK', game.players.attackers[0]);
 		//Turn stage: DEFENSE
 	}
 
 	//Атакующий игрок атакует повторно
 	REPEATING_ATTACK(){
-		return this.let('ATTACK', this.players.attackers[0]);
+		const game = this.game;
+		return game.let('ATTACK', game.players.attackers[0]);
 		//Turn stage: DEFENSE
 	}
 
 	//Атакующий игрок атакует после помогающего игрока
 	ATTACK(){
-		return this.let('ATTACK', this.players.attackers[0]);
+		const game = this.game;
+		return game.let('ATTACK', game.players.attackers[0]);
 		//Turn stage: DEFENSE
 	}
 
 	//Помогающий игрок атакует
 	SUPPORT(){
 
-		let attackers = this.players.attackers;
+		const game = this.game;
+
+		let attackers = game.players.attackers;
 
 		//Debug
 		if(!attackers[1])
-			this.log.error('No ally assigned, but turn stage is SUPPORT');
+			game.log.error('No ally assigned, but turn stage is SUPPORT');
 
-		return this.let('ATTACK', attackers[1] || attackers[0]);
+		return game.let('ATTACK', attackers[1] || attackers[0]);
 		//Turn stage: DEFENSE
 	}
 
 	//Подкладывание карт в догонку
 	FOLLOWUP(){
-		let attackers = this.players.attackers;
-		return this.let('ATTACK', !this.skipCounter ? attackers[0] : (attackers[1] || attackers[0]));
+		const game = this.game;
+
+		let attackers = game.players.attackers;
+		return game.let('ATTACK', !game.skipCounter ? attackers[0] : (attackers[1] || attackers[0]));
 		//Turn stage: DEFENSE
 	}
 
 	//Защищающийся игрок ходит
 	DEFENSE(){
+		const game = this.game;
 
 		//Если мы были в стадии подкидывания в догонку, передаем все карты со стола
 		//защищающемуся и сообщаем всем игрокам об этом
-		if(this.turnStages.current == 'FOLLOWUP')
-			return this.let('TAKE', this.players.defender);
+		if(this.current == 'FOLLOWUP')
+			return game.let('TAKE', game.players.defender);
 		//Иначе даем защищаться
 		else
-			return this.let('DEFEND', this.players.defender);
+			return game.let('DEFEND', game.players.defender);
 		//Turn stage: REPEATING_ATTACK, ATTACK, SUPPORT, END
 	}
 
 	//Начало конца хода, убираем карты со стола
 	END(){
-		this.turnStages.setNext('END_DEAL');
-		let discarded = this.cards.discard();
+		const game = this.game;
+
+		this.setNext('END_DEAL');
+		let discarded = game.cards.discard();
 		if(discarded){
-			this.waitForResponse(this.actions.timeouts.discard, this.players);
-			this.players.completeActionNotify(discarded);
+			game.waitForResponse(game.actions.timeouts.discard, game.players);
+			game.players.completeActionNotify(discarded);
 			return false;
 		}
 		return true;
@@ -100,11 +111,13 @@ class GameTurnStages{
 
 	//Раздаем карты после окончания хода
 	END_DEAL(){
-		this.turnStages.setNext('ENDED');
-		let dealsOut = this.cards.dealTillFullHand();
+		const game = this.game;
+
+		this.setNext('ENDED');
+		let dealsOut = game.cards.dealTillFullHand();
 		if(dealsOut.length){
-			this.waitForResponse(this.actions.timeouts.deal, this.players);
-			this.players.dealNotify(dealsOut);
+			game.waitForResponse(game.actions.timeouts.deal, game.players);
+			game.players.dealNotify(dealsOut);
 			return false;
 		}
 		return true;
@@ -114,22 +127,24 @@ class GameTurnStages{
 	//находим следующего игрока, ресетим ход и проверяем, закончилась ли игра
 	ENDED(){
 
+		const game = this.game;
+
 		//Если защищающийся брал, сдвигаем айди, по которому будет искаться атакующий
-		if(this.actions.takeOccurred){
-			this.players.attackers = [this.players.defender];
+		if(game.actions.takeOccurred){
+			game.players.attackers = [game.players.defender];
 		}
 
-		let currentAttackerIndex = this.players.findInactive();
-		this.resetTurn();
+		let currentAttackerIndex = game.players.findInactive();
+		game.resetTurn();
 		//Turn stage: null
 
-		if(!this.deck.length && this.players.notEnoughActive){
-			this.players.findLoser();
-			this.end();
+		if(!game.deck.length && game.players.notEnoughActive){
+			game.players.findLoser();
+			game.end();
 			return false;
 		}
 
-		this.players.findToGoNext(currentAttackerIndex);
+		game.players.findToGoNext(currentAttackerIndex);
 		return true;
 	}
 }
