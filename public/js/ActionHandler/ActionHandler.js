@@ -4,10 +4,10 @@
 * @class
 */
 
-var ActionHandler = function(reactions){
+var ActionHandler = function(actionReactions, notificationReactions){
 
-	this.actionReactions = window.actionReactions;
-	this.notificationReactions = window.notificationReactions;
+	this.actionReactions = actionReactions;
+	this.notificationReactions = notificationReactions;
 	this.possibleActions = null;
 
 	this.timedAction = null;
@@ -19,6 +19,11 @@ var ActionHandler = function(reactions){
 //Выполняет действие
 
 ActionHandler.prototype.executeAction = function(action){
+
+	if(!action){
+		console.error('Action handler: no action recieved');
+		return;
+	}
 
 	gameSeq.finish();
 

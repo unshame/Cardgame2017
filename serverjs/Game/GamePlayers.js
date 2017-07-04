@@ -154,7 +154,7 @@ class GamePlayers extends GamePlayersBase{
 					cards: send.cards && cardsToSend[pid] || [],
 					players: send.players && playersToSend || [],
 					trumpSuit: send.suit && game.cards.trumpSuit || null,
-					lockedFields: game.cards.lockedFields,
+					lockedFields: game.cards.lockedFieldsIds,
 					turnIndex: game.turnNumber,
 					gameIndex: game.index,
 					noResponse: noResponse || false

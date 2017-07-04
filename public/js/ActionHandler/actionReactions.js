@@ -69,13 +69,14 @@ window.actionReactions = {
 		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
 		var delay;
 		if(noDelay){
-			delay = fieldManager.queueCards(action.cards, noDelay ? true : false);
+			delay = fieldManager.queueCards(action.cards, noDelay);
 			fieldManager.removeMarkedCards();
-			fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, noDelay ? true : false);
+			fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, noDelay);
 		}
 		else{
 			delay = fieldManager.fancyShuffleCards(action.cards);
-		}		
+		}
+
 		if(hasTrumpSuit){
 			fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? game.defaultMoveTime : delay);
 		}

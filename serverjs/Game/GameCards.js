@@ -65,7 +65,7 @@ class GameCards extends BetterArray{
 		return defenseFields;
 	}
 
-	get lockedFields(){
+	get lockedFieldsIds(){
 		let lockedFields = [];
 		for(let i = this.table.fullLength; i < this.table.maxLength; i++){
 			lockedFields.push(this.table[i].id);
