@@ -19,7 +19,7 @@ class GameDirectives{
 
 			this.log.info(!this.firstEmptyTable && 'Field is full' || 'Defender has no cards');
 
-			this.setNextTurnStage('DEFENSE');
+			this.turnStages.setNext('DEFENSE');
 			return true;
 		}
 		else if(!hand.length){
@@ -29,14 +29,14 @@ class GameDirectives{
 				this.skipCounter++;
 
 				if(turnStage == 'FOLLOWUP'){
-					this.setNextTurnStage('FOLLOWUP');
+					this.turnStages.setNext('FOLLOWUP');
 				}
 				else{
-					this.setNextTurnStage('SUPPORT');
+					this.turnStages.setNext('SUPPORT');
 				}
 			}
 			else{
-				this.setNextTurnStage('DEFENSE');
+				this.turnStages.setNext('DEFENSE');
 			}
 			return true;
 		}
@@ -68,7 +68,7 @@ class GameDirectives{
 
 			this.log.info(!this.firstEmptyTable && 'Field is full' || 'Defender has no cards');
 
-			this.setNextTurnStage('DEFENSE');
+			this.turnStages.setNext('DEFENSE');
 			return true;
 		}
 		else if(!hand.length){
@@ -78,14 +78,14 @@ class GameDirectives{
 				this.skipCounter++;
 
 				if(turnStage == 'FOLLOWUP'){
-					this.setNextTurnStage('FOLLOWUP');
+					this.turnStages.setNext('FOLLOWUP');
 				}
 				else{
-					this.setNextTurnStage('SUPPORT');
+					this.turnStages.setNext('SUPPORT');
 				}
 			}
 			else{
-				this.setNextTurnStage('DEFENSE');
+				this.turnStages.setNext('DEFENSE');
 			}
 			return true;
 		}
@@ -103,7 +103,7 @@ class GameDirectives{
 		}
 		
 		//Меняем стадию на стадию защиты
-		this.setNextTurnStage('DEFENSE');
+		this.turnStages.setNext('DEFENSE');
 
 		this.log.silly(actions);
 
@@ -127,7 +127,7 @@ class GameDirectives{
 		//Если ни одной карты не найдено, значит игрок успешно отбился, можно завершать ход
 		if(!defenseFields.length){
 			this.log.info(player.name, 'successfully defended');
-			this.setNextTurnStage('END');
+			this.turnStages.setNext('END');
 			return true;
 		}
 
@@ -153,19 +153,19 @@ class GameDirectives{
 		switch(lastTurnStage){
 
 		case 'INITIAL_ATTACK':
-			this.setNextTurnStage('REPEATING_ATTACK');
+			this.turnStages.setNext('REPEATING_ATTACK');
 			break;
 
 		case 'REPEATING_ATTACK':
-			this.setNextTurnStage('REPEATING_ATTACK');
+			this.turnStages.setNext('REPEATING_ATTACK');
 			break;
 
 		case 'SUPPORT':
-			this.setNextTurnStage('ATTACK');
+			this.turnStages.setNext('ATTACK');
 			break;
 
 		case 'ATTACK':
-			this.setNextTurnStage('SUPPORT');
+			this.turnStages.setNext('SUPPORT');
 			break;		
 
 		//Debug
@@ -190,8 +190,8 @@ class GameDirectives{
 
 		let action = this.cards.getDiscardAction(player);
 
-		this.playerTook = true;
-		this.setNextTurnStage('END');
+		this.actions.takeOccurred = true;
+		this.turnStages.setNext('END');
 
 		this.waitForResponse(this.actions.timeouts.take, this.players);
 		this.players.takeNotify(action);

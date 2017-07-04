@@ -284,7 +284,7 @@ class GameCards extends BetterArray{
 
 				let card = this.deck[0];
 
-				this.game.logAction(card, 'DEAL', card.field, dealInfo.pid);
+				this.game.actions.logAction(card, 'DEAL', card.field, dealInfo.pid);
 
 				this.hands[dealInfo.pid].push(card);
 				card.field = dealInfo.pid;
@@ -378,7 +378,7 @@ class GameCards extends BetterArray{
 
 			if(tableField.attack){
 				let card = tableField.attack;
-				this.game.logAction(card, 'DISCARD', card.field, 'DISCARD_PILE');
+				this.game.actions.logAction(card, 'DISCARD', card.field, 'DISCARD_PILE');
 				card.field = 'DISCARD_PILE';
 
 				action.ids.push(tableField.attack.id);
@@ -388,7 +388,7 @@ class GameCards extends BetterArray{
 
 			if(tableField.defense){
 				let card = tableField.defense;
-				this.game.logAction(card, 'DISCARD', card.field, 'DISCARD_PILE');
+				this.game.actions.logAction(card, 'DISCARD', card.field, 'DISCARD_PILE');
 				card.field = 'DISCARD_PILE';
 
 				action.ids.push(tableField.defense.id);
@@ -547,7 +547,7 @@ class GameCards extends BetterArray{
 			if(tableField.attack){
 
 				let card = tableField.attack;
-				this.game.logAction(card, actionType, card.field, pid);
+				this.game.actions.logAction(card, actionType, card.field, pid);
 				card.field = pid;
 
 				this.hands[pid].push(tableField.attack);
@@ -565,7 +565,7 @@ class GameCards extends BetterArray{
 			if(tableField.defense){
 
 				let card = tableField.defense;
-				this.game.logAction(card, actionType, card.field, pid);
+				this.game.actions.logAction(card, actionType, card.field, pid);
 				card.field = pid;
 
 				this.hands[pid].push(tableField.defense);

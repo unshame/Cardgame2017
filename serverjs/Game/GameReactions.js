@@ -33,7 +33,7 @@ class GameReactions{
 
 		let field = action.field;
 
-		this.logAction(card, action.type, card.field, field );
+		this.actions.logAction(card, action.type, card.field, field );
 
 		//Перемещаем карту на стол и убираем карту из руки
 		card.field = field;
@@ -49,7 +49,7 @@ class GameReactions{
 
 		//Если игрок клал карту в догонку, даем ему воможность положить еще карту
 		if(this.turnStages.current == 'FOLLOWUP'){
-			this.setNextTurnStage('FOLLOWUP');
+			this.turnStages.setNext('FOLLOWUP');
 		}
 		else if(this.turnStages.current == 'DEFENSE'){
 			let attackers = this.players.attackers;
@@ -58,7 +58,7 @@ class GameReactions{
 			let currentAttackerIndex = activePlayers.indexOf(attackers[0]);
 			this.players.findToGoNext(currentAttackerIndex);
 			
-			this.setNextTurnStage('DEFENSE');	
+			this.turnStages.setNext('DEFENSE');	
 		}
 		else{
 			this.skipCounter = 0;	//Если же это просто ход, сбрасываем счетчик пропущенных ходов
@@ -80,9 +80,9 @@ class GameReactions{
 		card = cardsById[action.cid];
 		ci = this.hands[player.id].indexOf(card);
 
-		this.logAction(card, action.type, card.field, action.field );
+		this.actions.logAction(card, action.type, card.field, action.field );
 
-		//Перемещаем карту на стол и убираем карту из руки
+		//Перемещаем карту на стол и убираем карту из рукиs
 		card.field = action.field;
 		this.hands[player.id].splice(ci, 1);
 		tableFields[action.field].defense = card;
@@ -92,7 +92,7 @@ class GameReactions{
 		action.suit = card.suit;
 
 		if(this.cards.defenseFields.length){
-			this.setNextTurnStage('DEFENSE');
+			this.turnStages.setNext('DEFENSE');
 		}
 
 		return action;
@@ -120,14 +120,14 @@ class GameReactions{
 			case 'FOLLOWUP':
 				if(!this.skipCounter){
 					this.skipCounter++;
-					this.setNextTurnStage('FOLLOWUP');
+					this.turnStages.setNext('FOLLOWUP');
 				}
 				break;
 
 			//Атакующий не доложил карту, переходим к помогающему
 			case 'REPEATING_ATTACK':
 				this.skipCounter++;
-				this.setNextTurnStage('SUPPORT');
+				this.turnStages.setNext('SUPPORT');
 				break;
 
 			default:
@@ -136,10 +136,10 @@ class GameReactions{
 				if(this.skipCounter < 2){
 
 					if(this.turnStages.current == 'SUPPORT'){
-						this.setNextTurnStage('ATTACK');
+						this.turnStages.setNext('ATTACK');
 					}
 					else if(this.turnStages.current == 'ATTACK'){
-						this.setNextTurnStage('SUPPORT');
+						this.turnStages.setNext('SUPPORT');
 					}
 					else{
 						this.log.error('Invalid action', action.type);
@@ -156,7 +156,7 @@ class GameReactions{
 	TAKE(player, action){
 		this.log.info(player.name, "takes");
 		this.skipCounter = 0;
-		this.setNextTurnStage('FOLLOWUP');
+		this.turnStages.setNext('FOLLOWUP');
 		return action;
 	}
 }

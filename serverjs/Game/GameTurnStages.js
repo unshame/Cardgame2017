@@ -1,14 +1,32 @@
 /*
  * Класс содержит действия, выполняемые в различные стадии хода
- * Выполняются в контексте игры 
  */
 'use strict';
 
 class GameTurnStages{
-	constructor(){
+	constructor(game){
+		this.game = game;
+
 		this.current = null;
 		this.next = null;
 	}
+
+	reset(){
+		this.current = null;
+		this.next = 'DEFAULT';
+	}
+
+	//Устанавливает следующую фазу хода и запоминает текущую
+	//INITIAL_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> ... ->
+	//SUPPORT -> DEFENSE -> ATTACK -> DEFENSE -> ... -> FOLLOWUP -> DEFENSE -> END -> END_DEAL -> ENDED
+	setNext(stage){
+		this.current = this.next;
+		this.next = stage;
+		this.game.log.debug(stage);
+	}
+
+
+	// Действия выполняются в контексте игры 
 
 	//Начинаем ход
 	DEFAULT(){
@@ -70,10 +88,10 @@ class GameTurnStages{
 
 	//Начало конца хода, убираем карты со стола
 	END(){
-		this.setNextTurnStage('END_DEAL');
+		this.turnStages.setNext('END_DEAL');
 		let discarded = this.cards.discard();
 		if(discarded){
-			this.waitForResponse(this.timeouts.discard, this.players);
+			this.waitForResponse(this.actions.timeouts.discard, this.players);
 			this.players.completeActionNotify(discarded);
 			return false;
 		}
@@ -82,10 +100,10 @@ class GameTurnStages{
 
 	//Раздаем карты после окончания хода
 	END_DEAL(){
-		this.setNextTurnStage('ENDED');
+		this.turnStages.setNext('ENDED');
 		let dealsOut = this.cards.dealTillFullHand();
 		if(dealsOut.length){
-			this.waitForResponse(this.timeouts.deal, this.players);
+			this.waitForResponse(this.actions.timeouts.deal, this.players);
 			this.players.dealNotify(dealsOut);
 			return false;
 		}
@@ -97,7 +115,7 @@ class GameTurnStages{
 	ENDED(){
 
 		//Если защищающийся брал, сдвигаем айди, по которому будет искаться атакующий
-		if(this.playerTook){
+		if(this.actions.takeOccurred){
 			this.players.attackers = [this.players.defender];
 		}
 

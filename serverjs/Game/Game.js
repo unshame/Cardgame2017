@@ -36,9 +36,9 @@ class Game{
 			return;
 		}
 
-		this.actions = new GameActions(this);
-		this.states = new GameStates(this);
+		this.states = new GameStates();
 		this.turnStages = new GameTurnStages(this);
+		this.actions = new GameActions(this);
 		this.reactions = new GameReactions();
 		this.directives = new GameDirectives();
 
@@ -62,14 +62,11 @@ class Game{
 
 		this.timer = null;
 
-
 		this.turnStartTime = null;
-
 
 		this.result = null;
 
 		this.simulating = false;
-		this.playerTook = false;
 
 		//Запускаем игру
 		this.reset();
@@ -214,9 +211,9 @@ class Game{
 		
 		this.table.usedFields = 0;
 		this.skipCounter = 0;
-		this.turnStages.current = null;
-		this.turnStages.next = 'DEFAULT';	
-		this.playerTook = false;
+		this.turnStages.reset();
+
+		this.actions.reset();
 
 		this.players.resetTurn();
 		this.players.notify({message: 'TURN_ENDED'});
@@ -235,20 +232,11 @@ class Game{
 			message: 'TURN_STARTED',
 			index: this.turnNumber
 		});
-		this.setNextTurnStage('INITIAL_ATTACK');	
+		this.turnStages.setNext('INITIAL_ATTACK');	
 	}
 
 
 	//Методы выбора статуса игры и стадии хода
-
-	//Устанавливает следующую фазу хода и запоминает текущую
-	//INITIAL_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> ... ->
-	//SUPPORT -> DEFENSE -> ATTACK -> DEFENSE -> ... -> FOLLOWUP -> DEFENSE -> END -> END_DEAL -> ENDED
-	setNextTurnStage(stage){
-		this.turnStages.current = this.turnStages.next;
-		this.turnStages.next = stage;
-		this.log.debug(stage);
-	}
 
 	//Выполняет следующую стадию игры
 	//Возвращает нужно ли продолжать игру, или ждать игроков
@@ -292,7 +280,7 @@ class Game{
 	}
 	
 
-	//Методы передачи и обработки действий, установки таймера действий
+	//Методы установки таймера действий
 
 	//Ждет ответа от игроков
 	waitForResponse(time, players){
@@ -348,13 +336,17 @@ class Game{
 		}	
 	}
 
+
+	// Методы обработки действий
+
+	// Получает ответ от игрока асинхронно
 	recieveResponse(player, action){
 		setTimeout(() => {
 			this.actions.recieve(player, action);
 		}, 0);
 	}
 
-	//Получает ответ от игрока синхронно
+	// Получает ответ от игрока синхронно
 	recieveResponseSync(player, action){
 		this.actions.recieve(player, action);
 	}

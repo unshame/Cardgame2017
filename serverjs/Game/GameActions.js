@@ -11,6 +11,8 @@ class Actions{
 		this.valid = [];
 		this.stored = [];
 
+		this.takeOccurred = false;
+
 		//Время ожидания сервера
 		this.timeouts = {
 			gameStart: 10,
@@ -29,6 +31,7 @@ class Actions{
 	reset(){
 		this.valid.length = 0;
 		this.stored.length = 0;
+		this.takeOccurred = false;
 	}
 
 	//Получает и обрабатывает действие
@@ -77,6 +80,7 @@ class Actions{
 				player.afk = false;
 			}
 
+			// Выполняем или сохраняем действие
 			if(game.states.current == 'STARTED'){
 				waitingForResponse = true;
 				this.process(player, action);
@@ -100,9 +104,7 @@ class Actions{
 		}
 	}
 
-
-	//Выполняет или сохраняет действие, оповещает игроков о результатах действия
-	//Возвращает ожидается ли ответ от игроков или нет
+	//Выполняет действие, оповещает игроков о результатах действия
 	process(player, action){
 
 		const game = this.game;
@@ -297,6 +299,7 @@ class Actions{
 		return note;
 	}
 
+	//Оповещает игроков о сохраненном выполненном действии
 	completeNotify(){
 		const game = this.game;
 
