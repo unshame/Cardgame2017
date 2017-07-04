@@ -15,6 +15,7 @@ const
 	Bot = requirejs('Players/Bot'),
 	GameCards = requirejs('Game/GameCards'),
 	GamePlayers = requirejs('Game/GamePlayers'),
+	GameActions = requirejs('Game/GameActions'),
 	GameStates = requirejs('Game/GameStates'),
 	GameTurnStages = requirejs('Game/GameTurnStages'),
 	GameReactions = requirejs('Game/GameReactions'),
@@ -35,6 +36,7 @@ class Game{
 			return;
 		}
 
+		this.actions = new GameActions(this);
 		this.states = new GameStates(this);
 		this.turnStages = new GameTurnStages(this);
 		this.reactions = new GameReactions();
@@ -56,24 +58,18 @@ class Game{
 
 		//Номер игры
 		this.index = -1;
+		this.turnNumber = 0;
 
-		//Время ожидания сервера
-		this.timeouts = {
-			gameStart: 10,
-			gameEnd: 20,
-			trumpCards: 10,
-			deal: 10,
-			discard: 5,
-			take: 5,
-			actionComplete: 3,
-			actionAttack: 20,
-			actionDefend: 20,
-			afk: 5
-		};
-		this.completedAction = null;
-		this.actionDeadline = null;
 		this.timer = null;
 
+
+		this.turnStartTime = null;
+
+
+		this.result = null;
+
+		this.simulating = false;
+		this.playerTook = false;
 
 		//Запускаем игру
 		this.reset();
@@ -82,7 +78,8 @@ class Game{
 
 	//Запущена ли игра
 	//Игра не запущена, когда идет голосование о рестарте
-	get isStarted(){
+	//Это не тоже самое, что game.states == 'STARTED'
+	get isGoing(){
 		return this.states.current != 'NOT_STARTED';
 	}
 
@@ -112,8 +109,7 @@ class Game{
 		this.skipCounter = 0;
 
 		//Возможные действия игроков
-		this.validActions = [];
-		this.storedActions = [];
+		this.actions.reset();
 
 		//Свойства хода
 		this.turnNumber = 1;
@@ -167,11 +163,11 @@ class Game{
 
 		this.reset();
 		
-		this.validActions.push(actionAccept);
-		this.validActions.push(actionDecline);
+		this.actions.valid.push(actionAccept);
+		this.actions.valid.push(actionDecline);
 
-		this.waitForResponse(this.timeouts.gameEnd, this.players);
-		this.players.notify(note, this.validActions.slice());
+		this.waitForResponse(this.actions.timeouts.gameEnd, this.players);
+		this.players.notify(note, this.actions.valid.slice());
 	}
 
 	//Перезапускает игру 
@@ -182,8 +178,7 @@ class Game{
 		
 		this.players.notify(voteResults);
 
-		this.validActions = [];
-		this.storedActions = [];
+		this.actions.reset();
 
 		this.start();
 	}
@@ -286,14 +281,14 @@ class Game{
 
 	//Позволяет игроку выполнить действие
 	//Возвращает нужно ли продолжать игру, или ждать игроков
-	let(dirName, player){
+	let(dirName, ...players){
 
 		let directive = this.directives[dirName];
 		if(!directive){
 			this.log.error('Invalid directive', dirName);
 			return false;
 		}
-		return directive.call(this, player);
+		return directive.call(this, ...players);
 	}
 	
 
@@ -307,11 +302,7 @@ class Game{
 			this.timer = null;
 		}
 
-		if(this.completedAction){
-			this.completedAction.noResponse = true;
-			this.players.completeActionNotify(this.completedAction);
-			this.completedAction = null;
-		}
+		this.actions.completeNotify();
 
 		if(!this.simulating){
 			this.trySimulating();
@@ -327,10 +318,10 @@ class Game{
 
 			//Если игрок afk, время действия уменьшается
 			if(players.length == 1 && players[0].afk){
-				duration = this.timeouts.afk * 1000;
+				duration = this.actions.timeouts.afk * 1000;
 			}
 
-			this.actionDeadline = Date.now() + duration;
+			this.actions.deadline = Date.now() + duration;
 			this.timer = setTimeout(this.timeOut.bind(this), duration);
 		}
 		else{
@@ -346,302 +337,26 @@ class Game{
 		this.players.logTimeout();
 
 		//Если есть действия, выполняем первое попавшееся действие
-		if(this.validActions.length && this.states.current == 'STARTED'){
-			this.executeFirstAction();
+		if(this.actions.valid.length && this.states.current == 'STARTED'){
+			this.actions.executeFirst();
 		}
 		//Иначе, обнуляем действующих игроков, возможные действия и продолжаем ход
 		else{
 			this.players.working = [];
-			this.validActions = [];
+			this.actions.valid.length = 0;
 			while(this.continue());
 		}	
 	}
 
-	//Получает ответ от игрока асинхронно
 	recieveResponse(player, action){
 		setTimeout(() => {
-			this.recieveResponseSync(player, action);
+			this.actions.recieve(player, action);
 		}, 0);
 	}
 
 	//Получает ответ от игрока синхронно
 	recieveResponseSync(player, action){
-
-		//Проверяем валидность ответа
-		let playersWorking = this.players.working;
-		let pi = playersWorking.indexOf(player);
-
-		// Запоздавший или непредвиденный ответ
-		if(!~pi){
-			if(player.type != 'player' || !this.simulating){
-				this.log.warn( player.name, player.id, 'Late or uncalled response');
-			}
-
-			//Сообщаем игроку, что действие пришло не вовремя
-			if(action){
-				this.players.notify(
-					{
-						message: 'LATE_OR_UNCALLED_ACTION',
-						action: action
-					},
-					null,
-					[player]
-				);
-			}
-			return;
-		}
-
-		// Ожидается действие, но действие не получено, перепосылаем действия
-		if(this.validActions.length && !action){
-			this.log.warn(player.name, 'Wating for action but no action recieved');
-			if(this.isStarted){
-				player.recieveValidActions(this.validActions.slice(), (this.actionDeadline - Date.now())/1000);
-			}
-			return;
-		}
-
-		this.log.silly('Response from', player.id, action ? action : '');
-
-		//Выполняем или сохраняем действие
-		let waitingForResponse = false;
-		if(action){
-			waitingForResponse = this.processAction(player, action);
-		}
-
-		//Если мы не оповещали игроков и не ждем от них нового ответа
-		if(!waitingForResponse){
-			//Убираем игрока из списка действующих
-			playersWorking = this.players.working;
-			pi = playersWorking.indexOf(player);
-			if(~pi){
-				playersWorking.splice(pi, 1);	
-				this.players.working = playersWorking;
-			}
-
-			//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
-			if(!playersWorking.length){
-				clearTimeout(this.timer);
-				while(this.continue());
-			}
-		}
-	}
-
-
-	//Выполняет или сохраняет действие, оповещает игроков о результатах действия
-	//Возвращает ожидается ли ответ от игроков или нет
-	processAction(player, action){
-		//Игрок выбрал действие, он не afk
-		if(player.afk)
-			player.afk = false;
-
-		let outgoingAction;
-
-		//Во время игры один игрок действует за раз
-		if(this.states.current == 'STARTED'){
-
-			outgoingAction = this.executeAction(player, action);
-
-			//Если действие легально
-			if(outgoingAction){
-
-				//Убираем игрока из списка действующих (он там один)
-				this.players.working = [];
-
-				this.completedAction = outgoingAction;
-				// Делаем один шаг в игре, чтобы узнать, нужно ли дать игрокам время на обработку выполненного действия
-				this.continue();
-
-				//Сообщаем игрокам о действии
-				//Если дальнейших действий пока нет, даем игрокам время на обработку выполненного времени
-				if(this.completedAction == outgoingAction){
-					this.completedAction = null;
-					this.waitForResponse(this.timeouts.actionComplete, this.players);
-					this.players.completeActionNotify(outgoingAction);
-				}			
-
-			}
-			// иначе сообщаем игроку, что действие нелегально
-			else{
-				this.players.notify(
-					{
-						message: 'INVALID_ACTION',
-						action: action,
-						time: this.actionDeadline,
-						timeSent: Date.now()
-					},
-					this.validActions.slice(),
-					[player]
-				);
-			}
-			return true;			
-		}
-		//Если игра закончена, действовать могут все
-		else{
-			this.storeAction(player, action);
-		}
-
-		return false;
-	}
-
-	// Находит и возвращает локальную копию переданного действия или null
-	// ignored может быть 1 или массивом игнорируемых свойств действия
-	checkActionValidity(action, ignored){
-
-		if(ignored && !ignored.indexOf){
-			ignored = [ignored];
-		}
-
-		outer:	// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/label
-		for(let i = 0; i < this.validActions.length; i++){
-			let validAction = this.validActions[i];
-			for(let k in validAction){
-				if(!validAction.hasOwnProperty(k))
-					continue;
-				if((!ignored || !~ignored.indexOf(k)) && validAction[k] != action[k]){
-					continue outer;
-				}
-			}
-			return validAction;
-		};
-		return null;
-	}
-
-	//Обрабатывает полученное от игрока действие, возвращает исходящее действие
-	executeAction(player, incomingAction){
-
-		let action = this.checkActionValidity(incomingAction, 'linkedField');
-
-		//Проверка действия
-		if( !action ){
-			this.log.warn(
-				'Invalid action', player.id,
-				incomingAction && incomingAction.type, incomingAction, this.validActions
-			);
-			return null;
-		}
-
-		//Выполняем действие
-		let reaction = this.reactions[action.type];
-		if(!reaction){
-			this.log.warn('Unknown action', action.type);
-			return null;
-		}
-		action = reaction.call(this, player, action);
-		action.pid = player.id;
-
-		//Обнуляем возможные действия
-		this.validActions = [];		
-
-		return action;
-	}
-
-	//Выполняет первое дейтсие из this.validActions
-	//Приоритезирует SKIP и TAKE
-	executeFirstAction(){
-		let playersWorking = this.players.working;
-		let actionIndex = 0;
-		for(let ai = 0; ai < this.validActions.length; ai++){
-			let action = this.validActions[ai];
-			if(action.type == 'SKIP' || action.type == 'TAKE'){
-				actionIndex = ai;
-				break;
-			}
-		}
-
-		//У нас поддерживается только одно действие от одного игрока за раз
-		let player = playersWorking[0];	
-
-		//Устанавливаем, что игрок не выбрал действие
-		player.afk = true;
-
-		let outgoingAction = this.executeAction(player, this.validActions[actionIndex]);
-
-		//Убираем игрока из списка действующих
-		this.players.working = [];
-
-		this.waitForResponse(this.timeouts.actionComplete, this.players);
-		//Отправляем оповещение о том, что время хода вышло
-		player.handleLateness();
-		this.players.completeActionNotify(outgoingAction);
-	}
-
-	//Сохраняет полученное действие игрока
-	storeAction(player, incomingAction){
-
-		//Проверка действия
-		let action = this.checkActionValidity(incomingAction);
-
-		if( !action ){
-			this.log.warn('Invalid action', player.id, incomingAction.type, incomingAction, this.validActions);
-			return;
-		}
-
-		action.pid = player.id;
-
-		this.storedActions[player.id] = Object.assign({}, action);
-	}
-
-	//Считает сохраненные голоса и возвращает результаты
-	checkStoredActions(){
-
-		//Считаем голоса
-		let numAccepted = 0;
-
-		//TODO: заменить на this.players.length в финальной версии
-		let minAcceptedNeeded = Math.ceil(this.players.length / 2); 
-		
-		let allConnected = true;
-
-		for(let pi = 0; pi < this.players.length; pi++){
-			let player = this.players[pi];
-			let pid = player.id;
-			let action = this.storedActions[pid];
-
-			if(!player.connected){
-				allConnected = false;
-				continue;
-			}
-
-			if(action && action.type == 'ACCEPT')
-				numAccepted++;
-		}
-
-		this.log.info(numAccepted, 'out of', this.players.length, 'voted for rematch');
-		if(!allConnected)
-			this.log.info('Some players disconnected');
-
-		let results = [];
-		for(let pid in this.storedActions){
-			if(!this.storedActions.hasOwnProperty(pid))
-				continue;
-			results.push(Object.assign({}, this.storedActions[pid]));
-		}
-
-		let note = {
-			message: 'VOTE_RESULTS',
-			results: results
-		};
-
-		if(allConnected && numAccepted >= minAcceptedNeeded){
-			note.successful = true;
-		}
-		else{
-			note.successful = false;
-		}
-
-		return note;
-	}
-
-	//Записывает действие над картой в лог
-	logAction(card, actionType, from, to){
-		let playersById = this.players.byId;
-		this.log.debug(
-			'%s %s%s %s => %s',
-			actionType,
-			['♥', '♦', '♣', '♠'][card.suit], ['J', 'Q', 'K', 'A'][card.value - 11] || (card.value == 10 ? card.value : card.value + ' '),
-			playersById[from] ? playersById[from].name : from,
-			playersById[to] ? playersById[to].name : to
-		);
+		this.actions.recieve(player, action);
 	}
 }
 

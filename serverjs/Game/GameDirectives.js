@@ -7,6 +7,51 @@
 
 class GameDirectives{
 
+/*	ATTACK_DEFENSE(attackers, defender){
+		//В данный момент происходит переход между стадиями хода
+		//Откомментировать по необходимости
+		let turnStage = this.turnStages.next;
+		//let lastTurnStage = this.turnStages.current;
+		
+		let defHand = this.hands[defender.id];
+
+		if(!this.cards.firstEmptyTable || turnStage != 'FOLLOWUP' && !defHand.length){
+
+			this.log.info(!this.firstEmptyTable && 'Field is full' || 'Defender has no cards');
+
+			this.setNextTurnStage('DEFENSE');
+			return true;
+		}
+		else if(!hand.length){
+			this.log.info('Attacker has no cards');
+
+			if(this.skipCounter < 2 && this.players.attackers[1]){
+				this.skipCounter++;
+
+				if(turnStage == 'FOLLOWUP'){
+					this.setNextTurnStage('FOLLOWUP');
+				}
+				else{
+					this.setNextTurnStage('SUPPORT');
+				}
+			}
+			else{
+				this.setNextTurnStage('DEFENSE');
+			}
+			return true;
+		}
+
+		let actions = [];
+
+		for(let i = 0; i < attackers.length; i++){
+			let player = attackers[i];
+			let hand = this.hands[pid];
+
+			this.cards.getAttackActions(hand, actions);
+
+		}
+	}*/
+
 	//Отправляет атакующему возможные ходы
 	ATTACK(player){
 
@@ -62,9 +107,9 @@ class GameDirectives{
 
 		this.log.silly(actions);
 
-		this.validActions = actions;
-		this.waitForResponse(this.timeouts.actionAttack, [player]);
-		player.recieveValidActions(actions.slice(), this.timeouts.actionAttack);	
+		this.actions.valid = actions;
+		this.waitForResponse(this.actions.timeouts.actionAttack, [player]);
+		player.recieveValidActions(actions.slice(), this.actions.timeouts.actionAttack);	
 		return false;
 	}
 
@@ -102,7 +147,7 @@ class GameDirectives{
 		};
 		actions.push(action);
 
-		this.validActions = actions;
+		this.actions.valid = actions;
 
 		//Выставляем новую стадию хода в зависимости от предыдущей
 		switch(lastTurnStage){
@@ -129,8 +174,8 @@ class GameDirectives{
 			break;
 		}
 
-		this.waitForResponse(this.timeouts.actionDefend, [player]);
-		player.recieveValidActions(actions.slice(), this.timeouts.actionDefend);	
+		this.waitForResponse(this.actions.timeouts.actionDefend, [player]);
+		player.recieveValidActions(actions.slice(), this.actions.timeouts.actionDefend);	
 
 		return false;
 	}
@@ -148,7 +193,7 @@ class GameDirectives{
 		this.playerTook = true;
 		this.setNextTurnStage('END');
 
-		this.waitForResponse(this.timeouts.take, this.players);
+		this.waitForResponse(this.actions.timeouts.take, this.players);
 		this.players.takeNotify(action);
 		return false;
 	}

@@ -66,7 +66,7 @@ class Player{
 		if(this.remote && this.connected){
 			let now = Date.now();
 			if(this.afk)
-				time = this.game.timeouts.afk;
+				time = this.game.actions.timeouts.afk;
 			this.remote.recievePossibleActions(actions, now + time*1000, now);
 		}
 

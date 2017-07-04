@@ -12,7 +12,7 @@ class GameStates{
 	//Проверяем, нужно ли перезапускать игру
 	NOT_STARTED(){
 		//Проверяем результаты голосования
-		let voteResults = this.checkStoredActions();
+		let voteResults = this.actions.checkStored();
 
 		//Если голосов хватает, запускаем игру
 		if(voteResults.successful){
@@ -28,7 +28,7 @@ class GameStates{
 	//Сообщаем игрокам о колоде и друг друге
 	SHOULD_START(){		
 		this.states.current = 'STARTING';
-		this.waitForResponse(this.timeouts.gameStart, this.players);
+		this.waitForResponse(this.actions.timeouts.gameStart, this.players);
 		this.players.gameStateNotify(
 			this.players,
 			{
@@ -48,7 +48,7 @@ class GameStates{
 		let dealsOut = this.cards.dealStartingHands();
 
 		if(dealsOut && dealsOut.length){
-			this.waitForResponse(this.timeouts.deal, this.players);
+			this.waitForResponse(this.actions.timeouts.deal, this.players);
 			this.players.dealNotify(dealsOut);
 		}
 		else{
@@ -66,7 +66,7 @@ class GameStates{
 
 			//Сообщаем игрокам о минимальных козырях
 			if(minTCard){				
-				this.waitForResponse(this.timeouts.trumpCards, this.players);
+				this.waitForResponse(this.actions.timeouts.trumpCards, this.players);
 				this.players.minTrumpCardsNotify(minTCards, minTCard.pid);
 				return false;
 			}
