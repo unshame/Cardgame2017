@@ -1,4 +1,4 @@
-//ПОВОРОТ
+// ПОВОРОТ
 
 /**
 * Поворачивает карту с анимацией.
@@ -61,7 +61,7 @@ Card.prototype._calculateCorrectAngle = function(angle){
 */
 Card.prototype._startRotator = function(angle, time, delay, easing){
 
-	//Останавливаем твин, если он есть и угол поворота изменился
+	// Останавливаем твин, если он есть и угол поворота изменился
 	if(this._rotator){
 		var rotatorData = this._rotator.timeline[this._rotator.current];
 		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle && rotatorData.delay == delay && !this.game.paused)
@@ -71,7 +71,7 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 		this._rotator = null;
 	}
 
-	//Создаем и запускаем твин или поворачиваем карту если игра остановлена
+	// Создаем и запускаем твин или поворачиваем карту если игра остановлена
 	if(this.game.paused){
 		this.setAngle(angle);
 	}
@@ -87,7 +87,7 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 			delay/this.game.speed || 0
 		);
 
-		//Ресет твина по окончанию
+		// Ресет твина по окончанию
 		this._rotator.onComplete.addOnce(function(){
 			this._rotator = null;
 		}, this);
@@ -95,7 +95,7 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 };
 
 
-//ВОКРУГ ТОЧКИ
+// ВОКРУГ ТОЧКИ
 
 /**
  * Поворачивает карту вокруг указанной точки на указанный угол. 

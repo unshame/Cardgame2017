@@ -5,7 +5,7 @@
 */
 window.skins = [];
 
-//Modern
+// Modern
 skins.push({
 	width: 140,
 	height: 190,
@@ -20,7 +20,7 @@ skins.push({
 	trailHeight: 35
 });
 
-//Familiar
+// Familiar
 skins.push({
 	width: 390,
 	height: 570,
@@ -35,7 +35,7 @@ skins.push({
 	trailHeight: 35
 });
 
-//Classic
+// Classic
 skins.push({
 	color: 0x874A36,
 	background: 'wood_dark',
@@ -53,7 +53,7 @@ skins.push({
 	scale: 0.9
 });
 
-//Abstract
+// Abstract
 skins.push({
 	width: 130,
 	height: 202,
@@ -69,7 +69,7 @@ skins.push({
 	scale: 1
 });
 
-//Uno
+// Uno
 skins.push({
 	color: 0x68C655,
 	background: 'green',

@@ -13,7 +13,7 @@ class Actions{
 
 		this.takeOccurred = false;
 
-		//Время ожидания сервера
+		// Время ожидания сервера
 		this.timeouts = {
 			gameStart: 10,
 			gameEnd: 20,
@@ -29,17 +29,19 @@ class Actions{
 	}
 
 	reset(){
+		this.complete = null;
+		this.deadline = null;
 		this.valid.length = 0;
 		this.stored.length = 0;
 		this.takeOccurred = false;
 	}
 
-	//Получает и обрабатывает действие
+	// Получает и обрабатывает действие
 	recieve(player, action){
 
 		const game = this.game;
 
-		//Проверяем валидность ответа
+		// Проверяем валидность ответа
 		let playersWorking = game.players.working;
 		let pi = playersWorking.indexOf(player);
 
@@ -49,7 +51,7 @@ class Actions{
 				this.log.warn( player.name, player.id, 'Late or uncalled response');
 			}
 
-			//Сообщаем игроку, что действие пришло не вовремя
+			// Сообщаем игроку, что действие пришло не вовремя
 			if(action){
 				game.players.notify({
 					message: 'LATE_OR_UNCALLED_ACTION',
@@ -72,10 +74,10 @@ class Actions{
 
 		this.log.silly('Response from', player.id, action ? action : '');
 
-		//Выполняем или сохраняем действие
+		// Выполняем или сохраняем действие
 		let waitingForResponse = false;
 		if(action){
-			//Игрок выбрал действие, он не afk
+			// Игрок выбрал действие, он не afk
 			if(player.afk){
 				player.afk = false;
 			}
@@ -90,13 +92,13 @@ class Actions{
 			}
 		}
 
-		//Если мы не оповещали игроков и не ждем от них нового ответа
+		// Если мы не оповещали игроков и не ждем от них нового ответа
 		if(!waitingForResponse){
-			//Убираем игрока из списка действующих
+			// Убираем игрока из списка действующих
 			playersWorking.splice(pi, 1);	
 			game.players.working = playersWorking;
 
-			//Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
+			// Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
 			if(!playersWorking.length){
 				clearTimeout(game.timer);
 				while(game.continue());
@@ -104,25 +106,25 @@ class Actions{
 		}
 	}
 
-	//Выполняет действие, оповещает игроков о результатах действия
+	// Выполняет действие, оповещает игроков о результатах действия
 	process(player, action){
 
 		const game = this.game;
 
 		let outgoingAction = this.execute(player, action);
 
-		//Если действие легально
+		// Если действие легально
 		if(outgoingAction){
 
-			//Убираем игрока из списка действующих (он там один)
+			// Убираем игрока из списка действующих (он там один)
 			game.players.working = [];
 
 			this.complete = outgoingAction;
 			// Делаем один шаг в игре, чтобы узнать, нужно ли дать игрокам время на обработку выполненного действия
 			game.continue();
 
-			//Сообщаем игрокам о действии
-			//Если дальнейших действий пока нет, даем игрокам время на обработку выполненного времени
+			// Сообщаем игрокам о действии
+			// Если дальнейших действий пока нет, даем игрокам время на обработку выполненного времени
 			if(this.complete == outgoingAction){
 				this.complete = null;
 				game.waitForResponse(this.timeouts.actionComplete, game.players);
@@ -152,7 +154,7 @@ class Actions{
 			ignored = [ignored];
 		}
 
-		outer:	// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/label
+		outer:	// https:// developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/label
 		for(let i = 0; i < this.valid.length; i++){
 			let validAction = this.valid[i];
 			for(let k in validAction){
@@ -167,14 +169,14 @@ class Actions{
 		return null;
 	}
 
-	//Обрабатывает полученное от игрока действие, возвращает исходящее действие
+	// Обрабатывает полученное от игрока действие, возвращает исходящее действие
 	execute(player, incomingAction){
 
 		const game = this.game;
 
 		let action = this.checkValidity(incomingAction, 'linkedField');
 
-		//Проверка действия
+		// Проверка действия
 		if( !action ){
 			this.log.warn(
 				'Invalid action', player.id,
@@ -183,7 +185,7 @@ class Actions{
 			return null;
 		}
 
-		//Выполняем действие
+		// Выполняем действие
 		let reaction = game.reactions[action.type];
 		if(!reaction){
 			this.log.warn('Unknown action', action.type);
@@ -192,14 +194,14 @@ class Actions{
 		action = reaction.call(game, player, action);
 		action.pid = player.id;
 
-		//Обнуляем возможные действия
+		// Обнуляем возможные действия
 		this.valid.length = 0;		
 
 		return action;
 	}
 
-	//Выполняет первое дейтсие из this.valid
-	//Приоритезирует SKIP и TAKE
+	// Выполняет первое дейтсие из this.valid
+	// Приоритезирует SKIP и TAKE
 	executeFirst(){
 		const game = this.game;
 
@@ -213,27 +215,27 @@ class Actions{
 			}
 		}
 
-		//У нас поддерживается только одно действие от одного игрока за раз
+		// У нас поддерживается только одно действие от одного игрока за раз
 		let player = playersWorking[0];	
 
-		//Устанавливаем, что игрок не выбрал действие
+		// Устанавливаем, что игрок не выбрал действие
 		player.afk = true;
 
 		let outgoingAction = this.execute(player, this.valid[actionIndex]);
 
-		//Убираем игрока из списка действующих
+		// Убираем игрока из списка действующих
 		game.players.working = [];
 
 		game.waitForResponse(this.timeouts.actionComplete, game.players);
-		//Отправляем оповещение о том, что время хода вышло
+		// Отправляем оповещение о том, что время хода вышло
 		player.handleLateness();
 		game.players.completeActionNotify(outgoingAction);
 	}
 
-	//Сохраняет полученное действие игрока
+	// Сохраняет полученное действие игрока
 	store(player, incomingAction){
 
-		//Проверка действия
+		// Проверка действия
 		let action = this.checkValidity(incomingAction);
 
 		if( !action ){
@@ -246,15 +248,15 @@ class Actions{
 		this.stored[player.id] = Object.assign({}, action);
 	}
 
-	//Считает сохраненные голоса и возвращает результаты
+	// Считает сохраненные голоса и возвращает результаты
 	checkStored(){
 
 		const game = this.game;
 
-		//Считаем голоса
+		// Считаем голоса
 		let numAccepted = 0;
 
-		//TODO: заменить на game.players.length в финальной версии
+		// TODO: заменить на game.players.length в финальной версии
 		let minAcceptedNeeded = Math.ceil(game.players.length / 2); 
 		
 		let allConnected = true;
@@ -299,7 +301,7 @@ class Actions{
 		return note;
 	}
 
-	//Оповещает игроков о сохраненном выполненном действии
+	// Оповещает игроков о сохраненном выполненном действии
 	completeNotify(){
 		const game = this.game;
 
@@ -311,7 +313,7 @@ class Actions{
 		this.complete = null;
 	}
 
-	//Записывает действие над картой в лог
+	// Записывает действие над картой в лог
 	logAction(card, actionType, from, to){
 		const game = this.game;
 

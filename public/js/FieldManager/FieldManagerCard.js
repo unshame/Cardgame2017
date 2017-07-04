@@ -1,4 +1,4 @@
-//РАЗМЕЩЕНИЕ КАРТ
+// РАЗМЕЩЕНИЕ КАРТ
 
 /**
 * Добавляет карты в очередь соответствующим полям.
@@ -151,7 +151,7 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 		card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);
 	}		
 
-	//Выделяем поле игрока с наибольшим козырем
+	// Выделяем поле игрока с наибольшим козырем
 	if(this.fields[pid]){
 		this.fields[pid].setOwnHighlight(true, ui.colors.green);
 	}

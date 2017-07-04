@@ -1,4 +1,4 @@
-//Player hand
+// Player hand
 FieldBuilder.prototype._buildPlayerField = function(){
 	var manager = this.manager;
 
@@ -21,7 +21,7 @@ FieldBuilder.prototype._buildPlayerField = function(){
 	});
 };
 
-//Table
+// Table
 FieldBuilder.prototype._buildTableFields = function(lockedFields){
 	var manager = this.manager;
 
@@ -69,7 +69,7 @@ FieldBuilder.prototype._buildTableFields = function(lockedFields){
 	}
 };
 
-//Opponents
+// Opponents
 FieldBuilder.prototype._buildOpponentFields = function(){
 	var manager = this.manager,
 		players = playerManager.players,
@@ -105,7 +105,7 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 	}
 };
 
-//Deck
+// Deck
 FieldBuilder.prototype._buildDeckField = function(){
 	var manager = this.manager;
 	var iconStyle;
@@ -139,7 +139,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 	iconStyle);
 };
 
-//Discard pile
+// Discard pile
 FieldBuilder.prototype._buildDiscardField = function(){
 	var manager = this.manager;
 	manager.addField({

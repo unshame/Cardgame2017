@@ -34,7 +34,7 @@ class GameCards extends BetterArray{
 
 		this.log = game.log;
 
-		//Добавляем указатели на элементы игре
+		// Добавляем указатели на элементы игре
 		game.deck = this.deck;
 		game.discardPile = this.discardPile;
 		game.table = this.table;
@@ -42,12 +42,12 @@ class GameCards extends BetterArray{
 	}
 	static get [Symbol.species]() { return Array; }
 
-	//Карты по id
+	// Карты по id
 	get byId(){
 		return this.byKey('id');
 	}
 
-	//Возвращает первое свободное место на столе
+	// Возвращает первое свободное место на столе
 	get firstEmptyTable(){
 		let tableField = this.table.find((t, i) => {
 			return i < this.table.fullLength && !t.attack && !t.defense;
@@ -83,11 +83,11 @@ class GameCards extends BetterArray{
 			let pid = p.id;
 			cardsToSend[pid] = [];
 
-			//Колода
+			// Колода
 			this.deck.forEach((card) => {
 				let newCard = card.info;
 
-				//Игроки знают только о значении карты на дне колоды
+				// Игроки знают только о значении карты на дне колоды
 				if(card.field != 'BOTTOM' && !reveal){
 					newCard.value = null;
 					newCard.suit = null;			
@@ -95,7 +95,7 @@ class GameCards extends BetterArray{
 				cardsToSend[pid].unshift(newCard);
 			});
 
-			//Руки
+			// Руки
 			for(let hid in this.hands){
 				if(!this.hands.hasOwnProperty(hid))
 					continue;
@@ -114,7 +114,7 @@ class GameCards extends BetterArray{
 				});
 			}	
 
-			//В игре
+			// В игре
 			this.table.forEach((tableField) => {
 				if(tableField.attack){
 					let card = tableField.attack;
@@ -128,7 +128,7 @@ class GameCards extends BetterArray{
 				}		
 			});
 
-			//Сброс
+			// Сброс
 			this.discardPile.forEach((c) => {
 				let newCard = c.info;
 				if(!reveal){
@@ -142,27 +142,27 @@ class GameCards extends BetterArray{
 		return cardsToSend;
 	}
 
-	//Обнуляет карты
+	// Обнуляет карты
 	reset(soft){
 		const game = this.game;
 
-		//Убираем уже существующие карты
+		// Убираем уже существующие карты
 		if(!soft){
 			this.length = 0;
 		}
 
-		//Колода
+		// Колода
 		this.deck.length = 0;
 		
-		//Стопка сброса
+		// Стопка сброса
 		this.discardPile.length = 0;
 		
-		//Руки игроков (объекты с id карт по id игроков)		
+		// Руки игроков (объекты с id карт по id игроков)		
 		Object.keys(this.hands).forEach((key) => {
 			delete this.hands[key];
 		});			
 
-		//Поля (стол)
+		// Поля (стол)
 		this.table.length = 0;
 		this.table.length = this.table.maxLength;		
 		this.table.fullLength = this.table.zeroDiscardLength;
@@ -177,16 +177,16 @@ class GameCards extends BetterArray{
 		}
 	}
 
-	//Создает карты, поля и руки
+	// Создает карты, поля и руки
 	make(){
 		const game = this.game;
 
 		if(!this.length){
 
-			//Значения карт
+			// Значения карт
 			this.values.length = 0;
 		
-			//Задаем количество карт и минимальное значение карты
+			// Задаем количество карт и минимальное значение карты
 			if(game.players.length > 3){
 				this.lowestValue = 2;
 				this.numOfCards = 52;
@@ -196,18 +196,18 @@ class GameCards extends BetterArray{
 				this.numOfCards = 36;
 			}
 
-			//Задаем значения карт
+			// Задаем значения карт
 			for (let i = this.lowestValue; i <= this.maxValue; i++) {
 				this.values.push(i);
 			}	
 		}
 
-		//Создаем руки
+		// Создаем руки
 		game.players.forEach((p) => {
 			this.hands[p.id] = [];
 		});
 
-		//Создаем колоду
+		// Создаем колоду
 		if(!this.length){
 			this.makeDeck();
 		}
@@ -215,14 +215,14 @@ class GameCards extends BetterArray{
 			this.shuffle();
 		}
 
-		//Запоминаем козырь
+		// Запоминаем козырь
 		this.findTrumpCard();
 	}
 
-	//Создает колоду
+	// Создает колоду
 	makeDeck(){
 
-		//Добавляем карты в колоду и в сам объект
+		// Добавляем карты в колоду и в сам объект
 		this.values.forEach((v) => {
 			for(let si = 0; si < this.numOfSuits; si++){
 				let card = new Card(si, v, 'DECK');
@@ -231,7 +231,7 @@ class GameCards extends BetterArray{
 			}		
 		});
 
-		//Перемешиваем колоду
+		// Перемешиваем колоду
 		this.deck.shuffle();		
 	}
 
@@ -242,16 +242,16 @@ class GameCards extends BetterArray{
 			this.deck.push(c);
 		});
 
-		//Перемешиваем колоду
+		// Перемешиваем колоду
 		this.deck.shuffle();
 
-		//Перемешиваем id карт
+		// Перемешиваем id карт
 		this.shuffleKey('id');
 	}
 
-	//Находит козырную карту
+	// Находит козырную карту
 	findTrumpCard(){
-		//Находим первый попавшийся не туз и кладем его на дно колоды, это наш козырь
+		// Находим первый попавшийся не туз и кладем его на дно колоды, это наш козырь
 		for(let ci = 0; ci < this.deck.length; ci++){
 
 			let thisCard = this.deck[ci];
@@ -263,13 +263,13 @@ class GameCards extends BetterArray{
 			}
 		}	
 
-		//Запоминаем козырь
+		// Запоминаем козырь
 		let lastCard = this.deck[this.deck.length - 1];
 		lastCard.field = 'BOTTOM';
 		this.trumpSuit = lastCard.suit;
 	}
 
-	//Раздает карты, возвращает карты для отправки клиентам
+	// Раздает карты, возвращает карты для отправки клиентам
 	deal(dealsIn){
 
 		let dealsOut = [];
@@ -303,8 +303,8 @@ class GameCards extends BetterArray{
 		return dealsOut;
 	}
 
-	//Раздает карты пока у всех не по 6 карт или пока колода не закончится,
-	//возвращает карты для отправки клиентам
+	// Раздает карты пока у всех не по 6 карт или пока колода не закончится,
+	// возвращает карты для отправки клиентам
 	dealTillFullHand(){
 		const game = this.game;
 		const players = game.players;
@@ -348,7 +348,7 @@ class GameCards extends BetterArray{
 		}
 	}
 
-	//Раздает начальные руки, возвращает карты для отправки клиентам
+	// Раздает начальные руки, возвращает карты для отправки клиентам
 	dealStartingHands(){
 		const game = this.game;
 		let deals = [];
@@ -365,7 +365,7 @@ class GameCards extends BetterArray{
 		return this.deal(deals);
 	}
 
-	//Сбрасывает карты, возвращает карты для отправки клиентам
+	// Сбрасывает карты, возвращает карты для отправки клиентам
 	discard(){
 
 		let action = {
@@ -373,7 +373,7 @@ class GameCards extends BetterArray{
 			ids: []
 		};
 
-		//Убираем карты со всех позиций на столе
+		// Убираем карты со всех позиций на столе
 		this.table.forEach((tableField) => {
 
 			if(tableField.attack){
@@ -398,10 +398,10 @@ class GameCards extends BetterArray{
 
 		});
 
-		//Если карты были убраны, оповещаем игроков и переходим в фазу раздачи карт игрокам
+		// Если карты были убраны, оповещаем игроков и переходим в фазу раздачи карт игрокам
 		if(action.ids.length){
 
-			//После первого сброса на стол можно класть больше карт
+			// После первого сброса на стол можно класть больше карт
 			if(this.table.fullLength < this.table.maxLength){
 				this.table.fullLength++;
 				this.log.info('First discard, field expanded to', this.table.fullLength);
@@ -411,14 +411,14 @@ class GameCards extends BetterArray{
 			return action;
 		}
 
-		//Иначе раздаем карты и переходим в фазу конца хода
+		// Иначе раздаем карты и переходим в фазу конца хода
 		else{
 			return null;
 		}
 	}
 
 	getAttackActions(hand, actions){
-		//Находим значения карт, которые можно подбрасывать
+		// Находим значения карт, которые можно подбрасывать
 		let validValues = [];
 		this.table.forEach((tableField) => {
 			if(tableField.attack){
@@ -437,7 +437,7 @@ class GameCards extends BetterArray{
 
 		let emptyTable = this.firstEmptyTable;
 
-		//Выбираем подходящие карты из руки атакующего и собираем из них возможные действия
+		// Выбираем подходящие карты из руки атакующего и собираем из них возможные действия
 		hand.forEach((card) => {
 			let cid = card.id;
 			if(!validValues || ~validValues.indexOf(card.value)){		
@@ -456,15 +456,15 @@ class GameCards extends BetterArray{
 
 	getDefenseActions(hand, actions, defenseFields){
 
-		//Создаем список возможных действий защищающегося
+		// Создаем список возможных действий защищающегося
 		defenseFields.forEach((defenseField) => {
 			let fid = defenseField.id;
 			hand.forEach((card) => {
 				let cid = card.id;
 				let otherCard = defenseField.attack;
 
-				//Карты той же масти и большего значения, либо козыри, если битая карта не козырь,
-				//иначе - козырь большего значения
+				// Карты той же масти и большего значения, либо козыри, если битая карта не козырь,
+				// иначе - козырь большего значения
 				if( 
 					card.suit == this.trumpSuit && otherCard.suit != this.trumpSuit ||
 					card.suit == otherCard.suit && card.value > otherCard.value
@@ -481,7 +481,7 @@ class GameCards extends BetterArray{
 	}
 
 	getTransferActions(hand, actions, defenseFields){
-		//Узнаем, можно ли переводить
+		// Узнаем, можно ли переводить
 		let attackers = this.game.players.attackers;
 		let canTransfer = 
 			this.hands[
@@ -517,7 +517,7 @@ class GameCards extends BetterArray{
 				if(card.value != otherCard.value)
 					continue;
 
-				//Все поля, которые уже не находятся в возможных действиях
+				// Все поля, которые уже не находятся в возможных действиях
 				for(let fi = 0; fi < this.table.length; fi++){	
 					let fid = this.table[fi].id;
 

@@ -23,7 +23,7 @@ var CardControl = function(inDebugMode){
 	this._inertiaHistory = [];
 };
 
-//Обрабатывает нажатие на карту
+// Обрабатывает нажатие на карту
 CardControl.prototype.cardClick = function(card, pointer){
 	if(pointer.button == 1 || pointer.button == 4)
 		console.log(card);
@@ -42,7 +42,7 @@ CardControl.prototype.cardClick = function(card, pointer){
 	}
 };
 
-//Обрабатывает поднятие кнопки после нажатия на карту
+// Обрабатывает поднятие кнопки после нажатия на карту
 CardControl.prototype.cardUnclick = function(card){
 	if(!this.card || this.card != card)
 		return;
@@ -59,7 +59,7 @@ CardControl.prototype.cardUnclick = function(card){
 };
 
 
-//Проверка нажатия на базу карты
+// Проверка нажатия на базу карты
 CardControl.prototype._cardPointerInbound = function(){
 	var width = this.card.field ? skinManager.skin.width*(1 + this.card.field.scaleDiff) : skinManager.skin.width,
 		height = this.card.field ? skinManager.skin.height*(1 + this.card.field.scaleDiff) : skinManager.skin.height;
@@ -73,7 +73,7 @@ CardControl.prototype._cardPointerInbound = function(){
 	);
 };
 
-//Проверка корректности позиции карты (возащает false или поля)
+// Проверка корректности позиции карты (возащает false или поля)
 CardControl.prototype._cardOnValidField = function(){
 	if(!this.card.playable)
 		return false;
@@ -100,7 +100,7 @@ CardControl.prototype._cardOnValidField = function(){
 //@include:CardControlCard
 //@include:CardControlTrail
 
-//Обновление контроллера
+// Обновление контроллера
 CardControl.prototype.update = function(){
 	var shouldUpdateTrail = this._updateCard();
 	if(shouldUpdateTrail && !this.trialShouldReappend){
@@ -113,7 +113,7 @@ CardControl.prototype.update = function(){
 	this._updateTrail();
 };
 
-//Ресет контроллера
+// Ресет контроллера
 CardControl.prototype.reset = function(reason){
 
 	if(this.inDebugMode)

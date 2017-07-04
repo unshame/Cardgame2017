@@ -1,6 +1,6 @@
-//ДЕЙСТВИЯ НАД КАРТОЙ
+// ДЕЙСТВИЯ НАД КАРТОЙ
 
-//Поднимает карту
+// Поднимает карту
 CardControl.prototype.cardPickup = function(card, pointer){
 	if(!card){
 		console.warn('Card control: cardPickup called but no Card assigned.');
@@ -33,7 +33,7 @@ CardControl.prototype.cardPickup = function(card, pointer){
 	actionHandler.highlightPossibleActions();
 };
 
-//Устанавливает путь и время смещения карты к курсору
+// Устанавливает путь и время смещения карты к курсору
 CardControl.prototype._cardSetPathToCursor = function(){
 
 	if(this.card.mover){
@@ -47,7 +47,7 @@ CardControl.prototype._cardSetPathToCursor = function(){
 	this.cardShiftEndTime = game.time.time + (this.cardShiftDuration/game.speed);
 };
 
-//Кладет карту
+// Кладет карту
 CardControl.prototype.cardPutDown = function(){
 
 	if(!this.card){
@@ -60,21 +60,21 @@ CardControl.prototype.cardPutDown = function(){
 
 	var fields = this._cardOnValidField();
 
-	//У карты включена физика, бросаем ее
+	// У карты включена физика, бросаем ее
 	if(cardManager.physicsEnabled && this.card.sprite.body){
 		this.cardThrow();
 	}
-	//Карта находится над валидным полем, перемещаем ее
+	// Карта находится над валидным полем, перемещаем ее
 	else if(fields && !this.pointer.rightButton.isDown){
 		this.cardMoveToField(fields);
 	}
-	//Возвращаем карту на свое поле\базу
+	// Возвращаем карту на свое поле\базу
 	else{
 		this.cardReturn();
 	}
 };
 
-//Перемещает карту в новое поле
+// Перемещает карту в новое поле
 CardControl.prototype.cardMoveToField = function(newFields){
 
 	if(!this.card){
@@ -123,7 +123,7 @@ CardControl.prototype.cardMoveToField = function(newFields){
 	actionHandler.possibleActions = null;
 };
 
-//Возвращает карту на базу
+// Возвращает карту на базу
 CardControl.prototype.cardReturn = function(){
 
 	if(!this.card){
@@ -167,14 +167,14 @@ CardControl.prototype.cardReturn = function(){
 	actionHandler.highlightPossibleActions();
 };
 
-//Кидает карту
+// Кидает карту
 CardControl.prototype.cardThrow = function(){
 	var	dx = 0,
 		dy = 0, 
 		counted = 0,
 		curTime = game.time.time;
 
-	//Находим среднюю скорость перемещения карты
+	// Находим среднюю скорость перемещения карты
 	this._saveInertia(curTime, 100);
 	for(var i = 0; i < this._inertiaHistory.length; i++){
 		counted++;
@@ -184,14 +184,14 @@ CardControl.prototype.cardThrow = function(){
 	dx /= counted;
 	dy /= counted;
 
-	var velMult = 40,	//Множитель для скорости передвижения
-		angMult = 10,	//Множитель для скорости поворота
+	var velMult = 40,	// Множитель для скорости передвижения
+		angMult = 10,	// Множитель для скорости поворота
 		card = this.card;
 
 	this.card = null;
 	this.pointer = null;
 
-	//Устанавливаем свойства тела карты
+	// Устанавливаем свойства тела карты
 	card.sprite.body.collideWorldBounds = true;
 	card.sprite.body.velocity = {
 		x: dx*velMult,
@@ -213,15 +213,15 @@ CardControl.prototype.cardThrow = function(){
 	card.destroy(1000);
 };
 
-//ТАЙМЕР НАЖАТИЯ
+// ТАЙМЕР НАЖАТИЯ
 
-//Запускает таймер клика по карте
+// Запускает таймер клика по карте
 CardControl.prototype._setCardClickTimer = function(){
 	this._resetCardClickTimer();
 	this.cardClickTimer = setTimeout(this._resetCardClickTimer.bind(this), this.cardClickMaxDelay);
 };
 
-//Обнуляет таймер клика по карте
+// Обнуляет таймер клика по карте
 CardControl.prototype._resetCardClickTimer = function(){
 	if(this.cardClickTimer){
 		clearTimeout(this.cardClickTimer);

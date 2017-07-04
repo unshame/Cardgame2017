@@ -1,4 +1,4 @@
-//ДЕБАГ
+// ДЕБАГ
 
 CardManager.prototype.updateDebug = function(){
 	for(var ci in this.cards){
@@ -18,7 +18,7 @@ CardManager.prototype.toggleDebugMode = function(){
 
 
 
-//ТЕСТОВЫЕ ФУНКЦИИ
+// ТЕСТОВЫЕ ФУНКЦИИ
 
 /**
 * Возвращает несколько карт, которые не входят в `except`.

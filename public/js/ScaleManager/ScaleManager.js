@@ -14,7 +14,7 @@
 * @param {number} options.minRowsLandscape минимальное число строк сетки в горизонтальном режиме
 * @param {number} options.minColsPortrait  минимальное число колонок сетки в вертикальном режиме
 * @param {number} options.minRowsPortrait  минимальное число строк сетки в вертикальном режиме
-* @see {@link http://phaser.io/docs/2.6.2/Phaser.ScaleManager.html}
+* @see {@link http:// phaser.io/docs/2.6.2/Phaser.ScaleManager.html}
 */
 
 var ScaleManager = function(options){
@@ -143,8 +143,8 @@ ScaleManager.getDefaultOptions = function(){
 		game: game,
 		width: 0,
 		height: 0,
-		density:4,		//плотность сетки (масштаб - 1:density)
-		thickness: 1,	//толщина линий сетки для дебага
+		density:4,		// плотность сетки (масштаб - 1:density)
+		thickness: 1,	// толщина линий сетки для дебага
 		debug: false,
 		minColsLandscape:  28,
 		minRowsLandscape: 18,
@@ -405,7 +405,7 @@ ScaleManager.prototype._drawDebugGrid = function(){
 		debugGrid = this.game.make.graphics(0, 0),
 		thickness = this._thickness;
 
-	//debugGrid.lineStyle(thickness, 0x2BC41D, 1);
+	// debugGrid.lineStyle(thickness, 0x2BC41D, 1);
 	debugGrid.lineStyle(thickness, 0xffffff, 1);
 	debugGrid.drawRect(0, 0, width-thickness, height-thickness);
 	this._gridTexture = debugGrid.generateTexture();
@@ -418,7 +418,7 @@ ScaleManager.prototype._drawDebugGrid = function(){
 
 	var x = offset.x,
 		y = offset.y,
-		//color = 0xC10BAC,
+		// color = 0xC10BAC,
 		color = 0x000000,
 		alpha = 1;
 	
@@ -429,9 +429,9 @@ ScaleManager.prototype._drawDebugGrid = function(){
 	border.lineStyle(x, color, alpha);
 	border.moveTo(screenWidth - x/2 + thickness/2, 0);
 	border.lineTo(screenWidth - x/2 + thickness/2, screenHeight);
-	//border.lineStyle(y, color, alpha);
-	//border.moveTo(screenWidth, screenHeight - y/2 + thickness/2);
-	//border.lineTo(0,screenHeight - y/2 + thickness/2);
+	// border.lineStyle(y, color, alpha);
+	// border.moveTo(screenWidth, screenHeight - y/2 + thickness/2);
+	// border.lineTo(0,screenHeight - y/2 + thickness/2);
 	border.lineStyle(x, color, alpha);
 	border.moveTo(x/2 - thickness/2, screenHeight);
 	border.lineTo(x/2 - thickness/2,0);

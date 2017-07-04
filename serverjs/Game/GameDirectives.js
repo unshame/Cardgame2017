@@ -8,10 +8,10 @@
 class GameDirectives{
 
 /*	ATTACK_DEFENSE(attackers, defender){
-		//В данный момент происходит переход между стадиями хода
-		//Откомментировать по необходимости
+		// В данный момент происходит переход между стадиями хода
+		// Откомментировать по необходимости
 		let turnStage = this.turnStages.next;
-		//let lastTurnStage = this.turnStages.current;
+		// let lastTurnStage = this.turnStages.current;
 		
 		let defHand = this.hands[defender.id];
 
@@ -52,13 +52,13 @@ class GameDirectives{
 		}
 	}*/
 
-	//Отправляет атакующему возможные ходы
+	// Отправляет атакующему возможные ходы
 	ATTACK(player){
 
-		//В данный момент происходит переход между стадиями хода
-		//Откомментировать по необходимости
+		// В данный момент происходит переход между стадиями хода
+		// Откомментировать по необходимости
 		let turnStage = this.turnStages.next;
-		//let lastTurnStage = this.turnStages.current;
+		// let lastTurnStage = this.turnStages.current;
 		
 		let pid = player.id;
 		let hand = this.hands[pid];
@@ -94,7 +94,7 @@ class GameDirectives{
 
 		this.cards.getAttackActions(hand, actions);
 
-		//Добавляем возможность пропустить ход, если это не атака в начале хода
+		// Добавляем возможность пропустить ход, если это не атака в начале хода
 		if(turnStage != 'INITIAL_ATTACK'){
 			let action = {
 				type: 'SKIP'
@@ -102,7 +102,7 @@ class GameDirectives{
 			actions.push(action);	
 		}
 		
-		//Меняем стадию на стадию защиты
+		// Меняем стадию на стадию защиты
 		this.turnStages.setNext('DEFENSE');
 
 		this.log.silly(actions);
@@ -113,18 +113,18 @@ class GameDirectives{
 		return false;
 	}
 
-	//Отправляет защищающемуся возможные ходы
+	// Отправляет защищающемуся возможные ходы
 	DEFEND(player){
 
-		//В данный момент происходит переход между стадиями хода
-		//Откомментировать по необходимости
-		//let turnStage = this.turnStages.next;
+		// В данный момент происходит переход между стадиями хода
+		// Откомментировать по необходимости
+		// let turnStage = this.turnStages.next;
 		let lastTurnStage = this.turnStages.current;
 
-		//Находим карту, которую нужно отбивать
+		// Находим карту, которую нужно отбивать
 		let defenseFields = this.cards.defenseFields;
 
-		//Если ни одной карты не найдено, значит игрок успешно отбился, можно завершать ход
+		// Если ни одной карты не найдено, значит игрок успешно отбился, можно завершать ход
 		if(!defenseFields.length){
 			this.log.info(player.name, 'successfully defended');
 			this.turnStages.setNext('END');
@@ -141,7 +141,7 @@ class GameDirectives{
 			this.cards.getTransferActions(hand, actions, defenseFields);
 		}
 
-		//Добавляем возможность взять карты
+		// Добавляем возможность взять карты
 		let action = {
 			type: 'TAKE'
 		};
@@ -149,7 +149,7 @@ class GameDirectives{
 
 		this.actions.valid = actions;
 
-		//Выставляем новую стадию хода в зависимости от предыдущей
+		// Выставляем новую стадию хода в зависимости от предыдущей
 		switch(lastTurnStage){
 
 		case 'INITIAL_ATTACK':
@@ -168,7 +168,7 @@ class GameDirectives{
 			this.turnStages.setNext('SUPPORT');
 			break;		
 
-		//Debug
+		// Debug
 		default:
 			this.log.error('Invalid turnStage', lastTurnStage);
 			break;
@@ -180,13 +180,13 @@ class GameDirectives{
 		return false;
 	}
 
-	//Игрок берет карты со стола
+	// Игрок берет карты со стола
 	TAKE(player){
 
-		//В данный момент происходит переход между стадиями хода
-		//Откомментировать по необходимости
-		//let turnStage = this.turnStages.next;
-		//let lastTurnStage = this.turnStages.current;
+		// В данный момент происходит переход между стадиями хода
+		// Откомментировать по необходимости
+		// let turnStage = this.turnStages.next;
+		// let lastTurnStage = this.turnStages.current;
 
 		let action = this.cards.getDiscardAction(player);
 

@@ -33,10 +33,10 @@ var UI = function(){
 
 UI.prototype.initialize = function(){
 
-	//Таймер хода
+	// Таймер хода
 	this.rope = this.layers.addExistingLayer(new Rope(), -3);
 	
-	//Кнопки
+	// Кнопки
 	this.addButtons();
 
 	/**
@@ -57,7 +57,7 @@ UI.prototype.addButtons = function(){
 	this.actionButtons = this.layers.addLayer(1, 'actionButtons', true);
 	this.cornerButtons = this.layers.addLayer(-2, 'cornerButtons', true);
 
-	//Кнопки (временные)
+	// Кнопки (временные)
 	new Button({
 		position: function(width, height){
 			return {
@@ -178,7 +178,7 @@ UI.prototype.toggleFullScreen = function(){
 	}
 };
 
-//Возвращает phaser пиксель для превращения в текстуру
+// Возвращает phaser пиксель для превращения в текстуру
 UI.prototype.newPixel = function(){
 	var pixel = game.make.graphics(0, 0);
 	pixel.beginFill(ui.colors.white);

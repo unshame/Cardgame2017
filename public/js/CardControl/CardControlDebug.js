@@ -1,11 +1,11 @@
-//ДЕБАГ
+// ДЕБАГ
 
-//Рисует дебаг хвоста
+// Рисует дебаг хвоста
 CardControl.prototype.updateDebug = function(){
 	if(!this.inDebugMode)
 		return;
 
-	//База хвоста
+	// База хвоста
 	if(!this.debugBase){
 		this.debugBase = new Phaser.Rectangle() ;
 	}
@@ -19,7 +19,7 @@ CardControl.prototype.updateDebug = function(){
 	this.debugBase.height = height;
 	game.debug.geom( this.debugBase, 'rgba(255,0,0,0.6)' ) ;
 
-	//Визуализация максимальной скорости хвоста
+	// Визуализация максимальной скорости хвоста
 	if(!this.debugSpeed){
 		this.debugSpeed = new Phaser.Circle();
 	}
@@ -36,7 +36,7 @@ CardControl.prototype.updateDebug = function(){
 	this.debugSpeed.diameter = diameter + (width + height)/2;
 	game.debug.geom( this.debugSpeed, 'rgba(255,255,0,0.2)' ) ;
 
-	//Позиция спавна последнего партикля хвоста
+	// Позиция спавна последнего партикля хвоста
 	if(!this.debugSpawn){
 		this.debugSpawn = new Phaser.Rectangle() ;
 	}
@@ -50,7 +50,7 @@ CardControl.prototype.updateDebug = function(){
 		game.debug.pointer(this.pointer);
 };
 
-//Переключает дебаг
+// Переключает дебаг
 CardControl.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
 	if(!this.inDebugMode){

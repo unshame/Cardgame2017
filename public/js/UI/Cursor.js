@@ -82,8 +82,8 @@ Cursor.prototype.update = function(cursorinGame){
 	this.x = game.input.x;
 	this.y = game.input.y;
 
-	//Курсор перетаскивает карту
-	//меняем его на сжатую руку
+	// Курсор перетаскивает карту
+	// меняем его на сжатую руку
 	if(cardControl.card){
 		this.x -= this.width/2;
 		this.y -= this.height/2;
@@ -91,8 +91,8 @@ Cursor.prototype.update = function(cursorinGame){
 		return;
 	}
 
-	//Если курсор над картой или элементом интерфейса,
-	//меняем его на указатель
+	// Если курсор над картой или элементом интерфейса,
+	// меняем его на указатель
 	if(
 		cardManager.cursorIsOverACard() ||
 		ui.layers.cursorIsOverAnElement()
@@ -102,6 +102,6 @@ Cursor.prototype.update = function(cursorinGame){
 		return;
 	}
 
-	//Курсор не над чем не находится
+	// Курсор не над чем не находится
 	this.frame = 0;
 };

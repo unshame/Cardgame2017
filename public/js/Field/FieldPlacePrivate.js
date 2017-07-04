@@ -1,4 +1,4 @@
-//ПРИВАТНЫЕ ФУНКЦИИ РАЗМЕЩЕНИЯ КАРТ
+// ПРИВАТНЫЕ ФУНКЦИИ РАЗМЕЩЕНИЯ КАРТ
 
 /**
 * Считает отступы сверху и слева
@@ -15,8 +15,8 @@ Field.prototype._calculateMargin = function(requiredActiveWidth, areaActiveWidth
 	var offset = this.style.margin + this.style.padding;
 	var leftMargin = cardWidth/2 + offset;
 	var topMargin = 0;
-	//Если ширина карт меньше ширины поля, устанавливаем отступ
-	//По умолчанию отступ слева уже указан
+	// Если ширина карт меньше ширины поля, устанавливаем отступ
+	// По умолчанию отступ слева уже указан
 	if(requiredActiveWidth != areaActiveWidth){
 		switch(this.style.horizontalAlign){
 		case 'center':
@@ -31,20 +31,20 @@ Field.prototype._calculateMargin = function(requiredActiveWidth, areaActiveWidth
 		}
 	}
 
-	//Отступ сверху
+	// Отступ сверху
 	switch(this.style.verticalAlign){
 
-	//Выравнивание по верхнему краю
+	// Выравнивание по верхнему краю
 	case 'top':
 		topMargin = offset + cardHeight/2;
 		break;
 
-	//Выравнивание по нижнему краю
+	// Выравнивание по нижнему краю
 	case 'bottom':
 		topMargin = areaHeight - offset - cardHeight/2;
 		break;
 
-	//Выравнивание по центру
+	// Выравнивание по центру
 	default:
 		topMargin = areaHeight/2;
 		break;
@@ -114,13 +114,13 @@ Field.prototype._moveCard = function(
 	delayArray, delayIndex, bringToTopOn
 ){
 
-	//Задержка
+	// Задержка
 	var delay = delayArray[index];
 	if(delay === null || delay === undefined){
 		delay = this.delayTime*delayIndex;
 	}
 
-	//Сдвиг текущей карты
+	// Сдвиг текущей карты
 	if(this.focusedCard && index != focusedIndex){
 		shift = (index < focusedIndex) ? -shift : shift;	
 	}
@@ -128,7 +128,7 @@ Field.prototype._moveCard = function(
 		shift = 0;
 	}
 
-	//Масштаб карты
+	// Масштаб карты
 	if(this.focusedCard && index == focusedIndex){
 		card.setScale(1 + this.scaleDiff);
 	}
@@ -136,24 +136,24 @@ Field.prototype._moveCard = function(
 		card.setScale(1);
 	}
 
-	//Устанавливаем сдвиг для козыря в колоде
+	// Устанавливаем сдвиг для козыря в колоде
 	if(card.fieldId == 'BOTTOM'){
 		leftMargin += skinManager.skin.trumpOffset;
 	}
 
-	//Сдвиг поднятых карт
+	// Сдвиг поднятых карт
 	var bottomMargin = card.raised ? this.style.raisedOffset : 0;
 	if(this.style.flipped && this.style.axis == 'horizontal' || !this.style.flipped && this.style.axis == 'vertical')
 		bottomMargin = -bottomMargin;
 
-	//Горизонтальная позиция состоит из сдвига слева, сдвига по отношению
-	//к предыдущим картам, позиции базы поля и сдвига от курсора
+	// Горизонтальная позиция состоит из сдвига слева, сдвига по отношению
+	// к предыдущим картам, позиции базы поля и сдвига от курсора
 	var x = leftMargin + cardSpacing*index + shift;
 
-	//Вертикальная позиция состоит из двига сверху - сдвиг снизу
+	// Вертикальная позиция состоит из двига сверху - сдвиг снизу
 	var y = topMargin - bottomMargin;
 
-	//Абсолютная позиция 
+	// Абсолютная позиция 
 	if(this.style.axis == 'vertical'){
 		var temp = x;
 		x = y + this.base.x;
@@ -164,10 +164,10 @@ Field.prototype._moveCard = function(
 		y += this.base.y;
 	}
 
-	//Запускаем поворот карты
+	// Запускаем поворот карты
 	y = this._rotateCard(card, angle, x, y, delay, topMargin - bottomMargin);
 
-	//Запускаем перемещение карты
+	// Запускаем перемещение карты
 	if(cardControl.card != card){
 		card.moveTo(x, y, this.moveTime, delay, false, true, bringToTopOn);
 	}
@@ -175,8 +175,8 @@ Field.prototype._moveCard = function(
 		card.setBasePreserving(x, y);
 	}
 
-	//Проверяем перетаскиваемость карты для тех случаев, когда карта была перемещена
-	//без использования presetField метода
+	// Проверяем перетаскиваемость карты для тех случаев, когда карта была перемещена
+	// без использования presetField метода
 	if(this.style.draggable){
 		if(!card.draggable)
 			card.setDraggability(true);
@@ -198,7 +198,7 @@ Field.prototype._moveCard = function(
 */
 Field.prototype._rotateCard = function(card, angle, x, y, delay, margin){
 
-	//Находим угол и сдвигаем y, если поле выгнутое
+	// Находим угол и сдвигаем y, если поле выгнутое
 	if(this.style.area == 'curved'){
 		var toCenter = this.circleCenter.x - x + this.base.x,
 			distance = Math.sqrt(Math.pow(this.circleRadius, 2) - toCenter*toCenter);
@@ -206,11 +206,11 @@ Field.prototype._rotateCard = function(card, angle, x, y, delay, margin){
 		angle *= (180 / Math.PI);
 		y = this.base.y + this.circleCenter.y - distance + margin;
 	}
-	//Берем сохраненный угол, если поле со случайными углами
+	// Берем сохраненный угол, если поле со случайными углами
 	else if(this.style.randomAngle){
 		angle = this._angles[card.id] || 0;
 	}
-	//Поворачиваем карту, если она на дне колоды
+	// Поворачиваем карту, если она на дне колоды
 	else if(card.fieldId == 'BOTTOM'){
 		angle = Math.abs(angle - 90);
 	}	

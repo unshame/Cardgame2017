@@ -70,9 +70,9 @@ class Player{
 			this.remote.recievePossibleActions(actions, now + time*1000, now);
 		}
 
-		//Функции для дебага
-		//this.sendRandomAction(actions);
-		//this.sendTakeOrSkipAction(actions);
+		// Функции для дебага
+		// this.sendRandomAction(actions);
+		// this.sendTakeOrSkipAction(actions);
 	}
 
 

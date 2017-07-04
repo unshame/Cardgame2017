@@ -1,5 +1,5 @@
 
-//ДОБАВЛЕНИЕ КАРТ
+// ДОБАВЛЕНИЕ КАРТ
 
 /**
 * Добавляет карты в поле.
@@ -65,7 +65,7 @@ Field.prototype._appendCards = function(cards){
 			this.cards.unshift(card);
 		}
 
-		//Сохраняем новый угол карты
+		// Сохраняем новый угол карты
 		if(this.style.randomAngle){
 			var addedAngle = (Math.floor(Math.random()*5) + 8);
 			if(

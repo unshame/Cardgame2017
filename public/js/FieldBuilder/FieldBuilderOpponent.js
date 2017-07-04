@@ -11,7 +11,7 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 
 	var halfDensity = Math.floor(game.scale.density / 2);
 
-	//Кол-во колонок и отступы для рук противников и мест на столе
+	// Кол-во колонок и отступы для рук противников и мест на столе
 	var opponentNumRows = Math.round(game.scale.numRows - game.scale.density*2 + halfDensity - 2),
 		opponentCells = [
 			opponentNumRows,
@@ -35,20 +35,20 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 
 	this.dimensions.opponent = [
 		{
-			//width: , 
+			// width: , 
 			height: (opponentCells[0]* game.scale.cellHeight - _opponentsOffset[0]* (this._opponentPlacement[0] - 1)) / this._opponentPlacement[0]
 		},
 		{
 			width: (opponentCells[1]* game.scale.cellWidth - _opponentsOffset[1]* (this._opponentPlacement[1] - 1)) / this._opponentPlacement[1]
-			//height: 
+			// height: 
 		},
 		{
-			//width: , 
+			// width: , 
 			height: (opponentCells[2]* game.scale.cellHeight - _opponentsOffset[2]* (this._opponentPlacement[2] - 1)) / this._opponentPlacement[2]
 		}
 	];
 
-	//Позиции полей
+	// Позиции полей
 	this.positions.opponent = [
 		game.scale.cellAt(
 			halfDensity + 1,
@@ -73,20 +73,20 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 	this.positions.opponent[0].x -= skinManager.skin.height;
 };
 
-//Размеры для полей противников
+// Размеры для полей противников
 FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 	var players = playerManager.players,
 		_opponentsOffset = this._opponentsOffset,
-		i = playerManager.pi + 1,	//индекс первого противника по кругу после игрока
-		oi = 0,	//Счетчик размещенных полей
-		pi = 0;	//Индекс позиции для размещения
+		i = playerManager.pi + 1,	// индекс первого противника по кругу после игрока
+		oi = 0,	// Счетчик размещенных полей
+		pi = 0;	// Индекс позиции для размещения
 
 	var dimensions = this.dimensions.opponent,
 		placement = this._opponentPlacement.map(function(v){
 			return v;
 		}),
 
-		//Данные для разных позиций
+		// Данные для разных позиций
 		directions = ['backward', 'forward', 'forward'],
 		flipped = [false, true, true],
 		axis = ['vertical', 'horizontal', 'vertical'],
@@ -148,7 +148,7 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 	}
 };
 
-//Рассчитывает положение полей противников (слева, сверху, справа)
+// Рассчитывает положение полей противников (слева, сверху, справа)
 FieldBuilder.prototype._countOpponentPlacement = function(n){
 	var a = [0, 0, 0];
 	var i = 0;

@@ -14,9 +14,9 @@ var ActionHandler = function(actionReactions, notificationReactions){
 	this.timedActionTimeout = null;
 };
 
-//ОБРАБОТКА КОМАНД СЕРВЕРА
+// ОБРАБОТКА КОМАНД СЕРВЕРА
 
-//Выполняет действие
+// Выполняет действие
 
 ActionHandler.prototype.executeAction = function(action){
 
@@ -72,7 +72,7 @@ ActionHandler.prototype.handleNotification = function(note, actions){
 	}
 };
 
-//Подсвечивает карты, которыми можно ходить
+// Подсвечивает карты, которыми можно ходить
 ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 	if(!actions && !this.possibleActions){

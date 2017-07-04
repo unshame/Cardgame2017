@@ -11,7 +11,7 @@ var Button = function(options){
 			this.options[o] = options[o];
 	}
 
-	//Действие
+	// Действие
 	this.action = this.options.action;
 	var thisButton = this;
 	function actionWrapper(button, pointer, isOver){
@@ -23,7 +23,7 @@ var Button = function(options){
 		}
 	}
 
-	//Phaser кнопка
+	// Phaser кнопка
 	Phaser.Button.call(
 		this, game,
 		0,
@@ -37,7 +37,7 @@ var Button = function(options){
 	this.name = this.options.name;
 	this.isDown = false;
 
-	//Текст
+	// Текст
 	var style = { font: this.options.font, fill: this.options.textColor, align: 'center' };
 	if(this.options.text){
 		this.label = game.make.text(this.centerX, this.centerY, this.options.text, style);
@@ -57,14 +57,14 @@ var Button = function(options){
 	this.updatePosition(this.options.position);
 
 
-	//Убираем дефолтный курсор
+	// Убираем дефолтный курсор
 	this.input.useHandCursor = false;
 
 	game.add.existing(this);
 	if(this.label)
 		game.add.existing(this.label);
 
-	//Группа
+	// Группа
 	if(this.options.group){
 		this.group = this.options.group;
 		this.group.add(this);
@@ -96,21 +96,21 @@ Button.getDefaultOptions = function(){
 	return options;
 };
 
-//Прячет кнопку
+// Прячет кнопку
 Button.prototype.hide = function(){
 	this.visible = false;
 	if(this.label)
 		this.label.visible = false;
 };
 
-//Показывает кнопку
+// Показывает кнопку
 Button.prototype.show = function(){
 	this.visible = true;
 	if(this.label)
 		this.label.visible = true;
 };
 
-//Включает кнопку
+// Включает кнопку
 Button.prototype.enable = function(){
 	if(this.inputEnabled)
 		return;
@@ -126,7 +126,7 @@ Button.prototype.enable = function(){
 	}
 };
 
-//Выключает кнопку
+// Выключает кнопку
 Button.prototype.disable = function(){
 	if(!this.inputEnabled)
 		return;
@@ -142,7 +142,7 @@ Button.prototype.disable = function(){
 	}
 };
 
-//Меняет или восстанавливает заданную позицию
+// Меняет или восстанавливает заданную позицию
 Button.prototype.updatePosition = function(position){
 	if(position)
 		this.defaultPosition = position;
@@ -165,8 +165,8 @@ Button.prototype.updatePosition = function(position){
 	}
 };
 
-//Расширение Phaser.Button.changeStateFrame, для добавления изменения позиции текста
-//при изменении состоянии кнопки
+// Расширение Phaser.Button.changeStateFrame, для добавления изменения позиции текста
+// при изменении состоянии кнопки
 Button.prototype.changeStateFrame = function (state) {
 	if(this.label && this.inputEnabled){
 		if(state != 'Down' && this.isDown){

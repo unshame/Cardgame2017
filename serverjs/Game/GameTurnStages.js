@@ -17,9 +17,9 @@ class GameTurnStages{
 		this.next = 'DEFAULT';
 	}
 
-	//Устанавливает следующую фазу хода и запоминает текущую
-	//INITIAL_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> ... ->
-	//SUPPORT -> DEFENSE -> ATTACK -> DEFENSE -> ... -> FOLLOWUP -> DEFENSE -> END -> END_DEAL -> ENDED
+	// Устанавливает следующую фазу хода и запоминает текущую
+	// INITIAL_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> ... ->
+	// SUPPORT -> DEFENSE -> ATTACK -> DEFENSE -> ... -> FOLLOWUP -> DEFENSE -> END -> END_DEAL -> ENDED
 	setNext(stage){
 		this.current = this.next;
 		this.next = stage;
@@ -29,73 +29,73 @@ class GameTurnStages{
 
 	// Действия
 
-	//Начинаем ход
+	// Начинаем ход
 	DEFAULT(){
 		this.game.startTurn();
-		//Turn stage: INITIAL_ATTACK
+		// Turn stage: INITIAL_ATTACK
 		return true;
 	}
 
-	//Первая атака
+	// Первая атака
 	INITIAL_ATTACK(){
 		const game = this.game;
 		return game.let('ATTACK', game.players.attackers[0]);
-		//Turn stage: DEFENSE
+		// Turn stage: DEFENSE
 	}
 
-	//Атакующий игрок атакует повторно
+	// Атакующий игрок атакует повторно
 	REPEATING_ATTACK(){
 		const game = this.game;
 		return game.let('ATTACK', game.players.attackers[0]);
-		//Turn stage: DEFENSE
+		// Turn stage: DEFENSE
 	}
 
-	//Атакующий игрок атакует после помогающего игрока
+	// Атакующий игрок атакует после помогающего игрока
 	ATTACK(){
 		const game = this.game;
 		return game.let('ATTACK', game.players.attackers[0]);
-		//Turn stage: DEFENSE
+		// Turn stage: DEFENSE
 	}
 
-	//Помогающий игрок атакует
+	// Помогающий игрок атакует
 	SUPPORT(){
 
 		const game = this.game;
 
 		let attackers = game.players.attackers;
 
-		//Debug
+		// Debug
 		if(!attackers[1])
 			game.log.error('No ally assigned, but turn stage is SUPPORT');
 
 		return game.let('ATTACK', attackers[1] || attackers[0]);
-		//Turn stage: DEFENSE
+		// Turn stage: DEFENSE
 	}
 
-	//Подкладывание карт в догонку
+	// Подкладывание карт в догонку
 	FOLLOWUP(){
 		const game = this.game;
 
 		let attackers = game.players.attackers;
 		return game.let('ATTACK', !game.skipCounter ? attackers[0] : (attackers[1] || attackers[0]));
-		//Turn stage: DEFENSE
+		// Turn stage: DEFENSE
 	}
 
-	//Защищающийся игрок ходит
+	// Защищающийся игрок ходит
 	DEFENSE(){
 		const game = this.game;
 
-		//Если мы были в стадии подкидывания в догонку, передаем все карты со стола
-		//защищающемуся и сообщаем всем игрокам об этом
+		// Если мы были в стадии подкидывания в догонку, передаем все карты со стола
+		// защищающемуся и сообщаем всем игрокам об этом
 		if(this.current == 'FOLLOWUP')
 			return game.let('TAKE', game.players.defender);
-		//Иначе даем защищаться
+		// Иначе даем защищаться
 		else
 			return game.let('DEFEND', game.players.defender);
-		//Turn stage: REPEATING_ATTACK, ATTACK, SUPPORT, END
+		// Turn stage: REPEATING_ATTACK, ATTACK, SUPPORT, END
 	}
 
-	//Начало конца хода, убираем карты со стола
+	// Начало конца хода, убираем карты со стола
 	END(){
 		const game = this.game;
 
@@ -109,7 +109,7 @@ class GameTurnStages{
 		return true;
 	}
 
-	//Раздаем карты после окончания хода
+	// Раздаем карты после окончания хода
 	END_DEAL(){
 		const game = this.game;
 
@@ -123,20 +123,20 @@ class GameTurnStages{
 		return true;
 	}
 
-	//Конец конца хода
-	//находим следующего игрока, ресетим ход и проверяем, закончилась ли игра
+	// Конец конца хода
+	// находим следующего игрока, ресетим ход и проверяем, закончилась ли игра
 	ENDED(){
 
 		const game = this.game;
 
-		//Если защищающийся брал, сдвигаем айди, по которому будет искаться атакующий
+		// Если защищающийся брал, сдвигаем айди, по которому будет искаться атакующий
 		if(game.actions.takeOccurred){
 			game.players.attackers = [game.players.defender];
 		}
 
 		let currentAttackerIndex = game.players.findInactive();
 		game.resetTurn();
-		//Turn stage: null
+		// Turn stage: null
 
 		if(!game.deck.length && game.players.notEnoughActive){
 			game.players.findLoser();

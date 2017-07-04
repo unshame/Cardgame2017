@@ -25,13 +25,13 @@ const
 class Game{
 	constructor(players, canTransfer, debugMode){
 
-		//Генерируем айди игры
+		// Генерируем айди игры
 		var id = generateId();
 		this.id = 'game_' + id;
 
 		this.log = Log(module, id, debugMode);
 
-		//Добавляем бота, если игрок один
+		// Добавляем бота, если игрок один
 		while(players.length < 2){
 			players.push(new Bot(['addedBot']));
 			this.log.warn('Only %s players at the start of the game, adding a bot', players.length);
@@ -43,16 +43,16 @@ class Game{
 		this.reactions = new GameReactions();
 		this.directives = new GameDirectives();
 
-		//Сохраняем ссылки на игроков локально
+		// Сохраняем ссылки на игроков локально
 		this.players = new GamePlayers(this, players.slice());
 
-		//Карты
+		// Карты
 		this.cards = new GameCards(this);
 
-		//Можно ли переводить карты
+		// Можно ли переводить карты
 		this.canTransfer = canTransfer;
 
-		//Номер игры
+		// Номер игры
 		this.index = -1;
 		this.turnNumber = 0;
 
@@ -64,25 +64,25 @@ class Game{
 
 		this.simulating = false;
 
-		//Запускаем игру
+		// Запускаем игру
 		this.reset();
 		this.start();
 	}
 
-	//Запущена ли игра
-	//Игра не запущена, когда идет голосование о рестарте
-	//Это не тоже самое, что game.states == 'STARTED'
+	// Запущена ли игра
+	// Игра не запущена, когда идет голосование о рестарте
+	// Это не тоже самое, что game.states == 'STARTED'
 	get isRunning(){
 		return this.states.current != 'NOT_STARTED';
 	}
 
 
-	//Методы игры
+	// Методы игры
 
-	//Ресет игры
+	// Ресет игры
 	reset(){
 
-		//Свойства игры
+		// Свойства игры
 		this.index++;
 		this.states.current = 'NOT_STARTED';
 		this.result = {
@@ -97,22 +97,22 @@ class Game{
 		this.actions.reset();
 		this.skipCounter = 0;
 
-		//Свойства хода
+		// Свойства хода
 		this.turnNumber = 1;
 		this.turnStages.next = 'DEFAULT';
 	}
 
-	//Подготовка и начало игры
+	// Подготовка и начало игры
 	start(){
 
 		this.log.notice('Game started', this.index);
 
 		this.states.current = 'SHOULD_START';
 
-		//Перемешиваем игроков
+		// Перемешиваем игроков
 		this.players.shuffle();
 
-		//Создаем карты, поля и колоду
+		// Создаем карты, поля и колоду
 		this.cards.make();
 
 		let note = {
@@ -121,11 +121,11 @@ class Game{
 		};
 		this.players.notify(note);
 
-		//Начинаем игру
+		// Начинаем игру
 		while(this.continue());
 	}
 
-	//Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч
+	// Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч
 	end(){
 
 		this.log.info('Game ended', this.id, '\n\n');
@@ -156,11 +156,11 @@ class Game{
 		this.players.notify(note, this.actions.valid.slice());
 	}
 
-	//Перезапускает игру 
+	// Перезапускает игру 
 	rematch(voteResults){
 		this.log.info('Rematch');
 
-		//Оповещаем игроков о результате голосования
+		// Оповещаем игроков о результате голосования
 		
 		this.players.notify(voteResults);
 
@@ -169,17 +169,17 @@ class Game{
 		this.start();
 	}
 
-	//Возвращает игру в лобби
+	// Возвращает игру в лобби
 	backToLobby(voteResults){
-		//Оповещаем игроков о результате голосования
+		// Оповещаем игроков о результате голосования
 		this.players.notify(voteResults);
 
 		this.log.info('No rematch');
 
-		//TODO: оповестить лобби
+		// TODO: оповестить лобби
 	}
 
-	//Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
+	// Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
 	trySimulating(){
 		let humanActivePlayer = this.players.getWithFirst('type', 'player', this.players.active);
 		if(!humanActivePlayer){
@@ -191,9 +191,9 @@ class Game{
 	}
 
 
-	//Методы хода
+	// Методы хода
 
-	//Сбрасываем счетчики и стадию игры
+	// Сбрасываем счетчики и стадию игры
 	resetTurn(){
 
 		this.log.info('Turn Ended', (Date.now() - this.turnStartTime)/1000);
@@ -208,13 +208,13 @@ class Game{
 		this.players.notify({message: 'TURN_ENDED'});
 	}
 
-	//Начинает ход
+	// Начинает ход
 	startTurn(){
 		this.players.logTurnStart();
 
 		this.turnStartTime = Date.now();
 
-		//Увеличиваем счетчик ходов, меняем стадию игры на первую атаку и продолжаем ход
+		// Увеличиваем счетчик ходов, меняем стадию игры на первую атаку и продолжаем ход
 		this.turnNumber++;	
 
 		this.players.notify({
@@ -225,10 +225,10 @@ class Game{
 	}
 
 
-	//Методы выбора статуса игры и стадии хода
+	// Методы выбора статуса игры и стадии хода
 
-	//Выполняет следующую стадию игры
-	//Возвращает нужно ли продолжать игру, или ждать игроков
+	// Выполняет следующую стадию игры
+	// Возвращает нужно ли продолжать игру, или ждать игроков
 	continue(){
 
 		/*this.players.notify({
@@ -244,8 +244,8 @@ class Game{
 		return state.call(this.states);
 	}
 
-	//Выполняет следующую стадию хода
-	//Возвращает нужно ли продолжать игру, или ждать игроков
+	// Выполняет следующую стадию хода
+	// Возвращает нужно ли продолжать игру, или ждать игроков
 	doTurn(){
 
 		let turnStage = this.turnStages[this.turnStages.next];
@@ -256,8 +256,8 @@ class Game{
 		return turnStage.call(this.turnStages);
 	}
 
-	//Позволяет игроку выполнить действие
-	//Возвращает нужно ли продолжать игру, или ждать игроков
+	// Позволяет игроку выполнить действие
+	// Возвращает нужно ли продолжать игру, или ждать игроков
 	let(dirName, ...players){
 
 		let directive = this.directives[dirName];
@@ -269,9 +269,9 @@ class Game{
 	}
 	
 
-	//Методы установки таймера действий
+	// Методы установки таймера действий
 
-	//Ждет ответа от игроков
+	// Ждет ответа от игроков
 	waitForResponse(time, players){
 
 		if(this.timer){
@@ -293,7 +293,7 @@ class Game{
 		if(players.length){
 			let duration = time * 1000;
 
-			//Если игрок afk, время действия уменьшается
+			// Если игрок afk, время действия уменьшается
 			if(players.length == 1 && players[0].afk){
 				duration = this.actions.timeouts.afk * 1000;
 			}
@@ -307,17 +307,17 @@ class Game{
 		}
 	}
 
-	//Выполняется по окончанию таймера ответа игроков 
-	//Выполняет случайное действие или продолжает игру
+	// Выполняется по окончанию таймера ответа игроков 
+	// Выполняет случайное действие или продолжает игру
 	timeOut(){
 		this.timer = null;
 		this.players.logTimeout();
 
-		//Если есть действия, выполняем первое попавшееся действие
+		// Если есть действия, выполняем первое попавшееся действие
 		if(this.actions.valid.length && this.states.current == 'STARTED'){
 			this.actions.executeFirst();
 		}
-		//Иначе, обнуляем действующих игроков, возможные действия и продолжаем ход
+		// Иначе, обнуляем действующих игроков, возможные действия и продолжаем ход
 		else{
 			this.players.working = [];
 			this.actions.valid.length = 0;

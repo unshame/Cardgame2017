@@ -17,7 +17,7 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 		tableCells = 0;
 	}
 
-	//Пытаемся выровнять поля стола по центру
+	// Пытаемся выровнять поля стола по центру
 	var minTableSpace = skinManager.skin.width + this.minActiveSpaces.table,
 		extraSpace = (tableCells * game.scale.cellWidth) / numOfTables - minTableSpace,
 		tableWidth;

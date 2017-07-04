@@ -21,7 +21,7 @@
 
 var Card = function (options) {
 
-	//Options
+	// Options
 	this.options = Card.getDefaultOptions();
 	for(var o in options){
 		if(options.hasOwnProperty(o) && options[o] !== undefined)
@@ -235,7 +235,7 @@ Card.getDefaultOptions = function(){
 //@include:CardSkin
 //@include:CardGlow
 
-//СОБЫТИЯ
+// СОБЫТИЯ
 
 /**
 * Вызывается при нажатии на карту.
@@ -279,7 +279,7 @@ Card.prototype._cursorOut = function(sprite){
 };
 
 
-//БУЛЕВЫ ФУНКЦИИ
+// БУЛЕВЫ ФУНКЦИИ
 
 /**
 * Находится ли указатель над картой.
@@ -297,7 +297,7 @@ Card.prototype.cursorIsOver = function(){
 };
 
 
-//DESTROY, UPDATE
+// DESTROY, UPDATE
 
 /**
 * Полностью удаляет карту из игры с анимацией.

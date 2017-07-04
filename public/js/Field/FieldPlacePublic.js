@@ -1,4 +1,4 @@
-//ПУБЛИЧНЫЕ ФУНКЦИИ РАЗМЕЩЕНИЯ КАРТ
+// ПУБЛИЧНЫЕ ФУНКЦИИ РАЗМЕЩЕНИЯ КАРТ
 
 /**
 * Размещает карты в поле.
@@ -14,7 +14,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	if(noDelay === undefined)
 		noDelay = false;
 
-	//Размеры и угол поля
+	// Размеры и угол поля
 	var areaWidth = (this.style.axis == 'vertical') ?  this.area.height : this.area.width;
 	var areaHeight = (this.style.axis == 'vertical') ? this.area.width : this.area.height;
 	var angle = 0;
@@ -26,14 +26,14 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 		angle += 180;
 	}
 
-	//Размеры карт, ширина включает отступ между картами
+	// Размеры карт, ширина включает отступ между картами
 	var cardWidth = skinManager.skin.width + this.style.spacing*2;
 	var cardHeight = skinManager.skin.height;
 
-	//Активная ширина поля
+	// Активная ширина поля
 	var areaActiveWidth = areaWidth - cardWidth - this.style.padding*2 - this.style.margin*2;
 
-	//Необходимая ширина для размещения карт
+	// Необходимая ширина для размещения карт
 	var requiredActiveWidth = this.cards.length - 1;
 	if(this.style.forcedSpace){
 		requiredActiveWidth *= this.style.forcedSpace;
@@ -42,56 +42,56 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 		requiredActiveWidth *= cardWidth;
 	}
 
-	//Ширина карт не может быть больше активной ширины поля
+	// Ширина карт не может быть больше активной ширины поля
 	if(requiredActiveWidth > areaActiveWidth){
 
-		//Когда карты с отступом не вмещаются в поле, мы убираем отступ
+		// Когда карты с отступом не вмещаются в поле, мы убираем отступ
 		areaActiveWidth += this.style.spacing*2;
 		cardWidth -= this.style.spacing*2;
 
 		requiredActiveWidth = areaActiveWidth;
 	}
 
-	//Отступы
+	// Отступы
 	var margin = this._calculateMargin(requiredActiveWidth, areaActiveWidth, areaWidth, areaHeight, cardWidth, cardHeight),
 		topMargin = margin.top,
 		leftMargin = margin.left;
 
-	//Индекс карты под курсором
+	// Индекс карты под курсором
 	var focusedIndex = null;
 
-	//Сдвиг карты
+	// Сдвиг карты
 	var shift = 0;
 
-	//Задержка передвижения
+	// Задержка передвижения
 	var delayIndex = 0;
 
-	//Отступ между картами
+	// Отступ между картами
 	var cardSpacing = this._calculateCardSpacing(requiredActiveWidth);
 	this._cardSpacing = cardSpacing;	
 
-	//Проверка выделенной карты
+	// Проверка выделенной карты
 	if(cardControl.card && cardControl.card != this.focusedCard){
 		this.focusedCard = null;
 	}
 
-	//Индекс выделенной карты
+	// Индекс выделенной карты
 	focusedIndex = this.cards.indexOf(this.focusedCard);
 
-	//Если курсор находится над одной из карт и карты не вмещаются в поле,
-	//указываем сдвиг карты от курсора
+	// Если курсор находится над одной из карт и карты не вмещаются в поле,
+	// указываем сдвиг карты от курсора
 	if(this.focusedCard && cardWidth*(this.cards.length - 1) > areaActiveWidth){		
 		shift = cardWidth*(1 + this.scaleDiff/2) - cardSpacing;
-		//Уменьшаем сдвиг для карт в выгнутом поле
+		// Уменьшаем сдвиг для карт в выгнутом поле
 		if(this.style.area == 'curved'){
 			shift = Math.max(0, shift - 5);
 		}
 	}
 
-	//Создаем массив задержек в зависимости от направления поля
+	// Создаем массив задержек в зависимости от направления поля
 	var delayArray = this._createDelayArray(noDelay);
 
-	//Передвигаем карты
+	// Передвигаем карты
 	var i = this.style.direction == 'backward' ? this.cards.length - 1 : 0,
 		iterator = this.style.direction == 'backward' ? -1 : 1;
 	for(; i >= 0 && i < this.cards.length; i += iterator){
@@ -100,7 +100,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 		var localDelayIndex = delayIndex;
 		var isNew = !newCards && !this._queuedCards.length || ~this._queuedCards.indexOf(card) || newCards && ~newCards.indexOf(card);
 
-		//Не нужно задерживать карты, которые уже находятся в поле
+		// Не нужно задерживать карты, которые уже находятся в поле
 		if(newCards && !~newCards.indexOf(card)){
 			localDelayIndex = 0;
 		}
@@ -112,24 +112,24 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 			);
 		}
 
-		//Добавляем задержку передвижения, если указаны новые карты или
-		//если необходимо задерживать смещенные карты
+		// Добавляем задержку передвижения, если указаны новые карты или
+		// если необходимо задерживать смещенные карты
 		if(newCards && ~newCards.indexOf(card)){
 			delayIndex++;
 		}
 	}
 
-	//Поднимаем карту контроллера наверх
+	// Поднимаем карту контроллера наверх
 	if(cardControl.card){
 		cardControl.card.bringToTop(false);
 	}
 
-	//Дебаг отображение активно используемого пространства
+	// Дебаг отображение активно используемого пространства
 	if(this.inDebugMode){
 		this._setDebugActiveSpace(requiredActiveWidth, cardHeight, leftMargin, topMargin, shift);
 	}
 
-	//Возвращаем время задержки
+	// Возвращаем время задержки
 	var delay = delayIndex*this.delayTime + this.moveTime;
 	return delay;
 };

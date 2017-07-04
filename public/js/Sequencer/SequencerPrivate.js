@@ -20,7 +20,7 @@ Sequencer.prototype._add = function(step, action, duration, context){
 		this.duration += duration;
 	}
 
-	//Новый элемент списка
+	// Новый элемент списка
 	var newStep = this._currentStep = {
 		then: null,
 		wrapper: null,
@@ -28,10 +28,10 @@ Sequencer.prototype._add = function(step, action, duration, context){
 	};
 	newStep.then = this._add.bind(this, newStep);
 
-	//Добавляем враппер действия текущего элементу в списке
+	// Добавляем враппер действия текущего элементу в списке
 	step.wrapper = function(){
 
-		//Создаем функцию, вызывающую враппер действия следующего элемента в списке
+		// Создаем функцию, вызывающую враппер действия следующего элемента в списке
 		this._nextAction = function(){
 			if(typeof newStep.wrapper == 'function'){
 				newStep.wrapper.call(this);
@@ -41,7 +41,7 @@ Sequencer.prototype._add = function(step, action, duration, context){
 			}
 		};
 
-		//Пропуск текущего шага
+		// Пропуск текущего шага
 		if(this._shouldSkip > 0){
 			this._shouldSkip--;
 			this._nextAction.call(this);
@@ -53,13 +53,13 @@ Sequencer.prototype._add = function(step, action, duration, context){
 					duration = 0;
 				}
 			}
-			//Устанавливаем таймаут перед выполнением враппера действия следующего элемента в списке
+			// Устанавливаем таймаут перед выполнением враппера действия следующего элемента в списке
 			if(!this._finishing && this._nextAction){
 				this._timeout = setTimeout(this._nextAction.bind(this), duration);		
 			}
-			//Вызываем текущее действие
+			// Вызываем текущее действие
 			action.call(context || action, this._getMethods.call(this));
-			//Выполнение враппера действия след. элемента, если список выполняется без задержек
+			// Выполнение враппера действия след. элемента, если список выполняется без задержек
 			if(this._finishing && this._nextAction){
 				this._nextAction.call(this);
 			}
@@ -81,7 +81,7 @@ Sequencer.prototype._startFinishing = function(action, duration, delay, context)
 	var finishing = this._finishing;
 	this._finishing = false;
 
-	//Завершаем действия и восстанавливаем статус завершения, если он был установлен
+	// Завершаем действия и восстанавливаем статус завершения, если он был установлен
 	if(finishing){
 		this.finish();
 		this._finishing = true;
@@ -89,7 +89,7 @@ Sequencer.prototype._startFinishing = function(action, duration, delay, context)
 
 	var step = this.start(action, duration, delay, context);
 
-	//Восстанавливаем статус завершения, если он не был установлен
+	// Восстанавливаем статус завершения, если он не был установлен
 	if(!finishing){
 		this._finishing = false;
 	}
@@ -109,7 +109,7 @@ Sequencer.prototype._appendFinishing = function(action, duration, context){
 
 	var step = this.append(action, duration, context);
 
-	//Продолжаем завершение действий, если статус завершения был установлен.
+	// Продолжаем завершение действий, если статус завершения был установлен.
 	if(finishing && !this._finishing){
 		this.finish();
 	}
@@ -126,7 +126,7 @@ Sequencer.prototype._abortFinishing = function(){
 
 	this.abort();
 
-	//Восстанавливаем статус завершения, если он был установлен.
+	// Восстанавливаем статус завершения, если он был установлен.
 	if(finishing){
 		this._finishing = true;
 	}

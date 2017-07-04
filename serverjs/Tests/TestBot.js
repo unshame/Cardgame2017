@@ -16,7 +16,7 @@ class TestBot extends Bot{
 	}
 
 	recieveValidActions(actions){
-		//console.log('Here we\'ll send info to tester', this.name, this.game.id)	
+		// console.log('Here we\'ll send info to tester', this.name, this.game.id)	
 		let game = this.game;
 		let types = actions.map(a => a.type),
 			attackIndex = types.indexOf('ATTACK'),
@@ -42,11 +42,11 @@ class TestBot extends Bot{
 			}
 		}
 
-		//Тесты перевода
+		// Тесты перевода
 		if(this.tester.running && game.turnStages.current == 'DEFENSE' && ~attackIndex){		
 			let action = actions[attackIndex];
 
-			//Тест перевода игроку, у которого нет достаточного кол-ва карт, чтобы отбиться
+			// Тест перевода игроку, у которого нет достаточного кол-ва карт, чтобы отбиться
 			this.tests++;
 			let usedFields = game.table.usedFields;
 			let attackers = game.players.attackers;
@@ -59,7 +59,7 @@ class TestBot extends Bot{
 			}
 
 
-			//Тест смены ролей игроков при переводе
+			// Тест смены ролей игроков при переводе
 			this.tests++;
 			let before = [
 				attackers[0].name,
@@ -81,7 +81,7 @@ class TestBot extends Bot{
 			
 			this.sendResponseWithCallback(action, () => {
 
-				//Тест сохранения исходных атакующих
+				// Тест сохранения исходных атакующих
 				this.tester.transfers++;
 				let numOfTransfers = this.tester.transfers;
 				let numOfOriginalAttackers = this.game.players.originalAttackers.length;
@@ -92,7 +92,7 @@ class TestBot extends Bot{
 					this.failedTests++;
 				}
 
-				//Тест смены ролей игроков при переводе (продолжение)
+				// Тест смены ролей игроков при переводе (продолжение)
 				attackers = game.players.attackers;
 				let result = [
 					attackers[0].name,
@@ -128,9 +128,9 @@ class TestBot extends Bot{
 		switch(note.message){
 
 		case 'GAME_ENDED':
-			//console.log(note.message);
+			// console.log(note.message);
 			this.tester.bots = this.game.players;
-			//console.log(this.tester.bots.map(b => b.name))
+			// console.log(this.tester.bots.map(b => b.name))
 			break;
 
 		case 'TURN_ENDED':

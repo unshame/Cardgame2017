@@ -1,4 +1,4 @@
-//ОЧЕРЕДЬ
+// ОЧЕРЕДЬ
 
 /**
 * Добавляет карты в очередь на добавление.
@@ -13,7 +13,7 @@ Field.prototype.queueCards = function(newCards, delay){
 
 	var ci;
 
-	//Если задержка не указана, используем задержку последней карты в очереди
+	// Если задержка не указана, используем задержку последней карты в очереди
 	if(typeof delay != 'number' || isNaN(delay)){
 		var lastQueuedCard = this._queuedCards[this._queuedCards.length - 1];
 		if(lastQueuedCard){
@@ -24,19 +24,19 @@ Field.prototype.queueCards = function(newCards, delay){
 		}
 	}
 
-	//Устанавливаем задержку для всех карт, равную задержке первой карты в очереди
+	// Устанавливаем задержку для всех карт, равную задержке первой карты в очереди
 	for(ci = 0; ci < this.cards.length; ci++){
 		if(this._delays[this.cards[ci].id] === undefined){
 			this._delays[this.cards[ci].id] = delay;
 		}
 	}
 
-	//Устанавливаем задержку для кард в очереди, увеличивая каждую следующую
+	// Устанавливаем задержку для кард в очереди, увеличивая каждую следующую
 	for(ci = 0; ci < newCards.length; ci++){
 		var card = newCards[ci];
 
-		//Если карта переходит из поля, одну из карт которых перетаскивает игрок,
-		//возвращаем перетаскиваемую карту
+		// Если карта переходит из поля, одну из карт которых перетаскивает игрок,
+		// возвращаем перетаскиваемую карту
 		if(cardControl.card && cardControl.card.field && cardControl.card.field == card.field){
 			cardControl.cardReturn();
 		}
@@ -45,7 +45,7 @@ Field.prototype.queueCards = function(newCards, delay){
 		delay += this.delayTime;
 	}
 
-	//Запоминаем задержку для _uninteractibleTimer
+	// Запоминаем задержку для _uninteractibleTimer
 	this._expectedDelay = delay;
 	return delay;
 };

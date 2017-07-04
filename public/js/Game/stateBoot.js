@@ -3,8 +3,8 @@
 * Загружает ассеты и создает соединение с сервером.  
 * Добавляется в `game.state`.  
 * @namespace stateBoot
-* @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
-* @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
+* @see  {@link http:// phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
+* @see  {@link http:// phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
 * @property {string} key='boot' Название состояния
 * @property {number} preloadCounter=0 Счетчик тиков загрузки ассетов.
 * @property {number} loadCounter=0 Счетчик тиков подключения к серверу.
@@ -23,7 +23,7 @@ window.stateBoot = {
 
 		console.log('Preloading');
 
-		//Фон
+		// Фон
 		game.load.image('wood_light', 'assets/backgrounds/wood_light.png');
 		game.load.image('wood_dark', 'assets/backgrounds/wood_dark.png');
 		game.load.image('green', 'assets/backgrounds/green.png');
@@ -37,13 +37,13 @@ window.stateBoot = {
 		game.load.image('menu_blue','assets/backgrounds/menu_blue.jpg');
 		game.load.image('menu_gray','assets/backgrounds/menu_gray.gif');
 
-		//Для тестов
+		// Для тестов
 		game.load.image('testParticle', 'assets/test_particle.png');
 
 		game.load.image('lock', 'assets/lock.png');
 		game.load.image('unlock', 'assets/unlock.png');
 
-		//Кнопки
+		// Кнопки
 		game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 50, 4);
 		game.load.spritesheet('button_grey_small', 'assets/buttons/grey_small.png', 49, 49, 4);
 		game.load.spritesheet('button_orange_wide', 'assets/buttons/orange_wide.png', 190, 50, 4);
@@ -64,9 +64,9 @@ window.stateBoot = {
 		* The Web Font Loader is able to load fonts from Google Fonts, Typekit, Fonts.com,
 		* and Fontdeck, as well as self-hosted web fonts.
 		* @external WebFont
-		* @see  {@link https://github.com/typekit/webfontloader}
+		* @see  {@link https:// github.com/typekit/webfontloader}
 		*/
-		game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+		game.load.script('webfont', '// ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
 		skinManager.addSkins(window.skins);
 	},

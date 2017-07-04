@@ -1,4 +1,4 @@
-//Entry point
+// Entry point
 
 //@include:fonts
 //@include:loc

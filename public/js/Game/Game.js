@@ -7,7 +7,7 @@
 * @listens document.resize
 * @listens document.orientationchange
 * @listens document.visibilitychange
-* @see {@link http://phaser.io/docs/2.6.2/Phaser.Game.html}
+* @see {@link http:// phaser.io/docs/2.6.2/Phaser.Game.html}
 */
 
 var Game = function(speed, inDebugMode){
@@ -133,11 +133,11 @@ Game.prototype.initialize = function(){
 
 	this.scale.updateGameSize();
 
-	//Отключаем контекстное меню
+	// Отключаем контекстное меню
 	this.canvas.oncontextmenu = function (e) {e.preventDefault();};
 
-	//Антиалиасинг
-	//Phaser.Canvas.setImageRenderingCrisp(game.canvas);
+	// Антиалиасинг
+	// Phaser.Canvas.setImageRenderingCrisp(game.canvas);
 
 	/**
 	* Фон
@@ -225,7 +225,7 @@ Game.prototype._visibilityChangeListener = function(){
 
 	if (!document[this._hiddenValue]) {
 
-		//Снимаем игру с паузы
+		// Снимаем игру с паузы
 		this.paused = false;
 		this.pausedByViewChange = false;
 		if(this.inDebugMode)
@@ -235,12 +235,12 @@ Game.prototype._visibilityChangeListener = function(){
 			this._pauseTimeout = null;
 		}
 
-		//Ждем секунду, прежде чем откорректировать элементы игры, которые могли оказаться в неправильном положении
-		//Это делается, чтобы браузер не пропустил requireAnimationFrames движка, или что-то еще, что может пойти не так
+		// Ждем секунду, прежде чем откорректировать элементы игры, которые могли оказаться в неправильном положении
+		// Это делается, чтобы браузер не пропустил requireAnimationFrames движка, или что-то еще, что может пойти не так
 		setTimeout(correct.bind(this), 1000);
 	}
 	else{
-		//Устанавливаем таймаут, после которого игра ставится на паузу
+		// Устанавливаем таймаут, после которого игра ставится на паузу
 		this._pauseTimeout = setTimeout(pause.bind(this), 10000);
 	}
 };

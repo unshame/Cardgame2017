@@ -1,4 +1,4 @@
-//ПОЗИЦИОНИРОВАНИЕ
+// ПОЗИЦИОНИРОВАНИЕ
 
 /**
 * Устанавливает абсолютную позицию карты.
@@ -81,7 +81,7 @@ Card.prototype.setBasePreserving = function(x, y, resetMover){
 	this.setBase(x, y, resetMover);
 	this.setRelativePosition(newX, newY, false);
 
-	//Смещаем хвост карты
+	// Смещаем хвост карты
 	if(cardControl.trail.parent == this.base){
 		cardControl.trailShift(-shiftX, -shiftY);
 	}

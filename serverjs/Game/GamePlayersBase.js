@@ -27,7 +27,7 @@ class GamePlayersBase extends BetterArray{
 
 	static get [Symbol.species]() { return Array; }
 
-	//Добавление игроков в массив
+	// Добавление игроков в массив
 	push(p){
 		p.game = this.game;
 		this.setStatuses(p, this.gameStartStatus);
@@ -35,7 +35,7 @@ class GamePlayersBase extends BetterArray{
 	}
 
 
-	//Устанавливает статус по умолчанию игроку
+	// Устанавливает статус по умолчанию игроку
 	setStatuses(p, status){
 		for(let key in status){
 			if(status.hasOwnProperty(key))
@@ -43,7 +43,7 @@ class GamePlayersBase extends BetterArray{
 		}
 	}
 
-	//Ставит статусы по умолчанию хода
+	// Ставит статусы по умолчанию хода
 	resetTurn(){
 		for(let i = 0; i < this.length; i++){
 			let p = this[i];
@@ -51,7 +51,7 @@ class GamePlayersBase extends BetterArray{
 		}
 	}
 
-	//Ставит статусы по умолчанию игры
+	// Ставит статусы по умолчанию игры
 	resetGame(){
 		for(let i = 0; i < this.length; i++){
 			let p = this[i];
@@ -60,12 +60,12 @@ class GamePlayersBase extends BetterArray{
 	}
 
 
-	//Игроки по id
+	// Игроки по id
 	get byId(){
 		return this.byKey('id');
 	}
 
-	//Возвращает id и имена игроков
+	// Возвращает id и имена игроков
 	get info(){
 		let info = [];
 		for(let i = 0; i < this.length; i++){
@@ -80,7 +80,7 @@ class GamePlayersBase extends BetterArray{
 	}
 
 
-	//СТАТУСЫ	
+	// СТАТУСЫ	
 	
 	/*
 	 * Меняет статус игроков
@@ -157,12 +157,12 @@ class GamePlayersBase extends BetterArray{
 		return results;
 	}
 
-	//Тоже, что и getWith, только возвращается первый результат
+	// Тоже, что и getWith, только возвращается первый результат
 	getWithFirst(status, value, players){
 		return this.getWith(status, value, false, players)[0];
 	}
 
-	//Счеты
+	// Счеты
 	get scores(){
 		let scores = {};
 		for(let pi = 0; pi < this.length; pi++){
@@ -172,7 +172,7 @@ class GamePlayersBase extends BetterArray{
 		return scores;
 	}
 
-	//РОЛИ
+	// РОЛИ
 
 	getWithRole(role){
 		return this.getWithFirst('role', role);

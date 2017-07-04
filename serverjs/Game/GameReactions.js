@@ -7,7 +7,7 @@
 
 class GameReactions{
 
-	//Игрок походил
+	// Игрок походил
 	ATTACK(player, action){
 
 		let activePlayers = this.players.active;
@@ -35,40 +35,35 @@ class GameReactions{
 
 		this.actions.logAction(card, action.type, card.field, field );
 
-		//Перемещаем карту на стол и убираем карту из руки
+		// Перемещаем карту на стол и убираем карту из руки
 		card.field = field;
 		this.hands[player.id].splice(ci, 1);
 		tableFields[field].attack = card;
 
-		//Добавляем информацию о карте в действие
+		// Добавляем информацию о карте в действие
 		action.value = card.value;
 		action.suit = card.suit;
 
-		//Увеличиваем кол-во занятых мест на столе
+		// Увеличиваем кол-во занятых мест на столе
 		this.table.usedFields++;
 
-		//Если игрок клал карту в догонку, даем ему воможность положить еще карту
+		// Если игрок клал карту в догонку, даем ему воможность положить еще карту
 		if(this.turnStages.current == 'FOLLOWUP'){
 			this.turnStages.setNext('FOLLOWUP');
 		}
 		else if(this.turnStages.current == 'DEFENSE'){
-			let attackers = this.players.attackers;
-			this.players.setOriginalAttackers([attackers[0]]);
-
-			let currentAttackerIndex = activePlayers.indexOf(attackers[0]);
-			this.players.findToGoNext(currentAttackerIndex);
-			
+			this.players.shiftAttacker();			
 			this.turnStages.setNext('DEFENSE');	
 		}
 		else{
-			this.skipCounter = 0;	//Если же это просто ход, сбрасываем счетчик пропущенных ходов
+			this.skipCounter = 0;	// Если же это просто ход, сбрасываем счетчик пропущенных ходов
 		}
 
 		return action;
 
 	}
 
-	//Игрок отбивается
+	// Игрок отбивается
 	DEFENSE(player, action){
 
 		let cardsById = this.cards.byId;
@@ -82,12 +77,12 @@ class GameReactions{
 
 		this.actions.logAction(card, action.type, card.field, action.field );
 
-		//Перемещаем карту на стол и убираем карту из рукиs
+		// Перемещаем карту на стол и убираем карту из рукиs
 		card.field = action.field;
 		this.hands[player.id].splice(ci, 1);
 		tableFields[action.field].defense = card;
 
-		//Добавляем информацию о карте в действие
+		// Добавляем информацию о карте в действие
 		action.value = card.value;
 		action.suit = card.suit;
 
@@ -98,7 +93,7 @@ class GameReactions{
 		return action;
 	}
 
-	//Ходящий игрок пропустил ход
+	// Ходящий игрок пропустил ход
 	SKIP(player, action){
 
 		let activePlayers = this.players.active;
@@ -106,17 +101,17 @@ class GameReactions{
 
 		this.log.info(player.name, 'skips turn');
 
-		//Debug
+		// Debug
 		if(activePlayers.length > 2 && !attackers[1]){
 			this.log.error('More than 2 players but no ally assigned');
 		}
 
-		//Если есть помогающий игрок
+		// Если есть помогающий игрок
 		if(attackers[1]){
 			switch(this.turnStages.current){
 
-			//Если игра в режиме докладывания карт в догонку и только ходящий игрок походил,
-			//даем возможность другому игроку доложить карты
+			// Если игра в режиме докладывания карт в догонку и только ходящий игрок походил,
+			// даем возможность другому игроку доложить карты
 			case 'FOLLOWUP':
 				if(!this.skipCounter){
 					this.skipCounter++;
@@ -124,14 +119,14 @@ class GameReactions{
 				}
 				break;
 
-			//Атакующий не доложил карту, переходим к помогающему
+			// Атакующий не доложил карту, переходим к помогающему
 			case 'REPEATING_ATTACK':
 				this.skipCounter++;
 				this.turnStages.setNext('SUPPORT');
 				break;
 
 			default:
-				//Если кто-то из игроков еще не походил, даем ему возможность 
+				// Если кто-то из игроков еще не походил, даем ему возможность 
 				this.skipCounter++;
 				if(this.skipCounter < 2){
 
@@ -152,7 +147,7 @@ class GameReactions{
 		return action;
 	}
 
-	//Защищающийся берет карты
+	// Защищающийся берет карты
 	TAKE(player, action){
 		this.log.info(player.name, "takes");
 		this.skipCounter = 0;

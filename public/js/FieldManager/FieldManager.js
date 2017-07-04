@@ -178,7 +178,7 @@ FieldManager.prototype.swapFields = function(field1, field2){
 //@include:FieldManagerCard
 //@include:FieldManagerForEach
 
-//ДЕБАГ
+// ДЕБАГ
 
 /** Обновляет дебаг каждого поля */
 FieldManager.prototype.updateDebug = function(){

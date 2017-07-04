@@ -17,10 +17,12 @@ class GamePlayers extends GamePlayersBase{
 			players,
 			{
 				role: null,
+				roleIndex: null,
 				originalAttacker: false
 			},
 			{
 				role: null,
+				roleIndex: null,
 				originalAttacker: false,
 				active: true
 			}
@@ -40,9 +42,9 @@ class GamePlayers extends GamePlayersBase{
 		super.push(p);
 	}
 
-	//СТАТУСЫ
+	// СТАТУСЫ
 
-	//Активные
+	// Активные
 	get active(){
 		return this.getWith('active', true);
 	}
@@ -55,7 +57,7 @@ class GamePlayers extends GamePlayersBase{
 		this.set('active', true, players);
 	}
 
-	//Неактивные
+	// Неактивные
 	get inactive(){
 		return this.getWith('active', false);
 	}
@@ -68,7 +70,7 @@ class GamePlayers extends GamePlayersBase{
 		this.set('active', false, players);
 	}
 
-	//Действующие
+	// Действующие
 	get working(){
 		return this.getWith('working', true);
 	}
@@ -81,19 +83,19 @@ class GamePlayers extends GamePlayersBase{
 		this.set('working', true, players);
 	}
 
-	//Атакующие до перевода
+	// Атакующие до перевода
 	get originalAttackers(){
 		return this.getWith('originalAttacker', (val) => !!val, true);
 	}
 	set originalAttackers(players){
 		this.set('originalAttacker', false);
-		this.setOriginalAttackers(players);
-	}
-	setOriginalAttackers(players){
 		this.setIncrementing('originalAttacker', players);
 	}
+	setOriginalAttacker(player){
+		this.setIncrementing('originalAttacker', [player]);
+	}
 
-	//РОЛИ
+	// РОЛИ
 	
 	get attackers(){
 		let attackers = this.getWith('role', 'attacker');
@@ -111,7 +113,7 @@ class GamePlayers extends GamePlayersBase{
 		this.set('role', 'attacker', players);
 		this.setIncrementing('roleIndex', players);
 	}
-	setAttacker(player){		
+	setAttacker(player){
 		this.set('role', 'attacker', [player]);
 		this.setIncrementing('roleIndex', [player]);
 	}
@@ -123,9 +125,9 @@ class GamePlayers extends GamePlayersBase{
 		this.setRole(p, 'defender');
 	}
 
-	//ОПОВЕЩЕНИЕ ИГРОКОВ
+	// ОПОВЕЩЕНИЕ ИГРОКОВ
 
-	//Оповещает игроков о состоянии игры
+	// Оповещает игроков о состоянии игры
 	gameStateNotify(players, send, reveal, type, noResponse){
 
 		const game = this.game;
@@ -136,15 +138,15 @@ class GamePlayers extends GamePlayersBase{
 			send = {};
 		}		
 
-		//Карты
+		// Карты
 		if(send.cards)
 			cardsToSend = game.cards.getInfo(reveal);
 
-		//Игроки
+		// Игроки
 		if(send.players)
 			playersToSend = this.info;
 
-		//Пересылка
+		// Пересылка
 		for (let pi = 0; pi < players.length; pi++) {
 			let p = players[pi];
 			let pid = p.id;
@@ -163,7 +165,7 @@ class GamePlayers extends GamePlayersBase{
 		}	
 	}
 
-	//Передает полную информацию об игре игроку
+	// Передает полную информацию об игре игроку
 	gameStateNotifyOnReconnect(player){
 		if(!this.includes(player)){
 			this.log.warn('Can\'t reconnect player that\'s not in this game', this.game.id, player.id);
@@ -178,7 +180,7 @@ class GamePlayers extends GamePlayersBase{
 		'GAME_INFO_UPDATE');
 	}
 
-	//Оповещает игроков о раздаче карт
+	// Оповещает игроков о раздаче карт
 	dealNotify(deals){
 		let cardsById = this.game.cards.byId;
 
@@ -196,7 +198,7 @@ class GamePlayers extends GamePlayersBase{
 					cid: deal.cid
 				};
 
-				//Игроки знают только о значении своих карт
+				// Игроки знают только о значении своих карт
 				if(deal.pid == p.id){
 					dealsToSend[di].value = cardsById[deal.cid].value;
 					dealsToSend[di].suit = cardsById[deal.cid].suit;
@@ -207,7 +209,7 @@ class GamePlayers extends GamePlayersBase{
 		}
 	}
 
-	//Оповещает игроков о совершенном действии
+	// Оповещает игроков о совершенном действии
 	completeActionNotify(action){
 		for(let pi = 0; pi < this.length; pi++) {
 			let p = this[pi];				
@@ -215,14 +217,14 @@ class GamePlayers extends GamePlayersBase{
 		}
 	}
 
-	//Оповещает игроков о минимальных козырях
+	// Оповещает игроков о минимальных козырях
 	minTrumpCardsNotify(cards, minCardPid){
 		for(let pi = 0; pi < this.length; pi++){
 			this[pi].recieveMinTrumpCards(cards, minCardPid);
 		}	
 	}
 
-	//Оповещает игроков о том, что один из игроков взял карты
+	// Оповещает игроков о том, что один из игроков взял карты
 	takeNotify(action){
 		for(let pi = 0; pi < this.length; pi++){
 
@@ -252,7 +254,7 @@ class GamePlayers extends GamePlayersBase{
 		}
 	}
 
-	//Отправляет сообщение игрокам с опциональными действиями
+	// Отправляет сообщение игрокам с опциональными действиями
 	notify(note, actions, players){
 
 		if(!players || !players.length)
@@ -265,22 +267,32 @@ class GamePlayers extends GamePlayersBase{
 	}
 
 
-	//УПРАВЛЕНИЕ ИГРОКАМИ
+	// УПРАВЛЕНИЕ ИГРОКАМИ
 	
-	//Проверяет, остались ли игроки в игре и устанавливает проигравшего
+	// Проверяет, остались ли игроки в игре и устанавливает проигравшего
 	get notEnoughActive(){
 
 		let activePlayers = this.active;
 
-		//Если осталось меньше двух игроков, завершаем игру
+		// Если осталось меньше двух игроков, завершаем игру
 		if(activePlayers.length < 2){		
 			return true;
 		}
 		return false;
 	}
 
-	//Устанавливает игроков, вышедших из игры
-	//Возвращает индекс текущего игрока
+	// Сдвигает атакующего при переводе
+	shiftAttacker(){
+		let attackers = this.attackers;
+		let activePlayers = this.active;
+		this.setOriginalAttacker(attackers[0]);
+
+		let currentAttackerIndex = activePlayers.indexOf(attackers[0]);
+		this.findToGoNext(currentAttackerIndex);
+	}
+
+	// Устанавливает игроков, вышедших из игры
+	// Возвращает индекс текущего игрока
 	findInactive(){
 
 		const game = this.game;
@@ -288,11 +300,12 @@ class GamePlayers extends GamePlayersBase{
 		let inactivePlayers = this.inactive;
 		let attackers = this.attackers;
 
-		//Current attacker index
+		// Current attacker index
 		let ai = activePlayers.indexOf(attackers[0]);	
 
-		if(game.deck.length)
+		if(game.deck.length){
 			return ai;
+		}
 
 		let pi = activePlayers.length;
 
@@ -300,26 +313,28 @@ class GamePlayers extends GamePlayersBase{
 			let p = activePlayers[pi];
 			let pid = p.id;
 
-			//Если у игрока пустая рука
+			// Если у игрока пустая рука
 			if(!game.hands[pid].length){
 
-				//Убираем его из списка играющих
+				// Убираем его из списка играющих
 				activePlayers.splice(pi,1);
 
-				//Находим предыдущего ходящего в сдвинутом массиве
+				// Находим предыдущего ходящего в сдвинутом массиве
 				let newai = activePlayers.indexOf(attackers[0]);
 				if(activePlayers[ai] != attackers[0]){	
 
-					//Если предыдущий ходящий был сдвинут, переставляем индекс на его новую позицию				
-					if(~newai)
+					// Если предыдущий ходящий был сдвинут, переставляем индекс на его новую позицию				
+					if(~newai){
 						ai = newai;
-
-					//Если предыдущий ходящий вышел из игры и он был последним в списке,
-					//переставляем индекс предыдущего ходящего в конец измененного списка
-					else if(!activePlayers[ai])
+					}
+					// Если предыдущий ходящий вышел из игры и он был последним в списке,
+					// переставляем индекс предыдущего ходящего в конец измененного списка
+					else if(!activePlayers[ai]){
 						ai = activePlayers.length - 1;
-					else
+					}
+					else{
 						ai--;
+					}
 				}
 
 				this.log.info(p.name, 'is out of the game');	
@@ -328,7 +343,7 @@ class GamePlayers extends GamePlayersBase{
 		}
 		this.active = activePlayers;
 
-		//Находим игроков, только что вышедших из игры
+		// Находим игроков, только что вышедших из игры
 		let newInactivePlayers = [];
 
 		for(let pi = 0; pi < this.length; pi++){
@@ -342,7 +357,7 @@ class GamePlayers extends GamePlayersBase{
 
 		if(newInactivePlayers.length){
 
-			//Находим победителей
+			// Находим победителей
 			if(!inactivePlayers.length){
 
 				for(let i = 0; i < newInactivePlayers.length; i++){
@@ -357,14 +372,14 @@ class GamePlayers extends GamePlayersBase{
 				
 			}
 
-			//Запоминаем вышедших из игры игроков
+			// Запоминаем вышедших из игры игроков
 			this.setInactive(newInactivePlayers);
 		}
 		return ai;
 	}
 
-	//Находит игрока, начинающего игру, по минимальному козырю в руке
-	//Возвращает козыри в руках игроков и минимальный козырь
+	// Находит игрока, начинающего игру, по минимальному козырю в руке
+	// Возвращает козыри в руках игроков и минимальный козырь
 	findToGoFirst(){
 
 		const game = this.game;
@@ -372,10 +387,10 @@ class GamePlayers extends GamePlayersBase{
 
 		let [minTCards, minTCard] = this.findMinTrumpCards();
 
-		//Если есть хотя бы один козырь
+		// Если есть хотя бы один козырь
 		if(minTCard){
 
-			//Находим игроков, учавствующих в первом ходе
+			// Находим игроков, учавствующих в первом ходе
 			let pid = minTCard.pid;
 			let pi = activePlayers.map(p => p.id).indexOf(pid);
 
@@ -383,7 +398,7 @@ class GamePlayers extends GamePlayersBase{
 					
 			this.log.info('Player to go first: ', this.attackers[0].name);
 		}
-		//В противном случае, берем первого попавшегося игрока и начинаем ход
+		// В противном случае, берем первого попавшегося игрока и начинаем ход
 		else{
 			let attackers = [this[0]];
 			if(this[2]){
@@ -395,7 +410,7 @@ class GamePlayers extends GamePlayersBase{
 		return [minTCards, minTCard];
 	}
 
-	//Находим минимальный козырь в каждой руке
+	// Находим минимальный козырь в каждой руке
 	findMinTrumpCards(){
 		const game = this.game;
 
@@ -425,7 +440,7 @@ class GamePlayers extends GamePlayersBase{
 				}
 			}
 
-			//Если в руке есть козырь
+			// Если в руке есть козырь
 			if(minTCard.value <= game.cards.maxValue){
 				minTCards.push(minTCard);
 			}
@@ -438,7 +453,7 @@ class GamePlayers extends GamePlayersBase{
 				suit: game.cards.trumpSuit
 			};
 
-			//Находим минимальный из них
+			// Находим минимальный из них
 			for(let ci = 0; ci < minTCards.length; ci++){
 				if(minTCards[ci].value < minTCard.value){
 					minTCard = minTCards[ci];
@@ -449,7 +464,7 @@ class GamePlayers extends GamePlayersBase{
 		return [minTCards, minTCard];
 	}
 
-	//Находит участников  хода
+	// Находит участников  хода
 	findToGoNext(currentAttackerIndex){	
 
 		let activePlayers = this.active;
@@ -472,7 +487,7 @@ class GamePlayers extends GamePlayersBase{
 		this.defender = involved[1];
 	}
 
-	//Находим проигравшего
+	// Находим проигравшего
 	findLoser(){
 		
 		let activePlayers = this.active;

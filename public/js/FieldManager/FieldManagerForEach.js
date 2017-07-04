@@ -1,4 +1,4 @@
-//FOR EACH FIELD
+// FOR EACH FIELD
 
 /**
 * Выполняет callback для каждого поля из {@link FieldManager#fields}. 

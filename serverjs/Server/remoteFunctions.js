@@ -37,16 +37,16 @@ module.exports = function(server){
 			var newConnId = this.connection.id;
 			let player = server.players[connId];
 
-			//Переподключаем клиента, если экземпляр игрока:
-			//	отключен (может быть открыто несколько вкладок)
-			//	находится в игре
-			//	игра в процессе (не идет голосование за рестарт)
+			// Переподключаем клиента, если экземпляр игрока:
+			// 	отключен (может быть открыто несколько вкладок)
+			// 	находится в игре
+			// 	игра в процессе (не идет голосование за рестарт)
 			if(player && !player.connected && player.game && player.game.isRunning){
 				server.players[newConnId] = player;
 				delete server.players[connId];
 				player.updateRemote(newConnId, server.clients[newConnId].remote);
 			}
-			//Иначе сообщаем игроку, что переподключиться нельзя
+			// Иначе сообщаем игроку, что переподключиться нельзя
 			else{
 				let player = server.players[newConnId];
 				player.updateRemote();

@@ -9,24 +9,24 @@ class GameStates{
 		this.current = null;
 	}
 
-	//Проверяем, нужно ли перезапускать игру
+	// Проверяем, нужно ли перезапускать игру
 	NOT_STARTED(){
 		const game = this.game;
-		//Проверяем результаты голосования
+		// Проверяем результаты голосования
 		let voteResults = game.actions.checkStored();
 
-		//Если голосов хватает, запускаем игру
+		// Если голосов хватает, запускаем игру
 		if(voteResults.successful){
 			game.rematch(voteResults);
 		}
-		//Иначе, не запускаем игру
+		// Иначе, не запускаем игру
 		else{
 			game.backToLobby(voteResults);	
 		}
 		return false;
 	}
 
-	//Сообщаем игрокам о колоде и друг друге
+	// Сообщаем игрокам о колоде и друг друге
 	SHOULD_START(){		
 		const game = this.game;
 		this.current = 'STARTING';
@@ -44,7 +44,7 @@ class GameStates{
 		return false;
 	}
 
-	//Раздаем карты в начале игры
+	// Раздаем карты в начале игры
 	STARTING(){
 		const game = this.game;
 		this.current = 'STARTED';
@@ -61,20 +61,20 @@ class GameStates{
 
 	}
 
-	//Находим игрока, делающего первый ход в игре или продолжаем ход
+	// Находим игрока, делающего первый ход в игре или продолжаем ход
 	STARTED(){
 		const game = this.game;
 		if(!game.players.attackers.length){
 
 			let [minTCards, minTCard] = game.players.findToGoFirst();	
 
-			//Сообщаем игрокам о минимальных козырях
+			// Сообщаем игрокам о минимальных козырях
 			if(minTCard){				
 				game.waitForResponse(game.actions.timeouts.trumpCards, game.players);
 				game.players.minTrumpCardsNotify(minTCards, minTCard.pid);
 				return false;
 			}
-			//Иначе сообщаем об отсутствии козырей в руках
+			// Иначе сообщаем об отсутствии козырей в руках
 			else{
 				game.players.notify({
 					message: 'NO_TRUMP_CARDS'

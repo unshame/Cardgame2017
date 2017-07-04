@@ -1,4 +1,4 @@
-//ПЕРЕДВИЖЕНИЕ
+// ПЕРЕДВИЖЕНИЕ
 
 /**
 * Плавно перемещает карту
@@ -30,8 +30,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	var destination = this._calculateMoveCoordinates(x, y, relativeToBase, shouldRebase);
 
-	//Меняем позицию базы карты перед началом анимации
-	//и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась
+	// Меняем позицию базы карты перед началом анимации
+	// и меняем относительную позицию карты так, чтобы ее абсолютная позиция не менялась
 	if(shouldRebase){
 		this.setBasePreserving(destination.base.x, destination.base.y, false);
 	}
@@ -60,14 +60,14 @@ Card.prototype.returnToBase = function(time, delay){
 */
 Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, shouldRebase){
 
-	//Куда двигать карту
+	// Куда двигать карту
 	var moveX, moveY;
 
-	//Новая позиция базы
+	// Новая позиция базы
 	var newBaseX = relativeToBase ? x + this.base.x : x;
 	var newBaseY = relativeToBase ? y + this.base.y : y;
 
-	//Предупреждаем о том, что карта вышла за пределы экрана
+	// Предупреждаем о том, что карта вышла за пределы экрана
 	if(this.inDebugMode &&
 		!Phaser.Rectangle.containsRaw(
 			-this.skin.width/2,
@@ -79,16 +79,16 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 	)){
 		console.warn('Moving card', this.id, 'out of screen (' + newBaseX + ', ' + newBaseY + ')\n', this);
 	}
-	//Нет смысла менять базу, если координаты не изменились
+	// Нет смысла менять базу, если координаты не изменились
 	if(shouldRebase && newBaseX == this.base.x && newBaseY == this.base.y)
 		shouldRebase = false;
 
 	if(shouldRebase){
-		//Мы будем двигать карту к новой позиции базы
+		// Мы будем двигать карту к новой позиции базы
 		moveX = moveY = 0;
 	}
 	else{
-		//Если база остается прежней, то двигаем карту к нужной позиции
+		// Если база остается прежней, то двигаем карту к нужной позиции
 		moveX = relativeToBase ? x : x - this.base.x;
 		moveY = relativeToBase ? y : y - this.base.y;
 	}
@@ -126,7 +126,7 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 		return;
 	}
 
-	//Проверяем и останавливаем текущий мувер
+	// Проверяем и останавливаем текущий мувер
 	if(this.mover){
 		time = this._tryResetMover(x, y, time, delay, shouldRebase);
 		if(time < 0) return;
@@ -136,7 +136,7 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 		this.delayed = true;
 	}
 
-	//Запускаем новый твин
+	// Запускаем новый твин
 	this.mover = this.game.add.tween(this.sprite);
 	this.mover.to(
 		{			
@@ -203,7 +203,7 @@ Card.prototype._tryResetMover = function(x, y, time, delay, shouldRebase){
 	var moverData = this.mover.timeline[this.mover.current],
 		endPosition = moverData && moverData.vEnd;
 
-	//Не перезапускаем твин, если нет задержки и пункт назначения не изменился
+	// Не перезапускаем твин, если нет задержки и пункт назначения не изменился
 	if(!shouldRebase && endPosition && endPosition.x == x && endPosition.y == y && moverData.delay == delay){
 		this.applyValue();
 		if(this._bringToTopOn == BRING_TO_TOP_ON.START)
@@ -211,14 +211,14 @@ Card.prototype._tryResetMover = function(x, y, time, delay, shouldRebase){
 		return -1;
 	}
 
-	//Уменьшаем время движения, если твин уже в процессе, чтобы уменьшить заторможенность карт,
-	//когда они несколько раз меняют направление движения (игрок проносит курсор над рукой)
-	//Ограничиваем минимальное время половиной заданного, чтобы карты резко не прыгали
+	// Уменьшаем время движения, если твин уже в процессе, чтобы уменьшить заторможенность карт,
+	// когда они несколько раз меняют направление движения (игрок проносит курсор над рукой)
+	// Ограничиваем минимальное время половиной заданного, чтобы карты резко не прыгали
 	if(!delay){		
 		time = Math.max(moverData.duration*this.game.speed - moverData.dt*this.game.speed, time/2);
 	}
 
-	//Останавливаем существующий твин
+	// Останавливаем существующий твин
 	this.mover.stop();
 
 	return time;

@@ -1,4 +1,4 @@
-//ПОЗИЦИОНИРОВАНИЕ ПОЛЯ
+// ПОЗИЦИОНИРОВАНИЕ ПОЛЯ
 
 /**
 * Устанавливает позицию поля.
@@ -132,8 +132,8 @@ Field.prototype._createArea = function(width, height){
 * @param  {number} height высота поля
 */
 Field.prototype._createCircle = function(width, height){
-	var total = Math.max(2500, width),	//ширина квадрата, в который точно помещается окружность
-		extra = (total - width)/2,		//на сколько окружность выходит за пределы экрана
+	var total = Math.max(2500, width),	// ширина квадрата, в который точно помещается окружность
+		extra = (total - width)/2,		// на сколько окружность выходит за пределы экрана
 		a = {
 			x: -extra,
 			y: height

@@ -28,18 +28,18 @@
  * // func1 сразу -> func2 через 1000 -> func3 через 1500
  * // seq.duration == 3000
  * @example <caption>Вызов методов из действий</caption>
- * //action1 выполнится
+ * // action1 выполнится
  * function action0(s){
  * 	s.abort()
  * 	s.start(action1)
  * }
- * //action1 не выполнится
+ * // action1 не выполнится
  * function action0(s){
  * 	s.start(action1)
  * 	s.abort()
  * }
  * 
- * //action1 выполнится без задержки в обоих случаях
+ * // action1 выполнится без задержки в обоих случаях
  * function action0(s){
  * 	s.finish()
  * 	s.start(action1)
@@ -49,14 +49,14 @@
  * 	s.finish()
  * }
  *
- * //Аналогично с append
+ * // Аналогично с append
  *
- * //action1 выполнится
+ * // action1 выполнится
  * function action0(s){
  * 	s.skip()
  * 	s.start(action1)
  * }
- * //action1 не выполнится во всех следующих случаях
+ * // action1 не выполнится во всех следующих случаях
  * function action0(s){
  * 	s.start(action1)
  * 	s.skip()
@@ -156,11 +156,11 @@ Sequencer.prototype.start = function(action, duration, delay, context){
 	this.inProgress = true;
 	this._shouldSkip = 0;
 
-	//Добавляем первое действие в список
+	// Добавляем первое действие в список
 	var step = {},
 		newStep = this._add(step, action, duration, context);
 
-	//Выполняем первое действие с заданной задержкой
+	// Выполняем первое действие с заданной задержкой
 	this.duration += delay;
 	newStep.duration += delay;
 	this._nextAction = step.wrapper.bind(this);
@@ -241,8 +241,8 @@ Sequencer.prototype.unskip = function(){
 
 //@include:SequencerPrivate
 
-//Test
-//jshint ignore: start
+// Test
+// jshint ignore: start
 var sequence = new Sequencer();
 function addSeq(seq, shouldStop){
 	var start = Date.now();

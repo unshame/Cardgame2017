@@ -57,7 +57,7 @@ window.notificationReactions = {
 	*/
 	GAME_ENDED: function(note, actions){
 
-		//Ставим стопку сброса по центру экрана
+		// Ставим стопку сброса по центру экрана
 		var discard = fieldManager.fields.DISCARD_PILE,
 			dummy = fieldManager.fields.dummy, 
 			won = note.results && note.results.winners && ~note.results.winners.indexOf(game.pid),

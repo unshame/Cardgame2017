@@ -1,12 +1,12 @@
-//ХВОСТ КАРТЫ
+// ХВОСТ КАРТЫ
 
-//Смещает хвост относительно базы карты
+// Смещает хвост относительно базы карты
 CardControl.prototype.trailShift = function(x, y){
 	this.trail.position.x += x;
 	this.trail.position.y += y;
 };
 
-//Ресетит хвост карты
+// Ресетит хвост карты
 CardControl.prototype.trailReset = function(soft){
 	this._resetTrailResetTimer();
 	this.trail.forEachAlive(function(p){
@@ -19,28 +19,28 @@ CardControl.prototype.trailReset = function(soft){
 	this.trail.gravity = 0;
 	this.trail.lifespan = 600;
 	this.trail.alpha = 0.6;
-	this.trail.interval = 20;	//Свойство используется модулем, а не движком
+	this.trail.interval = 20;	// Свойство используется модулем, а не движком
 	this.trail.maxParticles = Math.ceil(this.trail.lifespan / this.trail.interval);
 	this.trail.position = {x: 0, y: 0};
 	this.trailDefaultBase.add(this.trail);
 };
 
-//Применяет скин к партиклям хвоста
+// Применяет скин к партиклям хвоста
 CardControl.prototype.trailApplySkin = function(){
 	this.trail.forEach(function(p){
 		p.loadTexture(skinManager.skin.trailName);
 	}, this);
 };
 
-//Создает хвост карты при движении
+// Создает хвост карты при движении
 CardControl.prototype._trailSpawnParticle = function(curTime){
 
 	var	delta = curTime - this.lastParticleTime;
 	if(this.lastParticleTime && delta < this.trail.interval)
 		return;
 
-	//Прибавляем интервал к последнему моменту спавна, чтобы кол-во партиклей соответствовало прошедшему времени
-	//Для оптимизации ограничиваем разницу во времени
+	// Прибавляем интервал к последнему моменту спавна, чтобы кол-во партиклей соответствовало прошедшему времени
+	// Для оптимизации ограничиваем разницу во времени
 	if(delta > this.trail.interval*10)
 		this.lastParticleTime += this.trail.interval*10;
 	else
@@ -62,7 +62,7 @@ CardControl.prototype._trailSpawnParticle = function(curTime){
 	this.trail.emitParticle();
 };
 
-//Обновление хвоста карты
+// Обновление хвоста карты
 CardControl.prototype._updateTrail = function(){
 	if(this.trail.countLiving() && this.trail.parent != this.trailDefaultBase){
 		
@@ -84,7 +84,7 @@ CardControl.prototype.trialReappend = function(){
 	this.lastParticleTime = game.time.time;
 };
 
-//ТАЙМЕР РЕСЕТА ХВОСТА
+// ТАЙМЕР РЕСЕТА ХВОСТА
 
 CardControl.prototype._setTrailResetTimer = function(){
 	this._resetTrailResetTimer();
