@@ -9,12 +9,6 @@ const
 	Player = require('./Player');
 
 
-function getDescisionTime(){
-	let fakeTime = 1,
-		minTime = 500;
-	return Math.random()*fakeTime + minTime;
-}
-
 class Bot extends Player{
 	constructor(randomNames){
 		super();
@@ -32,6 +26,11 @@ class Bot extends Player{
 		}
 	}
 
+	getDescisionTime(){
+		let fakeTime = 1,
+			minTime = 500;
+		return Math.random()*fakeTime + minTime;
+	}
 
 	recieveGameInfo(info){
 		if(!info.noResponse){
@@ -50,7 +49,7 @@ class Bot extends Player{
 	recieveValidActions(actions){
 		setTimeout(() => {
 			this.sendRandomAction(actions);
-		}, getDescisionTime());
+		}, this.getDescisionTime());
 	}
 
 	recieveCompleteAction(action){
@@ -68,7 +67,7 @@ class Bot extends Player{
 	sendDelayedResponse(action){
 		setTimeout(() => {
 			this.sendResponse(action);
-		}, getDescisionTime());
+		}, this.getDescisionTime());
 	}
 
 }

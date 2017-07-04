@@ -6,14 +6,14 @@ function runTest(numBots, duration, debug){
 	console.log('Testing...');
 	if(typeof duration != 'number')
 		duration = 2000;
-	var bots = [];
-	var randomNames = ['bot1', 'bot2', 'bot3', 'bot4', 'bot5'];
-	var tester = {
+	let bots = [];
+	let randomNames = ['bot1', 'bot2', 'bot3', 'bot4', 'bot5'];
+	let tester = {
 		running: true
 	};
 	if(!numBots)
 		numBots = 5;
-	for(var i = 0; i < numBots; i++){
+	for(let i = 0; i < numBots; i++){
 		bots.push(new TestBot(tester,randomNames));
 	}
 	new Game(bots, true, debug);
@@ -21,8 +21,8 @@ function runTest(numBots, duration, debug){
 		console.log('Tests finished...');
 		tester.running = false;
 		bots[0].connected = false;
-		for(var bi = 0; bi < bots.length; bi++){
-			var bot = bots[bi];			
+		for(let bi = 0; bi < bots.length; bi++){
+			let bot = bots[bi];			
 			console.log('Bot %s: failed %s out of %s', bot.name, bot.failedTests, bot.tests);
 		}
 	}, duration);

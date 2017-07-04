@@ -31,9 +31,10 @@ class Game{
 
 		this.log = Log(module, id, debugMode);
 
-		if(!players || !players.length){
-			this.log.error('Can\'t start a game without players');
-			return;
+		//Добавляем бота, если игрок один
+		while(players.length < 2){
+			players.push(new Bot(['addedBot']));
+			this.log.warn('Only %s players at the start of the game, adding a bot', players.length);
 		}
 
 		this.states = new GameStates();
@@ -42,11 +43,7 @@ class Game{
 		this.reactions = new GameReactions();
 		this.directives = new GameDirectives();
 
-		//Добавляем бота, если игрок один
-		if(players.length < 2){
-			players.push(new Bot(['addedBot']));
-			this.log.warn('Only one player at the start of the game, adding a bot');
-		}
+
 		//Сохраняем ссылки на игроков локально
 		this.players = new GamePlayers(this, players.slice());
 

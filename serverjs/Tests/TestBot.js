@@ -11,13 +11,16 @@ class TestBot extends Bot{
 		this.failedTests = 0;
 	}
 
+	getDescisionTime(){
+		return 0;
+	}
+
 	recieveValidActions(actions){
 		//console.log('Here we\'ll send info to tester', this.name, this.game.id)	
 		let game = this.game;
 		let types = actions.map(a => a.type),
 			attackIndex = types.indexOf('ATTACK'),
 			defenseIndex = types.indexOf('DEFENSE');
-		let lineNum = 0;
 
 		if(this.tester.running && game.turnStages.current != 'FOLLOWUP' && game.turnStages.next == 'DEFENSE' && ~attackIndex && !~defenseIndex){
 			let defenseFields = 0;
@@ -34,7 +37,6 @@ class TestBot extends Bot{
 			if(handSize <= defenseFields){
 				console.log('Test %s (attack) failed on %s', this.tests, this.name);
 				console.log('%s cards to beat but %s cards in hand', defenseFields + 1, handSize);
-				console.log('See line %s in log.txt for context', lineNum + 1);
 				console.log('----------------\n');
 				this.failedTests++;
 			}
@@ -52,7 +54,6 @@ class TestBot extends Bot{
 			if(handSize <= usedFields){
 				console.log('Test %s (transfer) failed on %s', this.tests, this.name);
 				console.log('%s cards to beat but %s cards in hand', usedFields + 1, handSize);
-				console.log('See line %s in log.txt for context', lineNum + 1);
 				console.log('----------------\n');
 				this.failedTests++;
 			}
@@ -87,7 +88,6 @@ class TestBot extends Bot{
 				if(numOfTransfers != numOfOriginalAttackers && numOfOriginalAttackers != active.length){
 					console.log('Test %s (transfer attacker saving) failed on %s', this.tests, this.name);
 					console.log('Transfers: %d but saved attackers: %d', numOfTransfers, numOfOriginalAttackers);
-					console.log('See line %s in log.txt for context', lineNum + 1);
 					console.log('----------------\n');
 					this.failedTests++;
 				}
@@ -114,7 +114,6 @@ class TestBot extends Bot{
 							return p.name;
 						})
 					);
-					console.log('See line %s in log.txt for context', lineNum + 1);
 					console.log('----------------\n');
 					this.failedTests++;
 				}
