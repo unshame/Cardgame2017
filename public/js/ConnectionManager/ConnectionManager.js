@@ -11,7 +11,7 @@ var ConnectionManager = function(inDebugMode, serverMethods, clientMethods){
 	* A nodejs transparent bidirectional RPC.
 	* @external Eureca
 	* @version 0.7.1
-	* @see {@link http:// eureca.io/}
+	* @see {@link http://eureca.io/}
 	*/
 	Eureca.Client.call(this);
 

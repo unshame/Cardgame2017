@@ -7,7 +7,7 @@
 * @listens document.resize
 * @listens document.orientationchange
 * @listens document.visibilitychange
-* @see {@link http:// phaser.io/docs/2.6.2/Phaser.Game.html}
+* @see {@link http://phaser.io/docs/2.6.2/Phaser.Game.html}
 */
 
 var Game = function(speed, inDebugMode){

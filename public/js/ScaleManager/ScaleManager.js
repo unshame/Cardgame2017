@@ -14,7 +14,7 @@
 * @param {number} options.minRowsLandscape минимальное число строк сетки в горизонтальном режиме
 * @param {number} options.minColsPortrait  минимальное число колонок сетки в вертикальном режиме
 * @param {number} options.minRowsPortrait  минимальное число строк сетки в вертикальном режиме
-* @see {@link http:// phaser.io/docs/2.6.2/Phaser.ScaleManager.html}
+* @see {@link http://phaser.io/docs/2.6.2/Phaser.ScaleManager.html}
 */
 
 var ScaleManager = function(options){

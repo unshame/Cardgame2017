@@ -146,7 +146,7 @@ Field.prototype._sortCards = function(){
 * Компаратор для сортировки.
 * @private
 * @see  {@link Field#_sortCards}
-* @see  {@link https:// developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/sort?v=control|Array#sort}
+* @see  {@link https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/sort?v=control|Array#sort}
 */
 Field.prototype._compareCards = function(a, b){
 	if(!a.suit && a.suit !== 0){

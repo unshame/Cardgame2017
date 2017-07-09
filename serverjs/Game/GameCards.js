@@ -182,24 +182,7 @@ class GameCards extends BetterArray{
 		const game = this.game;
 
 		if(!this.length){
-
-			// Значения карт
-			this.values.length = 0;
-		
-			// Задаем количество карт и минимальное значение карты
-			if(game.players.length > 3){
-				this.lowestValue = 2;
-				this.numOfCards = 52;
-			}
-			else{
-				this.lowestValue = 6;
-				this.numOfCards = 36;
-			}
-
-			// Задаем значения карт
-			for (let i = this.lowestValue; i <= this.maxValue; i++) {
-				this.values.push(i);
-			}	
+			this.createValues();
 		}
 
 		// Создаем руки
@@ -219,6 +202,28 @@ class GameCards extends BetterArray{
 		this.findTrumpCard();
 	}
 
+	createValues(){
+		const game = this.game;
+		
+		// Значения карт
+		this.values.length = 0;
+		
+		// Задаем количество карт и минимальное значение карты
+		if(game.players.length > 3){
+			this.lowestValue = 2;
+			this.numOfCards = 52;
+		}
+		else{
+			this.lowestValue = 6;
+			this.numOfCards = 36;
+		}
+
+		// Задаем значения карт
+		for (let i = this.lowestValue; i <= this.maxValue; i++) {
+			this.values.push(i);
+		}	
+	}
+
 	// Создает колоду
 	makeDeck(){
 
@@ -236,6 +241,8 @@ class GameCards extends BetterArray{
 	}
 
 	shuffle(){
+
+		this.deck.length = 0;
 
 		this.forEach((c) => {
 			c.field = 'DECK';

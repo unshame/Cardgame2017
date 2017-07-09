@@ -270,24 +270,17 @@ class GamePlayers extends GamePlayersBase{
 	// УПРАВЛЕНИЕ ИГРОКАМИ
 	
 	// Проверяет, остались ли игроки в игре и устанавливает проигравшего
+	// Если осталось меньше двух игроков, завершаем игру
 	get notEnoughActive(){
-
-		let activePlayers = this.active;
-
-		// Если осталось меньше двух игроков, завершаем игру
-		if(activePlayers.length < 2){		
-			return true;
-		}
-		return false;
+		return this.active.length < 2;
 	}
 
 	// Сдвигает атакующего при переводе
 	shiftAttacker(){
 		let attackers = this.attackers;
-		let activePlayers = this.active;
 		this.setOriginalAttacker(attackers[0]);
 
-		let currentAttackerIndex = activePlayers.indexOf(attackers[0]);
+		let currentAttackerIndex = this.active.indexOf(attackers[0]);
 		this.findToGoNext(currentAttackerIndex);
 	}
 
@@ -332,6 +325,7 @@ class GamePlayers extends GamePlayersBase{
 					else if(!activePlayers[ai]){
 						ai = activePlayers.length - 1;
 					}
+					// Иначе вышедший игрок был перед атакующим, значит нужно сдвинуть индекс назад
 					else{
 						ai--;
 					}

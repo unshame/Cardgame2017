@@ -90,7 +90,7 @@ function replaceDevCode(dir, devName, prodName, content){
 		return '';
 	}
 
-	// Замена контекнта
+	// Замена контента
 	let regex = /(<!-- dev -->)[\s\S]*(<!-- \/dev -->)/g;
 	devContent = devContent.replace(regex, content ? '$1' + content + '\n$2' : prodContent);
 	return devContent;
@@ -121,10 +121,12 @@ gulp.task('build', () => {
 	let indexContent = replaceDevCode(publicPath, 'index.html', 'indexProd.html');
 	let indexFile = newFile('public/index.html', indexContent);
 
+	let base = { "base" : "." };
+
 	// Скрипты, которые нужно минифицировать
 	gulp.src([
 			path.join(publicPath, '/lib/phaser.override.js')	// перезаписываемые функции Phaser
-		], { "base" : "." })
+		], base)
 		.pipe(jsFile)	// Весь остальной js код
 		.pipe(uglify())	// минификация
 		.pipe(gulp.dest('prod'));
@@ -141,8 +143,7 @@ gulp.task('build', () => {
 			path.join(publicPath, '/lib/phaser.min.js'),
 			path.join(publicPath, '/assets/**/*'),	
 			path.join(serverPath, '/**/*')	// серверные скрипты
-		], 
-		{ "base" : "." })
+		], base)
 		.pipe(indexFile)	// index.html с замененными путями к скриптам
 		.pipe(gulp.dest('prod'));
 
@@ -152,8 +153,7 @@ gulp.task('build', () => {
 			path.join(docPath, '/server/**/*'),
 			path.join(reportPath, '/client/**/*'),
 			path.join(reportPath, '/server/**/*')
-		], 
-		{ "base" : "." })
+		], base)
 		.pipe(gulp.dest('prod/public'));
 });
 

@@ -3,8 +3,8 @@
 * Загружает ассеты и создает соединение с сервером.  
 * Добавляется в `game.state`.  
 * @namespace stateBoot
-* @see  {@link http:// phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
-* @see  {@link http:// phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
+* @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
+* @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
 * @property {string} key='boot' Название состояния
 * @property {number} preloadCounter=0 Счетчик тиков загрузки ассетов.
 * @property {number} loadCounter=0 Счетчик тиков подключения к серверу.
@@ -64,9 +64,9 @@ window.stateBoot = {
 		* The Web Font Loader is able to load fonts from Google Fonts, Typekit, Fonts.com,
 		* and Fontdeck, as well as self-hosted web fonts.
 		* @external WebFont
-		* @see  {@link https:// github.com/typekit/webfontloader}
+		* @see  {@link https://github.com/typekit/webfontloader}
 		*/
-		game.load.script('webfont', '// ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+		game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
 		skinManager.addSkins(window.skins);
 	},

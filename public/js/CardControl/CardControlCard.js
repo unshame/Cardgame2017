@@ -97,7 +97,7 @@ CardControl.prototype._updateCardAngle = function(curTime){
 * Сохраняет текущее время и позицию карты.
 * @param  {number} curTime текущее время
 * @param  {number} maxTime позиции, запомненные больше этого времени назад, будут удалены
-* @see {@link https:// github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53|Источник кода}
+* @see {@link https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53|Источник кода}
 */
 CardControl.prototype._saveInertia = function(curTime, maxTime){
 	var curX = this.card.base.x + this.card.sprite.x,
