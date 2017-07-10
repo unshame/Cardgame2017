@@ -237,5 +237,5 @@ FieldBuilder.prototype._notEnoughSpace = function(id, ref, index, silent, noHeig
 		}
 		return true;
 	}
-	else return false;
+	return false;
 };

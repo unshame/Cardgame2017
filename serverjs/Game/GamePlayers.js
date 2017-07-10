@@ -50,8 +50,9 @@ class GamePlayers extends GamePlayersBase{
 	}
 	set active(players){
 		this.set('active', false);
-		if(players.length)
+		if(players.length){
 			this.set('active', true, players);
+		}
 	}
 	setActive(players){
 		this.set('active', true, players);
@@ -63,8 +64,9 @@ class GamePlayers extends GamePlayersBase{
 	}
 	set inactive(players){
 		this.set('active', true);
-		if(players.length)
+		if(players.length){
 			this.set('active', false, players);
+		}
 	}
 	setInactive(players){
 		this.set('active', false, players);
@@ -76,8 +78,9 @@ class GamePlayers extends GamePlayersBase{
 	}
 	set working(players){
 		this.set('working', false);
-		if(players.length)
+		if(players.length){
 			this.set('working', true, players);
+		}
 	}
 	setWorking(players){
 		this.set('working', true, players);
@@ -85,7 +88,7 @@ class GamePlayers extends GamePlayersBase{
 
 	// Атакующие до перевода
 	get originalAttackers(){
-		return this.getWith('originalAttacker', (val) => !!val, true);
+		return this.getWith('originalAttacker', val => !!val, true);
 	}
 	set originalAttackers(players){
 		this.set('originalAttacker', false);
@@ -100,7 +103,7 @@ class GamePlayers extends GamePlayersBase{
 	get attackers(){
 		let attackers = this.getWith('role', 'attacker');
 		if(attackers.length){
-			return this.getWith('roleIndex', (val) => !!val, true, attackers);
+			return this.getWith('roleIndex', val => !!val, true, attackers);
 		}
 		return [];
 	}
@@ -139,12 +142,14 @@ class GamePlayers extends GamePlayersBase{
 		}		
 
 		// Карты
-		if(send.cards)
+		if(send.cards){
 			cardsToSend = game.cards.getInfo(reveal);
+		}
 
 		// Игроки
-		if(send.players)
+		if(send.players){
 			playersToSend = this.info;
+		}
 
 		// Пересылка
 		for (let pi = 0; pi < players.length; pi++) {
@@ -254,15 +259,15 @@ class GamePlayers extends GamePlayersBase{
 	// Отправляет сообщение игрокам с опциональными действиями
 	notify(note, actions, players){
 
-		if(!players || !players.length)
+		if(!players || !players.length){
 			players = this;
+		}
 
 		for(let pi = 0; pi < players.length; pi++){
 			let p = players[pi];				
 			p.recieveNotification(Object.assign({}, note) || null, actions || null);
 		}
 	}
-
 
 	// УПРАВЛЕНИЕ ИГРОКАМИ
 	
@@ -275,9 +280,8 @@ class GamePlayers extends GamePlayersBase{
 	// Сдвигает атакующего при переводе
 	shiftAttacker(){
 		let attackers = this.attackers;
-		this.setOriginalAttacker(attackers[0]);
-
 		let currentAttackerIndex = this.active.indexOf(attackers[0]);
+		this.setOriginalAttacker(attackers[0]);
 		this.findToGoNext(currentAttackerIndex);
 	}
 
@@ -289,6 +293,7 @@ class GamePlayers extends GamePlayersBase{
 		let activePlayers = this.active;
 		let inactivePlayers = this.inactive;
 		let attackers = this.attackers;
+		let newInactivePlayers = [];
 
 		// Current attacker index
 		let ai = activePlayers.indexOf(attackers[0]);	
@@ -299,12 +304,16 @@ class GamePlayers extends GamePlayersBase{
 
 		let pi = activePlayers.length;
 
+		// Находим игроков, только что вышедших из игры
 		while(pi--){
 			let p = activePlayers[pi];
 			let pid = p.id;
 
 			// Если у игрока пустая рука
 			if(!game.hands[pid].length){
+
+				// Запоминаем его
+				newInactivePlayers.push(p);
 
 				// Убираем его из списка играющих
 				activePlayers.splice(pi,1);
@@ -315,18 +324,12 @@ class GamePlayers extends GamePlayersBase{
 
 			}
 		}
-		this.active = activePlayers;
 
-		// Находим игроков, только что вышедших из игры
-		let newInactivePlayers = [];
-
-		this.forEach((p) => {
-			if( !~activePlayers.indexOf(p) && !~inactivePlayers.indexOf(p) ){
-				newInactivePlayers.push(p);
-			}
-		});
-
+		// Если игроки вышли из игры
 		if(newInactivePlayers.length){
+
+			// Запоминаем какие игроки остались в игре
+			this.active = activePlayers;
 
 			// Объявляем победителей
 			if(!inactivePlayers.length){
@@ -453,8 +456,9 @@ class GamePlayers extends GamePlayersBase{
 		let involved = [];
 		let i = currentAttackerIndex + 1;
 		while(numInvolved--){
-			if(i >= activePlayers.length)
+			if(i >= activePlayers.length){
 				i = 0;
+			}
 			involved.push(activePlayers[i]);
 			i++;
 		}

@@ -44,10 +44,12 @@ class Player{
 		for(let ci = 0; ci < deals.length; ci++){
 			action.cards.push(deals[ci]);
 		}
-		if(this.remote && this.connected)
+		if(this.remote && this.connected){
 			this.remote.recieveCompleteAction(action);
-		else if(!this.connected)
+		}
+		else if(!this.connected){
 			this.sendResponse();
+		}
 	}
 
 	recieveMinTrumpCards(cards, winner){
@@ -56,17 +58,20 @@ class Player{
 			cards: cards,
 			pid: winner
 		};
-		if(this.remote && this.connected)
+		if(this.remote && this.connected){
 			this.remote.recieveCompleteAction(action);
-		else if(!this.connected)
+		}
+		else if(!this.connected){
 			this.sendResponse();
+		}
 	}
 
 	recieveValidActions(actions, time){
 		if(this.remote && this.connected){
 			let now = Date.now();
-			if(this.afk)
+			if(this.afk){
 				time = this.game.actions.timeouts.afk;
+			}
 			this.remote.recievePossibleActions(actions, now + time*1000, now);
 		}
 
@@ -77,20 +82,24 @@ class Player{
 
 
 	recieveCompleteAction(action){
-		if(this.remote && this.connected)
+		if(this.remote && this.connected){
 			this.remote.recieveCompleteAction(action);
-		else if(!this.connected && !action.noResponse)
+		}
+		else if(!this.connected && !action.noResponse){
 			this.sendResponse();
+		}
 	}
 
 	recieveNotification(note, actions){
-		if(this.remote && this.connected)
+		if(this.remote && this.connected){
 			this.remote.recieveNotification(note, actions);
+		}
 	}
 
 	handleLateness(){
-		if(this.remote && this.connected)
+		if(this.remote && this.connected){
 			this.remote.handleLateness();
+		}
 	}
 
 	// Синхронно посылает асинхронный ответ серверу
@@ -118,10 +127,12 @@ class Player{
 
 	sendRandomAction(actions){
 		let randomIndex;
-		if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'SKIP'))
+		if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'SKIP')){
 			randomIndex = Math.floor(Math.random()*(actions.length-1));
-		else
+		}
+		else{
 			randomIndex = Math.floor(Math.random()*actions.length);
+		}
 		let action = actions[randomIndex];
 		this.sendResponse(action);
 	}
@@ -138,15 +149,17 @@ class Player{
 			this.connId = newConnId;
 			this.remote = newRemote;
 		}
-		if(this.remote)
+		if(this.remote){
 			this.remote.updateId(newConnId ? this.id : null);
+		}
 	}
 
 	reconnect(){
 		this.connected = true;
 		this.afk = false;
-		if(this.game)
+		if(this.game){
 			this.game.players.gameStateNotifyOnReconnect(this);
+		}
 	}
 }
 

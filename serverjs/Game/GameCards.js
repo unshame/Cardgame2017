@@ -144,7 +144,6 @@ class GameCards extends BetterArray{
 
 	// Обнуляет карты
 	reset(soft){
-		const game = this.game;
 
 		// Убираем уже существующие карты
 		if(!soft){

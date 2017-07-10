@@ -71,7 +71,7 @@ class Game{
 
 	// Запущена ли игра
 	// Игра не запущена, когда идет голосование о рестарте
-	// Это не тоже самое, что game.states == 'STARTED'
+	// Это не тоже самое, что game.states.current == 'STARTED'
 	get isRunning(){
 		return this.states.current != 'NOT_STARTED';
 	}

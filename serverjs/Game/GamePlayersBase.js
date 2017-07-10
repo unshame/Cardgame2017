@@ -1,4 +1,4 @@
-/*
+/**
  * Класс, хранящий ссылки на игроков, участвующих в игре.
  * Предоставляет методы для получения игроков с определенными статусами и установки статусов.
  * 
@@ -106,13 +106,14 @@ class GamePlayersBase extends BetterArray{
 	}
 
 	setIncrementing(status, players){
-		let last = this.getWith(status, (val) => !!val).length + 1;
-		if(players.length){
-			for(let pi = 0; pi < players.length; pi++){
-				let p = players[pi];
-				this.set(status, last, [p]);
-				last++;
-			}
+		if(!players || !players.length)
+			players = this;
+
+		let last = this.getWith(status, val => !!val).length + 1;
+		for(let pi = 0; pi < players.length; pi++){
+			let p = players[pi];
+			this.set(status, last, [p]);
+			last++;
 		}
 	}
 

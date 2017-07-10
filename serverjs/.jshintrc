@@ -1,4 +1,5 @@
 {
+  "curly": false,
   "node": true,
   "esnext": true,
   "undef": true,
