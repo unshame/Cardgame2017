@@ -60,8 +60,12 @@ module.exports = function(server){
 		 */
 		requestGameInfo: function(){
 			let player = server.players[this.connection.id];
-			if(player)
-				player.reconnect();
+			if(player){
+				player.connected = true;
+				if(player.game){
+					player.game.players.reconnect(player);
+				}
+			}
 		},
 
 		/**

@@ -14,7 +14,7 @@ const
 	generateId = requirejs('generateId'),
 	Bot = requirejs('Players/Bot'),
 	GameCards = requirejs('Game/GameCards'),
-	GamePlayers = requirejs('Game/GamePlayers'),
+	DurakPlayers = requirejs('Game/Durak/DurakPlayers'),
 	GameActions = requirejs('Game/GameActions'),
 	GameStates = requirejs('Game/GameStates'),
 	GameTurnStages = requirejs('Game/GameTurnStages'),
@@ -44,7 +44,7 @@ class Game{
 		this.directives = new GameDirectives();
 
 		// Сохраняем ссылки на игроков локально
-		this.players = new GamePlayers(this, players.slice());
+		this.players = new DurakPlayers(this, players.slice());
 
 		// Карты
 		this.cards = new GameCards(this);

@@ -153,14 +153,6 @@ class Player{
 			this.remote.updateId(newConnId ? this.id : null);
 		}
 	}
-
-	reconnect(){
-		this.connected = true;
-		this.afk = false;
-		if(this.game){
-			this.game.players.gameStateNotifyOnReconnect(this);
-		}
-	}
 }
 
 module.exports = Player;
