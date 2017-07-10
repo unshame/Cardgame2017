@@ -133,19 +133,19 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 			return;
 		}
 
-		if(pid != c.pid){
-			if(this.fields[c.pid]){
-				this.fields[c.pid].setOwnHighlight(true, ui.colors.red);
+		if(pid != c.field){
+			if(this.fields[c.field]){
+				this.fields[c.field].setOwnHighlight(true, ui.colors.red);
 			}
 			else{
-				console.error('Field manager: field', c.pid, 'not found');
+				console.error('Field manager: field', c.field, 'not found');
 				continue;
 			}
 		}
 
 		card.raised = true;
 
-		if(card.field.id != playerManager.pid){	
+		if(card.field.id != playerManager.field){	
 			card.presetValue(c.suit, c.value);	
 		}
 		card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);
@@ -178,7 +178,7 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 			continue;
 		}
 
-		this.fields[c.pid].setOwnHighlight(false);		
+		this.fields[c.field].setOwnHighlight(false);		
 
 		card.raised = false;
 

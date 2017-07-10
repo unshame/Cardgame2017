@@ -71,7 +71,7 @@ class GameStates{
 			// Сообщаем игрокам о минимальных козырях
 			if(minTCard){				
 				game.waitForResponse(game.actions.timeouts.trumpCards, game.players);
-				game.players.minTrumpCardsNotify(minTCards, minTCard.pid);
+				game.players.minTrumpCardsNotify(minTCards, minTCard.field);
 				return false;
 			}
 			// Иначе сообщаем об отсутствии козырей в руках

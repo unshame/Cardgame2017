@@ -322,8 +322,9 @@ class GameCards extends BetterArray{
 
 		let sequence = [];
 		originalAttackers.forEach((p) => {
-			if(!sequence.includes(p))
+			if(!sequence.includes(p)){
 				sequence.push(p);
+			}
 		});
 		
 		attackers.forEach((attacker) => {
@@ -332,8 +333,9 @@ class GameCards extends BetterArray{
 			}
 		});
 
-		if(!sequence.includes(defender))
+		if(!sequence.includes(defender)){
 			sequence.push(defender);
+		}
 
 		sequence.forEach((player) => {
 			let pid = player.id;

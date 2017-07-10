@@ -100,7 +100,7 @@ class GamePlayers extends GamePlayersBase{
 	get attackers(){
 		let attackers = this.getWith('role', 'attacker');
 		if(attackers.length){
-			return this.getWith('roleIndex', (val) => !!val, true, attackers)
+			return this.getWith('roleIndex', (val) => !!val, true, attackers);
 		}
 		return [];
 	}
@@ -184,14 +184,11 @@ class GamePlayers extends GamePlayersBase{
 	dealNotify(deals){
 		let cardsById = this.game.cards.byId;
 
-		for(let pi = 0; pi < this.length; pi++) {
+		this.forEach((p) => {
 
 			let dealsToSend = [];
-			let p = this[pi];
 
-			for(let di = 0; di < deals.length; di++){
-
-				let deal = deals[di];
+			deals.forEach((deal, di) => {
 
 				dealsToSend[di] = {
 					pid: deal.pid,
@@ -203,10 +200,10 @@ class GamePlayers extends GamePlayersBase{
 					dealsToSend[di].value = cardsById[deal.cid].value;
 					dealsToSend[di].suit = cardsById[deal.cid].suit;
 				}
-			}				
+			});				
 			p.recieveDeals(dealsToSend.slice());
 
-		}
+		});
 	}
 
 	// Оповещает игроков о совершенном действии
@@ -312,24 +309,7 @@ class GamePlayers extends GamePlayersBase{
 				// Убираем его из списка играющих
 				activePlayers.splice(pi,1);
 
-				// Находим предыдущего ходящего в сдвинутом массиве
-				let newai = activePlayers.indexOf(attackers[0]);
-				if(activePlayers[ai] != attackers[0]){	
-
-					// Если предыдущий ходящий был сдвинут, переставляем индекс на его новую позицию				
-					if(newai !== -1){
-						ai = newai;
-					}
-					// Если предыдущий ходящий вышел из игры и он был первым в списке,
-					// переставляем индекс предыдущего ходящего в конец измененного списка
-					else if(ai === 0){
-						ai = activePlayers.length - 1;
-					}
-					// Иначе вышедший игрок был перед атакующим, значит нужно сдвинуть индекс назад
-					else{
-						ai--;
-					}
-				}
+				ai = this.adjustAttackerIndex(ai, activePlayers, attackers[0]);
 
 				this.log.info(p.name, 'is out of the game');	
 
@@ -340,30 +320,17 @@ class GamePlayers extends GamePlayersBase{
 		// Находим игроков, только что вышедших из игры
 		let newInactivePlayers = [];
 
-		for(let pi = 0; pi < this.length; pi++){
-
-			let p = this[pi];			
-
+		this.forEach((p) => {
 			if( !~activePlayers.indexOf(p) && !~inactivePlayers.indexOf(p) ){
 				newInactivePlayers.push(p);
 			}
-		}
+		});
 
 		if(newInactivePlayers.length){
 
-			// Находим победителей
+			// Объявляем победителей
 			if(!inactivePlayers.length){
-
-				for(let i = 0; i < newInactivePlayers.length; i++){
-
-					let p = newInactivePlayers[i];
-
-					p.score.wins++;
-					game.result.winners.push(p.id);
-
-					this.log.info(p.name, 'is a winner');
-				}
-				
+				this.declareWinners(newInactivePlayers);
 			}
 
 			// Запоминаем вышедших из игры игроков
@@ -372,20 +339,51 @@ class GamePlayers extends GamePlayersBase{
 		return ai;
 	}
 
+	// Находит и возвращает индекс предыдущего ходящего в сдвинутом массиве активных игроков
+	adjustAttackerIndex(ai, activePlayers, attacker){
+		let newai = activePlayers.indexOf(attacker);
+		if(activePlayers[ai] != attacker){	
+
+			// Если предыдущий ходящий был сдвинут, переставляем индекс на его новую позицию				
+			if(newai !== -1){
+				ai = newai;
+			}
+			// Если предыдущий ходящий вышел из игры:
+			// Если он был первым в списке, переставляем индекс
+			// предыдущего ходящего в конец измененного списка
+			else if(ai === 0){
+				ai = activePlayers.length - 1;
+			}
+			// Иначе сдвигаем индекс на игрока перед предыдущим ходящим
+			else{
+				ai--;
+			}
+		}
+		return ai;
+	}
+
+	// Устанавливает победителей
+	declareWinners(newInactivePlayers){
+		newInactivePlayers.forEach((p) => {
+			p.score.wins++;
+			this.game.result.winners.push(p.id);
+			this.log.info(p.name, 'is a winner');
+		});
+	}
+
 	// Находит игрока, начинающего игру, по минимальному козырю в руке
 	// Возвращает козыри в руках игроков и минимальный козырь
 	findToGoFirst(){
 
-		const game = this.game;
 		let activePlayers = this.active;
 
-		let [minTCards, minTCard] = this.findMinTrumpCards();
+		let [minCards, minCard] = this.findMinTrumpCards();
 
 		// Если есть хотя бы один козырь
-		if(minTCard){
+		if(minCard){
 
 			// Находим игроков, учавствующих в первом ходе
-			let pid = minTCard.pid;
+			let pid = minCard.field;
 			let pi = activePlayers.map(p => p.id).indexOf(pid);
 
 			this.findToGoNext(pi - 1);
@@ -401,61 +399,48 @@ class GamePlayers extends GamePlayersBase{
 			this.attackers = attackers;
 			this.defender = this[1];
 		}
-		return [minTCards, minTCard];
+		return [minCards, minCard];
 	}
 
 	// Находим минимальный козырь в каждой руке
 	findMinTrumpCards(){
 		const game = this.game;
 
-		let minTCards = [],
-			minTCard = null;
+		let minCards = [],
+			minCard = null;
 
-		for(let pi = 0; pi < this.length; pi++){
+		// Находим минимальный козырь в каждой руке
+		this.forEach((p, pid) => {
 
-			let pid = this[pi].id;
 			if(!game.hands.hasOwnProperty(pid))
-				continue;
+				return;
 
 			let hand = game.hands[pid];
-			let minTCard = {
-				pid: pid,
-				cid: null,
-				value: game.cards.maxValue + 1,
-				suit: game.cards.trumpSuit
-			};
+			let minCard = null;
 
-			for(let ci = 0; ci < hand.length; ci++){
-				let card = hand[ci];
-				if(card.suit == game.cards.trumpSuit && card.value < minTCard.value){
-					minTCard.pid = card.field;
-					minTCard.cid = card.id;
-					minTCard.value = card.value;
+			hand.forEach((card) => {
+				if( card.suit == game.cards.trumpSuit && (!minCard || card.value < minCard.value) ){
+					minCard = card.info;
 				}
-			}
+			});
 
 			// Если в руке есть козырь
-			if(minTCard.value <= game.cards.maxValue){
-				minTCards.push(minTCard);
+			if(minCard){
+				minCards.push(minCard);
 			}
-		}
-		if(minTCards.length){
-			minTCard = {
-				pid: null,
-				cid: null,
-				value: game.cards.maxValue + 1,
-				suit: game.cards.trumpSuit
-			};
+		});
 
-			// Находим минимальный из них
-			for(let ci = 0; ci < minTCards.length; ci++){
-				if(minTCards[ci].value < minTCard.value){
-					minTCard = minTCards[ci];
+		// Находим минимальный из них
+		if(minCards.length){
+
+			minCards.forEach((c) => {
+				if(!minCard || c.value < minCard.value){
+					minCard = c;
 				}
-			}
+			});
 		}
 
-		return [minTCards, minTCard];
+		return [minCards, minCard];
 	}
 
 	// Находит участников  хода

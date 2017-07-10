@@ -75,7 +75,7 @@ class Server extends Eureca.Server{
 			rndBots: Boolean(argv.r || argv.rnd || argv.random),
 			transfer: Boolean(process.env.TRANSFER || argv.transfer),
 			testing: argv.t || argv.test || argv.testing,
-			debug: argv.d || argv.debug,
+			debug: argv.d || argv.debug || 'notice',
 			port: process.env.PORT || Number(argv.port)
 		};
 
