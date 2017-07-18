@@ -142,12 +142,14 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 	.then(function(seq){
 		if(!field.icon){
 			seq.abort();
+			return;
 		}
 		field.icon.loadTexture('unlock');
 	}, spinTime + spinDelay - lockDelay)
 	.then(function(seq){
 		if(!field.icon){
 			seq.abort();
+			return;
 		}
 		tween.stop();
 		field.icon.destroy();

@@ -60,16 +60,15 @@ CardManager.prototype.createCards = function(cardsInfo){
 		var card = this.cards[c.cid];
 		ids.push(c.cid);
 		if(!card){
-			var options = {
-				game: game,
-				x: game.screenWidth / 2,
-				y: game.screenHeight + 300,
-				id: c.cid,
-				suit: c.suit,
-				value: c.value,
-				debug: this.inDebugMode
-			};
-			this.createCard(options);
+			this.createCard({
+				game: 	game,
+				x: 		game.screenWidth / 2,
+				y:		game.screenHeight + 300,
+				id: 	c.cid,
+				suit: 	c.suit,
+				value: 	c.value,
+				debug: 	this.inDebugMode
+			});
 		}
 		else{
 			card.presetValue(c.suit, c.value);
@@ -174,7 +173,7 @@ CardManager.prototype.enablePhysics = function(makeDraggable, except){
 		// jshint forin:false
 		if(!this.cards.hasOwnProperty(cid) || except && except.indexOf && ~except.indexOf(card))
 			continue;
-		
+
 		var card = this.cards[cid];
 		if(makeDraggable){
 			card.setDraggability(true);
@@ -198,8 +197,9 @@ CardManager.prototype.disablePhysics = function(){
 		if(!this.cards.hasOwnProperty(cid))
 			continue;
 		var card = this.cards[cid];
-		if(card.sprite.body)
+		if(card.sprite.body){
 			card.sprite.body.destroy();
+		}
 	}
 	this.physicsEnabled = false;
 };

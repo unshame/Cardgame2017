@@ -325,8 +325,8 @@ Field.getDefaultOptions = function(){
 			padding: 10,
 			margin: 0,
 			spacing: 10,
-			minActiveSpace: fieldManager.builder.minActiveSpace,	
-			raisedOffset: skinManager.skin.height/2,	
+			minActiveSpace: fieldManager.builder.minActiveSpace,
+			raisedOffset: skinManager.skin.height/2,
 			forcedSpace: false,	
 
 			focusable: false,	
