@@ -102,7 +102,7 @@ class GenericPlayers extends GamePlayers{
 
 	// ОПОВЕЩЕНИЕ ИГРОКОВ
 	
-	gameStateNotify(players, send, reveal, type, noResponse){}
+	gameStateNotify(players){}
 
 	gameStateNotifyOnReconnect(player){}
 
@@ -133,7 +133,7 @@ class GenericPlayers extends GamePlayers{
 
 		for(let pi = 0; pi < players.length; pi++){
 			let p = players[pi];				
-			p.recieveNotification(Object.assign({}, note) || null, actions || null);
+			p.recieveNotification(Object.assign({}, note), actions || null);
 		}
 	}
 

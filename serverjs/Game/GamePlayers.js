@@ -34,8 +34,9 @@ class GamePlayers extends BetterArray{
 	// Устанавливает статус по умолчанию игроку
 	setStatuses(p, status){
 		for(let key in status){
-			if(status.hasOwnProperty(key))
+			if(status.hasOwnProperty(key)){
 				p[key] = status[key];
+			}
 		}
 	}
 
@@ -71,27 +72,32 @@ class GamePlayers extends BetterArray{
 		if(!players || !players.length)
 			players = this;
 
-		let pids = this.map(p => p.id);
-
 		for(let i = 0; i < players.length; i++){
 			let p = players[i];
-			let pi = pids.indexOf(p.id);
-			if(~pi){
-				let p = this[pi];
+			if(this.includes(p) && p.game == this.game){
 				p[status] = value;
+			}
+			else{
+				this.log.error('Player isn\'t in this game', p.id);
 			}
 		}
 	}
 
 	setIncrementing(status, players){
+
 		if(!players || !players.length)
 			players = this;
 
 		let last = this.getWith(status, val => !!val).length + 1;
 		for(let pi = 0; pi < players.length; pi++){
 			let p = players[pi];
-			this.set(status, last, [p]);
-			last++;
+			if(this.includes(p) && p.game == this.game){
+				p[status] = last;
+				last++;
+			}
+			else{
+				this.log.error('Player isn\'t in this game', p.id);
+			}
 		}
 	}
 
@@ -117,19 +123,27 @@ class GamePlayers extends BetterArray{
 
 		for(let i = 0; i < players.length; i++){
 			let p = players[i];
-			if(compare(p[status])){
-				results.push(p);
+			if(this.includes(p) && p.game == this.game){
+				if(compare(p[status])){
+					results.push(p);
+				}
+			}
+			else{
+				this.log.error('Player isn\'t in this game', p.id);
 			}
 		}
 		if(results.length && sort){
 			results.sort(
 				(a, b) => {
-					if(a[status] == b[status])
+					if(a[status] == b[status]){
 						return 0;
-					else if(a[status] > b[status])
+					}
+					else if(a[status] > b[status]){
 						return 1;
-					else
+					}
+					else{
 						return -1;
+					}
 				}
 			);
 		}
@@ -137,8 +151,30 @@ class GamePlayers extends BetterArray{
 	}
 
 	// Тоже, что и getWith, только возвращается первый результат
-	getWithFirst(status, value, players){
-		return this.getWith(status, value, false, players)[0];
+	getWithFirst(status, compare, players){
+		if(!players)
+			players = this;
+
+		if(typeof compare != 'function'){
+			let newVal = compare;
+			compare = (value) => {
+				return value == newVal;
+			};
+		}
+
+		for(let i = 0; i < players.length; i++){
+			let p = players[i];
+			if(this.includes(p) && p.game == this.game){
+				if(compare(p[status])){
+					return p;
+				}
+			}
+			else{
+				this.log.error('Player isn\'t in this game', p.id);
+			}
+		}
+
+		return null;
 	}
 
 	// РОЛИ
@@ -148,11 +184,13 @@ class GamePlayers extends BetterArray{
 	}
 
 	setRole(player, role){
-		if(this[role])
+		if(this[role]){
 			this.set('role', null, this[role]);
+		}
 
-		if(player)
+		if(player){
 			this.set('role', role, [player]);
+		}
 	}
 }
 
