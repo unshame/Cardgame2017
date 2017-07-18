@@ -13,8 +13,9 @@ Card.prototype.presetValue = function(suit, value){
 	if(
 		(suit === null && this.suit === null) ||
 		(suit == this.suit && value == this.value)
-	)
+	){
 		return;
+	}
 
 	if(suit === null){
 		this.suit = null;
@@ -47,9 +48,9 @@ Card.prototype.applyValue = function(){
 	}
 
 	var duration = (this.flipTime/this.game.speed)/2,
-		highest = 0xffffff;
+		tint = 0xffffff;
 
-	this.sprite.tint = highest;
+	this.sprite.tint = tint;
 
 	this._flipper = this.game.add.tween(this.sprite.scale);
 
@@ -58,7 +59,8 @@ Card.prototype.applyValue = function(){
 
 	this._flipper.onUpdateCallback( this._updateTint.bind(this) );
 	this._flipper.onComplete.addOnce(function(){
-		this.sprite.tint = highest;
+		this.sprite.tint = tint;
+		this._flipper = null;
 	}, this);
 
 	if(this.suit === null){

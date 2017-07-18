@@ -174,11 +174,14 @@ CardManager.prototype.enablePhysics = function(makeDraggable, except){
 		// jshint forin:false
 		if(!this.cards.hasOwnProperty(cid) || except && except.indexOf && ~except.indexOf(card))
 			continue;
+		
 		var card = this.cards[cid];
-		if(makeDraggable)
+		if(makeDraggable){
 			card.setDraggability(true);
-		else
+		}
+		else{
 			card.setDraggability(false);
+		}
 		game.physics.arcade.enable(card.sprite);
 		card.sprite.body.velocity = {x: Math.random()*50 - 25, y: Math.random()*50 - 25};
 		card.sprite.body.drag = {x: Math.random()*25, y: Math.random()*25};
@@ -207,6 +210,26 @@ CardManager.prototype.update = function(){
 		if(!this.cards.hasOwnProperty(ci))
 			continue;
 		this.cards[ci].update();
+	}
+};
+
+
+/**
+* Поднимает указанную карту наверх, опционально поднимает перетаскиваемую карту наверх.
+* @param {Card} card карта, которую нужно поднять
+* @param {boolean} [fixController=true] нужно ли поднимать {@link cardControl#card} наверх
+*/
+CardManager.prototype.bringToTop = function(card, fixController){
+	if(!card || !this.cards[card.id] || !~this.cardsGroup.children.indexOf(card.base)){
+		console.log('Card manager: can\'t bring card to top', card);
+		return;
+	}
+	if(fixController === undefined){
+		fixController = true;
+	}
+	this.cardsGroup.bringToTop(card.base);
+	if(fixController && cardControl.card && cardControl.card != card){
+		this.bringToTop(cardControl.card, false);
 	}
 };
 

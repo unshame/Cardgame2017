@@ -121,7 +121,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 	// Поднимаем карту контроллера наверх
 	if(cardControl.card){
-		cardControl.card.bringToTop(false);
+		cardManager.bringToTop(cardControl.card, false);
 	}
 
 	// Дебаг отображение активно используемого пространства
@@ -166,7 +166,7 @@ Field.prototype.zAlignCards = function(checkDelay, forcedCard){
 	for(; i >= 0 && i < this.cards.length; i += iterator){
 		var card = this.cards[i];
 		if(!checkDelay || !card.delayed || card == forcedCard){
-			card.bringToTop();
+			cardManager.bringToTop(card);
 		}
 	}
 };

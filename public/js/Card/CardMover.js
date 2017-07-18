@@ -25,8 +25,9 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 
 	this._bringToTopOn = bringToTopOn;
 
-	if(this._bringToTopOn == BRING_TO_TOP_ON.INIT || this.game.paused && this._bringToTopOn != BRING_TO_TOP_ON.NEVER)
-		this.bringToTop();
+	if(this._bringToTopOn == BRING_TO_TOP_ON.INIT || this.game.paused && this._bringToTopOn != BRING_TO_TOP_ON.NEVER){
+		cardManager.bringToTop(this);
+	}
 
 	var destination = this._calculateMoveCoordinates(x, y, relativeToBase, shouldRebase);
 
@@ -162,7 +163,7 @@ Card.prototype._onMoveStart = function(){
 	this.applyValue();
 	if(this._bringToTopOn == BRING_TO_TOP_ON.START || this._bringToTopOn == BRING_TO_TOP_ON.START_ALL){
 		if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.START){
-			this.bringToTop();
+			cardManager.bringToTop(this);
 		}
 		else{
 			this.field.zAlignCards(true, this);
@@ -180,7 +181,7 @@ Card.prototype._onMoveComplete = function(){
 	this.applyValue();
 	if(this._bringToTopOn == BRING_TO_TOP_ON.END || this._bringToTopOn == BRING_TO_TOP_ON.END_ALL){
 		if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.END){
-			this.bringToTop();
+			cardManager.bringToTop(this);
 		}
 		else{
 			this.field.zAlignCards(true, this);
@@ -206,8 +207,9 @@ Card.prototype._tryResetMover = function(x, y, time, delay, shouldRebase){
 	// Не перезапускаем твин, если нет задержки и пункт назначения не изменился
 	if(!shouldRebase && endPosition && endPosition.x == x && endPosition.y == y && moverData.delay == delay){
 		this.applyValue();
-		if(this._bringToTopOn == BRING_TO_TOP_ON.START)
-			this.bringToTop();
+		if(this._bringToTopOn == BRING_TO_TOP_ON.START){
+			cardManager.bringToTop(this);
+		}
 		return -1;
 	}
 

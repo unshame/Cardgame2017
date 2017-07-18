@@ -88,19 +88,6 @@ Card.prototype.setBasePreserving = function(x, y, resetMover){
 };
 
 /**
-* Поднимает карту наверх, опционально поднимает перетаскиваемую карту наверх.
-* @param {boolean} [fixController=true] нужно ли поднимать {@link cardControl#card} наверх
-*/
-Card.prototype.bringToTop = function(fixController){
-	if(fixController === undefined)
-		fixController = true;
-	this.base.parent.bringToTop(this.base);
-	if(fixController && cardControl.card && cardControl.card != this){
-		cardControl.card.bringToTop(false);
-	}
-};
-
-/**
 * Запоминает id поля, в которое будет перемещена карта. Устанавливает перетаскиваемость.
 * @param {string} fieldId id поля
 */
