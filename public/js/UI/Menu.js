@@ -1,5 +1,5 @@
 
-var Menu = function(x,y){
+var Menu = function(x, y, z){
 	var pixel = ui.newPixel();
 	this.background = game.add.sprite(0, 0, pixel.generateTexture());
 	this.base = game.add.group();
@@ -7,20 +7,30 @@ var Menu = function(x,y){
 	this.options.x = x;
 	this.options.y = y;
 	this.margin = 50;
-	this.opened = false;
+	this.opened = true;
 
 	this.base.add(this.background);
 	this.buttons = [];
-	this.hide();
 
+	ui.layers.addExistingLayer(this.base, z);
 };
 
-Menu.prototype.addButton = function (action,text) {
-	var button = new Button(0,0,action,text);
+Menu.prototype.addButton = function (action, name, text) {
+	var button = new Button({
+		position: {
+			x: 0,
+			y: 0
+		},
+		color: 'grey',
+		size: 'wide',
+		action: action,
+		text: text,
+		name: name,
+		context: this,
+		group: this.base
+	});
 
 	this.buttons.push(button);
-	this.base.add(button);
-	this.base.add(button.text);
 	this.update();
 };
 
@@ -41,7 +51,7 @@ Menu.prototype.resize = function(){
 	this.background.height = height + this.margin*2;
 };
 
-Menu.prototype.reposition = function(){
+Menu.prototype.updatePosition = function(){
 	this.base.x = this.options.x - this.background.width/2;
 	this.base.y = this.options.y - this.background.height/2;
 	for (var i = 0; i < this.buttons.length; i++) {
@@ -50,13 +60,13 @@ Menu.prototype.reposition = function(){
 		for (var k = 0; k < i; k++) {
 			y += this.buttons[k].height + this.margin;
 		}
-		button.reposition(this.base.width/2 - button.width/2, y + this.margin);
+		button.updatePosition({x: this.base.width/2 - button.width/2, y: y + this.margin});
 	}
 };
 
 Menu.prototype.update = function(){
 	this.resize();
-	this.reposition();
+	this.updatePosition();
 	if(!this.opened)
 		this.hide();
 };
@@ -65,8 +75,7 @@ Menu.prototype.hide = function(){
 	this.opened = false;
 	this.background.visible = false;
 	for (var i = 0; i < this.buttons.length; i++) {
-		this.buttons[i].visible = false;
-		this.buttons[i].text.visible = false;
+		this.buttons[i].hide();
 	}
 };
 
@@ -74,8 +83,7 @@ Menu.prototype.reset = function(){
 	this.opened = true;
 	this.background.visible = true;
 	for (var i = 0; i < this.buttons.length; i++) {
-		this.buttons[i].visible = true;
-		this.buttons[i].text.visible = true;
+		this.buttons[i].show();
 	}
 };
 Menu.prototype.toggle = function(){
