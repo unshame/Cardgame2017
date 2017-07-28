@@ -221,7 +221,7 @@ CardManager.prototype.update = function(){
 */
 CardManager.prototype.bringToTop = function(card, fixController){
 	if(!card || !this.cards[card.id] || !~this.cardsGroup.children.indexOf(card.base)){
-		console.log('Card manager: can\'t bring card to top', card);
+		console.error('Card manager: can\'t bring card to top', card);
 		return;
 	}
 	if(fixController === undefined){
