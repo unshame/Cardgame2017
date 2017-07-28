@@ -51,6 +51,10 @@ UI.prototype.initialize = function(){
 	this.layers.addExistingLayer(cardEmitter, 4);
 
 	this.layers.positionLayers();
+
+	var testMenu = new Menu(game.screenWidth/2,game.screenHeight/2, 1);
+	testMenu.addButton(function(){}, 'test', 'test')
+	testMenu.addButton(function(){}, 'test1', 'test1')
 };
 
 UI.prototype.addButtons = function(){
