@@ -17,10 +17,6 @@ var Menu = function(x, y, z){
 
 Menu.prototype.addButton = function (action, name, text) {
 	var button = new Button({
-		position: {
-			x: 0,
-			y: 0
-		},
 		color: 'grey',
 		size: 'wide',
 		action: action,
