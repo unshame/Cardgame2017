@@ -52,7 +52,7 @@ UI.prototype.initialize = function(){
 
 	this.layers.positionLayers();
 
-	var testMenu = new Menu(game.screenWidth/2,game.screenHeight/2, 1);
+	var testMenu = new Menu(game.screenWidth/2,game.screenHeight/2, -4);
 	testMenu.addButton(function(){}, 'test', 'test')
 	testMenu.addButton(function(){}, 'test1', 'test1')
 };

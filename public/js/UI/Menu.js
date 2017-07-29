@@ -1,8 +1,8 @@
 
-var Menu = function(x, y, z){
+var Menu = function(x, y, z, name){
 	var pixel = ui.newPixel();
 	this.background = game.add.sprite(0, 0, pixel.generateTexture());
-	this.base = game.add.group();
+	this.base = ui.layers.addLayer(z, name || 'menu', true);
 	this.options = {};
 	this.options.x = x;
 	this.options.y = y;
@@ -10,9 +10,7 @@ var Menu = function(x, y, z){
 	this.opened = true;
 
 	this.base.add(this.background);
-	this.buttons = [];
-
-	ui.layers.addExistingLayer(this.base, z, true);
+	this.buttons = [];	
 };
 
 Menu.prototype.addButton = function (action, name, text) {
