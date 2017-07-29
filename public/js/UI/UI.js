@@ -54,9 +54,6 @@ UI.prototype.initialize = function(){
 	this.layers.addExistingLayer(cardEmitter, 4);
 
 	this.layers.positionLayers();
-
-	
-
 };
 
 UI.prototype.addButtons = function(){

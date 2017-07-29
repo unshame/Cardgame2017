@@ -14,7 +14,40 @@ var UILayers = function(){
 	* @type {Object<DisplayObject>}
 	*/
 	this.byName = {};
+
+	this.byPosition = {};
 };
+
+UILayers.prototype._getPositions = function(i, name, checkCursorOverlap){
+	var positions = {};
+	var i, layer, len = 0;
+	for(var lname in this.byName){
+		layer = this.byName[lname];
+		i = layer.index;
+		if(i >= 0){
+			while(positions[i]){
+				console.warn('Index already taken', i);
+				i++;
+			}
+			positions[i] = layer;
+		}
+		len++;
+	}
+	for(var lname in this.byName){
+		layer = this.byName[lname];
+		i = layer.index;
+		if(i < 0){
+			i = len + i;
+			while(positions[i]){
+				console.warn('Index already taken', i);
+				i++;
+			}
+			positions[i] = layer;
+		}
+	}
+	positions.length = len;
+	return positions;
+}
 
 /**
 * Создает новую `Phaser.Group` группу и добавляет ее как слой.
@@ -30,7 +63,7 @@ UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 	layer.name = name;
 	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[name] = layer;
-	this._positionLayer(layer);
+	this.positionLayers(layer);
 	return layer;
 };
 
@@ -46,7 +79,7 @@ UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 	layer.index = i;
 	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[layer.name] = layer;
-	this._positionLayer(layer);
+	this.positionLayers(layer);
 	return layer;
 };
 
@@ -60,7 +93,7 @@ UILayers.prototype.setLayerIndex = function(layer, i, checkCursorOverlap){
 	layer.index = i;
 	if(checkCursorOverlap !== undefined)
 		layer.checkCursorOverlap = checkCursorOverlap || false;
-	this._positionLayer(layer);
+	this.positionLayers(layer);
 };
 
 /**
@@ -88,11 +121,16 @@ UILayers.prototype._positionLayer = function(layer){
 * Позиционирует все слои по вертикали.
 */
 UILayers.prototype.positionLayers = function(){
-	for(var pname in this.byName){
-		if(!this.byName.hasOwnProperty(pname))
-			continue;
-
-		this._positionLayer(this.byName[pname]);
+	var positions = this._getPositions();
+	for(var i = 0; i < positions.length; i++){
+		var layer = positions[i];
+		if(!layer) continue;
+		try{
+			game.world.setChildIndex(layer, i);
+		}
+		catch(e){
+			console.error(e);
+		}	
 	}
 };
 
