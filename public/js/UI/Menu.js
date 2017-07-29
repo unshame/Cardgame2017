@@ -1,27 +1,26 @@
-var Menu = function(x, y, z, name){
+var Menu = function(position, z, name){
 	this.background = game.add.image(0, 0);
 	this.base = ui.layers.addLayer(z, name || 'menu', true);	
-	this.options = {};
-	this.options.x = x;
-	this.options.y = y;
+	this.position = position;
 	this.margin = 50;
 	this.opened = true;
 
 	this.base.add(this.background);
-	this.buttons = [];	
+	this.buttons = [];
+	this.buttonsByName = {};
 };
 
-Menu.prototype.addButton = function (action, name, text) {
+Menu.prototype.addButton = function (action, name, text, context) {
 	var button = new Button({
 		color: 'grey',
 		size: 'wide',
 		action: action,
 		text: text,
 		name: name,
-		context: this,
+		context: (context === false) ? null : this,
 		group: this.base
 	});
-
+	this.buttonsByName[name] = button;
 	this.buttons.push(button);
 	this.update();
 };
@@ -42,16 +41,25 @@ Menu.prototype.resize = function(){
 	this.createArea(width + this.margin*2, height + this.margin*2);
 };
 
-Menu.prototype.updatePosition = function(){
-	this.base.x = this.options.x - this.background.width/2;
-	this.base.y = this.options.y - this.background.height/2;
+Menu.prototype.updatePosition = function(position){
+	if(position){
+		this.position = position;
+	}
+	else{
+		position = this.position;
+	}
+	if(typeof position == 'function'){
+		position = position();
+	}
+	this.base.x = position.x - this.background.width/2;
+	this.base.y = position.y - this.background.height/2;
 	for (var i = 0; i < this.buttons.length; i++) {
 		var button = this.buttons[i];
 		var y = 0;
 		for (var k = 0; k < i; k++) {
 			y += this.buttons[k].height + this.margin;
 		}
-		button.updatePosition({x: this.base.width/2 - button.width/2, y: y + this.margin});
+		button.updatePosition({x: this.background.width/2 - button.width/2, y: y + this.margin});
 	}
 };
 

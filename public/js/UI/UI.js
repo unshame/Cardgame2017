@@ -35,8 +35,14 @@ UI.prototype.initialize = function(){
 
 	// Таймер хода
 	this.rope = this.layers.addExistingLayer(new Rope(), -3);
-	this.testMenu = new Menu(game.screenWidth/2,game.screenHeight/2, 1);
-	this.optMenu = new Menu(game.screenWidth/2,game.screenHeight/2, 1);
+	function getScreenCenter(){
+		return {
+			x:game.screenWidth/2,
+			y:game.screenHeight/2
+		}
+	}
+	this.testMenu = new Menu(getScreenCenter, -4, 'testMenu');
+	this.optMenu = new Menu(getScreenCenter, -5, 'optMenu');
 	this.optMenu.hide();
 	
 	// Кнопки
@@ -68,11 +74,25 @@ UI.prototype.addButtons = function(){
 	this.testMenu.addButton( function(){
 			this.hide();
 			ui.optMenu.show();
-		},'Options','Options');
+		},'options','Options');
 	this.optMenu.addButton( function(){
-			connection.proxy.queueUp();
-			this.hide();
-		},'lel','NOTHING');	
+		var mover = game.add.tween(this.buttonsByName['CHS']);
+		mover.to({			
+			x: 0,
+			y: 0,
+			alpha:0
+		}, 1000);
+		mover.start();
+	},'lel','NOTHING');	
+	this.optMenu.addButton( function(){
+		var mover = game.add.tween(this.buttonsByName['CHS']);
+		mover.to({			
+			x: 0,
+			y: ui.optMenu.background.height,
+			alpha:1
+		}, 1000);
+		mover.start();
+	}, 'next','Next');
 	this.optMenu.addButton( function(button, pointer){
 			if(pointer.isMouse && pointer.button !== 0){
 				skinManager.setSkin('uno');
@@ -153,8 +173,15 @@ UI.prototype.addButtons = function(){
 			};
 		},
 		action: function(){
+			
+			if(!ui.optMenu.opened){
 			ui.testMenu.hide();
 			ui.optMenu.show();
+			}
+			else{
+				ui.testMenu.show();
+				ui.optMenu.hide();
+			}
 			
 		},
 		icon: 'menu',

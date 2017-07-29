@@ -67,6 +67,8 @@ window.statePlay = {
 		fieldManager.resizeFields();
 
 		ui.updatePosition();
+		ui.testMenu.update();
+		ui.optMenu.update();
 
 		cardEmitter.restart();
 
