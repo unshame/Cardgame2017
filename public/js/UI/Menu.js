@@ -1,7 +1,6 @@
 
 var Menu = function(x, y, z){
-	var pixel = ui.newPixel();
-	this.background = game.add.sprite(0, 0, pixel.generateTexture());
+	this.background = game.add.image(0, 0);
 	this.base = game.add.group();
 	this.options = {};
 	this.options.x = x;
@@ -43,8 +42,7 @@ Menu.prototype.resize = function(){
 			width = button.width;
 	}
 
-	this.background.width = width + this.margin*2;
-	this.background.height = height + this.margin*2;
+	this.createArea(width + this.margin*2, height + this.margin*2);
 };
 
 Menu.prototype.updatePosition = function(){
@@ -75,16 +73,53 @@ Menu.prototype.hide = function(){
 	}
 };
 
-Menu.prototype.reset = function(){
+Menu.prototype.show = function(){
 	this.opened = true;
 	this.background.visible = true;
 	for (var i = 0; i < this.buttons.length; i++) {
 		this.buttons[i].show();
 	}
+	this.update();
 };
 Menu.prototype.toggle = function(){
 	if(this.opened)
 		this.hide();
 	else
-		this.reset();
+		this.show();
+};
+Menu.prototype.createArea = function(width, height){
+	var radius = 10,
+		lineWidth = 4,
+		x =  lineWidth/2,
+		y =  lineWidth/2;
+		
+	var area = this._bitmapArea;
+	if(!area){
+		area = game.make.bitmapData(width, height);
+	}
+	else{
+		area.clear();		
+		area.resize(width, height);
+	}
+	width -= x*2;
+	height -= y*2;
+	area.ctx.beginPath();
+	area.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+	area.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+	area.ctx.lineWidth = lineWidth;
+	area.ctx.moveTo(x + radius, y);
+	area.ctx.lineTo(x + width - radius, y);
+	area.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+	area.ctx.lineTo(x + width, y + height - radius);
+	area.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+	area.ctx.lineTo(x + radius, y + height);
+	area.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+	area.ctx.lineTo(x, y + radius);
+	area.ctx.quadraticCurveTo(x, y, x + radius, y);
+	area.ctx.fill();
+	area.ctx.stroke();
+	area.update();
+
+	this.background.loadTexture(area);
+	this._bitmapArea = area;
 };

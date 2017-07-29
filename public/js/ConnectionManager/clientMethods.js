@@ -31,7 +31,7 @@ window.clientMethods = {
 			fieldManager.resetNetwork();
 			ui.rope.stop();
 			ui.actionButtons.getByName('action').disable();
-			ui.cornerButtons.getByName('queueUp').show();
+			ui.testMenu.show();
 		}
 		playerManager.pid = game.pid;
 		connection.proxy.requestGameInfo();
@@ -46,7 +46,7 @@ window.clientMethods = {
 	},
 
 	recieveCompleteAction: function(action){
-		ui.cornerButtons.getByName('queueUp').hide();
+		ui.testMenu.hide();
 
 		var delay = actionHandler.executeAction(action);
 		if(!action.noResponse){

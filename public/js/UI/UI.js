@@ -35,6 +35,9 @@ UI.prototype.initialize = function(){
 
 	// Таймер хода
 	this.rope = this.layers.addExistingLayer(new Rope(), -3);
+	this.testMenu = new Menu(game.screenWidth/2,game.screenHeight/2, 1);
+	this.optMenu = new Menu(game.screenWidth/2,game.screenHeight/2, 1);
+	this.optMenu.hide();
 	
 	// Кнопки
 	this.addButtons();
@@ -52,9 +55,8 @@ UI.prototype.initialize = function(){
 
 	this.layers.positionLayers();
 
-	var testMenu = new Menu(game.screenWidth/2,game.screenHeight/2, 1);
-	testMenu.addButton(function(){}, 'test', 'test')
-	testMenu.addButton(function(){}, 'test1', 'test1')
+	
+
 };
 
 UI.prototype.addButtons = function(){
@@ -62,24 +64,34 @@ UI.prototype.addButtons = function(){
 	this.cornerButtons = this.layers.addLayer(-2, 'cornerButtons', true);
 
 	// Кнопки (временные)
-	new Button({
-		position: function(width, height){
-			return {
-				x: game.screenWidth/2 - width/2,
-				y: game.screenHeight/2 - height/2
-			};
-		},
-		action: function(){
+	this.testMenu.addButton( function(){
 			connection.proxy.queueUp();
 			this.hide();
-		},
-		text: 'Queue Up',
-		name: 'queueUp',
-		color: 'grey',
-		size: 'wide',
-		textColor: 'black',
-		group: this.cornerButtons
-	});
+		},'lel','queueUp');
+	this.testMenu.addButton( function(){
+			this.hide();
+			ui.optMenu.show();
+		},'Options','Options');
+	this.optMenu.addButton( function(){
+			connection.proxy.queueUp();
+			this.hide();
+		},'lel','NOTHING');	
+	this.optMenu.addButton( function(button, pointer){
+			if(pointer.isMouse && pointer.button !== 0){
+				skinManager.setSkin('uno');
+			}
+			else if(skinManager.skin.name == 'modern'){
+				skinManager.setSkin('classic');
+			}
+			else{
+				skinManager.setSkin('modern');
+			}
+
+		},'CHS','Change skin');
+	this.optMenu.addButton( function(){
+		this.hide();
+		ui.testMenu.show();
+	}, 'Back','Back');
 	new Button({
 		position: function(width, height){
 			return {
@@ -143,17 +155,10 @@ UI.prototype.addButtons = function(){
 				y: game.screenHeight - 15 - height
 			};
 		},
-		action: function(button, pointer){
-			if(pointer.isMouse && pointer.button !== 0){
-				skinManager.setSkin('uno');
-			}
-			else if(skinManager.skin.name == 'modern'){
-				skinManager.setSkin('classic');
-			}
-			else{
-				skinManager.setSkin('modern');
-			}
-
+		action: function(){
+			ui.testMenu.hide();
+			ui.optMenu.show();
+			
 		},
 		icon: 'menu',
 		color: 'orange',
