@@ -12,7 +12,7 @@ var Menu = function(x, y, z){
 	this.base.add(this.background);
 	this.buttons = [];
 
-	ui.layers.addExistingLayer(this.base, z);
+	ui.layers.addExistingLayer(this.base, z, true);
 };
 
 Menu.prototype.addButton = function (action, name, text) {
