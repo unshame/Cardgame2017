@@ -80,7 +80,6 @@ window.stateBoot = {
 
 		console.log('Starting up');		
 
-		this.preloadCounter = 0;
 		this.loadCounter = 0;
 
 		this.loadtextDOM = document.getElementById('loading-text');
@@ -91,16 +90,15 @@ window.stateBoot = {
 	/**
 	* Обновляет загрузочный текст.
 	* @param  {string} text       загрузочный текст
-	* @param  {string} counterKey название счетчика загрузки
 	*/
-	updateLoadText: function(text, counterKey){
-		if(this[counterKey] > 30)
-			this[counterKey] = 0;
-		for(var i = 0; i < this[counterKey]; i++){
+	updateLoadText: function(text){
+		if(this.loadCounter > 30)
+			this.loadCounter = 0;
+		for(var i = 0; i < this.loadCounter; i++){
 			text += '.';
 		}
 		this.loadtextDOM.innerHTML = text;
-		this[counterKey]++;
+		this.loadCounter++;
 	},
 
 	/**
@@ -109,7 +107,7 @@ window.stateBoot = {
 	* @memberof stateBoot
 	*/
 	loadUpdate: function(){
-		this.updateLoadText('loading assets', 'preloadCounter');
+		this.updateLoadText('loading assets');
 	},
 
 	/**
@@ -118,7 +116,7 @@ window.stateBoot = {
 	* @memberof stateBoot
 	*/
 	update: function(){
-		this.updateLoadText('connecting to server', 'loadCounter');
+		this.updateLoadText('connecting to server');
 	},
 
 	/**
