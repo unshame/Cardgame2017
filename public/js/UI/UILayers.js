@@ -14,32 +14,44 @@ var UILayers = function(){
 	* @type {Object<DisplayObject>}
 	*/
 	this.byName = {};
-
-	this.byPosition = {};
 };
 
-UILayers.prototype._getPositions = function(i, name, checkCursorOverlap){
+/**
+ * Определяет реальные индексы слоев для позиционирования.
+ * Исправляет повторяющиеся индексы.
+ * @private
+ * @return {object} Возвращает объект по типу массива,
+ * со слоями по z-index'у и кол-вом слоев (length).
+ */
+UILayers.prototype._getPositions = function(){
 	var positions = {};
-	var i, layer, len = 0;
-	for(var lname in this.byName){
+	var len = 0;
+	var i, lname, layer;
+	for(lname in this.byName){
+		if(!this.byName.hasOwnProperty(lname))
+			continue;
+
 		layer = this.byName[lname];
 		i = layer.index;
 		if(i >= 0){
 			while(positions[i]){
-				console.warn('Index already taken', i);
+				console.warn('Index already taken', layer.index, i, layer.name, positions[i].name);
 				i++;
 			}
 			positions[i] = layer;
 		}
 		len++;
 	}
-	for(var lname in this.byName){
+	for(lname in this.byName){
+		if(!this.byName.hasOwnProperty(lname))
+			continue;
+
 		layer = this.byName[lname];
 		i = layer.index;
 		if(i < 0){
-			i = len + i;
+			i = Math.max(0, len + i);
 			while(positions[i]){
-				console.warn('Index already taken', i);
+				console.warn('Index already taken', layer.index, i, layer.name, positions[i].name);
 				i++;
 			}
 			positions[i] = layer;
@@ -47,7 +59,7 @@ UILayers.prototype._getPositions = function(i, name, checkCursorOverlap){
 	}
 	positions.length = len;
 	return positions;
-}
+};
 
 /**
 * Создает новую `Phaser.Group` группу и добавляет ее как слой.
@@ -63,7 +75,6 @@ UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 	layer.name = name;
 	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[name] = layer;
-	this.positionLayers(layer);
 	return layer;
 };
 
@@ -79,7 +90,6 @@ UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 	layer.index = i;
 	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[layer.name] = layer;
-	this.positionLayers(layer);
 	return layer;
 };
 
@@ -93,28 +103,7 @@ UILayers.prototype.setLayerIndex = function(layer, i, checkCursorOverlap){
 	layer.index = i;
 	if(checkCursorOverlap !== undefined)
 		layer.checkCursorOverlap = checkCursorOverlap || false;
-	this.positionLayers(layer);
-};
-
-/**
-* Позиционирует слой по вертикали.
-* @private
-* @param {DisplayObject} layer слой
-*/
-UILayers.prototype._positionLayer = function(layer){
-
-	var i = layer.index,
-		len = game.world.children.length;
-	if(i < 0){
-		i = len + i;
-	}
-	i = Math.min(i, len - 1);
-	try{
-		game.world.setChildIndex(layer, i);
-	}
-	catch(e){
-		console.error(e);
-	}
+	this.positionLayers();
 };
 
 /**
@@ -122,16 +111,13 @@ UILayers.prototype._positionLayer = function(layer){
 */
 UILayers.prototype.positionLayers = function(){
 	var positions = this._getPositions();
+	var layers = [];
 	for(var i = 0; i < positions.length; i++){
 		var layer = positions[i];
 		if(!layer) continue;
-		try{
-			game.world.setChildIndex(layer, i);
-		}
-		catch(e){
-			console.error(e);
-		}	
+		layers.push(layer);
 	}
+	game.world.children = layers;
 };
 
 /**

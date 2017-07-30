@@ -85,8 +85,6 @@ CardEmitter.prototype.start = function(minSpeed, maxSpeed, sway, interval, rotat
 		interval = lifespan/this.maxParticles;
 	this.interval = interval;
 	this._start(false, lifespan, interval, undefined, undefined);
-
-	game.world.setChildIndex(this, game.world.children.length - 3);
 };
 
 /**

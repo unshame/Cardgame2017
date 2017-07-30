@@ -34,15 +34,15 @@ var UI = function(){
 UI.prototype.initialize = function(){
 
 	// Таймер хода
-	this.rope = this.layers.addExistingLayer(new Rope(), -3);
+	this.rope = this.layers.addExistingLayer(new Rope(), -4);
 	function getScreenCenter(){
 		return {
 			x:game.screenWidth/2,
 			y:game.screenHeight/2
 		}
 	}
-	this.testMenu = new Menu(getScreenCenter, -4, 'testMenu');
-	this.optMenu = new Menu(getScreenCenter, -5, 'optMenu');
+	this.testMenu = new Menu(getScreenCenter, 5, 'testMenu');
+	this.optMenu = new Menu(getScreenCenter, -2, 'optMenu');
 	this.optMenu.hide();
 	
 	// Кнопки
@@ -64,7 +64,7 @@ UI.prototype.initialize = function(){
 
 UI.prototype.addButtons = function(){
 	this.actionButtons = this.layers.addLayer(1, 'actionButtons', true);
-	this.cornerButtons = this.layers.addLayer(-2, 'cornerButtons', true);
+	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons', true);
 
 	// Кнопки (временные)
 	this.testMenu.addButton( function(){
