@@ -75,6 +75,10 @@ UILayers.prototype._getPositions = function(){
 * @return {Phaser.Group} Созданный слой.
 */
 UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
+	if(this.byName[name]){
+		console.error('UILayers: Layer name must be unique', name);
+		return null;
+	}
 	var layer = game.add.group();
 	layer.index = i;
 	layer.name = name;
@@ -93,6 +97,10 @@ UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 * @return {DisplayObject} Добавленный слой.
 */
 UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
+	if(this.byName[name]){
+		console.error('UILayers: Layer name must be unique', name);
+		return null;
+	}
 	layer.index = i;
 	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[layer.name] = layer;
@@ -134,8 +142,9 @@ UILayers.prototype.positionLayers = function(){
 */
 UILayers.prototype._positionElementsInLayer = function(layer){
 	layer.forEach(function(el){
-		if(el.updatePosition)
+		if(el.updatePosition){
 			el.updatePosition();
+		}
 	});
 };
 
@@ -169,8 +178,9 @@ UILayers.prototype.loadLabels = function(){
 			continue;
 
 		layer.forEach(function(el){
-			if(el.label && el.label.isText)
+			if(el.label && el.label.isText){
 				el.label.setText(el.label.text);
+			}
 		});
 	}
 };
