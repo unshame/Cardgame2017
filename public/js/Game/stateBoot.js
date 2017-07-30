@@ -149,10 +149,13 @@ window.stateBoot = {
 
 	/** 
 	* Выполняется по окончании загрузки и подключения к серверу. 
-	* Убирает загрузочный текст. 
+	* Убирает загрузочный текст и экран. 
 	* @memberof stateBoot 
 	*/ 
 	shutdown: function(){ 
 		this.loadtextDOM.innerHTML = ''; 
+		ui.layers.loadLabels();
+		document.getElementById('loading').style.display = 'none';
+		console.log('Game ready');
 	} 
 };

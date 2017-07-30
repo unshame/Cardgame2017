@@ -15,13 +15,9 @@ window.statePlay = {
 
 	/**
 	* Выполняется после соединения с сервером.
-	* Убирает загрузочный экран.
 	* @memberof statePlay
 	*/
 	create: function(){
-		console.log('Game ready');
-		ui.layers.loadLabels();
-		document.getElementById('loading').style.display = 'none';
 		cardEmitter.start(0, 50, 10, 2000, 20, 1);
 	},
 
