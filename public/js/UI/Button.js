@@ -77,7 +77,7 @@ Button.prototype = Object.create(Phaser.Button.prototype);
 Button.prototype.constructor = Button;
 
 Button.getDefaultOptions = function(){
-	var options = {
+	return {
 		position: {
 			x: 0,
 			y: 0
@@ -93,7 +93,6 @@ Button.getDefaultOptions = function(){
 		context: null,
 		group: null
 	};
-	return options;
 };
 
 // Прячет кнопку

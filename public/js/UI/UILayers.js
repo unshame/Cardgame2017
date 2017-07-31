@@ -14,33 +14,38 @@ var UILayers = function(){
 	* @type {Object<DisplayObject>}
 	*/
 	this.byName = {};
+
+	/**
+	* Кол-во слоев.
+	* @type {Number}
+	*/
+	this.numOfLayers = 0;
 };
 
 /**
- * Определяет реальные индексы слоев для позиционирования.
- * Исправляет повторяющиеся индексы.
- * @private
- * @return {object} Возвращает объект по типу массива,
- * со слоями по z-index'у и кол-вом слоев (length).
- */
+* Определяет реальные индексы слоев для позиционирования.
+* Исправляет повторяющиеся индексы.
+* @private
+* @return {object} Возвращает объект по типу массива,
+* со слоями по z-index'у и кол-вом слоев (length).
+*/
 UILayers.prototype._getPositions = function(){
 	var positions = {};
-	var len = 0;
+	var len = this.numOfLayers;
 	var i, lname, layer;
 	for(lname in this.byName){
 		if(!this.byName.hasOwnProperty(lname))
 			continue;
 
 		layer = this.byName[lname];
-		i = layer.index;
+		i = Math.min(len - 1, layer.index);
 		if(i >= 0){
 			while(positions[i]){
-				console.warn('Index already taken', layer.index, i, layer.name, positions[i].name);
+				console.warn('UILayers: Index already taken', layer.index, i, layer.name, positions[i].name);
 				i++;
 			}
 			positions[i] = layer;
 		}
-		len++;
 	}
 	for(lname in this.byName){
 		if(!this.byName.hasOwnProperty(lname))
@@ -51,7 +56,7 @@ UILayers.prototype._getPositions = function(){
 		if(i < 0){
 			i = Math.max(0, len + i);
 			while(positions[i]){
-				console.warn('Index already taken', layer.index, i, layer.name, positions[i].name);
+				console.warn('UILayers: Index already taken', layer.index, i, layer.name, positions[i].name);
 				i++;
 			}
 			positions[i] = layer;
@@ -70,11 +75,16 @@ UILayers.prototype._getPositions = function(){
 * @return {Phaser.Group} Созданный слой.
 */
 UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
+	if(this.byName[name]){
+		console.error('UILayers: Layer name must be unique', name);
+		return null;
+	}
 	var layer = game.add.group();
 	layer.index = i;
 	layer.name = name;
 	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[name] = layer;
+	this.numOfLayers++;
 	return layer;
 };
 
@@ -87,9 +97,14 @@ UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 * @return {DisplayObject} Добавленный слой.
 */
 UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
+	if(this.byName[layer.name]){
+		console.error('UILayers: Layer name must be unique', layer.name);
+		return null;
+	}
 	layer.index = i;
 	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[layer.name] = layer;
+	this.numOfLayers++;
 	return layer;
 };
 
@@ -127,8 +142,9 @@ UILayers.prototype.positionLayers = function(){
 */
 UILayers.prototype._positionElementsInLayer = function(layer){
 	layer.forEach(function(el){
-		if(el.updatePosition)
+		if(el.updatePosition){
 			el.updatePosition();
+		}
 	});
 };
 
@@ -162,8 +178,9 @@ UILayers.prototype.loadLabels = function(){
 			continue;
 
 		layer.forEach(function(el){
-			if(el.label && el.label.isText)
+			if(el.label && el.label.isText){
 				el.label.setText(el.label.text);
+			}
 		});
 	}
 };
