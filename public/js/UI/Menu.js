@@ -1,24 +1,51 @@
-var Menu = function(position, z, name){
+var Menu = function(options){
+	this.options = Menu.getDefaultOptions();
+	for(var o in options){
+		if(options.hasOwnProperty(o) && options[o] !== undefined){
+			this.options[o] = options[o];
+		}
+	}
+
 	this.background = game.add.image(0, 0);
 	this.background.visible = false;
-	this.base = ui.layers.addLayer(z, name || 'menu', true);	
-	this.position = position;
-	this.margin = 50;
+	this.background.tint = this.options.color || ui.colors.orange;
+
+	this.position = this.options.position;
+	this.margin = this.options.margin;
 	this.opened = false;
 
+	this.base = ui.layers.addLayer(this.options.z, this.options.name, true);	
 	this.base.add(this.background);
+
 	this.elements = [];
 	this.elementsByName = {};
 };
 
+Menu.getDefaultOptions = function(){
+	return {
+		position: {
+			x: 0,
+			y: 0
+		},
+		z: 0,
+		margin: 25,
+		name: 'default',
+		alpha: 0.8,
+		color: ui.colors.orange,
+		elementColor: 'orange',
+		textColor: 'white'
+	};
+};
+
 Menu.prototype.addButton = function (action, name, text, context) {
 	var button = new Button({
-		color: 'grey',
+		color: this.options.elementColor,
+		textColor: this.options.textColor,
 		size: 'wide',
 		action: action,
 		text: text,
 		name: name,
-		context: (context === false) ? null : this,
+		context: (context === false) ? undefined : this,
 		group: this.base
 	});
 	this.elementsByName[name] = button;
@@ -122,7 +149,7 @@ Menu.prototype.createArea = function(width, height){
 	width -= x*2;
 	height -= y*2;
 	area.ctx.beginPath();
-	area.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+	area.ctx.fillStyle = 'rgba(255, 255, 255, ' + this.options.alpha + ')';
 	area.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
 	area.ctx.lineWidth = lineWidth;
 	area.ctx.moveTo(x + radius, y);

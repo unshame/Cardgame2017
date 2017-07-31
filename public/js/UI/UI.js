@@ -35,14 +35,31 @@ UI.prototype.initialize = function(){
 
 	// Таймер хода
 	this.rope = this.layers.addExistingLayer(new Rope(), -4);
-	function getScreenCenter(){
-		return {
-			x:game.screenWidth/2,
-			y:game.screenHeight/2
-		}
-	}
-	this.testMenu = new Menu(getScreenCenter, 5, 'testMenu');
-	this.optMenu = new Menu(getScreenCenter, -2, 'optMenu');
+	
+	this.testMenu = new Menu({
+		position: function(){
+			return {
+				x:game.screenWidth/2,
+				y:game.screenHeight/2 + 150
+			}
+		}, 
+		z: 5,
+		alpha: 0.95,
+		name: 'testMenu'
+	});
+	this.optMenu = new Menu({
+		position: function(){
+			return {
+				x:game.screenWidth/2,
+				y:game.screenHeight/2
+			}
+		}, 
+		z: -2,
+		color: ui.colors.white,
+		elementColor: 'grey',
+		textColor: 'black',
+		name: 'optMenu'
+	});
 	this.testMenu.show();
 	
 	// Кнопки
@@ -72,11 +89,10 @@ UI.prototype.addButtons = function(){
 			this.hide();
 		},'lel','queueUp');
 	this.testMenu.addButton( function(){
-			this.hide();
 			ui.optMenu.show();
 		},'options','Options');
 	this.optMenu.addButton( function(){
-		var mover = game.add.tween(this.buttonsByName['CHS']);
+		var mover = game.add.tween(this.elementsByName['CHS']);
 		mover.to({			
 			x: 0,
 			y: 0,
@@ -85,7 +101,7 @@ UI.prototype.addButtons = function(){
 		mover.start();
 	},'lel','NOTHING');	
 	this.optMenu.addButton( function(){
-		var mover = game.add.tween(this.buttonsByName['CHS']);
+		var mover = game.add.tween(this.elementsByName['CHS']);
 		mover.to({			
 			x: 0,
 			y: ui.optMenu.background.height,
@@ -107,7 +123,6 @@ UI.prototype.addButtons = function(){
 		},'CHS','Change skin');
 	this.optMenu.addButton( function(){
 		this.hide();
-		ui.testMenu.show();
 	}, 'Back','Back');
 	new Button({
 		position: function(width, height){
@@ -173,16 +188,7 @@ UI.prototype.addButtons = function(){
 			};
 		},
 		action: function(){
-			
-			if(!ui.optMenu.opened){
-			ui.testMenu.hide();
-			ui.optMenu.show();
-			}
-			else{
-				ui.testMenu.show();
-				ui.optMenu.hide();
-			}
-			
+			ui.optMenu.toggle();
 		},
 		icon: 'menu',
 		color: 'orange',
