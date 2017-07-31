@@ -28,7 +28,7 @@
 * @type {Game}
 * @global
 */
-window.game = new Game('cardgame', 1, true);
+window.game = new Game('cardgame', 1, false);
 game.state.add(stateMenu, false, false);
 game.state.add(statePlay, false, false);
 game.state.add(stateBoot, true, true);
