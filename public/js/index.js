@@ -15,6 +15,7 @@
 //@include:FieldBuilder
 //@include:FieldManager
 //@include:Game
+//@include:StateManager
 //@include:State
 //@include:ScaleManager
 //@include:PlayerManager
@@ -28,6 +29,6 @@
 * @global
 */
 window.game = new Game();
-game.state.add(stateMenu.key, stateMenu, false);
-game.state.add(statePlay.key, statePlay, false);
-game.state.add(stateBoot.key, stateBoot, true);
+game.state.add(stateMenu, false, false);
+game.state.add(statePlay, false, false);
+game.state.add(stateBoot, true, true);

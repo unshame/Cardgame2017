@@ -96,3 +96,81 @@ Game.prototype.boot = function(){
 
 }
 
+/**
+ * Обрабатывает переданный конфиг. 
+ * Перезапись `Phaser.Game.prototype.parseConfig`. 
+ * @param  {object} config конфиг
+ */
+Game.prototype.parseConfig = function (config) {
+
+    this.config = config;
+
+    if (config['enableDebug'] === undefined)
+    {
+        this.config.enableDebug = true;
+    }
+
+    if (config['width'])
+    {
+        this._width = config['width'];
+    }
+
+    if (config['height'])
+    {
+        this._height = config['height'];
+    }
+
+    if (config['renderer'])
+    {
+        this.renderType = config['renderer'];
+    }
+
+    if (config['parent'])
+    {
+        this.parent = config['parent'];
+    }
+
+    if (config['transparent'] !== undefined)
+    {
+        this.transparent = config['transparent'];
+    }
+
+    if (config['antialias'] !== undefined)
+    {
+        this.antialias = config['antialias'];
+    }
+
+    if (config['resolution'])
+    {
+        this.resolution = config['resolution'];
+    }
+
+    if (config['preserveDrawingBuffer'] !== undefined)
+    {
+        this.preserveDrawingBuffer = config['preserveDrawingBuffer'];
+    }
+
+    if (config['physicsConfig'])
+    {
+        this.physicsConfig = config['physicsConfig'];
+    }
+
+    var seed = [(Date.now() * Math.random()).toString()];
+
+    if (config['seed'])
+    {
+        seed = config['seed'];
+    }
+
+    this.rnd = new Phaser.RandomDataGenerator(seed);
+
+    var state = null;
+
+    if (config['state'])
+    {
+        state = config['state'];
+    }
+
+    this.state = new StateManager(this);
+
+}

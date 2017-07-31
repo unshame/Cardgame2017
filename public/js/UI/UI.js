@@ -85,7 +85,8 @@ UI.prototype.addButtons = function(){
 
 	// Кнопки (временные)
 	this.testMenu.addButton(function(){
-		game.state.start('play', false, false, connection.proxy.queueUp, connection);
+		game.state.change('play');
+		connection.proxy.queueUp();
 	}, 'queueUp','Queue Up');
 	this.testMenu.addButton(function(){
 		ui.optMenu.show();

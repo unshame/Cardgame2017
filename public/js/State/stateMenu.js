@@ -1,7 +1,6 @@
 window.stateMenu = new State('menu', {
 
 	create: function(){
-		cardManager.reset();
 		cardEmitter.start(0, 50, 10, 2000, 20, 1);
 		ui.testMenu.show();
 	},
@@ -25,6 +24,7 @@ window.stateMenu = new State('menu', {
 	},
 
 	shutdown: function(){
+		cardEmitter.stop();
 		ui.testMenu.hide();
 	}
 });

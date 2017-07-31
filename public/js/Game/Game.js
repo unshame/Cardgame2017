@@ -99,10 +99,12 @@ var Game = function(speed, inDebugMode){
 
 	Phaser.Game.call(
 		this,
-		this.screenWidth,
- 		this.screenHeight, 
-		Phaser.CANVAS, 
-		'cardgame'
+		{
+			width: this.screenWidth,
+ 			height: this.screenHeight, 
+			renderer: Phaser.CANVAS, 
+			parent: 'game'
+		}
 	);
 
 	this._dimensionsUpdateTimeout = null;
@@ -174,6 +176,11 @@ Game.prototype.initialize = function(){
 	this._addVisibilityChangeListener();
 
 	this.initialized = true;
+
+	if(this.inDebugMode){
+		this.inDebugMode = false;
+		this.toggleDebugMode();
+	}
 };
 
 /**
@@ -182,7 +189,7 @@ Game.prototype.initialize = function(){
 Game.prototype.updateCoordinates = function(){
 	this.shouldUpdateFast = false;
 	this.scale.updateGameSize();
-	var state = this.state.getCurrentState();
+	var state = this.state.getCurrent();
 	state.postResize();
 	this._dimensionsUpdateTimeout = null;
 };
@@ -298,10 +305,6 @@ Game.prototype.fixPause = function(){
 		if(this.inDebugMode)
 			console.log('Game: unpaused forced');
 	}
-}
-
-Game.prototype.changeState = function(key, callback, context){
-	game.state.start(key, false, false, callback, context);
 }
 
 //@include:GameOverride

@@ -21,11 +21,12 @@ window.clientMethods = {
 		if(pid){
 			console.log('Reconnected to', pid);
 			game.pid = pid;
-			game.changeState('play', connection.proxy.requestGameInfo, connection);
+			game.state.change('play');
+			connection.proxy.requestGameInfo();
 		}
 		else{
 			connection.proxy.requestGameInfo();
-			game.changeState('menu');
+			game.state.change('menu');
 		}
 		
 	},

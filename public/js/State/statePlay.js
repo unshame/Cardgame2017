@@ -54,6 +54,7 @@ window.statePlay = new State('play', {
 	},
 
 	shutdown: function(){ 
+		cardManager.reset();
 		cardEmitter.stop();
 		fieldManager.resetNetwork();
 		playerManager.reset();

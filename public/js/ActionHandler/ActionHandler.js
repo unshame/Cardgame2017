@@ -20,7 +20,7 @@ var ActionHandler = function(actionReactions, notificationReactions){
 
 ActionHandler.prototype.executeAction = function(action){
 
-	if(game.state.current != 'play'){
+	if(game.state.currentSync != 'play'){
 		console.error('ActionHandler: must be in play state to execute actions');
 		return;
 	}
@@ -47,7 +47,7 @@ ActionHandler.prototype.executeAction = function(action){
 
 ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent){
 
-	if(game.state.current != 'play'){
+	if(game.state.currentSync != 'play'){
 		console.error('ActionHandler: must be in play state to handle possible actions');
 		return;
 	}
@@ -74,7 +74,7 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 };
 
 ActionHandler.prototype.handleNotification = function(note, actions){
-	if(game.state.current != 'play'){
+	if(game.state.currentSync != 'play'){
 		console.error('ActionHandler: must be in play state to recieve game notifications');
 		return;
 	}
