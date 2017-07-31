@@ -21,6 +21,8 @@ window.stateBoot = new State('boot', {
 
 		console.log('Preloading');
 
+		game.load.image('logo', 'assets/logo.png');
+
 		// Фон
 		game.load.image('wood_light', 'assets/backgrounds/wood_light.png');
 		game.load.image('wood_dark', 'assets/backgrounds/wood_dark.png');

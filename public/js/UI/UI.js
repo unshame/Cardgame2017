@@ -33,6 +33,11 @@ var UI = function(){
 
 UI.prototype.initialize = function(){
 
+	this.logo = game.add.image(game.screenWidth/2, game.screenHeight/2 - 200, 'logo');
+	this.logo.anchor.set(0.5, 0.5);
+	this.logo.scale.set(0.75, 0.75);
+	this.layers.addExistingLayer(this.logo, 6);
+
 	// Таймер хода
 	this.rope = this.layers.addExistingLayer(new Rope(), -4);
 	
@@ -213,6 +218,8 @@ UI.prototype.updatePosition = function(){
 
 	this.testMenu.update();
 	this.optMenu.update();
+
+	this.logo.position = new Phaser.Point(game.screenWidth/2, game.screenHeight/2 - 200);
 };
 
 UI.prototype.toggleFullScreen = function(){

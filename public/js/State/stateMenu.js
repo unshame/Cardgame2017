@@ -3,6 +3,7 @@ window.stateMenu = new State('menu', {
 	create: function(){
 		cardEmitter.start(0, 50, 10, 2000, 20, 1);
 		ui.testMenu.show();
+		ui.logo.visible = true;
 	},
 
 	render: function(){
@@ -26,5 +27,6 @@ window.stateMenu = new State('menu', {
 	shutdown: function(){
 		cardEmitter.stop();
 		ui.testMenu.hide();
+		ui.logo.visible = false;
 	}
 });
