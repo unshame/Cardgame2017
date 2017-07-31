@@ -132,7 +132,6 @@ window.stateBoot = new State('boot', {
 		* @global
 		*/
 		window.connection = new ConnectionManager(game.inDebugMode, window.serverMethods, window.clientMethods);
-
 	},
 
 	/** 
@@ -143,6 +142,13 @@ window.stateBoot = new State('boot', {
 	shutdown: function(){ 
 		this.loadtextDOM.innerHTML = ''; 
 		ui.layers.loadLabels();
+
+		// Форсим дебаг
+		if(game.inDebugMode){
+			game.toggleDebugMode();
+			game.toggleDebugMode();
+		}
+
 		document.getElementById('loading').style.display = 'none';
 		console.log('Game ready');
 	}

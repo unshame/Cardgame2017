@@ -10,7 +10,7 @@
 * @see {@link http://phaser.io/docs/2.6.2/Phaser.Game.html}
 */
 
-var Game = function(speed, inDebugMode){
+var Game = function(parent, speed, inDebugMode){
 
 	/**
 	 * Скорость игры.
@@ -103,7 +103,7 @@ var Game = function(speed, inDebugMode){
 			width: this.screenWidth,
  			height: this.screenHeight, 
 			renderer: Phaser.CANVAS, 
-			parent: 'game'
+			parent: parent
 		}
 	);
 
@@ -176,11 +176,6 @@ Game.prototype.initialize = function(){
 	this._addVisibilityChangeListener();
 
 	this.initialized = true;
-
-	if(this.inDebugMode){
-		this.inDebugMode = false;
-		this.toggleDebugMode();
-	}
 };
 
 /**
