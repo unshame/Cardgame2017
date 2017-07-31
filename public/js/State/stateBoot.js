@@ -145,5 +145,5 @@ window.stateBoot = new State('boot', {
 		ui.layers.loadLabels();
 		document.getElementById('loading').style.display = 'none';
 		console.log('Game ready');
-	} 
+	}
 });

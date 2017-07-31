@@ -13,9 +13,6 @@ window.clientMethods = {
 		if(oldId){
 			connection.proxy.reconnectClient(oldId);
 		}
-		else{
-			playerManager.pid = pid;
-		}
 		localStorage.setItem('durak_id', connId);
 		connection.id = connId;
 	},
@@ -23,11 +20,10 @@ window.clientMethods = {
 	updateId: function(pid){
 		if(pid){
 			console.log('Reconnected to', pid);
-			game.pid = playerManager.pid = pid;
+			game.pid = pid;
 			game.changeState('play', connection.proxy.requestGameInfo, connection);
 		}
 		else{
-			playerManager.pid = game.pid;
 			connection.proxy.requestGameInfo();
 			game.changeState('menu');
 		}

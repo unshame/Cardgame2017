@@ -3,14 +3,7 @@ window.stateMenu = new State('menu', {
 	create: function(){
 		cardManager.reset();
 		cardEmitter.start(0, 50, 10, 2000, 20, 1);
-		fieldManager.resetNetwork();
-		ui.rope.stop();
-		ui.actionButtons.getByName('action').disable();
 		ui.testMenu.show();
-	},
-
-	update: function(){
-
 	},
 
 	render: function(){
@@ -29,5 +22,9 @@ window.stateMenu = new State('menu', {
 		cardEmitter.restart();
 
 		document.getElementById('loading').style.display = 'none';
+	},
+
+	shutdown: function(){
+		ui.testMenu.hide();
 	}
 });

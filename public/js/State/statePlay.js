@@ -12,15 +12,6 @@
 window.statePlay = new State('play', {
 
 	/**
-	* Выполняется после соединения с сервером.
-	* @memberof statePlay
-	*/
-	create: function(){
-		ui.testMenu.hide();
-		cardEmitter.stop();
-	},
-
-	/**
 	* Выполняется каждый кадр игры между preUpdate и postUpdate элементов игры.
 	* Обновляет состояние элементов игры, которые не обновляются игрой автоматически.
 	* @memberof statePlay
@@ -60,5 +51,13 @@ window.statePlay = new State('play', {
 		cardEmitter.restart();
 
 		document.getElementById('loading').style.display = 'none';
+	},
+
+	shutdown: function(){ 
+		cardEmitter.stop();
+		fieldManager.resetNetwork();
+		playerManager.reset();
+		ui.rope.stop();
+		ui.actionButtons.getByName('action').disable();
 	}
 });
