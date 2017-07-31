@@ -55,6 +55,7 @@
     "gameSeq": true,
     "cardEmitter": true,
     "CardEmitter": true,
+    "State": true,
 
     "shuffleArray": true,
     "getCards": true,

@@ -1,6 +1,4 @@
-window.stateMenu = {
-
-	key: 'menu',
+window.stateMenu = new State('menu', {
 
 	create: function(){
 		cardManager.reset();
@@ -32,4 +30,4 @@ window.stateMenu = {
 
 		document.getElementById('loading').style.display = 'none';
 	}
-};
+});

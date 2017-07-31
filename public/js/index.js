@@ -15,6 +15,7 @@
 //@include:FieldBuilder
 //@include:FieldManager
 //@include:Game
+//@include:State
 //@include:ScaleManager
 //@include:PlayerManager
 //@include:Sequencer

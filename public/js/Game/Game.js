@@ -305,6 +305,3 @@ Game.prototype.changeState = function(key, callback, context){
 }
 
 //@include:GameOverride
-//@include:stateBoot
-//@include:statePlay
-//@include:stateMenu

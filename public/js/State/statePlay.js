@@ -9,17 +9,7 @@
 * @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
 */
 
-window.statePlay = {
-
-	key: 'play',
-
-	callback: null,
-
-	init: function(callback, context){
-		if(callback){
-			this.callback = callback.bind(context);
-		}
-	},
+window.statePlay = new State('play', {
 
 	/**
 	* Выполняется после соединения с сервером.
@@ -28,10 +18,6 @@ window.statePlay = {
 	create: function(){
 		ui.testMenu.hide();
 		cardEmitter.stop();
-		if(typeof this.callback == 'function'){
-			this.callback();
-			this.callback = null;
-		}
 	},
 
 	/**
@@ -75,4 +61,4 @@ window.statePlay = {
 
 		document.getElementById('loading').style.display = 'none';
 	}
-};
+});

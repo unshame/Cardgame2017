@@ -10,10 +10,8 @@
 * @property {number} loadCounter=0 Счетчик тиков подключения к серверу.
 */
 
-window.stateBoot = {
+window.stateBoot = new State('boot', {
 
-
-	key: 'boot',
 
 	/**
 	* Выполняется до загрузки игры и загружает ассеты.
@@ -137,14 +135,6 @@ window.stateBoot = {
 
 	},
 
-	/**
-	* Выполняется после того, как игра обработала изменение размера экрана.
-	* @memberof stateBoot
-	*/
-	postResize: function(){
-
-	},
-
 	/** 
 	* Выполняется по окончании загрузки и подключения к серверу. 
 	* Убирает загрузочный текст и экран. 
@@ -156,4 +146,4 @@ window.stateBoot = {
 		document.getElementById('loading').style.display = 'none';
 		console.log('Game ready');
 	} 
-};
+});
