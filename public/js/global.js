@@ -1,4 +1,36 @@
+// Глобальные методы
+
 /*jshint unused:false*/
+
+/**
+ * Fisher–Yates Shuffle (сортировка массивов).
+ * @param  {array} a массив для сортировки
+ * @global
+ * @return {array}   отсортированный массив (тот же, что и на входе)
+ */
+function shuffleArray(a){
+	var currentIndex = a.length,
+		temporaryValue,
+		randomIndex;
+
+	// While there remain elements to shuffle...
+	while (0 !== currentIndex) {
+
+		// Pick a remaining element...
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex -= 1;
+
+		// And swap it with the current element.
+		temporaryValue = a[currentIndex];
+		a[currentIndex] = a[randomIndex];
+		a[randomIndex] = temporaryValue;
+	}
+	return a;
+}
+
+
+// TEST AND DEBUG FUNCTIONS
+
 /**
 * Выводит в консоль имена слоев интерфейса и сами слои
 * @type {function}
@@ -54,29 +86,3 @@ var animTest = {
 		actionHandler.actionReactions.TRUMP_CARDS.call(actionHandler, {cards: cardsInfo, pid: game.pid});
 	}
 };
-
-/**
- * Fisher–Yates Shuffle
- * @param  {array} a массив для сортировки
- * @global
- * @return {array}   отсортированный массив (тот же, что и на входе)
- */
-function shuffleArray(a){
-	var currentIndex = a.length,
-		temporaryValue,
-		randomIndex;
-
-	// While there remain elements to shuffle...
-	while (0 !== currentIndex) {
-
-		// Pick a remaining element...
-		randomIndex = Math.floor(Math.random() * currentIndex);
-		currentIndex -= 1;
-
-		// And swap it with the current element.
-		temporaryValue = a[currentIndex];
-		a[currentIndex] = a[randomIndex];
-		a[randomIndex] = temporaryValue;
-	}
-	return a;
-}

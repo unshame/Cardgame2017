@@ -83,18 +83,25 @@ UI.prototype.addButtons = function(){
 	this.actionButtons = this.layers.addLayer(1, 'actionButtons', true);
 	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons', true);
 
-	// Кнопки (временные)
+	// ГЛАВНОЕ МЕНЮ
+	// Поиск игры
 	this.testMenu.addButton(function(){
 		game.state.change('play');
 		connection.proxy.queueUp();
 	}, 'queueUp','Queue Up');
+
+	// Опции
 	this.testMenu.addButton(function(){
 		ui.optMenu.show();
 	}, 'options','Options');
+
+	// МЕНЮ ОПЦИЙ
+	// Отключение от игры
 	this.optMenu.addButton(function(){
 		localStorage.removeItem('durak_id');
 		document.location.href = document.location.href;
 	}, 'disconnect','Disconnect');
+
 	this.optMenu.addButton(function(){
 		var mover = game.add.tween(this.elementsByName['CHS']);
 		mover.to({			
@@ -104,6 +111,7 @@ UI.prototype.addButtons = function(){
 		}, 1000);
 		mover.start();
 	},'lel','NOTHING');	
+
 	this.optMenu.addButton( function(){
 		var mover = game.add.tween(this.elementsByName['CHS']);
 		mover.to({			
@@ -113,6 +121,8 @@ UI.prototype.addButtons = function(){
 		}, 1000);
 		mover.start();
 	}, 'next','Next');
+
+	// Смена скина
 	this.optMenu.addButton(function(button, pointer){
 		if(pointer.isMouse && pointer.button !== 0){
 			skinManager.setSkin('uno');
@@ -125,9 +135,14 @@ UI.prototype.addButtons = function(){
 		}
 
 	},'CHS','Change skin');
+
+	// Закрыть меню
 	this.optMenu.addButton( function(){
 		this.hide();
 	}, 'Back','Back');
+
+
+	// Действие
 	new Button({
 		position: function(width, height){
 			return {
@@ -150,6 +165,8 @@ UI.prototype.addButtons = function(){
 		textColor: 'white',
 		group: this.actionButtons
 	});
+
+	// Дебаг
 	new Button({
 		position: function(width, height){
 			return game.scale.cellAt(
@@ -169,6 +186,7 @@ UI.prototype.addButtons = function(){
 		group: this.actionButtons
 	});
 
+	// На весь экран
 	new Button({
 		position: function(width, height){
 			return {
@@ -184,6 +202,8 @@ UI.prototype.addButtons = function(){
 		size: 'small',
 		group: this.cornerButtons
 	});
+
+	// Открытие меню
 	new Button({
 		position: function(width, height){
 			return {

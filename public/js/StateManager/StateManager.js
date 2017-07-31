@@ -79,22 +79,32 @@ StateManager.prototype.add = function(state, async, start){
  * @param  {string} key название состояния
  */
 StateManager.prototype.change = function(key){
+	var oldState, state;
+
 	if(this.states[key]){
+		
 		console.warn('StateManager: changing to async state', key);
+
 		if(this.current != this.currentSync){
-			var state = this.statesSync[key];
+			state = this.statesSync[key];
 			state.shutdown();
 		}
+
 		this.start(key, false, false);
 	}
 	else if(this.statesSync[key]){
+
 		if(this.game.inDebugMode){
 			console.log('StateManager: changing state', key);
 		}
-		var oldState = this.getCurrent();
-		var state = this.statesSync[key];
-		this.currentSync = key;
+
+		oldState = this.getCurrent();
+		state = this.statesSync[key];
+
 		oldState.shutdown();
+
+		this.currentSync = key;
+
 		state.preload();
 		state.init();
 		state.create();
