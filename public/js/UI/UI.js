@@ -136,11 +136,12 @@ UI.prototype.addButtons = function(){
 
 	},'CHS','Change skin');
 
+	this.optMenu.addButton(game.toggleDebugMode, 'debug','Debug', game);
+
 	// Закрыть меню
 	this.optMenu.addButton( function(){
 		this.hide();
 	}, 'Back','Back');
-
 
 	// Действие
 	new Button({
@@ -161,26 +162,6 @@ UI.prototype.addButtons = function(){
 		text: 'Take',
 		color: 'orange',
 		name: 'action',
-		size: 'wide',
-		textColor: 'white',
-		group: this.actionButtons
-	});
-
-	// Дебаг
-	new Button({
-		position: function(width, height){
-			return game.scale.cellAt(
-				game.scale.numCols - game.scale.density*1.5 - 1,
-				game.scale.numRows - game.scale.density - 1,
-				-width/2,
-				5
-			);
-		},
-		action: game.toggleDebugMode,
-		text: 'Debug',
-		context: game,
-		color: 'orange',
-		name: 'debug',
 		size: 'wide',
 		textColor: 'white',
 		group: this.actionButtons
@@ -221,7 +202,7 @@ UI.prototype.addButtons = function(){
 		group: this.cornerButtons
 	});
 
-	this.actionButtons.getByName('action').disable();
+	this.actionButtons.getByName('action').hide();
 };
 
 UI.prototype.updatePosition = function(){

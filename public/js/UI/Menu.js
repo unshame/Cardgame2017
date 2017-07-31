@@ -45,7 +45,7 @@ Menu.prototype.addButton = function (action, name, text, context) {
 		action: action,
 		text: text,
 		name: name,
-		context: (context === false) ? undefined : this,
+		context: (context === false) ? undefined : (context || this),
 		group: this.base
 	});
 	this.elementsByName[name] = button;
