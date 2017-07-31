@@ -43,7 +43,7 @@ UI.prototype.initialize = function(){
 	}
 	this.testMenu = new Menu(getScreenCenter, 5, 'testMenu');
 	this.optMenu = new Menu(getScreenCenter, -2, 'optMenu');
-	this.optMenu.hide();
+	this.testMenu.show();
 	
 	// Кнопки
 	this.addButtons();

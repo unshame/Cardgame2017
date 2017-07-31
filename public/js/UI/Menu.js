@@ -1,13 +1,14 @@
 var Menu = function(position, z, name){
 	this.background = game.add.image(0, 0);
+	this.background.visible = false;
 	this.base = ui.layers.addLayer(z, name || 'menu', true);	
 	this.position = position;
 	this.margin = 50;
-	this.opened = true;
+	this.opened = false;
 
 	this.base.add(this.background);
-	this.buttons = [];
-	this.buttonsByName = {};
+	this.elements = [];
+	this.elementsByName = {};
 };
 
 Menu.prototype.addButton = function (action, name, text, context) {
@@ -20,8 +21,11 @@ Menu.prototype.addButton = function (action, name, text, context) {
 		context: (context === false) ? null : this,
 		group: this.base
 	});
-	this.buttonsByName[name] = button;
-	this.buttons.push(button);
+	this.elementsByName[name] = button;
+	this.elements.push(button);
+	if(!this.opened){
+		button.hide();
+	}
 	this.update();
 };
 
@@ -29,13 +33,20 @@ Menu.prototype.resize = function(){
 	var width = 0,
 		height = 0;
 
-	for (var i = 0; i < this.buttons.length; i++) {
-		var button = this.buttons[i];
-		height += button.height;
-		if(i < this.buttons.length - 1)
+	for (var i = 0; i < this.elements.length; i++) {
+		var element = this.elements[i];
+		if(element.visible && !this.opened){
+			element.hide();
+		}
+		if(!element.visible)
+			continue;
+		height += element.height;
+		if(i < this.elements.length - 1){
 			height += this.margin;
-		if(width < button.width)
-			width = button.width;
+		}
+		if(width < element.width){
+			width = element.width;
+		}
 	}
 
 	this.createArea(width + this.margin*2, height + this.margin*2);
@@ -53,44 +64,46 @@ Menu.prototype.updatePosition = function(position){
 	}
 	this.base.x = position.x - this.background.width/2;
 	this.base.y = position.y - this.background.height/2;
-	for (var i = 0; i < this.buttons.length; i++) {
-		var button = this.buttons[i];
-		var y = 0;
-		for (var k = 0; k < i; k++) {
-			y += this.buttons[k].height + this.margin;
-		}
-		button.updatePosition({x: this.background.width/2 - button.width/2, y: y + this.margin});
+	var y = 0;
+	for (var i = 0; i < this.elements.length; i++) {
+		var element = this.elements[i];
+		if(!element.visible)
+			continue;
+		element.updatePosition({x: this.background.width/2 - element.width/2, y: y + this.margin});
+		y += element.height + this.margin;
 	}
 };
 
 Menu.prototype.update = function(){
+	if(!this.opened)
+		return;
 	this.resize();
 	this.updatePosition();
-	if(!this.opened)
-		this.hide();
 };
 
 Menu.prototype.hide = function(){
 	this.opened = false;
 	this.background.visible = false;
-	for (var i = 0; i < this.buttons.length; i++) {
-		this.buttons[i].hide();
+	for (var i = 0; i < this.elements.length; i++) {
+		this.elements[i].hide();
 	}
 };
 
 Menu.prototype.show = function(){
 	this.opened = true;
 	this.background.visible = true;
-	for (var i = 0; i < this.buttons.length; i++) {
-		this.buttons[i].show();
+	for (var i = 0; i < this.elements.length; i++) {
+		this.elements[i].show();
 	}
 	this.update();
 };
 Menu.prototype.toggle = function(){
-	if(this.opened)
+	if(this.opened){
 		this.hide();
-	else
+	}
+	else{
 		this.show();
+	}
 };
 Menu.prototype.createArea = function(width, height){
 	var radius = 10,
