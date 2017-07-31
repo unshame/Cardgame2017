@@ -53,6 +53,11 @@ window.statePlay = new State('play', {
 		document.getElementById('loading').style.display = 'none';
 	},
 
+	create: function(){
+		ui.actionButtons.getByName('action').show();
+		ui.actionButtons.getByName('action').disable();
+	},
+
 	shutdown: function(){ 
 		cardManager.reset();
 		cardEmitter.stop();
@@ -60,5 +65,6 @@ window.statePlay = new State('play', {
 		playerManager.reset();
 		ui.rope.stop();
 		ui.actionButtons.getByName('action').disable();
+		ui.actionButtons.getByName('action').hide();
 	}
 });
