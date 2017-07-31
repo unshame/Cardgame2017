@@ -20,6 +20,11 @@ var ActionHandler = function(actionReactions, notificationReactions){
 
 ActionHandler.prototype.executeAction = function(action){
 
+	if(game.state.current != 'play'){
+		console.error('ActionHandler: must be in play state to execute actions');
+		return;
+	}
+
 	if(!action){
 		console.error('Action handler: no action recieved');
 		return;
@@ -41,6 +46,11 @@ ActionHandler.prototype.executeAction = function(action){
 };
 
 ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent){
+
+	if(game.state.current != 'play'){
+		console.error('ActionHandler: must be in play state to handle possible actions');
+		return;
+	}
 
 	var actionTypes = actions.map(function(a){return a.type;});
 	var button = ui.actionButtons.getByName('action');
@@ -64,6 +74,11 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 };
 
 ActionHandler.prototype.handleNotification = function(note, actions){
+	if(game.state.current != 'play'){
+		console.error('ActionHandler: must be in play state to recieve game notifications');
+		return;
+	}
+
 	var reaction = this.notificationReactions[note.message];
 	if(!reaction){
 		console.warn('Action handler: Unknown notification handler', note.message, note, actions);

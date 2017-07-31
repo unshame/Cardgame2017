@@ -84,14 +84,17 @@ UI.prototype.addButtons = function(){
 	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons', true);
 
 	// Кнопки (временные)
-	this.testMenu.addButton( function(){
-			connection.proxy.queueUp();
-			this.hide();
-		},'lel','queueUp');
-	this.testMenu.addButton( function(){
-			ui.optMenu.show();
-		},'options','Options');
-	this.optMenu.addButton( function(){
+	this.testMenu.addButton(function(){
+		game.state.start('play', false, false, connection.proxy.queueUp, connection);
+	}, 'queueUp','Queue Up');
+	this.testMenu.addButton(function(){
+		ui.optMenu.show();
+	}, 'options','Options');
+	this.optMenu.addButton(function(){
+		localStorage.removeItem('durak_id');
+		document.location.href = document.location.href;
+	}, 'disconnect','Disconnect');
+	this.optMenu.addButton(function(){
 		var mover = game.add.tween(this.elementsByName['CHS']);
 		mover.to({			
 			x: 0,
@@ -109,18 +112,18 @@ UI.prototype.addButtons = function(){
 		}, 1000);
 		mover.start();
 	}, 'next','Next');
-	this.optMenu.addButton( function(button, pointer){
-			if(pointer.isMouse && pointer.button !== 0){
-				skinManager.setSkin('uno');
-			}
-			else if(skinManager.skin.name == 'modern'){
-				skinManager.setSkin('classic');
-			}
-			else{
-				skinManager.setSkin('modern');
-			}
+	this.optMenu.addButton(function(button, pointer){
+		if(pointer.isMouse && pointer.button !== 0){
+			skinManager.setSkin('uno');
+		}
+		else if(skinManager.skin.name == 'modern'){
+			skinManager.setSkin('classic');
+		}
+		else{
+			skinManager.setSkin('modern');
+		}
 
-		},'CHS','Change skin');
+	},'CHS','Change skin');
 	this.optMenu.addButton( function(){
 		this.hide();
 	}, 'Back','Back');
@@ -203,6 +206,9 @@ UI.prototype.addButtons = function(){
 UI.prototype.updatePosition = function(){
 	this.rope.updatePosition();
 	this.layers.positionElements();
+
+	this.testMenu.update();
+	this.optMenu.update();
 };
 
 UI.prototype.toggleFullScreen = function(){

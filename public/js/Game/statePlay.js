@@ -13,12 +13,25 @@ window.statePlay = {
 
 	key: 'play',
 
+	callback: null,
+
+	init: function(callback, context){
+		if(callback){
+			this.callback = callback.bind(context);
+		}
+	},
+
 	/**
 	* Выполняется после соединения с сервером.
 	* @memberof statePlay
 	*/
 	create: function(){
-		cardEmitter.start(0, 50, 10, 2000, 20, 1);
+		ui.testMenu.hide();
+		cardEmitter.stop();
+		if(typeof this.callback == 'function'){
+			this.callback();
+			this.callback = null;
+		}
 	},
 
 	/**
@@ -37,18 +50,12 @@ window.statePlay = {
 	* @memberof statePlay
 	*/
 	render: function(){
-		if(game.stage.disableVisibilityChange && game.paused && !game.pausedByViewChange){
-			game.paused = false;
-			if(game.inDebugMode)
-				console.log('Game: unpaused forced');
-		}
+		game.fixPause();
 
 		cardControl.updateDebug();
 		fieldManager.updateDebug();
-		cardManager.updateDebug();
-
-		if(game.inDebugMode)
-			game.debug.text(game.time.fps, 2, 14, "#00ff00");
+		cardManager.updateDebug();		
+		game.updateDebug();
 	},
 
 	/**
@@ -63,8 +70,6 @@ window.statePlay = {
 		fieldManager.resizeFields();
 
 		ui.updatePosition();
-		ui.testMenu.update();
-		ui.optMenu.update();
 
 		cardEmitter.restart();
 

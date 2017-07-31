@@ -23,18 +23,15 @@ window.clientMethods = {
 	updateId: function(pid){
 		if(pid){
 			console.log('Reconnected to', pid);
-			game.pid = pid;
+			game.pid = playerManager.pid = pid;
+			game.changeState('play', connection.proxy.requestGameInfo, connection);
 		}
 		else{
-			cardManager.reset();
-			cardEmitter.start(0, 50, 10, 2000, 20, 1);
-			fieldManager.resetNetwork();
-			ui.rope.stop();
-			ui.actionButtons.getByName('action').disable();
-			ui.testMenu.show();
+			playerManager.pid = game.pid;
+			connection.proxy.requestGameInfo();
+			game.changeState('menu');
 		}
-		playerManager.pid = game.pid;
-		connection.proxy.requestGameInfo();
+		
 	},
 
 	recievePossibleActions: function(newActions, time, timeSent){	
@@ -46,7 +43,6 @@ window.clientMethods = {
 	},
 
 	recieveCompleteAction: function(action){
-		ui.testMenu.hide();
 
 		var delay = actionHandler.executeAction(action);
 		if(!action.noResponse){

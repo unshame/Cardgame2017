@@ -36,7 +36,7 @@ ConnectionManager.prototype.constructor = ConnectionManager;
 ConnectionManager.prototype.bindProxy = function(proxy){
 	console.log('Connection ready');
 	this.proxy = proxy;
-	game.state.start('play', false);
+	game.changeState('menu');
 };
 
 ConnectionManager.prototype.handleConnection = function(){

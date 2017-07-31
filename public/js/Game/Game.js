@@ -286,6 +286,25 @@ Game.prototype.toggleDebugMode = function(){
 	this.time.advancedTiming = this.inDebugMode;
 };
 
+Game.prototype.updateDebug = function(){
+	if(!this.inDebugMode)
+		return;
+	this.debug.text(this.time.fps, 2, 14, "#00ff00");
+}
+
+Game.prototype.fixPause = function(){
+	if(this.stage.disableVisibilityChange && this.paused && !this.pausedByViewChange){
+		this.paused = false;
+		if(this.inDebugMode)
+			console.log('Game: unpaused forced');
+	}
+}
+
+Game.prototype.changeState = function(key, callback, context){
+	game.state.start(key, false, false, callback, context);
+}
+
 //@include:GameOverride
 //@include:stateBoot
 //@include:statePlay
+//@include:stateMenu

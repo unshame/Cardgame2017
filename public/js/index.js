@@ -27,5 +27,6 @@
 * @global
 */
 window.game = new Game();
+game.state.add(stateMenu.key, stateMenu, false);
 game.state.add(statePlay.key, statePlay, false);
 game.state.add(stateBoot.key, stateBoot, true);
