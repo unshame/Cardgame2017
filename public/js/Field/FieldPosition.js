@@ -104,7 +104,7 @@ Field.prototype._createArea = function(width, height){
 	width -= x*2;
 	height -= y*2;
 	area.ctx.beginPath();
-	area.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+	area.ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 	area.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
 	area.ctx.lineWidth = lineWidth;
 	area.ctx.moveTo(x + radius, y);
@@ -116,7 +116,9 @@ Field.prototype._createArea = function(width, height){
 	area.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
 	area.ctx.lineTo(x, y + radius);
 	area.ctx.quadraticCurveTo(x, y, x + radius, y);
+	area.ctx.globalAlpha = 0.65;
 	area.ctx.fill();
+	area.ctx.globalAlpha = 1;
 	area.ctx.stroke();
 	area.update();
 
@@ -160,10 +162,12 @@ Field.prototype._createCircle = function(width, height){
 	}
 	circle.ctx.beginPath();
 	circle.ctx.arc(center.x + this.base.x, center.y, radius,2 * Math.PI, 0); 
-	circle.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+	circle.ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 	circle.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
 	circle.ctx.lineWidth = this.style.border;
+	circle.ctx.globalAlpha = 0.65;
 	circle.ctx.fill();
+	circle.ctx.globalAlpha = 1;
 	circle.ctx.stroke();
 	circle.update();
 	this.circle.loadTexture(circle);

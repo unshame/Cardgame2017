@@ -45,7 +45,8 @@ UI.prototype.initialize = function(){
 		}, 
 		z: 5,
 		alpha: 0.95,
-		name: 'testMenu'
+		name: 'testMenu',
+		texture: 'black'
 	});
 	this.optMenu = new Menu({
 		position: function(){
@@ -56,6 +57,7 @@ UI.prototype.initialize = function(){
 		}, 
 		z: -2,
 		color: ui.colors.white,
+		texture: 'menu_blue',
 		elementColor: 'grey',
 		textColor: 'black',
 		name: 'optMenu'

@@ -19,6 +19,12 @@ var Menu = function(options){
 
 	this.elements = [];
 	this.elementsByName = {};
+
+	this._bitmapArea = game.make.bitmapData();;
+	if(this.options.texture){
+		var image = game.cache.getImage(this.options.texture);
+		this.pattern = this._bitmapArea.ctx.createPattern(image, 'repeat');
+	}
 };
 
 Menu.getDefaultOptions = function(){
@@ -32,8 +38,11 @@ Menu.getDefaultOptions = function(){
 		name: 'default',
 		alpha: 0.8,
 		color: ui.colors.orange,
+		texture: null,
 		elementColor: 'orange',
-		textColor: 'white'
+		textColor: 'white',
+		corner: 10,
+		border: 4
 	};
 };
 
@@ -133,23 +142,18 @@ Menu.prototype.toggle = function(){
 	}
 };
 Menu.prototype.createArea = function(width, height){
-	var radius = 10,
-		lineWidth = 4,
+	var radius = this.options.corner,
+		lineWidth = this.options.border,
 		x =  lineWidth/2,
 		y =  lineWidth/2;
 		
 	var area = this._bitmapArea;
-	if(!area){
-		area = game.make.bitmapData(width, height);
-	}
-	else{
-		area.clear();		
-		area.resize(width, height);
-	}
+	area.clear();		
+	area.resize(width, height);
 	width -= x*2;
 	height -= y*2;
 	area.ctx.beginPath();
-	area.ctx.fillStyle = 'rgba(255, 255, 255, ' + this.options.alpha + ')';
+	area.ctx.fillStyle = this.pattern || 'rgba(255, 255, 255, 1)';
 	area.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
 	area.ctx.lineWidth = lineWidth;
 	area.ctx.moveTo(x + radius, y);
@@ -161,10 +165,11 @@ Menu.prototype.createArea = function(width, height){
 	area.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
 	area.ctx.lineTo(x, y + radius);
 	area.ctx.quadraticCurveTo(x, y, x + radius, y);
-	area.ctx.fill();
 	area.ctx.stroke();
+	area.ctx.globalAlpha = this.options.alpha;
+	area.ctx.fill();
+	area.ctx.globalAlpha = 1;
 	area.update();
 
-	this.background.loadTexture(area);
-	this._bitmapArea = area;
+	this.background.loadTexture(area);	
 };
