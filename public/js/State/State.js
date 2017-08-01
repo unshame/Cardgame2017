@@ -14,8 +14,13 @@
  */
 var State = function(key, events){
 	Phaser.State.call(this);
+
+	/**
+	 * Название состояния.
+	 * @type {string}
+	 */
 	this.key = key;
-	this.callback = null;
+	
 	for(var e in events){
 		if(!events.hasOwnProperty(e))
 			continue;
@@ -96,75 +101,75 @@ State.prototype.postResumed = function(){};
 
 /**
 * Во всех состояниях выполняется сразу после переключения в состояние (до preload).
-* @name State#init
+* @method State#init
 */
 
 /**
 * В асинхронных состояниях выполняется после init и начинает загрузку ассетов.
 * В синхронных состояниях выполняется сразу после переключения в состояние (после вызова init).
-* @name State#preload
+* @method State#preload
 */
 
 /**
 * В асинхронных состояниях выполняется после загрузки всех элементов в preload.  
 * В синхронных состояниях выполняется сразу после переключения в состояние (после вызова init и preload).
-* @name State#create
+* @method State#create
 */
 
 /**
 * Во всех состояниях выполняется сразу после переключения на другое состояние (до init нового состояния).
-* @name State#shutdown
+* @method State#shutdown
 */
 
 
 /**
 * Во всех состояниях выполняется, когда симуляция игры была поставлена на паузу.
-* @name State#paused
+* @method State#paused
 */
 
 /**
 * Во всех состояниях выполняется, когда симуляция игры была снята с паузы.
-* @name State#resumed
+* @method State#resumed
 */
 
 /**
 * Во всех состояниях выполняется через секунду после того, как симуляция игры была снята с паузы.
-* @name State#postResumed
+* @method State#postResumed
 */
 
 
 /**
 * Во всех состояниях выполняется после окончания изменения размера игры.
-* @name State#postResize
+* @method State#postResize
 */
 
 
 /**
 * Во всех состояниях выполняется после update, но перед render.
-* @name State#preRender
+* @method State#preRender
 */
 
 /**
 * Во всех состояниях выполняется после того, как все элементы игры были выведены на экран.
-* @name State#render
+* @method State#render
 */
 
 
 /**
 * В асинхронных состояниях выполняется во время загрузки элементов в preload после loadUpdate.
 * В синхронных состояниях не выполняется.
-* @name State#loadRender
+* @method State#loadRender
 */
 
 /**
 * В асинхронных состояниях выполняется во время загрузки элементов в preload.
 * В синхронных состояниях не выполняется.
-* @name State#loadUpdate
+* @method State#loadUpdate
 */
 
 
 /**
 * Выпоняется каждый кадр игры между preUpdate и postUpdate всех элементов игры
 * как в синхронных, так и в асинхронных состояниях.
-* @name State#update
+* @method State#update
 */
