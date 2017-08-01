@@ -39,7 +39,7 @@ ActionHandler.prototype.executeAction = function(action){
 		console.warn('Action handler: Unknown action type', action.type, action);
 	}
 	else{
-		delay += reaction.call(this, action);
+		delay += reaction.call(this.actionReactions, action);
 	}
 	return delay;
 };
@@ -83,7 +83,7 @@ ActionHandler.prototype.handleNotification = function(note, actions){
 		console.warn('Action handler: Unknown notification handler', note.message, note, actions);
 	}
 	else{
-		reaction.call(this, note, actions);
+		reaction.call(this.notificationReactions, note, actions);
 	}
 };
 

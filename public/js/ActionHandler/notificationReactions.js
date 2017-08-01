@@ -1,6 +1,5 @@
 /**
 * Действия, выполняемые в ответ на сообщения от сервера
-* Выполняются в контексте ActionHandler
 * @namespace notificationReactions
 */
 

@@ -1,6 +1,5 @@
 /**
 * Действия, выполняемые в ответ на действия сервера  
-* Выполняются в контексте {@link ActionHandler}
 * @namespace actionReactions
 */
 window.actionReactions = {
@@ -95,7 +94,7 @@ window.actionReactions = {
 		setTimeout(function(){
 			text.destroy();
 		}, 2000);
-		return actionReactions['GAME_INFO'].call(this, action, true);
+		return this['GAME_INFO'].call(this, action, true);
 	},
 
 	/**
