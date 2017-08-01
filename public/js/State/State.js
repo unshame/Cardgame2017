@@ -6,6 +6,7 @@
  * Методы, связанные с паузой симуляции игры (используются во всех состояниях): `{@link State#paused|paused}, {@link State#resumed|resumed}, {@link State#postResumed|postResumed}`  
  * Второстепенные методы (используются в асинхронных состояниях): `{@link State#loadUpdate|loadUpdate}, {@link State#loadRender|loadRender}, {@link State#preload|preload}, {@link State#init|init}`  
  * Неиспользуемые методы (присутствуют, но не вызываются): `resize, pauseUpdate`  
+ * Существующие состояния и что они делают расписаны в разделе Namespaces (state*Key*).  
  * @class
  * @param {string} key    название состояния
  * @param {object} events методы состояния

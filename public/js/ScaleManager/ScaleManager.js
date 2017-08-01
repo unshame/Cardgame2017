@@ -183,7 +183,7 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 		else{
 			minHeight = this._minRowsLandscape*this.cellHeight;
 		}
-		minWidth = this._minColsLandscape*this.cellWidth
+		minWidth = this._minColsLandscape*this.cellWidth;
 		this.game.isRawLandscape = true;
 	}
 	else{
@@ -270,7 +270,7 @@ ScaleManager.prototype._calculateGridSize = function(screenWidth, screenHeight){
 	this.numRows = Math.floor(screenHeight/height);
 	this.gridWidth = screenWidth - offset.x*2;
 	this.gridHeight = screenHeight - offset.y*2;
-}
+};
 
 /**
 * Возвращает координаты ячейки.

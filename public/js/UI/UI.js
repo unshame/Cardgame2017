@@ -46,7 +46,7 @@ UI.prototype.initialize = function(){
 			return {
 				x:game.screenWidth/2,
 				y:game.screenHeight/2 + 150
-			}
+			};
 		}, 
 		z: 5,
 		alpha: 0.95,
@@ -58,7 +58,7 @@ UI.prototype.initialize = function(){
 			return {
 				x:game.screenWidth/2,
 				y:game.screenHeight/2
-			}
+			};
 		}, 
 		z: -2,
 		color: ui.colors.white,

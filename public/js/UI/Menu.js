@@ -20,7 +20,7 @@ var Menu = function(options){
 	this.elements = [];
 	this.elementsByName = {};
 
-	this._bitmapArea = game.make.bitmapData();;
+	this._bitmapArea = game.make.bitmapData();
 	if(this.options.texture){
 		var image = game.cache.getImage(this.options.texture);
 		this.pattern = this._bitmapArea.ctx.createPattern(image, 'repeat');

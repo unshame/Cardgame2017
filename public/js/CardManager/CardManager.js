@@ -77,7 +77,7 @@ CardManager.prototype.createCards = function(cardsInfo){
 	}
 	for(var ci in this.cards){
 		if(!this.cards.hasOwnProperty(ci)){
-			return;
+			continue;
 		}
 		if(!~ids.indexOf(ci)){
 			this.cards[ci].destroy();

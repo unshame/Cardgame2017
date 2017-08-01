@@ -286,7 +286,7 @@ Game.prototype.updateDebug = function(){
 	if(!this.inDebugMode)
 		return;
 	this.debug.text(this.time.fps, 2, 14, "#00ff00");
-}
+};
 
 Game.prototype.fixPause = function(){
 	if(this.stage.disableVisibilityChange && this.paused && !this.pausedByViewChange){
@@ -294,6 +294,6 @@ Game.prototype.fixPause = function(){
 		if(this.inDebugMode)
 			console.log('Game: unpaused forced');
 	}
-}
+};
 
 //@include:GameOverride

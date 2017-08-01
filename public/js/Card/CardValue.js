@@ -99,7 +99,7 @@ Card.prototype._updateTint = function(){
 	if(value !== undefined){
 		this.sprite.tint = Math.floor(value/step)*step;
 	}
-}
+};
 
 /**
 * Устанавливает значение карты сразу, с анимацией или без.

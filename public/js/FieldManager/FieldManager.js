@@ -61,7 +61,7 @@ FieldManager.prototype.initialize = function(){
 	this.fieldsGroup = game.add.group();
 	this.fieldsGroup.name = 'fields';
 	this.initialized = true;
-}
+};
 
 /**
 * Добавляет поле.

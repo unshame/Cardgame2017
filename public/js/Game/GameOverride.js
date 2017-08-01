@@ -94,7 +94,7 @@ Game.prototype.boot = function(){
 
     this.raf.start();
 
-}
+};
 
 /**
  * Обрабатывает переданный конфиг. 
@@ -173,4 +173,4 @@ Game.prototype.parseConfig = function (config) {
 
     this.state = new StateManager(this);
 
-}
+};

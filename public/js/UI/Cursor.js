@@ -64,7 +64,7 @@ Cursor.prototype.update = function(cursorinGame){
 	if(!Phaser.Device.desktop)
 		return;
 
-	this.initialized = this.unitialized || (game.input.x !== 0 || game.input.y !== 0);
+	this.initialized = game.input.x !== 0 || game.input.y !== 0;
 
 	if(cursorinGame !== undefined)
 		this.inGame = cursorinGame;

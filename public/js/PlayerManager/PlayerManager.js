@@ -21,4 +21,4 @@ PlayerManager.prototype.reset = function(){
 	this.pi = null;
 	this.pid = null;
 	this.players = [];
-}
+};
