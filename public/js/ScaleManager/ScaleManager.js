@@ -19,7 +19,7 @@
 
 var ScaleManager = function(options){
 
-	this.options = ScaleManager.getDefaultOptions();
+	this.options = this.getDefaultOptions();
 
 	if(options){
 		for(var o in options){
@@ -135,11 +135,10 @@ ScaleManager.prototype.constructor = ScaleManager;
 
 /**
 * Получить опции по умолчанию (см. {@link ScaleManager|ScaleManager options}).
-* @static
 * @return {object} Опции по умолчанию.
 */
-ScaleManager.getDefaultOptions = function(){
-	var options = {
+ScaleManager.prototype.getDefaultOptions = function(){
+	return {
 		game: game,
 		width: 0,
 		height: 0,
@@ -152,7 +151,6 @@ ScaleManager.getDefaultOptions = function(){
 		minRowsPortrait: 23,
 		cellRelationThreshold: 2.5
 	};
-	return options;
 };
 
 /**

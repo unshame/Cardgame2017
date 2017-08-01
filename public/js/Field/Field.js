@@ -302,7 +302,7 @@ var Field = function(options, style, iconStyle){
 /**
 * Возвращает опции по умолчанию
 */
-Field.getDefaultOptions = function(){
+Field.prototype.getDefaultOptions = function(){
 	return {
 		options: {
 
@@ -369,7 +369,7 @@ Field.getDefaultOptions = function(){
 * @param {object} [iconStyle] Внешний вид иконки поля.
 */
 Field.prototype._applyOptions = function(options, style, iconStyle){
-	var defaultConfig = Field.getDefaultOptions();
+	var defaultConfig = this.getDefaultOptions();
 
 	/**
 	 * Настройки поля.

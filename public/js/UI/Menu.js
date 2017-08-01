@@ -1,5 +1,5 @@
 var Menu = function(options){
-	this.options = Menu.getDefaultOptions();
+	this.options = this.getDefaultOptions();
 	for(var o in options){
 		if(options.hasOwnProperty(o) && options[o] !== undefined){
 			this.options[o] = options[o];
@@ -27,7 +27,7 @@ var Menu = function(options){
 	}
 };
 
-Menu.getDefaultOptions = function(){
+Menu.prototype.getDefaultOptions = function(){
 	return {
 		position: {
 			x: 0,

@@ -22,7 +22,7 @@
 var Card = function (options) {
 
 	// Options
-	this.options = Card.getDefaultOptions();
+	this.options = this.getDefaultOptions();
 	for(var o in options){
 		if(options.hasOwnProperty(o) && options[o] !== undefined)
 			this.options[o] = options[o];
@@ -210,10 +210,9 @@ var Card = function (options) {
 
 /** 
 * Возвращает опции по умолчанию (см. {@link Card|Card options}).
-* @static
 * @return {object} опции по умолчанию
 */
-Card.getDefaultOptions = function(){
+Card.prototype.getDefaultOptions = function(){
 	return {
 		game: null,
 		id:null,
