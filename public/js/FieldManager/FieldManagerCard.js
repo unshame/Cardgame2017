@@ -30,8 +30,6 @@ FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
 				card.field.cardsToRemove.push(card);
 			}
 			var fieldId = card.fieldId;
-			if(fieldId == 'BOTTOM')
-				fieldId = 'DECK';
 			var field = this.fields[fieldId];
 			if(!field){
 				console.error('Field manager: cannot queue card, field', fieldId, 'not found');
@@ -234,9 +232,6 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 		seq.append(function(){
 			rc.stopRevolving();
 			var fieldId = info.field;
-			if(fieldId == 'BOTTOM'){
-				fieldId = 'DECK';
-			}
 			this.moveCards(this.fields[fieldId], [info]);
 		}, interval2, this); 
 	}

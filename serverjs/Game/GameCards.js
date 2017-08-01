@@ -92,6 +92,9 @@ class GameCards extends BetterArray{
 					newCard.value = null;
 					newCard.suit = null;			
 				} 
+				if(newCard.field == 'BOTTOM'){
+					newCard.field = 'DECK';
+				}
 				cardsToSend[pid].unshift(newCard);
 			});
 

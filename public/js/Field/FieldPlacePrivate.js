@@ -137,7 +137,7 @@ Field.prototype._moveCard = function(
 	}
 
 	// Устанавливаем сдвиг для козыря в колоде
-	if(card.fieldId == 'BOTTOM'){
+	if(this.type == 'DECK' && card.suit !== null){
 		leftMargin += skinManager.skin.trumpOffset;
 	}
 
@@ -211,7 +211,7 @@ Field.prototype._rotateCard = function(card, angle, x, y, delay, margin){
 		angle = this._angles[card.id] || 0;
 	}
 	// Поворачиваем карту, если она на дне колоды
-	else if(card.fieldId == 'BOTTOM'){
+	else if(this.type == 'DECK' && card.suit !== null){
 		angle = Math.abs(angle - 90);
 	}	
 
