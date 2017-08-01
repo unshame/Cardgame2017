@@ -45,9 +45,10 @@ window.statePlay = new State('play', {
 	},
 
 	/**
-	 * Исправляет элементы игры, которые могли перестать обновляться,
-	 * когда игра была поставлена на паузу.
-	 */
+	* Исправляет элементы игры, которые могли перестать обновляться,
+	* когда игра была поставлена на паузу.
+	* @memberof statePlay
+	*/
 	resumed: function(){
 		actionHandler.highlightPossibleActions();
 		fieldManager.rotateCards();
