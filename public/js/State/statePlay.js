@@ -1,18 +1,16 @@
 /**
-* Основное состояние игры.  
-* Предоставляет движку функции, которые выполняются при загрузке, создании
-* и обновлении игрового цикла.  
-* Добавляется в `game.state`.  
+* Состояние процесса игры.
+* Обновляет все игровые элементы.  
+* Синхронное состояние.
 * @namespace statePlay
-* @property {string} key='play' Название состояния
-* @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
-* @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
+* @property {string} key='play' Название состояния.
+* @see {@link State}
+* @see {@link StateManager}
 */
 
 window.statePlay = new State('play', {
 
 	/**
-	* Выполняется каждый кадр игры между preUpdate и postUpdate элементов игры.
 	* Обновляет состояние элементов игры, которые не обновляются игрой автоматически.
 	* @memberof statePlay
 	*/
@@ -22,7 +20,6 @@ window.statePlay = new State('play', {
 	},
 
 	/**
-	* Выполняется каждый кадр игры после рендера всех элементов игры.
 	* Выводит дебаг информацию.
 	* @memberof statePlay
 	*/
@@ -36,28 +33,41 @@ window.statePlay = new State('play', {
 	},
 
 	/**
-	* Выполняется после того, как игра обработала изменение размера экрана.
-	* Обновляет размер и позицию всех модулей.
+	* Обновляет размер и позицию всех элементов игры.
 	* @memberof statePlay
 	*/
 	postResize: function(){
-
 		background.updateSize();
-
 		fieldManager.resizeFields();
-
 		ui.updatePosition();
-
 		cardEmitter.restart();
-
 		document.getElementById('loading').style.display = 'none';
 	},
 
+	/**
+	 * Исправляет элементы игры, которые могли перестать обновляться,
+	 * когда игра была поставлена на паузу.
+	 */
+	resumed: function(){
+		actionHandler.highlightPossibleActions();
+		fieldManager.rotateCards();
+		fieldManager.zAlignCards();
+		cardManager.forceApplyValues();
+	},
+
+	/**
+	* Показывает кнопку действия.
+	* @memberof statePlay
+	*/
 	create: function(){
 		ui.actionButtons.getByName('action').show();
 		ui.actionButtons.getByName('action').disable();
 	},
 
+	/**
+	* Ресетит все игровые модули по окончанию игры, прячет кнопку действия.
+	* @memberof statePlay
+	*/
 	shutdown: function(){ 
 		cardManager.reset();
 		cardEmitter.stop();

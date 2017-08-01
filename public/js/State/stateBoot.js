@@ -1,20 +1,18 @@
 /**
 * Состояние игры, отвечающее за загрузку.
 * Загружает ассеты и создает соединение с сервером.  
-* Добавляется в `game.state`.  
+* Асинхронное состояние.
 * @namespace stateBoot
-* @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html|Phaser.State}
-* @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html|Phaser.StateManager}
-* @property {string} key='boot' Название состояния
-* @property {number} preloadCounter=0 Счетчик тиков загрузки ассетов.
-* @property {number} loadCounter=0 Счетчик тиков подключения к серверу.
+* @see {@link State}
+* @see {@link StateManager}
+* @property {string} key='boot' Название состояния.
 */
 
 window.stateBoot = new State('boot', {
 
 
 	/**
-	* Выполняется до загрузки игры и загружает ассеты.
+	* Загружает ассеты.
 	* @memberof stateBoot
 	*/
 	preload: function(){
@@ -73,7 +71,7 @@ window.stateBoot = new State('boot', {
 	},
 
 	/**
-	* Выполняется в первую очередь, инициализирует показ процесса загрузки.
+	* Инициализирует показ процесса загрузки.
 	* @memberof stateBoot
 	*/
 	init: function(){
@@ -102,7 +100,6 @@ window.stateBoot = new State('boot', {
 	},
 
 	/**
-	* Выполняется во время загрузки ассетов.
 	* Выводит текст загрузки.
 	* @memberof stateBoot
 	*/
@@ -111,7 +108,6 @@ window.stateBoot = new State('boot', {
 	},
 
 	/**
-	* Выполняется во время соединения с сервером.
 	* Выводит текст загрузки.
 	* @memberof stateBoot
 	*/
@@ -120,7 +116,7 @@ window.stateBoot = new State('boot', {
 	},
 
 	/**
-	* Выполняется после загрузки ассетов, инициализирует игру и соединение с сервером.
+	* Инициализирует игру и соединение с сервером.
 	* @memberof stateBoot
 	*/
 	create: function(){
@@ -137,7 +133,6 @@ window.stateBoot = new State('boot', {
 	},
 
 	/** 
-	* Выполняется по окончании загрузки и подключения к серверу. 
 	* Убирает загрузочный текст и экран. 
 	* @memberof stateBoot 
 	*/ 

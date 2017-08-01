@@ -211,13 +211,6 @@ Game.prototype._updateCoordinatesDebounce = function(){
  */
 Game.prototype._visibilityChangeListener = function(){
 
-	function correct(){
-		actionHandler.highlightPossibleActions();
-		fieldManager.rotateCards();
-		fieldManager.zAlignCards();
-		cardManager.forceApplyValues();
-	}
-
 	function pause(){
 		this.paused = true;	
 		this.pausedByViewChange = true;
@@ -239,11 +232,12 @@ Game.prototype._visibilityChangeListener = function(){
 
 		// Ждем секунду, прежде чем откорректировать элементы игры, которые могли оказаться в неправильном положении
 		// Это делается, чтобы браузер не пропустил requireAnimationFrames движка, или что-то еще, что может пойти не так
-		setTimeout(correct.bind(this), 1000);
+		var state = this.state.getCurrent();
+		setTimeout(state.postResumed.bind(state), 1000);
 	}
 	else{
 		// Устанавливаем таймаут, после которого игра ставится на паузу
-		this._pauseTimeout = setTimeout(pause.bind(this), 10000);
+		this._pauseTimeout = setTimeout(pause.bind(this), this.inDebugMode ? 2000 : 10000);
 	}
 };
 
