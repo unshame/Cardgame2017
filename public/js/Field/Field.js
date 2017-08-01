@@ -205,21 +205,6 @@ var Field = function(options, style, iconStyle){
 	 */
 	this.base = game.add.group();
 	this.setBase(this.style.x, this.style.y);
-	if(this.style.area == 'curved'){
-		/**
-		 * Полукруглая поверхность поля, если `style.area == 'curved'`.
-		 * @type {Phaser.Image}
-		 */
-		this.circle = game.add.image(0, 0);
-		this.base.add(this.circle);
-
-		/**
-		 * BitmapData полукруглой поверхности поля.
-		 * @type {Phaser.BitmapData}
-		 * @private
-		 */
-		this._bitmapCircle = null;
-	}
 
 	/**
 	 * Поверхность поля.
@@ -235,7 +220,23 @@ var Field = function(options, style, iconStyle){
 	 * @type {Phaser.BitmapData}
 	 * @private
 	 */
-	this._bitmapArea = null;
+	this._bitmapArea = game.make.bitmapData();
+
+	if(this.style.area == 'curved'){
+		/**
+		 * Полукруглая поверхность поля, если `style.area == 'curved'`.
+		 * @type {Phaser.Image}
+		 */
+		this.circle = game.add.image(0, 0);
+		this.base.add(this.circle);
+
+		/**
+		 * BitmapData полукруглой поверхности поля.
+		 * @type {Phaser.BitmapData}
+		 * @private
+		 */
+		this._bitmapCircle = game.make.bitmapData();
+	}
 
 	if(this.iconStyle.texture){
 		/**

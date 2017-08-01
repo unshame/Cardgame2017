@@ -94,36 +94,31 @@ Field.prototype._createArea = function(width, height){
 		y = this.style.margin + lineWidth/2;
 		
 	var area = this._bitmapArea;
-	if(!area){
-		area = game.make.bitmapData(width, height);
-	}
-	else{
-		area.clear();		
-		area.resize(width, height);
-	}
+	var ctx = area.ctx;
+	area.clear();		
+	area.resize(width, height);
 	width -= x*2;
 	height -= y*2;
-	area.ctx.beginPath();
-	area.ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-	area.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-	area.ctx.lineWidth = lineWidth;
-	area.ctx.moveTo(x + radius, y);
-	area.ctx.lineTo(x + width - radius, y);
-	area.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-	area.ctx.lineTo(x + width, y + height - radius);
-	area.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-	area.ctx.lineTo(x + radius, y + height);
-	area.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-	area.ctx.lineTo(x, y + radius);
-	area.ctx.quadraticCurveTo(x, y, x + radius, y);
-	area.ctx.globalAlpha = 0.65;
-	area.ctx.fill();
-	area.ctx.globalAlpha = 1;
-	area.ctx.stroke();
+	ctx.beginPath();
+	ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+	ctx.lineWidth = lineWidth;
+	ctx.moveTo(x + radius, y);
+	ctx.lineTo(x + width - radius, y);
+	ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+	ctx.lineTo(x + width, y + height - radius);
+	ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+	ctx.lineTo(x + radius, y + height);
+	ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+	ctx.lineTo(x, y + radius);
+	ctx.quadraticCurveTo(x, y, x + radius, y);
+	ctx.globalAlpha = 0.65;
+	ctx.fill();
+	ctx.globalAlpha = 1;
+	ctx.stroke();
 	area.update();
 
 	this.area.loadTexture(area);
-	this._bitmapArea = area;
 };
 
 /**
@@ -152,26 +147,21 @@ Field.prototype._createCircle = function(width, height){
 	var center = this._calculateCircleCenter(a, c, b);
 	var radius = center.y;
 
-	var circle = this._bitmapCircle;
-	if(!circle){
-		circle = game.make.bitmapData(game.screenWidth, height);
-	}
-	else{
-		circle.clear();		
-		circle.resize(game.screenWidth, height);
-	}
-	circle.ctx.beginPath();
-	circle.ctx.arc(center.x + this.base.x, center.y, radius,2 * Math.PI, 0); 
-	circle.ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-	circle.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-	circle.ctx.lineWidth = this.style.border;
-	circle.ctx.globalAlpha = 0.65;
-	circle.ctx.fill();
-	circle.ctx.globalAlpha = 1;
-	circle.ctx.stroke();
+	var circle = this._bitmapCircle,
+		ctx = circle.ctx;
+	circle.clear();		
+	circle.resize(game.screenWidth, height);
+	ctx.beginPath();
+	ctx.arc(center.x + this.base.x, center.y, radius,2 * Math.PI, 0); 
+	ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+	ctx.lineWidth = this.style.border;
+	ctx.globalAlpha = 0.65;
+	ctx.fill();
+	ctx.globalAlpha = 1;
+	ctx.stroke();
 	circle.update();
 	this.circle.loadTexture(circle);
-	this._bitmapCircle = circle;
 
 	this.circle.x = -this.base.x;
 

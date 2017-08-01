@@ -147,29 +147,30 @@ Menu.prototype.createArea = function(width, height){
 		x =  lineWidth/2,
 		y =  lineWidth/2;
 		
-	var area = this._bitmapArea;
-	area.clear();		
-	area.resize(width, height);
+	var background = this._bitmapArea,
+		ctx = background.ctx;
+	background.clear();		
+	background.resize(width, height);
 	width -= x*2;
 	height -= y*2;
-	area.ctx.beginPath();
-	area.ctx.fillStyle = this.pattern || 'rgba(255, 255, 255, 1)';
-	area.ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-	area.ctx.lineWidth = lineWidth;
-	area.ctx.moveTo(x + radius, y);
-	area.ctx.lineTo(x + width - radius, y);
-	area.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-	area.ctx.lineTo(x + width, y + height - radius);
-	area.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-	area.ctx.lineTo(x + radius, y + height);
-	area.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-	area.ctx.lineTo(x, y + radius);
-	area.ctx.quadraticCurveTo(x, y, x + radius, y);
-	area.ctx.stroke();
-	area.ctx.globalAlpha = this.options.alpha;
-	area.ctx.fill();
-	area.ctx.globalAlpha = 1;
-	area.update();
+	ctx.beginPath();
+	ctx.fillStyle = this.pattern || 'rgba(255, 255, 255, 1)';
+	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+	ctx.lineWidth = lineWidth;
+	ctx.moveTo(x + radius, y);
+	ctx.lineTo(x + width - radius, y);
+	ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+	ctx.lineTo(x + width, y + height - radius);
+	ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+	ctx.lineTo(x + radius, y + height);
+	ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+	ctx.lineTo(x, y + radius);
+	ctx.quadraticCurveTo(x, y, x + radius, y);
+	ctx.stroke();
+	ctx.globalAlpha = this.options.alpha;
+	ctx.fill();
+	ctx.globalAlpha = 1;
+	background.update();
 
-	this.background.loadTexture(area);	
+	this.background.loadTexture(background);	
 };
