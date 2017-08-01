@@ -78,6 +78,12 @@ var Field = function(options, style, iconStyle){
 	this._applyOptions(options, style, iconStyle);
 
 	/**
+	* Находится ли поле в дебаг режиме
+	* @type {boolean}
+	*/
+	this.inDebugMode = this.options.debug;
+
+	/**
 	* Карты поля.
 	* @type {Card[]}
 	*/
@@ -289,12 +295,6 @@ var Field = function(options, style, iconStyle){
 	* @private
 	*/
 	this._debugActiveSpace = new Phaser.Rectangle();
-
-	/**
-	* Находится ли поле в дебаг режиме
-	* @type {boolean}
-	*/
-	this.inDebugMode = this.options.debug;
 
 	Object.seal(this);
 };

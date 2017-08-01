@@ -28,7 +28,7 @@
 * @type {Game}
 * @global
 */
-window.game = new Game('cardgame', 1, false);
+window.game = new Game('cardgame', 1, localStorage.getItem('durak_debug') == 'true');
 game.state.add(stateMenu, false, false);
 game.state.add(statePlay, false, false);
 game.state.add(stateBoot, true, true);

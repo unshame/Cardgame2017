@@ -15,8 +15,7 @@ var CardManager = function(inDebugMode){
 	* Phaser группа карт.
 	* @type {Phaser.Group}
 	*/
-	this.cardsGroup = game.add.group();
-	this.cardsGroup.name = 'cards';
+	this.cardsGroup = null;
 
 	this.numOfCards = 0;
 
@@ -46,6 +45,14 @@ var CardManager = function(inDebugMode){
 	*/
 	window.getCard = this.getCard.bind(this);
 };
+
+/**
+* Инициализирует модуль - создает группу для карт.
+*/
+CardManager.prototype.initialize = function(){
+	this.cardsGroup = game.add.group();
+	this.cardsGroup.name = 'cards';
+}
 
 /**
 * Создает карты.

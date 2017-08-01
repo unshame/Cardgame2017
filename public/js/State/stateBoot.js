@@ -10,6 +10,20 @@
 
 window.stateBoot = new State('boot', {
 
+	/**
+	* Инициализирует показ процесса загрузки.
+	* @memberof stateBoot
+	*/
+	init: function(){
+
+		console.log('Starting up');		
+
+		this.loadCounter = 0;
+
+		this.loadtextDOM = document.getElementById('loading-text');
+		var loading = document.getElementById('loading');
+		loading.style.backgroundImage = 'url("assets/loading.gif")';
+	},
 
 	/**
 	* Загружает ассеты.
@@ -71,18 +85,32 @@ window.stateBoot = new State('boot', {
 	},
 
 	/**
-	* Инициализирует показ процесса загрузки.
+	* Инициализирует игру и соединение с сервером.
 	* @memberof stateBoot
 	*/
-	init: function(){
+	create: function(){
 
-		console.log('Starting up');		
+		game.initialize();
+		console.log('Initialized');
+		console.log('Connecting');
+		/**
+		* Менеджер соединения с сервером
+		* @type {ConnectionManager}
+		* @global
+		*/
+		window.connection = new ConnectionManager(window.serverMethods, window.clientMethods, game.inDebugMode);
+	},
 
-		this.loadCounter = 0;
+	/** 
+	* Убирает загрузочный текст и экран. 
+	* @memberof stateBoot 
+	*/ 
+	shutdown: function(){ 
+		this.loadtextDOM.innerHTML = ''; 
+		ui.layers.loadLabels();
 
-		this.loadtextDOM = document.getElementById('loading-text');
-		var loading = document.getElementById('loading');
-		loading.style.backgroundImage = 'url("assets/loading.gif")';
+		document.getElementById('loading').style.display = 'none';
+		console.log('Game ready');
 	},
 
 	/**
@@ -114,40 +142,5 @@ window.stateBoot = new State('boot', {
 	*/
 	update: function(){
 		this.updateLoadText('connecting to server');
-	},
-
-	/**
-	* Инициализирует игру и соединение с сервером.
-	* @memberof stateBoot
-	*/
-	create: function(){
-
-		game.initialize();
-		console.log('Initialized');
-		console.log('Connecting');
-		/**
-		* Менеджер соединения с сервером
-		* @type {ConnectionManager}
-		* @global
-		*/
-		window.connection = new ConnectionManager(game.inDebugMode, window.serverMethods, window.clientMethods);
-	},
-
-	/** 
-	* Убирает загрузочный текст и экран. 
-	* @memberof stateBoot 
-	*/ 
-	shutdown: function(){ 
-		this.loadtextDOM.innerHTML = ''; 
-		ui.layers.loadLabels();
-
-		// Форсим дебаг
-		if(game.inDebugMode){
-			game.toggleDebugMode();
-			game.toggleDebugMode();
-		}
-
-		document.getElementById('loading').style.display = 'none';
-		console.log('Game ready');
 	}
 });

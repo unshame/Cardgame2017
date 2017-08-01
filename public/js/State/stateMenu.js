@@ -23,7 +23,7 @@ window.stateMenu = new State('menu', {
 	* @memberof stateMenu
 	*/
 	postResize: function(){
-		background.updateSize();
+		ui.background.updateSize();
 		fieldManager.resizeFields();
 		ui.updatePosition();
 		cardEmitter.restart();

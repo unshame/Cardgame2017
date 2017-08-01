@@ -53,6 +53,9 @@ var Game = function(parent, speed, inDebugMode){
 	*/
 	this.isRawLandscape = true;
 
+
+	/* Модули */
+
 	/**
 	* Менеджер полей
 	* @type {FieldManager}
@@ -95,6 +98,24 @@ var Game = function(parent, speed, inDebugMode){
 	*/
 	window.skinManager = new SkinManager('modern');
 
+	/**
+	* Менеджер карт
+	* @type {CardManager}
+	* @global
+	*/
+	window.cardManager = new CardManager(this.inDebugMode);
+
+	/**
+	* Контроллер карт
+	* @type {CardControl}
+	* @global
+	*/
+	window.cardControl = new CardControl(this.inDebugMode);
+
+	/********/
+
+
+	// Добавляем листенеры
 	window.addEventListener('resize', this._updateCoordinatesDebounce.bind(this));
 	window.addEventListener('orientationchange', this._updateCoordinatesDebounce.bind(this));
 
@@ -121,40 +142,18 @@ Game.prototype.constructor = Game;
 * Инициализирет игру.
 */
 Game.prototype.initialize = function(){
-	this.onPause.add(function(){
-		if(this.inDebugMode)
-			console.log('Game: paused internally');
-	}, this);
 
-	this.onResume.add(function(){
-		if(this.inDebugMode)
-			console.log('Game: unpaused internally');
-	}, this);	
-
-	this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-	this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-
+	// Устанавливаем размер игры
 	this.scale.updateGameSize();
 
 	// Отключаем контекстное меню
 	this.canvas.oncontextmenu = function (e) {e.preventDefault();};
 
+	// Добавляем листенеры
+	this._addVisibilityChangeListener();
+
 	// Антиалиасинг
 	// Phaser.Canvas.setImageRenderingCrisp(game.canvas);
-
-	/**
-	* Фон
-	* @type {Background}
-	* @global
-	*/
-	window.background = new Background();	
-
-	/**
-	* Менеджер карт
-	* @type {CardManager}
-	* @global
-	*/
-	window.cardManager = new CardManager();
 
 	/**
 	* Эмиттер карт
@@ -163,19 +162,26 @@ Game.prototype.initialize = function(){
 	*/
 	window.cardEmitter = new CardEmitter();
 
-	/**
-	* Контроллер карт
-	* @type {CardControl}
-	* @global
-	*/
-	window.cardControl = new CardControl();
-
+	// Инициализация модулей
+	cardManager.initialize();
+	cardControl.initialize();
 	fieldManager.initialize();
-
 	ui.initialize();
 
-	this._addVisibilityChangeListener();
+	/* Дебаг */
+	this.scale.drawDebugGrid();
 
+	this.onPause.add(function(){
+		if(this.inDebugMode)
+			console.log('Game: paused internally');
+	}, this);
+
+	this.onResume.add(function(){
+		if(this.inDebugMode)
+			console.log('Game: unpaused internally');
+	}, this);
+	/********/
+	
 	this.initialized = true;
 };
 
@@ -185,6 +191,7 @@ Game.prototype.initialize = function(){
 Game.prototype.updateCoordinates = function(){
 	this.shouldUpdateFast = false;
 	this.scale.updateGameSize();
+	this.scale.drawDebugGrid();
 	var state = this.state.getCurrent();
 	state.postResize();
 	this._dimensionsUpdateTimeout = null;
@@ -264,7 +271,10 @@ Game.prototype._addVisibilityChangeListener = function(){
 /** Переключает дебаг всех элементов игры. */
 Game.prototype.toggleDebugMode = function(){
 
+
 	this.inDebugMode = !this.inDebugMode;
+
+	localStorage.setItem('durak_debug', this.inDebugMode);
 
 	connection.inDebugMode = this.inDebugMode;
 
@@ -283,12 +293,26 @@ Game.prototype.toggleDebugMode = function(){
 	this.time.advancedTiming = this.inDebugMode;
 };
 
+/** Выводит состояние дебаг режима всех модулей. */
+Game.prototype.checkDebugStatus = function(){
+	console.log(
+		'game:', this.inDebugMode,
+		'\nconnection:', connection.inDebugMode,
+		'\nscale:', this.scale.inDebugMode,
+		'\ncardControl:', cardControl.inDebugMode,
+		'\nfieldManager:', fieldManager.inDebugMode,
+		'\ncardManager:', cardManager.inDebugMode
+	)
+}
+
+/** Выводит FPS. */
 Game.prototype.updateDebug = function(){
 	if(!this.inDebugMode)
 		return;
 	this.debug.text(this.time.fps, 2, 14, "#00ff00");
 };
 
+/** Снимает игру с паузы, если она была поставлена на паузу по неверной причине. */
 Game.prototype.fixPause = function(){
 	if(this.stage.disableVisibilityChange && this.paused && !this.pausedByViewChange){
 		this.paused = false;

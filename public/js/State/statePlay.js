@@ -37,7 +37,7 @@ window.statePlay = new State('play', {
 	* @memberof statePlay
 	*/
 	postResize: function(){
-		background.updateSize();
+		ui.background.updateSize();
 		fieldManager.resizeFields();
 		ui.updatePosition();
 		cardEmitter.restart();

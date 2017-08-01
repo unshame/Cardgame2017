@@ -244,7 +244,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 			trail.interval = 10;
 			trail.maxParticles = Math.ceil(trail.lifespan / trail.interval);
 			trail.makeParticles(skinManager.skin.trailName, [0, 1, 2, 3]);
-			background.add(trail);
+			ui.background.add(trail);
 			trail.width = trail.height = height/2 - skinManager.skin.width*1.5;
 			trail.start(false, trail.lifespan, trail.interval);
 		}, minTime - duration);

@@ -10,11 +10,8 @@ var CardControl = function(inDebugMode){
 	this.card = null;
 	this.pointer = null;
 
-	this.trail = game.add.emitter(0, 0);
-	this.trailDefaultBase = game.add.group();
-	this.trail.makeParticles(skinManager.skin.trailName, 0);
-	this.trailDefaultBase.name = 'trail';
-	this.trailReset();
+	this.trail = null;
+	this.trailDefaultBase = null;
 	this.cardShiftDuration = 100;
 	this.cardReturnTime = 200;
 	this.cardClickMaxDelay = 200;
@@ -22,6 +19,14 @@ var CardControl = function(inDebugMode){
 	this.cardMaxMoveAngle = 30;
 	this._inertiaHistory = [];
 };
+
+CardControl.prototype.initialize = function(){
+	this.trail = game.add.emitter(0, 0);
+	this.trailDefaultBase = game.add.group();
+	this.trail.makeParticles(skinManager.skin.trailName, 0);
+	this.trailDefaultBase.name = 'trail';
+	this.trailReset();
+}
 
 // Обрабатывает нажатие на карту
 CardControl.prototype.cardClick = function(card, pointer){

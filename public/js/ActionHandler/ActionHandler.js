@@ -37,7 +37,6 @@ ActionHandler.prototype.executeAction = function(action){
 	var reaction = this.actionReactions[action.type];
 	if(!reaction){
 		console.warn('Action handler: Unknown action type', action.type, action);
-		console.warn('Action handler: Unknown action type', action.type, action);
 	}
 	else{
 		delay += reaction.call(this, action);

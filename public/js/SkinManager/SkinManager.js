@@ -215,7 +215,7 @@ SkinManager.prototype.applySkin = function(){
 	cardControl.trailApplySkin();
 	fieldManager.applySkin();
 	actionHandler.highlightPossibleActions();
-	background.setTexture(this.skin.background);
+	ui.background.setTexture(this.skin.background);
 };
 
 /**

@@ -15,6 +15,8 @@ var UI = function(){
 
 	this.cursor = null;
 
+	this.background = null;
+
 	this.colors = {
 		orange: 0xFF8300,
 		green: 0x68C655,
@@ -32,6 +34,12 @@ var UI = function(){
 };
 
 UI.prototype.initialize = function(){
+
+	/**
+	* Фон
+	* @type {Background}
+	*/
+	this.background = new Background();	
 
 	this.logo = game.add.image(game.screenWidth/2, game.screenHeight/2 - 200, 'logo');
 	this.logo.anchor.set(0.5, 0.5);
@@ -67,7 +75,6 @@ UI.prototype.initialize = function(){
 		textColor: 'black',
 		name: 'optMenu'
 	});
-	this.testMenu.show();
 	
 	// Кнопки
 	this.addButtons();
@@ -75,7 +82,6 @@ UI.prototype.initialize = function(){
 	/**
 	* Курсор
 	* @type {Cursor}
-	* @global
 	*/
 	this.cursor = this.layers.addExistingLayer(new Cursor('cursor_orange'), -1);
 

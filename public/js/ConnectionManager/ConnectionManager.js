@@ -6,7 +6,7 @@
 * @extends {Eureca.Client}
 */
 
-var ConnectionManager = function(inDebugMode, serverMethods, clientMethods){
+var ConnectionManager = function(serverMethods, clientMethods, inDebugMode){
 
 	/**
 	* A nodejs transparent bidirectional RPC.

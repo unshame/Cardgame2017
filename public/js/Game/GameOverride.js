@@ -52,9 +52,16 @@ Game.prototype.boot = function(){
     this.net = new Phaser.Net(this);
 
     this.time.boot();
+    this.time.advancedTiming = this.inDebugMode; // Для вывода FPS
+
     this.stage.boot();
     this.world.boot();
+
     this.scale.boot();
+    // Форсим свойства ScaleManager
+    this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+    this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+
     this.input.boot();
     this.sound.boot();
     this.state.boot();

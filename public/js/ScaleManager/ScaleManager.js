@@ -160,7 +160,6 @@ ScaleManager.prototype.getDefaultOptions = function(){
 ScaleManager.prototype.updateGameSize = function(){
 	this._calculateScreenSize();
 	this.setGameSize(this.game.screenWidth, this.game.screenHeight);
-	this._drawDebugGrid();
 };
 
 /**
@@ -364,8 +363,20 @@ ScaleManager.prototype.cellAt = function(col, row, offsetX, offsetY, align){
 */
 ScaleManager.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
-	this._drawDebugGrid();
+	this.drawDebugGrid();
 };
+
+ScaleManager.prototype.addDebugGridToGroup = function(group){
+	if(!group)
+		return;
+
+	if(this._debugGrid){
+		group.add(this._debugGrid);
+	}
+	if(this._border){
+		group.add(this._border);
+	}
+}
 
 /**
 * Рисует сетку для дебага.
@@ -374,9 +385,7 @@ ScaleManager.prototype.toggleDebugMode = function(){
 * @param  {number} width  ширина
 * @param  {number} height высота
 */
-ScaleManager.prototype._drawDebugGrid = function(){
-	if(!this.game.initialized)
-		return;
+ScaleManager.prototype.drawDebugGrid = function(){
 
 	if(this._border){
 		this._border.destroy();
@@ -434,6 +443,6 @@ ScaleManager.prototype._drawDebugGrid = function(){
 	border.moveTo(x/2 - thickness/2, screenHeight);
 	border.lineTo(x/2 - thickness/2,0);
 
-	background.add(this._debugGrid);
-	background.add(this._border);
+	ui.background.add(this._debugGrid);
+	ui.background.add(this._border);
 };
