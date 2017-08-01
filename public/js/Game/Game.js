@@ -112,6 +112,13 @@ var Game = function(parent, speed, inDebugMode){
 	*/
 	window.cardControl = new CardControl(this.inDebugMode);
 
+	/**
+	* Менеджер соединения с сервером
+	* @type {ConnectionManager}
+	* @global
+	*/
+	window.connection = new ConnectionManager(window.serverMethods, window.clientMethods, this.inDebugMode);
+
 	/********/
 
 
@@ -167,6 +174,7 @@ Game.prototype.initialize = function(){
 	cardControl.initialize();
 	fieldManager.initialize();
 	ui.initialize();
+	connection.initialize();
 
 	/* Дебаг */
 	this.scale.drawDebugGrid();

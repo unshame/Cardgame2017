@@ -7,25 +7,19 @@
 */
 
 var ConnectionManager = function(serverMethods, clientMethods, inDebugMode){
-
 	/**
 	* A nodejs transparent bidirectional RPC.
 	* @external Eureca
 	* @version 0.7.1
 	* @see {@link http://eureca.io/}
 	*/
-	Eureca.Client.call(this);
+	Eureca.Client.call(this, {
+		autoConnect: false
+	});
 
 	this.proxy = null;
 	this.server = serverMethods;
 	this.exports = clientMethods;
-
-	this.on('ready', this.bindProxy.bind(this));
-	this.on('connect', this.handleConnection.bind(this));
-	this.on('connectionLost', this.handleConnectionLoss.bind(this));
-	this.on('connectionRetry', this.handleConnectionRetry.bind(this));
-	this.on('disconnect', this.handleConnectionLoss.bind(this));
-	this.on('error', this.handleError.bind(this));
 
 	this.responseTimer = null;
 	this.inDebugMode = inDebugMode || false;
@@ -34,8 +28,17 @@ var ConnectionManager = function(serverMethods, clientMethods, inDebugMode){
 ConnectionManager.prototype = Object.create(Eureca.Client.prototype);
 ConnectionManager.prototype.constructor = ConnectionManager;
 
+ConnectionManager.prototype.initialize = function(){
+	this.on('ready', this.bindProxy.bind(this));
+	this.on('connect', this.handleConnection.bind(this));
+	this.on('connectionLost', this.handleConnectionLoss.bind(this));
+	this.on('connectionRetry', this.handleConnectionRetry.bind(this));
+	this.on('disconnect', this.handleConnectionLoss.bind(this));
+	this.on('error', this.handleError.bind(this));
+	this.connect();
+}
+
 ConnectionManager.prototype.bindProxy = function(proxy){
-	console.log('Connection ready');
 	this.proxy = proxy;
 	game.state.change('menu');
 };

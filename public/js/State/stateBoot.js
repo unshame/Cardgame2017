@@ -89,16 +89,8 @@ window.stateBoot = new State('boot', {
 	* @memberof stateBoot
 	*/
 	create: function(){
-
+		console.log('Initializing');
 		game.initialize();
-		console.log('Initialized');
-		console.log('Connecting');
-		/**
-		* Менеджер соединения с сервером
-		* @type {ConnectionManager}
-		* @global
-		*/
-		window.connection = new ConnectionManager(window.serverMethods, window.clientMethods, game.inDebugMode);
 	},
 
 	/** 
@@ -106,9 +98,9 @@ window.stateBoot = new State('boot', {
 	* @memberof stateBoot 
 	*/ 
 	shutdown: function(){ 
-		this.loadtextDOM.innerHTML = ''; 
+		console.log('Connection ready');
 		ui.layers.loadLabels();
-
+		this.loadtextDOM.innerHTML = ''; 
 		document.getElementById('loading').style.display = 'none';
 		console.log('Game ready');
 	},
