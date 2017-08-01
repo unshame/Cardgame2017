@@ -33,12 +33,12 @@ var CardEmitter = function(){
 		frames.push(i);
 	}
 	this.makeParticles(skinManager.skin.sheetName, frames);
-
-	this._start = Phaser.Particles.Arcade.Emitter.prototype.start.bind(this);
 };
 
 CardEmitter.prototype = Object.create(Phaser.Particles.Arcade.Emitter.prototype);
 CardEmitter.prototype.constructor = CardEmitter;
+
+CardEmitter.prototype._start = Phaser.Particles.Arcade.Emitter.prototype.start;
 
 /**
 * Запускает эмиттер карт. Предварительно останавливает эмиттер, если он уже запущен.  
