@@ -98,10 +98,10 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 // ВОКРУГ ТОЧКИ
 
 /**
- * Поворачивает карту вокруг указанной точки на указанный угол. 
- * Параметры указыны в {@link Card#_revolveInfo}.
- * @private
- */
+* Поворачивает карту вокруг указанной точки на указанный угол. 
+* Параметры указыны в {@link Card#_revolveInfo}.
+* @private
+*/
 Card.prototype._revolve = function(){
 	if(!this._revolveInfo || this.mover)
 		return;
@@ -121,12 +121,12 @@ Card.prototype._revolve = function(){
 };
 
 /**
- * Сообщает карте, что нужно вращаться вокруг определенной точки.
- * Вращение происходит, если карта не двигается (нет {@link Card#mover})
- * @param  {number} x     позиция точки вращения по горизонтали
- * @param  {number} y     по вертикали
- * @param  {number} speed угол поворота за 1 мс
- */
+* Сообщает карте, что нужно вращаться вокруг определенной точки.
+* Вращение происходит, если карта не двигается (нет {@link Card#mover})
+* @param  {number} x     позиция точки вращения по горизонтали
+* @param  {number} y     по вертикали
+* @param  {number} speed угол поворота за 1 мс
+*/
 Card.prototype.revolveAround = function(x, y, speed){
 	this._revolveInfo = {
 		x: x,
@@ -136,8 +136,8 @@ Card.prototype.revolveAround = function(x, y, speed){
 };
 
 /**
- * Сообщает карте, что не нужно вращаться.
- */
+* Сообщает карте, что не нужно вращаться.
+*/
 Card.prototype.stopRevolving = function(){
 	this._revolveInfo = null;
 };

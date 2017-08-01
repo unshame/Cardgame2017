@@ -1,28 +1,28 @@
 /**
- * Менеджер состояний игры. 
- * Позволяет переключаться между состояниями игры без ожидания следующего игрового кадра (синхронные состояния).  
- * При использовании синхронных состояний, движок остается в последнем асинхронном состоянии, но все вызовы
- * перенаправляются на новое синхронное состояние.
- * @param {Phaser.Game} game игра
- * @class 
- * @extends {Phaser.StateManager}
- * @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html}
- */
+* Менеджер состояний игры. 
+* Позволяет переключаться между состояниями игры без ожидания следующего игрового кадра (синхронные состояния).  
+* При использовании синхронных состояний, движок остается в последнем асинхронном состоянии, но все вызовы
+* перенаправляются на новое синхронное состояние.
+* @param {Phaser.Game} game игра
+* @class 
+* @extends {Phaser.StateManager}
+* @see  {@link http://phaser.io/docs/2.6.2/Phaser.StateManager.html}
+*/
 var StateManager = function(game){
 	Phaser.StateManager.call(this, game);
 
 	/**
-	 * Синхронные состояния (в дополнение к `states`)
-	 * @type {Object}
-	 */
+	* Синхронные состояния (в дополнение к `states`)
+	* @type {Object}
+	*/
 	this.statesSync = {};
 
 	/**
-	 * Текущее синхронное состояние игры. 
-	 * Считается реальным состоянием игры (выполнятся методы этого состояния).  
-	 * Чтобы узнать асинхронное состояние используется `current`.  
-	 * @type {string}
-	 */
+	* Текущее синхронное состояние игры. 
+	* Считается реальным состоянием игры (выполнятся методы этого состояния).  
+	* Чтобы узнать асинхронное состояние используется `current`.  
+	* @type {string}
+	*/
 	this.currentSync = null;
 };
 
@@ -30,9 +30,9 @@ StateManager.prototype = Object.create(Phaser.StateManager.prototype);
 StateManager.prototype.constructor = StateManager;
 
 /**
- * Текущее состояние (синхронное или асинхронное).  
- * @return {State} Текущее состояние. 
- */
+* Текущее состояние (синхронное или асинхронное).  
+* @return {State} Текущее состояние. 
+*/
 StateManager.prototype.getCurrent = function(){
 	if(this.currentSync == this.current){
 		return this.states[this.current];
@@ -45,18 +45,18 @@ StateManager.prototype.getCurrent = function(){
 StateManager.prototype.getCurrentState = StateManager.prototype.getCurrent;
 
 /**
- * Добавляет асинхронное состояние в игру.
- * @private
- * @type {function}
- */
+* Добавляет асинхронное состояние в игру.
+* @private
+* @type {function}
+*/
 StateManager.prototype._addAsync = Phaser.StateManager.prototype.add;
 
 /**
- * Добавляет новое состояние в игру. 
- * @param {State} state Состояние.
- * @param {boolean} async Является ли состояние асинхронным.
- * @param {boolean} start Нужно ли переходить к этому состоянию сразу.
- */
+* Добавляет новое состояние в игру. 
+* @param {State} state Состояние.
+* @param {boolean} async Является ли состояние асинхронным.
+* @param {boolean} start Нужно ли переходить к этому состоянию сразу.
+*/
 StateManager.prototype.add = function(state, async, start){
 	if(start){
 		this.currentSync = state.key;
@@ -74,11 +74,11 @@ StateManager.prototype.add = function(state, async, start){
 };
 
 /**
- * Меняет состояние игры. 
- * Переходы к асинхронным состояниям плохо работают с ответами серверу и анимациями,
- * поэтому такие переходы не рекомендуются и кидают предупреждение в консоль.
- * @param  {string} key название состояния
- */
+* Меняет состояние игры. 
+* Переходы к асинхронным состояниям плохо работают с ответами серверу и анимациями,
+* поэтому такие переходы не рекомендуются и кидают предупреждение в консоль.
+* @param  {string} key название состояния
+*/
 StateManager.prototype.change = function(key){
 	var oldState, state;
 

@@ -1,25 +1,25 @@
 /**
- * Состояние игры. 
- * Предоставляет методы, выполняющиеся при апдейте, ресайзе, а также
- * при переключении между состояниями игры.  
- * Основные методы (используются во всех состояниях): `{@link State#update|update}, {@link State#preRender|preRender}, {@link State#render|render}, {@link State#create|create}, {@link State#shutdown|shutdown}, {@link State#postResize|postResize}`  
- * Методы, связанные с паузой симуляции игры (используются во всех состояниях): `{@link State#paused|paused}, {@link State#resumed|resumed}, {@link State#postResumed|postResumed}`  
- * Второстепенные методы (используются в асинхронных состояниях): `{@link State#loadUpdate|loadUpdate}, {@link State#loadRender|loadRender}, {@link State#preload|preload}, {@link State#init|init}`  
- * Неиспользуемые методы (присутствуют, но не вызываются): `resize, pauseUpdate`  
- * Существующие состояния и что они делают расписаны в разделе Namespaces (state*Key*).  
- * @class
- * @param {string} key    название состояния
- * @param {object} events методы состояния
- * @extends {Phaser.State}
- * @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html}
- */
+* Состояние игры. 
+* Предоставляет методы, выполняющиеся при апдейте, ресайзе, а также
+* при переключении между состояниями игры.  
+* Основные методы (используются во всех состояниях): `{@link State#update|update}, {@link State#preRender|preRender}, {@link State#render|render}, {@link State#create|create}, {@link State#shutdown|shutdown}, {@link State#postResize|postResize}`  
+* Методы, связанные с паузой симуляции игры (используются во всех состояниях): `{@link State#paused|paused}, {@link State#resumed|resumed}, {@link State#postResumed|postResumed}`  
+* Второстепенные методы (используются в асинхронных состояниях): `{@link State#loadUpdate|loadUpdate}, {@link State#loadRender|loadRender}, {@link State#preload|preload}, {@link State#init|init}`  
+* Неиспользуемые методы (присутствуют, но не вызываются): `resize, pauseUpdate`  
+* Существующие состояния и что они делают расписаны в разделе Namespaces (state*Key*).  
+* @class
+* @param {string} key    название состояния
+* @param {object} events методы состояния
+* @extends {Phaser.State}
+* @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html}
+*/
 var State = function(key, events){
 	Phaser.State.call(this);
 
 	/**
-	 * Название состояния.
-	 * @type {string}
-	 */
+	* Название состояния.
+	* @type {string}
+	*/
 	this.key = key;
 	
 	for(var e in events){

@@ -78,9 +78,9 @@ Card.prototype.applyValue = function(){
 };
 
 /**
- * Обновляет тинт карты в соответствии с ее переворотом.
- * @private
- */
+* Обновляет тинт карты в соответствии с ее переворотом.
+* @private
+*/
 Card.prototype._updateTint = function(){
 	var timeline, value,
 		step = 0x010101,
@@ -159,10 +159,10 @@ Card.prototype.setPlayability = function(playable, tint){
 };
 
 /**
- * Устанавливает подсветку карты.
- * @param {boolean} highlighted включена ли подстветка
- * @param {number} [tint=yi.colors.orange] цвет свечения карты
- */
+* Устанавливает подсветку карты.
+* @param {boolean} highlighted включена ли подстветка
+* @param {number} [tint=yi.colors.orange] цвет свечения карты
+*/
 Card.prototype.setHighlight = function(highlighted, tint){
 	if(this.playable)
 		this.playable = false;

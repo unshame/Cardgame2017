@@ -6,44 +6,44 @@
 var CardManager = function(inDebugMode){
 
 	/**
-	 * Карты по id.
-	 * @type {Object<Card>}
-	 */
+	* Карты по id.
+	* @type {Object<Card>}
+	*/
 	this.cards = {};
 
 	/**
-	 * Phaser группа карт.
-	 * @type {Phaser.Group}
-	 */
+	* Phaser группа карт.
+	* @type {Phaser.Group}
+	*/
 	this.cardsGroup = game.add.group();
 	this.cardsGroup.name = 'cards';
 
 	this.numOfCards = 0;
 
 	/**
-	 * Включена ли физика карт.
-	 * @type {Boolean}
-	 * @default false
-	 */
+	* Включена ли физика карт.
+	* @type {Boolean}
+	* @default false
+	*/
 	this.physicsEnabled = false;
 
 	/**
-	 * Выводит ли менеджер дебаг информацию.
-	 * @type {boolean}
-	 */
+	* Выводит ли менеджер дебаг информацию.
+	* @type {boolean}
+	*/
 	this.inDebugMode = inDebugMode || false;
 
 	/**
-	 * @method
-	 * @global
-	 * @see {@link CardManager#getCards}
-	 */
+	* @method
+	* @global
+	* @see {@link CardManager#getCards}
+	*/
 	window.getCards = this.getCards.bind(this);
 	/**
-	 * @method
-	 * @global
-	 * @see {@link CardManager#getCard}
-	 */
+	* @method
+	* @global
+	* @see {@link CardManager#getCard}
+	*/
 	window.getCard = this.getCard.bind(this);
 };
 

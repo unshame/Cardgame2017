@@ -7,39 +7,39 @@
 var FieldBuilder = function(manager){
 
 	/**
-	 * Ссылка на менеджер полей
-	 * @type {FieldManager}
-	 */
+	* Ссылка на менеджер полей
+	* @type {FieldManager}
+	*/
 	this.manager = manager;
 
 	/**
-	 * Отступы полей
-	 * @type {Object<number>}
-	 */
+	* Отступы полей
+	* @type {Object<number>}
+	*/
 	this.offsets = {};
 
 	/**
-	 * Минимальные ширины для размещения карт
-	 * @type {Object<number>}
-	 */
+	* Минимальные ширины для размещения карт
+	* @type {Object<number>}
+	*/
 	this.minActiveSpaces = {};
 
 	/**
-	 * Рассчитанные позиции полей
-	 * @type {Object<Object>}
-	 */
+	* Рассчитанные позиции полей
+	* @type {Object<Object>}
+	*/
 	this.positions = {};
 
 	/**
-	 * Рассчитанные размеры полей
-	 * @type {Object<Object>}
-	 */
+	* Рассчитанные размеры полей
+	* @type {Object<Object>}
+	*/
 	this.dimensions = {};
 
 	/**
-	 * Стандартный минимальный размер для размещения карт
-	 * @type {Number}
-	 */
+	* Стандартный минимальный размер для размещения карт
+	* @type {Number}
+	*/
 	this.minActiveSpace = 10;
 
 	this._possibleTableOrders = {	
@@ -50,35 +50,35 @@ var FieldBuilder = function(manager){
 	};
 
 	/**
-	 * Последовательность полей стола
-	 * @type {array}
-	 */
+	* Последовательность полей стола
+	* @type {array}
+	*/
 	this.tableOrder = null;
 
 	/**
-	 * Количество полей стола
-	 * @type {Number}
-	 */
+	* Количество полей стола
+	* @type {Number}
+	*/
 	this.tableAmount = 6;
 
 	/**
-	 * Кол-во полей стола в строке
-	 * @type {Number}
-	 */
+	* Кол-во полей стола в строке
+	* @type {Number}
+	*/
 	this.tablesInRow = 0;
 
 	/**
-	 * Отступ между полями стола
-	 * @type {Number}
-	 * @private
-	 */
+	* Отступ между полями стола
+	* @type {Number}
+	* @private
+	*/
 	this._tableOffset = 0;
 
 	/**
-	 * Кол-во клеток, занимаемые полями стола
-	 * @type {Number}
-	 * @private
-	 */
+	* Кол-во клеток, занимаемые полями стола
+	* @type {Number}
+	* @private
+	*/
 	this._tableCells = 0;
 	
 	this._opponentPlacement = null;
@@ -129,8 +129,8 @@ FieldBuilder.prototype.adjustFieldNetwork = function(lockedFields){
 };
 
 /**
- * Расчитывает размеры и позиции полей.
- */
+* Расчитывает размеры и позиции полей.
+*/
 FieldBuilder.prototype.calcSizes = function(){
 	this._calcGenSizes();
 	this._calcSpecSizes();

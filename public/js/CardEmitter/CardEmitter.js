@@ -6,24 +6,24 @@
 var CardEmitter = function(){
 
 	/**
-	 * Время пропадания партиклей эмиттера, когда он остановлен.
-	 * @private
-	 * @type {Number}
-	 */
+	* Время пропадания партиклей эмиттера, когда он остановлен.
+	* @private
+	* @type {Number}
+	*/
 	this.fadeTime = 500;
 
 	/**
-	 * Смещение партиклей в сторону
-	 * @private
-	 * @type {Number}
-	 */
+	* Смещение партиклей в сторону
+	* @private
+	* @type {Number}
+	*/
 	this.sway = 0;
 
 	/**
-	 * Интервал спавна партиклей.
-	 * @private
-	 * @type {Number}
-	 */
+	* Интервал спавна партиклей.
+	* @private
+	* @type {Number}
+	*/
 	this.interval = 0;
 
 	Phaser.Particles.Arcade.Emitter.call(this, game, game.world.centerX, -skinManager.skin.height, 100);
@@ -117,8 +117,8 @@ CardEmitter.prototype.restart = function(){
 };
 
 /**
- * Применяет скин к эмиттеру.
- */
+* Применяет скин к эмиттеру.
+*/
 CardEmitter.prototype.applySkin = function(){
 	this.minParticleScale = this.maxParticleScale = skinManager.skin.scale;
 	if(this.on){

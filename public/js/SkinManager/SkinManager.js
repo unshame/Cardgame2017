@@ -7,36 +7,36 @@
 var SkinManager = function(skinToSet){
 
 	/**
-	 * Добавленные скины.
-	 * @type {Object}
-	 */
+	* Добавленные скины.
+	* @type {Object}
+	*/
 	this.skins = {};
 
 	/**
-	 * Текущий скин. Далее указаны свойства, которые полезны за пределами этого модуля.
-	 * @type {Object}
-	 * @prop {string} name название скина
-	 * @prop {number} width ширина карты
-	 * @prop {number} height высота карты
-	 * @prop {number} scale масштаб карты
-	 * @prop {number} firstValueFrame кадр, с которого начинаются карты со значениями
-	 * @prop {number} cardbackFrame кадр рубашки карт
-	 * @prop {number} trumpOffset сдвиг для отображения масти карты 
-	 * @prop {number} color цвет, соответствующий скину
-	 * 
-	 * @prop {boolean} hasSuits есть ли графика отображения козырной масти
-	 * 
-	 * @prop {string} sheetName имя текстуры карт
-	 * @prop {string} glowSheetName имя текстуры свечения карт
-	 * @prop {string} trailName имя текстуры хвоста карт
-	 * @prop {string} suitsName имя текстуры отображения козырной масти
-	 */
+	* Текущий скин. Далее указаны свойства, которые полезны за пределами этого модуля.
+	* @type {Object}
+	* @prop {string} name название скина
+	* @prop {number} width ширина карты
+	* @prop {number} height высота карты
+	* @prop {number} scale масштаб карты
+	* @prop {number} firstValueFrame кадр, с которого начинаются карты со значениями
+	* @prop {number} cardbackFrame кадр рубашки карт
+	* @prop {number} trumpOffset сдвиг для отображения масти карты 
+	* @prop {number} color цвет, соответствующий скину
+	* 
+	* @prop {boolean} hasSuits есть ли графика отображения козырной масти
+	* 
+	* @prop {string} sheetName имя текстуры карт
+	* @prop {string} glowSheetName имя текстуры свечения карт
+	* @prop {string} trailName имя текстуры хвоста карт
+	* @prop {string} suitsName имя текстуры отображения козырной масти
+	*/
 	this.skin = null;
 
 	/**
-	 * Скин с этим именем будет установлен после его добавления.
-	 * @type {string}
-	 */
+	* Скин с этим именем будет установлен после его добавления.
+	* @type {string}
+	*/
 	this.skinToSet = skinToSet || null;
 };
 

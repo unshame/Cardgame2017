@@ -3,11 +3,11 @@
 /*jshint unused:false*/
 
 /**
- * Fisher–Yates Shuffle (сортировка массивов).
- * @param  {array} a массив для сортировки
- * @global
- * @return {array}   отсортированный массив (тот же, что и на входе)
- */
+* Fisher–Yates Shuffle (сортировка массивов).
+* @param  {array} a массив для сортировки
+* @global
+* @return {array}   отсортированный массив (тот же, что и на входе)
+*/
 function shuffleArray(a){
 	var currentIndex = a.length,
 		temporaryValue,

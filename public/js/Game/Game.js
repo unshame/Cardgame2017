@@ -13,43 +13,43 @@
 var Game = function(parent, speed, inDebugMode){
 
 	/**
-	 * Скорость игры.
-	 * @type {number}
-	 * @default 1
-	 */
+	* Скорость игры.
+	* @type {number}
+	* @default 1
+	*/
 	this.speed = speed || 1;
 
 	/**
-	 * Находится ли игры в дебаг режиме.
-	 * @type {boolean}
-	 * @default false
-	 */
+	* Находится ли игры в дебаг режиме.
+	* @type {boolean}
+	* @default false
+	*/
 	this.inDebugMode = inDebugMode || false;
 
 	/**
-	 * Инициализирована ли игра.
-	 * @type {Boolean}
-	 */
+	* Инициализирована ли игра.
+	* @type {Boolean}
+	*/
 	this.initialized = false;
 
 	/**
-	 * Была ли игра остановлена из-за потери видимости окна.
-	 * @type {Boolean}
-	 */
+	* Была ли игра остановлена из-за потери видимости окна.
+	* @type {Boolean}
+	*/
 	this.pausedByViewChange = false;
 
 	/**
-	 * Длительность перемещения карт по-умолчанию.
-	 * @type {Number}
-	 * @default 300
-	 */
+	* Длительность перемещения карт по-умолчанию.
+	* @type {Number}
+	* @default 300
+	*/
 	this.defaultMoveTime = 300;
 
 	/**
-	 * Находится ли игра в горизонтальном положении, 
-	 * рассчитывается только по размеру экрана.
-	 * @type {Boolean}
-	 */
+	* Находится ли игра в горизонтальном положении, 
+	* рассчитывается только по размеру экрана.
+	* @type {Boolean}
+	*/
 	this.isRawLandscape = true;
 
 	/**
@@ -60,10 +60,10 @@ var Game = function(parent, speed, inDebugMode){
 	window.fieldManager = new FieldManager(this.inDebugMode);
 
 	/**
-	 * Менеджер последовательностей игровых анимаций.
-	 * @type {Sequencer}
-	 * @global
-	 */
+	* Менеджер последовательностей игровых анимаций.
+	* @type {Sequencer}
+	* @global
+	*/
 	window.gameSeq = new Sequencer();
 
 	/**
@@ -117,8 +117,8 @@ Game.prototype = Object.create(Phaser.Game.prototype);
 Game.prototype.constructor = Game;
 
 /**
- * Инициализирет игру.
- */
+* Инициализирет игру.
+*/
 Game.prototype.initialize = function(){
 	this.onPause.add(function(){
 		if(this.inDebugMode)
@@ -179,8 +179,8 @@ Game.prototype.initialize = function(){
 };
 
 /**
- * Корректирует размеры игры в соответствии с размером окна.
- */
+* Корректирует размеры игры в соответствии с размером окна.
+*/
 Game.prototype.updateCoordinates = function(){
 	this.shouldUpdateFast = false;
 	this.scale.updateGameSize();
@@ -190,9 +190,9 @@ Game.prototype.updateCoordinates = function(){
 };
 
 /**
- * Запускает дебаунс корректировки размеров игры.
- * @private
- */
+* Запускает дебаунс корректировки размеров игры.
+* @private
+*/
 Game.prototype._updateCoordinatesDebounce = function(){
 	if(this._dimensionsUpdateTimeout){
 		clearTimeout(this._dimensionsUpdateTimeout);
@@ -205,10 +205,10 @@ Game.prototype._updateCoordinatesDebounce = function(){
 };
 
 /**
- * Ставит и снимает игру с паузы в зависимости от видимости окна,
- * корректирует элементы игры после снятия паузы.
- * @private
- */
+* Ставит и снимает игру с паузы в зависимости от видимости окна,
+* корректирует элементы игры после снятия паузы.
+* @private
+*/
 Game.prototype._visibilityChangeListener = function(){
 
 	function pause(){
@@ -242,9 +242,9 @@ Game.prototype._visibilityChangeListener = function(){
 };
 
 /**
- * Добавляет листенер изменения видимости вкладки в зависимости от браузера.
- * @private
- */
+* Добавляет листенер изменения видимости вкладки в зависимости от браузера.
+* @private
+*/
 Game.prototype._addVisibilityChangeListener = function(){
 	var visibilityChange; 
 	if (typeof document.hidden !== "undefined") {

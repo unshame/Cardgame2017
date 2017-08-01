@@ -154,9 +154,9 @@ ScaleManager.prototype.getDefaultOptions = function(){
 };
 
 /**
- * Расчитывает и устанавливает размер контейнера игры,
- * перерисовывает сетку.
- */
+* Расчитывает и устанавливает размер контейнера игры,
+* перерисовывает сетку.
+*/
 ScaleManager.prototype.updateGameSize = function(){
 	this._calculateScreenSize();
 	this.setGameSize(this.game.screenWidth, this.game.screenHeight);
@@ -164,9 +164,9 @@ ScaleManager.prototype.updateGameSize = function(){
 };
 
 /**
- * Расчитывает размеры игры.
- * @private
- */
+* Расчитывает размеры игры.
+* @private
+*/
 ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 	this.cellWidth = Math.round(skinManager.skin.width/this.density);
 	this.cellHeight = Math.round(skinManager.skin.height/this.density);
@@ -254,10 +254,10 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 };
 
 /**
- * Расчитывает размеры сетки.
- * @param  {number} screenWidth  ширина игры
- * @param  {number} screenHeight высота игры
- */
+* Расчитывает размеры сетки.
+* @param  {number} screenWidth  ширина игры
+* @param  {number} screenHeight высота игры
+*/
 ScaleManager.prototype._calculateGridSize = function(screenWidth, screenHeight){
 	var width = this.cellWidth,
 		height = this.cellHeight;

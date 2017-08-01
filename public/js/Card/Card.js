@@ -143,11 +143,11 @@ var Card = function (options) {
 	this._flipper = null;
 
 	/**
-	 * Информация для вращения карты вокруг точки.
-	 * @type {object}
-	 * @default null
-	 * @private
-	 */
+	* Информация для вращения карты вокруг точки.
+	* @type {object}
+	* @default null
+	* @private
+	*/
 	this._revolveInfo = null;
 
 	/**
@@ -160,10 +160,10 @@ var Card = function (options) {
 	this._bringToTopOn = BRING_TO_TOP_ON.NEVER;
 
 	/**
-	 * Ожидает ли карта перемещения.
-	 * @type {Boolean}
-	 * @default false
-	 */
+	* Ожидает ли карта перемещения.
+	* @type {Boolean}
+	* @default false
+	*/
 	this.delayed = false;
 
 	/**
@@ -191,10 +191,10 @@ var Card = function (options) {
 	this.flipTime = this.options.flipTime;
 
 	/**
-	 * Минимальное значение яркости карты при перевороте.
-	 * @private
-	 * @type {number}
-	 */
+	* Минимальное значение яркости карты при перевороте.
+	* @private
+	* @type {number}
+	*/
 	this._lowestTint = 0x666666;
 
 	/**

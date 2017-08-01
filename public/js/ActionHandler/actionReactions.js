@@ -85,11 +85,11 @@ window.actionReactions = {
 	},
 
 	/**
-	 * Информация об игре при переподключении к игре.
-	 * @param {object} action {@link actionReactions.GAME_INFO}
-	 * @return {number} Время выполнения действия
-	 * @memberof actionReactions
-	 */
+	* Информация об игре при переподключении к игре.
+	* @param {object} action {@link actionReactions.GAME_INFO}
+	* @return {number} Время выполнения действия
+	* @memberof actionReactions
+	*/
 	GAME_INFO_UPDATE: function(action){
 		var text = game.add.text(ui.rope.width + 10, game.screenHeight - 50, 'Reconnected', {fill: 'white'}, ui.cornerButtons);
 		setTimeout(function(){

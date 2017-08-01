@@ -41,9 +41,9 @@ var FieldManager = function(inDebugMode){
 	this.inDebugMode = inDebugMode;
 
 	/**
-	 * Инициализирован ли модуль
-	 * @type {Boolean}
-	 */
+	* Инициализирован ли модуль
+	* @type {Boolean}
+	*/
 	this.initialized = false;
 
 	/**
@@ -55,8 +55,8 @@ var FieldManager = function(inDebugMode){
 };
 
 /**
- * Создает Phaser группу для полей, инициализирует модуль.
- */
+* Создает Phaser группу для полей, инициализирует модуль.
+*/
 FieldManager.prototype.initialize = function(){
 	this.fieldsGroup = game.add.group();
 	this.fieldsGroup.name = 'fields';

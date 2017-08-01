@@ -78,171 +78,171 @@ var Field = function(options, style, iconStyle){
 	this._applyOptions(options, style, iconStyle);
 
 	/**
-	 * Карты поля.
-	 * @type {Card[]}
-	 */
+	* Карты поля.
+	* @type {Card[]}
+	*/
 	this.cards = [];
 
 	/**
-	 * Карты на удаление.
-	 * @type {Card[]}
-	 * @see {@link FieldManager#queueCards}
-	 */
+	* Карты на удаление.
+	* @type {Card[]}
+	* @see {@link FieldManager#queueCards}
+	*/
 	this.cardsToRemove = [];
 
 	/**
-	 * Карты, которые могут быть сыграны на это поле.
-	 * @type {Card[]}
-	 * @see  {@link highlightPossibleActions}
-	 */
+	* Карты, которые могут быть сыграны на это поле.
+	* @type {Card[]}
+	* @see  {@link highlightPossibleActions}
+	*/
 	this.validCards = [];
 
 	/**
-	 * Задержки карт по id карт.
-	 * @private
-	 * @type {object<string>}
-	 */
+	* Задержки карт по id карт.
+	* @private
+	* @type {object<string>}
+	*/
 	this._delays = {};
 
 	/**
-	 * Карты в очереди на добавление.
-	 * @type {Card[]}
-	 * @private
-	 */
+	* Карты в очереди на добавление.
+	* @type {Card[]}
+	* @private
+	*/
 	this._queuedCards = [];
 
 	/**
-	 * Углы карт по id карт.
-	 * @type {Object<number>}
-	 * @private
-	 */
+	* Углы карт по id карт.
+	* @type {Object<number>}
+	* @private
+	*/
 	this._angles = {};
 
 	/**
-	 * Ожидаемая задержка для установки {@link Field#_uninteractibleTimer}
-	 * @private
-	 * @type {Number}
-	 */
+	* Ожидаемая задержка для установки {@link Field#_uninteractibleTimer}
+	* @private
+	* @type {Number}
+	*/
 	this._expectedDelay = 0;
 
 	/**
-	 * Таймер {@link Field#_setUninteractibleTimer}
-	 * @private
-	 */
+	* Таймер {@link Field#_setUninteractibleTimer}
+	* @private
+	*/
 	this._uninteractibleTimer = null;
 
 	/**
-	 * Расчитанное расстояние между картами для {@link Field#cardIsInside}
-	 * @private
-	 * @type {Number}
-	 */
+	* Расчитанное расстояние между картами для {@link Field#cardIsInside}
+	* @private
+	* @type {Number}
+	*/
 	this._cardSpacing = 0;
 
 	/**
-	 * Выделенная карта.
-	 * @type {Card}
-	 */
+	* Выделенная карта.
+	* @type {Card}
+	*/
 	this.focusedCard = null;
 
 	/**
-	 * Связанное поле.
-	 * @type {Field}
-	 * @see {@link CardControl#cardMoveToField}
-	 */
+	* Связанное поле.
+	* @type {Field}
+	* @see {@link CardControl#cardMoveToField}
+	*/
 	this.linkedField = null;
 
 	/**
-	 * Тип поля
-	 * @type {string}
-	 */
+	* Тип поля
+	* @type {string}
+	*/
 	this.type = this.options.type;
 
 	/**
-	 * id поля
-	 * @type {string}
-	 */
+	* id поля
+	* @type {string}
+	*/
 	this.id = this.options.id;
 
 	/**
-	 * Запомненное id поля для временной замены 
-	 * @type {string}
-	 */
+	* Запомненное id поля для временной замены 
+	* @type {string}
+	*/
 	this.savedId = this.id;
 
 	/**
-	 * Специальное id поля для полей, пренадлежащих одной группе.
-	 * @type {number}
-	 */
+	* Специальное id поля для полей, пренадлежащих одной группе.
+	* @type {number}
+	*/
 	this.specialId = this.options.specialId;
 
 	/**
-	 * Имя поля
-	 * @type {string}
-	 */
+	* Имя поля
+	* @type {string}
+	*/
 	this.name = this.options.name;
 
 	/** 
-	 * Время движения карт.
-	 * @type {number}
-	 */
+	* Время движения карт.
+	* @type {number}
+	*/
 	this.moveTime = this.options.moveTime;
 
 	/**
-	 * Задержка между движением карт.
-	 * @type {number}
-	 */
+	* Задержка между движением карт.
+	* @type {number}
+	*/
 	this.delayTime = this.options.delayTime;
 
 	/**
-	 * На сколько увеличивать масштаб карт при наведении.
-	 * @type {number}
-	 */
+	* На сколько увеличивать масштаб карт при наведении.
+	* @type {number}
+	*/
 	this.scaleDiff = this.options.scaleDiff;
 
 	/**
-	 * Phaser группа с поверхностью поля.  
-	 * @type {Phaser.Group}
-	 */
+	* Phaser группа с поверхностью поля.  
+	* @type {Phaser.Group}
+	*/
 	this.base = game.add.group();
 	this.setBase(this.style.x, this.style.y);
 
 	/**
-	 * Поверхность поля.
-	 * @type {Phaser.Image}
-	 */
+	* Поверхность поля.
+	* @type {Phaser.Image}
+	*/
 	this.area = game.add.image(0, 0);
 	this.area.alpha = this.style.alpha;
 	this.area.visible = this.inDebugMode;
 	this.base.add(this.area);
 
 	/**
-	 * BitmapData поверхности поля.
-	 * @type {Phaser.BitmapData}
-	 * @private
-	 */
+	* BitmapData поверхности поля.
+	* @type {Phaser.BitmapData}
+	* @private
+	*/
 	this._bitmapArea = game.make.bitmapData();
 
 	if(this.style.area == 'curved'){
 		/**
-		 * Полукруглая поверхность поля, если `style.area == 'curved'`.
-		 * @type {Phaser.Image}
-		 */
+		* Полукруглая поверхность поля, если `style.area == 'curved'`.
+		* @type {Phaser.Image}
+		*/
 		this.circle = game.add.image(0, 0);
 		this.base.add(this.circle);
 
 		/**
-		 * BitmapData полукруглой поверхности поля.
-		 * @type {Phaser.BitmapData}
-		 * @private
-		 */
+		* BitmapData полукруглой поверхности поля.
+		* @type {Phaser.BitmapData}
+		* @private
+		*/
 		this._bitmapCircle = game.make.bitmapData();
 	}
 
 	if(this.iconStyle.texture){
 		/**
-		 * Иконка поля, если `iconStyle.texture` указано.
-		 * @type {Phaser.Image}
-		 */
+		* Иконка поля, если `iconStyle.texture` указано.
+		* @type {Phaser.Image}
+		*/
 		this.icon = game.add.image(0, 0, this.iconStyle.texture);
 		this.icon.frame = this.iconStyle.frame;
 		this.icon.visible = this.iconStyle.visible;
@@ -252,31 +252,31 @@ var Field = function(options, style, iconStyle){
 	}
 	
 	/**
-	 * Подсвечено ли поле.
-	 * @type {Boolean}
-	 * @default  false
-	 */
+	* Подсвечено ли поле.
+	* @type {Boolean}
+	* @default  false
+	*/
 	this.highlighted = false;
 
 	/**
-	 * Можно ли играть карты на это поле и тип действия.
-	 * @type {(string|boolean)}
-	 * @default  false
-	 */
+	* Можно ли играть карты на это поле и тип действия.
+	* @type {(string|boolean)}
+	* @default  false
+	*/
 	this.playable = false;
 
 	/**
-	 * Интерактивно ли поле.
-	 * @type {Boolean}
-	 * @default  true
-	 */
+	* Интерактивно ли поле.
+	* @type {Boolean}
+	* @default  true
+	*/
 	this.interactible = false;
 
 	/**
-	 * Увеличен ли масштаб поля
-	 * @type {Boolean}
-	 * @default  false
-	 */
+	* Увеличен ли масштаб поля
+	* @type {Boolean}
+	* @default  false
+	*/
 	this.poppedOut = false;
 
 	this.setSize(this.style.width, this.style.height);
@@ -284,16 +284,16 @@ var Field = function(options, style, iconStyle){
 	this._animateAppearance();
 	
 	/**
-	 * Размер активного места поля для дебага.
-	 * @type {Phaser.Rectangle}
-	 * @private
-	 */
+	* Размер активного места поля для дебага.
+	* @type {Phaser.Rectangle}
+	* @private
+	*/
 	this._debugActiveSpace = new Phaser.Rectangle();
 
 	/**
-	 * Находится ли поле в дебаг режиме
-	 * @type {boolean}
-	 */
+	* Находится ли поле в дебаг режиме
+	* @type {boolean}
+	*/
 	this.inDebugMode = this.options.debug;
 
 	Object.seal(this);
@@ -372,19 +372,19 @@ Field.prototype._applyOptions = function(options, style, iconStyle){
 	var defaultConfig = this.getDefaultOptions();
 
 	/**
-	 * Настройки поля.
-	 * @type {object}
-	 */
+	* Настройки поля.
+	* @type {object}
+	*/
 	this.options = defaultConfig.options;
 	/**
-	 * Внешний вид поля.
-	 * @type {object}
-	 */
+	* Внешний вид поля.
+	* @type {object}
+	*/
 	this.style = defaultConfig.style;
 	/**
-	 * Внешний вид иконки поля.
-	 * @type {object}
-	 */
+	* Внешний вид иконки поля.
+	* @type {object}
+	*/
 	this.iconStyle = defaultConfig.iconStyle;
 
 	var o;

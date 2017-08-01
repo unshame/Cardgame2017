@@ -1,12 +1,12 @@
 /**
- * Добавляет действие в список.
- * @private
- * @param {object} step     
- * @param {function} action   
- * @param {(number|function)} duration 
- * @param {any} context  
- * @return {object}
- */
+* Добавляет действие в список.
+* @private
+* @param {object} step     
+* @param {function} action   
+* @param {(number|function)} duration 
+* @param {any} context  
+* @return {object}
+*/
 Sequencer.prototype._add = function(step, action, duration, context){
 	if(!this.inProgress){
 		console.warn('Sequencer: adding step to an expired sequence', this);
@@ -69,14 +69,14 @@ Sequencer.prototype._add = function(step, action, duration, context){
 }; 
 
 /** 
- * Запускает новый список, предварительно завершив предыдущий, сохраняя статус завершения.
- * @private
- * @param {function} action
- * @param {(number|function)} duration
- * @param {number} delay
- * @param {any} context
- * @return {object} 
- */
+* Запускает новый список, предварительно завершив предыдущий, сохраняя статус завершения.
+* @private
+* @param {function} action
+* @param {(number|function)} duration
+* @param {number} delay
+* @param {any} context
+* @return {object} 
+*/
 Sequencer.prototype._startFinishing = function(action, duration, delay, context){
 	var finishing = this._finishing;
 	this._finishing = false;
@@ -97,13 +97,13 @@ Sequencer.prototype._startFinishing = function(action, duration, delay, context)
 };
 
 /** 
- * Добавляет действие в конец текущего списка или запускает новый, сохраняя статус завершения.
- * @private
- * @param {function} action
- * @param {(number|function)} duration
- * @param {any} context
- * @return {object} 
- */
+* Добавляет действие в конец текущего списка или запускает новый, сохраняя статус завершения.
+* @private
+* @param {function} action
+* @param {(number|function)} duration
+* @param {any} context
+* @return {object} 
+*/
 Sequencer.prototype._appendFinishing = function(action, duration, context){	
 	var finishing = this._finishing;
 
@@ -118,9 +118,9 @@ Sequencer.prototype._appendFinishing = function(action, duration, context){
 };
 
 /**
- * Отменяет выполнение всех невыполненых действий и обнуляет список, сохраняя статус завершения.
- * @private
- */
+* Отменяет выполнение всех невыполненых действий и обнуляет список, сохраняя статус завершения.
+* @private
+*/
 Sequencer.prototype._abortFinishing = function(){	
 	var finishing = this._finishing;
 
@@ -133,12 +133,12 @@ Sequencer.prototype._abortFinishing = function(){
 };
 
 /**
- * Возвращает специальные варианты основных методов,
- * которые позволяют правильно обрабатывать вложенные списки.
- * @private
- * @return {object<function>}
- * `{start, append, abort, finish, skip, unskip}`
- */
+* Возвращает специальные варианты основных методов,
+* которые позволяют правильно обрабатывать вложенные списки.
+* @private
+* @return {object<function>}
+* `{start, append, abort, finish, skip, unskip}`
+*/
 Sequencer.prototype._getMethods = function(){
 	return {
 		start: this._startFinishing.bind(this),

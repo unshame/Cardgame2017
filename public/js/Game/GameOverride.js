@@ -1,9 +1,9 @@
 // Перезапись существующих функций Phaser.Game.prototype
 
 /**
- * Создает и бутит все модули игры.
- * Перезапись `Phaser.Game.prototype.boot`.
- */
+* Создает и бутит все модули игры.
+* Перезапись `Phaser.Game.prototype.boot`.
+*/
 Game.prototype.boot = function(){
 
     if (this.isBooted)
@@ -97,10 +97,10 @@ Game.prototype.boot = function(){
 };
 
 /**
- * Обрабатывает переданный конфиг. 
- * Перезапись `Phaser.Game.prototype.parseConfig`. 
- * @param  {object} config конфиг
- */
+* Обрабатывает переданный конфиг. 
+* Перезапись `Phaser.Game.prototype.parseConfig`. 
+* @param  {object} config конфиг
+*/
 Game.prototype.parseConfig = function (config) {
 
     this.config = config;
