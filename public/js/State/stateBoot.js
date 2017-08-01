@@ -45,10 +45,7 @@ window.stateBoot = new State('boot', {
 		game.load.image('blue', 'assets/backgrounds/blue.png');
 
 		// Для меню
-		game.load.image('menu','assets/backgrounds/menu.png');
 		game.load.image('menu_blue','assets/backgrounds/menu_blue.jpg');
-		game.load.image('menu_gray','assets/backgrounds/menu_gray.gif');
-		game.load.image('space','assets/backgrounds/space.jpg');
 
 		// Для тестов
 		game.load.image('testParticle', 'assets/test_particle.png');
