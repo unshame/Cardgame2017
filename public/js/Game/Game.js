@@ -1,7 +1,8 @@
 /**
 * Модуль, работающий с движком игры и инициализирующий все остальные модули
+* @param {string} [parent] id DOM элемента, в который будет добавлен canvas элемент игры
 * @param {number} [speed=1] скорость игры
-* @param {number} [inDebugMode=false] находится ли игры в дебаг режиме
+* @param {number} [inDebugMode=false] находится ли игра в дебаг режиме
 * @class
 * @extends {Phaser.Game}
 * @listens document.resize
