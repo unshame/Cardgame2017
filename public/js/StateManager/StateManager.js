@@ -86,8 +86,9 @@ StateManager.prototype.change = function(key){
 		console.warn('StateManager: changing to async state', key);
 
 		if(this.current != this.currentSync){
-			state = this.statesSync[key];
+			state = this.statesSync[this.currentSync];
 			state.shutdown();
+			this.currentSync = key;
 		}
 
 		this.start(key, false, false);
