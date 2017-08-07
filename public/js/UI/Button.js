@@ -15,7 +15,7 @@ var Button = function(options){
 	this.action = this.options.action;
 	var thisButton = this;
 	function actionWrapper(button, pointer, isOver){
-		if(isOver){
+		if(isOver || !Phaser.Device.desktop){
 			if(cardControl.card){
 				cardControl.cardReturn();
 			}

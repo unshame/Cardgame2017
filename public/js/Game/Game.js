@@ -126,7 +126,7 @@ var Game = function(parent, speed, inDebugMode){
 		{
 			width: this.screenWidth,
  			height: this.screenHeight, 
-			renderer: Phaser.CANVAS, 
+			renderer: Phaser.Device.desktop ? Phaser.CANVAS : Phaser.WEBGL, 
 			parent: parent,
 			transparent: true
 		}
