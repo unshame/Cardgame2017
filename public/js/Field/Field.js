@@ -369,25 +369,25 @@ Field.prototype.getDefaultOptions = function(){
 * @param {object} [iconStyle] Внешний вид иконки поля.
 */
 Field.prototype._applyOptions = function(options, style, iconStyle){
-	var defaultConfig = this.getDefaultOptions();
+	var defaults = this.getDefaultOptions();
 
 	/**
 	* Настройки поля.
 	* @type {object}
 	*/
-	this.options = mergeOptions(defaultConfig.options, options);
+	this.options = mergeOptions(defaults.options, options);
 
 	/**
 	* Внешний вид поля.
 	* @type {object}
 	*/
-	this.style = mergeOptions(defaultConfig.style, style);
+	this.style = mergeOptions(defaults.style, style);
 
 	/**
 	* Внешний вид иконки поля.
 	* @type {object}
 	*/
-	this.iconStyle = mergeOptions(defaultConfig.iconStyle, iconStyle);
+	this.iconStyle = mergeOptions(defaults.iconStyle, iconStyle);
 
 };
 

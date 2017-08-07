@@ -28,9 +28,17 @@ function shuffleArray(a){
 	return a;
 }
 
+/**
+* Совмещает свойства по-умолчанию с неполностью указанными свойствами.  
+* @global
+* @param  {object} dest   опции по-умолчанию, которые нужно перезаписать
+* @param  {object} source опции, которыми нужно перезаписать
+* @return {object} 		  Возвращает объект, в котором свойства `dest` заменены на
+*                         свойства `source`, если они существуют и там и там.         
+*/
 function mergeOptions(dest, source){
 	if(typeof dest != 'object'){
-		console.error('Can\'t merge options: no default options provided');
+		console.error('Can\'t merge options: no destination provided');
 		return;
 	}
 	if(typeof source == 'object'){
