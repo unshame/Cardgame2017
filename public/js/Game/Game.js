@@ -194,7 +194,6 @@ Game.prototype.initialize = function(){
 * Корректирует размеры игры в соответствии с размером окна.
 */
 Game.prototype.updateCoordinates = function(){
-	this.shouldUpdateFast = false;
 	this.scale.updateGameSize();
 	this.scale.drawDebugGrid();
 	var state = this.state.getCurrent();
@@ -210,10 +209,10 @@ Game.prototype._updateCoordinatesDebounce = function(){
 	if(this._dimensionsUpdateTimeout){
 		clearTimeout(this._dimensionsUpdateTimeout);
 	}
-	else if(!this.shouldUpdateFast && !this.inDebugMode){
+	else if(!this.scale.fullScreenModeChanged && !this.inDebugMode){
 		document.getElementById('loading').style.display = 'block';
 	}
-	var timeout = (this.shouldUpdateFast || this.inDebugMode) ? 10 : 500;
+	var timeout = (this.scale.fullScreenModeChanged || this.inDebugMode) ? 10 : 500;
 	this._dimensionsUpdateTimeout = setTimeout(this.updateCoordinates.bind(this), timeout);
 };
 

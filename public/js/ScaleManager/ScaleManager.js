@@ -128,6 +128,13 @@ var ScaleManager = function(options){
 	* @private
 	*/
 	this._border = null;
+
+	/**
+	 * Был ли совершен переход из\в полный экран.  
+	 * Сообщает игре, что не нужно дебаунсить обновление позиций элементов.
+	 * @type {Boolean}
+	 */
+	this.fullScreenModeChanged = false;
 };
 
 ScaleManager.prototype = Object.create(Phaser.ScaleManager.prototype);
@@ -158,6 +165,7 @@ ScaleManager.prototype.getDefaultOptions = function(){
 * перерисовывает сетку.
 */
 ScaleManager.prototype.updateGameSize = function(){
+	this.fullScreenModeChanged = false;
 	this._calculateScreenSize();
 	this.setGameSize(this.game.screenWidth, this.game.screenHeight);
 };
@@ -445,4 +453,16 @@ ScaleManager.prototype.drawDebugGrid = function(){
 
 	ui.background.add(this._debugGrid);
 	ui.background.add(this._border);
+};
+
+ScaleManager.prototype.toggleFullScreen = function(){
+	this.fullScreenModeChanged = true;
+	if (this.isFullScreen){
+		ui.cornerButtons.getByName('fullscreen').label.frame = 0;
+		this.stopFullScreen();
+	}
+	else{
+		ui.cornerButtons.getByName('fullscreen').label.frame = 1;
+		this.startFullScreen();
+	}
 };

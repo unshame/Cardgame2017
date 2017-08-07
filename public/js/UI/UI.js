@@ -188,7 +188,7 @@ UI.prototype.addButtons = function(){
 				y: 15
 			};
 		},
-		action: this.toggleFullScreen,
+		action: game.scale.toggleFullScreen,
 		icon: 'fullscreen',
 		context: this,
 		color: 'orange',
@@ -226,18 +226,6 @@ UI.prototype.updatePosition = function(){
 	this.optMenu.update();
 
 	this.logo.position = new Phaser.Point(game.screenWidth/2, game.screenHeight/2 - 200);
-};
-
-UI.prototype.toggleFullScreen = function(){
-	game.shouldUpdateFast = true;
-	if (game.scale.isFullScreen){
-		this.cornerButtons.getByName('fullscreen').label.frame = 0;
-		game.scale.stopFullScreen();
-	}
-	else{
-		this.cornerButtons.getByName('fullscreen').label.frame = 1;
-		game.scale.startFullScreen();
-	}
 };
 
 // Возвращает phaser пиксель для превращения в текстуру
