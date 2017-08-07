@@ -374,18 +374,6 @@ ScaleManager.prototype.toggleDebugMode = function(){
 	this.drawDebugGrid();
 };
 
-ScaleManager.prototype.addDebugGridToGroup = function(group){
-	if(!group)
-		return;
-
-	if(this._debugGrid){
-		group.add(this._debugGrid);
-	}
-	if(this._border){
-		group.add(this._border);
-	}
-};
-
 /**
 * Рисует сетку для дебага.
 * @private
