@@ -135,6 +135,11 @@ UI.prototype.addButtons = function(){
 		mover.start();
 	}, 'next','Next');
 
+	// Смена фона
+	this.optMenu.addButton(function(button, pointer){
+		ui.background.nextTexture();
+	},'background','Background');
+
 	// Смена скина
 	this.optMenu.addButton(function(button, pointer){
 		if(pointer.isMouse && pointer.button !== 0){
