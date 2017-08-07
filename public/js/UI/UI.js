@@ -195,7 +195,7 @@ UI.prototype.addButtons = function(){
 		},
 		action: game.scale.toggleFullScreen,
 		icon: 'fullscreen',
-		context: this,
+		context: game.scale,
 		color: 'orange',
 		name: 'fullscreen',
 		size: 'small',
