@@ -41,28 +41,18 @@ Background.prototype.setTexture = function(textureName){
 	this.surface.loadTexture(textureName);
 	this.surface.textureName = textureName;
 	var transition = game.add.tween(fakebg.position);
-	var position, i = Math.floor(Math.random()*4);
-	switch(i){
-	case 0:
-		position = {y: -game.screenHeight};
-		break;
 
-	case 1:
-		position = {y: game.screenHeight};
-		break;
-
-	case 2:
-		position = {x: -game.screenWidth};
-		break;
-
-	case 3:
-		position = {x: game.screenWidth};
-		break;
-	}
+	var position = [
+		{y: -game.screenHeight},
+		{y: game.screenHeight},
+		{x: -game.screenWidth},
+		{x: game.screenWidth}
+	][ Math.floor(Math.random()*4) ];
+	
 	transition.to(position, 2000, Phaser.Easing.Bounce.Out);
 	transition.onComplete.addOnce(function(){
-		this.destroy();
-	}, fakebg);
+		fakebg.destroy();
+	});
 	transition.start();
 };
 
