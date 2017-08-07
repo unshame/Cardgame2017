@@ -28,6 +28,21 @@ function shuffleArray(a){
 	return a;
 }
 
+function mergeOptions(dest, source){
+	if(typeof dest != 'object'){
+		console.error('Can\'t merge options: no default options provided');
+		return;
+	}
+	if(typeof source == 'object'){
+		for(o in dest){
+			if(source.hasOwnProperty(o) && source[o] !== undefined){
+				dest[o] = source[o];
+			}
+		}
+	}
+	return dest;
+}
+
 
 // TEST AND DEBUG FUNCTIONS
 

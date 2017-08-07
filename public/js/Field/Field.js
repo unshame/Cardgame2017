@@ -375,40 +375,20 @@ Field.prototype._applyOptions = function(options, style, iconStyle){
 	* Настройки поля.
 	* @type {object}
 	*/
-	this.options = defaultConfig.options;
+	this.options = mergeOptions(defaultConfig.options, options);
+
 	/**
 	* Внешний вид поля.
 	* @type {object}
 	*/
-	this.style = defaultConfig.style;
+	this.style = mergeOptions(defaultConfig.style, style);
+
 	/**
 	* Внешний вид иконки поля.
 	* @type {object}
 	*/
-	this.iconStyle = defaultConfig.iconStyle;
+	this.iconStyle = mergeOptions(defaultConfig.iconStyle, iconStyle);
 
-	var o;
-	if(options){
-		for(o in defaultConfig.options){
-			if(options.hasOwnProperty(o) && options[o] !== undefined){
-				this.options[o] = options[o];
-			}
-		}
-	}
-	if(style){
-		for(o in defaultConfig.style){
-			if(style.hasOwnProperty(o) && style[o] !== undefined){
-				this.style[o] = style[o];
-			}
-		}
-	}
-	if(iconStyle){
-		for(o in defaultConfig.iconStyle){
-			if(iconStyle.hasOwnProperty(o) && iconStyle[o] !== undefined){
-				this.iconStyle[o] = iconStyle[o];
-			}
-		}
-	}
 };
 
 //@include:FieldPosition

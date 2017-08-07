@@ -19,15 +19,7 @@
 
 var ScaleManager = function(options){
 
-	this.options = this.getDefaultOptions();
-
-	if(options){
-		for(var o in options){
-			if(options.hasOwnProperty(o) && options[o] !== undefined){
-				this.options[o] = options[o];
-			}
-		}
-	}
+	this.options = mergeOptions(this.getDefaultOptions(), options);
 
 	Phaser.ScaleManager.call(this, this.options.game, this.options.width, this.options.height);
 

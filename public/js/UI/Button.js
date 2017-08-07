@@ -5,11 +5,7 @@
 
 var Button = function(options){
 
-	this.options = this.getDefaultOptions();
-	for(var o in options){
-		if(options.hasOwnProperty(o) && options[o] !== undefined)
-			this.options[o] = options[o];
-	}
+	this.options = mergeOptions(this.getDefaultOptions(), options);
 
 	// Действие
 	this.action = this.options.action;

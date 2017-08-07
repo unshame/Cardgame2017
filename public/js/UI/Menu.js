@@ -1,10 +1,5 @@
 var Menu = function(options){
-	this.options = this.getDefaultOptions();
-	for(var o in options){
-		if(options.hasOwnProperty(o) && options[o] !== undefined){
-			this.options[o] = options[o];
-		}
-	}
+	this.options = mergeOptions(this.getDefaultOptions(), options);
 
 	this.background = game.add.image(0, 0);
 	this.background.visible = false;
