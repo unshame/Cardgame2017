@@ -120,13 +120,18 @@ class GenericPlayers extends GamePlayers{
 			return;
 		}
 		this.notify({message: 'DISCONNECTED', noResponse: true}, null, [player]);
-		player.game = null;
-		this.splice(this.indexOf(player), 1);
+		
 		let replacement = new Bot(['Synth']);
 		replacement.statuses = player.statuses;
 		replacement.id = player.id;
+		replacement.game = this.game;
+		Object.seal(replacement);
+		
+		player.game = null;
 		player.statuses = {};
-		this.push(replacement);
+
+		let pi = this.indexOf(player);
+		this[pi] = replacement;
 	}
 
 	// Оповещает игроков о совершенном действии

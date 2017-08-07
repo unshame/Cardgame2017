@@ -30,6 +30,10 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
+	if(game.inDebugMode){
+		feed.newMessage(action.type, 'system', 2000);
+	}
+
 	gameSeq.finish();
 
 	var delay = 0;
@@ -76,6 +80,10 @@ ActionHandler.prototype.handleNotification = function(note, actions){
 	if(game.state.currentSync != 'play'){
 		console.error('ActionHandler: must be in play state to recieve game notifications');
 		return;
+	}
+
+	if(game.inDebugMode){
+		feed.newMessage(note.message, 'system', 2000);
 	}
 
 	var reaction = this.notificationReactions[note.message];
