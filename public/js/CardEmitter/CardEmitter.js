@@ -26,17 +26,68 @@ var CardEmitter = function(){
 	*/
 	this.interval = 0;
 
-	Phaser.Particles.Arcade.Emitter.call(this, game, game.world.centerX, -skinManager.skin.height, 100);
-	this.name = 'partyEmitter';
-	var frames = [];
-	for(var i = 0; i < 52; i++){
-		frames.push(i);
-	}
-	this.makeParticles(skinManager.skin.sheetName, frames);
+	/**
+	* Интервал до того, как к нему были применены ограничения.
+	* @type {Number}
+	* @private
+	*/
+	this._preferedInterval = 0;
+
+	/**
+	* Скорость игры при последнем запуске эмиттера.
+	* @type {number}
+	* @private
+	*/
+	this._cachedGameSpeed = game.speed;
+
+	/**
+	 * Максимальное количество частиц эмиттера.
+	 * Для применения максимума используется {@link CardEmitter#makeMaxParticles}
+	 * @type {Number}
+	 */
+	this.maxParticles = 50;
+
+	Phaser.Particles.Arcade.Emitter.call(this, game, game.world.centerX, -skinManager.skin.height, this.maxParticles);
+	this.name = 'cardEmitter';
+
+	this.makeMaxParicles();
 };
 
 CardEmitter.prototype = Object.create(Phaser.Particles.Arcade.Emitter.prototype);
 CardEmitter.prototype.constructor = CardEmitter;
+
+/**
+ * Приводит кол-во партиклей эмиттера к заданному значению, по необходимости удаляя и добавляя партикли.
+ * Перезапускает эмиттер.
+ * @param  {[type]} [max=CardEmitter#maxParticles] Желаемое кол-во партиклей.
+ */
+CardEmitter.prototype.makeMaxParicles = function(max){
+	if(typeof max != 'number' || isNaN(max)){
+		max = this.maxParticles;
+	}
+	else{
+		this.maxParticles = max;
+	}
+
+	var	current = this.children.length;
+	if(max < current){
+		if(this.on){
+			setTimeout(this.removeBetween.bind(this, max, current - 1), this.fadeTime/game.speed);
+		}
+		else{
+			this.removeBetween(max, current - 1);
+		}
+	}
+	else if(max > current){
+		var frames = [];
+		for(var i = skinManager.skin.firstValueFrame; i < skinManager.skin.firstValueFrame + 52; i++){
+			frames.push(i);
+		}
+		this.makeParticles(skinManager.skin.sheetName, frames, max - current);
+	}
+
+	this.restart();
+}
 
 CardEmitter.prototype._start = Phaser.Particles.Arcade.Emitter.prototype.start;
 
@@ -55,35 +106,58 @@ CardEmitter.prototype.start = function(minSpeed, maxSpeed, sway, interval, rotat
 
 	this.stop();
 
-	if(minSpeed === undefined)
-		minSpeed = this.minParticleSpeed.y;
-	if(maxSpeed === undefined)
-		maxSpeed = this.maxParticleSpeed.y;
-	if(sway === undefined)
+	if(minSpeed === undefined){
+		minSpeed = this.minParticleSpeed.y/this._cachedGameSpeed;
+	}
+	if(maxSpeed === undefined){
+		maxSpeed = this.maxParticleSpeed.y/this._cachedGameSpeed;
+	}
+	if(sway === undefined){
 		sway = this.sway;
-	else
+	}
+	else{
 		this.sway = sway;
-	if(rotation === undefined)
+	}
+	if(rotation === undefined){
 		rotation = this.maxRotation;
-	if(gravity !== undefined)
-		this.gravity = gravity;
-	if(interval === undefined)
-		interval = this.interval;
+	}
+	if(gravity !== undefined){
+		this.gravity = gravity * game.speed;
+	}
+	else{
+		this.gravity = this.gravity / this._cachedGameSpeed * game.speed;
+	}
+	if(interval === undefined){
+		interval = this._preferedInterval;
+	}
+	else{
+		this._preferedInterval = interval;
+	}
 
 	this.minParticleSpeed = {x: -sway * game.speed, y: minSpeed * game.speed};
 	this.maxParticleSpeed = {x: sway * game.speed, y: maxSpeed * game.speed};
+
 	this.minRotation = -rotation;
 	this.maxRotation = rotation;
+
 	this.x = game.world.centerX;
 	this.width = game.screenWidth;
+
+	// Вычисляем длину жизни частиц из уравнения движения 
+	// x(t) = x0 + vt + (at^2)/2
+	// a/2 * t^2 + vt + x0 = 0
 	function solveQuadEq(a, b, c) {
 		return Math.abs((-1 * b + Math.sqrt(Math.pow(b, 2) - (4 * a * c))) / (2 * a));
-	}
-	
+	}	
 	var lifespan = solveQuadEq(this.gravity / 2, minSpeed * game.speed, - (game.screenHeight + skinManager.skin.height * 2)) * 1000;
-	if(interval === false)
-		interval = lifespan/this.maxParticles;
+
+	// Ограничиваем минимальный интервал
+	var minInterval = lifespan/this.maxParticles;
+	if(interval === false || interval < minInterval){
+		interval = minInterval;
+	}
 	this.interval = interval;
+	this._cachedGameSpeed = game.speed;
 	this._start(false, lifespan, interval, undefined, undefined);
 };
 
@@ -107,13 +181,12 @@ CardEmitter.prototype.stop = function(){
 };
 
 /**
-* Перезапускает эмиттер карт с текущими настройками.
+* Перезапускает эмиттер карт с текущими настройками если он запущен.
 */
 CardEmitter.prototype.restart = function(){
-	if(!this.on)
-		return;
-	this.stop();
-	this.on = true;
+	if(this.on){
+		this.start();
+	}
 };
 
 /**
@@ -122,7 +195,6 @@ CardEmitter.prototype.restart = function(){
 CardEmitter.prototype.applySkin = function(){
 	this.minParticleScale = this.maxParticleScale = skinManager.skin.scale;
 	if(this.on){
-		this.restart();
 		setTimeout(this._applySkinToEmitter.bind(this), this.fadeTime/game.speed);
 	}
 	else{
