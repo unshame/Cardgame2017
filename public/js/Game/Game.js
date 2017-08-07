@@ -127,7 +127,8 @@ var Game = function(parent, speed, inDebugMode){
 			width: this.screenWidth,
  			height: this.screenHeight, 
 			renderer: Phaser.CANVAS, 
-			parent: parent
+			parent: parent,
+			transparent: true
 		}
 	);
 
