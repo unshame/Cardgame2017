@@ -121,11 +121,6 @@ var Game = function(parent, speed, inDebugMode){
 
 	/********/
 
-
-	// Добавляем листенеры
-	window.addEventListener('resize', this._updateCoordinatesDebounce.bind(this));
-	window.addEventListener('orientationchange', this._updateCoordinatesDebounce.bind(this));
-
 	Phaser.Game.call(
 		this,
 		{
@@ -158,6 +153,8 @@ Game.prototype.initialize = function(){
 
 	// Добавляем листенеры
 	this._addVisibilityChangeListener();
+	window.addEventListener('resize', this._updateCoordinatesDebounce.bind(this));
+	window.addEventListener('orientationchange', this._updateCoordinatesDebounce.bind(this));
 
 	// Антиалиасинг
 	// Phaser.Canvas.setImageRenderingCrisp(game.canvas);
