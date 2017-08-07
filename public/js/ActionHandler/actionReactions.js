@@ -90,10 +90,7 @@ window.actionReactions = {
 	* @memberof actionReactions
 	*/
 	GAME_INFO_UPDATE: function(action){
-		var text = game.add.text(ui.rope.width + 10, game.screenHeight - 50, 'Reconnected', {fill: 'white'}, ui.cornerButtons);
-		setTimeout(function(){
-			text.destroy();
-		}, 2000);
+		feed.newMessage('Reconnected', 'system', 2000);
 		return this['GAME_INFO'].call(this, action, true);
 	},
 

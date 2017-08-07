@@ -27,6 +27,7 @@ window.stateMenu = new State('menu', {
 		fieldManager.resizeFields();
 		ui.updatePosition();
 		cardEmitter.restart();
+		feed.shiftMessages();
 		document.getElementById('loading').style.display = 'none';
 	},
 

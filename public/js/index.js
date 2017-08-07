@@ -22,6 +22,7 @@
 //@include:Sequencer
 //@include:SkinManager
 //@include:UI
+//@include:NotificationManager
 
 /**
 * Игра

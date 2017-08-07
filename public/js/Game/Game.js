@@ -119,6 +119,7 @@ var Game = function(parent, speed, inDebugMode){
 	*/
 	window.connection = new ConnectionManager(window.serverMethods, window.clientMethods, 'menu', this.inDebugMode);
 
+
 	/********/
 
 	Phaser.Game.call(
@@ -166,6 +167,9 @@ Game.prototype.initialize = function(){
 	* @global
 	*/
 	window.cardEmitter = new CardEmitter();
+
+	window.feed = new NotificationManager();
+	
 
 	// Инициализация модулей
 	cardManager.initialize();

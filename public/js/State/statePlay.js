@@ -41,6 +41,7 @@ window.statePlay = new State('play', {
 		fieldManager.resizeFields();
 		ui.updatePosition();
 		cardEmitter.restart();
+		feed.shiftMessages();
 		document.getElementById('loading').style.display = 'none';
 	},
 
