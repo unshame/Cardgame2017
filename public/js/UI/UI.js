@@ -111,8 +111,8 @@ UI.prototype.addButtons = function(){
 	// МЕНЮ ОПЦИЙ
 	// Отключение от игры
 	this.optMenu.addButton(function(){
-		localStorage.removeItem('durak_id');
-		document.location.href = document.location.href;
+		connection.proxy.disconnect();
+		this.hide();
 	}, 'disconnect','Disconnect');
 
 	this.optMenu.addButton(function(){

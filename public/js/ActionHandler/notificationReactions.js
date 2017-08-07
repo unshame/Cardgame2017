@@ -146,6 +146,10 @@ window.notificationReactions = {
 		if(actions){
 			this.handlePossibleActions(actions, note.time, note.timeSent);
 		}
+	},
+
+	DISCONNECTED: function(){
+		game.state.change('menu');
 	}
 
 };

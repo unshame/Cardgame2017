@@ -23,7 +23,7 @@ const
 	Log = requirejs('logger');
 
 class Game{
-	constructor(players, canTransfer, debugMode){
+	constructor(players, canTransfer, debugMode, isTest){
 
 		// Генерируем айди игры
 		var id = generateId();
@@ -64,6 +64,10 @@ class Game{
 
 		this.simulating = false;
 
+		this.fakeDescisionTimer = this.defaultFakeDescisionTimer = 500;
+
+		this.isTest = isTest;
+
 		// Запускаем игру
 		this.reset();
 		this.start();
@@ -90,7 +94,13 @@ class Game{
 			loser: null
 		};
 
-		this.simulating = !this.players.getWith('type', 'player').length;
+		this.simulating = this.isTest;
+		if(this.simulating){
+			this.fakeDescisionTimer = 0;
+		}
+		else{
+			this.fakeDescisionTimer = this.defaultFakeDescisionTimer;
+		}
 
 		this.players.resetGame();
 		this.cards.reset(true);
@@ -104,7 +114,6 @@ class Game{
 
 	// Подготовка и начало игры
 	start(){
-
 		this.log.notice('Game started', this.index);
 
 		this.states.current = 'SHOULD_START';
@@ -129,6 +138,11 @@ class Game{
 	end(){
 
 		this.log.info('Game ended', this.id, '\n\n');
+
+		if(!this.isTest && !this.players.getWithOwn('type', 'player').length){
+			this.log.notice('Abandoning game, no human players left');
+			return;
+		}
 		
 		let results = Object.assign({}, this.result);
 		results.winners = this.result.winners.slice();
@@ -181,12 +195,13 @@ class Game{
 
 	// Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
 	trySimulating(){
-		let humanActivePlayer = this.players.getWithFirst('type', 'player', this.players.active);
-		if(!humanActivePlayer){
+		let humanActivePlayers = this.players.getWithOwn('type', 'player', this.players.active);
+		if(!humanActivePlayers.length){
 			this.log.notice('Simulating');
-			let humanPlayers = this.players.getWith('type', 'player');
+			let humanPlayers = this.players.getWithOwn('type', 'player');
 			this.players.notify({message: 'SIMULATING'}, null, humanPlayers);
 			this.simulating = true;
+			this.fakeDescisionTimer = 0;
 		}
 	}
 
@@ -210,6 +225,7 @@ class Game{
 
 	// Начинает ход
 	startTurn(){
+
 		this.players.logTurnStart();
 
 		this.turnStartTime = Date.now();
@@ -286,7 +302,7 @@ class Game{
 		}
 
 		if(this.simulating){
-			players = this.players.getWith('type', 'bot', false, players);
+			players = this.players.getWithOwn('type', 'bot', players);
 		}
 
 		this.players.working = players;

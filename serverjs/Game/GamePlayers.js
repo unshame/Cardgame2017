@@ -12,6 +12,13 @@
 const
 	BetterArray = requirejs('BetterArray.js');
 
+
+function valueToFunc(value){
+	return (otherValue) => {
+		return otherValue == value;
+	};
+}
+
 class GamePlayers extends BetterArray{
 
 	constructor(game, players){
@@ -28,6 +35,7 @@ class GamePlayers extends BetterArray{
 	// Добавление игроков в массив
 	push(p){
 		p.game = this.game;
+		Object.seal(p);	// Предотвращаем добавление новых свойств игрокам
 		super.push(p);
 	}
 
@@ -35,7 +43,7 @@ class GamePlayers extends BetterArray{
 	setStatuses(p, status){
 		for(let key in status){
 			if(status.hasOwnProperty(key)){
-				p[key] = status[key];
+				p.statuses[key] = status[key];
 			}
 		}
 	}
@@ -59,6 +67,28 @@ class GamePlayers extends BetterArray{
 		return info;
 	}
 
+	// Выполняет action для каждого игрока из players,
+	// только если игрок входит в игру
+	// Чтобы остановить цикл, action должно возвратить true
+	forEachOwn(action, players) {
+		if(!action)
+			return;
+
+		if(!players || !players.length)
+			players = this;
+
+		for(let i = 0; i < players.length; i++){
+			let p = players[i];
+			if(this.includes(p) && p.game == this.game){
+				if(action(p))
+					return;
+			}
+			else{
+				this.log.error('Player isn\'t in this game', p.id);
+			}
+		}
+	}
+
 	// СТАТУСЫ	
 	
 	/*
@@ -69,36 +99,20 @@ class GamePlayers extends BetterArray{
 	 */
 	set(status, value, players){
 
-		if(!players || !players.length)
-			players = this;
-
-		for(let i = 0; i < players.length; i++){
-			let p = players[i];
-			if(this.includes(p) && p.game == this.game){
-				p[status] = value;
-			}
-			else{
-				this.log.error('Player isn\'t in this game', p.id);
-			}
-		}
+		this.forEachOwn((p) => {
+			p.statuses[status] = value;
+		}, players);
 	}
 
+	// Устанавливает цифру в status игрокам
+	// Каждая новая цифра больше предыдущей установленной
 	setIncrementing(status, players){
 
-		if(!players || !players.length)
-			players = this;
-
 		let last = this.getWith(status, val => !!val).length + 1;
-		for(let pi = 0; pi < players.length; pi++){
-			let p = players[pi];
-			if(this.includes(p) && p.game == this.game){
-				p[status] = last;
-				last++;
-			}
-			else{
-				this.log.error('Player isn\'t in this game', p.id);
-			}
-		}
+		this.forEachOwn((p) => {
+			p.statuses[status] = last;
+			last++;
+		}, players);
 	}
 
 	/*
@@ -109,36 +123,26 @@ class GamePlayers extends BetterArray{
 	 * @players - опционально можно указать среди каких игроков выбирать
 	 */
 	getWith(status, compare, sort, players){
-		if(!players)
-			players = this;
 
 		if(typeof compare != 'function'){
-			let newVal = compare;
-			compare = (value) => {
-				return value == newVal;
-			};
+			compare = valueToFunc(compare);
 		}
 
 		let results = [];
 
-		for(let i = 0; i < players.length; i++){
-			let p = players[i];
-			if(this.includes(p) && p.game == this.game){
-				if(compare(p[status])){
-					results.push(p);
-				}
+		this.forEachOwn((p) => {
+			if(compare(p.statuses[status])){
+				results.push(p);
 			}
-			else{
-				this.log.error('Player isn\'t in this game', p.id);
-			}
-		}
+		}, players);
+
 		if(results.length && sort){
 			results.sort(
 				(a, b) => {
-					if(a[status] == b[status]){
+					if(a.statuses[status] == b.statuses[status]){
 						return 0;
 					}
-					else if(a[status] > b[status]){
+					else if(a.statuses[status] > b.statuses[status]){
 						return 1;
 					}
 					else{
@@ -152,29 +156,37 @@ class GamePlayers extends BetterArray{
 
 	// Тоже, что и getWith, только возвращается первый результат
 	getWithFirst(status, compare, players){
-		if(!players)
-			players = this;
 
 		if(typeof compare != 'function'){
-			let newVal = compare;
-			compare = (value) => {
-				return value == newVal;
-			};
+			compare = valueToFunc(compare);
 		}
 
-		for(let i = 0; i < players.length; i++){
-			let p = players[i];
-			if(this.includes(p) && p.game == this.game){
-				if(compare(p[status])){
-					return p;
-				}
+		let player = null;
+		this.forEachOwn((p) => {
+			if(compare(p.statuses[status])){
+				player = p;
+				return true;
 			}
-			else{
-				this.log.error('Player isn\'t in this game', p.id);
-			}
+		}, players);
+
+		return player;
+	}
+
+	getWithOwn(status, compare, players){
+
+		if(typeof compare != 'function'){
+			compare = valueToFunc(compare);
 		}
 
-		return null;
+		let results = [];
+
+		this.forEachOwn((p) => {
+			if(compare(p[status])){
+				results.push(p);
+			}
+		}, players);
+
+		return results;
 	}
 
 	// РОЛИ

@@ -28,7 +28,7 @@ class Bot extends Player{
 
 	getDescisionTime(){
 		let fakeTime = 1,
-			minTime = 500;
+			minTime = this.game.fakeDescisionTimer || 0;
 		return Math.random()*fakeTime + minTime;
 	}
 

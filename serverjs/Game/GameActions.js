@@ -47,9 +47,7 @@ class Actions{
 
 		// Запоздавший или непредвиденный ответ
 		if(!~pi){
-			if(player.type != 'player' || !this.simulating){
-				this.log.warn( player.name, player.id, 'Late or uncalled response');
-			}
+			this.log.warn( player.name, player.id, 'Late or uncalled response');
 
 			// Сообщаем игроку, что действие пришло не вовремя
 			if(action){

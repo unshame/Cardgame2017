@@ -84,6 +84,18 @@ module.exports = function(server){
 				}
 				server.addPlayerToQueue(player);
 			}
+		},
+
+		disconnect: function(){
+			let player = server.players[this.connection.id];
+			if(!player)
+				return;
+			if(player.game){
+				player.game.players.disconnect(player);
+			}
+			else{
+				server.log.notice('Player %s isn\'t in a game, cannot disconnect', player.id);
+			}
 		}
 	};
 };

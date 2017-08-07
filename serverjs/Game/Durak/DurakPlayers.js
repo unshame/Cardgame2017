@@ -104,8 +104,7 @@ class DurakPlayers extends GenericPlayers{
 		}
 
 		// Пересылка
-		for (let pi = 0; pi < players.length; pi++) {
-			let p = players[pi];
+		this.forEachOwn((p) => {
 			let pid = p.id;
 			p.recieveGameInfo(
 				{
@@ -119,7 +118,7 @@ class DurakPlayers extends GenericPlayers{
 					noResponse: noResponse || false
 				}
 			);
-		}	
+		}, players);
 	}
 
 	// Передает полную информацию об игре игроку
@@ -321,7 +320,7 @@ class DurakPlayers extends GenericPlayers{
 			let pi = activePlayers.map(p => p.id).indexOf(pid);
 
 			this.findToGoNext(pi - 1);
-					
+
 			this.log.info('Player to go first: ', this.attackers[0].name);
 		}
 		// В противном случае, берем первого попавшегося игрока и начинаем ход

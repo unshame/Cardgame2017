@@ -7,6 +7,7 @@
 'use strict';
 
 const
+	Bot = requirejs('Players/Bot.js'),
 	GamePlayers = requirejs('Game/GamePlayers');
 
 class GenericPlayers extends GamePlayers{
@@ -32,27 +33,24 @@ class GenericPlayers extends GamePlayers{
 
 	// Ставит статусы по умолчанию хода
 	resetTurn(){
-		for(let i = 0; i < this.length; i++){
-			let p = this[i];
+		this.forEach((p) => {
 			this.setStatuses(p, this.turnStartStatus);
-		}
+		});
 	}
 
 	// Ставит статусы по умолчанию игры
 	resetGame(){
-		for(let i = 0; i < this.length; i++){
-			let p = this[i];
+		this.forEach((p) => {
 			this.setStatuses(p, this.gameStartStatus);
-		}
+		});
 	}
 
 	// Счеты
 	get scores(){
 		let scores = {};
-		for(let pi = 0; pi < this.length; pi++){
-			let p = this[pi];
+		this.forEach((p) => {
 			scores[p.id] = p.score;
-		}
+		});
 		return scores;
 	}
 
@@ -116,25 +114,37 @@ class GenericPlayers extends GamePlayers{
 		this.gameStateNotifyOnReconnect(player);
 	}
 
+	disconnect(player){
+		if(!this.includes(player)){
+			this.log.error('Cannot disconnect a player that isn\'t in this game', player.id);
+			return;
+		}
+		this.notify({message: 'DISCONNECTED', noResponse: true}, null, [player]);
+		player.game = null;
+		this.splice(this.indexOf(player), 1);
+		let replacement = new Bot(['Synth']);
+		replacement.statuses = player.statuses;
+		replacement.id = player.id;
+		player.statuses = {};
+		this.push(replacement);
+	}
+
 	// Оповещает игроков о совершенном действии
 	completeActionNotify(action){
-		for(let pi = 0; pi < this.length; pi++) {
-			let p = this[pi];				
-			p.recieveCompleteAction(Object.assign({}, action));
-		}
+		this.forEach((p) => {
+			let newAction = Object.assign({}, action);
+			if(!newAction.noResponse && this.game.simulating && p.type == 'player'){
+				newAction.noResponse = true;
+			}
+			p.recieveCompleteAction(newAction);
+		});
 	}
 
 	// Отправляет сообщение игрокам с опциональными действиями
 	notify(note, actions, players){
-
-		if(!players || !players.length){
-			players = this;
-		}
-
-		for(let pi = 0; pi < players.length; pi++){
-			let p = players[pi];				
+		this.forEachOwn((p) => {
 			p.recieveNotification(Object.assign({}, note), actions || null);
-		}
+		}, players);
 	}
 
 	// ЛОГ

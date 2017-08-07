@@ -21,10 +21,13 @@ class Player{
 			this.connected = true;
 		}
 
+		this.statuses = {};
+
 		this.name = name || this.id;
 
 		this.game = null;
 		this.afk = false;
+
 	}
 
 	recieveGameInfo(info){
