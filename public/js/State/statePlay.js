@@ -71,6 +71,7 @@ window.statePlay = new State('play', {
 	*/
 	shutdown: function(){ 
 		gameSeq.finish();
+		cardControl.reset();
 		cardManager.reset();
 		cardEmitter.stop();
 		fieldManager.resetNetwork();
