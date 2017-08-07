@@ -117,7 +117,7 @@ var Game = function(parent, speed, inDebugMode){
 	* @type {ConnectionManager}
 	* @global
 	*/
-	window.connection = new ConnectionManager(window.serverMethods, window.clientMethods, this.inDebugMode);
+	window.connection = new ConnectionManager(window.serverMethods, window.clientMethods, 'menu', this.inDebugMode);
 
 	/********/
 

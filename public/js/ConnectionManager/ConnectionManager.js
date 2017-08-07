@@ -6,7 +6,7 @@
 * @extends {Eureca.Client}
 */
 
-var ConnectionManager = function(serverMethods, clientMethods, inDebugMode){
+var ConnectionManager = function(serverMethods, clientMethods, connectState, inDebugMode){
 	/**
 	* A nodejs transparent bidirectional RPC.
 	* @external Eureca
@@ -20,6 +20,7 @@ var ConnectionManager = function(serverMethods, clientMethods, inDebugMode){
 	this.proxy = null;
 	this.server = serverMethods;
 	this.exports = clientMethods;
+	this.connectState = connectState;
 
 	this.responseTimer = null;
 	this.inDebugMode = inDebugMode || false;
@@ -40,7 +41,7 @@ ConnectionManager.prototype.initialize = function(){
 
 ConnectionManager.prototype.bindProxy = function(proxy){
 	this.proxy = proxy;
-	game.state.change('menu');
+	game.state.change(this.connectState);
 };
 
 ConnectionManager.prototype.handleConnection = function(){
