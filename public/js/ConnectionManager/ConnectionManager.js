@@ -36,7 +36,7 @@ ConnectionManager.prototype.initialize = function(){
 	this.on('disconnect', this.handleConnectionLoss.bind(this));
 	this.on('error', this.handleError.bind(this));
 	this.connect();
-}
+};
 
 ConnectionManager.prototype.bindProxy = function(proxy){
 	this.proxy = proxy;

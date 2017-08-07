@@ -87,7 +87,7 @@ CardEmitter.prototype.makeMaxParicles = function(max){
 	}
 
 	this.restart();
-}
+};
 
 CardEmitter.prototype._start = Phaser.Particles.Arcade.Emitter.prototype.start;
 

@@ -307,8 +307,8 @@ Game.prototype.checkDebugStatus = function(){
 		'\ncardControl:', cardControl.inDebugMode,
 		'\nfieldManager:', fieldManager.inDebugMode,
 		'\ncardManager:', cardManager.inDebugMode
-	)
-}
+	);
+};
 
 /** Выводит FPS. */
 Game.prototype.updateDebug = function(){

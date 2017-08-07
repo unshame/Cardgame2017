@@ -384,7 +384,7 @@ ScaleManager.prototype.addDebugGridToGroup = function(group){
 	if(this._border){
 		group.add(this._border);
 	}
-}
+};
 
 /**
 * Рисует сетку для дебага.

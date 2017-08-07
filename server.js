@@ -12,7 +12,7 @@
  */
 global.requirejs = function(name) {
     return require(__dirname + '/serverjs/' + name);
-}
+};
 
 const Server = require(__dirname + '/serverjs/Server/Server');
 

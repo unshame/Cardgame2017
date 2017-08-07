@@ -52,7 +52,7 @@ var CardManager = function(inDebugMode){
 CardManager.prototype.initialize = function(){
 	this.cardsGroup = game.add.group();
 	this.cardsGroup.name = 'cards';
-}
+};
 
 /**
 * Создает карты.

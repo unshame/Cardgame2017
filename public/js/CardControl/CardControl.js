@@ -26,7 +26,7 @@ CardControl.prototype.initialize = function(){
 	this.trail.makeParticles(skinManager.skin.trailName, 0);
 	this.trailDefaultBase.name = 'trail';
 	this.trailReset();
-}
+};
 
 // Обрабатывает нажатие на карту
 CardControl.prototype.cardClick = function(card, pointer){

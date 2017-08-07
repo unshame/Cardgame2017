@@ -10,7 +10,6 @@ class GameReactions{
 	// Игрок походил
 	ATTACK(player, action){
 
-		let activePlayers = this.players.active;
 		let cardsById = this.cards.byId;
 		let tableFields = this.table.byKey('id');
 		let ci, card;
