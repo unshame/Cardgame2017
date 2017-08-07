@@ -54,14 +54,14 @@ StateManager.prototype._addAsync = Phaser.StateManager.prototype.add;
 /**
 * Добавляет новое состояние в игру. 
 * @param {State} state Состояние.
-* @param {boolean} async Является ли состояние асинхронным.
+* @param {boolean} isAsync Является ли состояние асинхронным.
 * @param {boolean} start Нужно ли переходить к этому состоянию сразу.
 */
-StateManager.prototype.add = function(state, async, start){
+StateManager.prototype.add = function(state, isAsync, start){
 	if(start){
 		this.currentSync = state.key;
 	}
-	if(async){
+	if(isAsync){
 		this._addAsync(state.key, state, start);
 	}
 	else{
