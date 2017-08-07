@@ -59,7 +59,7 @@ CardEmitter.prototype.constructor = CardEmitter;
 /**
  * Приводит кол-во партиклей эмиттера к заданному значению, по необходимости удаляя и добавляя партикли.
  * Перезапускает эмиттер.
- * @param  {[type]} [max=CardEmitter#maxParticles] Желаемое кол-во партиклей.
+ * @param  {number} [max=CardEmitter#maxParticles] Желаемое кол-во партиклей.
  */
 CardEmitter.prototype.makeMaxParicles = function(max){
 	if(typeof max != 'number' || isNaN(max)){

@@ -254,6 +254,7 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 
 /**
 * Расчитывает размеры сетки.
+* @private
 * @param  {number} screenWidth  ширина игры
 * @param  {number} screenHeight высота игры
 */
