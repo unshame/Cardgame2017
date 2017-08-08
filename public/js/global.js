@@ -114,7 +114,7 @@ var animTest = {
 		}
 	},
 	countdown: function(i, message){
-		if(!i){
+		if(!i || typeof i != 'number' || isNaN(i) || i < 1){
 			i = 5;
 		}
 		if(!message){
