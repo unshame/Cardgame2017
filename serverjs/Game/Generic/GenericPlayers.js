@@ -112,6 +112,7 @@ class GenericPlayers extends GamePlayers{
 
 		player.afk = false;
 		this.gameStateNotifyOnReconnect(player);
+		this.log.notice('Player reconnected', player.id);
 	}
 
 	disconnect(player){
@@ -136,6 +137,8 @@ class GenericPlayers extends GamePlayers{
 		let swap = this[pi];
 		this[pi] = replacement;
 		this[this.length - 1] = swap;
+
+		this.log.notice('Player disconnected', player.id);
 	}
 
 	// Оповещает игроков о совершенном действии
