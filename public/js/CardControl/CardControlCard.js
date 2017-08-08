@@ -1,6 +1,9 @@
 // АПДЕЙТ И ТАЙМЕР НАЖАТИЯ КОНТРОЛИРУЕМОЙ КАРТЫ
 
-// Обновление позиции карты и хвоста
+/**
+ * Обновление позиции карты и хвоста.
+ * @private
+ */
 CardControl.prototype._updateCard = function(){
 	if(!this.card){
 		return false;
@@ -45,7 +48,11 @@ CardControl.prototype._updateCard = function(){
 	return true;
 };
 
-// Устанавливаем позицию карты и плавно передивгаем ее к курсору
+/**
+ * Устанавливаем позицию карты и плавно передивгаем ее к курсору.
+ * @param  {number} curTime текущее время
+ * @private
+ */
 CardControl.prototype._updateCardPosition = function(curTime){
 	var sTime, sP, mP;
 	sTime = this.cardShiftEndTime - curTime;
@@ -65,12 +72,16 @@ CardControl.prototype._updateCardPosition = function(curTime){
 	this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
 };
 
-// Устанавливает угол в зависимости от инерции карты
+/**
+ * Устанавливает угол в зависимости от инерции карты.
+ * @param  {number} curTime текущее время
+ * @private
+ */
 CardControl.prototype._updateCardAngle = function(curTime){
 
 	var maxAngle = this.cardMaxMoveAngle;
 
-	this._saveInertia(curTime, 300);
+	this._saveCardInertia(curTime, 300);
 	
 	// Вычисляем угол из средней длины вектора инерции
 	var totalDistance = 0;
@@ -93,13 +104,14 @@ CardControl.prototype._updateCardAngle = function(curTime){
 	this.cardLastY = this.card.base.y + this.card.sprite.y;
 };
 
-/*
+/**
 * Сохраняет текущее время и позицию карты.
+* @private
 * @param  {number} curTime текущее время
 * @param  {number} maxTime позиции, запомненные больше этого времени назад, будут удалены
 * @see {@link https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53|Источник кода}
 */
-CardControl.prototype._saveInertia = function(curTime, maxTime){
+CardControl.prototype._saveCardInertia = function(curTime, maxTime){
 	var curX = this.card.base.x + this.card.sprite.x,
 		curY = this.card.base.y + this.card.sprite.y,
 		distance = {

@@ -1,25 +1,87 @@
 /**
-* Модуль, отвечающий за перетаскивание карт.
+* Модуль, отвечающий за перетаскивание карт.  
+* Обрабатывает клики по картам, перемещение карт по экрану игроком, перемещение карт между полями игроком,
+* а также хвост карты при перемещении игроком.  
+* Основные элементы: `{@link CardControl#card|card}, {@link CardControl#trail|pointer}, {@link CardControl#trail|trail}, {@link CardControl#trailDefaultBase|trailDefaultBase}`.
 * @class
 */
-
 var CardControl = function(inDebugMode){
 
+	/**
+	 * Находится ли контроллер в дебаг режиме.
+	 * @type {boolean}
+	 */
 	this.inDebugMode = inDebugMode || false;
 
+	/**
+	 * Контролируемая карта.
+	 * @type {Card}
+	 */
 	this.card = null;
+
+	/**
+	 * Указатель, "держущий" карту
+	 * @type {Phaser.Pointer}
+	 */
 	this.pointer = null;
 
+	/**
+	 * Хвост карты.
+	 * Представляет из себя эмиттер партиклей в виде иконок масти карты.
+	 * @type {Phaser.Particles.Arcade.Emitter}
+	 */
 	this.trail = null;
+
+	/**
+	 * База хвоста карты, когда он не прикреплен к карте.
+	 * @type {Phaser.Group}
+	 */
 	this.trailDefaultBase = null;
+	
+	/**
+	 * Нужно ли прикрепить хвост к текущей карте.
+	 * @type {Boolean}
+	 * @private
+	 */
+	this._trailShouldReappend = false;
+
+	/** 
+	 * Время сдвига центра карты к указателю.
+	 * @type {Number}
+	 */
 	this.cardShiftDuration = 100;
+	/**
+	 * Время возвращения карты на свою базу.
+	 * @type {Number}
+	 */
 	this.cardReturnTime = 200;
+	/**
+	 * Время между кликами по карте, когда она будет поднята вторым кликом.
+	 * @type {Number}
+	 */
 	this.cardClickMaxDelay = 200;
+	/**
+	 * На сколько должна быть свдвинута карта, чтобы было заметно покачивание
+	 * и чтобы хвост уменьшил пространство, на котором спавнятся партикли.
+	 * @type {Number}
+	 */
 	this.cardMoveThreshold = 2;
+
+	/**
+	 * Максимальный угол покачивания карты при движении.
+	 * @type {Number}
+	 */
 	this.cardMaxMoveAngle = 30;
+
+	/**
+	 * История инерции карты.
+	 * @type {Array}
+	 * @private
+	 */
 	this._inertiaHistory = [];
 };
 
+/** Инициалищирует модуль - создает хвост карты и группу для него. */
 CardControl.prototype.initialize = function(){
 	this.trail = game.add.emitter(0, 0);
 	this.trailDefaultBase = game.add.group();
@@ -28,7 +90,11 @@ CardControl.prototype.initialize = function(){
 	this.trailReset();
 };
 
-// Обрабатывает нажатие на карту
+/**
+ * Обрабатывает нажатие на карту.
+ * @param  {Card} card    карта
+ * @param  {Phaser.Pointer} pointer указатель, нажавший на карту
+ */
 CardControl.prototype.cardClick = function(card, pointer){
 	if(pointer.button == 1 || pointer.button == 4)
 		console.log(card);
@@ -47,7 +113,10 @@ CardControl.prototype.cardClick = function(card, pointer){
 	}
 };
 
-// Обрабатывает поднятие кнопки после нажатия на карту
+/**
+ * Обрабатывает поднятие кнопки после нажатия на карту.
+ * @param  {Card} card карта
+ */
 CardControl.prototype.cardUnclick = function(card){
 	if(!this.card || this.card != card)
 		return;
@@ -64,7 +133,10 @@ CardControl.prototype.cardUnclick = function(card){
 };
 
 
-// Проверка нажатия на базу карты
+/** 
+ * Проверка нажатия на базу карты.
+ * @private
+ */
 CardControl.prototype._cardPointerInbound = function(){
 	var width = this.card.field ? skinManager.skin.width*(1 + this.card.field.scaleDiff) : skinManager.skin.width,
 		height = this.card.field ? skinManager.skin.height*(1 + this.card.field.scaleDiff) : skinManager.skin.height;
@@ -78,7 +150,10 @@ CardControl.prototype._cardPointerInbound = function(){
 	);
 };
 
-// Проверка корректности позиции карты (возащает false или поля)
+/**
+ * Проверка корректности позиции карты (возащает false или поля).
+ * @private
+ */
 CardControl.prototype._cardOnValidField = function(){
 	if(!this.card.playable)
 		return false;
@@ -105,20 +180,23 @@ CardControl.prototype._cardOnValidField = function(){
 //@include:CardControlCard
 //@include:CardControlTrail
 
-// Обновление контроллера
+/** Обновляет контролируемую карту и ее хвост. */
 CardControl.prototype.update = function(){
 	var shouldUpdateTrail = this._updateCard();
-	if(shouldUpdateTrail && !this.trialShouldReappend){
+	if(shouldUpdateTrail && !this._trailShouldReappend){
 		var curTime = game.time.time;
 		this._trailSpawnParticle(curTime);
 	}
 	else if(!shouldUpdateTrail){
-		this.trialShouldReappend = false;
+		this._trailShouldReappend = false;
 	}
 	this._updateTrail();
 };
 
-// Ресет контроллера
+/**
+ * Ресет контроллера
+ * @param  {string} [reason] Причина ресета для дебага.
+ */
 CardControl.prototype.reset = function(reason){
 
 	if(this.inDebugMode)

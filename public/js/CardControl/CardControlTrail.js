@@ -1,12 +1,19 @@
 // ХВОСТ КАРТЫ
 
-// Смещает хвост относительно базы карты
+/**
+ * Смещает хвост относительно базы карты
+ * @param  {number} x Смещение по оси x.
+ * @param  {number} y Смещение по оси y.
+ */
 CardControl.prototype.trailShift = function(x, y){
 	this.trail.position.x += x;
 	this.trail.position.y += y;
 };
 
-// Ресетит хвост карты
+/**
+ * Ресетит хвост карты
+ * @param  {boolean} soft делает партикли прозрачными, вместо того, чтобы убивать их
+ */
 CardControl.prototype.trailReset = function(soft){
 	this._resetTrailResetTimer();
 	this.trail.forEachAlive(function(p){
@@ -25,14 +32,18 @@ CardControl.prototype.trailReset = function(soft){
 	this.trailDefaultBase.add(this.trail);
 };
 
-// Применяет скин к партиклям хвоста
+/** Применяет скин к партиклям хвоста. */
 CardControl.prototype.trailApplySkin = function(){
 	this.trail.forEach(function(p){
 		p.loadTexture(skinManager.skin.trailName);
 	}, this);
 };
 
-// Создает хвост карты при движении
+/**
+ * Создает хвост карты при движении.
+ * @param  {number} curTime текущее время
+ * @private
+ */
 CardControl.prototype._trailSpawnParticle = function(curTime){
 
 	var	delta = curTime - this.lastParticleTime;
@@ -62,7 +73,10 @@ CardControl.prototype._trailSpawnParticle = function(curTime){
 	this.trail.emitParticle();
 };
 
-// Обновление хвоста карты
+/**
+ * Обновление хвоста карты.
+ * @private
+ */
 CardControl.prototype._updateTrail = function(){
 	if(this.trail.countLiving() && this.trail.parent != this.trailDefaultBase){
 		
@@ -70,13 +84,17 @@ CardControl.prototype._updateTrail = function(){
 			p.alpha = p.lifespan / this.trail.lifespan;
 		}, this);
 	}
-	if(this.trialShouldReappend && !this.trailResetTimer && this.card){
-		this.trialReappend();
-		this.trialShouldReappend = false;
+	if(this._trailShouldReappend && !this.trailResetTimer && this.card){
+		this._trailReappend();
+		this._trailShouldReappend = false;
 	}
 };
 
-CardControl.prototype.trialReappend = function(){
+/**
+ * Прикрепляет хвост к текущей карте.
+ * @private
+ */
+CardControl.prototype._trailReappend = function(){
 	this.card.base.addAt(this.trail, 0);
 	this.trail._frames = this.card.suit;
 	this.trail.minParticleSpeed.setTo(-skinManager.skin.width, -skinManager.skin.height);
@@ -86,11 +104,19 @@ CardControl.prototype.trialReappend = function(){
 
 // ТАЙМЕР РЕСЕТА ХВОСТА
 
+/**
+ * Устанавливает таймер ресета хвоста.
+ * @private
+ */
 CardControl.prototype._setTrailResetTimer = function(){
 	this._resetTrailResetTimer();
 	this.trailResetTimer = setTimeout(this.trailReset.bind(this), this.trail.lifespan);
 };
 
+/**
+ * Ресетит таймер ресета хвоста.
+ * @private
+ */
 CardControl.prototype._resetTrailResetTimer = function(){
 	if(this.trailResetTimer){
 		clearTimeout(this.trailResetTimer);
