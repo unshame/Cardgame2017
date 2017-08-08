@@ -41,10 +41,10 @@ var CardEmitter = function(){
 	this._cachedGameSpeed = game.speed;
 
 	/**
-	 * Максимальное количество частиц эмиттера.
-	 * Для применения максимума используется {@link CardEmitter#makeMaxParticles}
-	 * @type {Number}
-	 */
+	* Максимальное количество частиц эмиттера.
+	* Для применения максимума используется {@link CardEmitter#makeMaxParticles}
+	* @type {Number}
+	*/
 	this.maxParticles = 50;
 
 	Phaser.Particles.Arcade.Emitter.call(this, game, game.world.centerX, -skinManager.skin.height, this.maxParticles);
@@ -57,10 +57,10 @@ CardEmitter.prototype = Object.create(Phaser.Particles.Arcade.Emitter.prototype)
 CardEmitter.prototype.constructor = CardEmitter;
 
 /**
- * Приводит кол-во партиклей эмиттера к заданному значению, по необходимости удаляя и добавляя партикли.
- * Перезапускает эмиттер.
- * @param  {number} [max=CardEmitter#maxParticles] Желаемое кол-во партиклей.
- */
+* Приводит кол-во партиклей эмиттера к заданному значению, по необходимости удаляя и добавляя партикли.
+* Перезапускает эмиттер.
+* @param  {number} [max=CardEmitter#maxParticles] Желаемое кол-во партиклей.
+*/
 CardEmitter.prototype.makeMaxParicles = function(max){
 	if(typeof max != 'number' || isNaN(max)){
 		max = this.maxParticles;

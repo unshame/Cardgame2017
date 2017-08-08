@@ -2,7 +2,7 @@
 * Состояние игры. 
 * Предоставляет методы, выполняющиеся при апдейте, ресайзе, а также
 * при переключении между состояниями игры.  
-* Основные методы (используются во всех состояниях): `{@link State#update|update}, {@link State#preRender|preRender}, {@link State#render|render}, {@link State#create|create}, {@link State#shutdown|shutdown}, {@link State#postResize|postResize}`  
+* Основные методы (используются во всех состояниях): `{@link State#update|update}, {@link State#preRender|preRender}, {@link State#render|render}, {@link State#create|create}, {@link State#shutdown|shutdown}, {@link State#postResize|postResize}, {@link State#applySkin|applySkin}`  
 * Методы, связанные с паузой симуляции игры (используются во всех состояниях): `{@link State#paused|paused}, {@link State#resumed|resumed}, {@link State#postResumed|postResumed}`  
 * Второстепенные методы (используются в асинхронных состояниях): `{@link State#loadUpdate|loadUpdate}, {@link State#loadRender|loadRender}, {@link State#preload|preload}, {@link State#init|init}`  
 * Неиспользуемые методы (присутствуют, но не вызываются): `resize, pauseUpdate`  
