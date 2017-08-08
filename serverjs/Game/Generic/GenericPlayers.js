@@ -27,7 +27,7 @@ class GenericPlayers extends GamePlayers{
 			wins: 0,
 			losses: 0
 		};
-		p.working = false;
+		p.statuses.working = false;
 		super.push(p);
 	}
 
@@ -121,17 +121,21 @@ class GenericPlayers extends GamePlayers{
 		}
 		this.notify({message: 'DISCONNECTED', noResponse: true}, null, [player]);
 		
+		
+		let pi = this.indexOf(player);
+		this.splice(pi, 1);
+
 		let replacement = new Bot(['Synth']);
+		this.push(replacement);
 		replacement.statuses = player.statuses;
 		replacement.id = player.id;
-		replacement.game = this.game;
-		Object.seal(replacement);
 		
 		player.game = null;
 		player.statuses = {};
 
-		let pi = this.indexOf(player);
+		let swap = this[pi];
 		this[pi] = replacement;
+		this[this.length - 1] = swap;
 	}
 
 	// Оповещает игроков о совершенном действии
