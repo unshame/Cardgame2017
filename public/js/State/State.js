@@ -94,6 +94,7 @@ State.prototype._resumed = function(){};
 // Дополнительные методы, не пресутствовавшие в Phaser.State
 State.prototype.postResize = function(){};
 State.prototype.postResumed = function(){};
+State.prototype.applySkin = function(){};
 
 //@include:stateBoot
 //@include:statePlay
@@ -173,4 +174,9 @@ State.prototype.postResumed = function(){};
 * Выпоняется каждый кадр игры между preUpdate и postUpdate всех элементов игры
 * как в синхронных, так и в асинхронных состояниях.
 * @method State#update
+*/
+
+/**
+* Во всех состояниях выполняется после смены скина.
+* @method State#applySkin
 */

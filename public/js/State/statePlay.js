@@ -47,6 +47,19 @@ window.statePlay = new State('play', {
 	},
 
 	/**
+	* Применяет текущий скин ко всем элементам игры
+	* @memberof statePlay
+	*/
+	applySkin: function(){
+		cardManager.applySkin();
+		cardEmitter.applySkin();
+		cardControl.trailApplySkin();
+		fieldManager.applySkin();
+		actionHandler.highlightPossibleActions();
+		ui.background.setTexture(skinManager.skin.background);
+	},
+
+	/**
 	* Исправляет элементы игры, которые могли перестать обновляться,
 	* когда игра была поставлена на паузу.
 	* @memberof statePlay

@@ -214,13 +214,8 @@ SkinManager.prototype.applySkin = function(){
 	if(!game.initialized){
 		return;
 	}
-	game.updateCoordinates();
-	cardManager.applySkin();
-	cardEmitter.applySkin();
-	cardControl.trailApplySkin();
-	fieldManager.applySkin();
-	actionHandler.highlightPossibleActions();
-	ui.background.setTexture(this.skin.background);
+	game.applySkin();
+
 };
 
 /**

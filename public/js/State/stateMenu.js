@@ -32,6 +32,15 @@ window.stateMenu = new State('menu', {
 	},
 
 	/**
+	* Применяет текущий скин ко всем элементам игры
+	* @memberof statePlay
+	*/
+	applySkin: function(){
+		cardEmitter.applySkin();
+		ui.background.setTexture(skinManager.skin.background);
+	},
+
+	/**
 	* Включает эмиттер карт, показывает главное меню и лого.
 	* @memberof stateMenu
 	*/

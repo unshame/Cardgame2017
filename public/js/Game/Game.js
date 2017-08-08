@@ -218,6 +218,17 @@ Game.prototype.updateCoordinates = function(){
 };
 
 /**
+* Применяет скин ко всем элементам игры
+*/
+Game.prototype.applySkin = function(){
+	this.scale.updateGameSize();
+	this.scale.drawDebugGrid();
+	var state = this.state.getCurrent();
+	state.postResize();
+	state.applySkin();
+};
+
+/**
 * Запускает дебаунс корректировки размеров игры.
 * @private
 */
