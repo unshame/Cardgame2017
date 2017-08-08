@@ -55,7 +55,7 @@ AnnouncerMessageFeed.prototype._destroyMessage = function(text){
 	Object.getPrototypeOf(AnnouncerMessageFeed.prototype)._destroyMessage.call(this, text);
 };
 
-AnnouncerMessageFeed.prototype._moveMessage = function(text, i, ii, y){
+AnnouncerMessageFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	if(text.moveTween){
 		text.moveTween.stop();
 	}
@@ -68,7 +68,7 @@ AnnouncerMessageFeed.prototype._moveMessage = function(text, i, ii, y){
 	var scale = this._scales[ii];
 
 	text.moveTween = this.game.add.tween(text.position);
-	text.moveTween.to({y: y}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
+	text.moveTween.to({x: x, y: y}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
 
 	text.scaleTween = this.game.add.tween(text.scale);
 	text.scaleTween.to({x: scale, y: scale}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);

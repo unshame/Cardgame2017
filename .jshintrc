@@ -59,9 +59,14 @@
     "State": true,
     "StateManager": true,
     "ScaleManager": true,
+    "AnnouncerMessageFeed": true,
+    "announcer": true,
+    "MessageFeed": true,
+    "feed": true,
     "PIXI": true,
 
     "shuffleArray": true,
+    "mergeOptions": true,
     "getCards": true,
     "getCard": true,
 

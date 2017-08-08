@@ -204,14 +204,15 @@ MessageFeed.prototype._fadeInMessage = function(text){
 */
 MessageFeed.prototype.shiftMessages = function(){
 	var y = this._getLowestY();
+	var x = this._getX();
 	var i, ii;
 	for(i = ii = this.children.length - 1; i >= 0; i--){
 		var text = this.children[i];
 		if(text.destroyTime !== undefined){
 			continue;
 		}
-		this._moveMessage(text, i, ii, y);
-		y -= text.height;
+		this._moveMessage(text, i, ii, x, y);
+		y -= text.height/Math.min(text.scale.y, 1);
 		ii--;
 	}
 };
@@ -224,12 +225,12 @@ MessageFeed.prototype.shiftMessages = function(){
 * @param  {number} ii   Индекс сообщения не учитывая сообщения с установленным `destroyTime`.
 * @param  {number} y    Позиция сообщения по вертикали.
 */
-MessageFeed.prototype._moveMessage = function(text, i, ii, y){
+MessageFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	if(text.moveTween){
 		text.moveTween.stop();
 	}
 	text.moveTween = this.game.add.tween(text.position);
-	text.moveTween.to({y: y}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
+	text.moveTween.to({x: x, y: y}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
 };
 
 //@include:AnnouncerMessageFeed

@@ -42,7 +42,7 @@ function mergeOptions(dest, source){
 		return;
 	}
 	if(typeof source == 'object'){
-		for(o in dest){
+		for(var o in dest){
 			if(source.hasOwnProperty(o) && source[o] !== undefined){
 				dest[o] = source[o];
 			}
@@ -107,5 +107,40 @@ var animTest = {
 			cardsInfo.push({cid: c.id, suit: c.suit, value: c.value, pid: c.fieldId});
 		}
 		actionHandler.actionReactions.TRUMP_CARDS.call(actionHandler, {cards: cardsInfo, pid: game.pid});
+	},
+	announcer: function(){
+		for(var i = 0; i < 20; i++){
+			announcer.newMessage(Math.random(), (20-i)*200);
+		}
+	},
+	countdown: function(i, message){
+		if(!i){
+			i = 5;
+		}
+		if(!message){
+			message = 'GO!';
+		}
+		var start = Date.now();
+		var last = 0;
+		var interval = setInterval(function(){
+			var now = Date.now();
+			if(now - last >= 1000){
+				last = now;
+				switch(i){
+					case 0:
+					announcer.newMessage(message);
+					break;
+
+					case -1:
+					announcer.clear();
+					clearInterval(interval);
+					break;
+
+					default:
+					announcer.newMessage(i + '...');
+				}
+				i--;
+			}
+		}, 50);
 	}
 };

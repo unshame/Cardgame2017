@@ -23,6 +23,10 @@ FieldBuilder.prototype._buildPlayerField = function(){
 
 // Table
 FieldBuilder.prototype._buildTableFields = function(lockedFields){
+	if(!lockedFields){
+		lockedFields = [];
+	}
+	
 	var manager = this.manager;
 
 	manager.addField({
