@@ -76,6 +76,7 @@ module.exports = function(server){
 			if(player){
 				if(player.game){
 					server.log.notice('Player %s already in game %s', player.id, player.game.id);
+					server.exports.requestGameInfo.call(this);
 					return;
 				}
 				if(server.newPlayers.includes(player)){
