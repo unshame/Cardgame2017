@@ -26,7 +26,7 @@ class Game{
 	constructor(players, canTransfer, debugMode, isTest){
 
 		// Генерируем айди игры
-		var id = generateId();
+		let id = generateId();
 		this.id = 'game_' + id;
 
 		this.log = Log(module, id, debugMode);

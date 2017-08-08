@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @module
  */
@@ -18,7 +20,9 @@ module.exports = function(server){
 			if(!action)
 				return;
 			let player = server.players[this.connection.id];
-			player && player.sendResponse(action);
+			if(player){
+				player.sendResponse(action);
+			}
 		},
 
 		/**
@@ -26,7 +30,9 @@ module.exports = function(server){
 		 */
 		recieveResponse: function(){
 			let player = server.players[this.connection.id];
-			player && player.sendResponse();
+			if(player){
+				player.sendResponse();
+			}
 		},
 
 		/**
@@ -34,7 +40,7 @@ module.exports = function(server){
 		 * @param  {string} connId старый id клиента
 		 */
 		reconnectClient: function(connId){
-			var newConnId = this.connection.id;
+			let newConnId = this.connection.id;
 			let player = server.players[connId];
 
 			// Переподключаем клиента, если экземпляр игрока:

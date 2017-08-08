@@ -1,8 +1,6 @@
 {
-  "browser": true,
   "globals": {
     "Phaser":true,
-    "$":true,
     "EurecaClientSetup":true,
 
     "isInDebugMode":true,
@@ -72,11 +70,15 @@
 
     "BRING_TO_TOP_ON": true
   },
+  "browser": true,
+  "esversion": 5,
   "undef": true,
   "unused": "vars",
   "forin": true,
-  "node": true,
+  "node": false,
   "sub": true,
-  "expr": true,
-  "-W058": true
+  "expr": false,
+  "-W058": true,
+  "curly": false,
+  "devel": true
 }

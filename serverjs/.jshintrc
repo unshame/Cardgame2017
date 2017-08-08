@@ -1,14 +1,17 @@
 {
-  "curly": false,
+  "browser": false,
   "node": true,
-  "esnext": true,
+  "esversion": 6,
   "undef": true,
   "unused": "vars",
   "forin": true,
   "node": true,
   "sub": true,
-  "expr": true,
+  "expr": false,
   "-W058": true,
+  "strict": "global",
+  "varstmt": true,
+  "curly": false,
   "globals": {
   	"requirejs": true
   }

@@ -1,3 +1,5 @@
+'use strict';
+
 const
 	Game = require('../Game/Game'),
 	TestBot = require('./TestBot');

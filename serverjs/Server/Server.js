@@ -69,7 +69,7 @@ class Server extends Eureca.Server{
 	 */
 	parseParams(paramLine){
 		let argv = minimist(paramLine);
-		var params = {
+		let params = {
 			numBots: argv.b === undefined ? Number(argv.bots) : Number(argv.b),
 			numPlayers: argv.p === undefined ? Number(argv.players) : Number(argv.p),
 			rndBots: Boolean(argv.r || argv.rnd || argv.random),
@@ -98,7 +98,7 @@ class Server extends Eureca.Server{
 	 * @return {winston.Logger} Логгер.
 	 */
 	createLogger(){
-		var log = Log(module, null, this.params.debug);
+		let log = Log(module, null, this.params.debug);
 
 		log.notice(
 			'port=' + this.params.port,
