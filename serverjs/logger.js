@@ -43,7 +43,7 @@ function leadWithZeros(num, len){
 function getTimeStamp(full){
 	const d = new Date();
 	let date = leadWithZeros(d.getHours()) + ':' + leadWithZeros(d.getMinutes()) + ':' +
-			   leadWithZeros(d.getSeconds()) + ':' + leadWithZeros(d.getMilliseconds(), 4);
+			   leadWithZeros(d.getSeconds()) + ':' + leadWithZeros(d.getMilliseconds(), 3);
 	if(full){
 		date = leadWithZeros(d.getDate()) + leadWithZeros(d.getMonth()) + leadWithZeros(d.getYear()) + 't' + date;
 	}
