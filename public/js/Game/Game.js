@@ -168,8 +168,19 @@ Game.prototype.initialize = function(){
 	*/
 	window.cardEmitter = new CardEmitter();
 
+	/**
+	* Фид системных сообщений.
+	* @type {MessageFeed}
+	* @global
+	*/
 	window.feed = new MessageFeed(this);
-	
+
+	/**
+	* Фид важных сообщений.
+	* @type {AnnouncerMessageFeed}
+	* @global
+	*/
+	window.announcer = new AnnouncerMessageFeed(this);	
 
 	// Инициализация модулей
 	cardManager.initialize();

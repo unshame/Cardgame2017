@@ -28,7 +28,7 @@ window.notificationReactions = {
 	* @param {object} note сообщение
 	*/
 	GAME_STARTED: function(note){
-		
+		announcer.newMessage('Game ' + (note.index + 1) + ' Started', 4000);
 	},
 
 	/**
@@ -76,12 +76,14 @@ window.notificationReactions = {
 			if(!won){
 				seq.abort();
 				seq.start(function(){
+					announcer.newMessage('Better luck next time', 10000);
 					fieldManager.resetFields();
 					cardManager.enablePhysics(true);
 				}, 0, delay - game.defaultMoveTime);
 			}
 		}, delay/game.speed, game.defaultMoveTime)
 		.then(function(){
+			announcer.newMessage('YOU WON!', 'important', 10000);
 			for(var ci = 0; ci < dummy.cards.length; ci++){
 				var card = dummy.cards[ci],
 					x = card.sprite.x + card.base.x + (10*(ci - dummy.cards.length/2)),
@@ -149,6 +151,7 @@ window.notificationReactions = {
 	},
 
 	DISCONNECTED: function(){
+		feed.newMessage('Disconnected', 2000);
 		game.state.change('menu');
 	}
 

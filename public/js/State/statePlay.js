@@ -42,6 +42,7 @@ window.statePlay = new State('play', {
 		ui.updatePosition();
 		cardEmitter.restart();
 		feed.shiftMessages();
+		announcer.shiftMessages();
 		document.getElementById('loading').style.display = 'none';
 	},
 
@@ -72,6 +73,7 @@ window.statePlay = new State('play', {
 	*/
 	shutdown: function(){ 
 		gameSeq.finish();
+		announcer.clear();
 		cardControl.reset();
 		cardManager.reset();
 		cardEmitter.stop();

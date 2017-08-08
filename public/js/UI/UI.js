@@ -89,6 +89,7 @@ UI.prototype.initialize = function(){
 	this.layers.addExistingLayer(cardManager.cardsGroup, 3);
 	this.layers.addExistingLayer(cardEmitter, 4);
 	this.layers.addExistingLayer(feed, 7);
+	this.layers.addExistingLayer(announcer, 8);
 
 	this.layers.positionLayers();
 };
