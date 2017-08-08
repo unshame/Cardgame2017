@@ -29,7 +29,7 @@ var AnnouncerMessageFeed = function(game, name){
 	* @private
 	* @type {Array}
 	*/
-	this._scales = [1, 0.75, 0.5, 0.25, 0];
+	this._scales = [1, 0.75, 0.5, 0];
 };
 
 AnnouncerMessageFeed.prototype = Object.create(MessageFeed.prototype);
@@ -64,7 +64,7 @@ AnnouncerMessageFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	}
 
 	var len = this.children.length;
-	ii = Math.min(len - 1 - ii, 4);
+	ii = Math.min(len - 1 - ii, this._scales.length - 1);
 	var scale = this._scales[ii];
 
 	text.moveTween = this.game.add.tween(text.position);
