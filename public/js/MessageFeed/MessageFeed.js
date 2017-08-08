@@ -1,5 +1,5 @@
 
-var NotificationManager = function(){
+var MessageFeed = function(game){
 	this.styles = {
 		system: {fill: 'white', font: '30px Exo'},
 		warning: {fill: 'red', font: '40px Exo'}
@@ -10,15 +10,15 @@ var NotificationManager = function(){
 	Phaser.Group.call(this, game);
 };
 
-NotificationManager.prototype = Object.create(Phaser.Group.prototype);
-NotificationManager.prototype.constructor = NotificationManager;
+MessageFeed.prototype = Object.create(Phaser.Group.prototype);
+MessageFeed.prototype.constructor = MessageFeed;
 
-NotificationManager.prototype.newMessage = function(message, style, time){
+MessageFeed.prototype.newMessage = function(message, style, time){
 	if(typeof style == 'string'){
 		style = this.styles[style];
 	}
 
-	var text = game.make.text(ui.rope.width + 10, this.getLowestY(), message, style);
+	var text = this.game.make.text(ui.rope.width + 10, this._getLowestY(), message, style);
 	if(time !== undefined){
 		text.endTime = Date.now() + time;
 	}
@@ -26,7 +26,7 @@ NotificationManager.prototype.newMessage = function(message, style, time){
 	text.anchor.set(0, 1);
 	text.alpha = 0;
 
-	text.fadeTween = game.add.tween(text);
+	text.fadeTween = this.game.add.tween(text);
 	text.fadeTween.to({alpha: 1}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
 
 	this.shiftMessages(text.height);
@@ -35,7 +35,7 @@ NotificationManager.prototype.newMessage = function(message, style, time){
 	return text;
 };
 
-NotificationManager.prototype.removeMessage = function(text){
+MessageFeed.prototype.removeMessage = function(text){
 	if(!~this.children.indexOf(text)){
 		return;
 	}
@@ -43,18 +43,18 @@ NotificationManager.prototype.removeMessage = function(text){
 	this.update();
 };
 
-NotificationManager.prototype.clear = function(){
+MessageFeed.prototype.clear = function(){
 	var i = this.children.length;
 	while (i--){
 		this.children[i].endTime = Date.now();
 	}
 };
 
-NotificationManager.prototype.getLowestY = function(){
-	return game.screenHeight - 10;
+MessageFeed.prototype._getLowestY = function(){
+	return this.game.screenHeight - 10;
 };
 
-NotificationManager.prototype.update = function(){
+MessageFeed.prototype.update = function(){
 
 	var i = this.children.length;
 	var now = Date.now();
@@ -74,7 +74,7 @@ NotificationManager.prototype.update = function(){
 
 };
 
-NotificationManager.prototype._destroyMessage = function(text){
+MessageFeed.prototype._destroyMessage = function(text){
 	if(text.fadeTween){
 		text.fadeTween.stop();
 	}
@@ -84,20 +84,20 @@ NotificationManager.prototype._destroyMessage = function(text){
 	this.remove(text, true);
 };
 
-NotificationManager.prototype._fadeOutMessage = function(text){
+MessageFeed.prototype._fadeOutMessage = function(text){
 	text.destroyTime = Date.now() + this.fadeTime;
 	if(text.fadeTween){
 		text.fadeTween.stop();
 	}
-	text.fadeTween = game.add.tween(text);
+	text.fadeTween = this.game.add.tween(text);
 	text.fadeTween.to({alpha: 0}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
 };
 
-NotificationManager.prototype.shiftMessages = function(y){
+MessageFeed.prototype.shiftMessages = function(y){
 	if(y === undefined){
 		y = 0;
 	}
-	y = this.getLowestY() - y;
+	y = this._getLowestY() - y;
 	for(var i = this.children.length - 1; i >= 0; i--){
 		var text = this.children[i];
 		if(text.destroyTime !== undefined){
@@ -106,7 +106,7 @@ NotificationManager.prototype.shiftMessages = function(y){
 		if(text.moveTween){
 			text.moveTween.stop();
 		}
-		text.moveTween = game.add.tween(text.position);
+		text.moveTween = this.game.add.tween(text.position);
 		text.moveTween.to({y: y}, 300, Phaser.Easing.Quadratic.Out, true);
 		y -= text.height;
 	}

@@ -168,7 +168,7 @@ Game.prototype.initialize = function(){
 	*/
 	window.cardEmitter = new CardEmitter();
 
-	window.feed = new NotificationManager();
+	window.feed = new MessageFeed(this);
 	
 
 	// Инициализация модулей
