@@ -64,8 +64,8 @@ MessageFeed.prototype.newMessage = function(message, style, time){
 		text.endTime = Date.now() + time;
 	}
 
-	this._fadeInMessage(text);
 	this.add(text);
+	this._fadeInMessage(text);
 	this.shiftMessages();
 
 	return text;
