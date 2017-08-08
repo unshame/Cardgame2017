@@ -22,10 +22,6 @@ var AnnouncerMessageFeed = function(game, name){
 		'important': {fill: 'red', font: '100px Exo'}
 	};
 
-	/**
-	* Имя фида для {@link UILayers}.
-	* @type {string}
-	*/
 	this.name = name || 'announcer';
 
 	/**
@@ -39,11 +35,9 @@ var AnnouncerMessageFeed = function(game, name){
 AnnouncerMessageFeed.prototype = Object.create(MessageFeed.prototype);
 AnnouncerMessageFeed.prototype.constructor = AnnouncerMessageFeed;
 
-AnnouncerMessageFeed.prototype._createText = function(message, style){
-	var text = this.game.make.text(this._getX(), this._getLowestY(), message, style);
+AnnouncerMessageFeed.prototype._styleText = function(text){
 	text.setShadow(2, 2, 'rgba(0,0,0,0.8)', 2);
 	text.anchor.set(0.5, 0.5);
-	return text;
 };
 
 AnnouncerMessageFeed.prototype._getX = function(){

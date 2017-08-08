@@ -33,7 +33,7 @@ window.stateMenu = new State('menu', {
 
 	/**
 	* Применяет текущий скин ко всем элементам игры
-	* @memberof statePlay
+	* @memberof stateMenu
 	*/
 	applySkin: function(){
 		cardEmitter.applySkin();

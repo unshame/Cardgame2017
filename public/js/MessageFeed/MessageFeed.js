@@ -79,10 +79,36 @@ MessageFeed.prototype.newMessage = function(message, style, time){
 * @return {Phaser.Text}    Текстовый элемент.
 */
 MessageFeed.prototype._createText = function(message, style){
-	var text = this.game.make.text(ui.rope.width + 10, this._getLowestY(), message, style);
+	var text = this.game.make.text(this._getX(), this._getLowestY(), message, style);
+	this._styleText(text);
+	return text;
+};
+
+/**
+* Применяет дополнительные стили к тексту.
+* @private
+*/
+MessageFeed.prototype._styleText = function(text){
 	text.setShadow(2, 2, 'rgba(0,0,0,0.8)', 2);
 	text.anchor.set(0, 1);
-	return text;
+};
+
+/**
+* Возвращает позицию сообщений по горизонтали.
+* @private
+* @return {number} Позиция по горизонтали.
+*/
+MessageFeed.prototype._getX = function(){
+	return ui.rope.width + 10;
+};
+
+/**
+* Возвращает позицию, над которой отображаются новые сообщения.
+* @private
+* @return {number} Позиция по вертикали.
+*/
+MessageFeed.prototype._getLowestY = function(){
+	return this.game.screenHeight - 10;
 };
 
 /**
@@ -108,14 +134,6 @@ MessageFeed.prototype.clear = function(){
 			text.endTime = Date.now();
 		}
 	}
-};
-
-/**
-* Нижняя точка, над которой отображаются новые сообщения.
-* @private
-*/
-MessageFeed.prototype._getLowestY = function(){
-	return this.game.screenHeight - 10;
 };
 
 /**
@@ -186,8 +204,8 @@ MessageFeed.prototype._fadeInMessage = function(text){
 */
 MessageFeed.prototype.shiftMessages = function(){
 	var y = this._getLowestY();
-	var ii;
-	for(var i = ii = this.children.length - 1; i >= 0; i--){
+	var i, ii;
+	for(i = ii = this.children.length - 1; i >= 0; i--){
 		var text = this.children[i];
 		if(text.destroyTime !== undefined){
 			continue;
