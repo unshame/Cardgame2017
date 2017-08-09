@@ -134,9 +134,17 @@ class GenericPlayers extends GamePlayers{
 		player.game = null;
 		player.statuses = {};
 
-		let swap = this[pi];
-		this[pi] = replacement;
-		this[this.length - 1] = swap;
+		var i = this.length - 1;
+		while(i > pi){
+			let swap = this[i - 1];
+			this[i - 1] = replacement;
+			this[i] = swap;
+			i--;
+		}
+
+		if(replacement.statuses.working){
+			replacement.sendResponse();
+		}
 
 		this.log.notice('Player disconnected', player.id);
 	}
