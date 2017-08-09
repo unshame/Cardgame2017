@@ -108,9 +108,9 @@ var animTest = {
 		}
 		actionHandler.actionReactions.TRUMP_CARDS.call(actionHandler, {cards: cardsInfo, pid: game.pid});
 	},
-	announcer: function(){
+	eventFeed: function(){
 		for(var i = 0; i < 20; i++){
-			announcer.newMessage(Math.random(), (20-i)*200);
+			eventFeed.newMessage(Math.random(), (20-i)*200);
 		}
 	},
 	countdown: function(i, message){
@@ -128,16 +128,16 @@ var animTest = {
 				last = now;
 				switch(i){
 					case 0:
-					announcer.newMessage(message);
+					eventFeed.newMessage(message);
 					break;
 
 					case -1:
-					announcer.clear();
+					eventFeed.clear();
 					clearInterval(interval);
 					break;
 
 					default:
-					announcer.newMessage(i + '...');
+					eventFeed.newMessage(i + '...');
 				}
 				i--;
 			}

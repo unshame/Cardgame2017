@@ -61,6 +61,7 @@ window.actionReactions = {
 			return;
 		}
 
+		announcer.clear();
 		cardEmitter.stop();
 		fieldManager.resetHighlights();
 		fieldManager.resetFields();

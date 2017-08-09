@@ -7,7 +7,7 @@
 * @class 
 * @extends {MessageFeed}
 */
-var AnnouncerMessageFeed = function(game, name){
+var EventFeed = function(game, name){
 
 	MessageFeed.call(this, game);
 
@@ -22,7 +22,7 @@ var AnnouncerMessageFeed = function(game, name){
 		'important': {fill: 'red', font: '100px Exo'}
 	};
 
-	this.name = name || 'announcer';
+	this.name = name || 'eventFeed';
 
 	/**
 	* Масштаб сообщений.
@@ -32,30 +32,30 @@ var AnnouncerMessageFeed = function(game, name){
 	this._scales = [1, 0.75, 0.5];
 };
 
-AnnouncerMessageFeed.prototype = Object.create(MessageFeed.prototype);
-AnnouncerMessageFeed.prototype.constructor = AnnouncerMessageFeed;
+EventFeed.prototype = Object.create(MessageFeed.prototype);
+EventFeed.prototype.constructor = EventFeed;
 
-AnnouncerMessageFeed.prototype._styleText = function(text){
+EventFeed.prototype._styleText = function(text){
 	text.setShadow(2, 2, 'rgba(0,0,0,0.8)', 2);
 	text.anchor.set(0.5, 0.5);
 };
 
-AnnouncerMessageFeed.prototype._getX = function(){
+EventFeed.prototype._getX = function(){
 	return this.game.screenWidth/2;
 };
 
-AnnouncerMessageFeed.prototype._getLowestY = function(){
+EventFeed.prototype._getLowestY = function(){
 	return this.game.screenHeight/2 - 100;
 };
 
-AnnouncerMessageFeed.prototype._destroyMessage = function(text){
+EventFeed.prototype._destroyMessage = function(text){
 	if(text.scaleTween){
 		text.scaleTween.stop();
 	}
-	Object.getPrototypeOf(AnnouncerMessageFeed.prototype)._destroyMessage.call(this, text);
+	Object.getPrototypeOf(EventFeed.prototype)._destroyMessage.call(this, text);
 };
 
-AnnouncerMessageFeed.prototype._moveMessage = function(text, i, ii, x, y){
+EventFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	if(text.moveTween){
 		text.moveTween.stop();
 	}

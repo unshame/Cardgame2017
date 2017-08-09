@@ -233,4 +233,5 @@ MessageFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	text.moveTween.to({x: x, y: y}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
 };
 
-//@include:AnnouncerMessageFeed
+//@include:AnnouncementFeed
+//@include:EventFeed

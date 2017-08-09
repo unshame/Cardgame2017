@@ -177,10 +177,17 @@ Game.prototype.initialize = function(){
 
 	/**
 	* Фид важных сообщений.
-	* @type {AnnouncerMessageFeed}
+	* @type {AnnouncementFeed}
 	* @global
 	*/
-	window.announcer = new AnnouncerMessageFeed(this);	
+	window.announcer = new AnnouncementFeed(this);	
+
+	/**
+	* Фид событий.
+	* @type {EventFeed}
+	* @global
+	*/
+	window.eventFeed = new EventFeed(this);	
 
 	// Инициализация модулей
 	cardManager.initialize();
