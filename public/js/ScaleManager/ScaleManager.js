@@ -170,8 +170,10 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 	this.cellWidth = Math.round(skinManager.skin.width/this.density);
 	this.cellHeight = Math.round(skinManager.skin.height/this.density);
 
-	var width = window.innerWidth/window.devicePixelRatio,
-		height = window.innerHeight/window.devicePixelRatio,
+	var container = document.getElementById(game.parent).getBoundingClientRect();
+
+	var width = container.width/window.devicePixelRatio,
+		height = container.height/window.devicePixelRatio,
 		widthRel = width/height,
 		minWidth, minHeight;
 
