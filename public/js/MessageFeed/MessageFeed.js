@@ -40,10 +40,10 @@ MessageFeed.prototype.constructor = MessageFeed;
 * Выводит новое сообщение.
 * @param  {string} message Сообщение.
 * @param  {string|object} [style='system']   Стиль сообщения - объект со свойствами текста
-*                                            или строка, соответствующая стилю из {@link MessageFeed#styles}.
+*                                            или строка, соответствующая стилю из `styles`.
 * @param  {number} [time]  Время, после которого сообщение пропадет.
 *                          Если не указать, сообщение нужно вручную удалять, 
-*                          передавая в {@link MessageFeed#removeMessage}.  
+*                          передавая в `removeMessage`.  
 *                          Может быть вторым параметром, вместо `style`.
 * @return {Phaser.Text}    Созданный текст объект с сообщением.
 */
@@ -221,7 +221,7 @@ MessageFeed.prototype.shiftMessages = function(){
 * Передвигает сообщение в заданную позицию.
 * @private
 * @param  {Phaser.Text} text Сообщение.
-* @param  {number} i    Реальный индекс сообщения в `MessageFeed#children`.
+* @param  {number} i    Реальный индекс сообщения в `children`.
 * @param  {number} ii   Индекс сообщения не учитывая сообщения с установленным `destroyTime`.
 * @param  {number} y    Позиция сообщения по вертикали.
 */

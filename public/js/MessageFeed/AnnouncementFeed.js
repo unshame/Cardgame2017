@@ -1,3 +1,12 @@
+/**
+* Отображает важные сообщения по центру экрана.
+* Также отличается от {@link MessageFeed} стилем сообщений и 
+* тем, что только одно сообщение отображается, все остальные стоят в очереди.
+* @param {Game} game игра
+* @param {string} [name] имя фида
+* @class 
+* @extends {MessageFeed}
+*/
 var AnnouncementFeed = function(game, name){
 
 	MessageFeed.call(this, game);
@@ -5,14 +14,13 @@ var AnnouncementFeed = function(game, name){
 	/**
 	* Стили текста.
 	* @type {Object}
-	* @property {object} system Красный текст 50px
-	* @property {object} important Красный текст 100px
+	* @property {object} system Темно-оранжевый текст 100px
 	*/
 	this.styles = {
 		'system': {fill: 'darkorange', font: '100px Exo'}
 	};
 
-	this.name = name || 'AnnouncementFeed';
+	this.name = name || 'announcer';
 };
 
 AnnouncementFeed.prototype = Object.create(MessageFeed.prototype);
@@ -51,6 +59,10 @@ AnnouncementFeed.prototype.update = function(){
 
 };
 
+/**
+ * Фейдид сообщение при добавлении, если оно первое в списке.
+ * @private
+ */
 AnnouncementFeed.prototype._fadeInMessage = function(text){
 	text.addTime = Date.now();
 	if(this.children.indexOf(text) === 0){
@@ -84,6 +96,10 @@ AnnouncementFeed.prototype.clear = function(){
 	}
 };
 
+/**
+ * Фейдид сообщение, если оно первое в списке.
+ * @private
+ */
 AnnouncementFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	if(!text.fadeTween && text.alpha === 0 && this.children.indexOf(text) === 0){
 		if(text.addTime !== undefined && text.endTime !== undefined){
