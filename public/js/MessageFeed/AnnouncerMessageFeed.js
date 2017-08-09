@@ -29,7 +29,7 @@ var AnnouncerMessageFeed = function(game, name){
 	* @private
 	* @type {Array}
 	*/
-	this._scales = [1, 0.75, 0.5, 0];
+	this._scales = [1, 0.75, 0.5];
 };
 
 AnnouncerMessageFeed.prototype = Object.create(MessageFeed.prototype);
@@ -64,11 +64,17 @@ AnnouncerMessageFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	}
 
 	var len = this.children.length;
-	ii = Math.min(len - 1 - ii, this._scales.length - 1);
-	var scale = this._scales[ii];
+	ii = len - 1 - ii;
 
-	text.moveTween = this.game.add.tween(text.position);
-	text.moveTween.to({x: x, y: y}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
+	// Удаляем сообщения, для которых не задан масштаб
+	if(ii >= this._scales.length){
+		this.removeMessage(text);
+	}
+
+	var scale = this._scales[ii] || 0;
+
+	text.moveTween = this.game.add.tween(text);
+	text.moveTween.to({x: x, y: y, alpha: scale}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
 
 	text.scaleTween = this.game.add.tween(text.scale);
 	text.scaleTween.to({x: scale, y: scale}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
