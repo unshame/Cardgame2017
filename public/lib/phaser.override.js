@@ -156,3 +156,49 @@ Phaser.Stage = function (game) {
 };
 
 Phaser.Stage.prototype = PhaserStage;
+
+Phaser.TweenData.prototype.start = function () {
+
+        this.startTime = this.game.time.time + this.delay;
+
+        // Время твинов уменьшается до минимума, если игра стоит на паузе
+        if(this.game.paused){
+            this.duration = 1;
+        }
+
+        if (this.parent.reverse)
+        {
+            this.dt = this.duration;
+        }
+        else
+        {
+            this.dt = 0;
+        }
+
+        if (this.delay > 0)
+        {
+            this.isRunning = false;
+        }
+        else
+        {
+            this.isRunning = true;
+        }
+
+        if (this.isFrom)
+        {
+            //  Reverse them all and instant set them
+            for (var property in this.vStartCache)
+            {
+                this.vStart[property] = this.vEndCache[property];
+                this.vEnd[property] = this.vStartCache[property];
+                this.parent.target[property] = this.vStart[property];
+            }
+        }
+
+        this.value = 0;
+        this.yoyoCounter = 0;
+        this.repeatCounter = this.repeatTotal;
+
+        return this;
+
+    }
