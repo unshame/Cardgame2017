@@ -12,6 +12,7 @@ const publicPath = './public';
 const serverPath = './serverjs';
 const docPath = './doc';
 const reportPath = './report';
+const prodPath = './prod';
 
 // Рекурсивно заменяет строку //@include:file в контенте указанного файла
 // на контент соответствующих файлов.
@@ -110,9 +111,8 @@ function addLibraryTags(tags, libs){
 	return tags;
 }
 
-// Таск создания версии для heroku
-gulp.task('build', () => {
-
+// Создает билд игры в папке prod
+function build(includeDocs){
 	// минифицируем и склеиваем все скрипты
 	let jsContent = includeReferenced(path.join(publicPath, '/js'), 'index');
 	let jsFile = newFile('public/durak.js', jsContent);
@@ -125,11 +125,12 @@ gulp.task('build', () => {
 
 	// Скрипты, которые нужно минифицировать
 	gulp.src([
+			path.join(publicPath, '/lib/eureca.js'),	// eureka
 			path.join(publicPath, '/lib/phaser.override.js')	// перезаписываемые функции Phaser
 		], base)
 		.pipe(jsFile)	// Весь остальной js код
 		.pipe(uglify())	// минификация
-		.pipe(gulp.dest('prod'));
+		.pipe(gulp.dest(prodPath));
 
 	// Все остальные файлы игры
 	gulp.src([
@@ -145,16 +146,28 @@ gulp.task('build', () => {
 			path.join(serverPath, '/**/*')	// серверные скрипты
 		], base)
 		.pipe(indexFile)	// index.html с замененными путями к скриптам
-		.pipe(gulp.dest('prod'));
+		.pipe(gulp.dest(prodPath));
 
 	// Документация и отчеты по коду
-	gulp.src([
-			path.join(docPath, '/client/**/*'),
-			path.join(docPath, '/server/**/*'),
-			path.join(reportPath, '/client/**/*'),
-			path.join(reportPath, '/server/**/*')
-		], base)
-		.pipe(gulp.dest('prod/public'));
+	if(includeDocs){
+		gulp.src([
+				path.join(docPath, '/client/**/*'),
+				path.join(docPath, '/server/**/*'),
+				path.join(reportPath, '/client/**/*'),
+				path.join(reportPath, '/server/**/*')
+			], base)				
+			.pipe(gulp.dest(path.join(prodPath, '/public')));
+	}
+}
+
+// Таск создания версии для heroku
+gulp.task('build', () => {
+	build(false);
+});
+
+// Таск создания версии для heroku с обновлением документации
+gulp.task('buildall', () => {
+	build(true);
 });
 
 // Добавляет html скрипт теги в index.html
@@ -162,6 +175,7 @@ gulp.task('addtags', () => {
 
 	// Добавляем библиотеки к тегам
 	let libs = addLibraryTags('', [
+		'lib/eureca.js',
 		'lib/phaser.js',
 		'lib/phaser.override.js'
 	]); 

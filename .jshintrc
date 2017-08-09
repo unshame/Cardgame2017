@@ -71,7 +71,6 @@
     "BRING_TO_TOP_ON": true
   },
   "browser": true,
-  "esversion": 5,
   "undef": true,
   "unused": "vars",
   "forin": true,
