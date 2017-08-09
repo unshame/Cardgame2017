@@ -113,7 +113,7 @@ UI.prototype.addButtons = function(){
 	// МЕНЮ ОПЦИЙ
 	// Отключение от игры
 	this.optMenu.addButton(function(){
-		connection.proxy.disconnect();
+		connection.server.disconnect();
 		this.hide();
 	}, 'disconnect','Disconnect');
 

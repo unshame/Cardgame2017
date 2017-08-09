@@ -50,5 +50,9 @@ window.serverMethods = {
 	
 	reconnect: function(){
 		connection.proxy.requestGameInfo();
+	},
+
+	disconnect: function(){
+		connection.proxy.disconnectClient();
 	}
 };

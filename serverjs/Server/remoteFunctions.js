@@ -93,7 +93,7 @@ module.exports = function(server){
 			}
 		},
 
-		disconnect: function(){
+		disconnectClient: function(){
 			let player = server.players[this.connection.id];
 			if(!player)
 				return;
