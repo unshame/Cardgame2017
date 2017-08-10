@@ -226,7 +226,7 @@ class Actions{
 
 		game.waitForResponse(this.timeouts.actionComplete, game.players);
 		// Отправляем оповещение о том, что время хода вышло
-		player.handleLateness();
+		game.players.notify({message: 'TOO_SLOW'}, null, [player]);
 		game.players.completeActionNotify(outgoingAction);
 	}
 

@@ -125,12 +125,6 @@ CardControl.prototype.cardMoveToField = function(newFields){
 		suit: card.suit,
 		value: card.value
 	}], BRING_TO_TOP_ON.START, true);
-
-	fieldManager.resetHighlights();
-
-	card.setPlayability(false);
-
-	actionHandler.possibleActions = null;
 };
 
 /** Возвращает карту на ее поле. */

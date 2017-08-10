@@ -99,12 +99,6 @@ class Player{
 		}
 	}
 
-	handleLateness(){
-		if(this.remote && this.connected){
-			this.remote.handleLateness();
-		}
-	}
-
 	// Синхронно посылает асинхронный ответ серверу
 	sendResponse(action){
 		if(!this.game){

@@ -56,10 +56,5 @@ var clientMethods = {
 		actionHandler.handleNotification(note, actions);
 		if(connection.inDebugMode)
 			console.log(note, actions);
-	},
-
-	handleLateness: function(){
-		if(connection.inDebugMode)
-			console.log('Too late');
 	}
 };

@@ -15,9 +15,8 @@ var serverMethods = {
 		for(var ai = 0; ai < actions.length; ai++){
 			var action = actions[ai];
 			if(action.cid == card.id && field.id == action.field){
-				ui.rope.stop();
-				ui.actionButtons.getByName('action').disable();
-				actions = null;
+				//actionHandler.removeActionsWith(action.cid, field.id);
+				actionHandler.reset();
 				connection.proxy.recieveCompleteAction(action);
 				return true;
 			}
@@ -34,17 +33,13 @@ var serverMethods = {
 
 		var actionTypes = actions.map(function(a){return a.type;});
 		if(~actionTypes.indexOf(type)){
-			ui.rope.stop();
-			ui.actionButtons.getByName('action').disable();
 			var action = {type: type};
-			actions = null;
+			actionHandler.reset();
 			connection.proxy.recieveCompleteAction(action);
 		}
 	},
 
 	sendResponse: function(){
-		gameSeq.finish();
-		actionHandler.possibleActions = null;
 		connection.proxy.recieveResponse();
 		connection.resetTimer();
 	},

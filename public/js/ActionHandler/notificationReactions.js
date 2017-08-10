@@ -154,6 +154,10 @@ var notificationReactions = {
 	DISCONNECTED: function(){
 		feed.newMessage('Disconnected', 2000);
 		game.state.change('menu');
+	},
+
+	TOO_SLOW: function(){
+		actionHandler.reset();
 	}
 
 };

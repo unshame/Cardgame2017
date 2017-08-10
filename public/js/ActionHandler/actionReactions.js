@@ -19,8 +19,6 @@ actionReactions = {
 		var cardsInfo = action.cards.slice(),
 			pid = action.pid;
 
-		fieldManager.resetHighlights();
-
 		gameSeq.start(function(){
 			fieldManager.showTrumpCards(cardsInfo, pid);
 		}, 3000/game.speed, 0)
@@ -61,6 +59,7 @@ actionReactions = {
 			return;
 		}
 
+		actionHandler.resetActions();
 		announcer.clear();
 		cardEmitter.stop();
 		fieldManager.resetHighlights();
@@ -103,7 +102,6 @@ actionReactions = {
 	* @memberof actionReactions
 	*/
 	REVEAL: function(action){
-		fieldManager.resetHighlights();
 		fieldManager.revealCards(action.cards);
 		return 0;
 	},
@@ -116,7 +114,6 @@ actionReactions = {
 	* @memberof actionReactions
 	*/
 	DRAW: function(action){
-		fieldManager.resetHighlights();
 		var delay = fieldManager.queueCards(action.cards);
 		fieldManager.removeMarkedCards();
 		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START);
@@ -135,7 +132,6 @@ actionReactions = {
 		var delay = 0;
 		if(!action.cards)
 			return delay;
-		fieldManager.resetHighlights();
 		var field = fieldManager.fields[action.pid];
 		delay = fieldManager.moveCards(field, action.cards.slice(), BRING_TO_TOP_ON.START);
 		return delay;
@@ -172,7 +168,6 @@ actionReactions = {
 	* @memberof actionReactions
 	*/
 	DISCARD: function(action){
-		fieldManager.resetHighlights();
 		var delay = 0;
 		var cards = [];
 		for(var i = 0; i < action.ids.length; i++){

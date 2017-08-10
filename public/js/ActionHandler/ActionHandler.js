@@ -99,8 +99,9 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 
 	var currentTime = new Date();
 	time = time - currentTime.getTime();
-	if(time)
+	if(time){
 		ui.rope.start(time - 1000);
+	}
 
 	this.highlightPossibleActions(actions);
 };
@@ -173,6 +174,31 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 	}
 	fieldManager.tryHighlightDummy();
 };
+
+ActionHandler.prototype.resetActions = function(){
+	this.possibleActions = null;
+}
+
+// Убирает все возможные действия
+ActionHandler.prototype.reset = function(){
+	this.resetActions();
+	fieldManager.resetHighlights();
+	ui.actionButtons.getByName('action').disable();
+	ui.rope.stop();
+}
+
+/*ActionHandler.prototype.removeActionsWith = function(cardId, fieldId){
+	if(!this.possibleActions){
+		return;
+	}
+	for(var i = this.possibleActions.length - 1; i >= 0; i--){
+		var action = this.possibleActions[i];
+		if(action.cid === cardId || action.field === fieldId){
+			this.possibleActions.splice(i, 1);
+		}
+	}
+	console.log(this.possibleActions.length)
+}*/
 
 //@include:actionReactions
 //@include:notificationReactions
