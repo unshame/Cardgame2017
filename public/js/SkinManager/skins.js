@@ -3,6 +3,8 @@
 * @type {object[]}
 * @global
 */
+
+/* exported skins */
 var skins = [];
 
 // Modern

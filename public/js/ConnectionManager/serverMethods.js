@@ -3,7 +3,8 @@
 * @namespace serverMethods
 */
 
-serverMethods = {
+/* exported serverMethods */
+var serverMethods = {
 
 	sendAction: function(field, card){
 		var actions = actionHandler.possibleActions;

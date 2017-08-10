@@ -13,17 +13,7 @@ var actionHandler,
 	gameSeq,
 	playerManager,
 	skinManager,
-	skins,
 	ui;
-
-// Глобальные объекты
-var clientMethods,
-	serverMethods,
-	statePlay,
-	stateBoot,
-	stateMenu,
-	notificationReactions,
-	actionReactions;
 
 // Глобальные методы
 

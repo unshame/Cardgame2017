@@ -7,7 +7,8 @@
 * @see {@link StateManager}
 */
 
-stateMenu = new State('menu', {
+/* exported stateMenu */
+var stateMenu = new State('menu', {
 
 	/**
 	* Выводит дебаг информацию.
