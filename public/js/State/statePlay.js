@@ -78,6 +78,7 @@ var statePlay = new State('play', {
 	* @memberof statePlay
 	*/
 	create: function(){
+		cardControl.trailApplySkin();
 		ui.actionButtons.getByName('action').show();
 		ui.actionButtons.getByName('action').disable();
 	},
