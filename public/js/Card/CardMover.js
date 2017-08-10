@@ -120,6 +120,9 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	if(this.game.paused){
 		this.applyValue();
 		this.setRelativePosition(x, y);
+		if(this._shouldHighlight){
+			this.setHighlight(true);
+		}
 		if(this.mover){
 			this.mover.stop();
 			this.mover = null;
@@ -186,6 +189,9 @@ Card.prototype._onMoveComplete = function(){
 		else{
 			this.field.zAlignCards(true, this);
 		}
+	}
+	if(this._shouldHighlight){
+		this.setHighlight(true);
 	}
 };
 

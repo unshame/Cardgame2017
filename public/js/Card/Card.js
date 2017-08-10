@@ -49,6 +49,18 @@ var Card = function (options) {
 	this.playable = false;
 
 	/**
+	 * Подсвечена ли карта.
+	 * @type {Boolean}
+	 */
+	this.highlighted = false;
+
+	/**
+	 * Должна ли карта быть подсвечена по окончании движения.
+	 * @type {Boolean}
+	 */
+	this._shouldHighlight = false;
+
+	/**
 	* Говорит {@link Card#field}, что карту нужно поднять
 	* @default false
 	* @type {boolean}

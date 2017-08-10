@@ -146,16 +146,21 @@ Card.prototype.setDraggability = function(draggable){
 * @param {number} [tint=ui.colors.orange] - цвет свечения карты
 */
 Card.prototype.setPlayability = function(playable, tint){
-	if(this.highlighted)
-		this.highlighted = false;
+	if(tint === undefined){
+		tint = tint || ui.colors.orange;
+	}
+
+	this.highlighted = false;
+	this._shouldHighlight = false;
+
+	this.playable = playable;
 
 	if(playable){
-		this._glowStart(0.25, 0.75, 1500, 500, tint || ui.colors.orange);
+		this._glowStart(0.25, 0.75, 1500, 500, tint);
 	}
 	else{
 		this._glowStop();
 	}
-	this.playable = playable;
 };
 
 /**
@@ -164,14 +169,25 @@ Card.prototype.setPlayability = function(playable, tint){
 * @param {number} [tint=yi.colors.orange] цвет свечения карты
 */
 Card.prototype.setHighlight = function(highlighted, tint){
-	if(this.playable)
-		this.playable = false;
+	if(tint === undefined){
+		tint = tint || ui.colors.orange;
+	}
+
+	if(highlighted && this.mover){
+		this.glow.tint = tint;
+		this._shouldHighlight = true;
+		return;
+	}
+
+	this.playable = false;
+
+	this._shouldHighlight = false;
+	this.highlighted = highlighted;
 
 	if(highlighted){
-		this._glowStart(0.5, 0.75, 1500, 0, tint || ui.colors.orange);
+		this._glowStart(0.5, 0.75, 1500, 0, tint);
 	}
 	else{
 		this._glowStop();
 	}
-	this.highlighted = highlighted;
 };
