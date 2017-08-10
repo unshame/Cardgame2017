@@ -60,7 +60,7 @@ function getTimeStamp(full){
  * @return {winston.Logger}       	 Новый логгер.
  */
 module.exports = function(callingModule, id, level) {
-	let name = callingModule.filename.split('\\').pop().replace('.js', '');
+	let name = callingModule.filename.split(/[/\\]+/).pop().replace('.js', '');
 	let filename = './logs/' + name + (id ? '#' + id : '') + '-' + (getTimeStamp(true).replace(/[|&;$%@"<>()+,\/:-]/g,'')) + '.log';
 	let transports = [
 		new winston.transports.Console(

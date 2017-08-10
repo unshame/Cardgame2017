@@ -17,7 +17,7 @@ var AnnouncementFeed = function(game, name){
 	* @property {object} system Темно-оранжевый текст 100px
 	*/
 	this.styles = {
-		'system': {fill: 'darkorange', font: '100px Exo'}
+		'system': {fill: numberToHexColor(ui.colors.orange), font: '100px Exo'}
 	};
 
 	this.name = name || 'announcer';

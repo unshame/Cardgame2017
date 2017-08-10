@@ -10,7 +10,7 @@ window.notificationReactions = {
 	* @memberOf notificationReactions
 	*/
 	SIMULATING: function(){
-
+		feed.newMessage('Simulating', 2000);
 	},
 
 	/**

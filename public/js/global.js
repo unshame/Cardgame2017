@@ -51,6 +51,30 @@ function mergeOptions(dest, source){
 	return dest;
 }
 
+/**
+* Добавляет нули перед строкой до указанного кол-ва.
+* @global
+* @param  {string} str 	строка
+* @param  {number} [len=2] желаемая длина строки длина
+* @return {string}         Полученная строка с нулями.
+*/
+function leadWithZeros(str, len){
+	len = len || 2;
+	return (Array(len).join('0') + str).slice(-len);
+}
+
+/**
+* Конвертирует число в строку по типу `#000000`.
+* @global
+* @param  {number} number число
+* @return {string}        Строка по типу `#000000`.
+*/
+function numberToHexColor(number){
+	var string = leadWithZeros(number.toString(16), 6);
+	string = '#' + string;
+	return string;
+}
+
 
 // TEST AND DEBUG FUNCTIONS
 
