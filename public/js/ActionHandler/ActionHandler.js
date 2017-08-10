@@ -4,34 +4,53 @@
 * @class
 */
 
-var ActionHandler = function(actionReactions, notificationReactions){
+var ActionHandler = function(correctState, actionReactions, notificationReactions){
 
+	this.correctState = correctState;
 	this.actionReactions = actionReactions;
 	this.notificationReactions = notificationReactions;
 	this.possibleActions = null;
 
 	this.timedAction = null;
 	this.timedActionTimeout = null;
+
+	this.waitingForGameInfo = false;
 };
 
 // ОБРАБОТКА КОМАНД СЕРВЕРА
 
+// Переставляет игру в правильное состояние и запрашивает информацию об игре у сервера
+ActionHandler.prototype.changeToCorrectState = function(){
+	console.warn('ActionHandler: changing to ' + this.correctState + ' state');
+	this.waitingForGameInfo = true;
+	game.state.change(this.correctState);
+	connection.server.reconnect();
+}
+
 // Выполняет действие
-
 ActionHandler.prototype.executeAction = function(action){
-
-	if(game.state.currentSync != 'play'){
-		console.error('ActionHandler: must be in play state to execute actions');
-		return;
-	}
 
 	if(!action){
 		console.error('Action handler: no action recieved');
 		return;
 	}
 
+	if(this.waitingForGameInfo && action.type == 'GAME_INFO_UPDATE' || action.type == 'GAME_INFO'){
+		this.waitingForGameInfo = false;
+	}
+
 	if(game.inDebugMode){
 		feed.newMessage(action.type, 'system', 2000);
+	}
+
+	if(game.state.currentSync != this.correctState){
+		this.changeToCorrectState();
+		return;
+	}
+
+	if(this.waitingForGameInfo){		
+		console.error('Action handler: waiting for game info');
+		return;
 	}
 
 	gameSeq.finish();
@@ -50,8 +69,18 @@ ActionHandler.prototype.executeAction = function(action){
 
 ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent){
 
-	if(game.state.currentSync != 'play'){
-		console.error('ActionHandler: must be in play state to handle possible actions');
+	if(!actions){
+		console.error('Action handler: no actions recieved');
+		return;
+	}
+
+	if(game.state.currentSync != this.correctState){
+		this.changeToCorrectState();
+		return;
+	}
+
+	if(this.waitingForGameInfo){		
+		console.error('Action handler: waiting for game info');
 		return;
 	}
 
@@ -77,13 +106,23 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 };
 
 ActionHandler.prototype.handleNotification = function(note, actions){
-	if(game.state.currentSync != 'play'){
-		console.error('ActionHandler: must be in play state to recieve game notifications');
+	if(!note){
+		console.error('Action handler: no note recieved');
 		return;
 	}
 
 	if(game.inDebugMode){
 		feed.newMessage(note.message, 'system', 2000);
+	}
+
+	if(game.state.currentSync != this.correctState){
+		this.changeToCorrectState();
+		return;
+	}
+
+	if(this.waitingForGameInfo){		
+		console.error('Action handler: waiting for game info');
+		return;
 	}
 
 	var reaction = this.notificationReactions[note.message];

@@ -75,7 +75,7 @@ var Game = function(parent, speed, inDebugMode){
 	* @type {ActionHandler}
 	* @global
 	*/
-	window.actionHandler = new ActionHandler(window.actionReactions, window.notificationReactions);
+	window.actionHandler = new ActionHandler('play', window.actionReactions, window.notificationReactions);
 
 	/**
 	* Менеджер игроков.
