@@ -112,9 +112,12 @@ function addLibraryTags(tags, libs){
 }
 
 // Создает билд игры в папке prod
-function build(includeDocs){
-	// минифицируем и склеиваем все скрипты
+function build(includeDocs, safeBuild){
+	// склеиваем все скрипты
 	let jsContent = includeReferenced(path.join(publicPath, '/js'), 'index');
+	if(safeBuild){
+		jsContent = '(function(){' + jsContent + '})()';
+	}
 	let jsFile = newFile('public/durak.js', jsContent);
 
 	// заменяем пути к скриптам в index.html
@@ -168,6 +171,16 @@ gulp.task('build', () => {
 // Таск создания версии для heroku с обновлением документации
 gulp.task('buildall', () => {
 	build(true);
+});
+
+// То же, только весь код оборачивается в самовызываемую функцию
+
+gulp.task('buildsafe', () => {
+	build(false, true);
+});
+
+gulp.task('buildallsafe', () => {
+	build(true, true);
 });
 
 // Добавляет html скрипт теги в index.html

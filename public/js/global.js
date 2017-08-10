@@ -1,6 +1,22 @@
-// Глобальные методы
-
 /*jshint unused:false*/
+
+// Глобальные модули
+var actionHandler,
+	announcer,
+	cardControl,
+	cardEmitter,
+	cardManager,
+	connection,
+	eventFeed,
+	feed,
+	fieldManager,
+	gameSeq,
+	playerManager,
+	skinManager,
+	skins,
+	ui;
+
+// Глобальные методы
 
 /**
 * Fisher–Yates Shuffle (сортировка массивов).
@@ -77,6 +93,9 @@ function numberToHexColor(number){
 
 
 // TEST AND DEBUG FUNCTIONS
+
+var	getCard,
+	getCards;
 
 /**
 * Выводит в консоль имена слоев интерфейса и сами слои

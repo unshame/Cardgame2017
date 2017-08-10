@@ -3,7 +3,7 @@
 * @namespace serverMethods
 */
 
-window.serverMethods = {
+var serverMethods = {
 
 	sendAction: function(field, card){
 		var actions = actionHandler.possibleActions;

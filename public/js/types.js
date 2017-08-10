@@ -10,7 +10,7 @@
 * @enum {number}
 * @global
 */
-window.BRING_TO_TOP_ON = {
+var BRING_TO_TOP_ON = {
 	/** Никогда. */
 	NEVER: 0,
 	/** При инициализации (до задержки). */

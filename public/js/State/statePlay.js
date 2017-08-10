@@ -8,7 +8,7 @@
 * @see {@link StateManager}
 */
 
-window.statePlay = new State('play', {
+var statePlay = new State('play', {
 
 	/**
 	* Обновляет состояние элементов игры, которые не обновляются игрой автоматически.

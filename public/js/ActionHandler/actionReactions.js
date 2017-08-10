@@ -2,7 +2,7 @@
 * Действия, выполняемые в ответ на действия сервера  
 * @namespace actionReactions
 */
-window.actionReactions = {
+var actionReactions = {
 	
 	/**
 	* Наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них

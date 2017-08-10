@@ -3,7 +3,7 @@
 * @type {object[]}
 * @global
 */
-window.skins = [];
+var skins = [];
 
 // Modern
 skins.push({

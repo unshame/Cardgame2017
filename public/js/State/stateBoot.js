@@ -8,7 +8,7 @@
 * @property {string} key='boot' Название состояния.
 */
 
-window.stateBoot = new State('boot', {
+var stateBoot = new State('boot', {
 
 	/**
 	* Инициализирует показ процесса загрузки.
@@ -78,7 +78,7 @@ window.stateBoot = new State('boot', {
 		*/
 		game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 
-		skinManager.addSkins(window.skins);
+		skinManager.addSkins(skins);
 	},
 
 	/**

@@ -61,63 +61,63 @@ var Game = function(parent, speed, inDebugMode){
 	* @type {FieldManager}
 	* @global
 	*/
-	window.fieldManager = new FieldManager(this.inDebugMode);
+	fieldManager = new FieldManager(this.inDebugMode);
 
 	/**
 	* Менеджер последовательностей игровых анимаций.
 	* @type {Sequencer}
 	* @global
 	*/
-	window.gameSeq = new Sequencer();
+	gameSeq = new Sequencer();
 
 	/**
 	* Обработчик действий сервера.
 	* @type {ActionHandler}
 	* @global
 	*/
-	window.actionHandler = new ActionHandler('play', window.actionReactions, window.notificationReactions);
+	actionHandler = new ActionHandler('play', actionReactions, notificationReactions);
 
 	/**
 	* Менеджер игроков.
 	* @type {PlayerManager}
 	* @global
 	*/
-	window.playerManager = new PlayerManager();
+	playerManager = new PlayerManager();
 
 	/**
 	* Менеджер интерфейса.
 	* @type {UI}
 	* @global
 	*/
-	window.ui = new UI();
+	ui = new UI();
 
 	/**
 	* Менеджер скинов.
 	* @type {SkinManager}
 	* @global
 	*/
-	window.skinManager = new SkinManager('modern');
+	skinManager = new SkinManager('modern');
 
 	/**
 	* Менеджер карт
 	* @type {CardManager}
 	* @global
 	*/
-	window.cardManager = new CardManager(this.inDebugMode);
+	cardManager = new CardManager(this.inDebugMode);
 
 	/**
 	* Контроллер карт
 	* @type {CardControl}
 	* @global
 	*/
-	window.cardControl = new CardControl(this.inDebugMode);
+	cardControl = new CardControl(this.inDebugMode);
 
 	/**
 	* Менеджер соединения с сервером
 	* @type {ConnectionManager}
 	* @global
 	*/
-	window.connection = new ConnectionManager(window.serverMethods, window.clientMethods, 'menu', this.inDebugMode);
+	connection = new ConnectionManager(serverMethods, clientMethods, 'menu', this.inDebugMode);
 
 
 	/********/
@@ -166,28 +166,28 @@ Game.prototype.initialize = function(){
 	* @type {CardEmitter}
 	* @global
 	*/
-	window.cardEmitter = new CardEmitter();
+	cardEmitter = new CardEmitter();
 
 	/**
 	* Фид системных сообщений.
 	* @type {MessageFeed}
 	* @global
 	*/
-	window.feed = new MessageFeed(this);
+	feed = new MessageFeed(this);
 
 	/**
 	* Фид важных сообщений.
 	* @type {AnnouncementFeed}
 	* @global
 	*/
-	window.announcer = new AnnouncementFeed(this);	
+	announcer = new AnnouncementFeed(this);	
 
 	/**
 	* Фид событий.
 	* @type {EventFeed}
 	* @global
 	*/
-	window.eventFeed = new EventFeed(this);	
+	eventFeed = new EventFeed(this);	
 
 	// Инициализация модулей
 	cardManager.initialize();

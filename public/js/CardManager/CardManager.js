@@ -37,13 +37,13 @@ var CardManager = function(inDebugMode){
 	* @global
 	* @see {@link CardManager#getCards}
 	*/
-	window.getCards = this.getCards.bind(this);
+	getCards = this.getCards.bind(this);
 	/**
 	* @method
 	* @global
 	* @see {@link CardManager#getCard}
 	*/
-	window.getCard = this.getCard.bind(this);
+	getCard = this.getCard.bind(this);
 };
 
 /**
