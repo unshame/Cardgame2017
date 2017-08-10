@@ -16,6 +16,15 @@ var actionHandler,
 	skins,
 	ui;
 
+// Глобальные объекты
+var clientMethods,
+	serverMethods,
+	statePlay,
+	stateBoot,
+	stateMenu,
+	notificationReactions,
+	actionReactions;
+
 // Глобальные методы
 
 /**

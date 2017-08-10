@@ -7,7 +7,7 @@
 * @see {@link StateManager}
 */
 
-var stateMenu = new State('menu', {
+stateMenu = new State('menu', {
 
 	/**
 	* Выводит дебаг информацию.

@@ -8,7 +8,7 @@
 * @property {string} key='boot' Название состояния.
 */
 
-var stateBoot = new State('boot', {
+stateBoot = new State('boot', {
 
 	/**
 	* Инициализирует показ процесса загрузки.

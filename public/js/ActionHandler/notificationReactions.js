@@ -3,7 +3,7 @@
 * @namespace notificationReactions
 */
 
-var notificationReactions = {
+notificationReactions = {
 
 	/**
 	* В игре остались только боты, игра симулируется в ускоренном режиме

@@ -8,7 +8,7 @@
 * @see {@link StateManager}
 */
 
-var statePlay = new State('play', {
+statePlay = new State('play', {
 
 	/**
 	* Обновляет состояние элементов игры, которые не обновляются игрой автоматически.

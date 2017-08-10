@@ -3,7 +3,7 @@
 * @namespace clientMethods
 */
 
-var clientMethods = {
+clientMethods = {
 
 	setId: function(connId, pid){
 		connection.resetTimer();

@@ -25,7 +25,7 @@ ActionHandler.prototype.changeToCorrectState = function(){
 	this.waitingForGameInfo = true;
 	game.state.change(this.correctState);
 	connection.server.reconnect();
-}
+};
 
 // Выполняет действие
 ActionHandler.prototype.executeAction = function(action){
