@@ -19,13 +19,13 @@ Sequencer.prototype._add = function(step, action, duration, context){
 
 	this.duration += duration;
 
-	var time = Date.now() + this.duration;
+	// Время до выполнения действия от начала последовательности
+	var fullDuration = this.duration;
 
 	// Новый элемент списка
 	var newStep = this._currentStep = {
 		then: null,
 		wrapper: null,
-		time: time,
 		duration: this.duration
 	};
 	newStep.then = this._add.bind(this, newStep);
@@ -33,7 +33,9 @@ Sequencer.prototype._add = function(step, action, duration, context){
 	// Добавляем враппер действия текущего элементу в списке
 	step.wrapper = function(){
 
-		this.duration -= duration;
+		if(!this._shouldSkip && this.inDebugMode){
+			console.log(action.name, Date.now() - this.startTime, this.duration);
+		}
 
 		// Создаем функцию, вызывающую враппер действия следующего элемента в списке
 		this._nextAction = function(){
@@ -47,13 +49,20 @@ Sequencer.prototype._add = function(step, action, duration, context){
 
 		// Пропуск текущего шага
 		if(this._shouldSkip > 0){
+			if(this.inDebugMode){
+				console.log('skipped', duration);
+			}
+			this._skippedTime += duration;
 			this._shouldSkip--;
 			this._nextAction.call(this);
 		}
 		else{
 			// Устанавливаем таймаут перед выполнением враппера действия следующего элемента в списке
 			if(!this._finishing && this._nextAction){
-				this._timeout = setTimeout(this._nextAction.bind(this), Math.max(time - Date.now(), 1));		
+				this._timeout = setTimeout(
+					this._nextAction.bind(this),
+					Math.max( this.startTime - this._skippedTime + fullDuration - Date.now(), 0 )
+				);		
 			}
 			// Вызываем текущее действие
 			action.call(context || action, this._getMethods.call(this));

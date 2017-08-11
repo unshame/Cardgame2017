@@ -70,7 +70,7 @@
 * 	s.skip()
 * }
 */
-var Sequencer = function(){
+var Sequencer = function(inDebugMode){
 
 	/**
 	* Выполняется ли список.
@@ -83,6 +83,19 @@ var Sequencer = function(){
 	* @type {Number}
 	*/
 	this.duration = 0;
+
+	/**
+	 * Время начала текущего списка.
+	 * @type {Number}
+	 */
+	this.startTime = 0;
+
+	/**
+	 * Время пропущенных шагов.
+	 * @type {Number}
+	 * @private
+	 */
+	this._skippedTime = 0;
 
 	/**
 	* Находится ли список в режиме выполнения без задержек.
@@ -128,6 +141,9 @@ var Sequencer = function(){
 		then: function(){},
 		duration: 0
 	};
+
+
+	this.inDebugMode = inDebugMode || false;
 };
 
 /**
@@ -156,14 +172,15 @@ Sequencer.prototype.start = function(action, duration, delay, context){
 	this.inProgress = true;
 	this._shouldSkip = 0;
 
-	this.duration += delay;
+	duration += delay;
+
+	this.startTime = Date.now();
 	
 	// Добавляем первое действие в список
 	var step = {},
 		newStep = this._add(step, action, duration, context);
 
 	// Выполняем первое действие с заданной задержкой
-	newStep.duration += delay;
 	this._nextAction = step.wrapper.bind(this);
 	this._timeout = setTimeout(this._nextAction, delay);
 
@@ -214,6 +231,8 @@ Sequencer.prototype.abort = function(){
 
 	this.inProgress = false;
 	this.duration = 0;
+	this.startTime = 0;
+	this._skippedTime = 0;
 
 	this._finishing = false;
 	this._shouldSkip = 0;
@@ -242,31 +261,25 @@ Sequencer.prototype.unskip = function(){
 
 // Test
 // jshint ignore: start
-var sequence = new Sequencer();
+var sequence = new Sequencer(true);
 function addSeq(seq, shouldStop){
 	var start = Date.now();
 	function action0(seq){
-		console.log(this.name, Date.now() - start)
-		seq.append(action1, 1000, 500)
+		seq.skip(2);
+		seq.append(action2, 1000).then(action3, 1000)
 	}
-	function action1(seq){		
-		console.log(this.name, Date.now() - start)
+	function action1(seq){
 	}
 	function action2(seq){
-		console.log(this.name, Date.now() - start)
 	}
 	function action3(seq){
-		console.log(this.name, Date.now() - start)
 	}
 	function action4(seq){
-		console.log(this.name, Date.now() - start)
-		seq.append(action1, 1000, 500)
-			.then(action2, 2000)
-		seq.skip(1);
+		seq.append(action2, 1000)
 	}
 	var seq0 = sequence
 		.start(action0, 1000, 500)
 		.then(action1, 1000)
-		.then(action1, 1000);
+		.then(action4, 1000);
 	return seq0
 };
