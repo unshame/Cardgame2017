@@ -124,6 +124,23 @@ MessageFeed.prototype.removeMessage = function(text){
 };
 
 /**
+* Удаляет сообщение с указанным индексом.
+* @param  {number} i индекс сообщения
+*/
+MessageFeed.prototype.removeMessageAt = function(i){
+	if(this.children[i]){
+		this.removeMessage(this.children[i]);
+	}
+}
+
+/**
+* Удаляет первое добавленное сообщение (с нулевым индексом).
+*/
+MessageFeed.prototype.nextMessage = function(){
+	this.removeMessageAt(0);
+}
+
+/**
 * Удаляет все отображаемые сообщения, устанавливая их `endTime` на текущее время.
 */
 MessageFeed.prototype.clear = function(){
