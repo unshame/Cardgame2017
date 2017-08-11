@@ -129,10 +129,10 @@ actionReactions = {
 	* @memberof actionReactions
 	*/
 	TAKE: function(action){
-		actionHandler.reset();
 		var delay = 0;
 		if(!action.cards)
 			return delay;
+		actionHandler.reset();
 		var field = fieldManager.fields[action.pid];
 		delay = fieldManager.moveCards(field, action.cards.slice(), BRING_TO_TOP_ON.START);
 		return delay;
