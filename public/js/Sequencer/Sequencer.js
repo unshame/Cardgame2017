@@ -126,11 +126,11 @@ var Sequencer = function(inDebugMode){
 	this._nextAction = null;
 
 	/**
-	* Текущий элемент списка
+	* Последний добавленный элемент списка.
 	* @type {object}
 	* @private
 	*/
-	this._currentStep = null;
+	this._lastStep = null;
 
 	/**
 	* Пустой элемент списка, чтобы вызов `then` не крашил игру.
@@ -202,7 +202,7 @@ Sequencer.prototype.start = function(action, duration, delay, context){
 */
 Sequencer.prototype.append = function(action, duration, context){
 	if(this.inProgress){
-		return this._add(this._currentStep, action, duration, context);
+		return this._add(this._lastStep, action, duration, context);
 	}
 	else{
 		var skips = this._shouldSkip;
@@ -237,7 +237,7 @@ Sequencer.prototype.abort = function(){
 	this._finishing = false;
 	this._shouldSkip = 0;
 	this._nextAction = null;
-	this._currentStep = null;
+	this._lastStep = null;
 };
 
 /** 

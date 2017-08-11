@@ -23,7 +23,7 @@ Sequencer.prototype._add = function(step, action, duration, context){
 	var fullDuration = this.duration;
 
 	// Новый элемент списка
-	var newStep = this._currentStep = {
+	var newStep = this._lastStep = {
 		then: null,
 		wrapper: null,
 		duration: this.startTime + fullDuration - this._skippedTime - Date.now()
