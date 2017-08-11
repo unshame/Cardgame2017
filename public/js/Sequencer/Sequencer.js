@@ -265,7 +265,6 @@ var sequence = new Sequencer(true);
 function addSeq(seq, shouldStop){
 	var start = Date.now();
 	function action0(seq){
-		seq.skip(2);
 		seq.append(action2, 1000).then(action3, 1000)
 	}
 	function action1(seq){

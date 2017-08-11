@@ -26,7 +26,7 @@ Sequencer.prototype._add = function(step, action, duration, context){
 	var newStep = this._currentStep = {
 		then: null,
 		wrapper: null,
-		duration: this.duration
+		duration: this.startTime + fullDuration - this._skippedTime - Date.now()
 	};
 	newStep.then = this._add.bind(this, newStep);
 
