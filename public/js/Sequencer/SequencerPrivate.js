@@ -13,23 +13,27 @@ Sequencer.prototype._add = function(step, action, duration, context){
 		return this._dummyStep;
 	}
 
-	if(typeof duration != 'function'){
-		if(duration < 0 || isNaN(duration)){
-			duration = 0;
-		}
-		this.duration += duration;
+	if(duration < 0 || isNaN(duration)){
+		duration = 0;
 	}
+
+	this.duration += duration;
+
+	var time = Date.now() + this.duration;
 
 	// Новый элемент списка
 	var newStep = this._currentStep = {
 		then: null,
 		wrapper: null,
+		time: time,
 		duration: this.duration
 	};
 	newStep.then = this._add.bind(this, newStep);
 
 	// Добавляем враппер действия текущего элементу в списке
 	step.wrapper = function(){
+
+		this.duration -= duration;
 
 		// Создаем функцию, вызывающую враппер действия следующего элемента в списке
 		this._nextAction = function(){
@@ -47,15 +51,9 @@ Sequencer.prototype._add = function(step, action, duration, context){
 			this._nextAction.call(this);
 		}
 		else{
-			if(typeof duration == 'function'){
-				duration = duration();
-				if(duration < 0 || isNaN(duration)){
-					duration = 0;
-				}
-			}
 			// Устанавливаем таймаут перед выполнением враппера действия следующего элемента в списке
 			if(!this._finishing && this._nextAction){
-				this._timeout = setTimeout(this._nextAction.bind(this), duration);		
+				this._timeout = setTimeout(this._nextAction.bind(this), Math.max(time - Date.now(), 1));		
 			}
 			// Вызываем текущее действие
 			action.call(context || action, this._getMethods.call(this));

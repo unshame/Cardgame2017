@@ -156,12 +156,13 @@ Sequencer.prototype.start = function(action, duration, delay, context){
 	this.inProgress = true;
 	this._shouldSkip = 0;
 
+	this.duration += delay;
+	
 	// Добавляем первое действие в список
 	var step = {},
 		newStep = this._add(step, action, duration, context);
 
 	// Выполняем первое действие с заданной задержкой
-	this.duration += delay;
 	newStep.duration += delay;
 	this._nextAction = step.wrapper.bind(this);
 	this._timeout = setTimeout(this._nextAction, delay);
@@ -246,7 +247,7 @@ function addSeq(seq, shouldStop){
 	var start = Date.now();
 	function action0(seq){
 		console.log(this.name, Date.now() - start)
-		seq.start(action4, 1000, 500).then(action3)
+		seq.append(action1, 1000, 500)
 	}
 	function action1(seq){		
 		console.log(this.name, Date.now() - start)
