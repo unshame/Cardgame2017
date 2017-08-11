@@ -45,23 +45,23 @@ ConnectionManager.prototype.bindProxy = function(proxy){
 };
 
 ConnectionManager.prototype.handleConnection = function(){
-	console.log('Connected');
+	feed.newMessage('Connected to server', 2000);
 };
 
 ConnectionManager.prototype.handleConnectionLoss = function(){
-	console.log('Lost connection');
+	feed.newMessage('Lost connection to server', 2000);
 };
 
 ConnectionManager.prototype.handleConnectionRetry = function(){
-	console.log('Retrying connection');
+	feed.newMessage('Retrying connection to server', 2000);
 };
 
 ConnectionManager.prototype.handleDisconnection = function(){
-	console.log('Disconnected');
+	feed.newMessage('Disconnected from server', 2000);
 };
 
 ConnectionManager.prototype.handleError = function(){
-	console.log('Error');
+	feed.newMessage('Server connection error', 2000);
 };
 
 ConnectionManager.prototype.resetTimer = function(){

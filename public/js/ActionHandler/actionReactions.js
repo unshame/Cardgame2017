@@ -17,12 +17,20 @@ actionReactions = {
 			return 0;		
 
 		var cardsInfo = action.cards.slice(),
-			pid = action.pid;
+			pid = action.pid,
+			player = playerManager.getPlayer(pid),
+			message;
 
 		gameSeq.start(function(){
+			if(player){
+				message = eventFeed.newMessage(player.name + ' is going first');
+			}
 			fieldManager.showTrumpCards(cardsInfo, pid);
 		}, 3000/game.speed, 0)
 		.then(function(){
+			if(message){
+				eventFeed.removeMessage(message);
+			}
 			fieldManager.hideTrumpCards(cardsInfo);
 		}, 500);
 
@@ -90,7 +98,7 @@ actionReactions = {
 	* @memberof actionReactions
 	*/
 	GAME_INFO_UPDATE: function(action){
-		feed.newMessage('Reconnected', 'system', 2000);
+		feed.newMessage('Reconnected to game', 2000);
 		return this['GAME_INFO'].call(this, action, true);
 	},
 
