@@ -178,7 +178,7 @@ UI.prototype.addButtons = function(){
 			};
 		},
 		action: function(){
-			connection.server.sendRealAction(actionHandler.realAction);
+			connection.server.sendRealAction(actionHandler.buttonAction);
 		},
 		text: 'Take',
 		color: 'orange',

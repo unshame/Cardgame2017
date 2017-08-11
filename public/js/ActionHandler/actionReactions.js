@@ -129,6 +129,7 @@ actionReactions = {
 	* @memberof actionReactions
 	*/
 	TAKE: function(action){
+		actionHandler.reset();
 		var delay = 0;
 		if(!action.cards)
 			return delay;
@@ -168,6 +169,7 @@ actionReactions = {
 	* @memberof actionReactions
 	*/
 	DISCARD: function(action){
+		actionHandler.reset();
 		var delay = 0;
 		var cards = [];
 		for(var i = 0; i < action.ids.length; i++){

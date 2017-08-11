@@ -15,8 +15,9 @@ var serverMethods = {
 		for(var ai = 0; ai < actions.length; ai++){
 			var action = actions[ai];
 			if(action.cid == card.id && field.id == action.field){
-				//actionHandler.removeActionsWith(action.cid, field.id);
-				actionHandler.reset();
+				actionHandler.removeActionsWith(card, field, action);
+				ui.rope.stop();
+				//actionHandler.reset();
 				connection.proxy.recieveCompleteAction(action);
 				return true;
 			}

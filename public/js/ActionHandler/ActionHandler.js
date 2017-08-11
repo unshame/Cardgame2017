@@ -10,6 +10,7 @@ var ActionHandler = function(correctState, actionReactions, notificationReaction
 	this.actionReactions = actionReactions;
 	this.notificationReactions = notificationReactions;
 	this.possibleActions = null;
+	this.turnStage = null;
 
 	this.timedAction = null;
 	this.timedActionTimeout = null;
@@ -67,8 +68,7 @@ ActionHandler.prototype.executeAction = function(action){
 	return delay;
 };
 
-ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent){
-
+ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent, turnStage){
 	if(!actions){
 		console.error('Action handler: no actions recieved');
 		return;
@@ -84,18 +84,7 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 		return;
 	}
 
-	var actionTypes = actions.map(function(a){return a.type;});
-	var button = ui.actionButtons.getByName('action');
-	if(~actionTypes.indexOf('SKIP')){
-		this.realAction = 'SKIP';
-		button.label.setText('Skip');
-		button.enable();
-	}
-	else if(~actionTypes.indexOf('TAKE')){
-		this.realAction = 'TAKE';
-		button.label.setText('Take');
-		button.enable();
-	}
+	this.turnStage = turnStage;
 
 	var currentTime = new Date();
 	time = time - currentTime.getTime();
@@ -160,8 +149,15 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 	fieldManager.resetHighlights();
 
+	var button = ui.actionButtons.getByName('action');
+	button.disable();
+
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
+		if(action.type == 'SKIP' || action.type == 'TAKE'){
+			this.setButtonAction(button, action.type);
+			continue;
+		}
 		var card = cardManager.cards[action.cid];
 		var field = fieldManager.fields[action.field];
 		if(action.cid && card && (!cardHolding || (cardHolding == card || cardHolding.value == card.value && action.type != 'DEFENSE'))){
@@ -175,30 +171,74 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 	fieldManager.tryHighlightDummy();
 };
 
-ActionHandler.prototype.resetActions = function(){
-	this.possibleActions = null;
+ActionHandler.prototype.setButtonAction = function(button, type){
+	this.buttonAction = type;
+	var typeText = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+	button.label.setText(typeText);
+	button.enable();
 }
 
 // Убирает все возможные действия
+ActionHandler.prototype.resetActions = function(){
+	this.possibleActions = null;
+	this.turnStage = null;
+};
+
+// Убирает все возможные действия и ресетит связанные с ними элементы игры
 ActionHandler.prototype.reset = function(){
 	this.resetActions();
 	fieldManager.resetHighlights();
 	ui.actionButtons.getByName('action').disable();
 	ui.rope.stop();
-}
+};
 
-/*ActionHandler.prototype.removeActionsWith = function(cardId, fieldId){
+// Убирает определенные действия из `possibleActions` в соответствии с `turnStage`.
+ActionHandler.prototype.removeActionsWith = function(card, field, doneAction){
 	if(!this.possibleActions){
 		return;
 	}
 	for(var i = this.possibleActions.length - 1; i >= 0; i--){
 		var action = this.possibleActions[i];
-		if(action.cid === cardId || action.field === fieldId){
+		if(this._shouldDeleteAction(action, card, field, doneAction)){
 			this.possibleActions.splice(i, 1);
 		}
 	}
-	console.log(this.possibleActions.length)
-}*/
+	if(this.possibleActions.length == 1 && this.possibleActions[0].type == 'TAKE'){
+		this.possibleActions.length = 0;
+	}
+};
+
+// Возвращает нужно ли удалить действие в соответствии с `turnStage`
+ActionHandler.prototype._shouldDeleteAction = function(action, card, field, doneAction){
+	switch(this.turnStage){
+		case 'INITIAL_ATTACK':
+		return card.id === action.cid || card.value !== cardManager.cards[action.cid].value;
+
+		case 'REPEATING_ATTACK':
+		/* falls through */
+
+		case 'ATTACK':
+		/* falls through */
+
+		case 'SUPPORT':
+		/* falls through */
+
+		case 'FOLLOWUP':
+		return card.id === action.cid || field.id === action.linkedField;
+
+		case 'DEFENSE':
+		if(doneAction.type == 'ATTACK'){
+			return true;
+		}
+		else{
+			return card.id === action.cid || field.id === action.field || action.type == 'ATTACK';
+		}
+
+		default:
+		console.error('ActionHandler: unknown turnStage', this.turnStage);
+		break;
+	}
+};
 
 //@include:actionReactions
 //@include:notificationReactions

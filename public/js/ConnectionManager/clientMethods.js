@@ -32,10 +32,10 @@ var clientMethods = {
 		
 	},
 
-	recievePossibleActions: function(newActions, time, timeSent){	
+	recievePossibleActions: function(newActions, time, timeSent, turnStage){	
 		connection.resetTimer();
 
-		actionHandler.handlePossibleActions(newActions, time, timeSent);
+		actionHandler.handlePossibleActions(newActions, time, timeSent, turnStage);
 		if(connection.inDebugMode)
 			console.log(newActions);
 	},

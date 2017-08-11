@@ -75,7 +75,7 @@ class Player{
 			if(this.afk){
 				time = this.game.actions.timeouts.afk;
 			}
-			this.remote.recievePossibleActions(actions, now + time*1000, now);
+			this.remote.recievePossibleActions(actions, now + time*1000, now, this.game.turnStages.current);
 		}
 
 		// Функции для дебага

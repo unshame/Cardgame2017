@@ -125,6 +125,8 @@ CardControl.prototype.cardMoveToField = function(newFields){
 		suit: card.suit,
 		value: card.value
 	}], BRING_TO_TOP_ON.START, true);
+
+	actionHandler.highlightPossibleActions();
 };
 
 /** Возвращает карту на ее поле. */

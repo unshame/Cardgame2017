@@ -57,6 +57,8 @@ var notificationReactions = {
 	*/
 	GAME_ENDED: function(note, actions){
 
+		actionHandler.reset();
+
 		// Ставим стопку сброса по центру экрана
 		var discard = fieldManager.fields.DISCARD_PILE,
 			dummy = fieldManager.fields.dummy, 
