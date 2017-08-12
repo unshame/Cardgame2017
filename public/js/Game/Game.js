@@ -53,73 +53,11 @@ var Game = function(parent, speed, inDebugMode){
 	*/
 	this.isRawLandscape = true;
 
-
-	/* Модули */
-
 	/**
 	* Менеджер последовательностей игровых анимаций.
 	* @type {Sequencer}
 	*/
 	this.seq = new Sequencer();
-
-	/**
-	* Менеджер полей
-	* @type {FieldManager}
-	* @global
-	*/
-	fieldManager = new FieldManager(this.inDebugMode);
-
-	/**
-	* Обработчик действий сервера.
-	* @type {ActionHandler}
-	* @global
-	*/
-	actionHandler = new ActionHandler('play', actionReactions, notificationReactions);
-
-	/**
-	* Менеджер игроков.
-	* @type {PlayerManager}
-	* @global
-	*/
-	playerManager = new PlayerManager();
-
-	/**
-	* Менеджер интерфейса.
-	* @type {UI}
-	* @global
-	*/
-	ui = new UI();
-
-	/**
-	* Менеджер скинов.
-	* @type {SkinManager}
-	* @global
-	*/
-	skinManager = new SkinManager('modern');
-
-	/**
-	* Менеджер карт
-	* @type {CardManager}
-	* @global
-	*/
-	cardManager = new CardManager(this.inDebugMode);
-
-	/**
-	* Контроллер карт
-	* @type {CardControl}
-	* @global
-	*/
-	cardControl = new CardControl(this.inDebugMode);
-
-	/**
-	* Менеджер соединения с сервером
-	* @type {ConnectionManager}
-	* @global
-	*/
-	connection = new ConnectionManager(serverMethods, clientMethods, 'menu', this.inDebugMode);
-
-
-	/********/
 
 	Phaser.Game.call(
 		this,

@@ -1,16 +1,5 @@
 /*jshint unused:false*/
 
-// Глобальные модули
-var actionHandler,
-	cardControl,
-	cardEmitter,
-	cardManager,
-	connection,
-	fieldManager,
-	playerManager,
-	skinManager,
-	ui;
-
 // Глобальные методы
 
 /**
