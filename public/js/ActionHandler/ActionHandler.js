@@ -83,8 +83,7 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 
 	this.turnStage = turnStage;
 
-	var currentTime = new Date();
-	time = time - currentTime.getTime();
+	time = time - Date.now();
 	if(time){
 		ui.rope.start(time - 1000);
 	}

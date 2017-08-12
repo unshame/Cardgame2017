@@ -28,7 +28,7 @@ Rope.prototype.constructor = Rope;
 * Обновляет прогресс таймера.
 */
 Rope.prototype.update = function(){
-	var now = new Date().getTime(),
+	var now = Date.now(),
 		burning = false;
 	if(!this.burning && this.startTime && this.startTime < now)
 		burning = true;
@@ -59,7 +59,7 @@ Rope.prototype.start = function(duration, start){
 	if(this.burning)
 		this.stop();
 
-	var now = new Date().getTime();
+	var now = Date.now();
 	this.burning = true;
 	this.startTime = start ? (now + start) : now; 
 	this.duration = duration;
