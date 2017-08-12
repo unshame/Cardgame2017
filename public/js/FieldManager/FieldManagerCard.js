@@ -236,7 +236,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 		}, interval2, this); 
 	}
 
-	gameSeq.start(function(seq){
+	game.seq.start(function(seq){
 		seq.append(function(){
 			trail.x = hx;
 			trail.y = height/2 + offset;

@@ -134,7 +134,7 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 
 	var tween = game.add.tween(field.icon);	
 
-	gameSeq.start(function(){
+	game.seq.start(function(){
 		field.setOwnHighlight(true);
 		tween.to({alpha: 0, angle: 720}, spinTime - lockDelay, Phaser.Easing.Quadratic.In, false, spinDelay);
 		tween.start();	
@@ -161,7 +161,7 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 		}
 	});
 
-	return gameSeq.duration - 500;
+	return game.seq.duration - 500;
 };
 
 /**

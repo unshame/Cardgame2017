@@ -44,7 +44,7 @@ Menu.prototype.getDefaultOptions = function(){
 
 Menu.prototype.getByName = function (name) {
 	return this.elementsByName[name];
-}
+};
 
 Menu.prototype.hideElement = function(name){
 	var el = this.elementsByName[name];
@@ -55,7 +55,7 @@ Menu.prototype.hideElement = function(name){
 		el.hide();
 		this.update();
 	}
-}
+};
 
 Menu.prototype.showElement = function(name){
 	var el = this.elementsByName[name];
@@ -67,7 +67,7 @@ Menu.prototype.showElement = function(name){
 		el.show();
 		this.update();
 	}
-}
+};
 
 Menu.prototype.addButton = function (action, name, text, context) {
 	var button = new Button({

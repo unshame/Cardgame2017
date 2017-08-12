@@ -182,8 +182,8 @@ SkinManager.prototype.loadSkin = function(skinName, apply){
 		game.load.onLoadComplete.addOnce(this.applySkin, this);
 	}
 	if(game.initialized){
-		var loadText = feed.newMessage('Loading skin...', 'system');
-		game.load.onLoadComplete.addOnce(feed.removeMessage.bind(feed, loadText), this);
+		var loadText = ui.feed.newMessage('Loading skin...', 'system');
+		game.load.onLoadComplete.addOnce(ui.feed.removeMessage.bind(ui.feed, loadText), this);
 	}
 
 	game.load.start();

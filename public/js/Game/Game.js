@@ -57,18 +57,17 @@ var Game = function(parent, speed, inDebugMode){
 	/* Модули */
 
 	/**
+	* Менеджер последовательностей игровых анимаций.
+	* @type {Sequencer}
+	*/
+	this.seq = new Sequencer();
+
+	/**
 	* Менеджер полей
 	* @type {FieldManager}
 	* @global
 	*/
 	fieldManager = new FieldManager(this.inDebugMode);
-
-	/**
-	* Менеджер последовательностей игровых анимаций.
-	* @type {Sequencer}
-	* @global
-	*/
-	gameSeq = new Sequencer();
 
 	/**
 	* Обработчик действий сервера.
@@ -167,27 +166,6 @@ Game.prototype.initialize = function(){
 	* @global
 	*/
 	cardEmitter = new CardEmitter();
-
-	/**
-	* Фид системных сообщений.
-	* @type {MessageFeed}
-	* @global
-	*/
-	feed = new MessageFeed(this);
-
-	/**
-	* Фид важных сообщений.
-	* @type {AnnouncementFeed}
-	* @global
-	*/
-	announcer = new AnnouncementFeed(this);	
-
-	/**
-	* Фид событий.
-	* @type {EventFeed}
-	* @global
-	*/
-	eventFeed = new EventFeed(this);	
 
 	// Инициализация модулей
 	cardManager.initialize();

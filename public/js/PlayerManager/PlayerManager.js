@@ -36,4 +36,4 @@ PlayerManager.prototype.getPlayer = function(pid){
 		console.error('Player manager: Player', pid, 'not found in players\n', this.players);
 		return null;
 	}
-}
+};

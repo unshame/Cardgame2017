@@ -1,10 +1,8 @@
 /**
-* Менеджер интерфейса.
-* Создает и обновляет позиции всех элементов интерфейса: кнопки, курсор и таймер.
-* Создает менеджер слоев интерфейса {@link UILayers} и добавляет элементы интерфейса, 
-* а также существующие группы в него:
-* `fieldManager.fieldsGroup` `cardManager.cardsGroup` `cardEmitter`.
-* Также, переключает полноэкранный режим {@link UI#toggleFullScreen}.
+* Менеджер интерфейса.  
+* Создает и обновляет позиции всех элементов интерфейса: кнопки, курсор, таймер и т.д.  
+* Создает менеджер слоев интерфейса {@link UI#layers} и добавляет элементы интерфейса, 
+* а также существующие группы в него.
 * @class
 */
 
@@ -14,9 +12,18 @@ var UI = function(){
 	this.cornerButtons = null;
 
 	this.cursor = null;
-
 	this.background = null;
+	this.logo = null;
+	this.rope = null;
 
+	this.feed = null;
+	this.eventFeed = null;
+	this.announcer = null;
+
+	/**
+	 * Заранее заданные цвета для использования в игровых элементах.
+	 * @type {Object}
+	 */
 	this.colors = {
 		orange: 0xFF8300,
 		green: 0x68C655,
@@ -26,29 +33,94 @@ var UI = function(){
 		lightBlue: 0x0072C4
 	};
 
-	/*
-	* Менеджер "слоев" элементов интерфейса
+	/**
+	* Менеджер "слоев" элементов интерфейса.
 	* @type {UILayers}
 	*/
 	this.layers = new UILayers();
 };
 
+/**
+ * Инициализирует интерфейс, создавая все элементы интерфейса
+ * и добавляя их в менеджер слоев.
+ */
 UI.prototype.initialize = function(){
 
 	/**
-	* Фон
+	* Курсор.
+	* @type {Cursor}
+	*/
+	this.cursor = new Cursor('cursor_orange');
+
+	/**
+	* Фон.
 	* @type {Background}
 	*/
 	this.background = new Background();	
 
+	/**
+	 * Лого игры.
+	 * @type {Phaser.Image}
+	 */
 	this.logo = game.add.image(game.screenWidth/2, game.screenHeight/2 - 200, 'logo');
 	this.logo.anchor.set(0.5, 0.5);
 	this.logo.scale.set(0.75, 0.75);
-	this.layers.addExistingLayer(this.logo, 6);
+	this.logo.name = 'logo';
 
-	// Таймер хода
-	this.rope = this.layers.addExistingLayer(new Rope(), -4);
+	/**
+	 * Таймер хода.
+	 * @type {Rope}
+	 */
+	this.rope = new Rope();
+
+	/**
+	* Фид системных сообщений.
+	* @type {MessageFeed}
+	*/
+	this.feed = new MessageFeed(game);
+
+	/**
+	* Фид важных сообщений.
+	* @type {AnnouncementFeed}
+	*/
+	this.announcer = new AnnouncementFeed(game);	
+
+	/**
+	* Фид событий.
+	* @type {EventFeed}
+	*/
+	this.eventFeed = new EventFeed(game);	
 	
+	this._createMenus();
+	this._createButtons();
+
+	this.layers.addExistingLayers([
+		[this.background, 0],
+		// this.actionButtons, 1
+		[fieldManager.fieldsGroup, 2],
+		[cardManager.cardsGroup, 3],
+		[cardEmitter, 4],
+		// this.testMenu, 5
+		[this.logo, 6],
+		[this.feed, 7],
+		[this.eventFeed, 8],
+		[this.announcer, 9],
+		[this.rope, -4],
+		// this.cornerButtons, -3
+		// this.optMenu, -2
+		[this.cursor, -1]
+	]);
+
+	this.layers.hideLayer(this.actionButtons, true);
+
+	this.layers.positionLayers();
+};
+
+/** 
+ * Создает меню.
+ * @private
+ */
+UI.prototype._createMenus = function(){
 	this.testMenu = new Menu({
 		position: function(){
 			return {
@@ -69,36 +141,29 @@ UI.prototype.initialize = function(){
 			};
 		}, 
 		z: -2,
-		color: ui.colors.white,
+		color: this.colors.white,
 		texture: 'menu_blue',
 		elementColor: 'grey',
 		textColor: 'black',
 		name: 'optMenu'
 	});
-	
-	// Кнопки
-	this.addButtons();
-
-	/**
-	* Курсор
-	* @type {Cursor}
-	*/
-	this.cursor = this.layers.addExistingLayer(new Cursor('cursor_orange'), -1);
-
-	this.layers.addExistingLayer(fieldManager.fieldsGroup, 2);
-	this.layers.addExistingLayer(cardManager.cardsGroup, 3);
-	this.layers.addExistingLayer(cardEmitter, 4);
-	this.layers.addExistingLayer(feed, 7);
-	this.layers.addExistingLayer(eventFeed, 8);
-	this.layers.addExistingLayer(announcer, 9);
-
-	this.layers.hideLayer(this.actionButtons, true);
-
-	this.layers.positionLayers();
 };
 
-UI.prototype.addButtons = function(){
+/** 
+ * Создает кнопки.
+ * @private
+ */
+UI.prototype._createButtons = function(){
+	/**
+	 * Кнопки игровых действий.
+	 * @type {Phaser.Group}
+	 */
 	this.actionButtons = this.layers.addLayer(1, 'actionButtons', true);
+
+	/**
+	 * Угловые кнопки.
+	 * @type {Phaser.Group}
+	 */
 	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons', true);
 
 	// ГЛАВНОЕ МЕНЮ
@@ -229,6 +294,7 @@ UI.prototype.addButtons = function(){
 
 };
 
+/** Обновляет позиции всех элементов UI. */
 UI.prototype.updatePosition = function(){
 	this.rope.updatePosition();
 	this.layers.positionElements();
@@ -239,7 +305,7 @@ UI.prototype.updatePosition = function(){
 	this.logo.position = new Phaser.Point(game.screenWidth/2, game.screenHeight/2 - 200);
 };
 
-// Возвращает phaser пиксель для превращения в текстуру
+/** Возвращает phaser пиксель для превращения в текстуру. */
 UI.prototype.newPixel = function(){
 	var pixel = game.make.graphics(0, 0);
 	pixel.beginFill(ui.colors.white);

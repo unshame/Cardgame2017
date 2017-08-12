@@ -38,7 +38,7 @@ ActionHandler.prototype.executeAction = function(action){
 	}
 
 	if(game.inDebugMode){
-		feed.newMessage(action.type, 'system', 2000);
+		ui.feed.newMessage(action.type, 'system', 2000);
 	}
 
 	if(game.state.currentSync != this.correctState){
@@ -51,7 +51,7 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
-	gameSeq.finish();
+	game.seq.finish();
 
 	var delay = 0;
 
@@ -99,7 +99,7 @@ ActionHandler.prototype.handleNotification = function(note, actions){
 	}
 
 	if(game.inDebugMode){
-		feed.newMessage(note.message, 'system', 2000);
+		ui.feed.newMessage(note.message, 'system', 2000);
 	}
 
 	if(game.state.currentSync != this.correctState){
@@ -137,7 +137,7 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 		actions = this.possibleActions;
 	}
 
-	gameSeq.finish();
+	game.seq.finish();
 
 	if(!fieldManager.networkCreated){
 		console.error('Action handler: field network hasn\'t been created');
@@ -173,7 +173,7 @@ ActionHandler.prototype.setButtonAction = function(button, type){
 	var typeText = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
 	button.label.setText(typeText);
 	button.enable();
-}
+};
 
 // Убирает все возможные действия
 ActionHandler.prototype.resetActions = function(){
@@ -230,7 +230,8 @@ ActionHandler.prototype._shouldDeleteAction = function(action, card, field, done
 		else{
 			return card.id === action.cid || field.id === action.field || action.type == 'ATTACK';
 		}
-
+		break;
+		
 		default:
 		console.error('ActionHandler: unknown turnStage', this.turnStage);
 		break;

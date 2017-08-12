@@ -109,39 +109,50 @@ UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 };
 
 /**
+ * Добавляет существующие элементы игры как слои из массива.
+ * @param {array} layers Слои `[layer, i, checkCursorOverlap]`
+ */
+UILayers.prototype.addExistingLayers = function(layers){
+	for(var i = 0; i < layers.length; i++){
+		var layer = layers[i];
+		this.addExistingLayer(layer[0], layer[1], layer[2]);
+	}
+};
+
+/**
  * Прячет элементы слоя у которых есть метод `hide`.
  * Опционально отключает элементы слоя, у которых есть метод `disable`.
  * @param  {DisplayObject} layer  слой
- * @param  {boolean} shoulDisable нужно ли отключать элементы
+ * @param  {boolean} shouldDisable нужно ли отключать элементы
  */
-UILayers.prototype.hideLayer = function(layer, shoulDisable){
+UILayers.prototype.hideLayer = function(layer, shouldDisable){
 	layer.forEach(function(el){
 		if(el.hide){
 			el.hide();
 		}
-		if(shoulDisable && el.disable){
+		if(shouldDisable && el.disable){
 			el.disable();
 		}
 	});
-}
+};
 
 /**
  * Показывает элементы слоя у которых есть метод `show`.
  * Опционально отключает элементы слоя, у которых есть метод `disable`.
  * @param  {DisplayObject} layer  слой
- * @param  {boolean} shoulDisable нужно ли отключать элементы
+ * @param  {boolean} shouldDisable нужно ли отключать элементы
  */
-UILayers.prototype.showLayer = function(layer, shoulDisable){
+UILayers.prototype.showLayer = function(layer, shouldDisable){
 	layer.forEach(function(el){
 		if(el.show){
 			el.show();
 		}
-		if(shoulDisable && el.disable){
+		if(shouldDisable && el.disable){
 			el.disable();
 		}
 	});
 	this._positionElementsInLayer(layer);
-}
+};
 
 /**
 * Меняет z-index и `checkCursorOverlap` слоя.

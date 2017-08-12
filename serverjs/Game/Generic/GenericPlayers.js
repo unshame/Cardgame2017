@@ -134,7 +134,7 @@ class GenericPlayers extends GamePlayers{
 		player.game = null;
 		player.statuses = {};
 
-		var i = this.length - 1;
+		let i = this.length - 1;
 		while(i > pi){
 			let swap = this[i - 1];
 			this[i - 1] = replacement;

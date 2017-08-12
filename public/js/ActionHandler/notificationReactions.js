@@ -11,7 +11,7 @@ var notificationReactions = {
 	* @memberOf notificationReactions
 	*/
 	SIMULATING: function(){
-		feed.newMessage('Simulating', 2000);
+		ui.feed.newMessage('Simulating', 2000);
 	},
 
 	/**
@@ -29,7 +29,7 @@ var notificationReactions = {
 	* @param {object} note сообщение
 	*/
 	GAME_STARTED: function(note){
-		eventFeed.newMessage('Game ' + (note.index + 1) + ' Started', 4000);
+		ui.eventFeed.newMessage('Game ' + (note.index + 1) + ' Started', 4000);
 	},
 
 	/**
@@ -73,20 +73,20 @@ var notificationReactions = {
 		delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);
 		delay += game.defaultMoveTime;		
 
-		gameSeq.start(function(seq){
+		game.seq.start(function(seq){
 			discard.removeAllCards();
 			dummy.placeQueuedCards();
 			if(!won){
 				seq.abort();
 				seq.start(function(){
-					announcer.newMessage('Better luck next time');
+					ui.announcer.newMessage('Better luck next time');
 					fieldManager.resetFields();
 					cardManager.enablePhysics(true);
 				}, 0, delay - game.defaultMoveTime);
 			}
 		}, delay/game.speed, game.defaultMoveTime)
 		.then(function(){
-			announcer.newMessage('YOU WON!');
+			ui.announcer.newMessage('YOU WON!');
 			for(var ci = 0; ci < dummy.cards.length; ci++){
 				var card = dummy.cards[ci],
 					x = card.sprite.x + card.base.x + (10*(ci - dummy.cards.length/2)),
@@ -154,12 +154,12 @@ var notificationReactions = {
 	},
 
 	DISCONNECTED: function(){
-		feed.newMessage('Disconnected from game', 2000);
+		ui.feed.newMessage('Disconnected from game', 2000);
 		game.state.change('menu');
 	},
 
 	LEFT_QUEUE: function(){
-		feed.newMessage('Left queue', 2000);
+		ui.feed.newMessage('Left queue', 2000);
 		game.state.change('menu');
 	},
 
@@ -168,12 +168,12 @@ var notificationReactions = {
 	},
 
 	QUEUE_STATUS: function(note){
-		eventFeed.newMessage('Players in queue: ' + note.playersQueued + '/' + note.playersNeeded);
+		ui.eventFeed.newMessage('Players in queue: ' + note.playersQueued + '/' + note.playersNeeded);
 	},
 
 	QUEUE_FULL: function(){
-		eventFeed.clear();
-		eventFeed.newMessage('All players ready', 2000);
+		ui.eventFeed.clear();
+		ui.eventFeed.newMessage('All players ready', 2000);
 	}
 
 };

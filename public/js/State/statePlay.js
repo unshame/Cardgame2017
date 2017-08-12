@@ -42,9 +42,9 @@ var statePlay = new State('play', {
 		fieldManager.resizeFields();
 		ui.updatePosition();
 		cardEmitter.restart();
-		feed.shiftMessages();
-		eventFeed.shiftMessages();
-		announcer.shiftMessages();
+		ui.feed.shiftMessages();
+		ui.eventFeed.shiftMessages();
+		ui.announcer.shiftMessages();
 		document.getElementById('loading').style.display = 'none';
 	},
 
@@ -89,9 +89,9 @@ var statePlay = new State('play', {
 	*/
 	shutdown: function(){ 
 		actionHandler.resetActions();
-		gameSeq.finish();
-		eventFeed.clear();
-		announcer.clear();
+		game.seq.finish();
+		ui.eventFeed.clear();
+		ui.announcer.clear();
 		cardControl.reset();
 		cardManager.reset();
 		cardEmitter.stop();

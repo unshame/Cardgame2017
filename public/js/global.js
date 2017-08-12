@@ -2,15 +2,11 @@
 
 // Глобальные модули
 var actionHandler,
-	announcer,
 	cardControl,
 	cardEmitter,
 	cardManager,
 	connection,
-	eventFeed,
-	feed,
 	fieldManager,
-	gameSeq,
 	playerManager,
 	skinManager,
 	ui;

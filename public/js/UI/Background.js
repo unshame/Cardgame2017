@@ -7,8 +7,6 @@
 var Background = function(){
 	Phaser.Group.call(this, game);
 	this.name = 'background';
-	game.add.existing(this);
-	ui.layers.addExistingLayer(this, 0);
 
 	this.textures = [
 		'blue',

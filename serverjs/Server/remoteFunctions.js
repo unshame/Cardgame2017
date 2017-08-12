@@ -98,7 +98,7 @@ module.exports = function(server){
 			let player = server.players[this.connection.id];
 			if(!player)
 				return;
-			var game = player.game;
+			let game = player.game;
 			if(game){
 				game.players.disconnect(player);
 				server.log.notice('Player %s disconnected from game %s', player.id, game.id);
