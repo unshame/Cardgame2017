@@ -57,8 +57,9 @@ Sequencer.prototype._add = function(step, action, duration, context){
 			this._nextAction.call(this);
 		}
 		else{
+			var finishing = this._finishing;			
 			// Устанавливаем таймаут перед выполнением враппера действия следующего элемента в списке
-			if(!this._finishing && this._nextAction){
+			if(!finishing && this._nextAction){
 				this._timeout = setTimeout(
 					this._nextAction.bind(this),
 					Math.max( this.startTime - this._skippedTime + fullDuration - Date.now(), 0 )
@@ -67,7 +68,7 @@ Sequencer.prototype._add = function(step, action, duration, context){
 			// Вызываем текущее действие
 			action.call(context || action, this._getMethods.call(this));
 			// Выполнение враппера действия след. элемента, если список выполняется без задержек
-			if(this._finishing && this._nextAction){
+			if(finishing && this._nextAction){
 				this._nextAction.call(this);
 			}
 		}
