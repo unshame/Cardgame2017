@@ -109,6 +109,41 @@ UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 };
 
 /**
+ * Прячет элементы слоя у которых есть метод `hide`.
+ * Опционально отключает элементы слоя, у которых есть метод `disable`.
+ * @param  {DisplayObject} layer  слой
+ * @param  {boolean} shoulDisable нужно ли отключать элементы
+ */
+UILayers.prototype.hideLayer = function(layer, shoulDisable){
+	layer.forEach(function(el){
+		if(el.hide){
+			el.hide();
+		}
+		if(shoulDisable && el.disable){
+			el.disable();
+		}
+	});
+}
+
+/**
+ * Показывает элементы слоя у которых есть метод `show`.
+ * Опционально отключает элементы слоя, у которых есть метод `disable`.
+ * @param  {DisplayObject} layer  слой
+ * @param  {boolean} shoulDisable нужно ли отключать элементы
+ */
+UILayers.prototype.showLayer = function(layer, shoulDisable){
+	layer.forEach(function(el){
+		if(el.show){
+			el.show();
+		}
+		if(shoulDisable && el.disable){
+			el.disable();
+		}
+	});
+	this._positionElementsInLayer(layer);
+}
+
+/**
 * Меняет z-index и `checkCursorOverlap` слоя.
 * @param {DisplayObject} layer        слой
 * @param {number} i                   z-index слоя

@@ -92,6 +92,8 @@ UI.prototype.initialize = function(){
 	this.layers.addExistingLayer(eventFeed, 8);
 	this.layers.addExistingLayer(announcer, 9);
 
+	this.layers.hideLayer(this.actionButtons, true);
+
 	this.layers.positionLayers();
 };
 
@@ -117,6 +119,8 @@ UI.prototype.addButtons = function(){
 		connection.server.disconnect();
 		this.hide();
 	}, 'disconnect','Disconnect');
+
+	this.optMenu.hideElement('disconnect');
 
 	this.optMenu.addButton(function(){
 		var mover = game.add.tween(this.elementsByName['CHS']);
@@ -178,7 +182,7 @@ UI.prototype.addButtons = function(){
 			};
 		},
 		action: function(){
-			connection.server.sendRealAction(actionHandler.buttonAction);
+			connection.server.sendButtonAction(actionHandler.buttonAction);
 		},
 		text: 'Take',
 		color: 'orange',
@@ -223,7 +227,6 @@ UI.prototype.addButtons = function(){
 		group: this.cornerButtons
 	});
 
-	this.actionButtons.getByName('action').hide();
 };
 
 UI.prototype.updatePosition = function(){

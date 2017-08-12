@@ -14,6 +14,7 @@ var Menu = function(options){
 
 	this.elements = [];
 	this.elementsByName = {};
+	this.hiddenElements = [];
 
 	this._bitmapArea = game.make.bitmapData();
 	if(this.options.texture){
@@ -40,6 +41,33 @@ Menu.prototype.getDefaultOptions = function(){
 		border: 4
 	};
 };
+
+Menu.prototype.getByName = function (name) {
+	return this.elementsByName[name];
+}
+
+Menu.prototype.hideElement = function(name){
+	var el = this.elementsByName[name];
+	if(!el)
+		return;
+	this.hiddenElements.push(el);
+	if(this.opened){
+		el.hide();
+		this.update();
+	}
+}
+
+Menu.prototype.showElement = function(name){
+	var el = this.elementsByName[name];
+	var i = this.hiddenElements.indexOf(el);
+	if(!el || !~i)
+		return;
+	this.hiddenElements.splice(i, 1);
+	if(this.opened){
+		el.show();
+		this.update();
+	}
+}
 
 Menu.prototype.addButton = function (action, name, text, context) {
 	var button = new Button({
@@ -124,6 +152,8 @@ Menu.prototype.show = function(){
 	this.opened = true;
 	this.background.visible = true;
 	for (var i = 0; i < this.elements.length; i++) {
+		if(~this.hiddenElements.indexOf(this.elements[i]))
+			continue;
 		this.elements[i].show();
 	}
 	this.update();

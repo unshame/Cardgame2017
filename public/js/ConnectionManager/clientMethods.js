@@ -26,7 +26,6 @@ var clientMethods = {
 			connection.proxy.requestGameInfo();
 		}
 		else{
-			connection.proxy.requestGameInfo();
 			game.state.change('menu');
 		}
 		

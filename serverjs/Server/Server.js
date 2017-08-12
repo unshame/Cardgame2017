@@ -154,6 +154,7 @@ class Server extends Eureca.Server{
 			let pi = this.newPlayers.indexOf(p);
 			if(~pi){
 				this.newPlayers.splice(pi, 1);
+				this.updateQueueStatus();
 			}
 
 			// Если игрок не находится в игре, удаляем его
@@ -202,6 +203,14 @@ class Server extends Eureca.Server{
 		// Запускаем игру при достаточном кол-ве игроков
 		if(this.newPlayers.length >= this.params.numPlayers){	
 
+			this.newPlayers.forEach((p) => {
+				p.recieveNotification({
+					message: 'QUEUE_FULL',
+					noResponse: true
+				});
+			});
+
+
 			// Добавляем ботов, если нужно
 			if(this.params.numBots){
 				let numBots = this.params.numBots;
@@ -224,8 +233,20 @@ class Server extends Eureca.Server{
 		}
 		// иначе продолжаем ждать игроков
 		else{
-			this.log.notice('Waiting for players:', this.params.numPlayers - this.newPlayers.length);
+			this.updateQueueStatus();
 		}
+	}
+
+	updateQueueStatus(){
+		this.newPlayers.forEach((p) => {
+			p.recieveNotification({
+				message: 'QUEUE_STATUS',
+				playersQueued: this.newPlayers.length,
+				playersNeeded: this.params.numPlayers,
+				noResponse: true
+			});
+		});
+		this.log.notice('Waiting for players:', this.params.numPlayers - this.newPlayers.length);
 	}
 
 

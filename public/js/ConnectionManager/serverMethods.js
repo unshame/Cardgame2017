@@ -25,7 +25,7 @@ var serverMethods = {
 		return false;
 	},
 
-	sendRealAction: function(type){
+	sendButtonAction: function(type){
 
 		var actions = actionHandler.possibleActions;
 

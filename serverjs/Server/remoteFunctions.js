@@ -55,6 +55,7 @@ module.exports = function(server){
 			// Иначе сообщаем игроку, что переподключиться нельзя
 			else{
 				let player = server.players[newConnId];
+				player.connected = true;
 				player.updateRemote();
 			}
 		},
@@ -97,11 +98,19 @@ module.exports = function(server){
 			let player = server.players[this.connection.id];
 			if(!player)
 				return;
-			if(player.game){
-				player.game.players.disconnect(player);
+			var game = player.game;
+			if(game){
+				game.players.disconnect(player);
+				server.log.notice('Player %s disconnected from game %s', player.id, game.id);
+			}
+			else if(server.newPlayers.includes(player)){
+				server.newPlayers.splice(server.newPlayers.indexOf(player), 1);
+				player.recieveNotification({message: 'LEFT_QUEUE', noResponse: true});
+				server.log.notice('Player %s left queue', player.id);
+				server.updateQueueStatus();
 			}
 			else{
-				server.log.notice('Player %s isn\'t in a game, cannot disconnect', player.id);
+				server.log.warn('Player %s isn\'t in a game, cannot disconnect', player.id);
 			}
 		}
 	};

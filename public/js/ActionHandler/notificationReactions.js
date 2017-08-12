@@ -158,8 +158,22 @@ var notificationReactions = {
 		game.state.change('menu');
 	},
 
+	LEFT_QUEUE: function(){
+		feed.newMessage('Left queue', 2000);
+		game.state.change('menu');
+	},
+
 	TOO_SLOW: function(){
 		actionHandler.reset();
+	},
+
+	QUEUE_STATUS: function(note){
+		eventFeed.newMessage('Players in queue: ' + note.playersQueued + '/' + note.playersNeeded);
+	},
+
+	QUEUE_FULL: function(){
+		eventFeed.clear();
+		eventFeed.newMessage('All players ready', 2000);
 	}
 
 };

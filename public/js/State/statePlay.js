@@ -79,8 +79,8 @@ var statePlay = new State('play', {
 	*/
 	create: function(){
 		cardControl.trailApplySkin();
-		ui.actionButtons.getByName('action').show();
-		ui.actionButtons.getByName('action').disable();
+		ui.layers.showLayer(ui.actionButtons, true);
+		ui.optMenu.showElement('disconnect');
 	},
 
 	/**
@@ -98,7 +98,7 @@ var statePlay = new State('play', {
 		fieldManager.resetNetwork();
 		playerManager.reset();
 		ui.rope.stop();
-		ui.actionButtons.getByName('action').disable();
-		ui.actionButtons.getByName('action').hide();
+		ui.layers.hideLayer(ui.actionButtons, true);
+		ui.optMenu.hideElement('disconnect');
 	}
 });

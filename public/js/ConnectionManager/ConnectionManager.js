@@ -24,6 +24,8 @@ var ConnectionManager = function(serverMethods, clientMethods, connectState, inD
 
 	this.responseTimer = null;
 	this.inDebugMode = inDebugMode || false;
+
+	this.hasConnected = false;
 };
 
 ConnectionManager.prototype = Object.create(Eureca.Client.prototype);
@@ -45,7 +47,12 @@ ConnectionManager.prototype.bindProxy = function(proxy){
 };
 
 ConnectionManager.prototype.handleConnection = function(){
-	feed.newMessage('Connected to server', 2000);
+	if(this.hasConnected){
+		feed.newMessage('Connected to server', 2000);
+	}
+	else{
+		this.hasConnected = true;
+	}
 };
 
 ConnectionManager.prototype.handleConnectionLoss = function(){

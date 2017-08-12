@@ -12,9 +12,6 @@ var ActionHandler = function(correctState, actionReactions, notificationReaction
 	this.possibleActions = null;
 	this.turnStage = null;
 
-	this.timedAction = null;
-	this.timedActionTimeout = null;
-
 	this.waitingForGameInfo = false;
 };
 
