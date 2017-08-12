@@ -150,10 +150,7 @@ var Sequencer = function(inDebugMode){
 * Запускает новый список, предварительно завершив предыдущий. 
 * @param  {function} action первое действие, выполняется сразу
 * @param  {number} duration время выполнения действия
-* @param {(number|function)} delay задержка выполнения первого действия в списке  
-*                                  может быть функцией, в котором случае задержка будет
-*                                  просчитана в момент выполнения действия и не будет 
-*                                  добавлена в {@link Sequencer#duration}
+* @param  {number} delay задержка выполнения первого действия в списке 
 * @param  {any} context  контекст выполнения действия
 * @return {object}  
 * Возвращает объект вида `{then, duration, wrapper}`  
@@ -192,7 +189,7 @@ Sequencer.prototype.start = function(action, duration, delay, context){
 * Добавляет действие в конец текущего списка или запускает новый.
 * Запланированные пропуски действий влияют на добавленные таким образом действия.
 * @param  {function} action добавляемое действие
-* @param  {(number|function)} duration время выполнения действия
+* @param  {number} duration время выполнения действия
 * @param  {any} context  контекст выполнения действия
 * @return {object}  
 * Возвращает объект вида `{then, duration, wrapper}`  

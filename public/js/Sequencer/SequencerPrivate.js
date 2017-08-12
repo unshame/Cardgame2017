@@ -3,7 +3,7 @@
 * @private
 * @param {object} step     
 * @param {function} action   
-* @param {(number|function)} duration 
+* @param {number} duration 
 * @param {any} context  
 * @return {object}
 */
@@ -80,7 +80,7 @@ Sequencer.prototype._add = function(step, action, duration, context){
 * Запускает новый список, предварительно завершив предыдущий, сохраняя статус завершения.
 * @private
 * @param {function} action
-* @param {(number|function)} duration
+* @param {number} duration
 * @param {number} delay
 * @param {any} context
 * @return {object} 
@@ -108,7 +108,7 @@ Sequencer.prototype._startFinishing = function(action, duration, delay, context)
 * Добавляет действие в конец текущего списка или запускает новый, сохраняя статус завершения.
 * @private
 * @param {function} action
-* @param {(number|function)} duration
+* @param {number} duration
 * @param {any} context
 * @return {object} 
 */
