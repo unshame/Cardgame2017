@@ -101,6 +101,7 @@ UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 		console.error('UILayers: Layer name must be unique', layer.name);
 		return null;
 	}
+	layer.parent = game.world;
 	layer.index = i;
 	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[layer.name] = layer;
@@ -204,10 +205,13 @@ UILayers.prototype.positionElements = function(){
 			continue;
 
 		var layer = this.byName[pname];
-		if(!(layer instanceof Phaser.Group))
+		if(layer.updatePosition){
+			layer.updatePosition();
 			continue;
-
-		this._positionElementsInLayer(layer);
+		}
+		if(layer instanceof Phaser.Group){
+			this._positionElementsInLayer(layer);
+		}
 	}
 };
 

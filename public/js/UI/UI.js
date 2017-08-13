@@ -295,12 +295,7 @@ UI.prototype._createButtons = function(){
 
 /** Обновляет позиции всех элементов UI. */
 UI.prototype.updatePosition = function(){
-	this.rope.updatePosition();
 	this.layers.positionElements();
-
-	this.testMenu.update();
-	this.optMenu.update();
-
 };
 
 /** Возвращает phaser пиксель для превращения в текстуру. */

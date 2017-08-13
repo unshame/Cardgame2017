@@ -49,7 +49,7 @@ AnnouncementFeed.prototype.update = function(){
 		if(text.destroyTime !== undefined){
 			if(text.destroyTime <= now){
 				this._destroyMessage(text);
-				this.shiftMessages();
+				this.updatePosition();
 			}
 		}
 		else if(this.children.indexOf(text) === 0 && text.endTime !== undefined && text.endTime <= now){

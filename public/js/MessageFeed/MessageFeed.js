@@ -66,7 +66,7 @@ MessageFeed.prototype.newMessage = function(message, style, time){
 
 	this.add(text);
 	this._fadeInMessage(text);
-	this.shiftMessages();
+	this.updatePosition();
 
 	return text;
 };
@@ -170,7 +170,7 @@ MessageFeed.prototype.update = function(){
 		}
 		else if(text.endTime !== undefined && text.endTime <= now){
 			this._fadeOutMessage(text);
-			this.shiftMessages();
+			this.updatePosition();
 		}
 	}
 
@@ -219,7 +219,7 @@ MessageFeed.prototype._fadeInMessage = function(text){
 /**
 * Устанавливает правильные позиции сообщениям.
 */
-MessageFeed.prototype.shiftMessages = function(){
+MessageFeed.prototype.updatePosition = function(){
 	var y = this._getLowestY();
 	var x = this._getX();
 	var i, ii;

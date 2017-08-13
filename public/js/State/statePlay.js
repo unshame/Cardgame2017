@@ -42,9 +42,6 @@ var statePlay = new State('play', {
 		fieldManager.resizeFields();
 		ui.updatePosition();
 		cardEmitter.restart();
-		ui.feed.shiftMessages();
-		ui.eventFeed.shiftMessages();
-		ui.announcer.shiftMessages();
 		document.getElementById('loading').style.display = 'none';
 	},
 
