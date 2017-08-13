@@ -75,6 +75,48 @@ function numberToHexColor(number){
 	return string;
 }
 
+/**
+ * Рисует прямоугольник с загругленными углами.
+ * @global
+ * @param  {Phaser.BitmapData} bitmap где рисовать
+ * @param  {number} width       ширина
+ * @param  {number} height      высота
+ * @param  {number} x           отступ по краям по горизонтали
+ * @param  {number} y           отступ по краям по вертикали
+ * @param  {number} radius      радиус углов
+ * @param  {number} lineWidth   ширина рамки
+ * @param  {number} alpha       прозрачность заливки
+ * @param  {(string|CanvasPattern)} fillStyle   стиль заливки
+ * @param  {(string|CanvasPattern)} strokeStyle стиль рамки
+ */
+function drawRoundedRectangle(bitmap, width, height, x, y, radius, lineWidth, alpha, fillStyle, strokeStyle){
+	var ctx = bitmap.ctx;
+	x += lineWidth/2,
+	y += lineWidth/2;
+	bitmap.clear();		
+	bitmap.resize(width, height);
+	width -= x*2;
+	height -= y*2;
+	ctx.beginPath();
+	ctx.fillStyle = fillStyle;
+	ctx.strokeStyle = strokeStyle;
+	ctx.lineWidth = lineWidth;
+	ctx.moveTo(x + radius, y);
+	ctx.lineTo(x + width - radius, y);
+	ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+	ctx.lineTo(x + width, y + height - radius);
+	ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+	ctx.lineTo(x + radius, y + height);
+	ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+	ctx.lineTo(x, y + radius);
+	ctx.quadraticCurveTo(x, y, x + radius, y);
+	ctx.stroke();
+	ctx.globalAlpha = alpha;
+	ctx.fill();
+	ctx.globalAlpha = 1;
+	bitmap.update();
+}
+
 
 // TEST AND DEBUG FUNCTIONS
 

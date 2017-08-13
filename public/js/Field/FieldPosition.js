@@ -88,37 +88,20 @@ Field.prototype.setSize = function(width, height, shouldPlace){
 * @param  {number} height высота поля
 */
 Field.prototype._createArea = function(width, height){
-	var radius = this.style.corner,
-		lineWidth = this.style.border,
-		x = this.style.margin + lineWidth/2,
-		y = this.style.margin + lineWidth/2;
-		
-	var area = this._bitmapArea;
-	var ctx = area.ctx;
-	area.clear();		
-	area.resize(width, height);
-	width -= x*2;
-	height -= y*2;
-	ctx.beginPath();
-	ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-	ctx.lineWidth = lineWidth;
-	ctx.moveTo(x + radius, y);
-	ctx.lineTo(x + width - radius, y);
-	ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-	ctx.lineTo(x + width, y + height - radius);
-	ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-	ctx.lineTo(x + radius, y + height);
-	ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-	ctx.lineTo(x, y + radius);
-	ctx.quadraticCurveTo(x, y, x + radius, y);
-	ctx.globalAlpha = 0.65;
-	ctx.fill();
-	ctx.globalAlpha = 1;
-	ctx.stroke();
-	area.update();
+	drawRoundedRectangle(
+		this._bitmapArea, 
+		width, 
+		height, 
+		this.style.margin, 
+		this.style.margin,
+		this.style.corner, 
+		this.style.border, 
+		0.65, 
+		'rgba(255, 255, 255, 1)', 
+		'rgba(255, 255, 255, 1)'
+	)
 
-	this.area.loadTexture(area);
+	this.area.loadTexture(this._bitmapArea);
 };
 
 /**

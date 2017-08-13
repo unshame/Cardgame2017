@@ -460,35 +460,19 @@ Menu.prototype.toggle = function(){
  * @private
  */
 Menu.prototype._createArea = function(width, height){
-	var radius = this.options.corner,
-		lineWidth = this.options.border,
-		x =  lineWidth/2,
-		y =  lineWidth/2;
-		
-	var background = this._bitmapArea,
-		ctx = background.ctx;
-	background.clear();		
-	background.resize(width, height);
-	width -= x*2;
-	height -= y*2;
-	ctx.beginPath();
-	ctx.fillStyle = this._pattern || 'rgba(255, 255, 255, 1)';
-	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-	ctx.lineWidth = lineWidth;
-	ctx.moveTo(x + radius, y);
-	ctx.lineTo(x + width - radius, y);
-	ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-	ctx.lineTo(x + width, y + height - radius);
-	ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-	ctx.lineTo(x + radius, y + height);
-	ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-	ctx.lineTo(x, y + radius);
-	ctx.quadraticCurveTo(x, y, x + radius, y);
-	ctx.stroke();
-	ctx.globalAlpha = this.options.alpha;
-	ctx.fill();
-	ctx.globalAlpha = 1;
-	background.update();
 
-	this.background.loadTexture(background);	
+	drawRoundedRectangle(
+		this._bitmapArea,
+		width,
+		height,
+		0,
+		0,
+		this.options.corner,
+		this.options.border,
+		this.options.alpha,
+		this._pattern || 'rgba(255, 255, 255, 1)',
+		'rgba(255, 255, 255, 1)'
+	);
+
+	this.background.loadTexture(this._bitmapArea);	
 };
