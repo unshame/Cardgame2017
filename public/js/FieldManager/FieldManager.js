@@ -93,7 +93,7 @@ FieldManager.prototype.addField = function(options, style, iconStyle){
 * @param {number} suit козырь
 */
 FieldManager.prototype.setTrumpSuit = function(suit, delay){
-	if(!this.fields.DECK){
+	if(!this.fields.DECK || !this.fields.DECK.icon){
 		console.error('Field manager: cannot set trump suit, no DECK');
 		return;
 	}
