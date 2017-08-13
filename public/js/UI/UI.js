@@ -62,10 +62,9 @@ UI.prototype.initialize = function(){
 	 * Лого игры.
 	 * @type {Phaser.Image}
 	 */
-	this.logo = game.add.image(game.screenWidth/2, game.screenHeight/2 - 200, 'logo');
-	this.logo.anchor.set(0.5, 0.5);
-	this.logo.scale.set(0.75, 0.75);
-	this.logo.name = 'logo';
+	this.logo = new Logo(function(){
+		return {x: game.screenWidth/2, y: game.screenHeight/2 - 200};
+	}, 0.75, 'logo');
 
 	/**
 	 * Таймер хода.
@@ -302,7 +301,6 @@ UI.prototype.updatePosition = function(){
 	this.testMenu.update();
 	this.optMenu.update();
 
-	this.logo.position = new Phaser.Point(game.screenWidth/2, game.screenHeight/2 - 200);
 };
 
 /** Возвращает phaser пиксель для превращения в текстуру. */
@@ -319,4 +317,5 @@ UI.prototype.newPixel = function(){
 //@include:Button
 //@include:Rope
 //@include:Menu
+//@include:Logo
 //@include:Cursor
