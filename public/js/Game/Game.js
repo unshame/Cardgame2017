@@ -140,7 +140,6 @@ Game.prototype.applySkin = function(){
 	this.scale.updateGameSize();
 	this.scale.drawDebugGrid();
 	var state = this.state.getCurrent();
-	state.postResize();
 	state.applySkin();
 };
 

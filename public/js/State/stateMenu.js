@@ -24,10 +24,8 @@ var stateMenu = new State('menu', {
 	* @memberof stateMenu
 	*/
 	postResize: function(){
-		ui.background.updateSize();
-		fieldManager.resizeFields();
-		ui.updatePosition();
-		cardEmitter.restart();
+		ui.updatePositions();
+		cardEmitter.restart(true);
 		document.getElementById('loading').style.display = 'none';
 	},
 
@@ -36,6 +34,7 @@ var stateMenu = new State('menu', {
 	* @memberof stateMenu
 	*/
 	applySkin: function(){
+		ui.updatePositions();
 		cardEmitter.applySkin();
 		ui.background.setTexture(skinManager.skin.background);
 	},
@@ -45,7 +44,7 @@ var stateMenu = new State('menu', {
 	* @memberof stateMenu
 	*/
 	create: function(){
-		cardEmitter.start(0, 50, 10, 2000, 20, 1);
+		cardEmitter.start(10, 50, 10, 2000, 20, 1);
 		ui.testMenu.fadeIn();
 		ui.logo.fadeIn();
 	},

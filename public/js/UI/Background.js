@@ -26,7 +26,7 @@ var Background = function(){
 Background.prototype = Object.create(Phaser.Group.prototype);
 Background.prototype.constructor = Background;
 
-Background.prototype.updateSize = function(){
+Background.prototype.updatePosition = function(){
 	this.surface.width = game.screenWidth;
 	this.surface.height =  game.screenHeight;
 };

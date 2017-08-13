@@ -181,10 +181,14 @@ CardEmitter.prototype.stop = function(){
 };
 
 /**
-* Перезапускает эмиттер карт с текущими настройками если он запущен.
-*/
-CardEmitter.prototype.restart = function(){
+ * Перезапускает эмиттер карт с текущими настройками если он запущен.
+ * @param  {boolean} [noFadeOut] отключает фейд существующих партиклей
+ */
+CardEmitter.prototype.restart = function(noFadeOut){
 	if(this.on){
+		if(noFadeOut){
+			this.on = false;
+		}
 		this.start();
 	}
 };
@@ -195,6 +199,7 @@ CardEmitter.prototype.restart = function(){
 CardEmitter.prototype.applySkin = function(){
 	this.minParticleScale = this.maxParticleScale = skinManager.skin.scale;
 	if(this.on){
+		this.restart();
 		setTimeout(this._applySkinToEmitter.bind(this), this.fadeTime/game.speed);
 	}
 	else{

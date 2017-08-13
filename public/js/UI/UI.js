@@ -294,7 +294,7 @@ UI.prototype._createButtons = function(){
 };
 
 /** Обновляет позиции всех элементов UI. */
-UI.prototype.updatePosition = function(){
+UI.prototype.updatePositions = function(){
 	this.layers.positionElements();
 };
 

@@ -38,10 +38,9 @@ var statePlay = new State('play', {
 	* @memberof statePlay
 	*/
 	postResize: function(){
-		ui.background.updateSize();
 		fieldManager.resizeFields();
-		ui.updatePosition();
-		cardEmitter.restart();
+		ui.updatePositions();
+		cardEmitter.restart(true);
 		document.getElementById('loading').style.display = 'none';
 	},
 
@@ -50,8 +49,10 @@ var statePlay = new State('play', {
 	* @memberof statePlay
 	*/
 	applySkin: function(){
-		cardManager.applySkin();
+		fieldManager.resizeFields();
+		ui.updatePositions();
 		cardEmitter.applySkin();
+		cardManager.applySkin();
 		cardControl.trailApplySkin();
 		fieldManager.applySkin();
 		actionHandler.highlightPossibleActions();
