@@ -16,7 +16,7 @@
 * @param {string} options.type='GENERIC' {@link Field#type}	
 * @param {string} options.name=null {@link Field#name}	
 * 
-* @param {number} options.moveTime=game.defaultMoveTime {@link Field#moveTime}	
+* @param {number} options.moveTime=cardManager.defaultMoveTime {@link Field#moveTime}	
 * @param {number} options.delayTime=100 {@link Field#delayTime}	
 * @param {number} options.scaleDiff=0.025 {@link Field#scaleDiff}
 * @param {boolean} options.debug=false {@link Field#inDebugMode}	
@@ -306,7 +306,7 @@ Field.prototype.getDefaultOptions = function(){
 	return {
 		options: {
 
-			moveTime: game.defaultMoveTime,
+			moveTime: cardManager.defaultMoveTime,
 			delayTime: 100,		
 			scaleDiff: 0.025,
 

@@ -17,7 +17,18 @@ var CardManager = function(inDebugMode){
 	*/
 	this.cardsGroup = null;
 
+	/**
+	* Кол-во карт в CardManager#cards.
+	* @type {Number}
+	*/
 	this.numOfCards = 0;
+
+	/**
+	* Длительность перемещения карт по-умолчанию.
+	* @type {Number}
+	* @default 300
+	*/
+	this.defaultMoveTime = 300;
 
 	/**
 	* Включена ли физика карт.
@@ -56,7 +67,7 @@ CardManager.prototype.initialize = function(){
 
 /**
 * Создает карты.
-* @param {CardInfo[]} cardsInfo информация о перемещаемых картах.
+* @param {CardInfo[]} cardsInfo информация о создаваемых картах.
 */
 CardManager.prototype.createCards = function(cardsInfo){
 	this.numOfCards = 0;

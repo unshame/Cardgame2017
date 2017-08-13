@@ -71,7 +71,7 @@ var notificationReactions = {
 
 		var cards = discard.cards.slice();
 		delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);
-		delay += game.defaultMoveTime;		
+		delay += cardManager.defaultMoveTime;		
 
 		game.seq.start(function(seq){
 			discard.removeAllCards();
@@ -82,22 +82,22 @@ var notificationReactions = {
 					ui.announcer.newMessage('Better luck next time');
 					fieldManager.resetFields();
 					cardManager.enablePhysics(true);
-				}, 0, delay - game.defaultMoveTime);
+				}, 0, delay - cardManager.defaultMoveTime);
 			}
-		}, delay/game.speed, game.defaultMoveTime)
+		}, delay/game.speed, cardManager.defaultMoveTime)
 		.then(function(){
 			ui.announcer.newMessage('YOU WON!');
 			for(var ci = 0; ci < dummy.cards.length; ci++){
 				var card = dummy.cards[ci],
 					x = card.sprite.x + card.base.x + (10*(ci - dummy.cards.length/2)),
-					time = Math.random()*game.defaultMoveTime + 500;
+					time = Math.random()*cardManager.defaultMoveTime + 500;
 				card.moveTo(x, -200, time, 0, false, true);
 				card.rotateTo(Math.random()*360 - 180, time);
 			}
 			cards = dummy.cards.slice();
 			fieldManager.resetFields();
 			cardManager.enablePhysics(false, dummy.cards);
-		}, game.defaultMoveTime + 500)
+		}, cardManager.defaultMoveTime + 500)
 		.then(function(){
 			for(var ci = 0; ci < cards.length; ci++){
 				var card = cards[ci];

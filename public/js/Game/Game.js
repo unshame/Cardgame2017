@@ -40,13 +40,6 @@ var Game = function(parent, speed, inDebugMode){
 	this.pausedByViewChange = false;
 
 	/**
-	* Длительность перемещения карт по-умолчанию.
-	* @type {Number}
-	* @default 300
-	*/
-	this.defaultMoveTime = 300;
-
-	/**
 	* Находится ли игра в горизонтальном положении, 
 	* рассчитывается только по размеру экрана.
 	* @type {Boolean}

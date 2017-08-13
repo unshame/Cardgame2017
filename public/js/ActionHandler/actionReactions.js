@@ -85,7 +85,7 @@ actionReactions = {
 		}
 
 		if(hasTrumpSuit){
-			fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? game.defaultMoveTime : delay);
+			fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? cardManager.defaultMoveTime : delay);
 		}
 
 		return delay;
