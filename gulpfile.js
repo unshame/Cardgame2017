@@ -7,12 +7,36 @@ const
 	newFile = require('gulp-file'),
 	uglify = require('gulp-uglify');
 
+// Имена файлов\папок
+const indexName = 'index';
+const publicName = 'public';
+
 // Пути к файлам
-const publicPath = './public';
+const publicPath = './' + publicName;
 const serverPath = './serverjs';
 const docPath = './doc';
 const reportPath = './report';
 const prodPath = './prod';
+const otherPaths = [
+	'./server.js',
+	'./app.json',		// для heroku
+	'./package.json',	// информация о приложении
+	'./logs/.gitkeep',	// нужно сохранить папку с логами, но без самих логов
+	'./.gitignore',		// для heroku
+	'./Procfile',		// для heroku
+	path.join(publicPath, 'style.css'),
+	path.join(publicPath, '/assets/**/*'),	
+	path.join(serverPath, '/**/*')	// серверные скрипты
+];
+
+// Пути к скриптам в public
+const libraryPaths = [
+	'lib/eureca.js',
+	'lib/phaser.js',
+	'lib/phaser.override.js'
+];
+const jsPath = 'js';
+const minifiedPath = 'durak.js';
 
 // Рекурсивно заменяет строку //@include:file в контенте указанного файла
 // на контент соответствующих файлов.
@@ -73,13 +97,13 @@ function includeReferenced(dir, fileName, tags, base, addSelf){
 // Заменяет код обернутый в <!-- dev --><!-- \/dev --> в devName на код из prodName в папке dir.
 // Если не задано prodName, заменяет код на content.
 // Возвращает строку после замены.
-function replaceDevCode(dir, devName, prodName, content){
+function replaceDevCode(dir, devName, prodName, content, removeDev){
 
 	let devFile = path.join(dir, devName);
 	let prodFile = prodName ? path.join(dir, prodName) : null;
 
 	if(!fs.existsSync(devFile) || prodName && !fs.existsSync(prodFile)){
-		console.warn('Either file not found', devFile, prodName);
+		console.warn('Either file not found', devFile, prodFile);
 		return '';
 	}
 
@@ -87,17 +111,20 @@ function replaceDevCode(dir, devName, prodName, content){
 	let prodContent = prodFile ? fs.readFileSync(prodFile, "utf8") : null;
 
 	if(!devContent || prodName && !prodContent){
-		console.warn('Either file empty', devFile, prodName);
+		console.warn('Either file empty', devFile, prodFile);
 		return '';
 	}
 
 	// Замена контента
 	let regex = /(<!-- dev -->)[\s\S]*(<!-- \/dev -->)/g;
-	devContent = devContent.replace(regex, content ? '$1' + content + '\n$2' : prodContent);
+	if(content && !removeDev){
+		content = '$1' + content + '\n$2';
+	}
+	devContent = devContent.replace(regex, content || prodContent);
 	return devContent;
 }
 
-// Добавляет html script теги к строке с адресами из массива, в конец или в начало.
+// Добавляет html script теги к строке с адресами из массива.
 // Возвращает строку
 function addLibraryTags(tags, libs){
 	if(!(libs instanceof Array)){
@@ -114,40 +141,27 @@ function addLibraryTags(tags, libs){
 // Создает билд игры в папке prod
 function build(includeDocs, safeBuild){
 	// склеиваем все скрипты
-	let jsContent = includeReferenced(path.join(publicPath, '/js'), 'index');
+	let jsContent = includeReferenced(path.join(publicPath, jsPath), indexName);
 	if(safeBuild){
 		jsContent = '(function(){' + jsContent + '})()';
 	}
-	let jsFile = newFile('public/durak.js', jsContent);
+	let jsFile = newFile(path.join(publicPath, minifiedPath), jsContent);
 
 	// заменяем пути к скриптам в index.html
-	let indexContent = replaceDevCode(publicPath, 'index.html', 'indexProd.html');
-	let indexFile = newFile('public/index.html', indexContent);
+	let tags = addLibraryTags('', libraryPaths.concat(minifiedPath)); 
+	let indexContent = replaceDevCode(publicPath, indexName + '.html', null, tags, true);
+	let indexFile = newFile(path.join(publicPath, indexName + '.html'), indexContent);
 
 	let base = { "base" : "." };
 
 	// Скрипты, которые нужно минифицировать
-	gulp.src([
-			path.join(publicPath, '/lib/eureca.js'),	// eureka
-			path.join(publicPath, '/lib/phaser.override.js')	// перезаписываемые функции Phaser
-		], base)
+	gulp.src(libraryPaths.map((p) => path.join(publicPath, p)), base)
 		.pipe(jsFile)	// Весь остальной js код
 		.pipe(uglify())	// минификация
 		.pipe(gulp.dest(prodPath));
 
 	// Все остальные файлы игры
-	gulp.src([
-			'./server.js',
-			'./app.json',		// для heroku
-			'./package.json',	// информация о приложении
-			'./logs/.gitkeep',	// нужно сохранить папку с логами, но без самих логов
-			'./.gitignore',		// для heroku
-			'./Procfile',		// для heroku
-			path.join(publicPath, 'style.css'),
-			path.join(publicPath, '/lib/phaser.min.js'),
-			path.join(publicPath, '/assets/**/*'),	
-			path.join(serverPath, '/**/*')	// серверные скрипты
-		], base)
+	gulp.src(otherPaths, base)
 		.pipe(indexFile)	// index.html с замененными путями к скриптам
 		.pipe(gulp.dest(prodPath));
 
@@ -159,7 +173,7 @@ function build(includeDocs, safeBuild){
 				path.join(reportPath, '/client/**/*'),
 				path.join(reportPath, '/server/**/*')
 			], base)				
-			.pipe(gulp.dest(path.join(prodPath, '/public')));
+			.pipe(gulp.dest(path.join(prodPath, publicName)));
 	}
 }
 
@@ -187,27 +201,23 @@ gulp.task('buildallsafe', () => {
 gulp.task('addtags', () => {
 
 	// Добавляем библиотеки к тегам
-	let libs = addLibraryTags('', [
-		'lib/eureca.js',
-		'lib/phaser.js',
-		'lib/phaser.override.js'
-	]); 
+	let libs = addLibraryTags('', libraryPaths); 
 
 	// Создаем теги из скриптов
-	let tags = includeReferenced(path.join(publicPath, '/js'), 'index', true, 'public\\');
-	tags = addLibraryTags(tags, 'js/index.js');
+	let tags = includeReferenced(path.join(publicPath, jsPath), indexName, true, publicName + '\\');
+	tags = addLibraryTags(tags, path.join(jsPath, indexName + '.js'));
 	tags = libs + tags;
 
 	// Замена обратных слешей на прямые
 	tags = tags.replace(/\\/g, '/');
 
 	// Заменяем существующие теги в контенте index.html на новые
-	let indexContent = replaceDevCode(publicPath, 'index.html', null, tags);
-	let indexPath = path.join(publicPath, 'index.html');
+	let indexContent = replaceDevCode(publicPath, indexName + '.html', null, tags);
+	let indexHtmlPath = path.join(publicPath, indexName + '.html');
 
 	// Перезаписываем index.html
-	fs.truncate(indexPath, 0, function() {
-		fs.writeFile(indexPath, indexContent, function (err) {
+	fs.truncate(indexHtmlPath, 0, function() {
+		fs.writeFile(indexHtmlPath, indexContent, function (err) {
 			if (err) {
 				return console.log("Error writing file: " + err);
 			}

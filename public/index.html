@@ -12,26 +12,25 @@
 	</div>
 	<div style="width:100%; height:100%;" id="cardgame"></div>
 		<script>
-		//Показ процесса загрузки скриптов
-		var loadCounter = 0;
-		var loadTextDOM = document.getElementById('loading-text');
-		var loadInterval = setInterval(function(){
-			if(window.game){
-				clearInterval(loadInterval);
-				delete window.loadInterval;
-				delete window.loadCounter;
-				delete window.loadTextDOM;
-				return;
-			}
-			var text = 'loading scripts';
-			if(loadCounter > 30)
-				loadCounter = 0;
-			for(var i = 0; i < loadCounter; i++){
-				text += '.';
-			}
-			loadTextDOM.innerHTML = text;
-			loadCounter++;
-		}, 50)
+		(function(){
+			//Показ процесса загрузки скриптов
+			var loadCounter = 0;
+			var loadTextDOM = document.getElementById('loading-text');
+			var loadInterval = setInterval(function(){
+				if(window.gameCreated){
+					clearInterval(loadInterval);
+					return;
+				}
+				var text = 'loading scripts';
+				if(loadCounter > 30)
+					loadCounter = 0;
+				for(var i = 0; i < loadCounter; i++){
+					text += '.';
+				}
+				loadTextDOM.innerHTML = text;
+				loadCounter++;
+			}, 50);
+		})()
 		</script>
 		
 <!-- dev -->

@@ -97,3 +97,6 @@ game.state.add(stateMenu, false, false);
 game.state.add(statePlay, false, false);
 // Запускаем загрузку игры
 game.state.add(stateBoot, true, true);	
+
+// Останавливаем анимацию загрузки из index.html
+window.gameCreated = true;
