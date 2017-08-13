@@ -1,28 +1,136 @@
+/**
+ * Меню.
+ * @class
+ * @param {object} options Опции.
+ * @extends {Phaser.Group}
+ */
 var Menu = function(options){
+
+	/**
+	 * Переданные при создании меню опции.
+	 * @type {object}
+	 */
 	this.options = mergeOptions(this.getDefaultOptions(), options);
 
-	this.background = game.add.image(0, 0);
-	this.background.visible = false;
+	Phaser.Group.call(this, game);
+
+	/**
+	 * Имя меню.
+	 * @type {string}
+	 */
+	this.name = this.options.name;
+
+	/**
+	 * Видимость меню.
+	 * @type {Boolean}
+	 */
+	this.visible = false;
+
+	/**
+	 * Фон меню.
+	 * @type {Phaser.Image}
+	 */
+	this.background = game.make.image(0, 0);
 	this.background.tint = this.options.color || ui.colors.orange;
+	this.add(this.background);
 
-	this.position = this.options.position;
-	this.margin = this.options.margin;
-	this.opened = false;
+	/**
+	 * Твин анимации фейда меню.
+	 * @type {Phaser.Tween}
+	 * @private
+	 */
+	this._fader = null;
+	/**
+	 * Направление анимации фейда
+	 * (-1 - скрывается, 0 - стоит на месте, 1 - показывается).
+	 * @type {number}
+	 * @private
+	 */
+	this._fading = 0;
 
-	this.base = ui.layers.addLayer(this.options.z, this.options.name, true);	
-	this.base.add(this.background);
-
+	/**
+	 * Элементы меню.
+	 * @type {Array}
+	 */
 	this.elements = [];
-	this.elementsByName = {};
+	/**
+	 * Элементы меню, которые не влияют на размер меню.
+	 * @type {Array}
+	 */
+	this.specialElements = [];
+	/**
+	 * Скрытые элементы меню.
+	 * @type {Array}
+	 */
 	this.hiddenElements = [];
+	/**
+	 * Отключенные элементы меню.
+	 * @type {Array}
+	 */
+	this.disabledElements = [];
 
+	/**
+	 * Графика фона меню.
+	 * @type {Phaser.BitmapData}
+	 * @private
+	 */
 	this._bitmapArea = game.make.bitmapData();
 	if(this.options.texture){
 		var image = game.cache.getImage(this.options.texture);
-		this.pattern = this._bitmapArea.ctx.createPattern(image, 'repeat');
+		/**
+		 * Повторяющаяся текстура фона меню.
+		 * @type {CanvasPattern}
+		 * @private
+		 */
+		this._pattern = this._bitmapArea.ctx.createPattern(image, 'repeat');
+	}
+
+	ui.layers.addExistingLayer(this, this.options.z, true);	
+};
+
+Menu.prototype = Object.create(Phaser.Group.prototype);
+Menu.prototype.constructor = Menu;
+
+/**
+ * Выполняет callback для каждого элемента меню.
+ * @param  {function} callback  Выполняется для каждого элемента, имеет три параметра `element, i, len`.
+ * @param  {boolean}   [includeSpecial] Нужно ли включать в цикл специальные элементы из {@link Menu#specialElements}.
+ */
+Menu.prototype.forEachElement = function(callback, includeSpecial){
+	var ii = 0, i = 0;
+	var len = includeSpecial ? this.elements.length : this.elements.length - this.specialElements.length;
+
+	for(; i < this.elements.length; i++){
+		var element = this.elements[i];
+
+		if(~this.specialElements.indexOf(element) && !includeSpecial)
+			continue;
+
+		callback.call(this, this.elements[i], ii, len);
+		ii++;
 	}
 };
 
+/**
+ * Возвращает элемент меню с указанным именем.
+ * @param  {string} name   Имя элемента.
+ * @return {DisplayObject} Элемент с `name`, равным указанному.
+ */
+Menu.prototype.getElementByName = function(name){
+	for (var i = 0; i < this.elements.length; i++){
+
+		if (this.elements[i].name === name){
+			return this.elements[i];
+		}
+
+	}
+	return null;
+};
+
+/** 
+ * Опции по умолчанию
+ * @return {object} опции
+ */
 Menu.prototype.getDefaultOptions = function(){
 	return {
 		position: {
@@ -38,37 +146,89 @@ Menu.prototype.getDefaultOptions = function(){
 		elementColor: 'orange',
 		textColor: 'white',
 		corner: 10,
-		border: 4
+		border: 4,
+		fadeTime: 200
 	};
 };
 
-Menu.prototype.getByName = function (name) {
-	return this.elementsByName[name];
-};
-
+/** 
+ * Прячет элемент меню с указанным именем.
+ * Чтобы элемент прятался только при следующем открытии меню, нужно предварительно запустить `fadeOut`.
+ * @param  {string} name   Имя элемента.
+ */
 Menu.prototype.hideElement = function(name){
-	var el = this.elementsByName[name];
-	if(!el)
+	var el = this.getElementByName(name);
+	var i = this.hiddenElements.indexOf(el);
+
+	if(!el || ~i)
 		return;
+
 	this.hiddenElements.push(el);
-	if(this.opened){
+	if(this._fading != -1){
 		el.hide();
-		this.update();
+
+		if(this.visible){
+			this.updatePosition();
+		}
 	}
 };
 
+/** 
+ * Прячет элемент меню с указанным именем.
+ * Чтобы элемент показывался только при следующем открытии меню, нужно предварительно запустить `fadeOut`.
+ * @param  {string} name   Имя элемента.
+ */
 Menu.prototype.showElement = function(name){
-	var el = this.elementsByName[name];
+	var el = this.getElementByName(name);
 	var i = this.hiddenElements.indexOf(el);
+
 	if(!el || !~i)
 		return;
+
 	this.hiddenElements.splice(i, 1);
-	if(this.opened){
+
+	if(this._fading != -1){
 		el.show();
-		this.update();
+
+		if(this.visible){
+			this.updatePosition();
+		}
 	}
 };
 
+/**
+ * Отключает элемент с указанным именем.
+ * @param  {string} name   Имя элемента.
+ */
+Menu.prototype.disableElement = function(name){
+	var el = this.getElementByName(name);
+	var i = this.disabledElements.indexOf(el);
+
+	if(!el || ~i)
+		return;
+
+	this.disabledElements.push(el);
+	el.disable();
+};
+
+/**
+ * Включает элемент с указанным именем.
+ * @param  {string} name   Имя элемента.
+ */
+Menu.prototype.enableElement = function(name){
+	var el = this.getElementByName(name);
+	var i = this.disabledElements.indexOf(el);
+
+	if(!el || !~i)
+		return;
+
+	this.disabledElements.splice(i, 1);
+	el.enable();
+};
+
+/**
+ * Создает и добавляет кнопку {@link Button} к элементам меню.
+ */
 Menu.prototype.addButton = function (action, name, text, context) {
 	var button = new Button({
 		color: this.options.elementColor,
@@ -78,95 +238,228 @@ Menu.prototype.addButton = function (action, name, text, context) {
 		text: text,
 		name: name,
 		context: (context === false) ? undefined : (context || this),
-		group: this.base
+		group: this
 	});
-	this.elementsByName[name] = button;
+	button.disable(true);
 	this.elements.push(button);
-	if(!this.opened){
-		button.hide();
-	}
-	this.update();
+	this.add(button);
 };
 
-Menu.prototype.resize = function(){
+/**
+ * Устанавливает размер фона меню в соответствии с элементами.
+ * @private
+ */
+Menu.prototype._resize = function(){
 	var width = 0,
-		height = 0;
+		height = 0,
+		margin = this.options.margin;
 
-	for (var i = 0; i < this.elements.length; i++) {
-		var element = this.elements[i];
-		if(element.visible && !this.opened){
-			element.hide();
+	this.forEachElement(function(element, i, len){
+		var h = this.hiddenElements.indexOf(element);
+
+		if(element.visible && ~h){
+			element.hide()
 		}
+		else if(!element.visible && !~h){
+			element.show()
+		}
+
 		if(!element.visible)
-			continue;
+			return;
+
 		height += element.height;
-		if(i < this.elements.length - 1){
-			height += this.margin;
+
+		if(i < len - 1){
+			height += margin;
 		}
+
 		if(width < element.width){
 			width = element.width;
 		}
-	}
+	});
 
-	this.createArea(width + this.margin*2, height + this.margin*2);
+	this._createArea(width + margin*2, height + margin*2);
 };
 
+/**
+ * Позиционирует меню и элементы.
+ * @param  {object} [position] новая позиция меню `{x, y}`.
+ */
 Menu.prototype.updatePosition = function(position){
+	this._resize();
+
 	if(position){
-		this.position = position;
+		this.options.position = position;
 	}
 	else{
-		position = this.position;
+		position = this.options.position;
 	}
+
 	if(typeof position == 'function'){
 		position = position();
 	}
-	this.base.x = position.x - this.background.width/2;
-	this.base.y = position.y - this.background.height/2;
-	var y = 0;
-	for (var i = 0; i < this.elements.length; i++) {
-		var element = this.elements[i];
+
+	this.x = position.x - this.background.width/2;
+	this.y = position.y - this.background.height/2;
+
+	var y = 0,
+		margin = this.options.margin;
+
+	this.forEachElement(function(element, i){
 		if(!element.visible)
-			continue;
-		element.updatePosition({x: this.background.width/2 - element.width/2, y: y + this.margin});
-		y += element.height + this.margin;
+			return;
+
+		element.updatePosition({x: this.background.width/2 - element.width/2, y: y + margin});
+		y += element.height + margin;
+	});
+};
+
+/** Плавно скрывает меню. */
+Menu.prototype.fadeOut = function(){
+	if(this._fading == -1){
+		return;
+	}
+
+	this._stopFader();
+	this._fading = -1;
+
+	this.disable(true);
+
+	this._fader = game.add.tween(this);
+	this._fader.to({alpha: 0}, this.options.fadeTime);
+	this._fader.onComplete.addOnce(function(){
+		this._fading = 0;
+		this._fader = null;
+		this._hide();
+	}, this);
+	this._fader.start();
+};
+
+/** Плавно показывает меню. */
+Menu.prototype.fadeIn = function(){
+	if(this._fading == 1){
+		return;
+	}
+
+	this._stopFader();
+	this._fading = 1;
+
+	this._show();
+	this.alpha = 0;
+
+	this._fader = game.add.tween(this);
+	this._fader.to({alpha: 1}, this.options.fadeTime);
+	this._fader.onComplete.addOnce(function(){
+		this._fading = 0;
+		this._fader = null;		
+		this.enable();
+	}, this);
+	this._fader.start();
+};
+
+/** Плавно показывает или скрывает меню в зависимости от текущего состояния. */
+Menu.prototype.fadeToggle = function(){
+	switch(this._fading){
+		case 0:
+		if(this.visible){
+			this.fadeOut();
+		}
+		else{
+			this.fadeIn();
+		}
+		break;
+
+		case 1:
+		this.fadeOut();
+		break;
+
+		case -1:
+		this.fadeIn();
+		break;
 	}
 };
 
-Menu.prototype.update = function(){
-	if(!this.opened)
+/**
+ * Останавливает анимацию меню.
+ * @private
+ */
+Menu.prototype._stopFader = function(){
+	if(!this._fader)
 		return;
-	this.resize();
+	this._fader.stop();
+	this._fader = null;
+	this._fading = 0;
+};
+
+/**
+ * Прячет меню.
+ * @private
+ */
+Menu.prototype._hide = function(){
+	this.visible = false;
+};
+
+/**
+ * Показывает и обновляет позицию меню.
+ * @private
+ */
+Menu.prototype._show = function(){
+	this.visible = true;
 	this.updatePosition();
 };
 
+/** Прячет меню, останавливая анимацию и убирая возможность нажимать на элементы. */
 Menu.prototype.hide = function(){
-	this.opened = false;
-	this.background.visible = false;
-	for (var i = 0; i < this.elements.length; i++) {
-		this.elements[i].hide();
-	}
+	this._stopFader();
+	this.alpha = 0;
+	this._hide();
+	this.disable(true);
 };
 
+/** Показывает меню, останавливая анимацию и давая возможность нажимать на элементы. */
 Menu.prototype.show = function(){
-	this.opened = true;
-	this.background.visible = true;
-	for (var i = 0; i < this.elements.length; i++) {
-		if(~this.hiddenElements.indexOf(this.elements[i]))
-			continue;
-		this.elements[i].show();
-	}
-	this.update();
+	this._stopFader();
+	this.alpha = 1;
+	this._show();
+	this.enable();
 };
+
+/** 
+ * Отключает элементы меню.
+ * @param  {boolean} changeToDefaultFrame заставляет элемент переключиться на дефолтный кадр текстуры, 
+ *                                        вместо кадра, соответствующего отключенному состоянию
+ */
+Menu.prototype.disable = function(changeToDefaultFrame){
+	this.forEachElement(function(element){
+		element.disable(changeToDefaultFrame);
+	}, true);
+};
+
+/** Включает элементы игры, не входящие в {@link Menu#disabledElements} */
+Menu.prototype.enable = function(){
+	this.forEachElement(function(element){
+		if(~this.disabledElements.indexOf(element))
+			return;
+
+		element.enable();
+	}, true);
+};
+
+/** Переключает видимость меню */
 Menu.prototype.toggle = function(){
-	if(this.opened){
+	if(this.visible){
 		this.hide();
 	}
 	else{
 		this.show();
 	}
 };
-Menu.prototype.createArea = function(width, height){
+
+/**
+ * Рисует фон меню.
+ * @private
+ */
+Menu.prototype._createArea = function(width, height){
 	var radius = this.options.corner,
 		lineWidth = this.options.border,
 		x =  lineWidth/2,
@@ -179,7 +472,7 @@ Menu.prototype.createArea = function(width, height){
 	width -= x*2;
 	height -= y*2;
 	ctx.beginPath();
-	ctx.fillStyle = this.pattern || 'rgba(255, 255, 255, 1)';
+	ctx.fillStyle = this._pattern || 'rgba(255, 255, 255, 1)';
 	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
 	ctx.lineWidth = lineWidth;
 	ctx.moveTo(x + radius, y);

@@ -122,13 +122,18 @@ Button.prototype.enable = function(){
 };
 
 // Выключает кнопку
-Button.prototype.disable = function(){
+Button.prototype.disable = function(changeToDefaultFrame){
 	if(!this.inputEnabled)
 		return;
-	this.frame = 3;
+	if(!changeToDefaultFrame){
+		this.frame = 3;
+	}
+	else{
+		this.changeStateFrame('Up');
+	}
 	this.inputEnabled = false;
 
-	if(this.label){
+	if(this.label && !changeToDefaultFrame){
 		this.label.alpha = 0.55;
 		if(!this.isDown){
 			this.label.y += this.label.downOffset;

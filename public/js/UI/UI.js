@@ -174,20 +174,20 @@ UI.prototype._createButtons = function(){
 
 	// Опции
 	this.testMenu.addButton(function(){
-		ui.optMenu.show();
+		ui.optMenu.fadeIn();
 	}, 'options','Options');
 
 	// МЕНЮ ОПЦИЙ
 	// Отключение от игры
 	this.optMenu.addButton(function(){
 		connection.server.disconnect();
-		this.hide();
+		this.fadeOut();
 	}, 'disconnect','Disconnect');
 
 	this.optMenu.hideElement('disconnect');
 
 	this.optMenu.addButton(function(){
-		var mover = game.add.tween(this.elementsByName['CHS']);
+		var mover = game.add.tween(this.getElementByName('CHS'));
 		mover.to({			
 			x: 0,
 			y: 0,
@@ -197,7 +197,7 @@ UI.prototype._createButtons = function(){
 	},'lel','NOTHING');	
 
 	this.optMenu.addButton( function(){
-		var mover = game.add.tween(this.elementsByName['CHS']);
+		var mover = game.add.tween(this.getElementByName('CHS'));
 		mover.to({			
 			x: 0,
 			y: ui.optMenu.background.height,
@@ -282,7 +282,7 @@ UI.prototype._createButtons = function(){
 			};
 		},
 		action: function(){
-			ui.optMenu.toggle();
+			ui.optMenu.fadeToggle();
 		},
 		icon: 'menu',
 		color: 'orange',
