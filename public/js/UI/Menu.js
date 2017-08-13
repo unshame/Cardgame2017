@@ -258,10 +258,10 @@ Menu.prototype._resize = function(){
 		var h = this.hiddenElements.indexOf(element);
 
 		if(element.visible && ~h){
-			element.hide()
+			element.hide();
 		}
 		else if(!element.visible && !~h){
-			element.show()
+			element.show();
 		}
 
 		if(!element.visible)

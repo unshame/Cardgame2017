@@ -59,7 +59,8 @@
     "statePlay": true,
     "stateBoot": true,
     "stateMenu": true,
-
+    
+    "drawRoundedRectangle": true,
     "shuffleArray": true,
     "mergeOptions": true,
     "numberToHexColor": true,
