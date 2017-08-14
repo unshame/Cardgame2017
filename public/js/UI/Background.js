@@ -1,7 +1,7 @@
 /**
 * Фоновый слой игры
 * @class
-* @extends {Phaser.Group}
+* @extends {external:Phaser.Group}
 */
 
 var Background = function(){

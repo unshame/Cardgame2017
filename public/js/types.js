@@ -64,3 +64,118 @@ var BRING_TO_TOP_ON = {
 * @property {number} [value] - значение карты
 */
 // CardInfo
+
+
+// PHASER CLASSES
+
+/**
+* Класс из {@link external:Phaser|Phaser}.  
+* Группа игровых элементов. Позволяет размещать и контролировать множество элементов.  
+* Должна быть добавлена в {@link UILayers} для корректного отображения по вертикали.  
+* Далее описаны полезные свойства и методы. По ссылке ниже можно найти полную документацию.
+* @class external:Phaser.Group
+* @param {Phaser.Game} game игра
+* @param {DisplayObject|null} [parent=(game world)] родительская группа
+* @param {string} [name='group'] имя группы
+* @see  {@link https://phaser.io/docs/2.6.2/Phaser.Group.html|Phaser.Group полная документация}
+*/
+
+/**
+* Позиция по горизонтали.
+* @name external:Phaser.Group#x
+* @type {number}
+*/
+
+/**
+* Позиция по вертикали.
+* @name external:Phaser.Group#y
+* @type {number}
+*/
+
+/**
+* Прозрачность.
+* @name external:Phaser.Group#alpha
+* @type {number}
+*/
+
+/**
+* Поворот в градусах.
+* @name external:Phaser.Group#angle
+* @type {number}
+*/
+
+/**
+* Поворот в радианах.
+* @name external:Phaser.Group#rotation
+* @type {number}
+*/
+
+/**
+* Отрисовывается ли элемент игрой.
+* @name external:Phaser.Group#visible
+* @type {boolean}
+*/
+
+/**
+* Элементы, входящие в группу.
+* @name external:Phaser.Group#children
+* @type {DisplayObject[]}
+*/
+
+/**
+* Кол-во элементов, входящих в группу.
+* @name external:Phaser.Group#length
+* @readOnly
+* @type {number}
+*/
+
+/**
+* Имя группы.
+* @name external:Phaser.Group#name
+* @type {string}
+*/
+
+/**
+* Добавляет элемент в группу.
+* @function external:Phaser.Group#add
+*/
+
+/**
+* Убирает элемент из группы.
+* @function external:Phaser.Group#remove
+*/
+
+/**
+* Поднимает элемент группы наверх.
+* @function external:Phaser.Group#bringToTop
+*/
+
+/**
+* Устанавливает индекс элемента группы по вертикали.
+* @function external:Phaser.Group#setChildIndex
+*/
+
+/**
+* Выполняет callback для каждого элемента группы.
+* @function external:Phaser.Group#forEach
+*/
+
+/**
+* Возвращает элемент группы с указанным именем.
+* @function external:Phaser.Group#getByName
+*/
+
+/**
+* Обновляет все элементы, входящие в группу.
+* @function external:Phaser.Group#update
+*/
+
+/**
+* Уничтожает группу, убирая все элементы из нее, опционально уничтожая их тоже.
+* @function external:Phaser.Group#destroy
+*/
+
+/**
+* Удаляет все элементы из группы, опционально уничтожая их.
+* @function external:Phaser.Group#removeAll
+*/

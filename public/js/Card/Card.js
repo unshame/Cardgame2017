@@ -5,7 +5,7 @@
 * установки флагов, применения скинов. Передает информацию о курсоре
 * присвоенному полю ({@link Field}) и контроллеру карт ({@link CardControl}).
 * @class
-* @extends {Phaser.Group}
+* @extends {external:Phaser.Group}
 * @param {object} options 		 - Опции, используемые при создании карты
 * @param {Game} options.game игра, к которой пренадлежит карта
 * @param {string} options.id 	 - id карты
@@ -56,9 +56,10 @@ var Card = function (options) {
 	this.highlighted = false;
 
 	/**
-	 * Должна ли карта быть подсвечена по окончании движения.
-	 * @type {Boolean}
-	 */
+	* Должна ли карта быть подсвечена по окончании движения.
+	* @type {Boolean}
+	* @private
+	*/
 	this._shouldHighlight = false;
 
 	/**

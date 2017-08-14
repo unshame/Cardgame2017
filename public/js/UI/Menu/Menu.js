@@ -2,7 +2,7 @@
  * Меню.
  * @class
  * @param {object} options Опции.
- * @extends {Phaser.Group}
+ * @extends {external:Phaser.Group}
  */
 var Menu = function(options){
 

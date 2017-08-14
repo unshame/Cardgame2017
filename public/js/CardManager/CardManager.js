@@ -2,6 +2,7 @@
 * Менеджер карт.
 * @class
 * @param {boolean} inDebugMode выводит ли менеджер дебаг информацию
+* @extends {external:Phaser.Group}
 */
 var CardManager = function(inDebugMode){
 

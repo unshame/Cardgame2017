@@ -3,7 +3,7 @@
 * @param {Game} game игра
 * @param {string} [name] имя фида
 * @class 
-* @extends {Phaser.Group}
+* @extends {external:Phaser.Group}
 */
 var MessageFeed = function(game, name){
 

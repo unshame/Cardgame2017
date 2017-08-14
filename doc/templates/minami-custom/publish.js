@@ -405,7 +405,6 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
     nav.push(buildNavHeading(itemHeading))
 
     items.sort(function(a, b){
-
       var al = a.longname.match(/\//g);
       var bl = b.longname.match(/\//g);
       if(!al)
@@ -419,10 +418,10 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
         return -1;
       }
       
-      if(a.longname > b.longname){
+      if(a.name > b.name){
           return 1;
       }
-      else if(a.longname < b.longname){
+      else if(a.name < b.name){
           return -1;
       }
       return 0;
