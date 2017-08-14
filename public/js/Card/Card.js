@@ -350,6 +350,8 @@ Card.prototype.destroy = function(delay, now) {
 Card.prototype._destroyNow = function() {
 	if(cardControl.card == this)
 		cardControl.reset('card destroyed');
+	if(ui.cursor.overlappingElement == this)
+		ui.cursor.overlappingElement = null;
 	this.sprite.destroy();
 	this.glow.destroy();
 	this.removeAll();
