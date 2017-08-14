@@ -14,6 +14,8 @@ var Menu = function(options){
 
 	Phaser.Group.call(this, game);
 
+	this.modal = this.options.modal;
+
 	/**
 	 * Имя меню.
 	 * @type {string}
@@ -31,6 +33,7 @@ var Menu = function(options){
 	 * @type {Phaser.Image}
 	 */
 	this.background = game.make.image(0, 0);
+	this.background.inputEnabled = true;
 	this.background.tint = this.options.color || ui.colors.orange;
 	this.add(this.background);
 
@@ -88,8 +91,7 @@ var Menu = function(options){
 	ui.layers.addExistingLayer(this, this.options.z, true);	
 };
 
-Menu.prototype = Object.create(Phaser.Group.prototype);
-Menu.prototype.constructor = Menu;
+extend(Menu, Phaser.Group);
 
 /** 
  * Опции по умолчанию
@@ -102,6 +104,7 @@ Menu.prototype.getDefaultOptions = function(){
 			y: 0
 		},
 		z: 0,
+		modal: false,
 		margin: 25,
 		name: 'default',
 		alpha: 0.8,

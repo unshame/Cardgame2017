@@ -5,17 +5,15 @@
 */
 var CardManager = function(inDebugMode){
 
+	Phaser.Group.call(this, game);
+
+	this.name = 'cardManager';
+
 	/**
 	* Карты по id.
 	* @type {Object<Card>}
 	*/
 	this.cards = {};
-
-	/**
-	* Phaser группа карт.
-	* @type {Phaser.Group}
-	*/
-	this.cardsGroup = null;
 
 	/**
 	* Кол-во карт в CardManager#cards.
@@ -57,13 +55,7 @@ var CardManager = function(inDebugMode){
 	getCard = this.getCard.bind(this);
 };
 
-/**
-* Инициализирует модуль - создает группу для карт.
-*/
-CardManager.prototype.initialize = function(){
-	this.cardsGroup = game.add.group();
-	this.cardsGroup.name = 'cards';
-};
+extend(CardManager, Phaser.Group);
 
 /**
 * Создает карты.
@@ -114,33 +106,15 @@ CardManager.prototype.createCard = function(options){
 	}
 	var card = new Card(options);
 	this.cards[options.id] = card;
-	this.cardsGroup.add(card.base);
+	this.add(card);
 };
 
 /** Уничтожает все карты. */
 CardManager.prototype.reset = function(){
 	this.numOfCards = 0;
-	for(var cid in this.cards){
-		if(this.cards.hasOwnProperty(cid)){
-			this.cards[cid].destroy();
-		}
-	}
-};
-
-/**
-* Находится ли курсор над одной из карт с `draggable == true`.
-* @return {(Card|boolean)} Возращает найденную карту или `false`.
-*/
-CardManager.prototype.cursorIsOverACard = function(){
-	for(var ci in this.cards){
-		if(!this.cards.hasOwnProperty(ci))
-			continue;
-		var card = this.cards[ci];
-		if(card.cursorIsOver() && card.draggable){
-			return card;
-		}
-	}
-	return false;
+	this.forEach(function(card){
+		card.destroy();
+	});
 };
 
 /** Возвращает карты с `raised == true` на место. */
@@ -222,33 +196,30 @@ CardManager.prototype.disablePhysics = function(){
 	this.physicsEnabled = false;
 };
 
-/** Выполняет `update` каждой карты. */
-CardManager.prototype.update = function(){
-	for(var ci in this.cards){
-		if(!this.cards.hasOwnProperty(ci))
-			continue;
-		this.cards[ci].update();
-	}
-};
-
 
 /**
 * Поднимает указанную карту наверх, опционально поднимает перетаскиваемую карту наверх.
 * @param {Card} card карта, которую нужно поднять
 * @param {boolean} [fixController=true] нужно ли поднимать {@link cardControl#card} наверх
 */
-CardManager.prototype.bringToTop = function(card, fixController){
-	if(!card || !this.cards[card.id] || !~this.cardsGroup.children.indexOf(card.base)){
+CardManager.prototype.bringCardToTop = function(card, fixController){
+	if(!card || !this.cards[card.id] || !~this.children.indexOf(card)){
 		console.error('Card manager: can\'t bring card to top', card);
 		return;
 	}
 	if(fixController === undefined){
 		fixController = true;
 	}
-	this.cardsGroup.bringToTop(card.base);
+	this.bringToTop(card);
 	if(fixController && cardControl.card && cardControl.card != card){
 		this.bringToTop(cardControl.card, false);
 	}
 };
+
+CardManager.prototype.setInputEnabled = function(enabled){
+	this.forEach(function(card){
+		card.sprite.inputEnabled = enabled;
+	});
+}
 
 //@include:CardManagerDebug

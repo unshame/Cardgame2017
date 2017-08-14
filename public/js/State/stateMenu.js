@@ -45,7 +45,7 @@ var stateMenu = new State('menu', {
 	*/
 	create: function(){
 		cardEmitter.start(10, 50, 10, 2000, 20, 1);
-		ui.testMenu.fadeIn();
+		ui.menus.main.fadeIn();
 		ui.logo.fadeIn();
 	},
 
@@ -55,7 +55,7 @@ var stateMenu = new State('menu', {
 	*/
 	shutdown: function(){
 		cardEmitter.stop();
-		ui.testMenu.fadeOut();
+		ui.menus.main.fadeOut();
 		ui.logo.fadeOut();
 	}
 });

@@ -129,8 +129,7 @@ var ScaleManager = function(options){
 	this.fullScreenModeChanged = false;
 };
 
-ScaleManager.prototype = Object.create(Phaser.ScaleManager.prototype);
-ScaleManager.prototype.constructor = ScaleManager;
+extend(ScaleManager, Phaser.ScaleManager);
 
 /**
 * Получить опции по умолчанию (см. {@link ScaleManager|ScaleManager options}).

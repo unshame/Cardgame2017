@@ -66,8 +66,8 @@ CardControl.prototype._updateCardPosition = function(curTime){
 		sP = {x:0, y:0};
 	}
 	mP = {
-		x: this.pointer.x - this.card.base.x,
-		y: this.pointer.y - this.card.base.y
+		x: this.pointer.x - this.card.x,
+		y: this.pointer.y - this.card.y
 	};
 	this.card.setRelativePosition(mP.x - sP.x, mP.y - sP.y);
 };
@@ -100,8 +100,8 @@ CardControl.prototype._updateCardAngle = function(curTime){
 	}
 	this.card.setAngle(angle);
 
-	this.cardLastX = this.card.base.x + this.card.sprite.x;
-	this.cardLastY = this.card.base.y + this.card.sprite.y;
+	this.cardLastX = this.card.x + this.card.sprite.x;
+	this.cardLastY = this.card.y + this.card.sprite.y;
 };
 
 /**
@@ -112,8 +112,8 @@ CardControl.prototype._updateCardAngle = function(curTime){
 * @see {@link https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53|Источник кода}
 */
 CardControl.prototype._saveCardInertia = function(curTime, maxTime){
-	var curX = this.card.base.x + this.card.sprite.x,
-		curY = this.card.base.y + this.card.sprite.y,
+	var curX = this.card.x + this.card.sprite.x,
+		curY = this.card.y + this.card.sprite.y,
 		distance = {
 			x: curX - this.cardLastX,
 			y: curY - this.cardLastY

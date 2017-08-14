@@ -21,8 +21,7 @@ var Rope = function(){
 
 };
 
-Rope.prototype = Object.create(Phaser.Sprite.prototype);
-Rope.prototype.constructor = Rope;
+extend(Rope, Phaser.Sprite);
 
 /**
 * Обновляет прогресс таймера.

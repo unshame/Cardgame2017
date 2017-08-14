@@ -20,6 +20,8 @@ var UI = function(){
 	this.eventFeed = null;
 	this.announcer = null;
 
+	this.modals = [];
+
 	/**
 	 * Заранее заданные цвета для использования в игровых элементах.
 	 * @type {Object}
@@ -90,6 +92,12 @@ UI.prototype.initialize = function(){
 	*/
 	this.eventFeed = new EventFeed(game);	
 	
+	/**
+	 * Менеджер модальных меню.
+	 * @type {ModalManager}
+	 */
+	this.modalManager = new ModalManager();
+
 	this._createMenus();
 	this._createButtons();
 
@@ -97,16 +105,17 @@ UI.prototype.initialize = function(){
 		[this.background, 0],
 		// this.actionButtons, 1
 		[fieldManager.fieldsGroup, 2],
-		[cardManager.cardsGroup, 3],
+		[cardManager, 3, true],
 		[cardEmitter, 4],
-		// this.testMenu, 5
+		// this.menus.main, 5
 		[this.logo, 6],
 		[this.feed, 7],
 		[this.eventFeed, 8],
 		[this.announcer, 9],
-		[this.rope, -4],
+		[this.rope, 10],
+		[this.modalManager, -5],
 		// this.cornerButtons, -3
-		// this.optMenu, -2
+		// this.menus.options, -2
 		[this.cursor, -1]
 	]);
 
@@ -120,32 +129,51 @@ UI.prototype.initialize = function(){
  * @private
  */
 UI.prototype._createMenus = function(){
-	this.testMenu = new Menu({
-		position: function(){
-			return {
-				x:game.screenWidth/2,
-				y:game.screenHeight/2 + 150
-			};
-		}, 
-		z: 5,
-		alpha: 0.95,
-		name: 'testMenu',
-		texture: 'black'
-	});
-	this.optMenu = new Menu({
-		position: function(){
-			return {
-				x:game.screenWidth/2,
-				y:game.screenHeight/2
-			};
-		}, 
-		z: -2,
-		color: this.colors.white,
-		texture: 'menu_blue',
-		elementColor: 'grey',
-		textColor: 'black',
-		name: 'optMenu'
-	});
+	this.menus = {
+		main: new Menu({
+			position: function(){
+				return {
+					x:game.screenWidth/2,
+					y:game.screenHeight/2 + 150
+				};
+			}, 
+			z: 5,
+			alpha: 0.95,
+			name: 'main',
+			texture: 'black'
+		}),
+		options: new Menu({
+			position: function(){
+				return {
+					x:game.screenWidth/2,
+					y:game.screenHeight/2
+				};
+			}, 
+			z: -3,
+			modal: true,
+			base: true,
+			color: this.colors.white,
+			texture: 'menu_blue',
+			elementColor: 'grey',
+			textColor: 'black',
+			name: 'options'
+		}),
+		test: new Menu({
+			position: function(){
+				return {
+					x:game.screenWidth/2 + 300,
+					y:game.screenHeight/2
+				};
+			}, 
+			z: -4,
+			modal: true,
+			color: this.colors.white,
+			texture: 'menu_blue',
+			elementColor: 'grey',
+			textColor: 'black',
+			name: 'test'
+		})
+	}
 };
 
 /** 
@@ -163,56 +191,56 @@ UI.prototype._createButtons = function(){
 	 * Угловые кнопки.
 	 * @type {Phaser.Group}
 	 */
-	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons', true);
+	this.cornerButtons = this.layers.addLayer(-2, 'cornerButtons', true);
 
-	// ГЛАВНОЕ МЕНЮ
+
+	////////////////////
+	/// ГЛАВНОЕ МЕНЮ ///
+	////////////////////
 	// Поиск игры
-	this.testMenu.addButton(function(){
+	this.menus.main.addButton(function(){
 		game.state.change('play');
 		connection.proxy.queueUp();
 	}, 'queueUp','Queue Up');
 
 	// Опции
-	this.testMenu.addButton(function(){
-		ui.optMenu.fadeIn();
+	this.menus.main.addButton(function(){
+		ui.modalManager.openModal('options');
 	}, 'options','Options');
 
-	// МЕНЮ ОПЦИЙ
+
+	////////////////////
+	//// МЕНЮ ОПЦИЙ ////
+	////////////////////
 	// Отключение от игры
-	this.optMenu.addButton(function(){
+	this.menus.options.addButton(function(){
 		connection.server.disconnect();
-		this.fadeOut();
+		ui.modalManager.closeModal();
 	}, 'disconnect','Disconnect');
 
-	this.optMenu.hideElement('disconnect');
+	this.menus.options.hideElement('disconnect');
 
-	this.optMenu.addButton(function(){
-		var mover = game.add.tween(this.getElementByName('CHS'));
-		mover.to({			
-			x: 0,
-			y: 0,
-			alpha:0
-		}, 1000);
-		mover.start();
+	this.menus.options.addButton(function(){
+		ui.modalManager.openModal('test');
 	},'lel','NOTHING');	
 
-	this.optMenu.addButton( function(){
+	this.menus.options.addButton( function(){
 		var mover = game.add.tween(this.getElementByName('CHS'));
 		mover.to({			
 			x: 0,
-			y: ui.optMenu.background.height,
+			y: ui.menus.options.background.height,
 			alpha:1
 		}, 1000);
 		mover.start();
 	}, 'next','Next');
 
 	// Смена фона
-	this.optMenu.addButton(function(button, pointer){
+	this.menus.options.addButton(function(button, pointer){
 		ui.background.nextTexture();
 	},'background','Background');
 
 	// Смена скина
-	this.optMenu.addButton(function(button, pointer){
+	this.menus.options.addButton(function(button, pointer){
 		if(pointer.isMouse && pointer.button !== 0){
 			skinManager.setSkin('uno');
 		}
@@ -225,13 +253,26 @@ UI.prototype._createButtons = function(){
 
 	},'CHS','Change skin');
 
-	this.optMenu.addButton(game.toggleDebugMode, 'debug','Debug', game);
+	this.menus.options.addButton(game.toggleDebugMode, 'debug','Debug', game);
 
 	// Закрыть меню
-	this.optMenu.addButton( function(){
-		this.hide();
+	this.menus.options.addButton( function(){
+		ui.modalManager.closeModal()
 	}, 'Back','Back');
 
+
+	////////////////////
+	/// ТЕСТОВОЕ МЕНЮ //
+	////////////////////
+
+	this.menus.test.addButton(function(){
+		ui.modalManager.openModal('options');
+	}, 'options','Options');
+
+
+	////////////////////
+	// УГЛОВЫЕ КНОПКИ //
+	////////////////////	
 	// Действие
 	new Button({
 		position: function(width, height){
@@ -282,7 +323,7 @@ UI.prototype._createButtons = function(){
 			};
 		},
 		action: function(){
-			ui.optMenu.fadeToggle();
+			ui.modalManager.toggleModals('options');
 		},
 		icon: 'menu',
 		color: 'orange',
@@ -314,3 +355,4 @@ UI.prototype.newPixel = function(){
 //@include:Menu
 //@include:Logo
 //@include:Cursor
+//@include:ModalManager

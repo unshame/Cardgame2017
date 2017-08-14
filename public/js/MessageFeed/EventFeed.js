@@ -32,8 +32,7 @@ var EventFeed = function(game, name){
 	this._scales = [1, 0.75, 0.5];
 };
 
-EventFeed.prototype = Object.create(MessageFeed.prototype);
-EventFeed.prototype.constructor = EventFeed;
+extend(EventFeed, MessageFeed);
 
 EventFeed.prototype._styleText = function(text){
 	text.setShadow(2, 2, 'rgba(0,0,0,0.8)', 2);

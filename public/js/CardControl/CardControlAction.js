@@ -24,15 +24,15 @@ CardControl.prototype.cardPickup = function(card, pointer){
 
 	if(this._inertiaHistory.length)
 		this._inertiaHistory = [];
-	this.cardLastX = this.card.base.x + this.card.sprite.x;
-	this.cardLastY = this.card.base.y + this.card.sprite.y;
+	this.cardLastX = this.card.x + this.card.sprite.x;
+	this.cardLastY = this.card.y + this.card.sprite.y;
 
 	this._setCardClickTimer();
 	this._trailShouldReappend = true;
 
 	this.card.setAngle(0);
 	this._cardSetPathToCursor();
-	cardManager.bringToTop(this.card, false);
+	cardManager.bringCardToTop(this.card, false);
 
 	actionHandler.highlightPossibleActions();
 };
@@ -48,8 +48,8 @@ CardControl.prototype._cardSetPathToCursor = function(){
 		this.card.mover = null;
 	}
 	this.cardShiftPosition = {
-		x: this.pointer.x - this.card.base.x - this.card.sprite.x,
-		y: this.pointer.y - this.card.base.y - this.card.sprite.y
+		x: this.pointer.x - this.card.x - this.card.sprite.x,
+		y: this.pointer.y - this.card.y - this.card.sprite.y
 	};
 	this.cardShiftEndTime = game.time.time + (this.cardShiftDuration/game.speed);
 };

@@ -16,8 +16,8 @@ Card.prototype.setPosition = function(x, y, resetMover){
 		this.mover = null;
 	}
 
-	this.sprite.x = x - this.base.x;
-	this.sprite.y = y - this.base.y;
+	this.sprite.x = x - this.x;
+	this.sprite.y = y - this.y;
 	this.update();
 };
 
@@ -58,8 +58,8 @@ Card.prototype.setBase = function(x, y, resetMover){
 		this.mover = null;
 	}
 
-	this.base.x = x;
-	this.base.y = y;
+	this.x = x;
+	this.y = y;
 	this.update();
 };
 
@@ -74,15 +74,15 @@ Card.prototype.setBasePreserving = function(x, y, resetMover){
 	if(typeof resetMover == 'undefined')
 		resetMover = true;
 
-	var shiftX = x - this.base.x,
-		shiftY = y - this.base.y,
+	var shiftX = x - this.x,
+		shiftY = y - this.y,
 		newX = this.sprite.x - shiftX,
 		newY = this.sprite.y - shiftY;
 	this.setBase(x, y, resetMover);
 	this.setRelativePosition(newX, newY, false);
 
 	// Смещаем хвост карты
-	if(cardControl.trail.parent == this.base){
+	if(cardControl.trail.parent == this){
 		cardControl.trailShift(-shiftX, -shiftY);
 	}
 };

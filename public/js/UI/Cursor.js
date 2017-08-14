@@ -52,8 +52,7 @@ var Cursor = function(textureName){
 
 };
 
-Cursor.prototype = Object.create(Phaser.Sprite.prototype);
-Cursor.prototype.constructor = Cursor;
+extend(Cursor, Phaser.Sprite);
 
 /**
 * Обновляет позицию и внешний вид курсора.
@@ -94,7 +93,6 @@ Cursor.prototype.update = function(cursorinGame){
 	// Если курсор над картой или элементом интерфейса,
 	// меняем его на указатель
 	if(
-		cardManager.cursorIsOverACard() ||
 		ui.layers.cursorIsOverAnElement()
 	){
 		this.x -= this.width*0.41;

@@ -26,7 +26,7 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	this._bringToTopOn = bringToTopOn;
 
 	if(this._bringToTopOn == BRING_TO_TOP_ON.INIT || this.game.paused && this._bringToTopOn != BRING_TO_TOP_ON.NEVER){
-		cardManager.bringToTop(this);
+		cardManager.bringCardToTop(this);
 	}
 
 	var destination = this._calculateMoveCoordinates(x, y, relativeToBase, shouldRebase);
@@ -65,8 +65,8 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 	var moveX, moveY;
 
 	// Новая позиция базы
-	var newBaseX = relativeToBase ? x + this.base.x : x;
-	var newBaseY = relativeToBase ? y + this.base.y : y;
+	var newBaseX = relativeToBase ? x + this.x : x;
+	var newBaseY = relativeToBase ? y + this.y : y;
 
 	// Предупреждаем о том, что карта вышла за пределы экрана
 	if(this.inDebugMode &&
@@ -81,7 +81,7 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 		console.warn('Moving card', this.id, 'out of screen (' + newBaseX + ', ' + newBaseY + ')\n', this);
 	}
 	// Нет смысла менять базу, если координаты не изменились
-	if(shouldRebase && newBaseX == this.base.x && newBaseY == this.base.y)
+	if(shouldRebase && newBaseX == this.x && newBaseY == this.y)
 		shouldRebase = false;
 
 	if(shouldRebase){
@@ -90,8 +90,8 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 	}
 	else{
 		// Если база остается прежней, то двигаем карту к нужной позиции
-		moveX = relativeToBase ? x : x - this.base.x;
-		moveY = relativeToBase ? y : y - this.base.y;
+		moveX = relativeToBase ? x : x - this.x;
+		moveY = relativeToBase ? y : y - this.y;
 	}
 
 	return {
@@ -166,7 +166,7 @@ Card.prototype._onMoveStart = function(){
 	this.applyValue();
 	if(this._bringToTopOn == BRING_TO_TOP_ON.START || this._bringToTopOn == BRING_TO_TOP_ON.START_ALL){
 		if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.START){
-			cardManager.bringToTop(this);
+			cardManager.bringCardToTop(this);
 		}
 		else{
 			this.field.zAlignCards(true, this);
@@ -184,7 +184,7 @@ Card.prototype._onMoveComplete = function(){
 	this.applyValue();
 	if(this._bringToTopOn == BRING_TO_TOP_ON.END || this._bringToTopOn == BRING_TO_TOP_ON.END_ALL){
 		if(!this.field || this._bringToTopOn == BRING_TO_TOP_ON.END){
-			cardManager.bringToTop(this);
+			cardManager.bringCardToTop(this);
 		}
 		else{
 			this.field.zAlignCards(true, this);
@@ -214,7 +214,7 @@ Card.prototype._tryResetMover = function(x, y, time, delay, shouldRebase){
 	if(!shouldRebase && endPosition && endPosition.x == x && endPosition.y == y && moverData.delay == delay){
 		this.applyValue();
 		if(this._bringToTopOn == BRING_TO_TOP_ON.START){
-			cardManager.bringToTop(this);
+			cardManager.bringCardToTop(this);
 		}
 		return -1;
 	}

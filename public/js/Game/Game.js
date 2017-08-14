@@ -69,8 +69,7 @@ var Game = function(parent, speed, inDebugMode){
 
 };
 
-Game.prototype = Object.create(Phaser.Game.prototype);
-Game.prototype.constructor = Game;
+extend(Game, Phaser.Game);
 
 /**
 * Инициализирет игру.
@@ -90,6 +89,13 @@ Game.prototype.initialize = function(){
 
 	// Антиалиасинг
 	// Phaser.Canvas.setImageRenderingCrisp(game.canvas);
+	
+	/**
+	* Менеджер карт
+	* @type {CardManager}
+	* @global
+	*/
+	cardManager = new CardManager(inDebugMode);
 
 	/**
 	* Эмиттер карт
@@ -99,7 +105,6 @@ Game.prototype.initialize = function(){
 	cardEmitter = new CardEmitter();
 
 	// Инициализация модулей
-	cardManager.initialize();
 	cardControl.initialize();
 	fieldManager.initialize();
 	ui.initialize();

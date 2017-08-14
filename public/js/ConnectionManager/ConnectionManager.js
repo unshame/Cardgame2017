@@ -28,8 +28,7 @@ var ConnectionManager = function(serverMethods, clientMethods, connectState, inD
 	this.hasConnected = false;
 };
 
-ConnectionManager.prototype = Object.create(Eureca.Client.prototype);
-ConnectionManager.prototype.constructor = ConnectionManager;
+extend(ConnectionManager, Eureca.Client);
 
 ConnectionManager.prototype.initialize = function(){
 	this.on('ready', this.bindProxy.bind(this));

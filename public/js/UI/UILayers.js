@@ -15,6 +15,8 @@ var UILayers = function(){
 	*/
 	this.byName = {};
 
+	this.positions = {};
+
 	/**
 	* Кол-во слоев.
 	* @type {Number}
@@ -63,6 +65,7 @@ UILayers.prototype._getPositions = function(){
 		}
 	}
 	positions.length = len;
+	this.positions = positions;
 	return positions;
 };
 
@@ -236,26 +239,40 @@ UILayers.prototype.loadLabels = function(){
 };
 
 /**
+* Находит первый элемент в слое, над которым находится курсор.
+* @param  {DisplayObject} layer слой
+* @return {(DisplayObject|null)} Находится ли курсор над элементом.
+* Если да, то возвращает первый попавшийся элемент, над которым находится курсор.
+*/
+UILayers.prototype.cursorIsOverAnElementInLayer = function(layer){
+	for(var i = 0, len = layer.children.length; i < len; i++){
+		var el = layer.children[i];
+		if(el.cursorIsOver && el.cursorIsOver())
+			return el;				
+	}
+	return null;
+}
+
+/**
 * Находит первый элемент в слоях, относящихся к `Phaser.Group` с `checkCursorOverlap == true`, над которым находится курсор.
-* @return {(DisplayObject|false)} Находится ли курсор над элементом.
+* Перестает проверять после первого слоя с `modal` и `visible` равными `true` (проверка идет с верхнего слоя).
+* @return {(DisplayObject|null)} Находится ли курсор над элементом.
 * Если да, то возвращает первый попавшийся элемент, над которым находится курсор.
 */
 UILayers.prototype.cursorIsOverAnElement = function(){
-	for(var pname in this.byName){
-		if(!this.byName.hasOwnProperty(pname))
+	for(var i = this.positions.length - 1; i >= 0; i--){
+		var layer = this.positions[i];
+		if(!layer || !layer.visible || !(layer instanceof Phaser.Group))
 			continue;
-
-		var layer = this.byName[pname];
-		if(!(layer instanceof Phaser.Group) || !layer.checkCursorOverlap)
-			continue;
-
-		for(var i = 0, len = layer.children.length; i < len; i++){
-			var el = layer.children[i];
-			if(el.cursorIsOver && el.cursorIsOver())
-				return el;				
+		var el = this.cursorIsOverAnElementInLayer(layer);
+		if(el){
+			return el;
+		}
+		else if(layer.modal && layer.visible){
+			return null;
 		}
 	}
-	return false;
+	return null;
 };
 
 /**

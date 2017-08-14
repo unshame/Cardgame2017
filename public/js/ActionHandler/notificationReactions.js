@@ -89,7 +89,7 @@ var notificationReactions = {
 			ui.announcer.newMessage('YOU WON!');
 			for(var ci = 0; ci < dummy.cards.length; ci++){
 				var card = dummy.cards[ci],
-					x = card.sprite.x + card.base.x + (10*(ci - dummy.cards.length/2)),
+					x = card.sprite.x + card.x + (10*(ci - dummy.cards.length/2)),
 					time = Math.random()*cardManager.defaultMoveTime + 500;
 				card.moveTo(x, -200, time, 0, false, true);
 				card.rotateTo(Math.random()*360 - 180, time);

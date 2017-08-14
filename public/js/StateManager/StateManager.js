@@ -26,8 +26,7 @@ var StateManager = function(game){
 	this.currentSync = null;
 };
 
-StateManager.prototype = Object.create(Phaser.StateManager.prototype);
-StateManager.prototype.constructor = StateManager;
+extend(StateManager, Phaser.StateManager);
 
 /**
 * Текущее состояние (синхронное или асинхронное).  

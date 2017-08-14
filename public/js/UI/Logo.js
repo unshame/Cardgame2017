@@ -17,8 +17,7 @@ var Logo = function(position, scale, texture, name){
 	this.updatePosition();	
 }
 
-Logo.prototype = Object.create(Phaser.Image.prototype);
-Logo.prototype.constructor = Logo;
+extend(Logo, Phaser.Image);
 
 /**
  * Обновляет позицию и масштаб лого.

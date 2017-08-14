@@ -69,8 +69,7 @@ var Button = function(options){
 	}
 };
 
-Button.prototype = Object.create(Phaser.Button.prototype);
-Button.prototype.constructor = Button;
+extend(Button, Phaser.Button);
 
 Button.prototype.getDefaultOptions = function(){
 	return {

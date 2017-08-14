@@ -108,8 +108,8 @@ Card.prototype._revolve = function(){
 
 	var dt = this.game.time.elapsed,
 		angle = this._revolveInfo.speed * dt,
-		x = this._revolveInfo.x - this.base.x,
-		y = this._revolveInfo.y - this.base.y,
+		x = this._revolveInfo.x - this.x,
+		y = this._revolveInfo.y - this.y,
 		cx = this.sprite.x,
 		cy = this.sprite.y,
 		distance = Math.sqrt(Math.pow(cx - x, 2) + Math.pow(cy - y, 2)),

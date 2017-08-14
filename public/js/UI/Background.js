@@ -23,8 +23,7 @@ var Background = function(){
 	this.add(this.surface);
 };
 
-Background.prototype = Object.create(Phaser.Group.prototype);
-Background.prototype.constructor = Background;
+extend(Background, Phaser.Group);
 
 Background.prototype.updatePosition = function(){
 	this.surface.width = game.screenWidth;

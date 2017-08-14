@@ -53,8 +53,7 @@ var CardEmitter = function(){
 	this.makeMaxParicles();
 };
 
-CardEmitter.prototype = Object.create(Phaser.Particles.Arcade.Emitter.prototype);
-CardEmitter.prototype.constructor = CardEmitter;
+extend(CardEmitter, Phaser.Particles.Arcade.Emitter);
 
 /**
 * Приводит кол-во партиклей эмиттера к заданному значению, по необходимости удаляя и добавляя партикли.

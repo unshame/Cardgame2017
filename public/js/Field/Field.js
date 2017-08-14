@@ -432,7 +432,7 @@ Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){
 		this.base.y - addY,
 		this.area.width + addX*2 + spacing*2,
 		this.area.height + addY*2,
-		card.base.x + card.sprite.x,
-		card.base.y + card.sprite.y
+		card.x + card.sprite.x,
+		card.y + card.sprite.y
 	);
 };

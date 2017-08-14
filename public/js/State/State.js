@@ -37,8 +37,7 @@ var State = function(key, events){
 	}
 };
 
-State.prototype = Object.create(Phaser.State.prototype);
-State.prototype.constructor = State;
+extend(State, Phaser.State);
 
 // Методы перенаправляют вызовы из асинхронного состояния в синхронное
 State.prototype.render = function(){

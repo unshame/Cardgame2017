@@ -33,8 +33,7 @@ var MessageFeed = function(game, name){
 	this.name = name || 'feed';
 };
 
-MessageFeed.prototype = Object.create(Phaser.Group.prototype);
-MessageFeed.prototype.constructor = MessageFeed;
+extend(MessageFeed, Phaser.Group);
 
 /**
 * Выводит новое сообщение.

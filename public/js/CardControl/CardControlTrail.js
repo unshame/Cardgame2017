@@ -95,7 +95,7 @@ CardControl.prototype._updateTrail = function(){
  * @private
  */
 CardControl.prototype._trailReappend = function(){
-	this.card.base.addAt(this.trail, 0);
+	this.card.addAt(this.trail, 0);
 	this.trail._frames = this.card.suit;
 	this.trail.minParticleSpeed.setTo(-skinManager.skin.width, -skinManager.skin.height);
 	this.trail.maxParticleSpeed.setTo(skinManager.skin.width, skinManager.skin.height);

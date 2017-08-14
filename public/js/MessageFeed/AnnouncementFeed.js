@@ -23,8 +23,7 @@ var AnnouncementFeed = function(game, name){
 	this.name = name || 'announcer';
 };
 
-AnnouncementFeed.prototype = Object.create(MessageFeed.prototype);
-AnnouncementFeed.prototype.constructor = AnnouncementFeed;
+extend(AnnouncementFeed, MessageFeed);
 
 AnnouncementFeed.prototype._styleText = function(text){
 	text.setShadow(2, 2, 'rgba(0,0,0,0.8)', 2);

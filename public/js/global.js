@@ -3,6 +3,37 @@
 // Глобальные методы
 
 /**
+* Делает `constructor` подклассом `parent`.
+* @param  {function} constructor
+* @param  {function} parent 
+* @global
+*/
+function extend(constructor, parent){
+	constructor.prototype = Object.create(parent.prototype);
+	constructor.prototype.constructor = constructor;
+}
+
+/**
+* Добавляет методы из прототипов `mixins` в прототип `constructor`.
+* @param  {function} constructor
+* @param  {function[]} mixins
+* @global
+*/
+function mixin(constructor, mixins){
+	for(var i = 0; i < mixins.length; i++){
+		var mix = mixins[i].prototype;
+		for(var key in mix){
+			if(!mix.hasOwnProperty(key) || key == 'constructor')
+				continue;
+			if(constructor.prototype[key]){
+				console.warn('Overwriting method', key, 'in', constructor, 'prototype');
+			}
+			constructor.prototype[key] = mix[key];
+		}
+	}
+}
+
+/**
 * Fisher–Yates Shuffle (сортировка массивов).
 * @param  {array} a массив для сортировки
 * @global

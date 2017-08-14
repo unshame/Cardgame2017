@@ -1,10 +1,11 @@
 /**
-* Конструктор карт  
-* Три основных компонента: {@link Card#base}, {@link Card#sprite} и {@link Card#glow}.  
+* Конструктор карт.  
+* Два основных компонента: {@link Card#sprite} и {@link Card#glow}.  
 * Имеет методы для перемещения (с анимацией и без), установки значений,
 * установки флагов, применения скинов. Передает информацию о курсоре
 * присвоенному полю ({@link Field}) и контроллеру карт ({@link CardControl}).
 * @class
+* @extends {Phaser.Group}
 * @param {object} options 		 - Опции, используемые при создании карты
 * @param {Game} options.game игра, к которой пренадлежит карта
 * @param {string} options.id 	 - id карты
@@ -24,7 +25,7 @@ var Card = function (options) {
 	// Options
 	this.options = mergeOptions(this.getDefaultOptions(), options);
 
-	this.game = this.options.game;
+	Phaser.Group.call(this, this.options.game);
 
 	/**
 	* Выводить ли дебаг информацию
@@ -118,15 +119,10 @@ var Card = function (options) {
 	*/
 	this._glowDecreaser = null;
 
-	/**
-	* Группа, содержащая спрайт и свечение карты (база карты)
-	* @type {Phaser.Group}
-	*/
-	this.base = game.add.group();
-	this.base.x = this.options.x;
-	this.base.y = this.options.y;
-	this.base.add(this.glow);
-	this.base.add(this.sprite);
+	this.x = this.options.x;
+	this.y = this.options.y;
+	this.add(this.glow);
+	this.add(this.sprite);
 
 	/**
 	* Твин передвижения карты.
@@ -216,6 +212,8 @@ var Card = function (options) {
 	Object.seal(this);
 };
 
+extend(Card, Phaser.Group);
+
 /** 
 * Возвращает опции по умолчанию (см. {@link Card|Card options}).
 * @return {object} опции по умолчанию
@@ -294,17 +292,19 @@ Card.prototype._cursorOut = function(sprite){
 */
 Card.prototype.cursorIsOver = function(){
 	return Phaser.Rectangle.containsRaw(
-		this.base.x + this.sprite.x - this.sprite.width/2,
-		this.base.y + this.sprite.y - this.sprite.height/2,
+		this.x + this.sprite.x - this.sprite.width/2,
+		this.y + this.sprite.y - this.sprite.height/2,
 		this.sprite.width,
 		this.sprite.height,
 		this.game.input.x,
 		this.game.input.y
-	);
+	) && this.draggable;
 };
 
 
 // DESTROY, UPDATE
+
+Card.prototype._destroyFinally = Phaser.Group.prototype.destroy;
 
 /**
 * Полностью удаляет карту из игры с анимацией.
@@ -351,8 +351,8 @@ Card.prototype._destroyNow = function() {
 		cardControl.reset('card destroyed');
 	this.sprite.destroy();
 	this.glow.destroy();
-	this.base.removeAll();
-	this.base.destroy();
+	this.removeAll();
+	this._destroyFinally();
 };
 
 /**
@@ -370,8 +370,8 @@ Card.prototype.updateDebug = function(){
 	if(!this.inDebugMode)
 		return;
 
-	var x = this.base.x + this.sprite.x - this.skin.width/2;
-	var y = this.base.y + this.sprite.y + this.skin.height/2 + 12;
+	var x = this.x + this.sprite.x - this.skin.width/2;
+	var y = this.y + this.sprite.y + this.skin.height/2 + 12;
 	if(this.suit || this.suit === 0){
 		this.game.debug.text(
 			getSuitStrings('EN')[this.suit] + ' ' + 
@@ -381,8 +381,8 @@ Card.prototype.updateDebug = function(){
 		y += 14;
 	}
 	this.game.debug.text(
-		Math.round(this.base.x + this.sprite.x) + ' ' + 
-		Math.round(this.base.y + this.sprite.y),
+		Math.round(this.x + this.sprite.x) + ' ' + 
+		Math.round(this.y + this.sprite.y),
 		x, y 
 	);
 };

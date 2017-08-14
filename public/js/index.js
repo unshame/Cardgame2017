@@ -63,12 +63,7 @@ var ui = new UI();
 */
 var skinManager = new SkinManager('modern');
 
-/**
-* Менеджер карт
-* @type {CardManager}
-* @global
-*/
-var cardManager = new CardManager(inDebugMode);
+var cardManager
 
 /**
 * Контроллер карт
