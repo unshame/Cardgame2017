@@ -48,6 +48,8 @@ ModalManager.prototype.openModal = function(menuName){
 
 	menu.fadeIn();
 	this.updateVisibility();
+
+	ui.layers.updateModalIndex(menu);
 };
 
 ModalManager.prototype.closeModal = function(){
@@ -72,6 +74,8 @@ ModalManager.prototype.closeModal = function(){
 	else{
 		this.updateVisibility();
 	}
+	
+	ui.layers.updateModalIndex(subtop);
 };
 
 ModalManager.prototype.updateVisibility = function(){

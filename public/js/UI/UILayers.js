@@ -16,16 +16,16 @@ var UILayers = function(){
 	this.byName = {};
 
 	/**
-	 * Слои, отсортированные по вертикали.
-	 * @type {DisplayObject[]}
-	 */
+	* Слои, отсортированные по вертикали.
+	* @type {DisplayObject[]}
+	*/
 	this.positions = [];
 
 	/**
-	* Кол-во слоев.
+	* Индекс модального слоя (слоя, блокирующего клики по элементам за ним).
 	* @type {Number}
 	*/
-	this.numOfLayers = 0;
+	this.modalLayerIndex = -1;
 };
 
 /**
@@ -64,7 +64,6 @@ UILayers.prototype.addLayer = function(i, name){
 	layer.name = name;
 	this.byName[name] = layer;
 	this.positions.push(layer);
-	this.numOfLayers++;
 	return layer;
 };
 
@@ -83,7 +82,6 @@ UILayers.prototype.addExistingLayer = function(layer, i){
 	layer.index = i;
 	this.byName[layer.name] = layer;
 	this.positions.push(layer);
-	this.numOfLayers++;
 	return layer;
 };
 
@@ -225,10 +223,27 @@ UILayers.prototype.getOrder = function(){
 };
 
 /**
- * Проверяет не заблокирован ли элемент над которым находится курсор модальным слоем
- * и соответственно обновляет курсор.
- * @param  {DisplayObject} el объект над которым находится курсор
- */
+* Вызывается из {@link ModalManager} и обновляет индекс модального слоя.
+* @param  {DisplayObject} modalLayer слой, который стал модальным
+*/
+UILayers.prototype.updateModalIndex = function(modalLayer){
+	if(!modalLayer){
+		this.modalLayerIndex = -1;
+		return;
+	}
+	var i = this.positions.indexOf(modalLayer);
+	if(!~i){
+		this.modalLayerIndex = -1;
+		return;
+	}
+	this.modalLayerIndex = i;
+}
+
+/**
+* Вызывается элементами игры и проверяет не заблокирован ли элемент
+* над которым находится курсор модальным слоем и соответственно обновляет курсор.
+* @param  {DisplayObject} el объект над которым находится курсор
+*/
 UILayers.prototype.updateCursorOverlap = function(el){
 	var parent = el.parent;
 	if(!parent)
@@ -236,15 +251,8 @@ UILayers.prototype.updateCursorOverlap = function(el){
 	var i = this.positions.indexOf(parent);
 	if(!~i)
 		return;
-	var k = this.positions.length - 1;
-	for(; k >= 0; k--){
-		var layer = this.positions[k];
-		if(layer.modal && layer.visible){
-			break;
-		}
-	}
-	if(i >= k){
+	var m = this.modalLayerIndex;
+	if(!~m || i >= m){
 		ui.cursor.updateOverlap(el);
 	}
-
 }
