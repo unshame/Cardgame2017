@@ -99,7 +99,7 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDe
 			var fieldChanged = card.presetField(fieldId || field.id);
 			if(fieldChanged){
 				if(card.field){
-					card.field.removeCards([card]);
+					card.field.cardsToRemove.push(card);
 				}
 				cardsToPlace.push(card);
 			}
@@ -110,6 +110,7 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDe
 			return;
 		}
 	}
+	this.removeMarkedCards();
 	return field.addCards(cardsToPlace, bringToTopOn, noDelay);
 };
 

@@ -36,7 +36,6 @@ var Card = function (options) {
 	/**
 	* Можно ли перетаскивать карту
 	* @type {boolean}
-	* @default false
 	* @see  Card#setDraggability
 	*/
 	this.draggable = false;
@@ -44,7 +43,6 @@ var Card = function (options) {
 	/**
 	* Играбильна ли карта
 	* @type {boolean}
-	* @default false
 	* @see  Card#setPlayability
 	*/
 	this.playable = false;
@@ -64,7 +62,6 @@ var Card = function (options) {
 
 	/**
 	* Говорит {@link Card#field}, что карту нужно поднять
-	* @default false
 	* @type {boolean}
 	*/
 	this.raised = false;
@@ -77,7 +74,6 @@ var Card = function (options) {
 
 	/**
 	* Поле карты
-	* @default null
 	* @type {Field}
 	*/
 	this.field = null;
@@ -107,7 +103,6 @@ var Card = function (options) {
 	/**
 	* Твин увеличения яркости свечения карты
 	* @type {Phaser.Tween}
-	* @default null
 	* @private
 	*/
 	this._glowIncreaser = null;
@@ -115,7 +110,6 @@ var Card = function (options) {
 	/**
 	* Твин уменьшения яркости свечения карты
 	* @type {Phaser.Tween}
-	* @default null
 	* @private
 	*/
 	this._glowDecreaser = null;
@@ -129,20 +123,23 @@ var Card = function (options) {
 	* Твин передвижения карты.
 	* По его существованию определяется, передвигается ли карта.
 	* @type {Phaser.Tween}
-	* @default null
 	*/
 	this.mover = null;
 	/**
+	* Информация о задержанном движении.
+	* @private
+	* @type {object}
+	*/
+	this._delayedMoverInfo = null;
+	/**
 	* Твин вращения карты
 	* @type {Phaser.Tween}
-	* @default null
 	* @private
 	*/
 	this._rotator = null;
 	/**
 	* Твин переворота карты
 	* @type {Phaser.Tween}
-	* @default null
 	* @private
 	*/
 	this._flipper = null;
@@ -150,7 +147,6 @@ var Card = function (options) {
 	/**
 	* Информация для вращения карты вокруг точки.
 	* @type {object}
-	* @default null
 	* @private
 	*/
 	this._revolveInfo = null;
@@ -159,7 +155,6 @@ var Card = function (options) {
 	* Когда карта будет перемещена вверх группы  
 	* @private
 	* @type {BRING_TO_TOP_ON}
-	* @default BRING_TO_TOP_ON.NEVER
 	* @see  {@link Card#moveTo}
 	*/
 	this._bringToTopOn = BRING_TO_TOP_ON.NEVER;
@@ -167,7 +162,6 @@ var Card = function (options) {
 	/**
 	* Ожидает ли карта перемещения.
 	* @type {Boolean}
-	* @default false
 	*/
 	this.delayed = false;
 
@@ -209,6 +203,8 @@ var Card = function (options) {
 	*/
 	this.skin = this.options.skin || skinManager.skin;
 	this.applySkin();
+
+	
 
 	Object.seal(this);
 };
@@ -367,6 +363,7 @@ Card.prototype.update = function() {
 	if(this.cursorIsOver()){
 		ui.layers.updateCursorOverlap(this);
 	}
+	this._tryStartDelayedMover();
 };
 
 /**

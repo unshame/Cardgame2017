@@ -29,6 +29,23 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 		cardManager.bringCardToTop(this);
 	}
 
+	// Если карта в движении и указана задержка, откладываем начало движения
+	if(!this.game.paused && delay && this.mover){
+		var startTime = Date.now() + delay;
+
+		// Обнуляем задержку
+		delay = 0;
+
+		// Запоминаем настройки движения
+		this._delayedMoverInfo = [startTime, arguments];
+		return;
+	}
+
+	// Удаляем сохраненные настройки движения, если мы не будем их использовать
+	if(this._delayedMoverInfo){
+		this._delayedMoverInfo = null;
+	}
+
 	var destination = this._calculateMoveCoordinates(x, y, relativeToBase, shouldRebase);
 
 	// Меняем позицию базы карты перед началом анимации
@@ -156,6 +173,20 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	this.mover.onStart.addOnce(this._onMoveStart, this);
 	this.mover.onComplete.addOnce(this._onMoveComplete, this);
 };
+
+/**
+* Запускает мувер, если указано {@link Card#_delayedMoverInfo}. 
+* @private
+*/
+Card.prototype._tryStartDelayedMover = function(){
+	if(!this._delayedMoverInfo || this._delayedMoverInfo[0] > Date.now())
+		return;
+
+	this._delayedMoverInfo[1][2] -= Date.now() - this._delayedMoverInfo[0];
+	var info = this._delayedMoverInfo[1];
+	this._delayedMoverInfo = null;
+	this.moveTo.apply(this, info);
+}
 
 /** 
 * Выполняется по началу движения карты 

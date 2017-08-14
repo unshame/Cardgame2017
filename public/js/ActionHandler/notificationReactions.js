@@ -70,8 +70,7 @@ var notificationReactions = {
 		}
 
 		var cards = discard.cards.slice();
-		delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);
-		delay += cardManager.defaultMoveTime;		
+		delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);	
 
 		game.seq.start(function(seq){
 			discard.removeAllCards();
@@ -84,7 +83,7 @@ var notificationReactions = {
 					cardManager.enablePhysics(true);
 				}, 0, delay - cardManager.defaultMoveTime);
 			}
-		}, delay/game.speed, cardManager.defaultMoveTime)
+		}, delay/game.speed)
 		.then(function(){
 			ui.announcer.newMessage('YOU WON!');
 			for(var ci = 0; ci < dummy.cards.length; ci++){
@@ -149,7 +148,7 @@ var notificationReactions = {
 			fieldManager.moveCards(field, [cardInfo], BRING_TO_TOP_ON.END_ALL);
 		}
 		if(actions){
-			this.handlePossibleActions(actions, note.time, note.timeSent);
+			actionHandler.handlePossibleActions(actions, note.time, note.timeSent);
 		}
 	},
 
