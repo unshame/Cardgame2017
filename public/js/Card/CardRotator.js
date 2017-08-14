@@ -106,7 +106,7 @@ Card.prototype._revolve = function(){
 	if(!this._revolveInfo || this.mover)
 		return;
 
-	var dt = this.game.time.elapsed,
+	var dt = this.game.time.physicsElapsedMS,
 		angle = this._revolveInfo.speed * dt,
 		x = this._revolveInfo.x - this.x,
 		y = this._revolveInfo.y - this.y,

@@ -184,8 +184,7 @@ CardControl.prototype._cardOnValidField = function(){
 CardControl.prototype.update = function(){
 	var shouldUpdateTrail = this._updateCard();
 	if(shouldUpdateTrail && !this._trailShouldReappend){
-		var curTime = game.time.time;
-		this._trailSpawnParticle(curTime);
+		this._trailSpawnParticle();
 	}
 	else if(!shouldUpdateTrail){
 		this._trailShouldReappend = false;

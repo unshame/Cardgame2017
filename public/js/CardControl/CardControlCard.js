@@ -27,7 +27,7 @@ CardControl.prototype._updateCard = function(){
 		return false;
 	}
 
-	var curTime = game.time.time;
+	var curTime = Date.now();
 
 	this._updateCardPosition(curTime);
 	this._updateCardAngle(curTime);

@@ -20,8 +20,6 @@ var UI = function(){
 	this.eventFeed = null;
 	this.announcer = null;
 
-	this.modals = [];
-
 	/**
 	 * Заранее заданные цвета для использования в игровых элементах.
 	 * @type {Object}

@@ -51,7 +51,7 @@ CardControl.prototype._cardSetPathToCursor = function(){
 		x: this.pointer.x - this.card.x - this.card.sprite.x,
 		y: this.pointer.y - this.card.y - this.card.sprite.y
 	};
-	this.cardShiftEndTime = game.time.time + (this.cardShiftDuration/game.speed);
+	this.cardShiftEndTime = Date.now() + (this.cardShiftDuration/game.speed);
 };
 
 /** Кладет карту обратно на поле, на новое поле или бросает ее. */
@@ -177,11 +177,10 @@ CardControl.prototype.cardReturn = function(){
 CardControl.prototype.cardThrow = function(){
 	var	dx = 0,
 		dy = 0, 
-		counted = 0,
-		curTime = game.time.time;
+		counted = 0;
 
 	// Находим среднюю скорость перемещения карты
-	this._saveCardInertia(curTime, 100);
+	this._saveCardInertia(Date.now(), 100);
 	for(var i = 0; i < this._inertiaHistory.length; i++){
 		counted++;
 		dx += this._inertiaHistory[i][1];

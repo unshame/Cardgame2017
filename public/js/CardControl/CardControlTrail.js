@@ -41,12 +41,11 @@ CardControl.prototype.trailApplySkin = function(){
 
 /**
  * Создает хвост карты при движении.
- * @param  {number} curTime текущее время
  * @private
  */
-CardControl.prototype._trailSpawnParticle = function(curTime){
+CardControl.prototype._trailSpawnParticle = function(){
 
-	var	delta = curTime - this.lastParticleTime;
+	var	delta = Date.now() - this.lastParticleTime;
 	if(this.lastParticleTime && delta < this.trail.interval)
 		return;
 
@@ -99,7 +98,7 @@ CardControl.prototype._trailReappend = function(){
 	this.trail._frames = this.card.suit;
 	this.trail.minParticleSpeed.setTo(-skinManager.skin.width, -skinManager.skin.height);
 	this.trail.maxParticleSpeed.setTo(skinManager.skin.width, skinManager.skin.height);
-	this.lastParticleTime = game.time.time;
+	this.lastParticleTime = Date.now();
 };
 
 // ТАЙМЕР РЕСЕТА ХВОСТА
