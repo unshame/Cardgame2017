@@ -1,6 +1,6 @@
 /**
- * Создает и добавляет кнопку {@link Button} к элементам меню.
- */
+* Создает и добавляет кнопку {@link Button} к элементам меню.
+*/
 Menu.prototype.addButton = function(action, name, text, context){
 	var button = new Button({
 		color: this.options.elementColor,

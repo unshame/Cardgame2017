@@ -21,9 +21,9 @@ var UI = function(){
 	this.announcer = null;
 
 	/**
-	 * Заранее заданные цвета для использования в игровых элементах.
-	 * @type {Object}
-	 */
+	* Заранее заданные цвета для использования в игровых элементах.
+	* @type {Object}
+	*/
 	this.colors = {
 		orange: 0xFF8300,
 		green: 0x68C655,
@@ -41,9 +41,9 @@ var UI = function(){
 };
 
 /**
- * Инициализирует интерфейс, создавая все элементы интерфейса
- * и добавляя их в менеджер слоев.
- */
+* Инициализирует интерфейс, создавая все элементы интерфейса
+* и добавляя их в менеджер слоев.
+*/
 UI.prototype.initialize = function(){
 
 	/**
@@ -59,17 +59,17 @@ UI.prototype.initialize = function(){
 	this.background = new Background();	
 
 	/**
-	 * Лого игры.
-	 * @type {Phaser.Image}
-	 */
+	* Лого игры.
+	* @type {Phaser.Image}
+	*/
 	this.logo = new Logo(function(){
 		return {x: game.screenWidth/2, y: game.screenHeight/2 - 200};
 	}, 0.75, 'logo');
 
 	/**
-	 * Таймер хода.
-	 * @type {Rope}
-	 */
+	* Таймер хода.
+	* @type {Rope}
+	*/
 	this.rope = new Rope();
 
 	/**
@@ -91,9 +91,9 @@ UI.prototype.initialize = function(){
 	this.eventFeed = new EventFeed(game);	
 	
 	/**
-	 * Менеджер модальных меню.
-	 * @type {ModalManager}
-	 */
+	* Менеджер модальных меню.
+	* @type {ModalManager}
+	*/
 	this.modalManager = new ModalManager();
 
 	this._createMenus();
@@ -123,9 +123,9 @@ UI.prototype.initialize = function(){
 };
 
 /** 
- * Создает меню.
- * @private
- */
+* Создает меню.
+* @private
+*/
 UI.prototype._createMenus = function(){
 	this.menus = {
 		main: new Menu({
@@ -177,20 +177,20 @@ UI.prototype._createMenus = function(){
 };
 
 /** 
- * Создает кнопки.
- * @private
- */
+* Создает кнопки.
+* @private
+*/
 UI.prototype._createButtons = function(){
 	/**
-	 * Кнопки игровых действий.
-	 * @type {Phaser.Group}
-	 */
+	* Кнопки игровых действий.
+	* @type {Phaser.Group}
+	*/
 	this.actionButtons = this.layers.addLayer(1, 'actionButtons');
 
 	/**
-	 * Угловые кнопки.
-	 * @type {Phaser.Group}
-	 */
+	* Угловые кнопки.
+	* @type {Phaser.Group}
+	*/
 	this.cornerButtons = this.layers.addLayer(-2, 'cornerButtons');
 
 

@@ -107,19 +107,19 @@ function numberToHexColor(number){
 }
 
 /**
- * Рисует прямоугольник с загругленными углами.
- * @global
- * @param  {Phaser.BitmapData} bitmap где рисовать
- * @param  {number} width       ширина
- * @param  {number} height      высота
- * @param  {number} x           отступ по краям по горизонтали
- * @param  {number} y           отступ по краям по вертикали
- * @param  {number} radius      радиус углов
- * @param  {number} lineWidth   ширина рамки
- * @param  {number} alpha       прозрачность заливки
- * @param  {(string|CanvasPattern)} fillStyle   стиль заливки
- * @param  {(string|CanvasPattern)} strokeStyle стиль рамки
- */
+* Рисует прямоугольник с загругленными углами.
+* @global
+* @param  {Phaser.BitmapData} bitmap где рисовать
+* @param  {number} width       ширина
+* @param  {number} height      высота
+* @param  {number} x           отступ по краям по горизонтали
+* @param  {number} y           отступ по краям по вертикали
+* @param  {number} radius      радиус углов
+* @param  {number} lineWidth   ширина рамки
+* @param  {number} alpha       прозрачность заливки
+* @param  {(string|CanvasPattern)} fillStyle   стиль заливки
+* @param  {(string|CanvasPattern)} strokeStyle стиль рамки
+*/
 function drawRoundedRectangle(bitmap, width, height, x, y, radius, lineWidth, alpha, fillStyle, strokeStyle){
 	var ctx = bitmap.ctx;
 	x += lineWidth/2,

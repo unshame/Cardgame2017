@@ -50,9 +50,9 @@ var Card = function (options) {
 	this.playable = false;
 
 	/**
-	 * Подсвечена ли карта.
-	 * @type {Boolean}
-	 */
+	* Подсвечена ли карта.
+	* @type {Boolean}
+	*/
 	this.highlighted = false;
 
 	/**

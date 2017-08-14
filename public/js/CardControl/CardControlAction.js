@@ -1,10 +1,10 @@
 // ДЕЙСТВИЯ НАД КАРТОЙ
 
 /**
- * Поднимает карту.
- * @param  {Card} card карта
- * @param  {Phaser.Pointer} pointer указатель, нажавший на карту
- */
+* Поднимает карту.
+* @param  {Card} card карта
+* @param  {Phaser.Pointer} pointer указатель, нажавший на карту
+*/
 CardControl.prototype.cardPickup = function(card, pointer){
 	if(!card){
 		console.warn('Card control: cardPickup called but no Card assigned.');
@@ -38,9 +38,9 @@ CardControl.prototype.cardPickup = function(card, pointer){
 };
 
 /**
- * Устанавливает путь и время смещения карты к курсору.
- * @private
- */
+* Устанавливает путь и время смещения карты к курсору.
+* @private
+*/
 CardControl.prototype._cardSetPathToCursor = function(){
 
 	if(this.card.mover){
@@ -82,9 +82,9 @@ CardControl.prototype.cardPutDown = function(){
 };
 
 /**
- * Перемещает карту в новое поле.
- * @param  {Field[]} newFields Поля, над котором находится карта.
- */
+* Перемещает карту в новое поле.
+* @param  {Field[]} newFields Поля, над котором находится карта.
+*/
 CardControl.prototype.cardMoveToField = function(newFields){
 
 	if(!this.card){
@@ -221,18 +221,18 @@ CardControl.prototype.cardThrow = function(){
 // ТАЙМЕР НАЖАТИЯ
 
 /**
- * Запускает таймер клика по карте.
- * @private
- */
+* Запускает таймер клика по карте.
+* @private
+*/
 CardControl.prototype._setCardClickTimer = function(){
 	this._resetCardClickTimer();
 	this.cardClickTimer = setTimeout(this._resetCardClickTimer.bind(this), this.cardClickMaxDelay);
 };
 
 /**
- * Обнуляет таймер клика по карте
- * @private
- */
+* Обнуляет таймер клика по карте
+* @private
+*/
 CardControl.prototype._resetCardClickTimer = function(){
 	if(this.cardClickTimer){
 		clearTimeout(this.cardClickTimer);

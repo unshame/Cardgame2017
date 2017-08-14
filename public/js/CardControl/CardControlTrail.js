@@ -1,19 +1,19 @@
 // ХВОСТ КАРТЫ
 
 /**
- * Смещает хвост относительно базы карты
- * @param  {number} x Смещение по оси x.
- * @param  {number} y Смещение по оси y.
- */
+* Смещает хвост относительно базы карты
+* @param  {number} x Смещение по оси x.
+* @param  {number} y Смещение по оси y.
+*/
 CardControl.prototype.trailShift = function(x, y){
 	this.trail.position.x += x;
 	this.trail.position.y += y;
 };
 
 /**
- * Ресетит хвост карты
- * @param  {boolean} soft делает партикли прозрачными, вместо того, чтобы убивать их
- */
+* Ресетит хвост карты
+* @param  {boolean} soft делает партикли прозрачными, вместо того, чтобы убивать их
+*/
 CardControl.prototype.trailReset = function(soft){
 	this._resetTrailResetTimer();
 	this.trail.forEachAlive(function(p){
@@ -40,9 +40,9 @@ CardControl.prototype.trailApplySkin = function(){
 };
 
 /**
- * Создает хвост карты при движении.
- * @private
- */
+* Создает хвост карты при движении.
+* @private
+*/
 CardControl.prototype._trailSpawnParticle = function(){
 
 	var	delta = Date.now() - this.lastParticleTime;
@@ -73,9 +73,9 @@ CardControl.prototype._trailSpawnParticle = function(){
 };
 
 /**
- * Обновление хвоста карты.
- * @private
- */
+* Обновление хвоста карты.
+* @private
+*/
 CardControl.prototype._updateTrail = function(){
 	if(this.trail.countLiving() && this.trail.parent != this.trailDefaultBase){
 		
@@ -90,9 +90,9 @@ CardControl.prototype._updateTrail = function(){
 };
 
 /**
- * Прикрепляет хвост к текущей карте.
- * @private
- */
+* Прикрепляет хвост к текущей карте.
+* @private
+*/
 CardControl.prototype._trailReappend = function(){
 	this.card.addAt(this.trail, 0);
 	this.trail._frames = this.card.suit;
@@ -104,18 +104,18 @@ CardControl.prototype._trailReappend = function(){
 // ТАЙМЕР РЕСЕТА ХВОСТА
 
 /**
- * Устанавливает таймер ресета хвоста.
- * @private
- */
+* Устанавливает таймер ресета хвоста.
+* @private
+*/
 CardControl.prototype._setTrailResetTimer = function(){
 	this._resetTrailResetTimer();
 	this.trailResetTimer = setTimeout(this.trailReset.bind(this), this.trail.lifespan);
 };
 
 /**
- * Ресетит таймер ресета хвоста.
- * @private
- */
+* Ресетит таймер ресета хвоста.
+* @private
+*/
 CardControl.prototype._resetTrailResetTimer = function(){
 	if(this.trailResetTimer){
 		clearTimeout(this.trailResetTimer);

@@ -86,9 +86,9 @@ UILayers.prototype.addExistingLayer = function(layer, i){
 };
 
 /**
- * Добавляет существующие элементы игры как слои из массива.
- * @param {array} layers Слои `[layer, i]`
- */
+* Добавляет существующие элементы игры как слои из массива.
+* @param {array} layers Слои `[layer, i]`
+*/
 UILayers.prototype.addExistingLayers = function(layers){
 	for(var i = 0; i < layers.length; i++){
 		var layer = layers[i];
@@ -97,11 +97,11 @@ UILayers.prototype.addExistingLayers = function(layers){
 };
 
 /**
- * Прячет элементы слоя у которых есть метод `hide`.
- * Опционально отключает элементы слоя, у которых есть метод `disable`.
- * @param  {DisplayObject} layer  слой
- * @param  {boolean} shouldDisable нужно ли отключать элементы
- */
+* Прячет элементы слоя у которых есть метод `hide`.
+* Опционально отключает элементы слоя, у которых есть метод `disable`.
+* @param  {DisplayObject} layer  слой
+* @param  {boolean} shouldDisable нужно ли отключать элементы
+*/
 UILayers.prototype.hideLayer = function(layer, shouldDisable){
 	layer.forEach(function(el){
 		if(el.hide){
@@ -114,11 +114,11 @@ UILayers.prototype.hideLayer = function(layer, shouldDisable){
 };
 
 /**
- * Показывает элементы слоя у которых есть метод `show`.
- * Опционально отключает элементы слоя, у которых есть метод `disable`.
- * @param  {DisplayObject} layer  слой
- * @param  {boolean} shouldDisable нужно ли отключать элементы
- */
+* Показывает элементы слоя у которых есть метод `show`.
+* Опционально отключает элементы слоя, у которых есть метод `disable`.
+* @param  {DisplayObject} layer  слой
+* @param  {boolean} shouldDisable нужно ли отключать элементы
+*/
 UILayers.prototype.showLayer = function(layer, shouldDisable){
 	layer.forEach(function(el){
 		if(el.show){

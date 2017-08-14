@@ -180,9 +180,9 @@ CardEmitter.prototype.stop = function(){
 };
 
 /**
- * Перезапускает эмиттер карт с текущими настройками если он запущен.
- * @param  {boolean} [noFadeOut] отключает фейд существующих партиклей
- */
+* Перезапускает эмиттер карт с текущими настройками если он запущен.
+* @param  {boolean} [noFadeOut] отключает фейд существующих партиклей
+*/
 CardEmitter.prototype.restart = function(noFadeOut){
 	if(this.on){
 		if(noFadeOut){

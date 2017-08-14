@@ -8,76 +8,76 @@
 var CardControl = function(inDebugMode){
 
 	/**
-	 * Находится ли контроллер в дебаг режиме.
-	 * @type {boolean}
-	 */
+	* Находится ли контроллер в дебаг режиме.
+	* @type {boolean}
+	*/
 	this.inDebugMode = inDebugMode || false;
 
 	/**
-	 * Контролируемая карта.
-	 * @type {Card}
-	 */
+	* Контролируемая карта.
+	* @type {Card}
+	*/
 	this.card = null;
 
 	/**
-	 * Указатель, "держущий" карту
-	 * @type {Phaser.Pointer}
-	 */
+	* Указатель, "держущий" карту
+	* @type {Phaser.Pointer}
+	*/
 	this.pointer = null;
 
 	/**
-	 * Хвост карты.
-	 * Представляет из себя эмиттер партиклей в виде иконок масти карты.
-	 * @type {Phaser.Particles.Arcade.Emitter}
-	 */
+	* Хвост карты.
+	* Представляет из себя эмиттер партиклей в виде иконок масти карты.
+	* @type {Phaser.Particles.Arcade.Emitter}
+	*/
 	this.trail = null;
 
 	/**
-	 * База хвоста карты, когда он не прикреплен к карте.
-	 * @type {Phaser.Group}
-	 */
+	* База хвоста карты, когда он не прикреплен к карте.
+	* @type {Phaser.Group}
+	*/
 	this.trailDefaultBase = null;
 	
 	/**
-	 * Нужно ли прикрепить хвост к текущей карте.
-	 * @type {Boolean}
-	 * @private
-	 */
+	* Нужно ли прикрепить хвост к текущей карте.
+	* @type {Boolean}
+	* @private
+	*/
 	this._trailShouldReappend = false;
 
 	/** 
-	 * Время сдвига центра карты к указателю.
-	 * @type {Number}
-	 */
+	* Время сдвига центра карты к указателю.
+	* @type {Number}
+	*/
 	this.cardShiftDuration = 100;
 	/**
-	 * Время возвращения карты на свою базу.
-	 * @type {Number}
-	 */
+	* Время возвращения карты на свою базу.
+	* @type {Number}
+	*/
 	this.cardReturnTime = 200;
 	/**
-	 * Время между кликами по карте, когда она будет поднята вторым кликом.
-	 * @type {Number}
-	 */
+	* Время между кликами по карте, когда она будет поднята вторым кликом.
+	* @type {Number}
+	*/
 	this.cardClickMaxDelay = 200;
 	/**
-	 * На сколько должна быть свдвинута карта, чтобы было заметно покачивание
-	 * и чтобы хвост уменьшил пространство, на котором спавнятся партикли.
-	 * @type {Number}
-	 */
+	* На сколько должна быть свдвинута карта, чтобы было заметно покачивание
+	* и чтобы хвост уменьшил пространство, на котором спавнятся партикли.
+	* @type {Number}
+	*/
 	this.cardMoveThreshold = 2;
 
 	/**
-	 * Максимальный угол покачивания карты при движении.
-	 * @type {Number}
-	 */
+	* Максимальный угол покачивания карты при движении.
+	* @type {Number}
+	*/
 	this.cardMaxMoveAngle = 30;
 
 	/**
-	 * История инерции карты.
-	 * @type {Array}
-	 * @private
-	 */
+	* История инерции карты.
+	* @type {Array}
+	* @private
+	*/
 	this._inertiaHistory = [];
 };
 
@@ -91,10 +91,10 @@ CardControl.prototype.initialize = function(){
 };
 
 /**
- * Обрабатывает нажатие на карту.
- * @param  {Card} card    карта
- * @param  {Phaser.Pointer} pointer указатель, нажавший на карту
- */
+* Обрабатывает нажатие на карту.
+* @param  {Card} card    карта
+* @param  {Phaser.Pointer} pointer указатель, нажавший на карту
+*/
 CardControl.prototype.cardClick = function(card, pointer){
 	if(pointer.button == 1 || pointer.button == 4)
 		console.log(card);
@@ -114,9 +114,9 @@ CardControl.prototype.cardClick = function(card, pointer){
 };
 
 /**
- * Обрабатывает поднятие кнопки после нажатия на карту.
- * @param  {Card} card карта
- */
+* Обрабатывает поднятие кнопки после нажатия на карту.
+* @param  {Card} card карта
+*/
 CardControl.prototype.cardUnclick = function(card){
 	if(!this.card || this.card != card)
 		return;
@@ -134,9 +134,9 @@ CardControl.prototype.cardUnclick = function(card){
 
 
 /** 
- * Проверка нажатия на базу карты.
- * @private
- */
+* Проверка нажатия на базу карты.
+* @private
+*/
 CardControl.prototype._cardPointerInbound = function(){
 	var width = this.card.field ? skinManager.skin.width*(1 + this.card.field.scaleDiff) : skinManager.skin.width,
 		height = this.card.field ? skinManager.skin.height*(1 + this.card.field.scaleDiff) : skinManager.skin.height;
@@ -151,9 +151,9 @@ CardControl.prototype._cardPointerInbound = function(){
 };
 
 /**
- * Проверка корректности позиции карты (возащает false или поля).
- * @private
- */
+* Проверка корректности позиции карты (возащает false или поля).
+* @private
+*/
 CardControl.prototype._cardOnValidField = function(){
 	if(!this.card.playable)
 		return false;
@@ -193,9 +193,9 @@ CardControl.prototype.update = function(){
 };
 
 /**
- * Ресет контроллера
- * @param  {string} [reason] Причина ресета для дебага.
- */
+* Ресет контроллера
+* @param  {string} [reason] Причина ресета для дебага.
+*/
 CardControl.prototype.reset = function(reason){
 
 	if(this.inDebugMode)

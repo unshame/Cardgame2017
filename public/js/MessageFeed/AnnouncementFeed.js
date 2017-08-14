@@ -59,9 +59,9 @@ AnnouncementFeed.prototype.update = function(){
 };
 
 /**
- * Фейдид сообщение при добавлении, если оно первое в списке.
- * @private
- */
+* Фейдид сообщение при добавлении, если оно первое в списке.
+* @private
+*/
 AnnouncementFeed.prototype._fadeInMessage = function(text){
 	text.addTime = Date.now();
 	if(this.children.indexOf(text) === 0){
@@ -96,9 +96,9 @@ AnnouncementFeed.prototype.clear = function(){
 };
 
 /**
- * Фейдид сообщение, если оно первое в списке.
- * @private
- */
+* Фейдид сообщение, если оно первое в списке.
+* @private
+*/
 AnnouncementFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	if(text.moveTween){
 		text.moveTween.stop();

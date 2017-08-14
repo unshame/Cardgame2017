@@ -1,88 +1,88 @@
 /**
- * Меню.
- * @class
- * @param {object} options Опции.
- * @extends {external:Phaser.Group}
- */
+* Меню.
+* @class
+* @param {object} options Опции.
+* @extends {external:Phaser.Group}
+*/
 var Menu = function(options){
 
 	/**
-	 * Переданные при создании меню опции.
-	 * @type {object}
-	 */
+	* Переданные при создании меню опции.
+	* @type {object}
+	*/
 	this.options = mergeOptions(this.getDefaultOptions(), options);
 
 	Phaser.Group.call(this, game);
 
 	/**
-	 * Имя меню.
-	 * @type {string}
-	 */
+	* Имя меню.
+	* @type {string}
+	*/
 	this.name = this.options.name;
 
 	/**
-	 * Видимость меню.
-	 * @type {Boolean}
-	 */
+	* Видимость меню.
+	* @type {Boolean}
+	*/
 	this.visible = false;
 
 	/**
-	 * Фон меню.
-	 * @type {Phaser.Image}
-	 */
+	* Фон меню.
+	* @type {Phaser.Image}
+	*/
 	this.background = game.make.image(0, 0);
 	this.background.inputEnabled = true;
 	this.background.tint = this.options.color || ui.colors.orange;
 	this.add(this.background);
 
 	/**
-	 * Твин анимации фейда меню.
-	 * @type {Phaser.Tween}
-	 * @private
-	 */
+	* Твин анимации фейда меню.
+	* @type {Phaser.Tween}
+	* @private
+	*/
 	this._fader = null;
 	/**
-	 * Направление анимации фейда
-	 * (-1 - скрывается, 0 - стоит на месте, 1 - показывается).
-	 * @type {number}
-	 * @private
-	 */
+	* Направление анимации фейда
+	* (-1 - скрывается, 0 - стоит на месте, 1 - показывается).
+	* @type {number}
+	* @private
+	*/
 	this._fading = 0;
 
 	/**
-	 * Элементы меню.
-	 * @type {Array}
-	 */
+	* Элементы меню.
+	* @type {Array}
+	*/
 	this.elements = [];
 	/**
-	 * Элементы меню, которые не влияют на размер меню.
-	 * @type {Array}
-	 */
+	* Элементы меню, которые не влияют на размер меню.
+	* @type {Array}
+	*/
 	this.specialElements = [];
 	/**
-	 * Скрытые элементы меню.
-	 * @type {Array}
-	 */
+	* Скрытые элементы меню.
+	* @type {Array}
+	*/
 	this.hiddenElements = [];
 	/**
-	 * Отключенные элементы меню.
-	 * @type {Array}
-	 */
+	* Отключенные элементы меню.
+	* @type {Array}
+	*/
 	this.disabledElements = [];
 
 	/**
-	 * Графика фона меню.
-	 * @type {Phaser.BitmapData}
-	 * @private
-	 */
+	* Графика фона меню.
+	* @type {Phaser.BitmapData}
+	* @private
+	*/
 	this._bitmapArea = game.make.bitmapData();
 	if(this.options.texture){
 		var image = game.cache.getImage(this.options.texture);
 		/**
-		 * Повторяющаяся текстура фона меню.
-		 * @type {CanvasPattern}
-		 * @private
-		 */
+		* Повторяющаяся текстура фона меню.
+		* @type {CanvasPattern}
+		* @private
+		*/
 		this._pattern = this._bitmapArea.ctx.createPattern(image, 'repeat');
 	}
 
@@ -92,9 +92,9 @@ var Menu = function(options){
 extend(Menu, Phaser.Group);
 
 /** 
- * Опции по умолчанию
- * @return {object} опции
- */
+* Опции по умолчанию
+* @return {object} опции
+*/
 Menu.prototype.getDefaultOptions = function(){
 	return {
 		position: {
@@ -116,9 +116,9 @@ Menu.prototype.getDefaultOptions = function(){
 };
 
 /**
- * Позиционирует меню и элементы.
- * @param  {object} [position] новая позиция меню `{x, y}`.
- */
+* Позиционирует меню и элементы.
+* @param  {object} [position] новая позиция меню `{x, y}`.
+*/
 Menu.prototype.updatePosition = function(position){
 	this._resize();
 
@@ -149,9 +149,9 @@ Menu.prototype.updatePosition = function(position){
 };
 
 /**
- * Устанавливает размер фона меню в соответствии с элементами.
- * @private
- */
+* Устанавливает размер фона меню в соответствии с элементами.
+* @private
+*/
 Menu.prototype._resize = function(){
 	var width = 0,
 		height = 0,
@@ -185,9 +185,9 @@ Menu.prototype._resize = function(){
 };
 
 /**
- * Рисует фон меню.
- * @private
- */
+* Рисует фон меню.
+* @private
+*/
 Menu.prototype._createArea = function(width, height){
 
 	drawRoundedRectangle(

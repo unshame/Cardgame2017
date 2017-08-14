@@ -85,16 +85,16 @@ var Sequencer = function(inDebugMode){
 	this.duration = 0;
 
 	/**
-	 * Время начала текущего списка.
-	 * @type {Number}
-	 */
+	* Время начала текущего списка.
+	* @type {Number}
+	*/
 	this.startTime = 0;
 
 	/**
-	 * Время пропущенных шагов.
-	 * @type {Number}
-	 * @private
-	 */
+	* Время пропущенных шагов.
+	* @type {Number}
+	* @private
+	*/
 	this._skippedTime = 0;
 
 	/**

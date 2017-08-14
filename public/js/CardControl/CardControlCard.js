@@ -1,9 +1,9 @@
 // АПДЕЙТ И ТАЙМЕР НАЖАТИЯ КОНТРОЛИРУЕМОЙ КАРТЫ
 
 /**
- * Обновление позиции карты и хвоста.
- * @private
- */
+* Обновление позиции карты и хвоста.
+* @private
+*/
 CardControl.prototype._updateCard = function(){
 	if(!this.card){
 		return false;
@@ -49,10 +49,10 @@ CardControl.prototype._updateCard = function(){
 };
 
 /**
- * Устанавливаем позицию карты и плавно передивгаем ее к курсору.
- * @param  {number} curTime текущее время
- * @private
- */
+* Устанавливаем позицию карты и плавно передивгаем ее к курсору.
+* @param  {number} curTime текущее время
+* @private
+*/
 CardControl.prototype._updateCardPosition = function(curTime){
 	var sTime, sP, mP;
 	sTime = this.cardShiftEndTime - curTime;
@@ -73,10 +73,10 @@ CardControl.prototype._updateCardPosition = function(curTime){
 };
 
 /**
- * Устанавливает угол в зависимости от инерции карты.
- * @param  {number} curTime текущее время
- * @private
- */
+* Устанавливает угол в зависимости от инерции карты.
+* @param  {number} curTime текущее время
+* @private
+*/
 CardControl.prototype._updateCardAngle = function(curTime){
 
 	var maxAngle = this.cardMaxMoveAngle;

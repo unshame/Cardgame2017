@@ -1,12 +1,12 @@
 /**
- * Лого игры.
- * @class
- * @param {object|function} position Позиция лого в виде объекта или функции,
- *                                   возвращающей объект вида `{x, y}`;                                  
- * @param {number} scale    Максимальный масштаб лого (будет уменьшен, если лого не влезает в экран).
- * @param {string} texture  Название текстуры лого.
- * @param {string} [name]   Имя лого в {@link UILayers}.
- */
+* Лого игры.
+* @class
+* @param {object|function} position Позиция лого в виде объекта или функции,
+*                                   возвращающей объект вида `{x, y}`;                                  
+* @param {number} scale    Максимальный масштаб лого (будет уменьшен, если лого не влезает в экран).
+* @param {string} texture  Название текстуры лого.
+* @param {string} [name]   Имя лого в {@link UILayers}.
+*/
 var Logo = function(position, scale, texture, name){
 	Phaser.Image.call(this, game, 0, 0, texture);
 	this.name = name || 'logo';
@@ -20,8 +20,8 @@ var Logo = function(position, scale, texture, name){
 extend(Logo, Phaser.Image);
 
 /**
- * Обновляет позицию и масштаб лого.
- */
+* Обновляет позицию и масштаб лого.
+*/
 Logo.prototype.updatePosition = function(){
 	var position = this.defaultPosition;	
 	var width = this.width/this.scale.x;
