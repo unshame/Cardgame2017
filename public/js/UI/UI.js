@@ -137,7 +137,7 @@ UI.prototype._createMenus = function(){
 			}, 
 			z: 5,
 			alpha: 0.95,
-			name: 'main',
+			name: 'menu_main',
 			texture: 'black'
 		}),
 		options: new Menu({
@@ -153,12 +153,12 @@ UI.prototype._createMenus = function(){
 			texture: 'menu_blue',
 			elementColor: 'grey',
 			textColor: 'black',
-			name: 'options'
+			name: 'menu_options'
 		}),
-		test: new Menu({
+		debug: new Menu({
 			position: function(){
 				return {
-					x:game.screenWidth/2 + 300,
+					x:game.screenWidth/2,
 					y:game.screenHeight/2
 				};
 			}, 
@@ -167,12 +167,12 @@ UI.prototype._createMenus = function(){
 			texture: 'menu_blue',
 			elementColor: 'grey',
 			textColor: 'black',
-			name: 'test'
+			name: 'menu_debug'
 		})
 	};
 	this.modalManager.makeModal([
 		this.menus.options,
-		this.menus.test
+		this.menus.debug
 	]);
 };
 
@@ -221,7 +221,7 @@ UI.prototype._createButtons = function(){
 	this.menus.options.hideElement('disconnect');
 
 	this.menus.options.addButton(function(){
-		ui.modalManager.openModal('test');
+		//ui.modalManager.openModal('debug');
 	},'lel','NOTHING');	
 
 	this.menus.options.addButton( function(){
@@ -253,21 +253,52 @@ UI.prototype._createButtons = function(){
 
 	},'CHS','Change skin');
 
-	this.menus.options.addButton(game.toggleDebugMode, 'debug','Debug', game);
+	this.menus.options.addButton(function(){
+		ui.modalManager.openModal('debug');
+	}, 'debug','Debug');
 
 	// Закрыть меню
 	this.menus.options.addButton( function(){
 		ui.modalManager.closeModal()
-	}, 'Back','Back');
+	}, 'close','Close');
 
 
 	////////////////////
-	/// ТЕСТОВОЕ МЕНЮ //
+	/// ДЕБАГ МЕНЮ //
 	////////////////////
 
-	this.menus.test.addButton(function(){
-		ui.modalManager.openModal('options');
-	}, 'options','Options');
+	this.menus.debug.addButton(function(){
+		game.toggleDebugMode();
+	}, 'all','All');
+
+	this.menus.debug.addButton(function(){
+		game.inDebugMode = !game.inDebugMode;
+		game.time.advancedTiming = game.inDebugMode;
+	}, 'game','Game');
+
+	this.menus.debug.addButton(function(){
+		connection.inDebugMode = !connection.inDebugMode;
+	}, 'connection','Connection');
+
+	this.menus.debug.addButton(function(){
+		game.scale.toggleDebugMode();
+	}, 'grid','Grid');
+
+	this.menus.debug.addButton(function(){
+		cardControl.toggleDebugMode();
+	}, 'ctrl','Control');
+
+	this.menus.debug.addButton(function(){
+		fieldManager.toggleDebugMode();
+	}, 'fields','Fields');
+
+	this.menus.debug.addButton(function(){
+		cardManager.toggleDebugMode();
+	}, 'cards','Cards');
+
+	this.menus.debug.addButton(function(){
+		ui.modalManager.closeModal();
+	}, 'back','Back');
 
 
 	////////////////////
