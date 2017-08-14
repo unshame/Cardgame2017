@@ -27,6 +27,11 @@ ModalManager.prototype.openModal = function(menuName){
 		len = this.modals.length,
 		i = this.modals.indexOf(menu);
 
+	if(!menu.modal){
+		console.error('Modal manager: cannot open non-modal menu');
+		return;
+	}
+
 	// Закрываем текущее верхнее меню
 	if(len){
 		this.modals[len - 1].fadeOut();

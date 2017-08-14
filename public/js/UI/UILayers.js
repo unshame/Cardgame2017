@@ -262,7 +262,7 @@ UILayers.prototype.cursorIsOverAnElementInLayer = function(layer){
 UILayers.prototype.cursorIsOverAnElement = function(){
 	for(var i = this.positions.length - 1; i >= 0; i--){
 		var layer = this.positions[i];
-		if(!layer || !layer.visible || !(layer instanceof Phaser.Group))
+		if(!layer || !layer.checkCursorOverlap || !layer.visible || !(layer instanceof Phaser.Group))
 			continue;
 		var el = this.cursorIsOverAnElementInLayer(layer);
 		if(el){
