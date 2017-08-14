@@ -14,8 +14,6 @@ var Menu = function(options){
 
 	Phaser.Group.call(this, game);
 
-	this.modal = this.options.modal;
-
 	/**
 	 * Имя меню.
 	 * @type {string}
@@ -104,7 +102,6 @@ Menu.prototype.getDefaultOptions = function(){
 			y: 0
 		},
 		z: 0,
-		modal: false,
 		margin: 25,
 		name: 'default',
 		alpha: 0.8,

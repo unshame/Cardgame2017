@@ -22,6 +22,25 @@ ModalManager.prototype.updatePosition = function(){
 	this.height = game.screenHeight;
 };
 
+ModalManager.prototype.makeModal = function(menus){
+	for(var i = 0; i < menus.length; i++){
+		var menu = menus[i];
+		if(!menu.fadeIn || !menu.fadeOut){
+			console.error('ModalManager: menu doesn\'t have required methods');
+			continue;
+		}
+		menu.modal = true;
+		menu._fadeIn = menu.fadeIn;
+		menu._fadeOut = menu.fadeOut;
+		menu._fadeToggle = menu.fadeToggle;
+		menu.fadeIn = menu.fadeOut = menu.fadeToggle = this._preventDirectCall.bind(menu);
+	}
+}
+
+ModalManager.prototype._preventDirectCall = function(){
+	console.error('ModalManager: menu should be opened/closed through ModalManager', this);
+}
+
 ModalManager.prototype.openModal = function(menuName){
 	var menu = ui.menus[menuName],
 		len = this.modals.length,
@@ -34,7 +53,7 @@ ModalManager.prototype.openModal = function(menuName){
 
 	// Закрываем текущее верхнее меню
 	if(len){
-		this.modals[len - 1].fadeOut();
+		this.modals[len - 1]._fadeOut();
 	}
 
 	// Если меню не было уже открыто, добавляем его в массив,
@@ -46,7 +65,7 @@ ModalManager.prototype.openModal = function(menuName){
 		this.modals.splice(i + 1, len - i - 1);
 	}
 
-	menu.fadeIn();
+	menu._fadeIn();
 	this.updateVisibility();
 
 	ui.layers.updateModalIndex(menu);
@@ -65,16 +84,16 @@ ModalManager.prototype.closeModal = function(){
 
 	// Закрываем верхнее меню
 	this.modals.splice(len - 1, 1);
-	top.fadeOut();
+	top._fadeOut();
 
 	// Открываем меню под ним если оно есть
 	if(subtop){
-		subtop.fadeIn();
+		subtop._fadeIn();
 	}
 	else{
 		this.updateVisibility();
 	}
-	
+
 	ui.layers.updateModalIndex(subtop);
 };
 
@@ -102,15 +121,15 @@ ModalManager.prototype.toggleModals = function(menuName){
 ModalManager.prototype.toggleModals = function(){
 	var len = this.modals.length
 	if(this.visible){
-		this.modals[len - 1].fadeOut();
+		this.modals[len - 1]._fadeOut();
 		this.visible = false;
 	}
 	else{
 		if(len){
-			this.modals[len - 1].fadeIn();
+			this.modals[len - 1]._fadeIn();
 		}
 		else{
-			this.baseMenu.fadeIn();
+			this.baseMenu._fadeIn();
 			this.modals.push(this.baseMenu);
 		}
 		this.updateVisibility();

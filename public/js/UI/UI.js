@@ -148,7 +148,6 @@ UI.prototype._createMenus = function(){
 				};
 			}, 
 			z: -3,
-			modal: true,
 			base: true,
 			color: this.colors.white,
 			texture: 'menu_blue',
@@ -164,14 +163,17 @@ UI.prototype._createMenus = function(){
 				};
 			}, 
 			z: -3,
-			modal: true,
 			color: this.colors.white,
 			texture: 'menu_blue',
 			elementColor: 'grey',
 			textColor: 'black',
 			name: 'test'
 		})
-	}
+	};
+	this.modalManager.makeModal([
+		this.menus.options,
+		this.menus.test
+	]);
 };
 
 /** 
