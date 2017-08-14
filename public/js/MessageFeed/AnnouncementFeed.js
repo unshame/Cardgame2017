@@ -100,6 +100,16 @@ AnnouncementFeed.prototype.clear = function(){
  * @private
  */
 AnnouncementFeed.prototype._moveMessage = function(text, i, ii, x, y){
+	if(text.moveTween){
+		text.moveTween.stop();
+		text.moveTween = null;
+	}
+	y = this._getLowestY();
+	if(this.x !== x || this.y !== y){
+		text.moveTween = this.game.add.tween(text);
+		text.moveTween.to({x: x, y: this._getLowestY()}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
+	}	
+
 	if(!text.fadeTween && text.alpha === 0 && this.children.indexOf(text) === 0){
 		if(text.addTime !== undefined && text.endTime !== undefined){
 			text.endTime = Date.now() + (text.endTime - text.addTime);

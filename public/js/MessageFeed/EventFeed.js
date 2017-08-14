@@ -44,7 +44,7 @@ EventFeed.prototype._getX = function(){
 };
 
 EventFeed.prototype._getLowestY = function(){
-	return this.game.screenHeight/2 - 100;
+	return this.game.screenHeight*0.25;
 };
 
 EventFeed.prototype._destroyMessage = function(text){
