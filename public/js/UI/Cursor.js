@@ -43,6 +43,12 @@ var Cursor = function(textureName){
 	*/
 	this.initialized = false;
 
+	/**
+	* Элемент над которым находится курсор.
+	* @type {DisplayElement}
+	*/
+	this.overlappingElement = null;
+
 	this.name = 'cursor';
 
 	game.add.existing(this);
@@ -57,16 +63,19 @@ extend(Cursor, Phaser.Sprite);
 /**
 * Обновляет позицию и внешний вид курсора.
 * @param  {boolean} [cursorinGame=Cursor#inGame] находится ли уазатель пользователя в окне
+* @param {boolean} [noOverlapCheck] курсор считает что находится над элементом без проверки
 */
-Cursor.prototype.update = function(cursorinGame){
+Cursor.prototype.update = function(cursorinGame, noOverlapCheck){
 
 	if(!Phaser.Device.desktop)
 		return;
 
 	this.initialized = game.input.x !== 0 || game.input.y !== 0;
 
-	if(cursorinGame !== undefined)
+	if(cursorinGame !== undefined){
 		this.inGame = cursorinGame;
+	}
+
 	if((!this.inGame || game.paused || !this.initialized) && this.alive){
 		this.kill();
 		game.canvas.style.cursor = "default";
@@ -92,14 +101,26 @@ Cursor.prototype.update = function(cursorinGame){
 
 	// Если курсор над картой или элементом интерфейса,
 	// меняем его на указатель
-	if(
-		ui.layers.cursorIsOverAnElement()
-	){
+	if(noOverlapCheck || this.overlappingElement && this.overlappingElement.cursorIsOver()){
 		this.x -= this.width*0.41;
 		this.frame = 1;
 		return;
 	}
+	else{
+		this.overlappingElement = null;
+	}
 
 	// Курсор не над чем не находится
 	this.frame = 0;
+};
+
+/**
+* Запоминает объект над которым находится курсор и обновляет курсор.
+* @param  {DisplayObject} el элемент над которым находится курсор
+*/
+Cursor.prototype.updateOverlap = function(el){
+	if(this.overlappingElement != el){
+		this.overlappingElement = el;
+		this.update(undefined, true);
+	}
 };

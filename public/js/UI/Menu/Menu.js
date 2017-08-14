@@ -88,7 +88,7 @@ var Menu = function(options){
 		this._pattern = this._bitmapArea.ctx.createPattern(image, 'repeat');
 	}
 
-	ui.layers.addExistingLayer(this, this.options.z, true);	
+	ui.layers.addExistingLayer(this, this.options.z);	
 };
 
 extend(Menu, Phaser.Group);

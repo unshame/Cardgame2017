@@ -103,7 +103,7 @@ UI.prototype.initialize = function(){
 		[this.background, 0],
 		// this.actionButtons, 1
 		[fieldManager.fieldsGroup, 2],
-		[cardManager, 3, true],
+		[cardManager, 3],
 		[cardEmitter, 4],
 		// this.menus.main, 5
 		[this.logo, 5],
@@ -183,13 +183,13 @@ UI.prototype._createButtons = function(){
 	 * Кнопки игровых действий.
 	 * @type {Phaser.Group}
 	 */
-	this.actionButtons = this.layers.addLayer(1, 'actionButtons', true);
+	this.actionButtons = this.layers.addLayer(1, 'actionButtons');
 
 	/**
 	 * Угловые кнопки.
 	 * @type {Phaser.Group}
 	 */
-	this.cornerButtons = this.layers.addLayer(-2, 'cornerButtons', true);
+	this.cornerButtons = this.layers.addLayer(-2, 'cornerButtons');
 
 
 	////////////////////

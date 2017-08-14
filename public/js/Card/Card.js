@@ -361,6 +361,9 @@ Card.prototype._destroyNow = function() {
 Card.prototype.update = function() {
 	this._revolve();
 	this._glowUpdatePosition();
+	if(this.cursorIsOver()){
+		ui.layers.updateCursorOverlap(this);
+	}
 };
 
 /**

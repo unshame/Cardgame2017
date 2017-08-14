@@ -52,11 +52,9 @@ UILayers.prototype._sortPositions = function(){
 * Создает новую `Phaser.Group` группу и добавляет ее как слой.
 * @param {number} i                   z-index слоя  
 * @param {string} name                имя слоя, должно быть уникальным
-* @param {boolean} [checkCursorOverlap=false] Устанавливает `checkCursorOverlap` созданной группе.
-* Указывает, нужно ли проверять эту группу в `{@link UILayers#cursorIsOverAnElement}`. 
 * @return {Phaser.Group} Созданный слой.
 */
-UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
+UILayers.prototype.addLayer = function(i, name){
 	if(this.byName[name]){
 		console.error('UILayers: Layer name must be unique', name);
 		return null;
@@ -64,7 +62,6 @@ UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 	var layer = game.add.group();
 	layer.index = i;
 	layer.name = name;
-	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[name] = layer;
 	this.positions.push(layer);
 	this.numOfLayers++;
@@ -75,18 +72,15 @@ UILayers.prototype.addLayer = function(i, name, checkCursorOverlap){
 * Добавляет существующий элемент игры, как слой.
 * @param {DisplayObject} layer       добавляемый элемент игры
 * @param {number} i                   z-index слоя
-* @param {boolean} [checkCursorOverlap=false] Устанавливает `checkCursorOverlap` слою.
-* Указывает, нужно ли проверять эту группу в `{@link UILayers#cursorIsOverAnElement}`. 
 * @return {DisplayObject} Добавленный слой.
 */
-UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
+UILayers.prototype.addExistingLayer = function(layer, i){
 	if(this.byName[layer.name]){
 		console.error('UILayers: Layer name must be unique', layer.name);
 		return null;
 	}
 	layer.parent = game.world;
 	layer.index = i;
-	layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.byName[layer.name] = layer;
 	this.positions.push(layer);
 	this.numOfLayers++;
@@ -95,7 +89,7 @@ UILayers.prototype.addExistingLayer = function(layer, i, checkCursorOverlap){
 
 /**
  * Добавляет существующие элементы игры как слои из массива.
- * @param {array} layers Слои `[layer, i, checkCursorOverlap]`
+ * @param {array} layers Слои `[layer, i]`
  */
 UILayers.prototype.addExistingLayers = function(layers){
 	for(var i = 0; i < layers.length; i++){
@@ -140,15 +134,12 @@ UILayers.prototype.showLayer = function(layer, shouldDisable){
 };
 
 /**
-* Меняет z-index и `checkCursorOverlap` слоя.
+* Меняет z-index слоя.
 * @param {DisplayObject} layer        слой
 * @param {number} i                   z-index слоя
-* @param {boolean} [checkCursorOverlap] устанавливает `checkCursorOverlap` слою
 */
-UILayers.prototype.setLayerIndex = function(layer, i, checkCursorOverlap){
+UILayers.prototype.setLayerIndex = function(layer, i){
 	layer.index = i;
-	if(checkCursorOverlap !== undefined)
-		layer.checkCursorOverlap = checkCursorOverlap || false;
 	this.positionLayers();
 };
 
@@ -213,42 +204,6 @@ UILayers.prototype.loadLabels = function(){
 	}
 };
 
-/**
-* Находит первый элемент в слое, над которым находится курсор.
-* @param  {DisplayObject} layer слой
-* @return {(DisplayObject|null)} Находится ли курсор над элементом.
-* Если да, то возвращает первый попавшийся элемент, над которым находится курсор.
-*/
-UILayers.prototype.cursorIsOverAnElementInLayer = function(layer){
-	for(var i = 0, len = layer.children.length; i < len; i++){
-		var el = layer.children[i];
-		if(el.cursorIsOver && el.cursorIsOver())
-			return el;				
-	}
-	return null;
-}
-
-/**
-* Находит первый элемент в слоях, относящихся к `Phaser.Group` с `checkCursorOverlap == true`, над которым находится курсор.
-* Перестает проверять после первого слоя с `modal` и `visible` равными `true` (проверка идет с верхнего слоя).
-* @return {(DisplayObject|null)} Находится ли курсор над элементом.
-* Если да, то возвращает первый попавшийся элемент, над которым находится курсор.
-*/
-UILayers.prototype.cursorIsOverAnElement = function(){
-	for(var i = this.positions.length - 1; i >= 0; i--){
-		var layer = this.positions[i];
-		if(!layer.checkCursorOverlap || !layer.visible || !(layer instanceof Phaser.Group))
-			continue;
-		var el = this.cursorIsOverAnElementInLayer(layer);
-		if(el){
-			return el;
-		}
-		else if(layer.modal && layer.visible){
-			return null;
-		}
-	}
-	return null;
-};
 
 /**
 * Дебаг функция для получения списка слоев.
@@ -268,3 +223,28 @@ UILayers.prototype.getOrder = function(){
 	};
 	return arr;
 };
+
+/**
+ * Проверяет не заблокирован ли элемент над которым находится курсор модальным слоем
+ * и соответственно обновляет курсор.
+ * @param  {DisplayObject} el объект над которым находится курсор
+ */
+UILayers.prototype.updateCursorOverlap = function(el){
+	var parent = el.parent;
+	if(!parent)
+		return;
+	var i = this.positions.indexOf(parent);
+	if(!~i)
+		return;
+	var k = this.positions.length - 1;
+	for(; k >= 0; k--){
+		var layer = this.positions[k];
+		if(layer.modal && layer.visible){
+			break;
+		}
+	}
+	if(i >= k){
+		ui.cursor.updateOverlap(el);
+	}
+
+}

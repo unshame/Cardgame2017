@@ -208,3 +208,9 @@ Button.prototype.cursorIsOver = function(){
 		game.input.y
 	);
 };
+
+Button.prototype.update = function(){
+	if(this.cursorIsOver()){
+		ui.layers.updateCursorOverlap(this);
+	}
+};
