@@ -37,10 +37,10 @@ UILayers.prototype._sortPositions = function(){
 	this.positions.sort(function(a, b){
 		a = a.index;
 		b = b.index;
-		if(a < 0 && b > 0 || a !== 0 && b === 0){
+		if(a < 0 && b >= 0){
 			return 1;
 		}
-		if(a > 0 && b < 0 || a === 0 && b !== 0){
+		if(a >= 0 && b < 0){
 			return -1;
 		}
 		return a - b;
