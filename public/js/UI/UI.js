@@ -108,14 +108,14 @@ UI.prototype.initialize = function(){
 		[cardManager, 3, true],
 		[cardEmitter, 4],
 		// this.menus.main, 5
-		[this.logo, 6],
-		[this.feed, 7],
-		[this.eventFeed, 8],
-		[this.announcer, 9],
-		[this.rope, 10],
-		[this.modalManager, -5],
-		// this.cornerButtons, -3
-		// this.menus.options, -2
+		[this.logo, 5],
+		[this.feed, 6],
+		[this.eventFeed, 6],
+		[this.announcer, 7],
+		[this.rope, 7],
+		[this.modalManager, -4],
+		// модальные меню, -3
+		// this.cornerButtons, -2
 		[this.cursor, -1]
 	]);
 
@@ -165,7 +165,7 @@ UI.prototype._createMenus = function(){
 					y:game.screenHeight/2
 				};
 			}, 
-			z: -4,
+			z: -3,
 			modal: true,
 			color: this.colors.white,
 			texture: 'menu_blue',
