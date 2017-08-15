@@ -76,6 +76,10 @@ Field.prototype.setSize = function(width, height, shouldPlace){
 		this._createCircle(width, height);
 	}	
 
+	if(this.badge){
+		this.badge.updatePosition();
+	}
+
 	if(shouldPlace){
 		this.placeCards();
 	}

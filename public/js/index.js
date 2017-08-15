@@ -23,6 +23,7 @@
 //@include:SkinManager
 //@include:UI
 //@include:MessageFeed
+//@include:PlayerBadge
 
 var inDebugMode = localStorage.getItem('durak_debug') == 'true';
 

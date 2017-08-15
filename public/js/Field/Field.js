@@ -256,6 +256,13 @@ var Field = function(options, style, iconStyle){
 		this.icon.scale.set(this.iconStyle.scale, this.iconStyle.scale);
 		this.base.add(this.icon);
 	}
+
+	this.badge = null;
+	if(this.options.badge){
+		console.log(this.options.badge)
+		this.badge = new PlayerBadge(this, this.name, this.options.badge);
+		this.base.add(this.badge);
+	}
 	
 	/**
 	* Подсвечено ли поле.
@@ -315,6 +322,8 @@ Field.prototype.getDefaultOptions = function(){
 			type: 'GENERIC',
 			name: null,
 
+			badge: false,
+
 			debug: false
 		},
 		style: {
@@ -346,6 +355,7 @@ Field.prototype.getDefaultOptions = function(){
 			adjust: true,
 			
 			area: 'plain',	
+			alwaysVisible: false,
 			alpha: 0.35,
 			corner: 5,
 			border: 4

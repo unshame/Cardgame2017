@@ -66,7 +66,7 @@ Field.prototype.setOwnHighlight = function(on, tint){
 
 	this.setVisibility(on);
 	plane.tint = on ? (tint || ui.colors.orange) : skinManager.skin.color;
-	plane.alpha = on ? this.style.alpha : 0.15;
+	plane.alpha = (this.style.alwaysVisible || on) ? this.style.alpha : 0.15;
 };
 
 /**
@@ -99,7 +99,7 @@ Field.prototype.setVisibility = function(visible){
 		plane = this.area;
 		break;
 	}
-	plane.visible = visible || this.inDebugMode || this.style.area == 'curved';
+	plane.visible = this.style.alwaysVisible || visible || this.inDebugMode;
 	this.setIconVisibility(visible);
 };
 

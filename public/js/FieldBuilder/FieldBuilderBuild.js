@@ -5,6 +5,8 @@ FieldBuilder.prototype._buildPlayerField = function(){
 	manager.addField({
 		type: 'HAND',
 		id: playerManager.pid,
+		name: playerManager.players[playerManager.pi].name,
+		badge: 'top',
 		specialId: playerManager.pi,
 		debug: manager.inDebugMode
 	},
@@ -12,6 +14,7 @@ FieldBuilder.prototype._buildPlayerField = function(){
 		x:this.positions[playerManager.pid].x,
 		y:this.positions[playerManager.pid].y,
 		width:this.dimensions.player.width,
+		alwaysVisible: true,
 		minActiveSpace: this.minActiveSpaces.player,
 		padding:this.offsets.player,
 		sortable: true,
@@ -87,6 +90,7 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			type: 'HAND',
 			id: p.id,
 			name: p.name,
+			badge: this.dimensions[p.id].badge,
 			specialId: this.dimensions[p.id].specialId,
 			debug: manager.inDebugMode
 		},
@@ -95,6 +99,7 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			y: this.positions[p.id].y,
 			width: this.dimensions[p.id].width,
 			height: this.dimensions[p.id].height,
+			alwaysVisible: true,
 			minActiveSpace: this.minActiveSpaces[p.id],
 			padding:this.offsets[p.id],
 			axis: this.dimensions[p.id].axis,
@@ -154,6 +159,7 @@ FieldBuilder.prototype._buildDiscardField = function(){
 	{
 		x: this.positions.DISCARD_PILE.x,
 		y: this.positions.DISCARD_PILE.y,
+		alwaysVisible: true,
 		minActiveSpace: this.minActiveSpaces.DISCARD_PILE,
 		spacing:0,
 		padding: this.offsets.DISCARD_PILE,
