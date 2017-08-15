@@ -25,7 +25,7 @@ var clientMethods = {
 			game.state.change('play');
 			connection.proxy.requestGameInfo();
 		}
-		else{
+		else if(game.state.currentSync != 'menu'){
 			game.state.change('menu');
 		}
 		
