@@ -4,7 +4,9 @@ var PlayerBadge = function(field, name, align){
 	this.align = align;
 	this.status = game.add.text(0, 0, '', {fill: 'white', font: '24px Exo'}, this);
 	this.name = game.add.text(0, 0, name, {fill: 'white', font: '24px Exo'}, this);
-
+	this.nameText = name;
+	this.statusText = '';
+	
 	this.updatePosition();
 };
 
@@ -12,6 +14,7 @@ extend(PlayerBadge, Phaser.Group);
 
 PlayerBadge.prototype.updatePosition = function(){
 	var field = this.field;
+	var width = this.field.area.width;
 	switch(this.align){
 		case 'top':
 		this.name.x = 0;
@@ -44,7 +47,8 @@ PlayerBadge.prototype.updatePosition = function(){
 
 		this.name.anchor.set(0, 1);
 		this.status.anchor.set(0, 0);
-
+		
+		width = this.field.area.width + Math.min(game.screenWidth - (this.field.base.x + width), 0);
 		break;
 
 		case 'right':
@@ -56,11 +60,24 @@ PlayerBadge.prototype.updatePosition = function(){
 
 		this.name.anchor.set(1, 1);
 		this.status.anchor.set(1, 0);
+		width = this.field.area.width + Math.min(this.field.base.x, 0);
 		break;
 
 		default:
 		console.error('PlayerBadge: invalid align', this.align);
 		break;
 	}
+	this._limitTextWidth(this.name, this.nameText, width);
+	this._limitTextWidth(this.status, this.statusText, width);
 }
 
+PlayerBadge.prototype._limitTextWidth = function(textDisplay, text, width){
+	textDisplay.setText(text);
+	if(textDisplay.width > width){
+		textDisplay.setText(text + '...');
+		while(textDisplay.width > width && text.length > 3){
+			text = text.slice(0, -1);
+			textDisplay.setText(text + '...');
+		}
+	}
+}
