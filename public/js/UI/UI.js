@@ -353,9 +353,7 @@ UI.prototype._createButtons = function(){
 				y: game.screenHeight - 15 - height
 			};
 		},
-		action: function(){
-			ui.modalManager.toggleModals('options');
-		},
+		action: ui.modalManager.toggleModals.bind(ui.modalManager, 'options'),
 		icon: 'menu',
 		color: 'orange',
 		name: 'options',
@@ -363,6 +361,23 @@ UI.prototype._createButtons = function(){
 		group: this.cornerButtons
 	});
 
+	// Дебаг
+	new Button({
+		position: function(width, height){
+			return {
+				x: game.screenWidth - 30 - width*2,
+				y: game.screenHeight - 15 - height
+			};
+		},
+		action: ui.modalManager.toggleModals.bind(ui.modalManager, 'debug'),
+		text: 'D',
+		context: game,
+		color: 'orange',
+		name: 'debug',
+		size: 'small',
+		textColor: 'white',
+		group: this.cornerButtons
+	});
 };
 
 /** Обновляет позиции всех элементов UI. */
