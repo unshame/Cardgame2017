@@ -71,6 +71,7 @@ var notificationReactions = {
 
 		var cards = discard.cards.slice();
 		delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);	
+		delay += cardManager.defaultMoveTime;
 
 		game.seq.start(function(seq){
 			discard.removeAllCards();
