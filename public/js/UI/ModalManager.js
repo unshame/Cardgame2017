@@ -109,7 +109,7 @@ ModalManager.prototype.updateVisibility = function(){
 
 ModalManager.prototype.toggleModals = function(menuName){
 	if(this.modals.length){
-		this.closeModal(this.modals.length);
+		this.closeModal();
 	}
 	else{
 		this.openModal(menuName);

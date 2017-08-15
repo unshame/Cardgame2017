@@ -37,8 +37,6 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 	// Удаляем сохраненные настройки движения, если мы не будем их использовать
 	this._removeDelayedTweenInfo('mover');
 
-
-
 	var destination = this._calculateMoveCoordinates(x, y, relativeToBase, shouldRebase);
 
 	// Меняем позицию базы карты перед началом анимации

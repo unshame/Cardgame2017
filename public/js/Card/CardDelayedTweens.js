@@ -22,7 +22,7 @@ Card.prototype._saveDelayedTweenInfo = function(key, args, durationIndex, delayI
 	};
 
 	if(this.inDebugMode){
-		console.log('Saved', key, 'info', this.id, this._delayedTweenInfos[key]);
+		console.log('Card: Saved', key, 'info', this.id, this._delayedTweenInfos[key]);
 	}
 };
 
@@ -52,6 +52,6 @@ Card.prototype._tryStartDelayedTween = function(key, func){
 	delete this._delayedTweenInfos[key];
 	func.apply(this, info.args);
 	if(this.inDebugMode){
-		console.log('Used', key, 'info', this.id, info);
+		console.log('Card: Used', key, 'info', this.id, info);
 	}
 };
