@@ -5,6 +5,8 @@
 * @param  {Card[]} cardsToRemove карты для удаления
 */
 Field.prototype.removeCards = function(cardsToRemove){
+	if(!cardsToRemove.length)
+		return;
 	for(var ci = cardsToRemove.length - 1; ci >= 0; ci--){
 		var card = cardsToRemove[ci];
 		var i = this.cards.indexOf(card);

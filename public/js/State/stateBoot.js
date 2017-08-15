@@ -53,6 +53,7 @@ var stateBoot = new State('boot', {
 
 		game.load.image('lock', 'assets/lock.png');
 		game.load.image('unlock', 'assets/unlock.png');
+		game.load.image('skull', 'assets/skull.png');
 
 		// Кнопки
 		game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 50, 4);

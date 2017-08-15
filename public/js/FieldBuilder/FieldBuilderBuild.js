@@ -105,7 +105,8 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			axis: this.dimensions[p.id].axis,
 			flipped: this.dimensions[p.id].flipped,
 			direction: this.dimensions[p.id].direction,
-			addTo: this.dimensions[p.id].addTo
+			addTo: this.dimensions[p.id].addTo,
+			alwaysVisible: true
 		});
 		oi++;
 		i++;
@@ -122,7 +123,10 @@ FieldBuilder.prototype._buildDeckField = function(){
 		iconStyle = {
 			texture: skinManager.skin.suitsName,
 			scale: skinManager.skin.scale,
-			offset: {x: 0, y: skinManager.skin.trumpOffset + skinManager.skin.height/2 - 20 - skinManager.skin.width / 2},
+			offset: {
+				x: 0,
+				y: skinManager.skin.trumpOffset + skinManager.skin.height/2 - 20 - skinManager.skin.width / 2
+			},
 			visible: false
 		};
 	}
@@ -168,6 +172,16 @@ FieldBuilder.prototype._buildDiscardField = function(){
 		axis: 'vertical',
 		direction: 'backward',
 		addTo: 'back',
-		adjust: false
+		adjust: false,
+		alwaysVisible: true
+	},
+	{
+		texture: 'skull',
+		shouldHide: false,
+		visible: true,
+		offset: {
+			x:0,
+			y: game.scale.cellHeight/2
+		}
 	});
 };

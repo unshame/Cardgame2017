@@ -33,8 +33,10 @@ var Button = function(options){
 	this.name = this.options.name;
 	this.isDown = false;
 
-	// Текст
-	var style = { font: this.options.font, fill: this.options.textColor, align: 'center' };
+	this.scale.set(this.options.scale, this.options.scale);
+
+	//Текст
+	var style = { font: this.options.font, fontSize: this.options.fontSize, fill: this.options.textColor, align: 'center' };
 	if(this.options.text){
 		this.label = game.make.text(this.centerX, this.centerY, this.options.text, style);
 		this.label.setShadow(1, 1, 'rgba(0,0,0,0.5)', 1);
@@ -85,8 +87,10 @@ Button.prototype.getDefaultOptions = function(){
 		name: null,
 		textColor: 'black',
 		font: '28px Exo',
+		fontSize: 30,
 		context: null,
-		group: null
+		group: null,
+		scale: 1
 	};
 };
 

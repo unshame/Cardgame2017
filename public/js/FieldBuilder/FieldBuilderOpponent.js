@@ -3,9 +3,9 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 	/* Константы */
 	this.offsets.opponent = [10, 10, 10];
 	this.minActiveSpaces.opponent = [
-		this.minActiveSpace,
-		this.minActiveSpace,
-		this.minActiveSpace
+        1, 
+        1, 
+        1 
 	];
 	/*--*/
 
@@ -18,7 +18,7 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 			game.scale.numCols - game.scale.density*4 - 2,
 			opponentNumRows
 		],
-		_opponentsOffset = this._opponentsOffset = [
+		opponentsOffset = this._opponentsOffset = [
 			(game.scale.cellHeight + this.offsets.opponent[0]* 2 ),
 			(game.scale.cellWidth + this.offsets.opponent[1]* 2 ),
 			(game.scale.cellHeight + this.offsets.opponent[2]* 2 )
@@ -36,15 +36,15 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 	this.dimensions.opponent = [
 		{
 			// width: , 
-			height: (opponentCells[0]* game.scale.cellHeight - _opponentsOffset[0]* (this._opponentPlacement[0] - 1)) / this._opponentPlacement[0]
+			height: (opponentCells[0]* game.scale.cellHeight - opponentsOffset[0]* (this._opponentPlacement[0] - 1)) / this._opponentPlacement[0]
 		},
 		{
-			width: (opponentCells[1]* game.scale.cellWidth - _opponentsOffset[1]* (this._opponentPlacement[1] - 1)) / this._opponentPlacement[1]
+			width: (opponentCells[1]* game.scale.cellWidth - opponentsOffset[1]* (this._opponentPlacement[1] - 1)) / this._opponentPlacement[1]
 			// height: 
 		},
 		{
 			// width: , 
-			height: (opponentCells[2]* game.scale.cellHeight - _opponentsOffset[2]* (this._opponentPlacement[2] - 1)) / this._opponentPlacement[2]
+			height: (opponentCells[2]* game.scale.cellHeight - opponentsOffset[2]* (this._opponentPlacement[2] - 1)) / this._opponentPlacement[2]
 		}
 	];
 
@@ -76,7 +76,7 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 // Размеры для полей противников
 FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 	var players = playerManager.players,
-		_opponentsOffset = this._opponentsOffset,
+		opponentsOffset = this._opponentsOffset,
 		i = playerManager.pi + 1,	// индекс первого противника по кругу после игрока
 		oi = 0,	// Счетчик размещенных полей
 		pi = 0;	// Индекс позиции для размещения
@@ -94,13 +94,13 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 		badges = ['right', 'bottom', 'left'],
 		xs = [
 			0,
-			dimensions[1].width + _opponentsOffset[1],
+			dimensions[1].width + opponentsOffset[1],
 			0
 		],
 		ys = [
-			-(dimensions[0].height + _opponentsOffset[0]),
+			-(dimensions[0].height + opponentsOffset[0]),
 			0,
-			dimensions[2].height + _opponentsOffset[2]
+			dimensions[2].height + opponentsOffset[2]
 		];
 
 	if(i >= players.length)

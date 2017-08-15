@@ -218,7 +218,7 @@ var Field = function(options, style, iconStyle){
 	*/
 	this.area = game.add.image(0, 0);
 	this.area.alpha = this.style.alpha;
-	this.area.visible = this.inDebugMode;
+	this.area.visible = false;
 	this.base.add(this.area);
 
 	/**
@@ -243,6 +243,8 @@ var Field = function(options, style, iconStyle){
 		*/
 		this._bitmapCircle = game.make.bitmapData();
 	}
+
+	this.setVisibility(this.inDebugMode);
 
 	if(this.iconStyle.texture){
 		/**

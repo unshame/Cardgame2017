@@ -182,7 +182,7 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 	var numOfCards = cardManager.numOfCards,
 		halfDensity = Math.floor(game.scale.density / 2);
 
-	this.offsets.DECK = 22;
+	this.offsets.DECK = 15;
 	this.minActiveSpaces.DECK = numOfCards/2;
 	this.dimensions.DECK = {};
 	this.positions.DECK = game.scale.cellAt(
@@ -192,7 +192,7 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 		-this.offsets.DECK
 	);
 
-	this.offsets.DISCARD_PILE = 22;
+	this.offsets.DISCARD_PILE = 15;
 	this.minActiveSpaces.DISCARD_PILE = numOfCards/2;
 	this.dimensions.DISCARD_PILE = {};
 	this.positions.DISCARD_PILE = game.scale.cellAt(

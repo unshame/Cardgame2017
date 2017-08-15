@@ -72,7 +72,7 @@ Field.prototype.updateDebug = function(){
 */
 Field.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
-	this.area.visible = this.inDebugMode;
+	this.setVisibility(this.inDebugMode);
 	if(!this.inDebugMode)
 		game.debug.reset();
 };
