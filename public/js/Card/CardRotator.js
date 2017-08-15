@@ -9,6 +9,14 @@
 */
 Card.prototype.rotateTo = function(angle, time, delay, easing){
 
+	// Если карта в поворачивается и указана задержка, откладываем начало поворота
+	if(!this.game.paused && delay && this._rotator){
+		this._saveDelayedTweenInfo('rotator', arguments, 1, 2);
+		return;
+	}
+	// Удаляем сохраненные настройки поворота, если мы не будем их использовать
+	this._removeDelayedTweenInfo('rotator');
+
 	var newAngle = this._calculateCorrectAngle(angle);
 
 	if(newAngle === false){
@@ -93,7 +101,6 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 		}, this);
 	}
 };
-
 
 // ВОКРУГ ТОЧКИ
 

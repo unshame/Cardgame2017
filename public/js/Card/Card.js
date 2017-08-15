@@ -126,11 +126,11 @@ var Card = function (options) {
 	*/
 	this.mover = null;
 	/**
-	* Информация о задержанном движении.
+	* Информация о задержанных твинах.
 	* @private
-	* @type {object}
+	* @type {object<object>}
 	*/
-	this._delayedMoverInfo = null;
+	this._delayedTweenInfos = {};
 	/**
 	* Твин вращения карты
 	* @type {Phaser.Tween}
@@ -202,9 +202,7 @@ var Card = function (options) {
 	* @see {@link SkinManager}
 	*/
 	this.skin = this.options.skin || skinManager.skin;
-	this.applySkin();
-
-	
+	this.applySkin();	
 
 	Object.seal(this);
 };
@@ -236,6 +234,7 @@ Card.prototype.getDefaultOptions = function(){
 //@include:CardRotator
 //@include:CardSkin
 //@include:CardGlow
+//@include:CardDelayedTweens
 
 // СОБЫТИЯ
 
@@ -363,7 +362,8 @@ Card.prototype.update = function() {
 	if(this.cursorIsOver()){
 		ui.layers.updateCursorOverlap(this);
 	}
-	this._tryStartDelayedMover();
+	this._tryStartDelayedTween('mover', this.moveTo);
+	this._tryStartDelayedTween('rotator', this.rotateTo);
 };
 
 /**
