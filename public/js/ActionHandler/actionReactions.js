@@ -124,7 +124,7 @@ actionReactions = {
 	DRAW: function(action){
 		var delay = fieldManager.queueCards(action.cards);
 		fieldManager.removeMarkedCards();
-		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START);
+		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START_ALL);
 		return delay;
 	},
 
