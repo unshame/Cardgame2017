@@ -261,7 +261,6 @@ var Field = function(options, style, iconStyle){
 
 	this.badge = null;
 	if(this.options.badge){
-		console.log(this.options.badge)
 		this.badge = new PlayerBadge(this, this.name, this.options.badge);
 		this.base.add(this.badge);
 	}

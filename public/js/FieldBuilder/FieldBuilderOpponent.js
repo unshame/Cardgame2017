@@ -51,7 +51,7 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 	// Позиции полей
 	this.positions.opponent = [
 		game.scale.cellAt(
-			halfDensity + 1,
+			game.scale.density,
 			game.scale.numRows - game.scale.density,
 			-this.offsets.opponent[0],
 			-this.offsets.opponent[0]
@@ -63,7 +63,7 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 			-this.offsets.opponent[1]
 		),
 		game.scale.cellAt(
-			game.scale.numCols - halfDensity - 1,
+			game.scale.numCols - game.scale.density,
 			game.scale.density,
 			-this.offsets.opponent[0],
 			-this.offsets.opponent[0]

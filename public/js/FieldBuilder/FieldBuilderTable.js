@@ -7,7 +7,7 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 	/*--*/
 
 	var halfRows = Math.floor(game.scale.numRows / 2),
-		tableCells = this._tableCells = this._opponentPlacement[0] ? Math.round(game.scale.numCols - 4 - game.scale.density* 1.5) : game.scale.numCols - 2,
+		tableCells = this._tableCells = this._opponentPlacement[0] ? Math.round(game.scale.numCols - 6 - game.scale.density* 1.5) : game.scale.numCols - 2,
 		tableOffset = this._tableOffset = this.offsets.table* 2;
 
 	if(tableCells <= 0){
@@ -42,7 +42,7 @@ FieldBuilder.prototype._calcGenTableSizes = function(numOfTables){
 	};
 
 	this.positions.table = game.scale.cellAt(
-		this._opponentPlacement[0] ? 1 + game.scale.density : 1,
+		this._opponentPlacement[0] ? 2 + game.scale.density : 1,
 		halfRows - 1,
 		-this.offsets.table,
 		-this.offsets.table,

@@ -1,11 +1,11 @@
 // Player hand
 FieldBuilder.prototype._buildPlayerField = function(){
 	var manager = this.manager;
-
-	manager.addField({
+	var player = playerManager.players[playerManager.pi];
+	var field = manager.addField({
 		type: 'HAND',
 		id: playerManager.pid,
-		name: playerManager.players[playerManager.pi].name,
+		name: player.name,
 		badge: 'top',
 		specialId: playerManager.pi,
 		debug: manager.inDebugMode
@@ -22,6 +22,7 @@ FieldBuilder.prototype._buildPlayerField = function(){
 		draggable: true,
 		area: 'curved'
 	});
+	player.badge = field.badge;
 };
 
 // Table
@@ -80,13 +81,13 @@ FieldBuilder.prototype._buildTableFields = function(lockedFields){
 FieldBuilder.prototype._buildOpponentFields = function(){
 	var manager = this.manager,
 		players = playerManager.players,
-		i =  playerManager.pi + 1,
+		i = playerManager.pi + 1,
 		oi = 0;
 	if(i >= players.length)
 		i = 0;
 	while(i != playerManager.pi){
 		var p = players[i];
-		manager.addField({
+		var field = manager.addField({
 			type: 'HAND',
 			id: p.id,
 			name: p.name,
@@ -108,6 +109,7 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			addTo: this.dimensions[p.id].addTo,
 			alwaysVisible: true
 		});
+		p.badge = field.badge;
 		oi++;
 		i++;
 		if(i >= players.length)

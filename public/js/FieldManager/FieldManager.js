@@ -68,6 +68,7 @@ FieldManager.prototype.initialize = function(){
 * @param {object} [options] опции поля
 * @param {object} [style] стиль поля
 * @param {object} [iconStyle] стиль иконки поля
+* @return {Field}
 */
 FieldManager.prototype.addField = function(options, style, iconStyle){
 
@@ -86,6 +87,8 @@ FieldManager.prototype.addField = function(options, style, iconStyle){
 	if(options.type == 'TABLE'){
 		this.table.push(field);
 	}
+
+	return field;
 };
 
 /**

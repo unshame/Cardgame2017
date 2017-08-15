@@ -147,7 +147,7 @@ ScaleManager.prototype.getDefaultOptions = function(){
 		minRowsLandscape: 18,
 		minColsPortrait: 20,
 		minRowsPortrait: 23,
-		cellRelationThreshold: 2.5
+		cellRelationThreshold: 2.5625
 	};
 };
 
