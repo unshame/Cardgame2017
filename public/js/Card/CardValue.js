@@ -138,6 +138,7 @@ Card.prototype.setValue = function(suit, value, animate){
 */
 Card.prototype.setDraggability = function(draggable){	
 	this.draggable = draggable;
+	this.sprite.inputEnabled = draggable;
 };
 
 /**

@@ -85,7 +85,7 @@ var Card = function (options) {
 	* @type {Phaser.Sprite}
 	*/
 	this.sprite = game.add.sprite();
-	this.sprite.inputEnabled = true;
+	this.sprite.inputEnabled = false;
 	this.sprite.events.onInputDown.add(this._cursorDown, this);
 	this.sprite.events.onInputUp.add(this._cursorUp, this);
 	this.sprite.events.onInputOver.add(this._cursorOver, this);

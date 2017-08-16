@@ -131,7 +131,7 @@ OptionManager.prototype = {
 		catch(e){
 			console.error('OptionManager: ', e);
 		}
-		if(!options && typeof options != 'object'){
+		if(!options || typeof options != 'object'){
 			options = {};
 		}
 		for(var key in this.defaults){
