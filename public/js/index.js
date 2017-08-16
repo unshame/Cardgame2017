@@ -64,8 +64,6 @@ var ui = new UI();
 */
 var skinManager = new SkinManager('modern');
 
-var cardManager
-
 /**
 * Контроллер карт
 * @type {CardControl}
@@ -81,7 +79,8 @@ var cardControl = new CardControl(inDebugMode);
 var connection = new ConnectionManager(serverMethods, clientMethods, 'menu', inDebugMode);
 
 // Глобальные модули, создаваемые в game.initialize
-var cardEmitter;
+var cardEmitter,
+	cardManager;
 
 /**
 * Игра

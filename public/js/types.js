@@ -65,6 +65,17 @@ var BRING_TO_TOP_ON = {
 */
 // CardInfo
 
+/**
+* Информация о действии переданного от сервера.
+* @typedef {object} ActionInfo
+* @property {string} cid 	id карты
+* @property {string} pid 	id игрока
+* @property {string} field id поля
+* @property {number} suit 	масть карты
+* @property {number} value значение карты
+*/
+// Action
+
 
 // PHASER CLASSES
 

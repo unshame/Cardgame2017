@@ -1,31 +1,70 @@
 /**
-* Модуль отвечает за обработку действий от сервера
-* Формирует и передает информацию о действиях FieldManager'у
+* Модуль отвечает за обработку действий и оповещений от сервера.
+* Подсвечивает возможные действия и управляет кнопкой действия и таймером хода.
 * @class
+* @param {string} correctState
+* @param {object<function>} actionReactions
+* @param {object<function>} notificationReactions
 */
 
 var ActionHandler = function(correctState, actionReactions, notificationReactions){
 
+	/**
+	* Состояние игры в котором можно обрабатывать действия и оповещения.
+	* @type {string}
+	*/
 	this.correctState = correctState;
+
+	/**
+	* Методы, реагирующие на действия переданные от сервера.
+	* @see  {@link actionReactions}
+	* @type {object<function>}
+	*/
 	this.actionReactions = actionReactions;
+
+	/**
+	* Методы, реагирующие на оповещения от сервера.
+	* @see  {@link notificationReactions}
+	* @type {object<function>}
+	*/
 	this.notificationReactions = notificationReactions;
+
+	/**
+	* Сохраненные возможные действия.
+	* @type {object}
+	*/
 	this.possibleActions = null;
+
+	/**
+	* Текущая стадия хода.
+	* @type {string}
+	*/
 	this.turnStage = null;
 
-	this.waitingForGameInfo = false;
+	/**
+	* Ожидает ли модуль информации об игре от сервера
+	* @type {Boolean}
+	* @private
+	*/
+	this._waitingForGameInfo = false;
 };
 
 // ОБРАБОТКА КОМАНД СЕРВЕРА
 
-// Переставляет игру в правильное состояние и запрашивает информацию об игре у сервера
+/** Переставляет игру в правильное состояние и запрашивает информацию об игре у сервера */
 ActionHandler.prototype.changeToCorrectState = function(){
 	console.warn('ActionHandler: changing to ' + this.correctState + ' state');
-	this.waitingForGameInfo = true;
+	this._waitingForGameInfo = true;
 	game.state.change(this.correctState);
 	connection.server.reconnect();
 };
 
-// Выполняет действие
+/**
+* Выполняет действие.
+* @param  {object} action 		   действие
+* @param  {string} action.type тип действия по которому будет вызвана соответствующая функция из {@link ActionHandler#actionReactions}
+* @return {number} Время выполнения действия.
+*/
 ActionHandler.prototype.executeAction = function(action){
 
 	if(!action){
@@ -33,8 +72,8 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
-	if(this.waitingForGameInfo && action.type == 'GAME_INFO_UPDATE' || action.type == 'GAME_INFO'){
-		this.waitingForGameInfo = false;
+	if(this._waitingForGameInfo && action.type == 'GAME_INFO_UPDATE' || action.type == 'GAME_INFO'){
+		this._waitingForGameInfo = false;
 	}
 
 	if(game.inDebugMode){
@@ -46,8 +85,8 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
-	if(this.waitingForGameInfo){		
-		console.error('Action handler: waiting for game info');
+	if(this._waitingForGameInfo){		
+		console.error('Action handler: waiting for game info, instead got', action.type, action);
 		return;
 	}
 
@@ -65,6 +104,13 @@ ActionHandler.prototype.executeAction = function(action){
 	return delay;
 };
 
+/**
+* Позволяет игроку выбрать действие из списка при помощи интеракции с игрой.
+* @param {object} actions 	возможные действия
+* @param {number} time 	время, до которого необходимо выбрать действие
+* @param {number} timeSent время в которое действия были отправлены с сервера
+* @param {string} turnStage текущая стадия хода
+*/
 ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent, turnStage){
 	if(!actions){
 		console.error('Action handler: no actions recieved');
@@ -76,8 +122,8 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 		return;
 	}
 
-	if(this.waitingForGameInfo){		
-		console.error('Action handler: waiting for game info');
+	if(this._waitingForGameInfo){		
+		console.error('Action handler: waiting for game info, instead got possible actions', actions);
 		return;
 	}
 
@@ -91,6 +137,11 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 	this.highlightPossibleActions(actions);
 };
 
+/**
+* Реагирует на оповещение от сервера
+* @param  {object} note 		   оповещение
+* @param  {string} note.message    тип оповещения по которому будет вызвана соответствующая функция из {@link ActionHandler#notificationReactions}
+*/
 ActionHandler.prototype.handleNotification = function(note, actions){
 	if(!note){
 		console.error('Action handler: no note recieved');
@@ -106,8 +157,8 @@ ActionHandler.prototype.handleNotification = function(note, actions){
 		return;
 	}
 
-	if(this.waitingForGameInfo){		
-		console.error('Action handler: waiting for game info');
+	if(this._waitingForGameInfo){		
+		console.error('Action handler: waiting for game info, instead got', note.message, note);
 		return;
 	}
 
@@ -120,7 +171,10 @@ ActionHandler.prototype.handleNotification = function(note, actions){
 	}
 };
 
-// Подсвечивает карты, которыми можно ходить
+/**
+* Подсвечивает карты, которыми можно ходить и активирует кнопку действия.
+* @param {object} actions 	возможные действия
+*/
 ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 	if(!actions && !this.possibleActions){
@@ -167,6 +221,11 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 	fieldManager.tryHighlightDummy();
 };
 
+/**
+* Устанавливает текст и действие кнопки действия.
+* @param {Button} button кнопка действия
+* @param {string} type   тип действия
+*/
 ActionHandler.prototype.setButtonAction = function(button, type){
 	this.buttonAction = type;
 	var typeText = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
@@ -174,13 +233,13 @@ ActionHandler.prototype.setButtonAction = function(button, type){
 	button.enable();
 };
 
-// Убирает все возможные действия
+/** Убирает все возможные действия */
 ActionHandler.prototype.resetActions = function(){
 	this.possibleActions = null;
 	this.turnStage = null;
 };
 
-// Убирает все возможные действия и ресетит связанные с ними элементы игры
+/** Убирает все возможные действия и ресетит связанные с ними элементы игры */
 ActionHandler.prototype.reset = function(){
 	this.resetActions();
 	fieldManager.resetHighlights();
@@ -188,7 +247,7 @@ ActionHandler.prototype.reset = function(){
 	ui.rope.stop();
 };
 
-// Убирает определенные действия из `possibleActions` в соответствии с `turnStage`.
+/** Убирает определенные действия из `possibleActions` в соответствии с `turnStage`. */
 ActionHandler.prototype.removeActionsWith = function(card, field, doneAction){
 	if(!this.possibleActions){
 		return;
@@ -204,7 +263,10 @@ ActionHandler.prototype.removeActionsWith = function(card, field, doneAction){
 	}
 };
 
-// Возвращает нужно ли удалить действие в соответствии с `turnStage`
+/**
+* Возвращает нужно ли удалить действие в соответствии с `turnStage`
+* @private
+*/
 ActionHandler.prototype._shouldDeleteAction = function(action, card, field, doneAction){
 	switch(this.turnStage){
 		case 'INITIAL_ATTACK':

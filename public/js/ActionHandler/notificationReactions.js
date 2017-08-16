@@ -1,5 +1,6 @@
 /**
-* Действия, выполняемые в ответ на сообщения от сервера
+* Действия, выполняемые в ответ на оповещения от сервера.
+* @see  {@link ActionHandler#notificationReactions}
 * @namespace notificationReactions
 */
 
@@ -7,7 +8,7 @@
 var notificationReactions = {
 
 	/**
-	* В игре остались только боты, игра симулируется в ускоренном режиме
+	* В игре остались только боты, игра симулируется в ускоренном режиме.
 	* @memberOf notificationReactions
 	*/
 	SIMULATING: function(){
@@ -15,7 +16,7 @@ var notificationReactions = {
 	},
 
 	/**
-	* Начало хода
+	* Начало хода.
 	* @memberOf notificationReactions
 	* @param {object} note сообщение
 	*/
@@ -24,16 +25,17 @@ var notificationReactions = {
 	},
 
 	/**
-	* Начало игры
+	* Начало игры.
 	* @memberOf notificationReactions
 	* @param {object} note сообщение
+	* @param {number} note.index порядковый индекс игры
 	*/
 	GAME_STARTED: function(note){
 		ui.eventFeed.newMessage('Game ' + (note.index + 1) + ' Started', 4000);
 	},
 
 	/**
-	* Окончание хода
+	* Окончание хода.
 	* @memberOf notificationReactions
 	* @param {object} note сообщение
 	*/
@@ -41,19 +43,12 @@ var notificationReactions = {
 		fieldManager.resetTableOrder();
 	},
 
-	/*
-	* 	GAME_ENDED - окончание игры, голосование за старт новой
-	* 		note: {
-	* 			results: {
-	* 				winners,
-	* 				loser
-	* 			},
-	* 			scores: Object
-	* 		},
-	* 		actions: [
-	* 			{ type: 'ACCEPT' },
-	* 			{ type: 'DECLINE' }
-	* 		]
+	/**
+	* Окончание игры, голосование за старт новой.
+	* @param {object}                 note         сообщение
+	* @param {object}                 note.results результаты игры '{winners<object>, loser<string>}'
+	* @param {object<object<number>>} note.scores  очки игроков по id игроков в виде `{wins, losses, cardsWhenLost} `
+	* @param {object}                 actions      действия голосования за и против рематча `{ { type: 'ACCEPT' }, { type: 'DECLINE' } }`
 	*/
 	GAME_ENDED: function(note, actions){
 
@@ -108,33 +103,23 @@ var notificationReactions = {
 		});
 	},
 
-	/*
-	* 	VOTE_RESULTS - результаты голосования
-	* 		note: {
-	* 			results: {
-	* 				pid: {
-	* 					type: 'ACCEPT' | 'DECLINE',
-	* 				 	pid
-	* 				},
-	* 				...
-	* 			},
-	* 			successful: bool
-	* 		}
+	/**
+	* Результаты голосования.
+	* @param {object}                 note         сообщение
+	* @param {object<object<string>>} note.results результаты голосования по id игроков вида '{type, pid}'
+	* @param {boolean}                 successful  удачно ли прошло голосование
 	*/
 	VOTE_RESULTS: function(note){
 		console.log(note);
 	},
 
-	/*
-	* 	INVALID_ACTION, LATE_OR_UNCALLED_ACTION - неверное действие или действие с запозданием\без запроса
-	* 		note: {
-	* 			action,  - действие, которое необходимо обратить
-	* 			time,	
-	* 			timeSent
-	* 		},
-	* 		actions [
-	* 			любые действия
-	* 		]
+	/**
+	* Было выполнено невалидное действие.
+	* @param {object}             note           сообщение
+	* @param {ActionInfo}         note.action    действие, которое необходимо обратить
+	* @param {object}             note.time      время до которого нужно выполнить новое действие
+	* @param {object}             note.timeSent  время в которое действия были отправленны с сервера
+	* @param {object<ActionInfo>} actions        действия из которых нужно выбрать одно в замен неверного
 	*/
 	INVALID_ACTION: function(note, actions){
 		var action = note.action,
@@ -153,10 +138,15 @@ var notificationReactions = {
 		}
 	},
 
+	/**
+	* Игрок отключен от игры.
+	*/
 	DISCONNECTED: function(){
 		ui.feed.newMessage('Disconnected from game', 2000);
 		game.state.change('menu');
 	},
+
+	// нужно перенести в отдельный объект
 
 	LEFT_QUEUE: function(){
 		ui.feed.newMessage('Left queue', 2000);
@@ -177,6 +167,13 @@ var notificationReactions = {
 
 };
 
-/*jshint undef:false*/
-
-notificationReactions['LATE_OR_UNCALLED_ACTION'] = notificationReactions['INVALID_ACTION'];
+/**
+* Действие было выполнено невовремя или без запроса
+* @memberOf notificationReactions
+* @function
+* @param {object}     note         	   сообщение
+* @param {ActionInfo} [note.action]    действие, которое необходимо обратить
+* @param {object}     [note.time]      время до которого нужно выполнить новое действие
+* @param {object}     [note.timeSent]  время в которое действия были отправленны с сервера
+*/
+notificationReactions.LATE_OR_UNCALLED_ACTION = notificationReactions.INVALID_ACTION;

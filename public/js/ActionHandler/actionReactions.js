@@ -1,11 +1,12 @@
 /**
 * Действия, выполняемые в ответ на действия сервера  
+* @see  {@link ActionHandler#actionReactions}
 * @namespace actionReactions
 */
-actionReactions = {
+var actionReactions = {
 	
 	/**
-	* Наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них
+	* Наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них.
 	* @param {object} action - Обрабатываемое действие
 	* @param {CardInfo[]} action.cards - Информация о козырных картах
 	* @param {string} action.pid - id игрока с наименьшим козырем
@@ -106,7 +107,7 @@ actionReactions = {
 	},
 
 	/**
-	* Раскрытие значений карт
+	* Раскрытие значений карт.
 	* @param {object} action - Обрабатываемое действие
 	* @param {CardInfo[]} action.cards - Информация о картах
 	* @return {number} Время выполнения действия (0)
@@ -118,7 +119,7 @@ actionReactions = {
 	},
 
 	/**
-	* Раздача карт
+	* Раздача карт.
 	* @param {object} action - Обрабатываемое действие
 	* @param {CardInfo[]} action.cards - Информация о картах
 	* @return {number} Время до начала добавления последней карты
@@ -132,7 +133,7 @@ actionReactions = {
 	},
 
 	/**
-	* Игрок либо хочет взять, либо уже берет карты, зависит от присутствия action.cards
+	* Игрок либо хочет взять, либо уже берет карты, зависит от присутствия `action.cards`.
 	* @param {object} action - Обрабатываемое действие
 	* @param {CardInfo[]} [action.cards] - Информация о картах
 	* @param {string} action.pid - id берущего игрока	 
@@ -150,13 +151,8 @@ actionReactions = {
 	},
 
 	/**
-	* Игрок защищается
-	* @param {object} action - Обрабатываемое действие
-	* @param {string} action.cid - id карты
-	* @param {string} action.pid - id игрока
-	* @param {string} action.field - id поля
-	* @param {number} action.suit - масть карты
-	* @param {number} action.value - значение карты
+	* Игрок защищается.
+	* @param {ActionInfo} action - Обрабатываемое действие
 	* @return {number} Время выполнения действия
 	* @memberof actionReactions
 	*/
@@ -173,7 +169,7 @@ actionReactions = {
 	},
 
 	/**
-	* Карты перемещаются в стопку сброса
+	* Карты перемещаются в стопку сброса.
 	* @param {object} action - Обрабатываемое действие
 	* @param {string[]} action.ids - массив id перемещаемых карт
 	* @return {number} Время выполнения действия
@@ -199,7 +195,7 @@ actionReactions = {
 	},
 
 	/**
-	* Игрок пропускает ход
+	* Игрок пропускает ход.
 	* @param {object} action - Обрабатываемое действие
 	* @param {string} action.pid - id игрока
 	* @return {number} Время выполнения действия
@@ -210,18 +206,11 @@ actionReactions = {
 	}
 };
 
-/*jshint undef:false*/
-
 /**
-* Игрок атакует
+* Игрок атакует.
 * @method  ATTACK
-* @param {object} action - Обрабатываемое действие
-* @param {string} action.cid - id карты
-* @param {string} action.pid - id игрока
-* @param {string} action.field - id поля
-* @param {number} action.suit - масть карты
-* @param {number} action.value - значение карты
+* @param {ActionInfo} action Обрабатываемое действие
 * @return {number} Время выполнения действия
 * @memberof actionReactions
 */
-actionReactions['ATTACK'] = actionReactions['DEFENSE'];
+actionReactions.ATTACK = actionReactions.DEFENSE;
