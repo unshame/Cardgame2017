@@ -12,17 +12,19 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 	var halfDensity = Math.floor(game.scale.density / 2);
 
 	// Кол-во колонок и отступы для рук противников и мест на столе
-	var opponentNumRows = Math.round(game.scale.numRows - game.scale.density*2 + halfDensity - 2),
-		opponentCells = [
-			opponentNumRows,
-			game.scale.numCols - game.scale.density*4 - 2,
-			opponentNumRows
-		],
-		opponentsOffset = this._opponentsOffset = [
-			(game.scale.cellHeight + this.offsets.opponent[0]* 2 ),
-			(game.scale.cellWidth + this.offsets.opponent[1]* 2 ),
-			(game.scale.cellHeight + this.offsets.opponent[2]* 2 )
-		];
+	
+	var topOpponentOffsetMultiplier = this._topOpponentFits ? 4 : 2;
+	var opponentNumRows = Math.round(game.scale.numRows - game.scale.density*2 - 1);
+	var opponentCells = [
+		opponentNumRows,
+		game.scale.numCols - game.scale.density*topOpponentOffsetMultiplier - 2,
+		opponentNumRows
+	];
+	var opponentsOffset = this._opponentsOffset = [
+		(game.scale.cellHeight + this.offsets.opponent[0]* 2 ),
+		(game.scale.cellWidth + this.offsets.opponent[1]* 2 ),
+		(game.scale.cellHeight + this.offsets.opponent[2]* 2 )
+	];
 
 	for(var i = 0; i < opponentCells.length; i++){
 		if(opponentCells[i] <= 0){
@@ -35,16 +37,16 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 
 	this.dimensions.opponent = [
 		{
-			// width: , 
-			height: (opponentCells[0]* game.scale.cellHeight - opponentsOffset[0]* (this._opponentPlacement[0] - 1)) / this._opponentPlacement[0]
+			width: skinManager.skin.width, 
+			height: (opponentCells[0] * game.scale.cellHeight - opponentsOffset[0]* (this._opponentPlacement[0] - 1)) / this._opponentPlacement[0]
 		},
 		{
-			width: (opponentCells[1]* game.scale.cellWidth - opponentsOffset[1]* (this._opponentPlacement[1] - 1)) / this._opponentPlacement[1]
-			// height: 
+			width: (opponentCells[1] * game.scale.cellWidth - opponentsOffset[1]* (this._opponentPlacement[1] - 1)) / this._opponentPlacement[1],
+			height: skinManager.skin.height
 		},
 		{
-			// width: , 
-			height: (opponentCells[2]* game.scale.cellHeight - opponentsOffset[2]* (this._opponentPlacement[2] - 1)) / this._opponentPlacement[2]
+			width: skinManager.skin.width, 
+			height: (opponentCells[2] * game.scale.cellHeight - opponentsOffset[2]* (this._opponentPlacement[2] - 1)) / this._opponentPlacement[2]
 		}
 	];
 
@@ -52,12 +54,12 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 	this.positions.opponent = [
 		game.scale.cellAt(
 			game.scale.density,
-			game.scale.numRows - game.scale.density,
+			game.scale.numRows - game.scale.density*1.5 + 1,
 			-this.offsets.opponent[0],
 			-this.offsets.opponent[0]
 		),
 		game.scale.cellAt(
-			Math.floor(game.scale.density*2) + 1,
+			this._topOpponentFits ? Math.floor(game.scale.density*2) + 1 : game.scale.density + 1,
 			-halfDensity,
 			-this.offsets.opponent[1],
 			-this.offsets.opponent[1]
@@ -82,9 +84,7 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 		pi = 0;	// Индекс позиции для размещения
 
 	var dimensions = this.dimensions.opponent,
-		placement = this._opponentPlacement.map(function(v){
-			return v;
-		}),
+		placement = this._opponentPlacement.slice(),
 
 		// Данные для разных позиций
 		directions = ['backward', 'forward', 'forward'],
@@ -108,10 +108,11 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 		i = 0;
 	
 	while(i != playerManager.pi){
-
+		
 		if(!placement[pi]){
 			pi++;
 			oi = 0;
+			continue;
 		}
 
 		var p = players[i],
@@ -129,20 +130,24 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 			x: x,
 			y: y
 		};
-
 		this.dimensions[p.id] = {
 			width: dimensions[pi].width,
-			height: dimensions[pi].height,
+			height: dimensions[pi].height
+		};
+		this.options[p.id] = {
+			badge: badges[pi],
+			specialId: i + '('+ oi + ')'
+		};
+		this.styles[p.id] = {
 			direction: directions[pi],
 			flipped: flipped[pi],
 			axis: axis[pi],
 			addTo: addTo[pi],
-			specialId: i + '('+ oi + ')',
-			badge: badges[pi],
-			animateAppearance: animateFrom[pi]
+			animateAppearance: animateFrom[pi],
+			badgeAlign: badges[pi]
 		};
 		this.offsets[p.id] = this.offsets.opponent[pi];
-		this._notEnoughSpace(p.id, 'opponent', pi);
+		this._notEnoughSpace(p.id, 'opponent', pi, false, pi == 1, pi != 1);
 		oi++;
 		i++;
 		if(i >= players.length)
@@ -156,16 +161,45 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 FieldBuilder.prototype._countOpponentPlacement = function(n){
 	var a = [0, 0, 0];
 	var i = 0;
-	while(n--){
-		if(i > 2)
-			i = 0;
-		if(n >= 2)
-			a[i]++;
-		else if(a[0] == a[2])
-			a[1]++;
-		else
-			a[2]++;
-		i++;
+	if(game.scale.cellRelation > this._recudeTopOpponentsNumberRelation){
+		while(n--){
+			if(i > 2){
+				i = 0;
+			}
+			if(n >= 2){
+				a[i]++;
+			}
+			else if(a[0] == a[2]){
+				a[1]++;
+			}
+			else{
+				a[2]++;
+			}
+			i++;
+		}
+	}
+	else if(n == 1){
+		a[1]++;
+	}
+	else{
+		while(n--){
+			if(i > 2){
+				i = 0;
+			}
+			if(n > 2){
+				a[i]++;
+			}
+			else if(a[1] < a[0] && a[1] < a[2]){
+				a[1]++;
+			}
+			else if(a[0] <= a[2]){
+				a[0]++;
+			}
+			else{
+				a[2]++;
+			}
+			i++;
+		}
 	}
 	return a;
 };

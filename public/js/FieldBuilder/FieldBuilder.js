@@ -36,6 +36,10 @@ var FieldBuilder = function(manager){
 	*/
 	this.dimensions = {};
 
+	this.options = {};
+
+	this.styles = {};
+
 	/**
 	* Стандартный минимальный размер для размещения карт
 	* @type {Number}
@@ -85,19 +89,23 @@ var FieldBuilder = function(manager){
 
 	this._opponentsOffset = null;	
 
+	// Magic numbers - game.scalecellRelation
+	this._increaseTopOpponentsSpaceRelation = 1.78;		// ниже этого колода и стопка сброса сдвигаются ближе к краям
+	this._recudeTopOpponentsNumberRelation = 1.13;	// ниже этого больше оппонентов помещается по горизотали чем по вертикали
+
+	this._topOpponentFits = true;
+
 	Object.seal(this);
 };
 
 /** Создает поля */
 FieldBuilder.prototype.createFieldNetwork = function(lockedFields){
 
-	var manager = this.manager,
-		players = playerManager.players;
+	var manager = this.manager;
 
 	manager.table.length = 0;
 	manager.opponents.length = 0;
 
-	this._opponentPlacement = this._countOpponentPlacement(players.length - 1);
 	this.calcSizes();
 
 	this._buildDeckField();
@@ -112,8 +120,7 @@ FieldBuilder.prototype.createFieldNetwork = function(lockedFields){
 /** Правит поля */
 FieldBuilder.prototype.adjustFieldNetwork = function(lockedFields){
 
-	var manager = this.manager,
-		players = playerManager.players;
+	var manager = this.manager;
 
 	if(!manager.networkCreated){
 		this.createFieldNetwork();
@@ -123,7 +130,6 @@ FieldBuilder.prototype.adjustFieldNetwork = function(lockedFields){
 	manager.table.length = 0;
 	manager.opponents.length = 0;
 
-	this._opponentPlacement = this._countOpponentPlacement(players.length - 1);
 	this.calcSizes();
 	this._buildOpponentFields();
 	this._buildDiscardField();
@@ -134,6 +140,9 @@ FieldBuilder.prototype.adjustFieldNetwork = function(lockedFields){
 * Расчитывает размеры и позиции полей.
 */
 FieldBuilder.prototype.calcSizes = function(){
+	var numPlayers = playerManager.players.length;
+	this._topOpponentFits = game.scale.cellRelation > this._increaseTopOpponentsSpaceRelation || numPlayers == 3;
+	this._opponentPlacement = this._countOpponentPlacement(numPlayers - 1);
 	this._calcGenSizes();
 	this._calcSpecSizes();
 };
@@ -182,13 +191,14 @@ FieldBuilder.prototype._calcSpecSizes = function(){
 */
 FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 	var numOfCards = cardManager.numOfCards,
-		halfDensity = Math.floor(game.scale.density / 2);
+		halfDensity = Math.floor(game.scale.density / 2),
+		addedCells = this._topOpponentFits ? 3 : 0;
 
 	this.offsets.DECK = 15;
 	this.minActiveSpaces.DECK = numOfCards/2;
 	this.dimensions.DECK = {};
 	this.positions.DECK = game.scale.cellAt(
-		game.scale.density + 3,
+		game.scale.density + addedCells,
 		-halfDensity,
 		-this.offsets.DECK,
 		-this.offsets.DECK
@@ -198,7 +208,7 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 	this.minActiveSpaces.DISCARD_PILE = numOfCards/2;
 	this.dimensions.DISCARD_PILE = {};
 	this.positions.DISCARD_PILE = game.scale.cellAt(
-		game.scale.numCols - game.scale.density - 3,
+		game.scale.numCols - game.scale.density - addedCells,
 		-halfDensity,
 		-this.offsets.DISCARD_PILE,
 		-this.offsets.DISCARD_PILE
@@ -213,10 +223,10 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 * @return {boolean}         Меньше ли ширина\высота.
 */
 FieldBuilder.prototype._notEnoughSpace = function(id, ref, index, silent, noHeight, noWidth){
-	var isArray = typeof index == 'number',
-		width = isArray ? this.dimensions[ref][index].width : this.dimensions[ref].width,
-		height = isArray ? this.dimensions[ref][index].height : this.dimensions[ref].height,
-		minActiveSpace = isArray ? this.minActiveSpaces[ref][index] : this.minActiveSpaces[ref],
+	var arrayExists = typeof index == 'number',
+		width = arrayExists ? this.dimensions[ref][index].width : this.dimensions[ref].width,
+		height = arrayExists ? this.dimensions[ref][index].height : this.dimensions[ref].height,
+		minActiveSpace = arrayExists ? this.minActiveSpaces[ref][index] : this.minActiveSpaces[ref],
 		requiredWidth = skinManager.skin.width + minActiveSpace,
 		requiredHeight = skinManager.skin.height + minActiveSpace,
 		str = null;
@@ -226,10 +236,10 @@ FieldBuilder.prototype._notEnoughSpace = function(id, ref, index, silent, noHeig
 	}
 
 	if(!noWidth && (width || width === 0) && width < requiredWidth){
-		str = ['Field builder: Not enough space for field', id, '(', width, '<', requiredWidth, ')\n'];
+		str = ['Field builder: Not enough space (width) for field', id, '(', width, '<', requiredWidth, ')\n'];
 	}
 	else if(!noHeight && (height || height === 0) && height < requiredHeight){
-		str = ['Field builder: Not enough space for field', id, '(', height, '<', requiredHeight, ')\n'];
+		str = ['Field builder: Not enough space (height) for field', id, '(', height, '<', requiredHeight, ')\n'];
 	}
 	
 	if(str){

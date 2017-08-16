@@ -115,10 +115,27 @@ FieldManager.prototype.resizeFields = function(){
 	if(!this.networkCreated)
 		return;
 	this.builder.calcSizes();
-	this.forEachField(function(field, si){
-		field.style.padding = this.builder.offsets[si];
-		field.setBase(this.builder.positions[si].x, this.builder.positions[si].y);
-		field.setSize(this.builder.dimensions[si].width, this.builder.dimensions[si].height, true);
+	this.forEachField(function(field, id){
+		field.style.padding = this.builder.offsets[id];
+		var style = this.builder.styles[id];
+		var options = this.builder.options[id];
+		var key;
+		if(style){
+			for(key in style){
+				if(style.hasOwnProperty(key)){
+					field.style[key] = style[key];
+				}
+			}
+		}
+		if(options){
+			for(key in options){
+				if(options.hasOwnProperty(key) && typeof options[key] == typeof field[key]){
+					field[key] = options[key];
+				}
+			}
+		}
+		field.setBase(this.builder.positions[id].x, this.builder.positions[id].y);
+		field.setSize(this.builder.dimensions[id].width, this.builder.dimensions[id].height, true);
 	});
 };
 

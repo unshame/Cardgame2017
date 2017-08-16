@@ -5,7 +5,8 @@ FieldBuilder.prototype._calcGenPlayerSizes = function(){
 	this.minActiveSpaces.player = this.minActiveSpace;
 	/*--*/
 
-	var playerNumCols = Math.min((game.scale.numCols - 8), 40);
+	var reduce = game.scale.cellRelation > this._recudeTopOpponentsNumberRelation;
+	var playerNumCols = reduce ? Math.min((game.scale.numCols - 8), 40) : game.scale.numCols - 6;
 
 	this.dimensions.player = {
 		width: playerNumCols*game.scale.cellWidth

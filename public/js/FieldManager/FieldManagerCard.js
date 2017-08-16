@@ -245,8 +245,8 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 	var tables = this.builder.tableOrder.map(function(i){
 		return this.table[i];
 	}, this);
-	var timeForTables = Math.min(trailLifespan, totalTime),		// Время подсветки стола
-		timePerField = (totalTime - timeForTables)/fields.length,	// Время между анимацией двух полей
+	var timeForTables = trailLifespan,		// Время подсветки стола
+		timePerField = (totalTime - timeForTables - 1000)/fields.length,	// Время между анимацией двух полей
 		timePerTable = timeForTables/tables.length;					// Время между подсветкой двух полей стола
 	// Анимируем поля с задержкой асинхронно остальной анимации
 	fields.forEach(function(f, i){

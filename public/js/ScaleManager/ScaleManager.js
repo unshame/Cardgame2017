@@ -145,7 +145,7 @@ ScaleManager.prototype.getDefaultOptions = function(){
 		debug: false,
 		minColsLandscape:  28,
 		minRowsLandscape: 18,
-		minColsPortrait: 20,
+		minColsPortrait: 23,
 		minRowsPortrait: 23,
 		cellRelationThreshold: 2.5625
 	};
@@ -222,7 +222,7 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 
 	this._calculateGridSize(screenWidth, screenHeight);
 
-	var cellRelation = this.numCols/this.numRows;
+	var cellRelation = this.cellRelation = this.numCols/this.numRows;
 
 	if(!reduceMinHeight && cellRelation >= this._cellRelationThreshold){
 		this._calculateScreenSize(true);

@@ -92,8 +92,8 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			type: 'HAND_OPPONENT',
 			id: p.id,
 			name: p.name,
-			badge: this.dimensions[p.id].badge,
-			specialId: this.dimensions[p.id].specialId,
+			badge: this.options[p.id].badge,
+			specialId: this.options[p.id].specialId,
 			debug: manager.inDebugMode
 		},
 		{
@@ -104,12 +104,12 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			alwaysVisible: true,
 			minActiveSpace: this.minActiveSpaces[p.id],
 			padding:this.offsets[p.id],
-			axis: this.dimensions[p.id].axis,
-			flipped: this.dimensions[p.id].flipped,
-			direction: this.dimensions[p.id].direction,
-			addTo: this.dimensions[p.id].addTo,
+			axis: this.styles[p.id].axis,
+			flipped: this.styles[p.id].flipped,
+			direction: this.styles[p.id].direction,
+			addTo: this.styles[p.id].addTo,
 			alwaysVisible: true,
-			animateAppearance: this.dimensions[p.id].animateAppearance
+			animateAppearance: this.styles[p.id].animateAppearance
 		});
 		p.badge = field.badge;
 		oi++;
