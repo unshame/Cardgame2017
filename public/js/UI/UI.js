@@ -20,6 +20,9 @@ var UI = function(){
 	this.eventFeed = null;
 	this.announcer = null;
 
+	this.modalManager = null;
+	this.menus = null;
+
 	/**
 	* Заранее заданные цвета для использования в игровых элементах.
 	* @type {Object}
@@ -102,7 +105,7 @@ UI.prototype.initialize = function(){
 	this.layers.addExistingLayers([
 		[this.background, 0],
 		// this.actionButtons, 1
-		[fieldManager.fieldsGroup, 2],
+		[fieldManager, 2],
 		[cardManager, 3],
 		[cardEmitter, 4],
 		// this.menus.main, 5

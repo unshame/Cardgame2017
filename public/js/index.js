@@ -30,7 +30,6 @@
 
 // Глобальные модули
 var options,
-	fieldManager,
 	actionHandler,
 	playerManager,
 	ui,
@@ -40,7 +39,8 @@ var options,
 	game;
 
 // Глобальные модули, создаваемые в game.initialize
-var cardEmitter,
+var fieldManager,
+	cardEmitter,
 	cardManager;
 
 // Создаем модули, когда Phaser.Device инициализировался,
@@ -56,13 +56,6 @@ Phaser.Device.whenReady(function(){
 	* @type {OptionManager}
 	*/
 	options = new OptionManager(appName, containerName);
-
-	/**
-	* Менеджер полей
-	* @type {FieldManager}
-	* @global
-	*/
-	fieldManager = new FieldManager(options.get('debug_fields'));
 
 	/**
 	* Обработчик действий сервера.

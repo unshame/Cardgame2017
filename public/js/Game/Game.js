@@ -90,6 +90,13 @@ Game.prototype.initialize = function(){
 	// Phaser.Canvas.setImageRenderingCrisp(game.canvas);
 	
 	/**
+	* Менеджер полей
+	* @type {FieldManager}
+	* @global
+	*/
+	fieldManager = new FieldManager(options.get('debug_fields'));
+
+	/**
 	* Менеджер карт
 	* @type {CardManager}
 	* @global
@@ -105,7 +112,6 @@ Game.prototype.initialize = function(){
 
 	// Инициализация модулей
 	cardControl.initialize();
-	fieldManager.initialize();
 	ui.initialize();
 	connection.initialize();
 

@@ -3,10 +3,13 @@
 * Добавляет и удаляет карты из полей, предоставляет методы для работы с полями.  
 * Создает {@link FieldBuilder}, который создает поля и карты.
 * @class
+* @extends {external:Phaser.Group}
 * @param {Boolean} [inDebugMode] - Отображать ли дебаг информацию {@link FieldManager#toggleDebugMode}
 */
 
 var FieldManager = function(inDebugMode){
+
+	Phaser.Group.call(this, game, null, 'fields');
 
 	/**
 	* Созданы ли поля
@@ -22,17 +25,10 @@ var FieldManager = function(inDebugMode){
 	this.fields = {};
 
 	/**
-	* Phaser группа полей
-	* @type {Phaser.Group}
-	*/
-	this.fieldsGroup = null;
-
-	/**
 	* Поля стола
 	* @type {Field[]}
 	*/
 	this.table = [];
-
 
 	this.opponents = [];
 
@@ -44,12 +40,6 @@ var FieldManager = function(inDebugMode){
 	this.inDebugMode = inDebugMode;
 
 	/**
-	* Инициализирован ли модуль
-	* @type {Boolean}
-	*/
-	this.initialized = false;
-
-	/**
 	* Создает поля для менеджера
 	* @type {FieldBuilder}
 	*/
@@ -57,14 +47,7 @@ var FieldManager = function(inDebugMode){
 
 };
 
-/**
-* Создает Phaser группу для полей, инициализирует модуль.
-*/
-FieldManager.prototype.initialize = function(){
-	this.fieldsGroup = game.add.group();
-	this.fieldsGroup.name = 'fields';
-	this.initialized = true;
-};
+extend(FieldManager, Phaser.Group);
 
 /**
 * Добавляет поле.
@@ -75,17 +58,12 @@ FieldManager.prototype.initialize = function(){
 */
 FieldManager.prototype.addField = function(options, style, iconStyle){
 
-	if(!this.initialized){
-		console.error('Field manager: cannot add field, module uninitialized');
-		return;
-	}
-
 	var field = new Field(options, style, iconStyle);
 	if(this.fields[options.id]){
 		this.fields[options.id].destroy();
 	}
 	this.fields[options.id] = field;
-	this.fieldsGroup.add(field.base);
+	this.add(field.base);
 
 	if(options.type == 'TABLE'){
 		this.table.push(field);
