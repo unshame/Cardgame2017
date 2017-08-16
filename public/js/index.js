@@ -1,5 +1,7 @@
 // Entry point
 
+/* jshint unused:false */
+
 //@include:global
 //@include:fonts
 //@include:loc
@@ -27,80 +29,94 @@
 //@include:PlayerBadge
 
 // Глобальные модули
-
-var appName = 'durak';
-var containerName = 'cardgame';
-
-/**
-* Менеджер настроек.
-* @global
-* @type {OptionManager}
-*/
-var options = new OptionManager(appName, containerName);
-
-/**
-* Менеджер полей
-* @type {FieldManager}
-* @global
-*/
-var fieldManager = new FieldManager(options.get('debug_fields'));
-
-/**
-* Обработчик действий сервера.
-* @type {ActionHandler}
-* @global
-*/
-var actionHandler = new ActionHandler('play', actionReactions, notificationReactions);
-
-/**
-* Менеджер игроков.
-* @type {PlayerManager}
-* @global
-*/
-var playerManager = new PlayerManager();
-
-/**
-* Менеджер интерфейса.
-* @type {UI}
-* @global
-*/
-var ui = new UI();
-
-/**
-* Менеджер скинов.
-* @type {SkinManager}
-* @global
-*/
-var skinManager = new SkinManager(options.get('ui_skin'));
-
-/**
-* Контроллер карт
-* @type {CardControl}
-* @global
-*/
-var cardControl = new CardControl(options.get('debug_control'));
-
-/**
-* Менеджер соединения с сервером
-* @type {ConnectionManager}
-* @global
-*/
-var connection = new ConnectionManager(serverMethods, clientMethods, 'menu', options.get('debug_connection'));
+var options,
+	fieldManager,
+	actionHandler,
+	playerManager,
+	ui,
+	skinManager,
+	cardControl,
+	connection,
+	game;
 
 // Глобальные модули, создаваемые в game.initialize
 var cardEmitter,
 	cardManager;
 
-/**
-* Игра
-* @type {Game}
-* @global
-*/
-var game = new Game(containerName, 1, options.get('debug_game'));
-game.state.add(stateMenu, false, false);
-game.state.add(statePlay, false, false);
-// Запускаем загрузку игры
-game.state.add(stateBoot, true, true);	
+// Создаем модули, когда Phaser.Device инициализировался,
+// чтобы знать на каком типе девайса запущена игра
+Phaser.Device.whenReady(function(){
 
-// Останавливаем анимацию загрузки из index.html
-window.gameCreated = true;
+	var appName = 'durak';
+	var containerName = 'cardgame';
+
+	/**
+	* Менеджер настроек.
+	* @global
+	* @type {OptionManager}
+	*/
+	options = new OptionManager(appName, containerName);
+
+	/**
+	* Менеджер полей
+	* @type {FieldManager}
+	* @global
+	*/
+	fieldManager = new FieldManager(options.get('debug_fields'));
+
+	/**
+	* Обработчик действий сервера.
+	* @type {ActionHandler}
+	* @global
+	*/
+	actionHandler = new ActionHandler('play', actionReactions, notificationReactions);
+
+	/**
+	* Менеджер игроков.
+	* @type {PlayerManager}
+	* @global
+	*/
+	playerManager = new PlayerManager();
+
+	/**
+	* Менеджер интерфейса.
+	* @type {UI}
+	* @global
+	*/
+	ui = new UI();
+
+	/**
+	* Менеджер скинов.
+	* @type {SkinManager}
+	* @global
+	*/
+	skinManager = new SkinManager(options.get('ui_skin'));
+
+	/**
+	* Контроллер карт
+	* @type {CardControl}
+	* @global
+	*/
+	cardControl = new CardControl(options.get('debug_control'));
+
+	/**
+	* Менеджер соединения с сервером
+	* @type {ConnectionManager}
+	* @global
+	*/
+	connection = new ConnectionManager(serverMethods, clientMethods, 'menu', options.get('debug_connection'));
+
+	/**
+	* Игра
+	* @type {Game}
+	* @global
+	*/
+	game = new Game(containerName, 1, options.get('debug_game'));
+	game.state.add(stateMenu, false, false);
+	game.state.add(statePlay, false, false);
+	// Запускаем загрузку игры
+	game.state.add(stateBoot, true, true);	
+
+	// Останавливаем анимацию загрузки из index.html
+	window.gameCreated = true;
+});
