@@ -247,7 +247,7 @@ UI.prototype._createButtons = function(){
 	}, 'renderer',(renderer === Phaser.WEBGL ? 'Canvas' : 'WebGL'));
 	
 	this.menus.options.addButton(function(){
-		options.restoreAll();
+		options.restoreAllDefaults();
 		options.save();
 		location.href = location.href;
 	}, 'restore','Restore');
