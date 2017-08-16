@@ -10,11 +10,12 @@ var clientMethods = {
 		connection.resetTimer();
 		game.seq.finish();
 		game.pid = pid;
-		var oldId = localStorage.getItem('durak_id');
+		var oldId = options.get('connection_id');
 		if(oldId){
 			connection.proxy.reconnectClient(oldId);
 		}
-		localStorage.setItem('durak_id', connId);
+		options.set('connection_id', connId);
+		options.save();
 		connection.id = connId;
 	},
 

@@ -201,6 +201,8 @@ SkinManager.prototype.setSkin = function(skinName){
 		this.skinToSet = null;
 	}
 	this.skin = this.skins[skinName];
+	options.set('ui_skin', skinName);
+	options.save();
 	if(!this.skin.loaded){
 		this.loadSkin(skinName, true);
 	}

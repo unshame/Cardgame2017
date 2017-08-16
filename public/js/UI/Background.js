@@ -16,10 +16,13 @@ var Background = function(){
 		'wood_light',
 		'wood_dark'
 	];
-
-	this.surface = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, skinManager.skin.background);
+	var textureName = options.get('ui_background');
+	if(!~this.textures.indexOf(textureName)){
+		textureName = skinManager.skin.background;
+	}
+	this.surface = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, textureName);
 	this.surface.name = 'surface';
-	this.surface.textureName = skinManager.skin.background;
+	this.surface.textureName = textureName;
 	this.add(this.surface);
 };
 
@@ -37,6 +40,8 @@ Background.prototype.setTexture = function(textureName){
 	this.addChildAt(fakebg, 1);
 	this.surface.loadTexture(textureName);
 	this.surface.textureName = textureName;
+	options.set('ui_background', textureName);
+	options.save();
 	var transition = game.add.tween(fakebg.position);
 
 	var position = [

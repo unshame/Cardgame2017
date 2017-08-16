@@ -53,6 +53,8 @@ CardControl.prototype.updateDebug = function(){
 // Переключает дебаг
 CardControl.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
+	options.set('debug_control', this.inDebugMode);
+	options.save();
 	if(!this.inDebugMode){
 		console.log('Card control: Debug mode OFF');
 		game.debug.reset();

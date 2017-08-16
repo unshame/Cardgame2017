@@ -5,6 +5,7 @@
 //@include:loc
 //@include:types
 
+//@include:OptionManager
 //@include:ActionHandler
 //@include:Card
 //@include:CardControl
@@ -25,16 +26,24 @@
 //@include:MessageFeed
 //@include:PlayerBadge
 
-var inDebugMode = localStorage.getItem('durak_debug') == 'true';
-
 // Глобальные модули
+
+var appName = 'durak';
+var containerName = 'cardgame';
+
+/**
+* Менеджер настроек.
+* @global
+* @type {OptionManager}
+*/
+var options = new OptionManager(appName, containerName);
 
 /**
 * Менеджер полей
 * @type {FieldManager}
 * @global
 */
-var fieldManager = new FieldManager(inDebugMode);
+var fieldManager = new FieldManager(options.get('debug_fields'));
 
 /**
 * Обработчик действий сервера.
@@ -62,21 +71,21 @@ var ui = new UI();
 * @type {SkinManager}
 * @global
 */
-var skinManager = new SkinManager('modern');
+var skinManager = new SkinManager(options.get('ui_skin'));
 
 /**
 * Контроллер карт
 * @type {CardControl}
 * @global
 */
-var cardControl = new CardControl(inDebugMode);
+var cardControl = new CardControl(options.get('debug_control'));
 
 /**
 * Менеджер соединения с сервером
 * @type {ConnectionManager}
 * @global
 */
-var connection = new ConnectionManager(serverMethods, clientMethods, 'menu', inDebugMode);
+var connection = new ConnectionManager(serverMethods, clientMethods, 'menu', options.get('debug_connection'));
 
 // Глобальные модули, создаваемые в game.initialize
 var cardEmitter,
@@ -87,7 +96,7 @@ var cardEmitter,
 * @type {Game}
 * @global
 */
-var game = new Game('cardgame', 1, inDebugMode);
+var game = new Game(containerName, 1, options.get('debug_game'));
 game.state.add(stateMenu, false, false);
 game.state.add(statePlay, false, false);
 // Запускаем загрузку игры

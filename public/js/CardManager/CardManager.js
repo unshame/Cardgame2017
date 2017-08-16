@@ -23,7 +23,7 @@ var CardManager = function(inDebugMode){
 	this.numOfCards = 0;
 
 	/**
-	* Длительность перемещения карт по-умолчанию.
+	* Длительность перемещения карт по умолчанию.
 	* @type {Number}
 	* @default 300
 	*/

@@ -371,6 +371,8 @@ ScaleManager.prototype.cellAt = function(col, row, offsetX, offsetY, align){
 */
 ScaleManager.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
+	options.set('debug_grid', this.inDebugMode);
+	options.save();
 	this.drawDebugGrid();
 };
 

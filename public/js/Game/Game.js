@@ -57,7 +57,7 @@ var Game = function(parent, speed, inDebugMode){
 		{
 			width: this.screenWidth,
  			height: this.screenHeight, 
-			renderer: Phaser.Device.desktop ? Phaser.CANVAS : Phaser.WEBGL, 
+			renderer: options.get('system_renderer'), 
 			parent: parent,
 			transparent: true
 		}
@@ -94,7 +94,7 @@ Game.prototype.initialize = function(){
 	* @type {CardManager}
 	* @global
 	*/
-	cardManager = new CardManager(inDebugMode);
+	cardManager = new CardManager(options.get('debug_connection'));
 
 	/**
 	* Эмиттер карт
@@ -217,29 +217,37 @@ Game.prototype._addVisibilityChangeListener = function(){
 };
 
 /** Переключает дебаг всех элементов игры. */
-Game.prototype.toggleDebugMode = function(){
+Game.prototype.toggleAllDebugModes = function(){
 
-
-	this.inDebugMode = !this.inDebugMode;
-
-	localStorage.setItem('durak_debug', this.inDebugMode);
+	this.toggleDebugMode();
 
 	connection.inDebugMode = this.inDebugMode;
+	options.set('debug_connection', this.inDebugMode);
 
-	if(this.scale.inDebugMode != this.inDebugMode)
+	if(this.scale.inDebugMode != this.inDebugMode){
 		this.scale.toggleDebugMode();
+	}
 
-	if(cardControl.inDebugMode != this.inDebugMode)
+	if(cardControl.inDebugMode != this.inDebugMode){
 		cardControl.toggleDebugMode();
+	}
 
-	if(fieldManager.inDebugMode != this.inDebugMode)
+	if(fieldManager.inDebugMode != this.inDebugMode){
 		fieldManager.toggleDebugMode();
+	}
 
-	if(cardManager.inDebugMode != this.inDebugMode)
-		cardManager.toggleDebugMode();
-
-	this.time.advancedTiming = this.inDebugMode;
+	if(cardManager.inDebugMode != this.inDebugMode){
+		cardManager.toggleDebugMode();	
+	}
 };
+
+/** Переключает дебаг игры */
+Game.prototype.toggleDebugMode = function(){
+	this.inDebugMode = !this.inDebugMode;
+	this.time.advancedTiming = this.inDebugMode;
+	options.set('debug_game', this.inDebugMode);
+	options.save();
+}
 
 /** Выводит состояние дебаг режима всех модулей. */
 Game.prototype.checkDebugStatus = function(){

@@ -220,20 +220,6 @@ UI.prototype._createButtons = function(){
 
 	this.menus.options.hideElement('disconnect');
 
-	this.menus.options.addButton(function(){
-		//ui.modalManager.openModal('debug');
-	},'lel','NOTHING');	
-
-	this.menus.options.addButton( function(){
-		var mover = game.add.tween(this.getElementByName('CHS'));
-		mover.to({			
-			x: 0,
-			y: ui.menus.options.background.height,
-			alpha:1
-		}, 1000);
-		mover.start();
-	}, 'next','Next');
-
 	// Смена фона
 	this.menus.options.addButton(function(button, pointer){
 		ui.background.nextTexture();
@@ -253,6 +239,19 @@ UI.prototype._createButtons = function(){
 
 	},'CHS','Change skin');
 
+	var renderer = options.get('system_renderer');
+	this.menus.options.addButton( function(){
+		options.set('system_renderer', renderer === Phaser.WEBGL ? Phaser.CANVAS : Phaser.WEBGL);
+		options.save();
+		location.href = location.href;
+	}, 'renderer',(renderer === Phaser.WEBGL ? 'Canvas' : 'WebGL'));
+	
+	this.menus.options.addButton(function(){
+		options.restoreAll();
+		options.save();
+		location.href = location.href;
+	}, 'restore','Restore');
+
 	this.menus.options.addButton(function(){
 		ui.modalManager.openModal('debug');
 	}, 'debug','Debug');
@@ -268,12 +267,11 @@ UI.prototype._createButtons = function(){
 	////////////////////
 
 	this.menus.debug.addButton(function(){
-		game.toggleDebugMode();
+		game.toggleAllDebugModes();
 	}, 'all','All');
 
 	this.menus.debug.addButton(function(){
-		game.inDebugMode = !game.inDebugMode;
-		game.time.advancedTiming = game.inDebugMode;
+		game.toggleDebugMode();
 	}, 'game','Game');
 
 	this.menus.debug.addButton(function(){

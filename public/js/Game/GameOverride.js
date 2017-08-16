@@ -30,7 +30,7 @@ Game.prototype.boot = function(){
         game: this,
     	width: this._width,
     	height: this._height,
-        debug: this.inDebugMode
+        debug: options.get('debug_grid')
     });
     this.stage = new Phaser.Stage(this);
 
