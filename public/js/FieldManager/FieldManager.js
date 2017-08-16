@@ -63,7 +63,7 @@ FieldManager.prototype.addField = function(options, style, iconStyle){
 		this.fields[options.id].destroy();
 	}
 	this.fields[options.id] = field;
-	this.add(field.base);
+	this.add(field);
 
 	if(options.type == 'TABLE'){
 		this.table.push(field);

@@ -219,7 +219,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 
 	var offset = game.scale.cellHeight*2 + game.scale.gridOffset.y,		// отступ сверху до верхней границы вращения
 		maxHeight = game.screenWidth - game.scale.cellWidth*4,
-		height = playerField.base.y - animOffset - offset;	// высота ограничивающая вращение
+		height = playerField.y - animOffset - offset;	// высота ограничивающая вращение
 	if(height > maxHeight){
 		height = maxHeight;
 		offset = game.screenHeight/2 - offset - height/2;

@@ -10,8 +10,8 @@
 * @param {number} shift       отступ от выделенной карты
 */
 Field.prototype._setDebugActiveSpace = function(activeWidth, cardHeight, leftMargin, topMargin, shift){
-	this._debugActiveSpace.x = this.base.x;
-	this._debugActiveSpace.y = this.base.y;
+	this._debugActiveSpace.x = this.x;
+	this._debugActiveSpace.y = this.y;
 	if(this.style.axis == 'vertical'){
 		this._debugActiveSpace.x += topMargin - cardHeight/2;
 		this._debugActiveSpace.y += leftMargin - shift;
@@ -32,8 +32,8 @@ Field.prototype._setDebugActiveSpace = function(activeWidth, cardHeight, leftMar
 Field.prototype.updateDebug = function(){
 	if(!this.inDebugMode)
 		return;
-	var ax = this.base.x + this.area.x;
-	var ay = this.base.y + this.area.y;
+	var ax = this.x + this.area.x;
+	var ay = this.y + this.area.y;
 	var x, y;
 	if(ax < 0)
 		x = 0;
@@ -43,7 +43,7 @@ Field.prototype.updateDebug = function(){
 		x = ax;
 
 	if(ay < 0)
-		y = this.base.height + ay + 15;
+		y = this.height + ay + 15;
 	else if(ay > game.screenHeight)
 		y = game.screenHeight;
 	else

@@ -47,6 +47,8 @@ Field.prototype.removeAllCards = function(){
 	this.cardsToRemove.length = 0;
 };
 
+Field.prototype._destroy = Phaser.Group.prototype.destroy;
+
 /** Полностью уничтожает поле, убирает все карты предварительно. */
 Field.prototype.destroy = function(){
 	if(this._bitmapCircle){
@@ -56,8 +58,8 @@ Field.prototype.destroy = function(){
 		this._bitmapArea.destroy();
 	}
 	this.removeAllCards();
-	this.base.removeAll(true);
-	this.base.destroy();
+	this.removeAll(true);
+	this._destroy();
 };
 
 /**

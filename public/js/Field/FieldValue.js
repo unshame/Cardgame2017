@@ -124,7 +124,7 @@ Field.prototype.setPopOut = function(popped){
 	if(popped == this.poppedOut)
 		return;
 	this.poppedOut = popped;
-	var scale = popped ? 1 + this.scaleDiff : 1;
+	var scale = popped ? 1 + this.style.scaleDiff : 1;
 	for(var i = 0; i < this.cards.length - 1; i++){
 		this.cards[i].setScale(1);
 	}

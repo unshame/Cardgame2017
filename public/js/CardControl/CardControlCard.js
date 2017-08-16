@@ -33,7 +33,7 @@ CardControl.prototype._updateCard = function(){
 	this._updateCardAngle(curTime);
 	var fields = this._cardOnValidField();
 	if(fields){
-		this.card.setScale(1 + fields[0].scaleDiff);
+		this.card.setScale(1 + fields[0].style.scaleDiff);
 		if(~fields[0].validCards.indexOf(this.card)){
 			fieldManager.popOutField(fields[0]);
 		}

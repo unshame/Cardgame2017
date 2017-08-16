@@ -130,7 +130,7 @@ Field.prototype._moveCard = function(
 
 	// Масштаб карты
 	if(this.focusedCard && index == focusedIndex){
-		card.setScale(1 + this.scaleDiff);
+		card.setScale(1 + this.style.scaleDiff);
 	}
 	else{
 		card.setScale(1);
@@ -156,12 +156,12 @@ Field.prototype._moveCard = function(
 	// Абсолютная позиция 
 	if(this.style.axis == 'vertical'){
 		var temp = x;
-		x = y + this.base.x;
-		y = temp + this.base.y;
+		x = y + this.x;
+		y = temp + this.y;
 	}
 	else{
-		x += this.base.x;
-		y += this.base.y;
+		x += this.x;
+		y += this.y;
 	}
 
 	// Запускаем поворот карты
@@ -200,11 +200,11 @@ Field.prototype._rotateCard = function(card, angle, x, y, delay, margin){
 
 	// Находим угол и сдвигаем y, если поле выгнутое
 	if(this.style.area == 'curved'){
-		var toCenter = this.circleCenter.x - x + this.base.x,
+		var toCenter = this.circleCenter.x - x + this.x,
 			distance = Math.sqrt(Math.pow(this.circleRadius, 2) - toCenter*toCenter);
 		angle = Math.acos(toCenter/this.circleRadius) - Math.PI/2;
 		angle *= (180 / Math.PI);
-		y = this.base.y + this.circleCenter.y - distance + margin;
+		y = this.y + this.circleCenter.y - distance + margin;
 	}
 	// Берем сохраненный угол, если поле со случайными углами
 	else if(this.style.randomAngle){

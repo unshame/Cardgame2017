@@ -94,8 +94,6 @@ var FieldBuilder = function(manager){
 	this._reduceTopOpponentsNumberRelation = 1.13;	// ниже этого больше оппонентов помещается по горизотали чем по вертикали
 
 	this._topOpponentFits = true;
-
-	Object.seal(this);
 };
 
 /** Создает поля */

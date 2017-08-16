@@ -203,8 +203,6 @@ var Card = function (options) {
 	*/
 	this.skin = this.options.skin || skinManager.skin;
 	this.applySkin();	
-
-	Object.seal(this);
 };
 
 extend(Card, Phaser.Group);

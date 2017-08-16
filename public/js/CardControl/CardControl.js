@@ -138,8 +138,8 @@ CardControl.prototype.cardUnclick = function(card){
 * @private
 */
 CardControl.prototype._cardPointerInbound = function(){
-	var width = this.card.field ? skinManager.skin.width*(1 + this.card.field.scaleDiff) : skinManager.skin.width,
-		height = this.card.field ? skinManager.skin.height*(1 + this.card.field.scaleDiff) : skinManager.skin.height;
+	var width = this.card.field ? skinManager.skin.width*(1 + this.card.field.style.scaleDiff) : skinManager.skin.width,
+		height = this.card.field ? skinManager.skin.height*(1 + this.card.field.style.scaleDiff) : skinManager.skin.height;
 	return Phaser.Rectangle.containsRaw(
 		this.card.x - width / 2,
 		this.card.y - height / 2,

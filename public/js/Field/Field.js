@@ -2,7 +2,7 @@
 * Конструктор полей карт ({@link Card}).  
 * Производит размещение карт на экране. Контролирует позицию карт при наведении курсора.
 * Отвечает за подсветку пространства под картами и самих карт.  
-* Основные компоненты: {@link Field#base}, {@link Field#area}, {@link Field#circle}, {@link Field#icon}, {@link Field#cards}.  
+* Основные компоненты: {@link Field#area}, {@link Field#circle}, {@link Field#icon}, {@link Field#badge}, {@link Field#cards}.  
 * Карты добавляются в поле двумя методами:  
 *
 * {@link Field#queueCards} -> {@link Field#placeQueuedCards}  
@@ -11,20 +11,24 @@
 * Использование второго метода до финализации первого добавляет карты в очередь и запускает очередь  
 * `.queueCards(c1)` -> `.addCards(c2)` => `.queueCards(c1)` -> `.queueCards(c2)` -> `.placeQueuedCards()`   
 * @class
-* @param {object} [options] Настройки поля. {@link Field#options} 
+* @extends {external:Phaser.Group}
+* @param {object} [options] Настройки поля. {@link Field#options}. 
+*                           Будут пересохранены в `this`, изменения объекта `options` не повлияют на поле.
 * @param {string} options.id=null {@link Field#id}	
 * @param {string} options.type='GENERIC' {@link Field#type}	
 * @param {string} options.name=null {@link Field#name}	
 * 
 * @param {number} options.moveTime=cardManager.defaultMoveTime {@link Field#moveTime}	
 * @param {number} options.delayTime=100 {@link Field#delayTime}	
-* @param {number} options.scaleDiff=0.025 {@link Field#scaleDiff}
 * @param {boolean} options.debug=false {@link Field#inDebugMode}	
 * @param {number} options.specialId=null {@link Field#specialId}	
+* @param {(boolean|string)} options.badge Нужно ли добавлять плашку с информацией игрока ({@link PlayerBadge}) и как ее выравнивать.  
+*                                         Значения: `false, 'left', 'right', 'top', 'bottom'`  
+*                                         Значение будет пересохранено в `style.badgeAlign` для последующего изменения.
 * 
 * @param {object} [style] Внешний вид поля. {@link Field#style} 
-* @param {number} style.x=0	{@link Field#base} позиция по горизонтали
-* @param {number} style.y=0	{@link Field#base} позиция по вертикали
+* @param {number} style.x=0	{@link Field#x} позиция по горизонтали
+* @param {number} style.y=0	{@link Field#y} позиция по вертикали
 * @param {number} style.width=0	{@link Field#area} ширина поверхности
 * @param {number} style.height=0 {@link Field#area} высота поверхности
 * @param {number} style.margin=0 Отступ от края поля до видимого края поля.
@@ -33,6 +37,7 @@
 * @param {number} style.minActiveSpace=fieldManager.builder.minActiveSpace Минимальная ширина\высота для расположения карт.
 * @param {number} style.raisedOffset=skinManager.skin.height/2 	На сколько поднимать карты с `raised == true`
 * @param {(boolean|number)} style.forcedSpace=false Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать заданное значение.
+* @param {number} style.scaleDiff=0.025 На сколько увеличивается масштаб карты при наведении.
 * 
 * @param {boolean} style.focusable=false Нужно ли сдвигать карты при наведении
 * @param {boolean} style.sortable=false Нужно ли сортировать карты 
@@ -63,6 +68,9 @@
 * @param {number} style.corner=5 Радиус закругленного угла.
 * @param {number} style.border=4 Ширина рамки.
 *
+* @param {(boolean|string)} style.animateAppearance Нужно ли анимировать появление поля и откуда это делать.  
+*                                                   Значения: `false, 'left', 'right', 'top', 'bottom'`
+*
 * @param {object} [iconStyle] Внешний вид иконки поля. {@link Field#iconStyle} {@link Field#icon} 
 * @param {string} iconStyle.texture=null текстура иконки	
 * @param {number} iconStyle.frame=0 кадр текстуры иконки
@@ -75,13 +83,92 @@
 
 var Field = function(options, style, iconStyle){
 
+
 	this._applyOptions(options, style, iconStyle);
+
+
+	Phaser.Group.call(this, game, null, this.options.name);
+	/**
+	* Имя поля.
+	* @member Field#name
+	* @type {string}
+	*/
+
+	// Сохраняем опции на самом объекте для быстрого доступа
+
+	/**
+	* Тип поля
+	* @type {string}
+	*/
+	this.type = this.options.type;
+
+	/**
+	* id поля
+	* @type {string}
+	*/
+	this.id = this.options.id;
+
+	/**
+	* Запомненное id поля для временной замены 
+	* @type {string}
+	*/
+	this.savedId = this.id;
+
+	/**
+	* Специальное id поля для полей, пренадлежащих одной группе.
+	* @type {number}
+	*/
+	this.specialId = this.options.specialId;
+
+	/** 
+	* Время движения карт.
+	* @type {number}
+	*/
+	this.moveTime = this.options.moveTime;
+
+	/**
+	* Задержка между движением карт.
+	* @type {number}
+	*/
+	this.delayTime = this.options.delayTime;
 
 	/**
 	* Находится ли поле в дебаг режиме
 	* @type {boolean}
 	*/
 	this.inDebugMode = this.options.debug;
+
+
+	// Меняемые свойства
+
+	/**
+	* Подсвечено ли поле.
+	* @type {Boolean}
+	* @default  false
+	*/
+	this.highlighted = false;
+
+	/**
+	* Можно ли играть карты на это поле и тип действия.
+	* @type {(string|boolean)}
+	* @default  false
+	*/
+	this.playable = false;
+
+	/**
+	* Интерактивно ли поле.
+	* @type {Boolean}
+	* @default  true
+	*/
+	this.interactible = false;
+
+	/**
+	* Увеличен ли масштаб поля
+	* @type {Boolean}
+	* @default  false
+	*/
+	this.poppedOut = false;
+
 
 	/**
 	* Карты поля.
@@ -125,24 +212,12 @@ var Field = function(options, style, iconStyle){
 	this._angles = {};
 
 	/**
-	* Ожидаемая задержка для установки {@link Field#_uninteractibleTimer}
-	* @private
-	* @type {Number}
+	* Связанное поле.
+	* @type {Field}
+	* @see {@link CardControl#cardMoveToField}
 	*/
-	this._expectedDelay = 0;
+	this.linkedField = null;
 
-	/**
-	* Таймер {@link Field#_setUninteractibleTimer}
-	* @private
-	*/
-	this._uninteractibleTimer = null;
-
-	/**
-	* Расчитанное расстояние между картами для {@link Field#cardIsInside}
-	* @private
-	* @type {Number}
-	*/
-	this._cardSpacing = 0;
 
 	/**
 	* Выделенная карта.
@@ -151,66 +226,33 @@ var Field = function(options, style, iconStyle){
 	this.focusedCard = null;
 
 	/**
-	* Связанное поле.
-	* @type {Field}
-	* @see {@link CardControl#cardMoveToField}
+	* Ожидаемая задержка для установки {@link Field#_uninteractibleTimer}
+	* @private
+	* @type {Number}
 	*/
-	this.linkedField = null;
+	this._expectedDelay = 0;
 
 	/**
-	* Тип поля
-	* @type {string}
+	* Расчитанное расстояние между картами для {@link Field#cardIsInside}
+	* @private
+	* @type {Number}
 	*/
-	this.type = this.options.type;
+	this._cardSpacing = 0;
+
 
 	/**
-	* id поля
-	* @type {string}
+	* Таймер {@link Field#_setUninteractibleTimer}
+	* @private
 	*/
-	this.id = this.options.id;
+	this._uninteractibleTimer = null;
 
 	/**
-	* Запомненное id поля для временной замены 
-	* @type {string}
+	* Твин появления поля.
+	* @type {Phaser.Tween}
+	* @private
 	*/
-	this.savedId = this.id;
+	this._entranceTween = null;
 
-	/**
-	* Специальное id поля для полей, пренадлежащих одной группе.
-	* @type {number}
-	*/
-	this.specialId = this.options.specialId;
-
-	/**
-	* Имя поля
-	* @type {string}
-	*/
-	this.name = this.options.name;
-
-	/** 
-	* Время движения карт.
-	* @type {number}
-	*/
-	this.moveTime = this.options.moveTime;
-
-	/**
-	* Задержка между движением карт.
-	* @type {number}
-	*/
-	this.delayTime = this.options.delayTime;
-
-	/**
-	* На сколько увеличивать масштаб карт при наведении.
-	* @type {number}
-	*/
-	this.scaleDiff = this.options.scaleDiff;
-
-	/**
-	* Phaser группа с поверхностью поля.  
-	* @type {Phaser.Group}
-	*/
-	this.base = game.add.group();
-	this.setBase(this.style.x, this.style.y);
 
 	/**
 	* Поверхность поля.
@@ -219,7 +261,7 @@ var Field = function(options, style, iconStyle){
 	this.area = game.add.image(0, 0);
 	this.area.alpha = this.style.alpha;
 	this.area.visible = false;
-	this.base.add(this.area);
+	this.add(this.area);
 
 	/**
 	* BitmapData поверхности поля.
@@ -228,13 +270,14 @@ var Field = function(options, style, iconStyle){
 	*/
 	this._bitmapArea = game.make.bitmapData();
 
+	// Круглая поверхность
 	if(this.style.area == 'curved'){
 		/**
 		* Полукруглая поверхность поля, если `style.area == 'curved'`.
 		* @type {Phaser.Image}
 		*/
 		this.circle = game.add.image(0, 0);
-		this.base.add(this.circle);
+		this.add(this.circle);
 
 		/**
 		* BitmapData полукруглой поверхности поля.
@@ -244,8 +287,7 @@ var Field = function(options, style, iconStyle){
 		this._bitmapCircle = game.make.bitmapData();
 	}
 
-	this.setOwnHighlight(false);
-
+	// Иконка
 	if(this.iconStyle.texture){
 		/**
 		* Иконка поля, если `iconStyle.texture` указано.
@@ -256,46 +298,23 @@ var Field = function(options, style, iconStyle){
 		this.icon.visible = this.iconStyle.visible;
 		this.icon.anchor.set(0.5, 0.5);
 		this.icon.scale.set(this.iconStyle.scale, this.iconStyle.scale);
-		this.base.add(this.icon);
+		this.add(this.icon);
 	}
 
-	this.badge = null;
+	// Плашка
 	if(this.options.badge){
+
+		// Сохраняем выравнивание плашки, чтобы потом можно было его изменить
 		this.style.badgeAlign = this.options.badge;
+
+		/**
+		* Информационная плашка игрока.
+		* @type {PlayerBadge}
+		*/
 		this.badge = new PlayerBadge(this, this.name);
-		this.base.add(this.badge);
+		this.add(this.badge);
 	}
-	
-	/**
-	* Подсвечено ли поле.
-	* @type {Boolean}
-	* @default  false
-	*/
-	this.highlighted = false;
 
-	/**
-	* Можно ли играть карты на это поле и тип действия.
-	* @type {(string|boolean)}
-	* @default  false
-	*/
-	this.playable = false;
-
-	/**
-	* Интерактивно ли поле.
-	* @type {Boolean}
-	* @default  true
-	*/
-	this.interactible = false;
-
-	/**
-	* Увеличен ли масштаб поля
-	* @type {Boolean}
-	* @default  false
-	*/
-	this.poppedOut = false;
-
-	this.setSize(this.style.width, this.style.height);
-	
 	/**
 	* Размер активного места поля для дебага.
 	* @type {Phaser.Rectangle}
@@ -303,12 +322,14 @@ var Field = function(options, style, iconStyle){
 	*/
 	this._debugActiveSpace = new Phaser.Rectangle();
 
-	this._entranceTween = null;
-
-	Object.seal(this);
+	this.setOwnHighlight(false);
+	this.setBase(this.style.x, this.style.y);
+	this.setSize(this.style.width, this.style.height);
 
 	this._setupAnimatedAppearance();
 };
+
+extend(Field, Phaser.Group);
 
 /**
 * Возвращает опции по умолчанию
@@ -319,7 +340,6 @@ Field.prototype.getDefaultOptions = function(){
 
 			moveTime: cardManager.defaultMoveTime,
 			delayTime: 100,		
-			scaleDiff: 0.025,
 
 			id: null,
 			specialId: null,
@@ -342,6 +362,7 @@ Field.prototype.getDefaultOptions = function(){
 			minActiveSpace: fieldManager.builder.minActiveSpace,
 			raisedOffset: skinManager.skin.height/2,
 			forcedSpace: false,	
+			scaleDiff: 0.025,
 
 			focusable: false,	
 			sortable: false,	
@@ -389,6 +410,7 @@ Field.prototype._applyOptions = function(options, style, iconStyle){
 
 	/**
 	* Настройки поля.
+	* Изменения не повлияют на само поле, т.к. все свойства сохранены в `this`.
 	* @type {object}
 	*/
 	this.options = mergeOptions(defaults.options, options);
@@ -444,8 +466,8 @@ Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){
 	}
 
 	return card && Phaser.Rectangle.containsRaw(
-		this.base.x - spacing - addX,
-		this.base.y - addY,
+		this.x - spacing - addX,
+		this.y - addY,
 		this.area.width + addX*2 + spacing*2,
 		this.area.height + addY*2,
 		card.x + card.sprite.x,

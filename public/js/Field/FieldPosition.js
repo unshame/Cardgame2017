@@ -16,8 +16,8 @@ Field.prototype.setBase = function(x, y, shouldPlace){
 
 	this.endAnimation();
 
-	this.base.x = this.style.x = Math.round(x);
-	this.base.y = this.style.y = Math.round(y);
+	this.x = this.style.x = Math.round(x);
+	this.y = this.style.y = Math.round(y);
 
 	if(shouldPlace)
 		this.placeCards();
@@ -141,7 +141,7 @@ Field.prototype._createCircle = function(width, height){
 	circle.clear();		
 	circle.resize(game.screenWidth, height);
 	ctx.beginPath();
-	ctx.arc(center.x + this.base.x, center.y, radius,2 * Math.PI, 0); 
+	ctx.arc(center.x + this.x, center.y, radius,2 * Math.PI, 0); 
 	ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
 	ctx.lineWidth = this.style.border;
@@ -152,7 +152,7 @@ Field.prototype._createCircle = function(width, height){
 	circle.update();
 	this.circle.loadTexture(circle);
 
-	this.circle.x = -this.base.x;
+	this.circle.x = -this.x;
 
 	this.circleCenter = center;
 	this.circleRadius = radius;
@@ -203,24 +203,24 @@ Field.prototype._setupAnimatedAppearance = function(){
 	if(!this.style.animateAppearance)
 		return;
 
-	this._entranceTween = game.add.tween(this.base.position);
+	this._entranceTween = game.add.tween(this.position);
 
-	var position = {x: this.base.x, y: this.base.y};
+	var position = {x: this.x, y: this.y};
 	switch(this.style.animateAppearance){
 		case 'left':
-		this.base.x -= this.area.width;
+		this.x -= this.area.width;
 		break;
 
 		case 'right':
-		this.base.x += this.area.width;
+		this.x += this.area.width;
 		break;
 
 		case 'top':
-		this.base.y -= this.area.height;
+		this.y -= this.area.height;
 		break;
 
 		case 'bottom':
-		this.base.y += this.area.height;
+		this.y += this.area.height;
 		break;
 
 		default:
@@ -239,7 +239,7 @@ Field.prototype.endAnimation = function(){
 		return;
 	}
 	var tweenData = this._entranceTween.timeline[this._entranceTween.current];
-	this.base.position = tweenData.vEnd;
+	this.position = tweenData.vEnd;
 	this._entranceTween.stop();
 	this._entranceTween = null;
 };

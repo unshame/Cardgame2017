@@ -48,7 +48,7 @@ PlayerBadge.prototype.updatePosition = function(){
 		this.name.anchor.set(0, 1);
 		this.status.anchor.set(0, 0);
 		
-		width = this.field.area.width + Math.min(game.screenWidth - (this.field.base.x + width), 0);
+		width = this.field.area.width + Math.min(game.screenWidth - (this.field.x + width), 0);
 		break;
 
 		case 'right':
@@ -60,7 +60,7 @@ PlayerBadge.prototype.updatePosition = function(){
 
 		this.name.anchor.set(1, 1);
 		this.status.anchor.set(1, 0);
-		width = this.field.area.width + Math.min(this.field.base.x, 0);
+		width = this.field.area.width + Math.min(this.field.x, 0);
 		break;
 
 		default:
