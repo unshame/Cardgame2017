@@ -125,6 +125,7 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 		console.error('Field manager: cannot unlock field', id, ', no such field or field has no icon');
 		return;
 	}
+	var icon = field.icon;
 	
 	if(game.paused || noAnimation){
 		field.icon.destroy();
@@ -132,15 +133,15 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 		return;
 	}
 
-	field.icon.visible = true;
+	icon.visible = true;
 	field.iconStyle.shouldHide = false;
-	field.icon.alpha = 1;
+	icon.alpha = 1;
 
 	var lockDelay = 100/game.speed,
 		spinDelay = 300/game.speed,
 		spinTime = 1000/game.speed;
 
-	var tween = game.add.tween(field.icon);	
+	var tween = game.add.tween(icon);	
 
 	game.seq.start(function(){
 		field.setOwnHighlight(true);
@@ -148,19 +149,11 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 		tween.start();	
 	}, lockDelay)
 	.then(function(seq){
-		if(!field.icon){
-			seq.abort();
-			return;
-		}
-		field.icon.loadTexture('unlock');
+		icon.loadTexture('unlock');
 	}, spinTime + spinDelay - lockDelay)
 	.then(function(seq){
-		if(!field.icon){
-			seq.abort();
-			return;
-		}
 		tween.stop();
-		field.icon.destroy();
+		icon.destroy();
 		field.icon = null;
 	}, lockDelay)
 	.then(function(){

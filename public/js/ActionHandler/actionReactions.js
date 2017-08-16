@@ -23,7 +23,7 @@ actionReactions = {
 
 		game.seq.start(function(){
 			if(player){
-				message = ui.eventFeed.newMessage(player.name + ' is going first');
+				message = ui.eventFeed.newMessage(player.name + ' is going first', 'positive');
 			}
 			fieldManager.showTrumpCards(cardsInfo, pid);
 		}, 3000/game.speed, 0)

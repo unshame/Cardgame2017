@@ -19,6 +19,7 @@ var EventFeed = function(game, name){
 	*/
 	this.styles = {
 		'system': {fill: 'red', font: '50px Exo'},
+		'positive': {fill: 'green', font: '50px Exo'},
 		'important': {fill: 'red', font: '100px Exo'}
 	};
 
