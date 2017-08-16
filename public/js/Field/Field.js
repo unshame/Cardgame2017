@@ -244,7 +244,7 @@ var Field = function(options, style, iconStyle){
 		this._bitmapCircle = game.make.bitmapData();
 	}
 
-	this.setVisibility(this.inDebugMode);
+	this.setOwnHighlight(false);
 
 	if(this.iconStyle.texture){
 		/**
@@ -294,8 +294,6 @@ var Field = function(options, style, iconStyle){
 	this.poppedOut = false;
 
 	this.setSize(this.style.width, this.style.height);
-
-	this._animateAppearance();
 	
 	/**
 	* Размер активного места поля для дебага.
@@ -304,7 +302,11 @@ var Field = function(options, style, iconStyle){
 	*/
 	this._debugActiveSpace = new Phaser.Rectangle();
 
+	this._entranceTween = null;
+
 	Object.seal(this);
+
+	this._setupAnimatedAppearance();
 };
 
 /**
@@ -354,6 +356,8 @@ Field.prototype.getDefaultOptions = function(){
 			flipped: false,		
 			randomAngle: false,	
 			adjust: true,
+
+			animateAppearance: false,
 			
 			area: 'plain',	
 			alwaysVisible: false,

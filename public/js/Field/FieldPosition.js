@@ -14,6 +14,8 @@ Field.prototype.setBase = function(x, y, shouldPlace){
 	if(shouldPlace === undefined)
 		shouldPlace = false;
 
+	this.endAnimation();
+
 	this.base.x = this.style.x = Math.round(x);
 	this.base.y = this.style.y = Math.round(y);
 
@@ -180,15 +182,59 @@ Field.prototype._calculateCircleCenter = function(a, b, c){
 	return new Phaser.Point(x, y);
 };
 
+Field.prototype.animateAppearance = function(delay){
+	if(!this._entranceTween || this._entranceTween.isRunning){
+		return;
+	}
+	var tweenData = this._entranceTween.timeline[0];
+	tweenData.delay = delay;
+	this._entranceTween.start();
+}
+
 /** 
 * Анимирует появление поля
-* @private
 */
-Field.prototype._animateAppearance = function(){
-	if(this.style.area == 'curved'){
-		var tween = game.add.tween(this.circle.position);
-		this.circle.y = this.area.height;
-		tween.to({y: 0}, this.moveTime/game.speed, Phaser.Easing.Quadratic.Out);
-		tween.start();
+Field.prototype._setupAnimatedAppearance = function(){
+	if(!this.style.animateAppearance)
+		return;
+
+	this._entranceTween = game.add.tween(this.base.position);
+
+	var position = {x: this.base.x, y: this.base.y};
+	switch(this.style.animateAppearance){
+		case 'left':
+		this.base.x -= this.area.width;
+		break;
+
+		case 'right':
+		this.base.x += this.area.width;
+		break;
+
+		case 'top':
+		this.base.y -= this.area.height;
+		break;
+
+		case 'bottom':
+		this.base.y += this.area.height;
+		break;
+
+		default:
+		console.error('Field: invalid animateAppearance value', this.style.animateAppearance);
+		return;
 	}
+	this._entranceTween.to(position, this.moveTime/game.speed, Phaser.Easing.Quadratic.Out);
+	this._entranceTween.onComplete.addOnce(function(){
+		this._entranceTween = null;
+	}, this);
 };
+
+
+Field.prototype.endAnimation = function(){
+	if(!this._entranceTween){
+		return;
+	}
+	var tweenData = this._entranceTween.timeline[this._entranceTween.current];
+	this.base.position = tweenData.vEnd;
+	this._entranceTween.stop();
+	this._entranceTween = null;
+}

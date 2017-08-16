@@ -20,7 +20,8 @@ FieldBuilder.prototype._buildPlayerField = function(){
 		sortable: true,
 		focusable: true,
 		draggable: true,
-		area: 'curved'
+		area: 'curved',
+		animateAppearance: 'bottom'
 	});
 	player.badge = field.badge;
 };
@@ -88,7 +89,7 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 	while(i != playerManager.pi){
 		var p = players[i];
 		var field = manager.addField({
-			type: 'HAND',
+			type: 'HAND_OPPONENT',
 			id: p.id,
 			name: p.name,
 			badge: this.dimensions[p.id].badge,
@@ -107,7 +108,8 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			flipped: this.dimensions[p.id].flipped,
 			direction: this.dimensions[p.id].direction,
 			addTo: this.dimensions[p.id].addTo,
-			alwaysVisible: true
+			alwaysVisible: true,
+			animateAppearance: this.dimensions[p.id].animateAppearance
 		});
 		p.badge = field.badge;
 		oi++;
@@ -175,6 +177,7 @@ FieldBuilder.prototype._buildDiscardField = function(){
 		direction: 'backward',
 		addTo: 'back',
 		adjust: false,
+		animateAppearance: 'top',
 		alwaysVisible: true
 	},
 	{

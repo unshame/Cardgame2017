@@ -147,3 +147,9 @@ FieldManager.prototype.resetTableOrder = function(){
 		this.fields[table.id] = table;
 	}
 };
+
+FieldManager.prototype.endFieldAnimations = function(){
+	this.forEachField(function(f){
+		f.endAnimation();
+	});
+};

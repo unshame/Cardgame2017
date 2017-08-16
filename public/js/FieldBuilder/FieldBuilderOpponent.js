@@ -92,6 +92,7 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 		axis = ['vertical', 'horizontal', 'vertical'],
 		addTo = ['back', 'front', 'front'],
 		badges = ['right', 'bottom', 'left'],
+		animateFrom = ['left', 'top', 'right'],
 		xs = [
 			0,
 			dimensions[1].width + opponentsOffset[1],
@@ -137,7 +138,8 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 			axis: axis[pi],
 			addTo: addTo[pi],
 			specialId: i + '('+ oi + ')',
-			badge: badges[pi]
+			badge: badges[pi],
+			animateAppearance: animateFrom[pi]
 		};
 		this.offsets[p.id] = this.offsets.opponent[pi];
 		this._notEnoughSpace(p.id, 'opponent', pi);

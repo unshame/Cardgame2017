@@ -95,6 +95,7 @@ FieldBuilder.prototype.createFieldNetwork = function(lockedFields){
 		players = playerManager.players;
 
 	manager.table.length = 0;
+	manager.opponents.length = 0;
 
 	this._opponentPlacement = this._countOpponentPlacement(players.length - 1);
 	this.calcSizes();
@@ -120,6 +121,7 @@ FieldBuilder.prototype.adjustFieldNetwork = function(lockedFields){
 	}
 
 	manager.table.length = 0;
+	manager.opponents.length = 0;
 
 	this._opponentPlacement = this._countOpponentPlacement(players.length - 1);
 	this.calcSizes();

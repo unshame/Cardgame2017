@@ -173,7 +173,6 @@ var notificationReactions = {
 
 	QUEUE_FULL: function(){
 		ui.eventFeed.clear();
-		ui.eventFeed.newMessage('All players ready', 2000);
 	}
 
 };

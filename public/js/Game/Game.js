@@ -64,7 +64,6 @@ var Game = function(parent, speed, inDebugMode){
 	);
 
 	this._dimensionsUpdateTimeout = null;
-	this._pauseTimeout = null;
 	this._hiddenValue = null;
 
 };
@@ -163,40 +162,38 @@ Game.prototype._updateCoordinatesDebounce = function(){
 	this._dimensionsUpdateTimeout = setTimeout(this.updateCoordinates.bind(this), timeout);
 };
 
+/** Остонавливает симуляцию. */
+Game.prototype.pause = function(){
+	this.paused = true;	
+	this.pausedByViewChange = true;
+	if(this.inDebugMode){
+		console.log('Game: paused by visibility change');
+	}
+};
+
+/** Запускает симуляцию. */
+Game.prototype.unpause = function(){
+	this.paused = false;
+	this.pausedByViewChange = false;
+	if(this.inDebugMode){
+		console.log('Game: unpaused by visibility change');
+	}
+
+	var state = this.state.getCurrent();
+	setTimeout(state.postResumed.bind(state), 1000);
+};
+
 /**
 * Ставит и снимает игру с паузы в зависимости от видимости окна,
 * корректирует элементы игры после снятия паузы.
 * @private
 */
 Game.prototype._visibilityChangeListener = function(){
-
-	function pause(){
-		this.paused = true;	
-		this.pausedByViewChange = true;
-		if(this.inDebugMode)
-			console.log('Game: paused by visibility change');
-	}
-
 	if (!document[this._hiddenValue]) {
-
-		// Снимаем игру с паузы
-		this.paused = false;
-		this.pausedByViewChange = false;
-		if(this.inDebugMode)
-			console.log('Game: unpaused by visibility change');
-		if(this._pauseTimeout){
-			clearTimeout(this._pauseTimeout);
-			this._pauseTimeout = null;
-		}
-
-		// Ждем секунду, прежде чем откорректировать элементы игры, которые могли оказаться в неправильном положении
-		// Это делается, чтобы браузер не пропустил requireAnimationFrames движка, или что-то еще, что может пойти не так
-		var state = this.state.getCurrent();
-		setTimeout(state.postResumed.bind(state), 1000);
+		this.unpause();
 	}
 	else{
-		// Устанавливаем таймаут, после которого игра ставится на паузу
-		this._pauseTimeout = setTimeout(pause.bind(this), this.inDebugMode ? 2000 : 10000);
+		this.pause();
 	}
 };
 

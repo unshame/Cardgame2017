@@ -61,6 +61,10 @@ actionReactions = {
 				fieldManager.builder.createFieldNetwork(action.lockedFields);
 			}
 		}
+		else{
+			fieldManager.resetHighlights();
+			fieldManager.resetFields();
+		}
 
 		if(!fieldManager.networkCreated){
 			console.error('Action handler: field network hasn\'t been created');
@@ -70,12 +74,11 @@ actionReactions = {
 		actionHandler.resetActions();
 		ui.announcer.clear();
 		cardEmitter.stop();
-		fieldManager.resetHighlights();
-		fieldManager.resetFields();
 		cardControl.reset();
 		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
 		var delay;
 		if(noDelay){
+			fieldManager.endFieldAnimations();
 			delay = fieldManager.queueCards(action.cards, noDelay);
 			fieldManager.removeMarkedCards();
 			fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, noDelay);

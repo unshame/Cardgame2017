@@ -33,6 +33,9 @@ var FieldManager = function(inDebugMode){
 	*/
 	this.table = [];
 
+
+	this.opponents = [];
+
 	/**
 	* Выводить ли дебаг информацию
 	* @type {bollean}
@@ -87,7 +90,9 @@ FieldManager.prototype.addField = function(options, style, iconStyle){
 	if(options.type == 'TABLE'){
 		this.table.push(field);
 	}
-
+	else if(options.type == 'HAND_OPPONENT'){
+		this.opponents.push(field);
+	}
 	return field;
 };
 
