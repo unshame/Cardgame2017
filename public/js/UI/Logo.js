@@ -3,9 +3,9 @@
 * @class
 * @param {object|function} position Позиция лого в виде объекта или функции,
 *                                   возвращающей объект вида `{x, y}`;                                  
-* @param {number} scale    Максимальный масштаб лого (будет уменьшен, если лого не влезает в экран).
-* @param {string} texture  Название текстуры лого.
-* @param {string} [name]   Имя лого в {@link UILayers}.
+* @param {number}          scale    Максимальный масштаб лого (будет уменьшен, если лого не влезает в экран).
+* @param {string}          texture  Название текстуры лого.
+* @param {string}          [name]   Имя лого в {@link UILayers}.
 */
 var Logo = function(position, scale, texture, name){
 	Phaser.Image.call(this, game, 0, 0, texture);

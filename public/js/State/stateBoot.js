@@ -106,7 +106,7 @@ var stateBoot = new State('boot', {
 
 	/**
 	* Обновляет загрузочный текст.
-	* @param  {string} text       загрузочный текст
+	* @param {string} text загрузочный текст
 	* @memberof stateBoot
 	*/
 	updateLoadText: function(text){

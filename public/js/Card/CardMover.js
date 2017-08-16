@@ -2,15 +2,15 @@
 
 /**
 * Плавно перемещает карту
-* @param  {number} x              - позиция по горизонтали
-* @param  {number} y              - позиция по вертикали
-* @param  {number} time           - время перемещения
-* @param  {number} [delay=0]      - задержка перед перемещением
-* @param  {boolean} [relativeToBase=false] - перемещение происходит относительно базы карты
-* @param  {boolean} [shouldRebase=false]   - нужно ли перемещать базу карты или только карту  
-* если база не изменилась, то эта переменная всегда будет false
-* @param  {BRING_TO_TOP_ON} [bringToTopOn=BRING_TO_TOP_ON.INIT]   - когда поднимать карту на передний план 
-* @param  {functon} [easing=Phaser.Easing.Quadratic.Out] - функция плавности
+* @param {number}          x                                    позиция по горизонтали
+* @param {number}          y                                    позиция по вертикали
+* @param {number}          time                                 время перемещения
+* @param {number}          [delay=0]                            задержка перед перемещением
+* @param {boolean}         [relativeToBase=false]               перемещение происходит относительно базы карты
+* @param {boolean}         [shouldRebase=false]                 нужно ли перемещать базу карты или только карту.
+*                                                               если база не изменилась, то эта переменная всегда будет false
+* @param {BRING_TO_TOP_ON} [bringToTopOn=BRING_TO_TOP_ON.INIT]  когда поднимать карту на передний план
+* @param {functon}         [easing=Phaser.Easing.Quadratic.Out] функция плавности
 */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn, easing){
 
@@ -51,8 +51,8 @@ Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase
 /**
 * Плавно возвращает карту на базу.
 * @see  {@link Card#moveTo}
-* @param  {number} time           - время перемещения
-* @param  {number} delay          - задержка перед перемещением
+* @param {number} time  время перемещения
+* @param {number} delay задержка перед перемещением
 */
 Card.prototype.returnToBase = function(time, delay){
 	this.moveTo(0, 0, time || 0, delay || 0, true);
@@ -61,11 +61,12 @@ Card.prototype.returnToBase = function(time, delay){
 /**
 * Вычисляет координаты базы и спрайта, к которым будет происходить движение, из переданных координат.
 * @private
-* @param  {number} x              позиция по горизонтали
-* @param  {number} y              позиция по вертикали
-* @param  {number} relativeToBase перемещение происходит относительно базы карты
-* @param  {number} shouldRebase   нужно ли перемещать базу карты или только карту  
-* @return {object}                Возвращает две позици `{ sprite: {x, y}, base: {x, y} }`
+* @param {number} x              позиция по горизонтали
+* @param {number} y              позиция по вертикали
+* @param {number} relativeToBase перемещение происходит относительно базы карты
+* @param {number} shouldRebase   нужно ли перемещать базу карты или только карту
+*
+* @return {object} Возвращает две позици `{ sprite: {x, y}, base: {x, y} }`
 */
 Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, shouldRebase){
 
@@ -117,12 +118,12 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 /**
 * Создает и запускает твин передвижения или перемещает карту если игра остановлена.
 * @private
-* @param  {number} x              	 позиция по горизонтали
-* @param  {number} y              	 позиция по вертикали
-* @param  {number} time           	 время перемещения
-* @param  {number} delay          	 задержка перед перемещением
-* @param  {boolean} shouldRebase    нужно ли перемещать базу карты или только карту 
-* @param  {functon} easing 		 функция плавности
+* @param {number}  x            позиция по горизонтали
+* @param {number}  y            позиция по вертикали
+* @param {number}  time         время перемещения
+* @param {number}  delay        задержка перед перемещением
+* @param {boolean} shouldRebase нужно ли перемещать базу карты или только карту
+* @param {functon} easing       функция плавности
 */
 Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	if(this.game.paused){
@@ -207,11 +208,12 @@ Card.prototype._onMoveComplete = function(){
 * Останавливает мувер, если время, позиция или задержка изменились.
 * Возвращает уменьшенное время, если они остались прежними.
 * @private
-* @param  {number} x              	 позиция по горизонтали
-* @param  {number} y              	 позиция по вертикали
-* @param  {number} time           	 время перемещения
-* @param  {number} delay          	 задержка перед перемещением
-* @param  {boolean} shouldRebase    нужно ли перемещать базу карты или только карту 
+* @param {number}  x            позиция по горизонтали
+* @param {number}  y            позиция по вертикали
+* @param {number}  time         время перемещения
+* @param {number}  delay        задержка перед перемещением
+* @param {boolean} shouldRebase нужно ли перемещать базу карты или только карту
+*
 * @return {number} Возвращает оставшееся время или -1, если мувер не был остановлен.
 */
 Card.prototype._tryResetMover = function(x, y, time, delay, shouldRebase){

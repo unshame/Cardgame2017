@@ -2,8 +2,8 @@
 
 /**
 * Устанавливает абсолютную позицию карты.
-* @param {number} x          позиция по горизонтали
-* @param {number} y          позиция по вертикали
+* @param {number}  x                 позиция по горизонтали
+* @param {number}  y                 позиция по вертикали
 * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
 */
 Card.prototype.setPosition = function(x, y, resetMover){
@@ -23,8 +23,8 @@ Card.prototype.setPosition = function(x, y, resetMover){
 
 /**
 * Устанавливает положение карты по отношению к базе карты.
-* @param {number} x          позиция по горизонтали
-* @param {number} y          позиция по вертикали
+* @param {number}  x                 позиция по горизонтали
+* @param {number}  y                 позиция по вертикали
 * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
 */
 Card.prototype.setRelativePosition = function(x, y, resetMover){
@@ -44,8 +44,8 @@ Card.prototype.setRelativePosition = function(x, y, resetMover){
 
 /**
 * Устанавливает позицию базы карты.
-* @param {number} x          позиция по горизонтали
-* @param {number} y          позиция по вертикали
+* @param {number}  x                 позиция по горизонтали
+* @param {number}  y                 позиция по вертикали
 * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
 */
 Card.prototype.setBase = function(x, y, resetMover){
@@ -65,8 +65,8 @@ Card.prototype.setBase = function(x, y, resetMover){
 
 /**
 * Устанавливает позицию базы карты, сохраняя относительный сдвиг спрайта и хвоста.
-* @param {number} x  позиция по горизонтали
-* @param {number} y  позиция по вертикали
+* @param {number}  x                 позиция по горизонтали
+* @param {number}  y                 позиция по вертикали
 * @param {boolean} [resetMover=true] нужно ли останавливать {@link Card#mover}
 */
 Card.prototype.setBasePreserving = function(x, y, resetMover){

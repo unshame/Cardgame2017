@@ -52,9 +52,9 @@ StateManager.prototype._addAsync = Phaser.StateManager.prototype.add;
 
 /**
 * Добавляет новое состояние в игру. 
-* @param {State} state Состояние.
+* @param {State}   state   Состояние.
 * @param {boolean} isAsync Является ли состояние асинхронным.
-* @param {boolean} start Нужно ли переходить к этому состоянию сразу.
+* @param {boolean} start   Нужно ли переходить к этому состоянию сразу.
 */
 StateManager.prototype.add = function(state, isAsync, start){
 	if(start){
@@ -76,7 +76,7 @@ StateManager.prototype.add = function(state, isAsync, start){
 * Меняет состояние игры. 
 * Переходы к асинхронным состояниям плохо работают с ответами серверу и анимациями,
 * поэтому такие переходы не рекомендуются и кидают предупреждение в консоль.
-* @param  {string} key название состояния
+* @param {string} key название состояния
 */
 StateManager.prototype.change = function(key){
 	var oldState, state;

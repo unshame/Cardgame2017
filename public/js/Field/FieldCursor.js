@@ -32,9 +32,9 @@ Field.prototype._setUninteractibleTimer = function(time){
 
 /**
 * Выделяет карту, над которой находится курсор.
-* @param  {Card} card      выделенная карта
-* @param  {Phaser.Pointer} pointer курсор
-* @param  {boolean} [forced]  заставляет поле выделить карту, даже если она не находится в пределах поля
+* @param {Card}           card     выделенная карта
+* @param {Phaser.Pointer} pointer  курсор
+* @param {boolean}        [forced] заставляет поле выделить карту, даже если она не находится в пределах поля
 * или поле не выделяет карты при наведении
 */
 Field.prototype.focusOnCard = function(card, pointer, forced){
@@ -49,8 +49,8 @@ Field.prototype.focusOnCard = function(card, pointer, forced){
 
 /**
 * Убирает выделение карты.
-* @param  {Card} card   выделенная карта
-* @param  {boolean} [forced] заставляет поле убрать выделение карты, даже если поле не стало бы этого делать
+* @param {Card}    card     выделенная карта
+* @param {boolean} [forced] заставляет поле убрать выделение карты, даже если поле не стало бы этого делать
 */
 Field.prototype.focusOffCard = function(card, forced){
 	if(

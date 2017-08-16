@@ -50,8 +50,9 @@ UILayers.prototype._sortPositions = function(){
 
 /**
 * Создает новую `Phaser.Group` группу и добавляет ее как слой.
-* @param {number} i                   z-index слоя  
-* @param {string} name                имя слоя, должно быть уникальным
+* @param {number} i    index слоя
+* @param {string} name имя слоя, должно быть уникальным
+*
 * @return {Phaser.Group} Созданный слой.
 */
 UILayers.prototype.addLayer = function(i, name){
@@ -69,8 +70,9 @@ UILayers.prototype.addLayer = function(i, name){
 
 /**
 * Добавляет существующий элемент игры, как слой.
-* @param {DisplayObject} layer       добавляемый элемент игры
-* @param {number} i                   z-index слоя
+* @param {DisplayObject} layer добавляемый элемент игры
+* @param {number}        i     index слоя
+*
 * @return {DisplayObject} Добавленный слой.
 */
 UILayers.prototype.addExistingLayer = function(layer, i){
@@ -99,8 +101,8 @@ UILayers.prototype.addExistingLayers = function(layers){
 /**
 * Прячет элементы слоя у которых есть метод `hide`.
 * Опционально отключает элементы слоя, у которых есть метод `disable`.
-* @param  {DisplayObject} layer  слой
-* @param  {boolean} shouldDisable нужно ли отключать элементы
+* @param {DisplayObject} layer         слой
+* @param {boolean}       shouldDisable нужно ли отключать элементы
 */
 UILayers.prototype.hideLayer = function(layer, shouldDisable){
 	layer.forEach(function(el){
@@ -116,8 +118,8 @@ UILayers.prototype.hideLayer = function(layer, shouldDisable){
 /**
 * Показывает элементы слоя у которых есть метод `show`.
 * Опционально отключает элементы слоя, у которых есть метод `disable`.
-* @param  {DisplayObject} layer  слой
-* @param  {boolean} shouldDisable нужно ли отключать элементы
+* @param {DisplayObject} layer         слой
+* @param {boolean}       shouldDisable нужно ли отключать элементы
 */
 UILayers.prototype.showLayer = function(layer, shouldDisable){
 	layer.forEach(function(el){
@@ -133,8 +135,8 @@ UILayers.prototype.showLayer = function(layer, shouldDisable){
 
 /**
 * Меняет z-index слоя.
-* @param {DisplayObject} layer        слой
-* @param {number} i                   z-index слоя
+* @param {DisplayObject} layer слой
+* @param {number}        i     index слоя
 */
 UILayers.prototype.setLayerIndex = function(layer, i){
 	layer.index = i;
@@ -224,7 +226,7 @@ UILayers.prototype.getOrder = function(){
 
 /**
 * Вызывается из {@link ModalManager} и обновляет индекс модального слоя.
-* @param  {DisplayObject} modalLayer слой, который стал модальным
+* @param {DisplayObject} modalLayer слой, который стал модальным
 */
 UILayers.prototype.updateModalIndex = function(modalLayer){
 	if(!modalLayer){
@@ -242,7 +244,7 @@ UILayers.prototype.updateModalIndex = function(modalLayer){
 /**
 * Вызывается элементами игры и проверяет не заблокирован ли элемент
 * над которым находится курсор модальным слоем и соответственно обновляет курсор.
-* @param  {DisplayObject} el объект над которым находится курсор
+* @param {DisplayObject} el объект над которым находится курсор
 */
 UILayers.prototype.updateCursorOverlap = function(el){
 	var parent = el.parent;

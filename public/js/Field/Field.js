@@ -9,76 +9,79 @@
 * {@link Field#addCards}  
 *
 * Использование второго метода до финализации первого добавляет карты в очередь и запускает очередь  
-* `.queueCards(c1)` -> `.addCards(c2)` => `.queueCards(c1)` -> `.queueCards(c2)` -> `.placeQueuedCards()`   
+* `.queueCards(c1)` -> `.addCards(c2)` => `.queueCards(c1)` -> `.queueCards(c2)` -> `.placeQueuedCards()`  
+*  
 * @class
 * @extends {external:Phaser.Group}
-* @param {object} [options] Настройки поля. {@link Field#options}. 
-*                           Будут пересохранены в `this`, изменения объекта `options` не повлияют на поле.
-* @param {string} options.id=null {@link Field#id}	
-* @param {string} options.type='GENERIC' {@link Field#type}	
-* @param {string} options.name=null {@link Field#name}	
 * 
-* @param {number} options.moveTime=cardManager.defaultMoveTime {@link Field#moveTime}	
-* @param {number} options.delayTime=100 {@link Field#delayTime}	
-* @param {boolean} options.debug=false {@link Field#inDebugMode}	
-* @param {number} options.specialId=null {@link Field#specialId}	
-* @param {(boolean|string)} options.badge Нужно ли добавлять плашку с информацией игрока ({@link PlayerBadge}) и как ее выравнивать.  
-*                                         Значения: `false, 'left', 'right', 'top', 'bottom'`  
-*                                         Значение будет пересохранено в `style.badgeAlign` для последующего изменения.
-* 
-* @param {object} [style] Внешний вид поля. {@link Field#style} 
-* @param {number} style.x=0	{@link Field#x} позиция по горизонтали
-* @param {number} style.y=0	{@link Field#y} позиция по вертикали
-* @param {number} style.width=0	{@link Field#area} ширина поверхности
-* @param {number} style.height=0 {@link Field#area} высота поверхности
-* @param {number} style.margin=0 Отступ от края поля до видимого края поля.
-* @param {number} style.padding=10 Отступ от видимого края поля до карт внутри.
-* @param {number} style.spacing=10 Отступ между картами.
-* @param {number} style.minActiveSpace=fieldManager.builder.minActiveSpace Минимальная ширина\высота для расположения карт.
-* @param {number} style.raisedOffset=skinManager.skin.height/2 	На сколько поднимать карты с `raised == true`
-* @param {(boolean|number)} style.forcedSpace=false Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать заданное значение.
-* @param {number} style.scaleDiff=0.025 На сколько увеличивается масштаб карты при наведении.
-* 
-* @param {boolean} style.focusable=false Нужно ли сдвигать карты при наведении
-* @param {boolean} style.sortable=false Нужно ли сортировать карты 
-* @param {boolean} style.draggable=false Можно ли перетаскивать карты в этом поле
-* 
-* @param {string} style.horizontalAlign='center' Горизонтальное выравнивание поля.  
-*                                                Значения: `'left', 'center', 'right', 'centerLeft'`
-* @param {string} style.verticalAlign='middle' Вертикальное выравнивание поля.  
-*                                              Значения: `'top', 'middle', 'bottom'`
-* 
-* @param {string} style.axis='horizontal' Ориентация поля.
-*                                         Меняет местами horizontalAlign и verticalAlign (right станет bottom и т.д.), не влияет на width и height.  
-* 	                                      Значения: `'vertical', 'horizontal'`
-* @param {string} style.direction='forward'	Направление поля.  
-*                                           Значения: `'forward', 'backward'`
-* @param {string} style.addTo='front' В какой конец поля добавляются карты.  
-*                                     Значения: `'front', 'back'`
-* @param {string} style.area='plain' Тип поверхности поля.  
-*                                    Значения: `'plain', 'curved', 'glowing'`
-* @param {boolean} style.reversed=false Карты добавляются начиная с последней
-* @param {boolean} style.flipped=false	Карты распологаются повернутыми на 180 градусов
-* @param {(boolean|string)} style.randomAngle=false Нужно ли класть карты в поле под случайным углом.  
-*                                                   Значения: `false, 'uni', 'bi'`  
-*                                                   `'uni'` - карты поворачиваются по направлению поля   
-*                                                   `'bi'` - карты поворачиваются в случайную сторону
-* @param {boolean} style.adjust=true нужно ли пытаться двигать карты, которые уже находятся в поле, при добавлении новых
-* @param {number} style.alpha=0.35 Прозрачность поля.
-* @param {number} style.corner=5 Радиус закругленного угла.
-* @param {number} style.border=4 Ширина рамки.
+* @param {object}           [options]------------------------------------------------Настройки поля. {@link Field#options}. 
+*                                                                                    Будут пересохранены в `this`, изменения объекта `options` не повлияют на поле.
+* @param {string}           options.id=null------------------------------------------{@link Field#id}	
+* @param {string}           options.type='GENERIC'-----------------------------------{@link Field#type}	
+* @param {string}           options.name=null----------------------------------------{@link Field#name}	
 *
-* @param {(boolean|string)} style.animateAppearance Нужно ли анимировать появление поля и откуда это делать.  
-*                                                   Значения: `false, 'left', 'right', 'top', 'bottom'`
+* @param {number}           options.moveTime=cardManager.defaultMoveTime-------------{@link Field#moveTime}	
+* @param {number}           options.delayTime=100------------------------------------{@link Field#delayTime}	
+* @param {boolean}          options.debug=false--------------------------------------{@link Field#inDebugMode}	
+* @param {number}           options.specialId=null-----------------------------------{@link Field#specialId}	
 *
-* @param {object} [iconStyle] Внешний вид иконки поля. {@link Field#iconStyle} {@link Field#icon} 
-* @param {string} iconStyle.texture=null текстура иконки	
-* @param {number} iconStyle.frame=0 кадр текстуры иконки
-* @param {number} iconStyle.scale=1 масштаб текстуры иконки
-* @param {object} iconStyle.offset={x:0,y:0} отступ иконки `{x, y}`
-* @param {boolean} iconStyle.shouldHide=false нужно ли прятать иконку
-* @param {boolean} iconStyle.visible=true спрятана ли иконка по умолчанию
+* @param {(boolean|string)} options.badge--------------------------------------------Нужно ли добавлять плашку с информацией игрока ({@link PlayerBadge}) и как ее выравнивать.  
+*                                                                                    Значения: `false, 'left', 'right', 'top', 'bottom'`  
+*                                                                                    Значение будет пересохранено в `style.badgeAlign` для последующего изменения.
 *
+* @param {object}           [style]--------------------------------------------------Внешний вид поля. {@link Field#style} 
+* @param {number}           style.x=0------------------------------------------------{@link Field#x} позиция по горизонтали
+* @param {number}           style.y=0------------------------------------------------{@link Field#y} позиция по вертикали
+* @param {number}           style.width=0--------------------------------------------{@link Field#area} ширина поверхности
+* @param {number}           style.height=0-------------------------------------------{@link Field#area} высота поверхности
+* @param {number}           style.margin=0-------------------------------------------Отступ от края поля до видимого края поля.
+* @param {number}           style.padding=10-----------------------------------------Отступ от видимого края поля до карт внутри.
+* @param {number}           style.spacing=10-----------------------------------------Отступ между картами.
+* 
+* @param {number}           style.minActiveSpace=fieldManager.builder.minActiveSpace-Минимальная ширина\высота для расположения карт.
+* @param {number}           style.raisedOffset=skinManager.skin.height/2-------------На сколько поднимать карты с `raised == true`
+* @param {(boolean|number)} style.forcedSpace=false----------------------------------Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать заданное значение.
+* @param {number}           style.scaleDiff=0.025------------------------------------На сколько увеличивается масштаб карты при наведении.
+* 
+* @param {boolean}          style.focusable=false------------------------------------Нужно ли сдвигать карты при наведении
+* @param {boolean}          style.sortable=false-------------------------------------Нужно ли сортировать карты 
+* @param {boolean}          style.draggable=false------------------------------------Можно ли перетаскивать карты в этом поле
+*          
+* @param {string}           style.horizontalAlign='center'---------------------------Горизонтальное выравнивание поля.  
+*                                                                                    Значения: `'left', 'center', 'right', 'centerLeft'`
+* @param {string}           style.verticalAlign='middle'-----------------------------Вертикальное выравнивание поля.  
+*                                                                                    Значения: `'top', 'middle', 'bottom'`
+*          
+* @param {string}           style.axis='horizontal'----------------------------------Ориентация поля.
+*                                                                                    Меняет местами horizontalAlign и verticalAlign (right станет bottom и т.д.), не влияет на width и height.  
+* 	                                                                                 Значения: `'vertical', 'horizontal'`
+* @param {string}           style.direction='forward'--------------------------------Направление поля.  
+*                                                                                    Значения: `'forward', 'backward'`
+* @param {string}           style.addTo='front'--------------------------------------В какой конец поля добавляются карты.  
+*                                                                                    Значения: `'front', 'back'`
+* @param {string}           style.area='plain'---------------------------------------Тип поверхности поля.  
+*                                                                                    Значения: `'plain', 'curved', 'glowing'`
+* @param {boolean}          style.reversed=false-------------------------------------Карты добавляются начиная с последней
+* @param {boolean}          style.flipped=false--------------------------------------Карты распологаются повернутыми на 180 градусов
+* @param {(boolean|string)} style.randomAngle=false----------------------------------Нужно ли класть карты в поле под случайным углом.  
+*                                                                                    Значения: `false, 'uni', 'bi'`  
+*                                                                                    `'uni'` - карты поворачиваются по направлению поля   
+*                                                                                    `'bi'` - карты поворачиваются в случайную сторону
+* @param {boolean}          style.adjust=true----------------------------------------Нужно ли пытаться двигать карты, которые уже находятся в поле, при добавлении новых.
+* @param {number}           style.alpha=0.35-----------------------------------------Прозрачность поля.
+* @param {number}           style.corner=5-------------------------------------------Радиус закругленного угла.
+* @param {number}           style.border=4-------------------------------------------Ширина рамки.
+*
+* @param {(boolean|string)} style.animateAppearance----------------------------------Нужно ли анимировать появление поля и откуда это делать.  
+*                                                                                    Значения: `false, 'left', 'right', 'top', 'bottom'`
+*
+* @param {object}           [iconStyle]----------------------------------------------Внешний вид иконки поля. {@link Field#iconStyle} {@link Field#icon} 
+* @param {string}           iconStyle.texture=null-----------------------------------текстура иконки	
+* @param {number}           iconStyle.frame=0----------------------------------------кадр текстуры иконки
+* @param {number}           iconStyle.scale=1----------------------------------------масштаб текстуры иконки
+* @param {object}           iconStyle.offset={x:0,y:0}-------------------------------отступ иконки `{x, y}`
+* @param {boolean}          iconStyle.shouldHide=false-------------------------------нужно ли прятать иконку
+* @param {boolean}          iconStyle.visible=true-----------------------------------спрятана ли иконка по умолчанию
 */
 
 var Field = function(options, style, iconStyle){
@@ -337,7 +340,6 @@ extend(Field, Phaser.Group);
 Field.prototype.getDefaultOptions = function(){
 	return {
 		options: {
-
 			moveTime: cardManager.defaultMoveTime,
 			delayTime: 100,		
 
@@ -401,8 +403,8 @@ Field.prototype.getDefaultOptions = function(){
 /**
 * Совмещает переданные опции со стандартными и сохраняет их, как свойства объекта.
 * @private
-* @param {object} [options] Настройки поля.
-* @param {object} [style] Внешний вид поля.
+* @param {object} [options]   Настройки поля.
+* @param {object} [style]     Внешний вид поля.
 * @param {object} [iconStyle] Внешний вид иконки поля.
 */
 Field.prototype._applyOptions = function(options, style, iconStyle){
@@ -441,9 +443,10 @@ Field.prototype._applyOptions = function(options, style, iconStyle){
 
 /**
 * Проверяет нахождение карты внутри поля (по координатам).
-* @param  {Card} card                     проверяемая карта
-* @param  {boolean} [includeSpacing=true] нужно ли учитывать сдвиг карт друг от друга
-* @param  {boolean} [includeWholeCard=false]      если false, то центр карты должен быть внутри поля, иначе - любая часть карты
+* @param {Card}    card                     проверяемая карта
+* @param {boolean} [includeSpacing=true]    нужно ли учитывать сдвиг карт друг от друга
+* @param {boolean} [includeWholeCard=false] любая часть карты
+*
 * @return {boolean} Находится ли карта в поле.
 */
 Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){

@@ -3,8 +3,8 @@
 /**
 * Задает значения для установки в будущем.
 * Отсутствие suit означает, что карта лежит рубашкой вверх.
-* @param  {(number|null)} [suit=null]  - масть карты
-* @param  {number} [value=0] - значение карты
+* @param {(number|null)} [suit=null] масть карты
+* @param {number}        [value=0]   значение карты
 */
 Card.prototype.presetValue = function(suit, value){
 	if(suit === undefined)
@@ -104,9 +104,9 @@ Card.prototype._updateTint = function(){
 /**
 * Устанавливает значение карты сразу, с анимацией или без.
 * Отсутствие suit означает, что карта лежит рубашкой вверх.
-* @param  {(number|null)} [suit=null]  - масть карты
-* @param  {number} [value=0] - значение карты
-* @param {boolean} [animate=true] - анимировать ли переворот карты
+* @param {(number|null)} [suit=null]    масть карты
+* @param {number}        [value=0]      значение карты
+* @param {boolean}       [animate=true] анимировать ли переворот карты
 */
 Card.prototype.setValue = function(suit, value, animate){
 
@@ -134,7 +134,7 @@ Card.prototype.setValue = function(suit, value, animate){
 
 /**
 * Устанавливает перетаскиваемость карты.
-* @param {boolean} draggable - значение перетаскиваемости
+* @param {boolean} draggable значение перетаскиваемости
 */
 Card.prototype.setDraggability = function(draggable){	
 	this.draggable = draggable;
@@ -143,8 +143,8 @@ Card.prototype.setDraggability = function(draggable){
 
 /**
 * Устанавливает, можно ли ходить этой картой.
-* @param {boolean} playable - играбильность карты
-* @param {number} [tint=ui.colors.orange] - цвет свечения карты
+* @param {boolean} playable                играбильность карты
+* @param {number}  [tint=ui.colors.orange] цвет свечения карты
 */
 Card.prototype.setPlayability = function(playable, tint){
 	if(tint === undefined){
@@ -166,8 +166,8 @@ Card.prototype.setPlayability = function(playable, tint){
 
 /**
 * Устанавливает подсветку карты.
-* @param {boolean} highlighted включена ли подстветка
-* @param {number} [tint=yi.colors.orange] цвет свечения карты
+* @param {boolean} highlighted             включена ли подстветка
+* @param {number}  [tint=ui.colors.orange] цвет свечения карты
 */
 Card.prototype.setHighlight = function(highlighted, tint){
 	if(tint === undefined){

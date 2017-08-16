@@ -148,11 +148,12 @@ var Sequencer = function(inDebugMode){
 
 /**
 * Запускает новый список, предварительно завершив предыдущий. 
-* @param  {function} action первое действие, выполняется сразу
-* @param  {number} duration время выполнения действия
-* @param  {number} delay задержка выполнения первого действия в списке 
-* @param  {any} context  контекст выполнения действия
-* @return {object}  
+* @param {function} action   первое действие, выполняется сразу
+* @param {number}   duration время выполнения действия
+* @param {number}   delay    задержка выполнения первого действия в списке
+* @param {any}      context  контекст выполнения действия
+*
+* @return {object}
 * Возвращает объект вида `{then, duration, wrapper}`  
 * `then` - функция для добавления следующего действия.  
 * `duration` - время выполнения на момент добавления этого действия.  
@@ -188,10 +189,11 @@ Sequencer.prototype.start = function(action, duration, delay, context){
 /**
 * Добавляет действие в конец текущего списка или запускает новый.
 * Запланированные пропуски действий влияют на добавленные таким образом действия.
-* @param  {function} action добавляемое действие
-* @param  {number} duration время выполнения действия
-* @param  {any} context  контекст выполнения действия
-* @return {object}  
+* @param {function} action   добавляемое действие
+* @param {number}   duration время выполнения действия
+* @param {any}      context  контекст выполнения действия
+*
+* @return {object}
 * Возвращает объект вида `{then, duration, wrapper}`  
 * `then` - функция для добавления следующего действия.  
 * `duration` - время выполнения на момент добавления этого действия.  
@@ -239,7 +241,7 @@ Sequencer.prototype.abort = function(){
 
 /** 
 * Пропускает указанное количество следующих действий в списке.
-* @param  {number} [times=1] кол-во пропускаемых действий
+* @param {number} [times=1] во пропускаемых действий
 */
 Sequencer.prototype.skip = function(times){
 	if(isNaN(times) || times < 0)

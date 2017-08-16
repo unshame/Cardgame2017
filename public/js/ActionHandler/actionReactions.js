@@ -7,11 +7,11 @@ var actionReactions = {
 	
 	/**
 	* Наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них.
-	* @param {object} action - Обрабатываемое действие
-	* @param {CardInfo[]} action.cards - Информация о козырных картах
-	* @param {string} action.pid - id игрока с наименьшим козырем
+	* @param {object}     action       Обрабатываемое действие
+	* @param {CardInfo[]} action.cards Информация о козырных картах
+	* @param {string}     action.pid   id игрока с наименьшим козырем
+	*
 	* @return {number} Время выполнения действия
-	* @memberof actionReactions
 	*/
 	TRUMP_CARDS: function(action){
 		if(!action.cards || !action.cards.length)
@@ -40,13 +40,13 @@ var actionReactions = {
 
 	/**
 	* Информация об игре.
-	* @param {object} action - Обрабатываемое действие
-	* @param {CardInfo[]} action.cards - Информация о картах
-	* @param {number} [action.numDiscarded] - Количество карт в стопке сброса
-	* @param {number} [action.trumpSuit] - Масть козырных карт
-	* @param {boolean} [noDelay=false] - нужно ли анимировать раздачу карт
+	* @param {object}     action                Обрабатываемое действие
+	* @param {CardInfo[]} action.cards          Информация о картах
+	* @param {number}     [action.numDiscarded] Количество карт в стопке сброса
+	* @param {number}     [action.trumpSuit]    Масть козырных карт
+	* @param {boolean}    [noDelay=false]       нужно ли анимировать раздачу карт
+	*
 	* @return {number} Время до начала добавления последней карты
-	* @memberof actionReactions
 	*/
 	GAME_INFO: function(action, noDelay){
 
@@ -98,8 +98,8 @@ var actionReactions = {
 	/**
 	* Информация об игре при переподключении к игре.
 	* @param {object} action {@link actionReactions.GAME_INFO}
+	*
 	* @return {number} Время выполнения действия
-	* @memberof actionReactions
 	*/
 	GAME_INFO_UPDATE: function(action){
 		ui.feed.newMessage('Reconnected to game', 2000);
@@ -108,10 +108,10 @@ var actionReactions = {
 
 	/**
 	* Раскрытие значений карт.
-	* @param {object} action - Обрабатываемое действие
-	* @param {CardInfo[]} action.cards - Информация о картах
+	* @param {object}     action       Обрабатываемое действие
+	* @param {CardInfo[]} action.cards Информация о картах
+	*
 	* @return {number} Время выполнения действия (0)
-	* @memberof actionReactions
 	*/
 	REVEAL: function(action){
 		fieldManager.revealCards(action.cards);
@@ -134,11 +134,11 @@ var actionReactions = {
 
 	/**
 	* Игрок либо хочет взять, либо уже берет карты, зависит от присутствия `action.cards`.
-	* @param {object} action - Обрабатываемое действие
-	* @param {CardInfo[]} [action.cards] - Информация о картах
-	* @param {string} action.pid - id берущего игрока	 
+	* @param {object}     action         Обрабатываемое действие
+	* @param {CardInfo[]} [action.cards] Информация о картах
+	* @param {string}     action.pid     id берущего игрока
+	*
 	* @return {number} Время выполнения действия
-	* @memberof actionReactions
 	*/
 	TAKE: function(action){
 		var delay = 0;
@@ -152,9 +152,9 @@ var actionReactions = {
 
 	/**
 	* Игрок защищается.
-	* @param {ActionInfo} action - Обрабатываемое действие
+	* @param {ActionInfo} action Обрабатываемое действие
+	*
 	* @return {number} Время выполнения действия
-	* @memberof actionReactions
 	*/
 	DEFENSE: function(action){
 		var delay = 0;
@@ -170,10 +170,10 @@ var actionReactions = {
 
 	/**
 	* Карты перемещаются в стопку сброса.
-	* @param {object} action - Обрабатываемое действие
-	* @param {string[]} action.ids - массив id перемещаемых карт
+	* @param {object}   action     Обрабатываемое действие
+	* @param {string[]} action.ids массив id перемещаемых карт
+	*
 	* @return {number} Время выполнения действия
-	* @memberof actionReactions
 	*/
 	DISCARD: function(action){
 		actionHandler.reset();
@@ -196,10 +196,10 @@ var actionReactions = {
 
 	/**
 	* Игрок пропускает ход.
-	* @param {object} action - Обрабатываемое действие
-	* @param {string} action.pid - id игрока
+	* @param {object} action     Обрабатываемое действие
+	* @param {string} action.pid id игрока
+	*
 	* @return {number} Время выполнения действия
-	* @memberof actionReactions
 	*/
 	SKIP: function(action){
 		return 0;
@@ -209,8 +209,9 @@ var actionReactions = {
 /**
 * Игрок атакует.
 * @method  ATTACK
-* @param {ActionInfo} action Обрабатываемое действие
-* @return {number} Время выполнения действия
 * @memberof actionReactions
+* @param {ActionInfo} action Обрабатываемое действие
+*
+* @return {number} Время выполнения действия
 */
 actionReactions.ATTACK = actionReactions.DEFENSE;

@@ -92,8 +92,8 @@ CardControl.prototype.initialize = function(){
 
 /**
 * Обрабатывает нажатие на карту.
-* @param  {Card} card    карта
-* @param  {Phaser.Pointer} pointer указатель, нажавший на карту
+* @param {Card}           card    карта
+* @param {Phaser.Pointer} pointer указатель, нажавший на карту
 */
 CardControl.prototype.cardClick = function(card, pointer){
 	if(pointer.button == 1 || pointer.button == 4)
@@ -115,7 +115,7 @@ CardControl.prototype.cardClick = function(card, pointer){
 
 /**
 * Обрабатывает поднятие кнопки после нажатия на карту.
-* @param  {Card} card карта
+* @param {Card} card карта
 */
 CardControl.prototype.cardUnclick = function(card){
 	if(!this.card || this.card != card)
@@ -194,7 +194,7 @@ CardControl.prototype.update = function(){
 
 /**
 * Ресет контроллера
-* @param  {string} [reason] Причина ресета для дебага.
+* @param {string} [reason] Причина ресета для дебага.
 */
 CardControl.prototype.reset = function(reason){
 

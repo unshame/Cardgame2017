@@ -2,9 +2,10 @@
 
 /**
 * Добавляет карты в очередь на добавление.
-* @param  {Card[]} newCards добавляемые карты
-* @param  {number} delay	задержка, добавляемая к первой карте в очереди
-* @return {number}		  Планируемое время добавления
+* @param {Card[]} newCards        добавляемые карты
+* @param {number} delay	задержка, добавляемая к первой карте в очереди
+*
+* @return {number} Планируемое время добавления
 * @see  {@link Field#placeQueuedCards}
 */
 Field.prototype.queueCards = function(newCards, delay){
@@ -53,7 +54,7 @@ Field.prototype.queueCards = function(newCards, delay){
 /**
 * Размещает карты из очереди.
 * @param {BRING_TO_TOP_ON} [bringToTopOn=BRING_TO_TOP_ON.START] когда поднимать карты на передний план
-* @param {boolean} [noDelay=false]  убирает время ожидания перед добавлением карт
+* @param {boolean}         [noDelay=false]                      убирает время ожидания перед добавлением карт
 * @see   {@link Field#queueCards}
 */
 Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){

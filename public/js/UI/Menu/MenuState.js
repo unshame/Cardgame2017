@@ -33,8 +33,8 @@ Menu.prototype.show = function(){
 
 /** 
 * Отключает элементы меню.
-* @param  {boolean} changeToDefaultFrame заставляет элемент переключиться на дефолтный кадр текстуры, 
-*                                        вместо кадра, соответствующего отключенному состоянию
+* @param {boolean} changeToDefaultFrame заставляет элемент переключиться на дефолтный кадр текстуры,
+*                                       вместо кадра, соответствующего отключенному состоянию
 */
 Menu.prototype.disable = function(changeToDefaultFrame){
 	this.forEachElement(function(element){

@@ -9,7 +9,6 @@ var notificationReactions = {
 
 	/**
 	* В игре остались только боты, игра симулируется в ускоренном режиме.
-	* @memberOf notificationReactions
 	*/
 	SIMULATING: function(){
 		ui.feed.newMessage('Simulating', 2000);
@@ -17,7 +16,6 @@ var notificationReactions = {
 
 	/**
 	* Начало хода.
-	* @memberOf notificationReactions
 	* @param {object} note сообщение
 	*/
 	TURN_STARTED: function(note){
@@ -26,8 +24,7 @@ var notificationReactions = {
 
 	/**
 	* Начало игры.
-	* @memberOf notificationReactions
-	* @param {object} note сообщение
+	* @param {object} note       сообщение
 	* @param {number} note.index порядковый индекс игры
 	*/
 	GAME_STARTED: function(note){
@@ -36,7 +33,6 @@ var notificationReactions = {
 
 	/**
 	* Окончание хода.
-	* @memberOf notificationReactions
 	* @param {object} note сообщение
 	*/
 	TURN_ENDED: function(note){
@@ -107,7 +103,7 @@ var notificationReactions = {
 	* Результаты голосования.
 	* @param {object}                 note         сообщение
 	* @param {object<object<string>>} note.results результаты голосования по id игроков вида '{type, pid}'
-	* @param {boolean}                 successful  удачно ли прошло голосование
+	* @param {boolean}                successful   удачно ли прошло голосование
 	*/
 	VOTE_RESULTS: function(note){
 		console.log(note);
@@ -115,11 +111,11 @@ var notificationReactions = {
 
 	/**
 	* Было выполнено невалидное действие.
-	* @param {object}             note           сообщение
-	* @param {ActionInfo}         note.action    действие, которое необходимо обратить
-	* @param {object}             note.time      время до которого нужно выполнить новое действие
-	* @param {object}             note.timeSent  время в которое действия были отправленны с сервера
-	* @param {object<ActionInfo>} actions        действия из которых нужно выбрать одно в замен неверного
+	* @param {object}             note          сообщение
+	* @param {ActionInfo}         note.action   действие, которое необходимо обратить
+	* @param {object}             note.time     время до которого нужно выполнить новое действие
+	* @param {object}             note.timeSent время в которое действия были отправленны с сервера
+	* @param {object<ActionInfo>} actions       действия из которых нужно выбрать одно в замен неверного
 	*/
 	INVALID_ACTION: function(note, actions){
 		var action = note.action,
@@ -171,9 +167,9 @@ var notificationReactions = {
 * Действие было выполнено невовремя или без запроса
 * @memberOf notificationReactions
 * @function
-* @param {object}     note         	   сообщение
-* @param {ActionInfo} [note.action]    действие, которое необходимо обратить
-* @param {object}     [note.time]      время до которого нужно выполнить новое действие
-* @param {object}     [note.timeSent]  время в которое действия были отправленны с сервера
+* @param {object}     note            сообщение
+* @param {ActionInfo} [note.action]   действие, которое необходимо обратить
+* @param {object}     [note.time]     время до которого нужно выполнить новое действие
+* @param {object}     [note.timeSent] время в которое действия были отправленны с сервера
 */
 notificationReactions.LATE_OR_UNCALLED_ACTION = notificationReactions.INVALID_ACTION;

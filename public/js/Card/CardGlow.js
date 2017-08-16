@@ -2,11 +2,11 @@
 
 /**
 * Запускает свечение.
-* @param  {number} minGlow    минимальная прозрачность свечения
-* @param  {number} maxGlow    максимальная прозрачность свечения
-* @param  {number} speed      время анимации между minGlow и maxGlow
-* @param  {number} [delayRange=0] максимальное значение задержки начала свечения
-* @param  {number} [color=ui.colors.white]     цвет свечения
+* @param {number} minGlow                 минимальная прозрачность свечения
+* @param {number} maxGlow                 максимальная прозрачность свечения
+* @param {number} speed                   время анимации между minGlow и maxGlow
+* @param {number} [delayRange=0]          максимальное значение задержки начала свечения
+* @param {number} [color=ui.colors.white] цвет свечения
 * @private
 */
 Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color){

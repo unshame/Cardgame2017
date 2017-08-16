@@ -158,7 +158,7 @@ CardManager.prototype.forceApplyValues = function(){
 
 /**
 * Включает физику карт.
-* @param  {boolean} makeDraggable нужно ли делать карты перетаскиваемыми
+* @param {boolean} makeDraggable нужно ли делать карты перетаскиваемыми
 */
 CardManager.prototype.enablePhysics = function(makeDraggable, except){
 
@@ -200,7 +200,7 @@ CardManager.prototype.disablePhysics = function(){
 
 /**
 * Поднимает указанную карту наверх, опционально поднимает перетаскиваемую карту наверх.
-* @param {Card} card карта, которую нужно поднять
+* @param {Card}    card                 карта, которую нужно поднять
 * @param {boolean} [fixController=true] нужно ли поднимать {@link cardControl#card} наверх
 */
 CardManager.prototype.bringCardToTop = function(card, fixController){

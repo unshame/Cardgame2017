@@ -2,7 +2,7 @@
 
 /**
 * Удаляет карты из поля.
-* @param  {Card[]} cardsToRemove карты для удаления
+* @param {Card[]} cardsToRemove карты для удаления
 */
 Field.prototype.removeCards = function(cardsToRemove){
 	if(!cardsToRemove.length)

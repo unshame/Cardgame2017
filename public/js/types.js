@@ -58,21 +58,22 @@ var BRING_TO_TOP_ON = {
 /**
 * Информация о карте.
 * @typedef {object} CardInfo
-* @property {string} cid id карты
-* @property {string} [pid/field] id игрока/поля
-* @property {(number|null)} [suit] - масть карты
-* @property {number} [value] - значение карты
+* @property {string}        cid         id карты
+* @property {string}        [pid/field] id игрока/поля
+* @property {(number|null)} [suit]      масть карты
+* @property {number}        [value]     значение карты
 */
 // CardInfo
 
 /**
 * Информация о действии переданного от сервера.
 * @typedef {object} ActionInfo
-* @property {string} cid 	id карты
-* @property {string} pid 	id игрока
-* @property {string} field id поля
-* @property {number} suit 	масть карты
-* @property {number} value значение карты
+* @property {string} [type]  тип действия
+* @property {string} [cid]   id карты
+* @property {string} [pid]   id игрока
+* @property {string} [field] id поля
+* @property {number} [suit]  масть карты
+* @property {number} [value] значение карты
 */
 // Action
 
@@ -85,9 +86,9 @@ var BRING_TO_TOP_ON = {
 * Должна быть добавлена в {@link UILayers} для корректного отображения по вертикали.  
 * Далее описаны полезные свойства и методы. По ссылке ниже можно найти полную документацию.
 * @class external:Phaser.Group
-* @param {Phaser.Game} game игра
+* @param {Phaser.Game}        game                  игра
 * @param {DisplayObject|null} [parent=(game world)] родительская группа
-* @param {string} [name='group'] имя группы
+* @param {string}             [name='group']        имя группы
 * @see  {@link https://phaser.io/docs/2.6.2/Phaser.Group.html|Phaser.Group полная документация}
 */
 

@@ -1,7 +1,7 @@
 /**
 * Выполняет callback для каждого элемента меню.
-* @param  {function} callback  Выполняется для каждого элемента, имеет три параметра `element, i, len`.
-* @param  {boolean}   [includeSpecial] Нужно ли включать в цикл специальные элементы из {@link Menu#specialElements}.
+* @param {function} callback         Выполняется для каждого элемента, имеет три параметра `element, i, len`.
+* @param {boolean}  [includeSpecial] Нужно ли включать в цикл специальные элементы из {@link Menu#specialElements}.
 */
 Menu.prototype.forEachElement = function(callback, includeSpecial){
 	var ii = 0, i = 0;
@@ -20,7 +20,8 @@ Menu.prototype.forEachElement = function(callback, includeSpecial){
 
 /**
 * Возвращает элемент меню с указанным именем.
-* @param  {string} name   Имя элемента.
+* @param {string} name Имя элемента.
+*
 * @return {DisplayObject} Элемент с `name`, равным указанному.
 */
 Menu.prototype.getElementByName = function(name){
@@ -37,7 +38,7 @@ Menu.prototype.getElementByName = function(name){
 /** 
 * Прячет элемент меню с указанным именем.
 * Чтобы элемент прятался только при следующем открытии меню, нужно предварительно запустить `fadeOut`.
-* @param  {string} name   Имя элемента.
+* @param {string} name Имя элемента.
 */
 Menu.prototype.hideElement = function(name){
 	var el = this.getElementByName(name);
@@ -59,7 +60,7 @@ Menu.prototype.hideElement = function(name){
 /** 
 * Прячет элемент меню с указанным именем.
 * Чтобы элемент показывался только при следующем открытии меню, нужно предварительно запустить `fadeOut`.
-* @param  {string} name   Имя элемента.
+* @param {string} name Имя элемента.
 */
 Menu.prototype.showElement = function(name){
 	var el = this.getElementByName(name);
@@ -81,7 +82,7 @@ Menu.prototype.showElement = function(name){
 
 /**
 * Отключает элемент с указанным именем.
-* @param  {string} name   Имя элемента.
+* @param {string} name Имя элемента.
 */
 Menu.prototype.disableElement = function(name){
 	var el = this.getElementByName(name);
@@ -96,7 +97,7 @@ Menu.prototype.disableElement = function(name){
 
 /**
 * Включает элемент с указанным именем.
-* @param  {string} name   Имя элемента.
+* @param {string} name Имя элемента.
 */
 Menu.prototype.enableElement = function(name){
 	var el = this.getElementByName(name);

@@ -3,17 +3,17 @@
 * Создает сетку по размеру карт для расположения элементов игры.
 * @class
 * @extends {Phaser.ScaleManager}
-* @param {object} [options] 		 Опции
-* @param {Game} options.game=game игра
-* @param {width} options.width=0 текущая ширина игры для Phaser.ScaleManager
-* @param {height} options.height=0 текущая высота игры для Phaser.ScaleManager
-* @param {number} options.density=4 сколько клеток умещается в карте по одной оси
-* @param {number} options.thickness=1 ширина линий сетки для дебага
-* @param {boolean} options.debug=false нужно ли выводить дебаг информацию
-* @param {number} options.minColsLandscape минимальное число колонок сетки в горизонтальном режиме
-* @param {number} options.minRowsLandscape минимальное число строк сетки в горизонтальном режиме
-* @param {number} options.minColsPortrait  минимальное число колонок сетки в вертикальном режиме
-* @param {number} options.minRowsPortrait  минимальное число строк сетки в вертикальном режиме
+* @param {object}  [options]                Опции
+* @param {Game}    options.game=game        игра
+* @param {width}   options.width=0          текущая ширина игры для Phaser.ScaleManager
+* @param {height}  options.height=0         текущая высота игры для Phaser.ScaleManager
+* @param {number}  options.density=4        сколько клеток умещается в карте по одной оси
+* @param {number}  options.thickness=1      ширина линий сетки для дебага
+* @param {boolean} options.debug=false      нужно ли выводить дебаг информацию
+* @param {number}  options.minColsLandscape минимальное число колонок сетки в горизонтальном режиме
+* @param {number}  options.minRowsLandscape минимальное число строк сетки в горизонтальном режиме
+* @param {number}  options.minColsPortrait  минимальное число колонок сетки в вертикальном режиме
+* @param {number}  options.minRowsPortrait  минимальное число строк сетки в вертикальном режиме
 * @see {@link http://phaser.io/docs/2.6.2/Phaser.ScaleManager.html}
 */
 
@@ -262,8 +262,8 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 /**
 * Расчитывает размеры сетки.
 * @private
-* @param  {number} screenWidth  ширина игры
-* @param  {number} screenHeight высота игры
+* @param {number} screenWidth  ширина игры
+* @param {number} screenHeight высота игры
 */
 ScaleManager.prototype._calculateGridSize = function(screenWidth, screenHeight){
 	var width = this.cellWidth,
@@ -281,15 +281,16 @@ ScaleManager.prototype._calculateGridSize = function(screenWidth, screenHeight){
 
 /**
 * Возвращает координаты ячейки.
-* @param  {number} [col=0]    колонка ячейки
-* @param  {number} [row=0]   строка ячейки
-* @param  {number} [offsetX=0] отступ слева
-* @param  {number} [offsetY=0] отступ сверху
-* @param  {string} [align='top left']   Выравнивание, если считать выравниваемый объект
-* картой в вертикальном положении.  
-* Формат аналогичен css `background-align`.
-* Если указать только вертикальное выравнивание, горизонтальное будет `center`.
-* @return {object}         Координаты `{x, y}`
+* @param {number} [col=0]            колонка ячейки
+* @param {number} [row=0]            строка ячейки
+* @param {number} [offsetX=0]        отступ слева
+* @param {number} [offsetY=0]        отступ сверху
+* @param {string} [align='top left'] Выравнивание, если считать выравниваемый объект
+*                             		 картой в вертикальном положении.  
+* 		                             Формат аналогичен css `background-align`.
+* 		         		             Если указать только вертикальное выравнивание, горизонтальное будет `center`.
+* 		         		             
+* @return {object} Координаты `{x, y}`
 */
 ScaleManager.prototype.cellAt = function(col, row, offsetX, offsetY, align){
 
@@ -379,9 +380,9 @@ ScaleManager.prototype.toggleDebugMode = function(){
 /**
 * Рисует сетку для дебага.
 * @private
-* @param  {object} offset отступ от края `{x, y}`
-* @param  {number} width  ширина
-* @param  {number} height высота
+* @param {object} offset отступ от края `{x, y}`
+* @param {number} width  ширина
+* @param {number} height высота
 */
 ScaleManager.prototype.drawDebugGrid = function(){
 

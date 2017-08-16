@@ -117,7 +117,7 @@ Menu.prototype.getDefaultOptions = function(){
 
 /**
 * Позиционирует меню и элементы.
-* @param  {object} [position] новая позиция меню `{x, y}`.
+* @param {object} [position] новая позиция меню `{x, y}`.
 */
 Menu.prototype.updatePosition = function(position){
 	this._resize();

@@ -1,6 +1,6 @@
 /**
 * Отображает временные сообщения в нижнем левом углу экрана.
-* @param {Game} game игра
+* @param {Game}   game   игра
 * @param {string} [name] имя фида
 * @class 
 * @extends {external:Phaser.Group}
@@ -37,14 +37,16 @@ extend(MessageFeed, Phaser.Group);
 
 /**
 * Выводит новое сообщение.
-* @param  {string} message Сообщение.
-* @param  {string|object} [style='system']   Стиль сообщения - объект со свойствами текста
-*                                            или строка, соответствующая стилю из `styles`.
-* @param  {number} [time]  Время, после которого сообщение пропадет.
-*                          Если не указать, сообщение нужно вручную удалять, 
-*                          передавая в `removeMessage`.  
-*                          Может быть вторым параметром, вместо `style`.
-* @return {Phaser.Text}    Созданный текст объект с сообщением.
+* @param {string}        message          Сообщение.
+* @param {string|object} [style='system'] объект со свойствами текста
+*                                         или строка, соответствующая стилю из `styles`.
+* 
+* @param {number}        [time]           Время, после которого сообщение пропадет.
+*                                         Если не указать, сообщение нужно вручную удалять, 
+*                                         передавая в `removeMessage`.  
+*                                         Может быть вторым параметром, вместо `style`.
+*                                         
+* @return {Phaser.Text} Созданный текст объект с сообщением.
 */
 MessageFeed.prototype.newMessage = function(message, style, time){
 	if(typeof style == 'number'){
@@ -73,9 +75,10 @@ MessageFeed.prototype.newMessage = function(message, style, time){
 /**
 * Создает текстовый элемент и применяет к нему стиль.
 * @private
-* @param  {string} message Сообщение.
-* @param  {object} style   Стиль.
-* @return {Phaser.Text}    Текстовый элемент.
+* @param {string} message Сообщение.
+* @param {object} style   Стиль.
+*
+* @return {Phaser.Text} Текстовый элемент.
 */
 MessageFeed.prototype._createText = function(message, style){
 	var text = this.game.make.text(this._getX(), this._getLowestY(), message, style);
@@ -112,7 +115,7 @@ MessageFeed.prototype._getLowestY = function(){
 
 /**
 * Удаляет переданное отображаемое сообщение, устанавливая его `endTime` на текущее время.
-* @param  {Phaser.Text} text Сообщение, которое нужно удалить.
+* @param {Phaser.Text} text Сообщение, которое нужно удалить.
 */
 MessageFeed.prototype.removeMessage = function(text){
 	if(!~this.children.indexOf(text) || text.destroyTime !== undefined){
@@ -124,7 +127,7 @@ MessageFeed.prototype.removeMessage = function(text){
 
 /**
 * Удаляет сообщение с указанным индексом.
-* @param  {number} i индекс сообщения
+* @param {number} i индекс сообщения
 */
 MessageFeed.prototype.removeMessageAt = function(i){
 	if(this.children[i]){
@@ -178,7 +181,7 @@ MessageFeed.prototype.update = function(){
 /**
 * Удаляет сообщение.
 * @private
-* @param  {Phaser.Text} text Текст для удаления.
+* @param {Phaser.Text} text Текст для удаления.
 */
 MessageFeed.prototype._destroyMessage = function(text){
 	if(text.fadeTween){
@@ -193,7 +196,7 @@ MessageFeed.prototype._destroyMessage = function(text){
 /**
 * Фейдид сообщение перед удалением.
 * @private
-* @param  {Phaser.Text} text Текст.
+* @param {Phaser.Text} text Текст.
 */
 MessageFeed.prototype._fadeOutMessage = function(text){
 	text.destroyTime = Date.now() + this.fadeTime;
@@ -236,10 +239,10 @@ MessageFeed.prototype.updatePosition = function(){
 /**
 * Передвигает сообщение в заданную позицию.
 * @private
-* @param  {Phaser.Text} text Сообщение.
-* @param  {number} i    Реальный индекс сообщения в `children`.
-* @param  {number} ii   Индекс сообщения не учитывая сообщения с установленным `destroyTime`.
-* @param  {number} y    Позиция сообщения по вертикали.
+* @param {Phaser.Text} text Сообщение.
+* @param {number}      i    Реальный индекс сообщения в `children`.
+* @param {number}      ii   Индекс сообщения не учитывая сообщения с установленным `destroyTime`.
+* @param {number}      y    Позиция сообщения по вертикали.
 */
 MessageFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	if(text.moveTween){

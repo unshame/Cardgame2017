@@ -58,7 +58,7 @@ extend(CardEmitter, Phaser.Particles.Arcade.Emitter);
 /**
 * Приводит кол-во партиклей эмиттера к заданному значению, по необходимости удаляя и добавляя партикли.
 * Перезапускает эмиттер.
-* @param  {number} [max=CardEmitter#maxParticles] Желаемое кол-во партиклей.
+* @param {number} [max=CardEmitter#maxParticles] во партиклей.
 */
 CardEmitter.prototype.makeMaxParicles = function(max){
 	if(typeof max != 'number' || isNaN(max)){
@@ -93,13 +93,13 @@ CardEmitter.prototype._start = Phaser.Particles.Arcade.Emitter.prototype.start;
 /**
 * Запускает эмиттер карт. Предварительно останавливает эмиттер, если он уже запущен.  
 * Не указанные параметры остаются с предыдущего запуска.
-* @param  {number} [minSpeed] минимальная вертикальная скорость партиклей
-* @param  {number} [maxSpeed] максимальная вертикальная скорость партиклей
-* @param  {number} [sway]     максимальная скорость по горизонтали
-* @param  {(number|boolean)} [interval] Интервал между спавном партиклей.
-* `false` рассчитывает интервал на основе времени жизни и максимального кол-ва партиклей.
-* @param  {number} [rotation] максимальная скорость поворота партиклей
-* @param  {number} [gravity]  вертикальное ускорение партиклей
+* @param {number}           [minSpeed] минимальная вертикальная скорость партиклей
+* @param {number}           [maxSpeed] максимальная вертикальная скорость партиклей
+* @param {number}           [sway]     максимальная скорость по горизонтали
+* @param {(number|boolean)} [interval] Интервал между спавном партиклей.
+*                                      `false` рассчитывает интервал на основе времени жизни и максимального кол-ва партиклей.
+* @param {number}           [rotation] максимальная скорость поворота партиклей
+* @param {number}           [gravity]  вертикальное ускорение партиклей
 */
 CardEmitter.prototype.start = function(minSpeed, maxSpeed, sway, interval, rotation, gravity){
 

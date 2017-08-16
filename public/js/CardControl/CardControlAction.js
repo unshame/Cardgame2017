@@ -2,8 +2,8 @@
 
 /**
 * Поднимает карту.
-* @param  {Card} card карта
-* @param  {Phaser.Pointer} pointer указатель, нажавший на карту
+* @param {Card}           card    карта
+* @param {Phaser.Pointer} pointer указатель, нажавший на карту
 */
 CardControl.prototype.cardPickup = function(card, pointer){
 	if(!card){
@@ -83,7 +83,7 @@ CardControl.prototype.cardPutDown = function(){
 
 /**
 * Перемещает карту в новое поле.
-* @param  {Field[]} newFields Поля, над котором находится карта.
+* @param {Field[]} newFields Поля, над котором находится карта.
 */
 CardControl.prototype.cardMoveToField = function(newFields){
 

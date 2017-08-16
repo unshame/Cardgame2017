@@ -4,7 +4,7 @@
 * Создает {@link FieldBuilder}, который создает поля и карты.
 * @class
 * @extends {external:Phaser.Group}
-* @param {Boolean} [inDebugMode] - Отображать ли дебаг информацию {@link FieldManager#toggleDebugMode}
+* @param {Boolean} [inDebugMode] Отображать ли дебаг информацию {@link FieldManager#toggleDebugMode}
 */
 
 var FieldManager = function(inDebugMode){
@@ -51,9 +51,10 @@ extend(FieldManager, Phaser.Group);
 
 /**
 * Добавляет поле.
-* @param {object} [options] опции поля
-* @param {object} [style] стиль поля
+* @param {object} [options]   опции поля
+* @param {object} [style]     стиль поля
 * @param {object} [iconStyle] стиль иконки поля
+*
 * @return {Field}
 */
 FieldManager.prototype.addField = function(options, style, iconStyle){
@@ -94,8 +95,8 @@ FieldManager.prototype.setTrumpSuit = function(suit, delay){
 
 /**
 * Убирает визуальный замок с поля.
-* @param  {string} id id поля
-* @param  {boolean} [noAnimation] отключает анимацию
+* @param {string}  id            id поля
+* @param {boolean} [noAnimation] отключает анимацию
 */
 FieldManager.prototype.unlockField = function(id, noAnimation){
 	var field = this.fields[id];
@@ -145,8 +146,8 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 
 /**
 * Меняет местами два поля
-* @param  {Field} field1 первое поле
-* @param  {Field} field2 второе поле
+* @param {Field} field1 первое поле
+* @param {Field} field2 второе поле
 */
 FieldManager.prototype.swapFields = function(field1, field2){
 	var tempId = field2.id;

@@ -2,8 +2,8 @@
 
 /**
 * Смещает хвост относительно базы карты
-* @param  {number} x Смещение по оси x.
-* @param  {number} y Смещение по оси y.
+* @param {number} x Смещение по оси x.
+* @param {number} y Смещение по оси y.
 */
 CardControl.prototype.trailShift = function(x, y){
 	this.trail.position.x += x;

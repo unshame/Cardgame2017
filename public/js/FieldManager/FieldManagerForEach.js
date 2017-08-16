@@ -2,8 +2,9 @@
 
 /**
 * Выполняет callback для каждого поля из {@link FieldManager#fields}. 
-* @param {function} callback - Вызываемая функция
-* @param {function} context - Контекст вызываваемой функции
+* @param {function} callback Вызываемая функция
+* @param {function} context  Контекст вызываваемой функции
+*
 * @return {any[]} Возвращенные переданной функцей значения
 */
 FieldManager.prototype.forEachField = function(callback, context){
@@ -28,8 +29,8 @@ FieldManager.prototype.removeMarkedCards = function(){
 
 /** 
 * Заставляет каждое поле разместить все карты. 
-* @param  {BRING_TO_TOP_ON} bringToTopOn - Когда поднимать карту на передний план
-* @param  {boolean} noDelay - Говорит полю, что перемещение не нужно задерживать
+* @param {BRING_TO_TOP_ON} bringToTopOn Когда поднимать карту на передний план
+* @param {boolean}         noDelay      Говорит полю, что перемещение не нужно задерживать
 */
 FieldManager.prototype.placeCards = function(bringToTopOn, noDelay){
 	this.forEachField(function(field){

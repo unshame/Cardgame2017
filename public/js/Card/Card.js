@@ -6,17 +6,17 @@
 * присвоенному полю ({@link Field}) и контроллеру карт ({@link CardControl}).
 * @class
 * @extends {external:Phaser.Group}
-* @param {object} options 		 - Опции, используемые при создании карты
-* @param {Game} options.game игра, к которой пренадлежит карта
-* @param {string} options.id 	 - id карты
-* @param {number} [options.x=0] 	 - позиция по горизонтали
-* @param {number} [options.y=0] - позиция по вертикали
-* @param {(number|null)} [options.suit=null]  - масть карты
-* @param {number} [options.value=0] 		 - значение карты
-* @param {number} [options.flipTime=150] - время переворота карты
-* @param {object} [options.skin=skinManager.skin] - скин карты
-* @param {string} [options.fieldId=null] - id поля, в которое будет добавлена карта
-* @param {boolean} [options.debug=false] - вывод дебаг информации
+* @param {object}        options                         Опции, используемые при создании карты
+* @param {Game}          options.game                    игра, к которой пренадлежит карта
+* @param {string}        options.id                      id карты
+* @param {number}        [options.x=0]                   позиция по горизонтали
+* @param {number}        [options.y=0]                   позиция по вертикали
+* @param {(number|null)} [options.suit=null]             масть карты
+* @param {number}        [options.value=0]               значение карты
+* @param {number}        [options.flipTime=150]          время переворота карты
+* @param {object}        [options.skin=skinManager.skin] скин карты
+* @param {string}        [options.fieldId=null]          id поля, в которое будет добавлена карта
+* @param {boolean}       [options.debug=false]           вывод дебаг информации
 */
 
 
@@ -239,8 +239,8 @@ Card.prototype.getDefaultOptions = function(){
 /**
 * Вызывается при нажатии на карту.
 * @private
-* @param  {Phaser.Sprite} sprite {@link Card#sprite}
-* @param  {Phaser.Pointer} pointer вызвавший ивент указатель
+* @param {Phaser.Sprite}  sprite  {@link Card#sprite}
+* @param {Phaser.Pointer} pointer вызвавший ивент указатель
 */
 Card.prototype._cursorDown = function(sprite, pointer){
 	cardControl.cardClick(this, pointer);
@@ -249,8 +249,8 @@ Card.prototype._cursorDown = function(sprite, pointer){
 /**
 * Вызывается при окончании нажатия на карту.
 * @private
-* @param  {Phaser.Sprite} sprite {@link Card#sprite}
-* @param  {Phaser.Pointer} pointer вызвавший ивент указатель
+* @param {Phaser.Sprite}  sprite  {@link Card#sprite}
+* @param {Phaser.Pointer} pointer вызвавший ивент указатель
 */
 Card.prototype._cursorUp = function(sprite, pointer){
 	cardControl.cardUnclick(this, pointer);
@@ -259,8 +259,8 @@ Card.prototype._cursorUp = function(sprite, pointer){
 /**
 * Вызывается при наведении на карту.
 * @private
-* @param  {Phaser.Sprite} sprite {@link Card#sprite}
-* @param  {Phaser.Pointer} pointer вызвавший ивент указатель
+* @param {Phaser.Sprite}  sprite  {@link Card#sprite}
+* @param {Phaser.Pointer} pointer вызвавший ивент указатель
 */
 Card.prototype._cursorOver = function(sprite, pointer){
 	if(this.field)
@@ -270,7 +270,7 @@ Card.prototype._cursorOver = function(sprite, pointer){
 /**
 * Вызывается когда указатель покидает спрайт карты.
 * @private
-* @param  {Phaser.Sprite} sprite {@link Card#sprite}
+* @param {Phaser.Sprite} sprite {@link Card#sprite}
 */
 Card.prototype._cursorOut = function(sprite){
 	if(this.field)
@@ -302,8 +302,8 @@ Card.prototype._destroyFinally = Phaser.Group.prototype.destroy;
 
 /**
 * Полностью удаляет карту из игры с анимацией.
-* @param {number} [delay=0] задержка перед удалением
-* @param {boolean} [now] убирает анимацию удаления и игнорирует задержку
+* @param {number}  [delay=0] задержка перед удалением
+* @param {boolean} [now]     убирает анимацию удаления и игнорирует задержку
 */
 Card.prototype.destroy = function(delay, now) {
 	if(delay === undefined || now)

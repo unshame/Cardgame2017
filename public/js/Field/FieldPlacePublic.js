@@ -2,10 +2,11 @@
 
 /**
 * Размещает карты в поле.
-* @param  {Card[]} [newCards=null]       только что добавленные карты, они будут перемещены в поле по очереди
-* @param  {BRING_TO_TOP_ON} [bringToTopOn] когда поднимать карту на передний план
-* @param  {boolean} [noDelay=false]      все карты будут перемещены без задержки
-* @return {number}              Возвращает задержку следующей карты.
+* @param {Card[]}          [newCards=null] только что добавленные карты, они будут перемещены в поле по очереди
+* @param {BRING_TO_TOP_ON} [bringToTopOn]  когда поднимать карту на передний план
+* @param {boolean}         [noDelay=false] все карты будут перемещены без задержки
+*
+* @return {number} Возвращает задержку следующей карты.
 */
 Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
@@ -153,10 +154,8 @@ Field.prototype.rotateCards = function(){
 
 /**
 * Устанавливает z-index карт.
-* @param  {boolean} [checkDelay] если `true`, то будут подняты только карты,
-* которые не ожидают перемещения.
-* @param {Card} [forcedCard] Карта, которая поднимается,
-* даже если `checkDelay == true` и она движется 
+* @param {boolean} [checkDelay] если `true`, то будут подняты только карты, которые не ожидают перемещения.
+* @param {Card}    [forcedCard] Карта, которая поднимается, даже если `checkDelay == true` и она движется
 */
 Field.prototype.zAlignCards = function(checkDelay, forcedCard){
 	var i = this.style.direction == 'backward' ? this.cards.length - 1 : 0;

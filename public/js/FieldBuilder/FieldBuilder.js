@@ -218,7 +218,7 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 /**
 * Выводит предупреждение в консоль, если ширина меньше ширины одной карты
 * @private
-* @return {boolean}         Меньше ли ширина\высота.
+* @return {boolean} Меньше ли ширина\высота.
 */
 FieldBuilder.prototype._notEnoughSpace = function(id, ref, index, silent, noHeight, noWidth){
 	var arrayExists = typeof index == 'number',

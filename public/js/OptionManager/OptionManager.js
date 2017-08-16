@@ -53,8 +53,9 @@ OptionManager.prototype = {
 
 	/**
 	* Получает настройку.
-	* @param  {string} key ключ настройки
-	* @return {any}    Значение настройки.
+	* @param {string} key ключ настройки
+	*
+	* @return {any} Значение настройки.
 	*/
 	get: function(key){
 		return this.options[key];
@@ -63,9 +64,10 @@ OptionManager.prototype = {
 	/**
 	* Получает настройки определенной группы.
 	* Группа входит в ключ настройки: `group_whatever`.
-	* @param  {string} group название группы
-	* @return {object}       Возвращает объект со значениями настроек по ключу настроек без группы.  
-	*                        `group_whatever` -> `whatever`
+	* @param {string} group название группы
+	*
+	* @return {object} Возвращает объект со значениями настроек по ключу настроек без группы.
+	*                  `group_whatever` -> `whatever`
 	*/
 	getGroup: function(group){
 		var options = {};
@@ -81,7 +83,7 @@ OptionManager.prototype = {
 	/**
 	* Устанавливает значение настройки.
 	* @param {string} key   ключ настройки
-	* @param {any} value    значение настройки
+	* @param {any}    value значение настройки
 	*/
 	set: function(key, value){
 		this.options[key] = value;
@@ -147,8 +149,9 @@ OptionManager.prototype = {
 
 	/**
 	* Восстанавливает настройку на ту, которая в данный момент находятся в `localStorage`.
-	* @param  {string} key ключ настройки
-	* @return {any}    Значение настройки в `localStorage`.
+	* @param {string} key ключ настройки
+	*
+	* @return {any} Значение настройки в `localStorage`.
 	*/
 	restore: function(key, restoredOptions){
 		if(!restoredOptions){
@@ -160,9 +163,10 @@ OptionManager.prototype = {
 	/**
 	* Восстанавливает все настройки определенной группы на те, которые в данный момент находятся в `localStorage`.  
 	* Группа входит в ключ настройки: `group_whatever`.
-	* @param  {string} group название группы
-	* @return {object}       Возвращает объект со значениями настроек из `localStorage` по ключу настроек без группы.  
-	*                        `group_whatever` -> `whatever`
+	* @param {string} group название группы
+	*
+	* @return {object} Возвращает объект со значениями настроек из `localStorage` по ключу настроек без группы.
+	*                  `group_whatever` -> `whatever`
 	*/
 	restoreGroup: function(group){
 		var restoredOptions = this.load();
@@ -193,8 +197,9 @@ OptionManager.prototype = {
 
 	/**
 	* Восстанавливает настройку по умолчанию
-	* @param  {string} key ключ настройки
-	* @return {any}    Значение настройки по умолчанию.
+	* @param {string} key ключ настройки
+	*
+	* @return {any} Значение настройки по умолчанию.
 	*/
 	restoreDefault: function(key){
 		return (this.options[key] = this.defaults[key]);
@@ -203,9 +208,10 @@ OptionManager.prototype = {
 	/**
 	* Восстанавливает все настройки определенной группы по умолчанию.  
 	* Группа входит в ключ настройки: `group_whatever`.
-	* @param  {string} group название группы
-	* @return {object}       Возвращает объект со значениями настроек по умолчанию по ключу настроек без группы.  
-	*                        `group_whatever` -> `whatever`
+	* @param {string} group название группы
+	*
+	* @return {object} Возвращает объект со значениями настроек по умолчанию по ключу настроек без группы.
+	*                  `group_whatever` -> `whatever`
 	*/
 	restoreGroupDefaults: function(group){
 		var options = {};

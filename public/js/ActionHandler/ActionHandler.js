@@ -2,7 +2,7 @@
 * Модуль отвечает за обработку действий и оповещений от сервера.
 * Подсвечивает возможные действия и управляет кнопкой действия и таймером хода.
 * @class
-* @param {string} correctState
+* @param {string}           correctState
 * @param {object<function>} actionReactions
 * @param {object<function>} notificationReactions
 */
@@ -61,8 +61,9 @@ ActionHandler.prototype.changeToCorrectState = function(){
 
 /**
 * Выполняет действие.
-* @param  {object} action 		   действие
-* @param  {string} action.type тип действия по которому будет вызвана соответствующая функция из {@link ActionHandler#actionReactions}
+* @param {object} action      действие
+* @param {string} action.type тип действия по которому будет вызвана соответствующая функция из {@link ActionHandler#actionReactions}
+*
 * @return {number} Время выполнения действия.
 */
 ActionHandler.prototype.executeAction = function(action){

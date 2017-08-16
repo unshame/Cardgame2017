@@ -48,8 +48,8 @@ Rope.prototype.update = function(){
 
 /**
 * Запускает таймер.
-* @param  {number} duration время таймера
-* @param  {number} start    через сколько времени начинать отсчет 
+* @param {number} duration время таймера
+* @param {number} start    через сколько времени начинать отсчет
 */
 Rope.prototype.start = function(duration, start){
 	if(!duration || isNaN(duration))

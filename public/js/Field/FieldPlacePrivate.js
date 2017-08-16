@@ -3,13 +3,14 @@
 /**
 * Считает отступы сверху и слева
 * @private
-* @param  {number} requiredActiveWidth необходимая ширина для размещения карт
-* @param  {number} areaActiveWidth     реальная ширина для размещения карт
-* @param  {number} areaWidth           ширина поля
-* @param  {number} areaHeight          высота поля
-* @param  {number} cardWidth           ширина карты
-* @param  {number} cardHeight          высота карты
-* @return {object}                     Возвращает отступы `{top, left}`
+* @param {number} requiredActiveWidth необходимая ширина для размещения карт
+* @param {number} areaActiveWidth     реальная ширина для размещения карт
+* @param {number} areaWidth           ширина поля
+* @param {number} areaHeight          высота поля
+* @param {number} cardWidth           ширина карты
+* @param {number} cardHeight          высота карты
+*
+* @return {object} Возвращает отступы `{top, left}`
 */
 Field.prototype._calculateMargin = function(requiredActiveWidth, areaActiveWidth, areaWidth, areaHeight, cardWidth, cardHeight){
 	var offset = this.style.margin + this.style.padding;
@@ -58,8 +59,9 @@ Field.prototype._calculateMargin = function(requiredActiveWidth, areaActiveWidth
 /**
 * Создает массив задержек.
 * @private
-* @param  {boolean} noDelay все задержки равны нулю
-* @return {array}   Возращает массив задержек.
+* @param {boolean} noDelay все задержки равны нулю
+*
+* @return {array} Возращает массив задержек.
 */
 Field.prototype._createDelayArray = function(noDelay){
 	var delayArray = [],
@@ -78,8 +80,9 @@ Field.prototype._createDelayArray = function(noDelay){
 /**
 * Считает отступ между картами.
 * @private
-* @param  {number} activeWidth Активная ширина поля.
-* @return {number}             Возвращает отступ между картами.
+* @param {number} activeWidth Активная ширина поля.
+*
+* @return {number} Возвращает отступ между картами.
 */
 Field.prototype._calculateCardSpacing = function(activeWidth){
 	var cardSpacing = 0;
@@ -97,17 +100,17 @@ Field.prototype._calculateCardSpacing = function(activeWidth){
 /**
 * Рассчитывает позицию для карты в соотвествии с индексом и перемещает карту в эту позицию.
 * @private
-* @param  {Card} card             	    карта
-* @param  {number} index               индекс карты в поле
-* @param  {number} topMargin           отступ сверху
-* @param  {number} leftMargin          отступ слева
-* @param  {number} cardSpacing         отступ от предыдущей карты
-* @param  {number} angle               угол поворота
-* @param  {number} shift               сдвиг от выделенной карты
-* @param  {number} focusedIndex        индекс выделенной карты в поле
-* @param  {number[]} delayArray        массив задержек карт
-* @param  {number} delayIndex          индекс задержки карты
-* @param  {BRING_TO_TOP_ON} bringToTopOn       когда поднимать карту на передний план
+* @param {Card}            card         карта
+* @param {number}          index        индекс карты в поле
+* @param {number}          topMargin    отступ сверху
+* @param {number}          leftMargin   отступ слева
+* @param {number}          cardSpacing  отступ от предыдущей карты
+* @param {number}          angle        угол поворота
+* @param {number}          shift        сдвиг от выделенной карты
+* @param {number}          focusedIndex индекс выделенной карты в поле
+* @param {number[]}        delayArray   массив задержек карт
+* @param {number}          delayIndex   индекс задержки карты
+* @param {BRING_TO_TOP_ON} bringToTopOn когда поднимать карту на передний план
 */
 Field.prototype._moveCard = function(
 	card, index, topMargin, leftMargin, cardSpacing, angle, shift, focusedIndex,
@@ -189,12 +192,13 @@ Field.prototype._moveCard = function(
 /**
 * Поворачивает карту и считает корректированную позицию по оси y.
 * @private
-* @param  {Card}   card  карта
-* @param  {number} angle угол
-* @param  {number} x     позиция по x
-* @param  {number} y     позиция по y
-* @param  {number} delay время задержки
-* @return {number}       Возвращает откорректированную позицию по оси y.
+* @param {Card}   card  карта
+* @param {number} angle угол
+* @param {number} x     позиция по x
+* @param {number} y     позиция по y
+* @param {number} delay время задержки
+*
+* @return {number} Возвращает откорректированную позицию по оси y.
 */
 Field.prototype._rotateCard = function(card, angle, x, y, delay, margin){
 

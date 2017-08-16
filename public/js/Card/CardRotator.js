@@ -2,10 +2,10 @@
 
 /**
 * Поворачивает карту с анимацией.
-* @param  {number} angle  угол, к которому будет поворачиваться карта
-* @param  {number} time   время поворота
-* @param  {number} [delay=0]  задержка перед поворотом
-* @param  {function} [easing=Phaser.Easing.Quadratic.Out] функция плавности
+* @param {number}   angle                                угол, к которому будет поворачиваться карта
+* @param {number}   time                                 время поворота
+* @param {number}   [delay=0]                            задержка перед поворотом
+* @param {function} [easing=Phaser.Easing.Quadratic.Out] функция плавности
 */
 Card.prototype.rotateTo = function(angle, time, delay, easing){
 
@@ -32,7 +32,8 @@ Card.prototype.rotateTo = function(angle, time, delay, easing){
 /**
 * Корректирует угол. 
 * @private
-* @param  {number} angle     угол
+* @param {number} angle угол
+*
 * @return {(number|boolean)} Возвращает скорректированный угол, если он не равен текущему, или `false`.
 */
 Card.prototype._calculateCorrectAngle = function(angle){
@@ -62,10 +63,10 @@ Card.prototype._calculateCorrectAngle = function(angle){
 /**
 * Создает и запускает твин поворота или поворачивает карту если игра остановлена.
 * @private
-* @param  {number} angle    угол, к которому будет поворачиваться карта
-* @param  {number} time     время поворота
-* @param  {number} delay    задержка перед поворотом
-* @param  {function} easing функция плавности
+* @param {number}   angle  угол, к которому будет поворачиваться карта
+* @param {number}   time   время поворота
+* @param {number}   delay  задержка перед поворотом
+* @param {function} easing функция плавности
 */
 Card.prototype._startRotator = function(angle, time, delay, easing){
 
@@ -130,9 +131,9 @@ Card.prototype._revolve = function(){
 /**
 * Сообщает карте, что нужно вращаться вокруг определенной точки.
 * Вращение происходит, если карта не двигается (нет {@link Card#mover})
-* @param  {number} x     позиция точки вращения по горизонтали
-* @param  {number} y     по вертикали
-* @param  {number} speed угол поворота за 1 мс
+* @param {number} x     позиция точки вращения по горизонтали
+* @param {number} y     по вертикали
+* @param {number} speed угол поворота за 1 мс
 */
 Card.prototype.revolveAround = function(x, y, speed){
 	this._revolveInfo = {

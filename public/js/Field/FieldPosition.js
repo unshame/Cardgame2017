@@ -2,8 +2,8 @@
 
 /**
 * Устанавливает позицию поля.
-* @param {number} [x=this.style.x]            по горизонтали
-* @param {number} [y=this.style.y]            по вертикали
+* @param {number}  [x=this.style.x]    по горизонтали
+* @param {number}  [y=this.style.y]    по вертикали
 * @param {boolean} [shouldPlace=false] нужно ли размещать карты после установки
 */
 Field.prototype.setBase = function(x, y, shouldPlace){
@@ -25,9 +25,9 @@ Field.prototype.setBase = function(x, y, shouldPlace){
 
 /**
 * Устанавливает размер поля.
-* @param  {number} [width=this.style.width] ширина
-* @param  {number} [height=this.style.height] высота
-* @param  {boolean} [shouldPlace=false] нужно ли размещать карты после установки
+* @param {number}  [width=this.style.width]   ширина
+* @param {number}  [height=this.style.height] высота
+* @param {boolean} [shouldPlace=false]        нужно ли размещать карты после установки
 */
 Field.prototype.setSize = function(width, height, shouldPlace){
 	if(width === null || width === undefined)
@@ -90,8 +90,8 @@ Field.prototype.setSize = function(width, height, shouldPlace){
 /**
 * Запоминает размеры поля и рисует прямоугольник с закругленными углами.
 * @private
-* @param  {number} width  ширина поля
-* @param  {number} height высота поля
+* @param {number} width  ширина поля
+* @param {number} height высота поля
 */
 Field.prototype._createArea = function(width, height){
 	drawRoundedRectangle(
@@ -114,8 +114,8 @@ Field.prototype._createArea = function(width, height){
 * Считает и запоминает радиус и центр окружности по ширине и высоте поля и
 * рисует видимую часть окружности. 
 * @private
-* @param  {number} width  ширина поля
-* @param  {number} height высота поля
+* @param {number} width  ширина поля
+* @param {number} height высота поля
 */
 Field.prototype._createCircle = function(width, height){
 	var total = Math.max(2500, width),	// ширина квадрата, в который точно помещается окружность
@@ -161,10 +161,11 @@ Field.prototype._createCircle = function(width, height){
 /**
 * Считает центр круга по трем точкам. Взято со stackoverflow.
 * @private
-* @param  {object} a точка a `{x, y}`
-* @param  {object} b точка b `{x, y}`
-* @param  {object} c точка c `{x, y}`
-* @return {Phaser.Point}   Возвращает центр круга.
+* @param {object} a точка a `{x, y}`
+* @param {object} b точка b `{x, y}`
+* @param {object} c точка c `{x, y}`
+*
+* @return {Phaser.Point} Возвращает центр круга.
 */
 Field.prototype._calculateCircleCenter = function(a, b, c){
 	var yDelta_a = b.y - a.y,
@@ -184,7 +185,7 @@ Field.prototype._calculateCircleCenter = function(a, b, c){
 
 /** 
 * Запускает твин появления поля.
-* @param  {number} delay задержка до запуска твина
+* @param {number} delay задержка до запуска твина
 */
 Field.prototype.animateAppearance = function(delay){
 	if(!this._entranceTween || this._entranceTween.isRunning){

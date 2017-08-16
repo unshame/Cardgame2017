@@ -22,7 +22,7 @@ Field.prototype.setCardsHighlight = function(highlight){
 
 /**
 * Подсвечивает последнюю карту.
-* @param  {boolean} highlight включить ли подсветку
+* @param {boolean} highlight включить ли подсветку
 */
 Field.prototype.setLastCardHighlight = function(highlight){
 	if(!this.cards.length)
@@ -38,8 +38,8 @@ Field.prototype.setLastCardHighlight = function(highlight){
 /**
 * Устанавливает подсветку поля. По умолчанию зависит от того,
 * включен ли дебаг поля.
-* @param {boolean} [on=Field#inDebugMode] подствечивать ли поле
-* @param {number} [tint=ui.colors.lightBlue]    цвет подсветки
+* @param {boolean} [on=Field#inDebugMode]     подствечивать ли поле
+* @param {number}  [tint=ui.colors.lightBlue] цвет подсветки
 */
 Field.prototype.setOwnHighlight = function(on, tint){
 	this.highlighted = on;
@@ -71,8 +71,8 @@ Field.prototype.setOwnHighlight = function(on, tint){
 
 /**
 * Устанавливает возможность играть карты на поле и подсветку.
-* @param {(string|boolean)} playable играбильность и тип применимого действия         
-* @param {string} [linkedFieldId=null] связанное поле, используется `{@link CardControl#cardMoveToField}`
+* @param {(string|boolean)} playable             играбильность и тип применимого действия
+* @param {string}           [linkedFieldId=null] связанное поле, используется `{@link CardControl#cardMoveToField}`
 */
 Field.prototype.setOwnPlayability = function(playable, linkedFieldId){
 	this.playable = playable;
@@ -118,7 +118,7 @@ Field.prototype.setIconVisibility = function(visible){
 
 /**
 * Увеличивает или восстанавливает масштаб последней карты в поле.
-* @param  {boolean} popped нужно ли увеличить или восстановить масштаб
+* @param {boolean} popped нужно ли увеличить или восстановить масштаб
 */
 Field.prototype.setPopOut = function(popped){
 	if(popped == this.poppedOut)

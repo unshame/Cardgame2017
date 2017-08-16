@@ -4,8 +4,8 @@
 
 /**
 * Делает `constructor` подклассом `parent`.
-* @param  {function} constructor
-* @param  {function} parent 
+* @param {function} constructor
+* @param {function} parent
 * @global
 */
 function extend(constructor, parent){
@@ -15,8 +15,8 @@ function extend(constructor, parent){
 
 /**
 * Добавляет методы из прототипов `mixins` в прототип `constructor`.
-* @param  {function} constructor
-* @param  {function[]} mixins
+* @param {function}   constructor
+* @param {function[]} mixins
 * @global
 */
 function mixin(constructor, mixins){
@@ -37,9 +37,10 @@ function mixin(constructor, mixins){
 
 /**
 * Fisher–Yates Shuffle (сортировка массивов).
-* @param  {array} a массив для сортировки
 * @global
-* @return {array}   отсортированный массив (тот же, что и на входе)
+* @param {array} a массив для сортировки
+*
+* @return {array} отсортированный массив (тот же, что и на входе)
 */
 function shuffleArray(a){
 	var currentIndex = a.length,
@@ -64,10 +65,11 @@ function shuffleArray(a){
 /**
 * Совмещает свойства по умолчанию с неполностью указанными свойствами.  
 * @global
-* @param  {object} dest   опции по умолчанию, которые нужно перезаписать
-* @param  {object} source опции, которыми нужно перезаписать
-* @return {object} 		  Возвращает объект, в котором свойства `dest` заменены на
-*                         свойства `source`, если они существуют и там и там.         
+* @param {object} dest   опции по умолчанию, которые нужно перезаписать
+* @param {object} source опции, которыми нужно перезаписать
+*
+* @return {object} Возвращает объект, в котором свойства `dest` заменены на
+*                  свойства `source`, если они существуют и там и там.         
 */
 function mergeOptions(dest, source){
 	if(typeof dest != 'object'){
@@ -87,9 +89,10 @@ function mergeOptions(dest, source){
 /**
 * Добавляет нули перед строкой до указанного кол-ва.
 * @global
-* @param  {string} str 	строка
-* @param  {number} [len=2] желаемая длина строки длина
-* @return {string}         Полученная строка с нулями.
+* @param {string} str     строка
+* @param {number} [len=2] желаемая длина строки длина
+*
+* @return {string} Полученная строка с нулями.
 */
 function leadWithZeros(str, len){
 	len = len || 2;
@@ -99,8 +102,9 @@ function leadWithZeros(str, len){
 /**
 * Конвертирует число в строку по типу `#000000`.
 * @global
-* @param  {number} number число
-* @return {string}        Строка по типу `#000000`.
+* @param {number} number число
+*
+* @return {string} Строка по типу `#000000`.
 */
 function numberToHexColor(number){
 	var string = leadWithZeros(number.toString(16), 6);
@@ -111,16 +115,16 @@ function numberToHexColor(number){
 /**
 * Рисует прямоугольник с загругленными углами.
 * @global
-* @param  {Phaser.BitmapData} bitmap где рисовать
-* @param  {number} width       ширина
-* @param  {number} height      высота
-* @param  {number} x           отступ по краям по горизонтали
-* @param  {number} y           отступ по краям по вертикали
-* @param  {number} radius      радиус углов
-* @param  {number} lineWidth   ширина рамки
-* @param  {number} alpha       прозрачность заливки
-* @param  {(string|CanvasPattern)} fillStyle   стиль заливки
-* @param  {(string|CanvasPattern)} strokeStyle стиль рамки
+* @param {Phaser.BitmapData}      bitmap      где рисовать
+* @param {number}                 width       ширина
+* @param {number}                 height      высота
+* @param {number}                 x           отступ по краям по горизонтали
+* @param {number}                 y           отступ по краям по вертикали
+* @param {number}                 radius      радиус углов
+* @param {number}                 lineWidth   ширина рамки
+* @param {number}                 alpha       прозрачность заливки
+* @param {(string|CanvasPattern)} fillStyle   стиль заливки
+* @param {(string|CanvasPattern)} strokeStyle стиль рамки
 */
 function drawRoundedRectangle(bitmap, width, height, x, y, radius, lineWidth, alpha, fillStyle, strokeStyle){
 	var ctx = bitmap.ctx;
@@ -168,7 +172,7 @@ function printLayers(){
 
 /**
 * Переносит самую левую карту в руке игрока на стол с задержкой.
-* @param  {number} [i=0] id поля стола
+* @param {number} [i=0]        id поля стола
 * @param {number} [delay=3000] задержка
 * @global
 */

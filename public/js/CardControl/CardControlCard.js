@@ -50,7 +50,7 @@ CardControl.prototype._updateCard = function(){
 
 /**
 * Устанавливаем позицию карты и плавно передивгаем ее к курсору.
-* @param  {number} curTime текущее время
+* @param {number} curTime текущее время
 * @private
 */
 CardControl.prototype._updateCardPosition = function(curTime){
@@ -74,7 +74,7 @@ CardControl.prototype._updateCardPosition = function(curTime){
 
 /**
 * Устанавливает угол в зависимости от инерции карты.
-* @param  {number} curTime текущее время
+* @param {number} curTime текущее время
 * @private
 */
 CardControl.prototype._updateCardAngle = function(curTime){
@@ -107,8 +107,8 @@ CardControl.prototype._updateCardAngle = function(curTime){
 /**
 * Сохраняет текущее время и позицию карты.
 * @private
-* @param  {number} curTime текущее время
-* @param  {number} maxTime позиции, запомненные больше этого времени назад, будут удалены
+* @param {number} curTime текущее время
+* @param {number} maxTime позиции, запомненные больше этого времени назад, будут удалены
 * @see {@link https://github.com/KyleU/solitaire.gg/blob/bf67e1622048bc32abfeef2848f74f220daa384e/app/assets/javascripts/card/CardInput.js#L53|Источник кода}
 */
 CardControl.prototype._saveCardInertia = function(curTime, maxTime){

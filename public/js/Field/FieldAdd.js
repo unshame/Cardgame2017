@@ -3,9 +3,10 @@
 
 /**
 * Добавляет карты в поле.
-* @param {Card[]} newCards добавляемые карты
-* @param  {BRING_TO_TOP_ON} [bringToTopOn=BRING_TO_TOP_ON.START] когда поднимать карты на передний план
-* @param {boolean} [noDelay=false]  убирает время ожидания перед добавлением карт
+* @param {Card[]}          newCards                             добавляемые карты
+* @param {BRING_TO_TOP_ON} [bringToTopOn=BRING_TO_TOP_ON.START] когда поднимать карты на передний план
+* @param {boolean}         [noDelay=false]                      убирает время ожидания перед добавлением карт
+*
 * @return {number} Время добавления
 */
 Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
@@ -40,7 +41,7 @@ Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
 * Добавляет карты в {@link Field#cards}.
 * Вычисляет и сохраняет угол карты в {@link Field#_angles}, если указан {@link Field#randomAngle}.
 * @private
-* @param  {Card[]} cards карты для добавления
+* @param {Card[]} cards карты для добавления
 */
 Field.prototype._appendCards = function(cards){
 

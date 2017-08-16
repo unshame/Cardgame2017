@@ -62,8 +62,8 @@ extend(Cursor, Phaser.Sprite);
 
 /**
 * Обновляет позицию и внешний вид курсора.
-* @param  {boolean} [cursorinGame=Cursor#inGame] находится ли уазатель пользователя в окне
-* @param {boolean} [noOverlapCheck] курсор считает что находится над элементом без проверки
+* @param {boolean} [cursorinGame=Cursor#inGame] находится ли уазатель пользователя в окне
+* @param {boolean} [noOverlapCheck]             курсор считает что находится над элементом без проверки
 */
 Cursor.prototype.update = function(cursorinGame, noOverlapCheck){
 
@@ -116,7 +116,7 @@ Cursor.prototype.update = function(cursorinGame, noOverlapCheck){
 
 /**
 * Запоминает объект над которым находится курсор и обновляет курсор.
-* @param  {DisplayObject} el элемент над которым находится курсор
+* @param {DisplayObject} el элемент над которым находится курсор
 */
 Cursor.prototype.updateOverlap = function(el){
 	if(this.overlappingElement != el){

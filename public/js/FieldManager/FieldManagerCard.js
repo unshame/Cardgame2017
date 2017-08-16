@@ -2,9 +2,10 @@
 
 /**
 * Добавляет карты в очередь соответствующим полям.
-* @param {CardInfo[]} cardsInfo информация о перемещаемых картах
-* @param {boolean} [noDelay=false] Обнуляет задержку карт.
-* Рекомендуется использовать `noDelay` в {@link FieldManager#placeQueuedCards} вместо указания здесь.
+* @param {CardInfo[]} cardsInfo       информация о перемещаемых картах
+* @param {boolean}    [noDelay=false] Обнуляет задержку карт. 
+*                                     Рекомендуется использовать `noDelay` в {@link FieldManager#placeQueuedCards} вместо указания здесь.
+*
 * @return {number} Время до начала движения последней перемещаемой карты.
 */
 FieldManager.prototype.queueCards = function(cardsInfo, noDelay){
@@ -72,10 +73,11 @@ FieldManager.prototype.revealCards = function(cardsInfo){
 
 /**
 * Перемещает карты в соответствующие поля.
-* @param {Field} field - Поле, в которое происходит перемещение
-* @param {CardInfo[]} cardsInfo информация о перемещаемых картах
-* @param {BRING_TO_TOP_ON} [bringToTopOn] когда поднимать карту на передний план 
-* @param {boolean} [noDelay=false] - Говорит полю, что перемещение не нужно задерживать
+* @param {Field}           field           Поле, в которое происходит перемещение
+* @param {CardInfo[]}      cardsInfo       информация о перемещаемых картах
+* @param {BRING_TO_TOP_ON} [bringToTopOn]  когда поднимать карту на передний план
+* @param {boolean}         [noDelay=false] Говорит полю, что перемещение не нужно задерживать
+*
 * @return {number} Время до начала движения последней перемещаемой карты
 */
 FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDelay){
@@ -118,8 +120,9 @@ FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDe
 /**
 * Показывает козырные карты.
 * @param {CardInfo[]} cardsInfo информация о картах
-* @param {string} pid   		id игрока с наименьшей картой
-* @return {number}      Время показа карт.
+* @param {string}     pid       id игрока с наименьшей картой
+*
+* @return {number} Время показа карт.
 */
 FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 	
@@ -196,8 +199,9 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 /**
 * Анимирует перемешивание карт, добавляя карты в колоду по окончании анимации.
 * Также анимирует появления полей игроков и подсвечивает поля стола.
-* @param  {CardInfo[]} cardsInfo информация о картах
-* @return {number}           Время анимации.
+* @param {CardInfo[]} cardsInfo информация о картах
+*
+* @return {number} Время анимации.
 */
 FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 
