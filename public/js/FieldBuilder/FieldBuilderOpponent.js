@@ -161,7 +161,7 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 FieldBuilder.prototype._countOpponentPlacement = function(n){
 	var a = [0, 0, 0];
 	var i = 0;
-	if(game.scale.cellRelation > this._recudeTopOpponentsNumberRelation){
+	if(game.scale.cellRelation > this._reduceTopOpponentsNumberRelation){
 		while(n--){
 			if(i > 2){
 				i = 0;

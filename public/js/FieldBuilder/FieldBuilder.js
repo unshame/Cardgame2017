@@ -91,7 +91,7 @@ var FieldBuilder = function(manager){
 
 	// Magic numbers - game.scalecellRelation
 	this._increaseTopOpponentsSpaceRelation = 1.78;		// ниже этого колода и стопка сброса сдвигаются ближе к краям
-	this._recudeTopOpponentsNumberRelation = 1.13;	// ниже этого больше оппонентов помещается по горизотали чем по вертикали
+	this._reduceTopOpponentsNumberRelation = 1.13;	// ниже этого больше оппонентов помещается по горизотали чем по вертикали
 
 	this._topOpponentFits = true;
 

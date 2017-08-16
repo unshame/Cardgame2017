@@ -109,7 +109,8 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			direction: this.styles[p.id].direction,
 			addTo: this.styles[p.id].addTo,
 			alwaysVisible: true,
-			animateAppearance: this.styles[p.id].animateAppearance
+			animateAppearance: this.styles[p.id].animateAppearance,
+			alpha: 0.15
 		});
 		p.badge = field.badge;
 		oi++;
@@ -178,7 +179,8 @@ FieldBuilder.prototype._buildDiscardField = function(){
 		addTo: 'back',
 		adjust: false,
 		animateAppearance: 'top',
-		alwaysVisible: true
+		alwaysVisible: true,
+		alpha: 0.15
 	},
 	{
 		texture: 'skull',

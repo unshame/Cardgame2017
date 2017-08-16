@@ -207,6 +207,8 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 		return delay;
 	}
 	var	playerField = this.fields[game.pid];
+	// если поле игрока будет анимироваться, нужно это учесть в радиусе вращения карт
+	var animOffset = playerField._entranceTween ? playerField.area.height : 0;
 	var gameSpeed = game.speed; // анимация будет проходить с этим множителем
 
 	// this was a mistake
@@ -215,8 +217,13 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 		interval2 = 50/gameSpeed;	// интервал между началом движения карт в колоду
 
 	var offset = game.scale.cellHeight*2 + game.scale.gridOffset.y,		// отступ сверху до верхней границы вращения
-		height = playerField.base.y - playerField.area.height - offset,	// высота ограничивающая вращение
-		hx = game.screenWidth/2,						// позиция по горизонтали вокруг которой вращаются карты
+		maxHeight = game.screenWidth - game.scale.cellWidth*4,
+		height = playerField.base.y - animOffset - offset;	// высота ограничивающая вращение
+	if(height > maxHeight){
+		height = maxHeight;
+		offset = game.screenHeight/2 - offset - height/2;
+	}
+	var hx = game.screenWidth/2,						// позиция по горизонтали вокруг которой вращаются карты
 		cx = hx + height/2 - skinManager.skin.width,	// позиция по горизонтали откуда начнут вращаться карты
 		cy = height/2 + offset;							// позиция по вертикали откуда начнут вращаться карты и вокруг которой вращаются карты
 
