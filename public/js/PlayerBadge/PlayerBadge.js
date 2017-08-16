@@ -17,13 +17,14 @@ PlayerBadge.prototype.updatePosition = function(){
 	var align = this.field.style.badgeAlign;
 	switch(align){
 		case 'top':
-		this.name.x = 0;
-		this.name.y = 0;
+		// this.name.x = 0;
+		// this.name.y = 0;
+		// this.name.anchor.set(0, 1);
+		this.name.visible = false;
 
 		this.status.x = field.area.width;
 		this.status.y = 0;
 
-		this.name.anchor.set(0, 1);
 		this.status.anchor.set(1, 1);
 		break;
 
