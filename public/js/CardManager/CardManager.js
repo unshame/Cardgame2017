@@ -217,10 +217,4 @@ CardManager.prototype.bringCardToTop = function(card, fixController){
 	}
 };
 
-CardManager.prototype.setInputEnabled = function(enabled){
-	this.forEach(function(card){
-		card.sprite.inputEnabled = enabled;
-	});
-}
-
 //@include:CardManagerDebug

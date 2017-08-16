@@ -237,7 +237,7 @@ UILayers.prototype.updateModalIndex = function(modalLayer){
 		return;
 	}
 	this.modalLayerIndex = i;
-}
+};
 
 /**
 * Вызывается элементами игры и проверяет не заблокирован ли элемент
@@ -255,4 +255,4 @@ UILayers.prototype.updateCursorOverlap = function(el){
 	if(!~m || i >= m){
 		ui.cursor.updateOverlap(el);
 	}
-}
+};

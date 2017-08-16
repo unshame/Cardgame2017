@@ -69,7 +69,7 @@ PlayerBadge.prototype.updatePosition = function(){
 	}
 	this._limitTextWidth(this.name, this.nameText, width);
 	this._limitTextWidth(this.status, this.statusText, width);
-}
+};
 
 PlayerBadge.prototype._limitTextWidth = function(textDisplay, text, width){
 	textDisplay.setText(text);
@@ -80,4 +80,4 @@ PlayerBadge.prototype._limitTextWidth = function(textDisplay, text, width){
 			textDisplay.setText(text + '...');
 		}
 	}
-}
+};

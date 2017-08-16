@@ -32,6 +32,10 @@
     "AnnouncementFeed": true,
     "MessageFeed": true,
     "EventFeed": true,
+    "OptionManager": true,
+    "Logo": true,
+    "ModalManager": true,
+    "PlayerBadge": true,
     
     "game": true,
     "skinManager": true,
@@ -49,6 +53,7 @@
     "feed": true,
     "gameSeq": true,
     "eventFeed": true,
+    "options": true,
 
     "skins": true,
     "actionReactions": true,
@@ -60,6 +65,8 @@
     "stateBoot": true,
     "stateMenu": true,
     
+    "extend": true,
+    "mixin": true,
     "drawRoundedRectangle": true,
     "shuffleArray": true,
     "mergeOptions": true,

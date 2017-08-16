@@ -247,7 +247,7 @@ Game.prototype.toggleDebugMode = function(){
 	this.time.advancedTiming = this.inDebugMode;
 	options.set('debug_game', this.inDebugMode);
 	options.save();
-}
+};
 
 /** Выводит состояние дебаг режима всех модулей. */
 Game.prototype.checkDebugStatus = function(){

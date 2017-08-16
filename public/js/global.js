@@ -23,7 +23,9 @@ function mixin(constructor, mixins){
 	for(var i = 0; i < mixins.length; i++){
 		var mix = mixins[i].prototype;
 		for(var key in mix){
-			if(!mix.hasOwnProperty(key) || key == 'constructor')
+			if(!mix.hasOwnProperty(key))
+				continue;
+			if(key == 'constructor')
 				continue;
 			if(constructor.prototype[key]){
 				console.warn('Overwriting method', key, 'in', constructor, 'prototype');
@@ -122,7 +124,7 @@ function numberToHexColor(number){
 */
 function drawRoundedRectangle(bitmap, width, height, x, y, radius, lineWidth, alpha, fillStyle, strokeStyle){
 	var ctx = bitmap.ctx;
-	x += lineWidth/2,
+	x += lineWidth/2;
 	y += lineWidth/2;
 	bitmap.clear();		
 	bitmap.resize(width, height);

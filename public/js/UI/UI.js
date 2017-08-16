@@ -258,7 +258,7 @@ UI.prototype._createButtons = function(){
 
 	// Закрыть меню
 	this.menus.options.addButton( function(){
-		ui.modalManager.closeModal()
+		ui.modalManager.closeModal();
 	}, 'close','Close');
 
 

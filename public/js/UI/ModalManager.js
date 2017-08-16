@@ -35,11 +35,11 @@ ModalManager.prototype.makeModal = function(menus){
 		menu._fadeToggle = menu.fadeToggle;
 		menu.fadeIn = menu.fadeOut = menu.fadeToggle = this._preventDirectCall.bind(menu);
 	}
-}
+};
 
 ModalManager.prototype._preventDirectCall = function(){
 	console.error('ModalManager: menu should be opened/closed through ModalManager', this);
-}
+};
 
 ModalManager.prototype.openModal = function(menuName){
 	var menu = ui.menus[menuName],

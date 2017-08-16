@@ -105,7 +105,7 @@ Field.prototype._createArea = function(width, height){
 		0.65, 
 		'rgba(255, 255, 255, 1)', 
 		'rgba(255, 255, 255, 1)'
-	)
+	);
 
 	this.area.loadTexture(this._bitmapArea);
 };
@@ -182,6 +182,10 @@ Field.prototype._calculateCircleCenter = function(a, b, c){
 	return new Phaser.Point(x, y);
 };
 
+/** 
+* Запускает твин появления поля.
+* @param  {number} delay задержка до запуска твина
+*/
 Field.prototype.animateAppearance = function(delay){
 	if(!this._entranceTween || this._entranceTween.isRunning){
 		return;
@@ -189,10 +193,11 @@ Field.prototype.animateAppearance = function(delay){
 	var tweenData = this._entranceTween.timeline[0];
 	tweenData.delay = delay;
 	this._entranceTween.start();
-}
+};
 
 /** 
-* Анимирует появление поля
+* Создает твин анимации появления поля.
+* @private
 */
 Field.prototype._setupAnimatedAppearance = function(){
 	if(!this.style.animateAppearance)
@@ -228,7 +233,7 @@ Field.prototype._setupAnimatedAppearance = function(){
 	}, this);
 };
 
-
+/** Завершает твин появления поля. */
 Field.prototype.endAnimation = function(){
 	if(!this._entranceTween){
 		return;
@@ -237,4 +242,4 @@ Field.prototype.endAnimation = function(){
 	this.base.position = tweenData.vEnd;
 	this._entranceTween.stop();
 	this._entranceTween = null;
-}
+};

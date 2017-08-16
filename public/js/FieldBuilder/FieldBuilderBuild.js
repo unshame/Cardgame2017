@@ -108,7 +108,6 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			flipped: this.styles[p.id].flipped,
 			direction: this.styles[p.id].direction,
 			addTo: this.styles[p.id].addTo,
-			alwaysVisible: true,
 			animateAppearance: this.styles[p.id].animateAppearance,
 			alpha: 0.15
 		});
@@ -179,7 +178,6 @@ FieldBuilder.prototype._buildDiscardField = function(){
 		addTo: 'back',
 		adjust: false,
 		animateAppearance: 'top',
-		alwaysVisible: true,
 		alpha: 0.15
 	},
 	{

@@ -15,7 +15,7 @@ var Logo = function(position, scale, texture, name){
 	this.fader = null;
 	this.anchor.set(0.5, 0.5);
 	this.updatePosition();	
-}
+};
 
 extend(Logo, Phaser.Image);
 
@@ -25,11 +25,10 @@ extend(Logo, Phaser.Image);
 Logo.prototype.updatePosition = function(){
 	var position = this.defaultPosition;	
 	var width = this.width/this.scale.x;
-	var height = this.height/this.scale.y;
 	var scale = this.defaultScale;
 
 	if(scale * width > game.screenWidth){
-		scale = game.screenWidth/width
+		scale = game.screenWidth/width;
 	}
 	this.scale.set(scale, scale);
 
@@ -38,7 +37,7 @@ Logo.prototype.updatePosition = function(){
 	}
 	this.x = position.x;
 	this.y = position.y;
-}
+};
 
 /** Плавно показывает лого */
 Logo.prototype.fadeIn = function(){
