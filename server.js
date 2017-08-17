@@ -16,7 +16,7 @@ global.requirejs = function(name) {
 
 const Server = require(__dirname + '/serverjs/Server/Server');
 
-let server = new Server({allow:[
+global.server = new Server({allow:[
 	'setId',
 	'updateId',
 	'meetOpponents',
