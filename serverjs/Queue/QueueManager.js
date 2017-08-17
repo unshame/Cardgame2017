@@ -34,7 +34,7 @@ class QueueManager{
 		}
 
 		let queue;
-		for(let i = this.quickQueues.length - 1; i >= 0; i--){
+		for(let i = 0; i < this.quickQueues.length; i++){
 			if(!this.quickQueues[i].game){
 				queue = this.quickQueues[i];
 				break;
