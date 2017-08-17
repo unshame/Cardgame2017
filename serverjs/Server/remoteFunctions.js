@@ -101,7 +101,12 @@ module.exports = function(server){
 		concedeClient: function(){
 			let player = server.players[this.connection.id];
 			if(player){
-				server.manager.concedePlayer(player);
+				if(player.queue){
+					server.manager.removePlayerFromQueue(player)
+				}
+				else{
+					server.manager.concedePlayer(player);
+				}
 			}
 		}
 	};
