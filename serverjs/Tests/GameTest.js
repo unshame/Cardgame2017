@@ -18,7 +18,7 @@ function runTest(numBots, duration, debug){
 	for(let i = 0; i < numBots; i++){
 		bots.push(new TestBot(tester,randomNames));
 	}
-	new Game(bots, true, debug, true);
+	new Game({endGame: () => {}}, bots, true, debug, true);
 	setTimeout(() => {
 		console.log('Tests finished...');
 		tester.running = false;
