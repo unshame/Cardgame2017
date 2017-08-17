@@ -11,6 +11,7 @@ const
 
 // Игровые модули
 const 
+	QueueManager = requirejs('Queue/QueueManager'),
 	Game = requirejs('Game/Game'),
 	Bot = requirejs('Players/Bot'),
 	Player = requirejs('Players/Player'),
@@ -35,15 +36,22 @@ class Server extends Eureca.Server{
 			this.log.notice('Waiting for players:', this.params.numPlayers);
 		}
 
+		this.manager = new QueueManager(this, {
+			game: Game,
+			bot: Bot,
+			numPlayers: this.params.numPlayers,
+			numBots: this.params.numBots,
+			transfer: this.params.transfer,
+			debug: this.params.debug
+		});
+
 		// express
 		let rootPath = '/../../';
 		this.app = express();
 		this.app.use(express.static(path.join(__dirname, rootPath, '/public')));
 
 		this.clients = {};		// подключенные клиенты
-		this.games = [];		// Работающие игры
 		this.players = {};		// Все игроки
-		this.newPlayers = [];	// Игроки в очереди
 
 		// Биндим функции на ивенты
 		this.on('connect', this.handleConnect);
@@ -54,9 +62,6 @@ class Server extends Eureca.Server{
 		// Функции, доступные со стороны клиента
 		this.exports = getRemoteFunctions(this);
 
-		// Случайные имена ботов
-		this.randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavonne','Leola','Arlena','Marilynn','Shawnna','Alanna','Armando','Julieann','Alyson','Rutha','Wilber','Marty','Tyrone','Mammie','Shalon','Faith','Mi','Denese','Flora','Josphine','Christa','Sharonda','Sofia','Collene','Marlyn','Herma','Mac','Marybelle','Casimira','Nicholle','Ervin','Evia','Noriko','Yung','Devona','Kenny','Aliza','Stacey','Toni','Brigette','Lorri','Bernetta','Sonja','Margaretta', 'Johnny Cocksucker III'];
-		
 		// Подключаем сервер к порту
 		this.httpServer = http.createServer(this.app);
 		this.attach(this.httpServer);
@@ -72,7 +77,6 @@ class Server extends Eureca.Server{
 		let params = {
 			numBots: argv.b === undefined ? Number(argv.bots) : Number(argv.b),
 			numPlayers: argv.p === undefined ? Number(argv.players) : Number(argv.p),
-			rndBots: Boolean(argv.r || argv.rnd || argv.random),
 			transfer: Boolean(process.env.TRANSFER || argv.transfer),
 			testing: argv.t || argv.test || argv.testing,
 			debug: argv.d || argv.debug || 'notice',
@@ -104,7 +108,6 @@ class Server extends Eureca.Server{
 			'port=' + this.params.port,
 			'numBots=' + this.params.numBots,
 			'numPlayers=' + this.params.numPlayers,
-			'rndBots=' + this.params.rndBots,
 			'transfer=' + this.params.transfer,
 			'testing=' + this.params.testing,
 			'debug=' + this.params.debug
@@ -125,7 +128,7 @@ class Server extends Eureca.Server{
 		let remote = this.getClient(conn.id);
 
 		// Запоминаем информацию о клиенте
-		this.clients[conn.id] = {id:conn.id, remote:remote};
+		this.clients[conn.id] = {id: conn.id, remote: remote};
 
 		// Подключаем клиента к экземпляру игрока	
 		let p = new Player(remote, conn.id);
@@ -149,21 +152,10 @@ class Server extends Eureca.Server{
 		let removeId = conn.id;
 
 		let p = this.players[removeId];
-		if(p){
-			// Удаляем игрока из очереди
-			let pi = this.newPlayers.indexOf(p);
-			if(~pi){
-				this.newPlayers.splice(pi, 1);
-				this.updateQueueStatus();
-			}
 
-			// Если игрок не находится в игре, удаляем его
-			if(!p.game){
+		if(p){
+			if(this.manager.disconnectPlayer(p)){
 				delete this.players[removeId];
-			}
-			// иначе устанавливаем отключенный статус
-			else{
-				p.connected = false;
 			}
 		}
 
@@ -192,63 +184,6 @@ class Server extends Eureca.Server{
 			}
 		});
 	}
-
-	/**
-	 * Добавляет игрока в очередь и запускает игру, если очередь заполнена
-	 * @param {Player} player игрок
-	 */
-	addPlayerToQueue(player){
-		this.newPlayers.push(player);
-
-		// Запускаем игру при достаточном кол-ве игроков
-		if(this.newPlayers.length >= this.params.numPlayers){	
-
-			this.newPlayers.forEach((p) => {
-				p.recieveNotification({
-					message: 'QUEUE_FULL',
-					noResponse: true
-				});
-			});
-
-
-			// Добавляем ботов, если нужно
-			if(this.params.numBots){
-				let numBots = this.params.numBots;
-
-				// Случайное кол-во ботов
-				if(this.params.rndBots)
-					numBots = Math.floor(Math.random()*numBots) + 1;
-
-				let randomNamesCopy = this.randomNames.slice();
-				for (let n = 0; n < numBots; n++) {
-					let bot = new Bot(randomNamesCopy);
-					this.newPlayers.push(bot);
-				}
-				this.log.notice('Bots added:', numBots);
-			}
-
-			// Создаем игру, очищаем очередь
-			this.games.push(new Game(this.newPlayers, this.params.transfer, this.params.debug));
-			this.newPlayers = [];
-		}
-		// иначе продолжаем ждать игроков
-		else{
-			this.updateQueueStatus();
-		}
-	}
-
-	updateQueueStatus(){
-		this.newPlayers.forEach((p) => {
-			p.recieveNotification({
-				message: 'QUEUE_STATUS',
-				playersQueued: this.newPlayers.length,
-				playersNeeded: this.params.numPlayers,
-				noResponse: true
-			});
-		});
-		this.log.notice('Waiting for players:', this.params.numPlayers - this.newPlayers.length);
-	}
-
 
 }
 

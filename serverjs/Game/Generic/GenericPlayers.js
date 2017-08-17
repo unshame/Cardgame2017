@@ -115,14 +115,14 @@ class GenericPlayers extends GamePlayers{
 		this.log.notice('Player reconnected', player.id);
 	}
 
-	disconnect(player){
+	concede(player){
 		if(!this.includes(player)){
-			this.log.error('Cannot disconnect a player that isn\'t in this game', player.id);
+			this.log.error('Cannot concede a player that isn\'t in this game', player.id);
 			return;
 		}
-		this.notify({message: 'DISCONNECTED', noResponse: true}, null, [player]);
+		this.notify({message: 'CONCEDED', noResponse: true}, null, [player]);
 		
-		
+
 		let pi = this.indexOf(player);
 		this.splice(pi, 1);
 
@@ -146,7 +146,7 @@ class GenericPlayers extends GamePlayers{
 			replacement.sendResponse();
 		}
 
-		this.log.notice('Player disconnected', player.id);
+		this.log.notice('Player conceded', player.id);
 	}
 
 	// Оповещает игроков о совершенном действии

@@ -216,7 +216,7 @@ class GameCards extends BetterArray{
 			this.numOfCards = 52;
 		}
 		else{
-			this.lowestValue = 6;
+			this.lowestValue = 14;
 			this.numOfCards = 36;
 		}
 

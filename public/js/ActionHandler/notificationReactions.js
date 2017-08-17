@@ -28,7 +28,7 @@ var notificationReactions = {
 	* @param {number} note.index порядковый индекс игры
 	*/
 	GAME_STARTED: function(note){
-		ui.eventFeed.newMessage('Game ' + (note.index + 1) + ' Started', 4000);
+		//ui.eventFeed.newMessage('Game ' + (note.index + 1) + ' Started', 4000);
 	},
 
 	/**
@@ -137,7 +137,7 @@ var notificationReactions = {
 	/**
 	* Игрок отключен от игры.
 	*/
-	DISCONNECTED: function(){
+	CONCEDED: function(){
 		ui.feed.newMessage('Disconnected from game', 2000);
 		game.state.change('menu');
 	},

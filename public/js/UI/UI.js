@@ -203,7 +203,7 @@ UI.prototype._createButtons = function(){
 	// Поиск игры
 	this.menus.main.addButton(function(){
 		game.state.change('play');
-		connection.proxy.queueUp();
+		connection.proxy.quickQueueUpClient();
 	}, 'queueUp','Queue Up');
 
 	// Опции

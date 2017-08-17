@@ -47,6 +47,7 @@ module.exports = function(server){
 			// 	отключен (может быть открыто несколько вкладок)
 			// 	находится в игре
 			// 	игра в процессе (не идет голосование за рестарт)
+
 			if(player && !player.connected && player.game && player.game.isRunning){
 				server.players[newConnId] = player;
 				delete server.players[connId];
@@ -54,9 +55,23 @@ module.exports = function(server){
 			}
 			// Иначе сообщаем игроку, что переподключиться нельзя
 			else{
-				let player = server.players[newConnId];
-				player.connected = true;
-				player.updateRemote();
+				let str = 'Can\'t reconnect ' + connId + ': ';
+				if(!player){
+					str += 'player not found';
+				}
+				else if(player.connected){
+					str += 'player already connected';
+				}
+				else if(!player.game){
+					str += 'player not in a game';
+				}
+				else if(!player.game.isRunning){
+					str += 'game has ended';
+				}
+				server.log.notice(str);
+				let newPlayer = server.players[newConnId];
+				newPlayer.connected = true;
+				newPlayer.updateRemote();
 			}
 		},
 
@@ -68,49 +83,25 @@ module.exports = function(server){
 		requestGameInfo: function(){
 			let player = server.players[this.connection.id];
 			if(player){
-				player.connected = true;
-				if(player.game){
-					player.game.players.reconnect(player);
-				}
+				server.manager.reconnectPlayer(player);
 			}
 		},
 
 		/**
 		 * Добавляет игрока в очередь
 		 */
-		queueUp: function(){
+		quickQueueUpClient: function(){
 			let player = server.players[this.connection.id];
+			server.log.notice(player.type, player.id);
 			if(player){
-				if(player.game){
-					server.log.notice('Player %s already in game %s', player.id, player.game.id);
-					server.exports.requestGameInfo.call(this);
-					return;
-				}
-				if(server.newPlayers.includes(player)){
-					server.log.notice('Player %s already in queue', player.id);
-					return;
-				}
-				server.addPlayerToQueue(player);
+				server.manager.addPlayerToQuickQueue(player);
 			}
 		},
 
-		disconnectClient: function(){
+		concedeClient: function(){
 			let player = server.players[this.connection.id];
-			if(!player)
-				return;
-			let game = player.game;
-			if(game){
-				game.players.disconnect(player);
-				server.log.notice('Player %s disconnected from game %s', player.id, game.id);
-			}
-			else if(server.newPlayers.includes(player)){
-				server.newPlayers.splice(server.newPlayers.indexOf(player), 1);
-				player.recieveNotification({message: 'LEFT_QUEUE', noResponse: true});
-				server.log.notice('Player %s left queue', player.id);
-				server.updateQueueStatus();
-			}
-			else{
-				server.log.warn('Player %s isn\'t in a game, cannot disconnect', player.id);
+			if(player){
+				server.manager.concedePlayer(player);
 			}
 		}
 	};

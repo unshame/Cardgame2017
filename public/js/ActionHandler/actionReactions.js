@@ -79,6 +79,7 @@ var actionReactions = {
 		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
 		var delay;
 		if(noDelay){
+			ui.layers.showLayer(ui.actionButtons, true);
 			fieldManager.endFieldAnimations();
 			delay = fieldManager.queueCards(action.cards, noDelay);
 			fieldManager.removeMarkedCards();

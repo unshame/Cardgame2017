@@ -205,12 +205,6 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 */
 FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 
-	if(game.paused){
-		this.endFieldAnimations();
-		var delay = this.queueCards(cardsInfo);
-		this.placeQueuedCards();
-		return delay;
-	}
 	var	playerField = this.fields[game.pid];
 	// если поле игрока будет анимироваться, нужно это учесть в радиусе вращения карт
 	var animOffset = playerField._entranceTween ? playerField.area.height : 0;
@@ -346,6 +340,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 
 		// Завершаем анимацию и ресетим хвост карты
 		seq.append(function(){
+			ui.layers.showLayer(ui.actionButtons, true);
 			fields.forEach(function(f){
 				f.endAnimation();
 			});

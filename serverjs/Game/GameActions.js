@@ -162,7 +162,7 @@ class Actions{
 					continue outer;
 				}
 			}
-			return validAction;
+			return Object.assign({}, validAction);
 		}
 		return null;
 	}
@@ -254,8 +254,7 @@ class Actions{
 		// Считаем голоса
 		let numAccepted = 0;
 
-		// TODO: заменить на game.players.length в финальной версии
-		let minAcceptedNeeded = Math.ceil(game.players.length / 2); 
+		let minAcceptedNeeded = game.players.length; 
 		
 		let allConnected = true;
 

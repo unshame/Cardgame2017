@@ -23,13 +23,15 @@ const
 	Log = requirejs('logger');
 
 class Game{
-	constructor(players, canTransfer, debugMode, isTest){
+	constructor(queue, players, canTransfer, debugMode, isTest){
 
 		// Генерируем айди игры
 		let id = generateId();
 		this.id = 'game_' + id;
 
 		this.log = Log(module, id, debugMode);
+
+		this.queue = queue;
 
 		// Добавляем бота, если игрок один
 		while(players.length < 2){
@@ -188,9 +190,10 @@ class Game{
 		// Оповещаем игроков о результате голосования
 		this.players.notify(voteResults);
 
-		this.log.info('No rematch');
+		this.players.forEach(p => p.game = null);
 
-		// TODO: оповестить лобби
+		this.log.info('No rematch');
+		this.queue.endGame(voteResults.results);
 	}
 
 	// Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру

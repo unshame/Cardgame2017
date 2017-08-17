@@ -50,6 +50,6 @@ var serverMethods = {
 	},
 
 	disconnect: function(){
-		connection.proxy.disconnectClient();
+		connection.proxy.concedeClient();
 	}
 };

@@ -76,7 +76,6 @@ var statePlay = new State('play', {
 	*/
 	create: function(){
 		cardControl.trailApplySkin();
-		ui.layers.showLayer(ui.actionButtons, true);
 		ui.menus.options.showElement('disconnect');
 	},
 
