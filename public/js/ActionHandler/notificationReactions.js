@@ -154,6 +154,9 @@ var notificationReactions = {
 	},
 
 	QUEUE_STATUS: function(note){
+		if(fieldManager.networkCreated){
+			game.state.change('play');
+		}
 		ui.eventFeed.newMessage('Players in queue: ' + note.playersQueued + '/' + note.playersNeeded);
 	},
 

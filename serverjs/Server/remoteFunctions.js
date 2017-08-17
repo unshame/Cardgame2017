@@ -101,7 +101,7 @@ module.exports = function(server){
 		concedeClient: function(){
 			let player = server.players[this.connection.id];
 			if(player){
-				if(player.queue){
+				if(!player.game && player.queue){
 					server.manager.removePlayerFromQueue(player)
 				}
 				else{
