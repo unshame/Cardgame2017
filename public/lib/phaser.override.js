@@ -201,4 +201,12 @@ Phaser.TweenData.prototype.start = function () {
 
         return this;
 
-    }
+}
+
+// Эффект тряски
+Phaser.Easing.Wiggle = function(aPeriod1, aPeriod2, aProgress){
+    var current1 = aProgress * Math.PI * 2 * aPeriod1;
+    var current2 = aProgress * (Math.PI * 2 * aPeriod2 + Math.PI / 2);
+
+    return Math.sin(current1) * Math.cos(current2);
+}

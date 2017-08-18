@@ -73,6 +73,8 @@ var notificationReactions = {
 					ui.announcer.newMessage('Better luck next time');
 					fieldManager.resetFields();
 					cardManager.enablePhysics(true);
+					//game.camera.shake(0.005, 1000);
+					game.shake(15, 800, 20, 50);
 				}, 0, delay - cardManager.defaultMoveTime);
 			}
 		}, delay/game.speed)

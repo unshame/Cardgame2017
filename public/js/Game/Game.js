@@ -283,4 +283,34 @@ Game.prototype.fixPause = function(){
 	}
 };
 
+Game.prototype.shake = function(distance, duration, sin, cos){	
+
+	var elements = [
+		ui.background,
+		fieldManager,
+		cardManager,
+		ui.actionButtons
+	];
+
+	function restorePosition(el){
+		el.position = position;
+	}
+
+	for(var i = 0; i < elements.length; i++){
+		var el = elements[i];
+		var position = {x: el.position.x, y: el.position.y};
+		var tween = game.add.tween(el.position);
+		tween.to(
+			{
+				x: el.position.x + distance,
+				y: el.position.y + distance
+			},
+			duration,
+			Phaser.Easing.Wiggle.bind(null, sin, cos)
+		);
+		tween.onComplete.add(restorePosition.bind(null, el));
+		tween.start();
+	}
+};
+
 //@include:GameOverride

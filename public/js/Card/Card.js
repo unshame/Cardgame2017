@@ -196,6 +196,8 @@ var Card = function (options) {
 	*/
 	this._lowestTint = 0x666666;
 
+	this._shouldEnablePhysics = false;
+
 	/**
 	* Скин карты
 	* @type {object}
@@ -233,6 +235,7 @@ Card.prototype.getDefaultOptions = function(){
 //@include:CardSkin
 //@include:CardGlow
 //@include:CardDelayedTweens
+//@include:CardPhysics
 
 // СОБЫТИЯ
 

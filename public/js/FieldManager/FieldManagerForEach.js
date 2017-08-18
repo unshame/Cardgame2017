@@ -129,7 +129,7 @@ FieldManager.prototype.resizeFields = function(){
 			mergeOptions(field.style, style);
 		}
 
-		var badgeStyle = this.builder.badgeStyle[id];
+		var badgeStyle = this.builder.badgeStyles[id];
 		if(badgeStyle){
 			mergeOptions(field.badgeStyle, badgeStyle);
 		}

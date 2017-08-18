@@ -7,7 +7,7 @@
 var Background = function(){
 	Phaser.Group.call(this, game);
 	this.name = 'background';
-
+	this.offset = 40;
 	this.textures = [
 		'blue',
 		'green',
@@ -20,7 +20,7 @@ var Background = function(){
 	if(!~this.textures.indexOf(textureName)){
 		textureName = skinManager.skin.background;
 	}
-	this.surface = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, textureName);
+	this.surface = game.add.tileSprite(-this.offset/2, -this.offset/2, game.screenWidth + this.offset, game.screenHeight + this.offset, textureName);
 	this.surface.name = 'surface';
 	this.surface.textureName = textureName;
 	this.add(this.surface);
@@ -29,8 +29,8 @@ var Background = function(){
 extend(Background, Phaser.Group);
 
 Background.prototype.updatePosition = function(){
-	this.surface.width = game.screenWidth;
-	this.surface.height =  game.screenHeight;
+	this.surface.width = game.screenWidth + this.offset;
+	this.surface.height =  game.screenHeight + this.offset;
 };
 
 Background.prototype.setTexture = function(textureName){

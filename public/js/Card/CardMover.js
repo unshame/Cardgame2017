@@ -202,6 +202,9 @@ Card.prototype._onMoveComplete = function(){
 	if(this._shouldHighlight){
 		this.setHighlight(true);
 	}
+	if(this._shouldEnablePhysics){
+		this.enablePhysics(this._shouldEnablePhysics == 2 ? true : false);
+	}
 };
 
 /**
