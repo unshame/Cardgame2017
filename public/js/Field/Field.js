@@ -163,7 +163,7 @@ var Field = function(options, style, iconStyle){
 	* @type {Boolean}
 	* @default  true
 	*/
-	this.interactible = false;
+	this.interactible = true;
 
 	/**
 	* Увеличен ли масштаб поля

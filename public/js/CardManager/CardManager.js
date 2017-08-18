@@ -113,9 +113,9 @@ CardManager.prototype.createCard = function(options){
 /** Уничтожает все карты. */
 CardManager.prototype.reset = function(){
 	this.numOfCards = 0;
-	this.forEach(function(card){
-		card.destroy();
-	});
+	for(var i = this.children.length - 1; i >= 0; i--){
+		this.children[i].destroy();
+	}
 };
 
 /** Возвращает карты с `raised == true` на место. */
