@@ -65,7 +65,7 @@ AnnouncementFeed.prototype.update = function(){
 AnnouncementFeed.prototype._fadeInMessage = function(text){
 	text.addTime = Date.now();
 	if(this.children.indexOf(text) === 0){
-		Object.getPrototypeOf(AnnouncementFeed.prototype)._fadeInMessage.call(this, text);
+		supercall(AnnouncementFeed)._fadeInMessage.call(this, text);
 	}
 	else{
 		text.alpha = 0;
@@ -115,6 +115,6 @@ AnnouncementFeed.prototype._moveMessage = function(text, i, ii, x, y){
 			text.endTime = Date.now() + (text.endTime - text.addTime);
 			text.addTime = undefined;
 		}
-		Object.getPrototypeOf(AnnouncementFeed.prototype)._fadeInMessage.call(this, text);
+		supercall(AnnouncementFeed)._fadeInMessage.call(this, text);
 	}
 };

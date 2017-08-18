@@ -185,7 +185,7 @@ Button.prototype.changeStateFrame = function (state) {
 		this.label.state = state;
 
 	if(this.inputEnabled)
-		return Object.getPrototypeOf(Button.prototype).changeStateFrame.call(this, state);
+		return supercall(Button).changeStateFrame.call(this, state);
 };
 
 Button.prototype.cursorIsOver = function(){

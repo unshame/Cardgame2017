@@ -52,7 +52,7 @@ EventFeed.prototype._destroyMessage = function(text){
 	if(text.scaleTween){
 		text.scaleTween.stop();
 	}
-	Object.getPrototypeOf(EventFeed.prototype)._destroyMessage.call(this, text);
+	supercall(EventFeed)._destroyMessage.call(this, text);
 };
 
 EventFeed.prototype._moveMessage = function(text, i, ii, x, y){
