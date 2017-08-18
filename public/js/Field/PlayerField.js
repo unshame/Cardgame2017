@@ -113,6 +113,31 @@ PlayerField.prototype._createCircle = function(width, height){
 	this.circleRadius = radius;
 };
 
+/**
+* Считает центр круга по трем точкам. Взято со stackoverflow.
+* @private
+* @param {object} a точка a `{x, y}`
+* @param {object} b точка b `{x, y}`
+* @param {object} c точка c `{x, y}`
+*
+* @return {Phaser.Point} Возвращает центр круга.
+*/
+Field.prototype._calculateCircleCenter = function(a, b, c){
+	var yDelta_a = b.y - a.y,
+		xDelta_a = b.x - a.x,
+		yDelta_b = c.y - b.y,
+		xDelta_b = c.x - b.x,
+		x, y;
+
+	var aSlope = yDelta_a / xDelta_a,
+		bSlope = yDelta_b / xDelta_b;
+
+	x = (aSlope*bSlope*(a.y - c.y) + bSlope*(a.x + b.x) - aSlope*(b.x+c.x) )/(2* (bSlope-aSlope) );
+	y = -1*(x - (a.x+b.x)/2)/aSlope +  (a.y+b.y)/2;
+
+	return new Phaser.Point(x, y);
+};
+
 PlayerField.prototype.setOwnHighlight = function(on, tint){
 	this.highlighted = on;
 	this.setVisibility(on);

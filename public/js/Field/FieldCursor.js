@@ -67,6 +67,7 @@ Field.prototype.focusOffCard = function(card, forced){
 		return;
 
 	this.focusedCard = null;
-	if(!this._uninteractibleTimer || forced)
+	if(!this._uninteractibleTimer || forced){
 		this.placeCards(null, BRING_TO_TOP_ON.INIT);
+	}
 };
