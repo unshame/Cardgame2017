@@ -154,19 +154,14 @@ var notificationReactions = {
 		game.seq.start(function(){		
 			field.badge.visible = false;		
 			field.badge.updatePosition();
-			field._setupAnimatedAppearance();
-			field.placeCards();
+			field.setupAnimatedAppearance();
 		}, duration, 300)
 		.then(function(){
 			field.badge.visible = true;		
 			field.animateAppearance();
-		}, duration)
-		.then(function(){
-			field.placeCards();
-		}, duration)
+		}, duration*2)
 		.then(function(){
 			field.endAnimation();
-			field.placeCards();
 		});
 	},
 

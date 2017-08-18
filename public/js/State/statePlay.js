@@ -66,7 +66,7 @@ var statePlay = new State('play', {
 	resumed: function(){
 		actionHandler.highlightPossibleActions();
 		fieldManager.rotateCards();
-		fieldManager.placeCards();
+		fieldManager.zAlignCards();
 		cardManager.forceApplyValues();
 	},
 

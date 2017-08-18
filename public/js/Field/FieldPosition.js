@@ -110,11 +110,8 @@ Field.prototype.animateAppearance = function(delay){
 	this._entranceTween.start();
 };
 
-/** 
-* Создает твин анимации появления поля.
-* @private
-*/
-Field.prototype._setupAnimatedAppearance = function(){
+/** Создает твин анимации появления поля. */
+Field.prototype.setupAnimatedAppearance = function(){
 	if(!this.style.animateAppearance || game.paused){
 		return;
 	}
@@ -153,8 +150,10 @@ Field.prototype._setupAnimatedAppearance = function(){
 	}
 	this._entranceTween.to(position, this.moveTime/game.speed, Phaser.Easing.Quadratic.Out);
 	this._entranceTween.onComplete.addOnce(function(){
-		this._entranceTween = null;
+		this.endAnimation();
 	}, this);
+
+	this.placeCards();
 };
 
 /** Завершает твин появления поля. */
@@ -166,4 +165,5 @@ Field.prototype.endAnimation = function(){
 	this.position = tweenData.vEnd;
 	this._entranceTween.stop();
 	this._entranceTween = null;
+	this.placeCards();
 };

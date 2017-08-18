@@ -274,7 +274,7 @@ Field.prototype.initialize = function(){
 	this.setBase(this.style.x, this.style.y);
 	this.setSize(this.style.width, this.style.height);
 
-	this._setupAnimatedAppearance();
+	this.setupAnimatedAppearance();
 }
 
 /**
