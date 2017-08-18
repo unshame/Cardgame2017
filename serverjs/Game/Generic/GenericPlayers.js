@@ -146,6 +146,8 @@ class GenericPlayers extends GamePlayers{
 			replacement.sendResponse();
 		}
 
+		this.notify({message: 'PLAYER_CONCEDED', pid: player.id, name: replacement.name});
+
 		this.log.notice('Player conceded', player.id);
 	}
 

@@ -160,14 +160,14 @@ CardManager.prototype.forceApplyValues = function(){
 * Включает физику карт.
 * @param {boolean} makeDraggable нужно ли делать карты перетаскиваемыми
 */
-CardManager.prototype.enablePhysics = function(makeDraggable, except){
+CardManager.prototype.enablePhysics = function(makeDraggable, except, only){
 
 	for(var cid in this.cards){
 		// jshint forin:false
-		if(!this.cards.hasOwnProperty(cid) || except && except.indexOf && ~except.indexOf(card))
+		var card = this.cards[cid];
+		if(!this.cards.hasOwnProperty(cid) || except && except.indexOf && ~except.indexOf(card) || only && !~only.indexOf(card))
 			continue;
 
-		var card = this.cards[cid];
 		card.enablePhysics(makeDraggable);
 	}
 	this.physicsEnabled = true;

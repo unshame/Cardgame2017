@@ -17,7 +17,7 @@ var BadgeField = function(options, style, badgeStyle){
 	* Информационная плашка игрока.
 	* @type {Badge}
 	*/
-	this.badge = new Badge(this, this.name);
+	this.badge = new Badge(this, this.id);
 	this.add(this.badge);
 };
 

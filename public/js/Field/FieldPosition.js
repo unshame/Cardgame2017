@@ -106,7 +106,7 @@ Field.prototype.animateAppearance = function(delay){
 		return;
 	}
 	var tweenData = this._entranceTween.timeline[0];
-	tweenData.delay = delay;
+	tweenData.delay = delay || 0;
 	this._entranceTween.start();
 };
 
@@ -115,8 +115,17 @@ Field.prototype.animateAppearance = function(delay){
 * @private
 */
 Field.prototype._setupAnimatedAppearance = function(){
-	if(!this.style.animateAppearance)
+	if(!this.style.animateAppearance || game.paused){
 		return;
+	}
+	if(game.paused){
+		this.endAnimation();
+		return;
+	}
+
+	if(this._entranceTween){
+		this._entranceTween.stop();
+	}
 
 	this._entranceTween = game.add.tween(this.position);
 

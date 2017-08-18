@@ -142,6 +142,32 @@ var notificationReactions = {
 	CONCEDED: function(){
 		ui.feed.newMessage('Disconnected from game', 2000);
 		game.state.change('menu');
+
+	},
+
+	PLAYER_CONCEDED: function(note){
+		var player = playerManager.getPlayer(note.pid);
+		ui.eventFeed.newMessage(player.name + ' conceded', 2000);
+		player.name = note.name;
+		var field = fieldManager.fields[note.pid];
+		var duration = field.moveTime/game.speed;
+		game.seq.start(function(){		
+			field.badge.visible = false;		
+			field.badge.updatePosition();
+			field._setupAnimatedAppearance();
+			field.placeCards();
+		}, duration, 300)
+		.then(function(){
+			field.badge.visible = true;		
+			field.animateAppearance();
+		}, duration)
+		.then(function(){
+			field.placeCards();
+		}, duration)
+		.then(function(){
+			field.endAnimation();
+			field.placeCards();
+		});
 	},
 
 	// нужно перенести в отдельный объект
