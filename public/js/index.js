@@ -26,7 +26,7 @@
 //@include:SkinManager
 //@include:UI
 //@include:MessageFeed
-//@include:PlayerBadge
+//@include:Badge
 
 // Глобальные модули
 var options,

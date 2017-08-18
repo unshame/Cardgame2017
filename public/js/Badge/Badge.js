@@ -1,4 +1,4 @@
-var PlayerBadge = function(field, name){
+var Badge = function(field, name){
 	Phaser.Group.call(this, game, null, name);
 	this.field = field;
 	this.status = game.add.text(0, 0, '', {fill: 'white', font: '24px Exo'}, this);
@@ -9,9 +9,9 @@ var PlayerBadge = function(field, name){
 	this.updatePosition();
 };
 
-extend(PlayerBadge, Phaser.Group);
+extend(Badge, Phaser.Group);
 
-PlayerBadge.prototype.updatePosition = function(){
+Badge.prototype.updatePosition = function(){
 	var field = this.field;
 	var width = this.field.area.width;
 	var align = this.field.badgeStyle.align;
@@ -65,14 +65,14 @@ PlayerBadge.prototype.updatePosition = function(){
 		break;
 
 		default:
-		console.error('PlayerBadge: invalid align', align);
+		console.error('Badge: invalid align', align);
 		break;
 	}
 	this._limitTextWidth(this.name, this.nameText, width);
 	this._limitTextWidth(this.status, this.statusText, width);
 };
 
-PlayerBadge.prototype._limitTextWidth = function(textDisplay, text, width){
+Badge.prototype._limitTextWidth = function(textDisplay, text, width){
 	textDisplay.setText(text);
 	if(textDisplay.width > width){
 		textDisplay.setText(text + '...');

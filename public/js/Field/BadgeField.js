@@ -1,5 +1,5 @@
 /**
-* Поле с плашкой информации игрока {@link BadgeField#badge} ({@link PlayerBadge}).
+* Поле с плашкой информации игрока {@link BadgeField#badge} ({@link Badge}).
 * @class 
 * @extends {Field}
 * @param {object} options
@@ -15,9 +15,9 @@ var BadgeField = function(options, style, badgeStyle){
 
 	/**
 	* Информационная плашка игрока.
-	* @type {PlayerBadge}
+	* @type {Badge}
 	*/
-	this.badge = new PlayerBadge(this, this.name);
+	this.badge = new Badge(this, this.name);
 	this.add(this.badge);
 };
 
