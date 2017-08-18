@@ -36,6 +36,17 @@ function mixin(constructor, mixins){
 }
 
 /**
+* Возвращает прототип прототипа конструктора.
+* @param {function} constructor
+*
+* @return {prototype}
+* @global
+*/
+function supercall(constructor){
+	return Object.getPrototypeOf(constructor.prototype);
+}
+
+/**
 * Fisher–Yates Shuffle (сортировка массивов).
 * @global
 * @param {array} a массив для сортировки
@@ -77,8 +88,8 @@ function mergeOptions(dest, source){
 		return;
 	}
 	if(typeof source == 'object'){
-		for(var o in dest){
-			if(source.hasOwnProperty(o) && source[o] !== undefined){
+		for(var o in source){
+			if(source.hasOwnProperty(o) && dest.hasOwnProperty(o)){
 				dest[o] = source[o];
 			}
 		}
