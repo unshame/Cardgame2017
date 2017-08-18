@@ -144,8 +144,10 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 			axis: axis[pi],
 			addTo: addTo[pi],
 			animateAppearance: animateFrom[pi],
-			badgeAlign: badges[pi]
 		};
+		this.badgeStyles[p.id] = {
+			align: badges[pi]
+		}
 		this.offsets[p.id] = this.offsets.opponent[pi];
 		this._notEnoughSpace(p.id, 'opponent', pi, false, pi == 1, pi != 1);
 		oi++;

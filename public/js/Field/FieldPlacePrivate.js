@@ -64,11 +64,9 @@ Field.prototype._calculateMargin = function(requiredActiveWidth, areaActiveWidth
 * @return {array} Возращает массив задержек.
 */
 Field.prototype._createDelayArray = function(noDelay){
-	var delayArray = [],
-		i = this.style.reversed ? this.cards.length - 1 : 0,
-		iter = this.style.reversed ? -1 : 1;
+	var delayArray = [];
 
-	for(; i >= 0 && i < this.cards.length; i += iter){
+	for(var i = 0; i < this.cards.length; i++){
 
 		var localDelay = noDelay ? 0 : this._delays[this.cards[i].id]; 
 
@@ -96,6 +94,13 @@ Field.prototype._calculateCardSpacing = function(activeWidth){
 	}
 	return cardSpacing;
 };
+
+Field.prototype._calculateShift = function(cardWidth, cardSpacing, areaActiveWidth){
+	if(this.focusedCard && cardWidth*(this.cards.length - 1) > areaActiveWidth){		
+		return shift = cardWidth*(1 + this.style.scaleDiff/2) - cardSpacing;
+	}
+	return 0;
+}
 
 /**
 * Рассчитывает позицию для карты в соотвествии с индексом и перемещает карту в эту позицию.
@@ -167,8 +172,23 @@ Field.prototype._moveCard = function(
 		y += this.y;
 	}
 
+	this._startCardMovers(card, angle, x, y, topMargin - bottomMargin, delay, bringToTopOn);
+	this._fixCardDraggability(card);
+};
+
+/**
+* Запускает твины карты.
+* @param  {Card} card         
+* @param  {number} angle        
+* @param  {number} x            
+* @param  {number} y           
+* @param  {number} margin      
+* @param  {number} delay       
+* @param  {BRING_TO_TOP_ON} bringToTopOn
+*/
+Field.prototype._startCardMovers = function(card, angle, x, y, margin, delay, bringToTopOn){
 	// Запускаем поворот карты
-	y = this._rotateCard(card, angle, x, y, delay, topMargin - bottomMargin);
+	this._rotateCard(card, angle, delay);
 
 	// Запускаем перемещение карты
 	if(cardControl.card != card){
@@ -177,12 +197,20 @@ Field.prototype._moveCard = function(
 	else{
 		card.setBasePreserving(x, y);
 	}
+};
 
-	// Проверяем перетаскиваемость карты для тех случаев, когда карта была перемещена
-	// без использования presetField метода
+/**
+* Выставляет перетаскиваемость карты для тех случаев, когда карта была перемещена
+* без использования presetField метода.
+* @private
+* @param {Card} card
+*/
+Field.prototype._fixCardDraggability = function(card){
+
 	if(this.style.draggable){
-		if(!card.draggable)
+		if(!card.draggable){
 			card.setDraggability(true);
+		}
 	}
 	else if(card.draggable){
 		card.setDraggability(false);
@@ -200,18 +228,11 @@ Field.prototype._moveCard = function(
 *
 * @return {number} Возвращает откорректированную позицию по оси y.
 */
-Field.prototype._rotateCard = function(card, angle, x, y, delay, margin){
+Field.prototype._rotateCard = function(card, angle, delay){
 
-	// Находим угол и сдвигаем y, если поле выгнутое
-	if(this.style.area == 'curved'){
-		var toCenter = this.circleCenter.x - x + this.x,
-			distance = Math.sqrt(Math.pow(this.circleRadius, 2) - toCenter*toCenter);
-		angle = Math.acos(toCenter/this.circleRadius) - Math.PI/2;
-		angle *= (180 / Math.PI);
-		y = this.y + this.circleCenter.y - distance + margin;
-	}
+
 	// Берем сохраненный угол, если поле со случайными углами
-	else if(this.style.randomAngle){
+	if(this.style.randomAngle){
 		angle = this._angles[card.id] || 0;
 	}
 	// Поворачиваем карту, если она на дне колоды
@@ -220,6 +241,4 @@ Field.prototype._rotateCard = function(card, angle, x, y, delay, margin){
 	}	
 
 	card.rotateTo(angle, this.moveTime, delay);
-
-	return y;
 };

@@ -21,21 +21,6 @@ Field.prototype.setCardsHighlight = function(highlight){
 };
 
 /**
-* Подсвечивает последнюю карту.
-* @param {boolean} highlight включить ли подсветку
-*/
-Field.prototype.setLastCardHighlight = function(highlight){
-	if(!this.cards.length)
-		return;
-
-	this.setCardsHighlight(false);
-	if(highlight){
-		var i = this.style.direction == 'backward' ? 0 : this.cards.length - 1;
-		this.cards[i].setHighlight(highlight);
-	}
-};
-
-/**
 * Устанавливает подсветку поля. По умолчанию зависит от того,
 * включен ли дебаг поля.
 * @param {boolean} [on=Field#inDebugMode]     подствечивать ли поле
@@ -43,30 +28,9 @@ Field.prototype.setLastCardHighlight = function(highlight){
 */
 Field.prototype.setOwnHighlight = function(on, tint){
 	this.highlighted = on;
-
-	var plane;
-	switch(this.style.area){
-		case 'plain': 
-		plane = this.area;
-		break;
-
-		case 'curved':
-		plane = this.circle;
-		break;
-
-		case 'glowing':
-		if(this.cards.length){
-			this.setVisibility(false);
-			this.setLastCardHighlight(on);
-			return;
-		}
-		plane = this.area;
-		break;
-	}
-
 	this.setVisibility(on);
-	plane.tint = on ? (tint || ui.colors.orange) : skinManager.skin.color;
-	plane.alpha = (this.style.alwaysVisible || on) ? this.style.alpha : 0.15;
+	this.area.tint = on ? (tint || ui.colors.orange) : skinManager.skin.color;
+	this.area.alpha = (this.style.alwaysVisible || on) ? this.style.alpha : 0.15;
 };
 
 /**
@@ -85,35 +49,7 @@ Field.prototype.setOwnPlayability = function(playable, linkedFieldId){
 * @param {boolean} visible видимость
 */
 Field.prototype.setVisibility = function(visible){
-	var plane;
-	switch(this.style.area){
-		case 'plain': 
-		plane = this.area;
-		break;
-
-		case 'curved':
-		plane = this.circle;
-		break;
-
-		case 'glowing':
-		plane = this.area;
-		break;
-	}
-	plane.visible = this.style.alwaysVisible || visible || this.inDebugMode;
-	this.setIconVisibility(visible);
-};
-
-/**
-* Устанавливает видимость иконки поля.
-* @param {boolean} visible видимость
-*/
-Field.prototype.setIconVisibility = function(visible){
-	if(!this.icon)
-		return;
-
-	if(!visible && this.iconStyle.shouldHide || visible && !this.icon.visible){
-		this.icon.visible = visible;
-	}
+	this.area.visible = this.style.alwaysVisible || visible || this.inDebugMode;
 };
 
 /**

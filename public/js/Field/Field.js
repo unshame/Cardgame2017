@@ -2,7 +2,7 @@
 * Конструктор полей карт ({@link Card}).  
 * Производит размещение карт на экране. Контролирует позицию карт при наведении курсора.
 * Отвечает за подсветку пространства под картами и самих карт.  
-* Основные компоненты: {@link Field#area}, {@link Field#circle}, {@link Field#icon}, {@link Field#badge}, {@link Field#cards}.  
+* Основные компоненты: {@link Field#area}, {@link Field#cards}.  
 * Карты добавляются в поле двумя методами:  
 *
 * {@link Field#queueCards} -> {@link Field#placeQueuedCards}  
@@ -14,7 +14,7 @@
 * @class
 * @extends {external:Phaser.Group}
 * 
-* @param {object}           [options]------------------------------------------------Настройки поля. {@link Field#options}. 
+* @param {object}           options--------------------------------------------------Настройки поля. {@link Field#options}. 
 *                                                                                    Будут пересохранены в `this`, изменения объекта `options` не повлияют на поле.
 * @param {string}           options.id=null------------------------------------------{@link Field#id}	
 * @param {string}           options.type='GENERIC'-----------------------------------{@link Field#type}	
@@ -25,11 +25,8 @@
 * @param {boolean}          options.debug=false--------------------------------------{@link Field#inDebugMode}	
 * @param {number}           options.specialId=null-----------------------------------{@link Field#specialId}	
 *
-* @param {(boolean|string)} options.badge--------------------------------------------Нужно ли добавлять плашку с информацией игрока ({@link PlayerBadge}) и как ее выравнивать.  
-*                                                                                    Значения: `false, 'left', 'right', 'top', 'bottom'`  
-*                                                                                    Значение будет пересохранено в `style.badgeAlign` для последующего изменения.
 *
-* @param {object}           [style]--------------------------------------------------Внешний вид поля. {@link Field#style} 
+* @param {object}           style----------------------------------------------------Внешний вид поля. {@link Field#style} 
 * @param {number}           style.x=0------------------------------------------------{@link Field#x} позиция по горизонтали
 * @param {number}           style.y=0------------------------------------------------{@link Field#y} позиция по вертикали
 * @param {number}           style.width=0--------------------------------------------{@link Field#area} ширина поверхности
@@ -59,9 +56,6 @@
 *                                                                                    Значения: `'forward', 'backward'`
 * @param {string}           style.addTo='front'--------------------------------------В какой конец поля добавляются карты.  
 *                                                                                    Значения: `'front', 'back'`
-* @param {string}           style.area='plain'---------------------------------------Тип поверхности поля.  
-*                                                                                    Значения: `'plain', 'curved', 'glowing'`
-* @param {boolean}          style.reversed=false-------------------------------------Карты добавляются начиная с последней
 * @param {boolean}          style.flipped=false--------------------------------------Карты распологаются повернутыми на 180 градусов
 * @param {(boolean|string)} style.randomAngle=false----------------------------------Нужно ли класть карты в поле под случайным углом.  
 *                                                                                    Значения: `false, 'uni', 'bi'`  
@@ -74,20 +68,12 @@
 *
 * @param {(boolean|string)} style.animateAppearance----------------------------------Нужно ли анимировать появление поля и откуда это делать.  
 *                                                                                    Значения: `false, 'left', 'right', 'top', 'bottom'`
-*
-* @param {object}           [iconStyle]----------------------------------------------Внешний вид иконки поля. {@link Field#iconStyle} {@link Field#icon} 
-* @param {string}           iconStyle.texture=null-----------------------------------текстура иконки	
-* @param {number}           iconStyle.frame=0----------------------------------------кадр текстуры иконки
-* @param {number}           iconStyle.scale=1----------------------------------------масштаб текстуры иконки
-* @param {object}           iconStyle.offset={x:0,y:0}-------------------------------отступ иконки `{x, y}`
-* @param {boolean}          iconStyle.shouldHide=false-------------------------------нужно ли прятать иконку
-* @param {boolean}          iconStyle.visible=true-----------------------------------спрятана ли иконка по умолчанию
 */
 
-var Field = function(options, style, iconStyle){
+var Field = function(options, style){
 
 
-	this._applyOptions(options, style, iconStyle);
+	this._applyOptions(options, style);
 
 
 	Phaser.Group.call(this, game, null, this.options.name);
@@ -273,66 +259,23 @@ var Field = function(options, style, iconStyle){
 	*/
 	this._bitmapArea = game.make.bitmapData();
 
-	// Круглая поверхность
-	if(this.style.area == 'curved'){
-		/**
-		* Полукруглая поверхность поля, если `style.area == 'curved'`.
-		* @type {Phaser.Image}
-		*/
-		this.circle = game.add.image(0, 0);
-		this.add(this.circle);
-
-		/**
-		* BitmapData полукруглой поверхности поля.
-		* @type {Phaser.BitmapData}
-		* @private
-		*/
-		this._bitmapCircle = game.make.bitmapData();
-	}
-
-	// Иконка
-	if(this.iconStyle.texture){
-		/**
-		* Иконка поля, если `iconStyle.texture` указано.
-		* @type {Phaser.Image}
-		*/
-		this.icon = game.add.image(0, 0, this.iconStyle.texture);
-		this.icon.frame = this.iconStyle.frame;
-		this.icon.visible = this.iconStyle.visible;
-		this.icon.anchor.set(0.5, 0.5);
-		this.icon.scale.set(this.iconStyle.scale, this.iconStyle.scale);
-		this.add(this.icon);
-	}
-
-	// Плашка
-	if(this.options.badge){
-
-		// Сохраняем выравнивание плашки, чтобы потом можно было его изменить
-		this.style.badgeAlign = this.options.badge;
-
-		/**
-		* Информационная плашка игрока.
-		* @type {PlayerBadge}
-		*/
-		this.badge = new PlayerBadge(this, this.name);
-		this.add(this.badge);
-	}
-
 	/**
 	* Размер активного места поля для дебага.
 	* @type {Phaser.Rectangle}
 	* @private
 	*/
 	this._debugActiveSpace = new Phaser.Rectangle();
+};
 
+extend(Field, Phaser.Group);
+
+Field.prototype.initialize = function(){
 	this.setOwnHighlight(false);
 	this.setBase(this.style.x, this.style.y);
 	this.setSize(this.style.width, this.style.height);
 
 	this._setupAnimatedAppearance();
-};
-
-extend(Field, Phaser.Group);
+}
 
 /**
 * Возвращает опции по умолчанию
@@ -347,8 +290,6 @@ Field.prototype.getDefaultOptions = function(){
 			specialId: null,
 			type: 'GENERIC',
 			name: null,
-
-			badge: false,
 
 			debug: false
 		},
@@ -376,26 +317,16 @@ Field.prototype.getDefaultOptions = function(){
 			axis: 'horizontal', 	
 			direction: 'forward',	
 			addTo: 'front',		
-			reversed: false,	
 			flipped: false,		
 			randomAngle: false,	
 			adjust: true,
 
 			animateAppearance: false,
 			
-			area: 'plain',	
 			alwaysVisible: false,
 			alpha: 0.35,
 			corner: 5,
 			border: 4
-		},
-		iconStyle: {
-			texture: null,
-			frame: 0,
-			scale: 1,
-			offset: {x: 0, y:0},
-			shouldHide: false,
-			visible: true
 		}
 	};
 };
@@ -405,9 +336,8 @@ Field.prototype.getDefaultOptions = function(){
 * @private
 * @param {object} [options]   Настройки поля.
 * @param {object} [style]     Внешний вид поля.
-* @param {object} [iconStyle] Внешний вид иконки поля.
 */
-Field.prototype._applyOptions = function(options, style, iconStyle){
+Field.prototype._applyOptions = function(options, style){
 	var defaults = this.getDefaultOptions();
 
 	/**
@@ -423,12 +353,6 @@ Field.prototype._applyOptions = function(options, style, iconStyle){
 	*/
 	this.style = mergeOptions(defaults.style, style);
 
-	/**
-	* Внешний вид иконки поля.
-	* @type {object}
-	*/
-	this.iconStyle = mergeOptions(defaults.iconStyle, iconStyle);
-
 };
 
 //@include:FieldPosition
@@ -440,6 +364,11 @@ Field.prototype._applyOptions = function(options, style, iconStyle){
 //@include:FieldPlacePublic
 //@include:FieldCursor
 //@include:FieldDebug
+
+//@include:IconField
+//@include:BadgeField
+//@include:PlayerField
+//@include:TableField
 
 /**
 * Проверяет нахождение карты внутри поля (по координатам).

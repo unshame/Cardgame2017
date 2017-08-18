@@ -14,7 +14,7 @@ extend(PlayerBadge, Phaser.Group);
 PlayerBadge.prototype.updatePosition = function(){
 	var field = this.field;
 	var width = this.field.area.width;
-	var align = this.field.style.badgeAlign;
+	var align = this.field.badgeStyle.align;
 	switch(align){
 		case 'top':
 		// this.name.x = 0;

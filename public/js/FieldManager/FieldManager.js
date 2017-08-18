@@ -57,23 +57,44 @@ extend(FieldManager, Phaser.Group);
 *
 * @return {Field}
 */
-FieldManager.prototype.addField = function(options, style, iconStyle){
-
-	var field = new Field(options, style, iconStyle);
-	if(this.fields[options.id]){
-		this.fields[options.id].destroy();
+FieldManager.prototype.addField = function(Constructor){
+	var args = [],
+		len = arguments.length;
+	for(var i = 1; i < len; i++) {
+		args[i] = arguments[i];
 	}
-	this.fields[options.id] = field;
+	var field = new (Constructor.bind.apply(Constructor, args))();
+	if(this.fields[field.id]){
+		this.fields[field.id].destroy();
+	}
+	this.fields[field.id] = field;
 	this.add(field);
-
-	if(options.type == 'TABLE'){
-		this.table.push(field);
-	}
-	else if(options.type == 'HAND_OPPONENT'){
-		this.opponents.push(field);
-	}
+	field.initialize();
 	return field;
 };
+
+FieldManager.prototype.addGenericField = function(options, style, iconStyle){
+	return this.addField(iconStyle ? IconField : Field, options, style, iconStyle);
+}
+
+FieldManager.prototype.addTableField = function(options, style, iconStyle){
+	var field = this.addField(TableField, options, style, iconStyle);
+	this.table.push(field);
+	return field;
+}
+
+FieldManager.prototype.addPlayerField = function(options, style, badgeStyle){
+	return this.addField(PlayerField, options, style, badgeStyle);
+}
+
+FieldManager.prototype.addOpponentField = function(options, style, badgeStyle){
+	var field = this.addField(BadgeField, options, style, badgeStyle);
+	this.opponents.push(field);
+	return field;
+}
+
+
+
 
 /**
 * Устанавливает козырь колоде.

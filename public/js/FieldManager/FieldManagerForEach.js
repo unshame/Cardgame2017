@@ -65,7 +65,7 @@ FieldManager.prototype.resetHighlights = function(){
 		field.setPopOut(false);
 		field.setOwnPlayability(false);
 		field.validCards.length = 0;
-		field.setIconVisibility(false);
+		field.setOwnHighlight(false);
 		field.setCardsPlayability(false);
 	});
 };
@@ -118,23 +118,22 @@ FieldManager.prototype.resizeFields = function(){
 	this.builder.calcSizes();
 	this.forEachField(function(field, id){
 		field.style.padding = this.builder.offsets[id];
-		var style = this.builder.styles[id];
+		
 		var options = this.builder.options[id];
-		var key;
-		if(style){
-			for(key in style){
-				if(style.hasOwnProperty(key)){
-					field.style[key] = style[key];
-				}
-			}
-		}
 		if(options){
-			for(key in options){
-				if(options.hasOwnProperty(key) && typeof options[key] == typeof field[key]){
-					field[key] = options[key];
-				}
-			}
+			mergeOptions(field, style);
 		}
+
+		var style = this.builder.styles[id];
+		if(style){
+			mergeOptions(field.style, style);
+		}
+
+		var badgeStyle = this.builder.badgeStyle[id];
+		if(badgeStyle){
+			mergeOptions(field.badgeStyle, badgeStyle);
+		}
+
 		field.setBase(this.builder.positions[id].x, this.builder.positions[id].y);
 		field.setSize(this.builder.dimensions[id].width, this.builder.dimensions[id].height, true);
 	});

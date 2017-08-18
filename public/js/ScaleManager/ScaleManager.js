@@ -137,7 +137,7 @@ extend(ScaleManager, Phaser.ScaleManager);
 */
 ScaleManager.prototype.getDefaultOptions = function(){
 	return {
-		game: game,
+		game: null,
 		width: 0,
 		height: 0,
 		density:4,		// плотность сетки (масштаб - 1:density)

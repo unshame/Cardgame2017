@@ -40,6 +40,8 @@ var FieldBuilder = function(manager){
 
 	this.styles = {};
 
+	this.badgeStyles = {};
+
 	/**
 	* Стандартный минимальный размер для размещения карт
 	* @type {Number}

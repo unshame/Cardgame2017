@@ -69,19 +69,6 @@ Field.prototype.setSize = function(width, height, shouldPlace){
 
 	this._createArea(width, height);
 
-	if(this.icon){
-		this.icon.x = width/2 + this.iconStyle.offset.x;
-		this.icon.y = height/2 + this.iconStyle.offset.y;
-	}
-
-	if(this.style.area == 'curved'){
-		this._createCircle(width, height);
-	}	
-
-	if(this.badge){
-		this.badge.updatePosition();
-	}
-
 	if(shouldPlace){
 		this.placeCards();
 	}
@@ -108,54 +95,6 @@ Field.prototype._createArea = function(width, height){
 	);
 
 	this.area.loadTexture(this._bitmapArea);
-};
-
-/**
-* Считает и запоминает радиус и центр окружности по ширине и высоте поля и
-* рисует видимую часть окружности. 
-* @private
-* @param {number} width  ширина поля
-* @param {number} height высота поля
-*/
-Field.prototype._createCircle = function(width, height){
-	var total = Math.max(2500, width),	// ширина квадрата, в который точно помещается окружность
-		extra = (total - width)/2,		// на сколько окружность выходит за пределы экрана
-		a = {
-			x: -extra,
-			y: height
-		},
-		b = {
-			x: extra + width,
-			y: height
-		},
-		c = {
-			x: width/2,
-			y: 0
-		};
-
-	var center = this._calculateCircleCenter(a, c, b);
-	var radius = center.y;
-
-	var circle = this._bitmapCircle,
-		ctx = circle.ctx;
-	circle.clear();		
-	circle.resize(game.screenWidth, height);
-	ctx.beginPath();
-	ctx.arc(center.x + this.x, center.y, radius,2 * Math.PI, 0); 
-	ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
-	ctx.lineWidth = this.style.border;
-	ctx.globalAlpha = 0.65;
-	ctx.fill();
-	ctx.globalAlpha = 1;
-	ctx.stroke();
-	circle.update();
-	this.circle.loadTexture(circle);
-
-	this.circle.x = -this.x;
-
-	this.circleCenter = center;
-	this.circleRadius = radius;
 };
 
 /**

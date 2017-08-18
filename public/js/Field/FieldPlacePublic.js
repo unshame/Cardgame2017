@@ -61,9 +61,6 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 	// Индекс карты под курсором
 	var focusedIndex = null;
 
-	// Сдвиг карты
-	var shift = 0;
-
 	// Задержка передвижения
 	var delayIndex = 0;
 
@@ -81,13 +78,7 @@ Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
 	// Если курсор находится над одной из карт и карты не вмещаются в поле,
 	// указываем сдвиг карты от курсора
-	if(this.focusedCard && cardWidth*(this.cards.length - 1) > areaActiveWidth){		
-		shift = cardWidth*(1 + this.style.scaleDiff/2) - cardSpacing;
-		// Уменьшаем сдвиг для карт в выгнутом поле
-		if(this.style.area == 'curved'){
-			shift = Math.max(0, shift - 5);
-		}
-	}
+	var shift = this._calculateShift(cardWidth, cardSpacing, areaActiveWidth);
 
 	// Создаем массив задержек в зависимости от направления поля
 	var delayArray = this._createDelayArray(noDelay);

@@ -2,11 +2,10 @@
 FieldBuilder.prototype._buildPlayerField = function(){
 	var manager = this.manager;
 	var player = playerManager.players[playerManager.pi];
-	var field = manager.addField({
+	var field = manager.addPlayerField({
 		type: 'HAND',
 		id: playerManager.pid,
 		name: player.name,
-		badge: 'top',
 		specialId: playerManager.pi,
 		debug: manager.inDebugMode
 	},
@@ -20,8 +19,10 @@ FieldBuilder.prototype._buildPlayerField = function(){
 		sortable: true,
 		focusable: true,
 		draggable: true,
-		area: 'curved',
 		animateAppearance: 'bottom'
+	},
+	{
+		align: 'top'
 	});
 	player.badge = field.badge;
 };
@@ -34,7 +35,7 @@ FieldBuilder.prototype._buildTableFields = function(lockedFields){
 	
 	var manager = this.manager;
 
-	manager.addField({
+	manager.addGenericField({
 		type: 'DUMMY',
 		id: 'dummy',
 		debug: manager.inDebugMode
@@ -51,7 +52,7 @@ FieldBuilder.prototype._buildTableFields = function(lockedFields){
 	for(var i = 0; i < this.tableAmount; i++){
 		var id = 'TABLE' + i;
 		var icon = ~lockedFields.indexOf(id) ? 'lock' : null;
-		manager.addField({
+		manager.addTableField({
 			type: 'TABLE',
 			id: id,
 			specialId: i,
@@ -67,7 +68,6 @@ FieldBuilder.prototype._buildTableFields = function(lockedFields){
 			spacing:0,
 			randomAngle: 'uni',
 			padding: this.offsets.table,
-			area: 'glowing',
 			horizontalAlign: 'centerLeft'
 		},
 		{
@@ -88,11 +88,10 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 		i = 0;
 	while(i != playerManager.pi){
 		var p = players[i];
-		var field = manager.addField({
+		var field = manager.addOpponentField({
 			type: 'HAND_OPPONENT',
 			id: p.id,
 			name: p.name,
-			badge: this.options[p.id].badge,
 			specialId: this.options[p.id].specialId,
 			debug: manager.inDebugMode
 		},
@@ -110,6 +109,9 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 			addTo: this.styles[p.id].addTo,
 			animateAppearance: this.styles[p.id].animateAppearance,
 			alpha: 0.15
+		},
+		{
+			align: this.badgeStyles[p.id].align
 		});
 		p.badge = field.badge;
 		oi++;
@@ -134,7 +136,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 			visible: false
 		};
 	}
-	manager.addField({
+	manager.addGenericField({
 		type: 'DECK',
 		id: 'DECK',
 		delayTime: 50,
@@ -159,7 +161,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 // Discard pile
 FieldBuilder.prototype._buildDiscardField = function(){
 	var manager = this.manager;
-	manager.addField({
+	manager.addGenericField({
 		type: 'DISCARD_PILE',
 		id: 'DISCARD_PILE',
 		debug: manager.inDebugMode
