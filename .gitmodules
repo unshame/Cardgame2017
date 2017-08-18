@@ -1,0 +1,3 @@
+[submodule "prod"]
+	path = prod
+	url = https://git.heroku.com/durak.git
