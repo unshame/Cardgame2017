@@ -51,7 +51,14 @@ FieldBuilder.prototype._buildTableFields = function(lockedFields){
 	
 	for(var i = 0; i < this.tableAmount; i++){
 		var id = 'TABLE' + i;
-		var icon = ~lockedFields.indexOf(id) ? 'lock' : null;
+		var icon = null;
+		if(~lockedFields.indexOf(id)){
+			icon = {
+				texture: icon,
+				shouldHide: true,
+				visible: false
+			}
+		};
 		manager.addTableField({
 			type: 'TABLE',
 			id: id,
@@ -70,11 +77,7 @@ FieldBuilder.prototype._buildTableFields = function(lockedFields){
 			padding: this.offsets.table,
 			horizontalAlign: 'centerLeft'
 		},
-		{
-			texture: icon,
-			shouldHide: true,
-			visible: false
-		});
+		icon);
 	}
 };
 

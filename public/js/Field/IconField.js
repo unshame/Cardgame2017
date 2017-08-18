@@ -14,23 +14,26 @@
 var IconField = function(options, style, iconStyle){
 	Field.call(this, options, style);
 
-	/**
-	* Внешний вид иконки поля.
-	* @type {object}
-	*/
+	if(iconStyle){
+		/**
+		* Внешний вид иконки поля.
+		* @type {object}
+		*/
+		this.iconStyle = mergeOptions(this.getIconDefaultOptions(), iconStyle);
+		
+		/**
+		* Иконка поля, если `iconStyle.texture` указано.
+		* @type {Phaser.Image}
+		*/
+		this.icon = game.add.image(0, 0, this.iconStyle.texture);
+		this.icon.frame = this.iconStyle.frame;
+		this.icon.visible = this.iconStyle.visible;
+		this.icon.anchor.set(0.5, 0.5);
+		this.icon.scale.set(this.iconStyle.scale, this.iconStyle.scale);
+		this.add(this.icon);
+	}
 
-	this.iconStyle = mergeOptions(this.getIconDefaultOptions(), iconStyle);
 
-	/**
-	* Иконка поля, если `iconStyle.texture` указано.
-	* @type {Phaser.Image}
-	*/
-	this.icon = game.add.image(0, 0, this.iconStyle.texture);
-	this.icon.frame = this.iconStyle.frame;
-	this.icon.visible = this.iconStyle.visible;
-	this.icon.anchor.set(0.5, 0.5);
-	this.icon.scale.set(this.iconStyle.scale, this.iconStyle.scale);
-	this.add(this.icon);
 };
 
 

@@ -178,6 +178,7 @@ Field.prototype._moveCard = function(
 
 /**
 * Запускает твины карты.
+* @private
 * @param  {Card} card         
 * @param  {number} angle        
 * @param  {number} x            
