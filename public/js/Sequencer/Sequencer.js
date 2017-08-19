@@ -252,6 +252,7 @@ Sequencer.prototype.unskip = function(){
 };
 
 //@include:SequencerPrivate
+//@include:Sequencer2
 
 // Test
 // jshint ignore: start
