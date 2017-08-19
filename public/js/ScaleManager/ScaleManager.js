@@ -78,6 +78,12 @@ var ScaleManager = function(options){
 	this.cellHeight = 0;
 
 	/**
+	* Отношение кол-ва клеток по горизонтали к кол-ву клеток по вертикали.
+	* @type {Number}
+	*/
+	this.cellRelation = 0;
+
+	/**
 	* Ширина линий сетки для дебага.
 	* @type {number}
 	* @private

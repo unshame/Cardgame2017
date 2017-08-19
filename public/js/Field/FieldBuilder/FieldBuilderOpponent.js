@@ -12,20 +12,29 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 	var halfDensity = Math.floor(game.scale.density / 2);
 
 	// Кол-во колонок и отступы для рук противников и мест на столе
+	// Оппоненты размещаются в трех разных позициях - справа, сверху и слева
 	
+	// Отступ уменьшается, если поле не вмещается
 	var topOpponentOffsetMultiplier = this._topOpponentFits ? 4 : 2;
+
+	// Кол-во строк, выделенные на поля
 	var opponentNumRows = Math.round(game.scale.numRows - game.scale.density*2 - 1);
+
+	// Кол-во клеток, выделенные на поля
 	var opponentCells = [
 		opponentNumRows,
 		game.scale.numCols - game.scale.density*topOpponentOffsetMultiplier - 2,
 		opponentNumRows
 	];
+
+	// Отступы между полями
 	var opponentsOffset = this._opponentsOffset = [
 		(game.scale.cellHeight + this.offsets.opponent[0]* 2 ),
 		(game.scale.cellWidth + this.offsets.opponent[1]* 2 ),
 		(game.scale.cellHeight + this.offsets.opponent[2]* 2 )
 	];
 
+	// Выводим предупреждение, если на оппонентов было выделено отрицательное число клеток
 	for(var i = 0; i < opponentCells.length; i++){
 		if(opponentCells[i] <= 0){
 			if(this.manager.inDebugMode){
@@ -35,6 +44,7 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 		}
 	}
 
+	// Размеры полей
 	this.dimensions.opponent = [
 		{
 			width: skinManager.skin.width, 
@@ -72,6 +82,7 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 		),
 	];
 
+	// Сдвигаем позицию оппонентов слева на высоту карты
 	this.positions.opponent[0].x -= skinManager.skin.height;
 };
 
@@ -104,11 +115,17 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 			dimensions[2].height + opponentsOffset[2]
 		];
 
-	if(i >= players.length)
+	if(i >= players.length){
 		i = 0;
+	}
 	
+	// Начиная от оппонента после игрока и заканчивая оппонентом перед игроком
+	// расчитываем и сохраняем позиции и свойства полей противников 
+	// для трех позиций их размещения в соответствии с рассчитанным ранее
+	// количеством оппонентов в каждой позиции
 	while(i != playerManager.pi){
 		
+		// Достаточно игроков расположено в текущей позиции, переходим в следующую
 		if(!placement[pi]){
 			pi++;
 			oi = 0;
@@ -119,11 +136,14 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 			x = this.positions.opponent[pi].x + xs[pi]*oi,
 			y = this.positions.opponent[pi].y + ys[pi]*oi;
 
+		// Сдвиг для полей с направлением в обратную стророну
 		if(directions[pi] == 'backward'){
-			if(axis[pi] == 'horizontal')
+			if(axis[pi] == 'horizontal'){
 				x -= dimensions[pi].width;
-			else
+			}
+			else{
 				y -= dimensions[pi].height;
+			}
 		}
 
 		this.positions[p.id] = {
@@ -152,8 +172,9 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 		this._notEnoughSpace(p.id, 'opponent', pi, false, pi == 1, pi != 1);
 		oi++;
 		i++;
-		if(i >= players.length)
+		if(i >= players.length){
 			i = 0;
+		}
 
 		placement[pi]--;
 	}

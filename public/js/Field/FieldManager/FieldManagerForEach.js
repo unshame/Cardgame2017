@@ -20,13 +20,6 @@ FieldManager.prototype.forEachField = function(callback, context){
 	return returnedValues;
 };
 
-/** Удаляет карты {@link Field#cardsToRemove} из соответсвующих полей. */
-FieldManager.prototype.removeMarkedCards = function(){
-	this.forEachField(function(field, si){
-		field.removeMarkedCards();
-	});
-};
-
 /** 
 * Заставляет каждое поле разместить все карты. 
 * @param {BRING_TO_TOP_ON} bringToTopOn Когда поднимать карту на передний план
@@ -49,13 +42,6 @@ FieldManager.prototype.rotateCards = function(){
 FieldManager.prototype.zAlignCards = function(){
 	this.forEachField(function(field){
 		field.zAlignCards();
-	});
-};
-
-/** Выполняет размещение очередей карт каждого поля. */
-FieldManager.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
-	this.forEachField(function(field){
-		field.placeQueuedCards(bringToTopOn, noDelay);
 	});
 };
 
@@ -109,7 +95,8 @@ FieldManager.prototype.resetPopOut = function(){
 	});
 };
 
-/** Меняет размеры и устанавливает позицию полей в соотстветсвии с 
+/** 
+* Меняет размеры и устанавливает позицию полей в соотстветсвии с 
 * {@link FieldBuilder#positions} и {@link FieldBuilder#dimensions}.
 */
 FieldManager.prototype.resizeFields = function(){
@@ -171,4 +158,16 @@ FieldManager.prototype.endFieldAnimations = function(){
 	this.forEachField(function(f){
 		f.endAnimation();
 	});
+};
+
+/** Применяет скин к полям */
+FieldManager.prototype.applySkin = function(){
+	this.resizeFields();
+	var deck = this.fields.DECK;
+	if(deck && deck.icon && skinManager.skin.hasSuits){
+		var frame = deck.icon.frame;
+		deck.icon.loadTexture(skinManager.skin.suitsName);
+		deck.icon.scale.set(skinManager.skin.scale, skinManager.skin.scale);
+		deck.icon.frame = frame;
+	}
 };

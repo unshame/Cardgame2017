@@ -30,11 +30,15 @@ var FieldManager = function(inDebugMode){
 	*/
 	this.table = [];
 
+	/**
+	* Поля оппонентов.
+	* @type {Array}
+	*/
 	this.opponents = [];
 
 	/**
 	* Выводить ли дебаг информацию
-	* @type {bollean}
+	* @type {bolean}
 	* @see  FieldManager#toggleDebugMode
 	*/
 	this.inDebugMode = inDebugMode;
@@ -51,9 +55,8 @@ extend(FieldManager, Phaser.Group);
 
 /**
 * Добавляет поле.
-* @param {object} [options]   опции поля
-* @param {object} [style]     стиль поля
-* @param {object} [iconStyle] стиль иконки поля
+* @param {function} Constructor конструктор поля
+* @param {...object} options   опции, передаваемые в конструктор поля
 *
 * @return {Field}
 */
@@ -73,28 +76,53 @@ FieldManager.prototype.addField = function(Constructor){
 	return field;
 };
 
+/**
+* Добавляет обычное поле или поле с иконкой.
+* @param {object} options   
+* @param {object} style   
+* @param {object} [iconStyle]
+* @return {(Field|IconField)}
+*/
 FieldManager.prototype.addGenericField = function(options, style, iconStyle){
 	return this.addField(iconStyle ? IconField : Field, options, style, iconStyle);
 }
 
+/**
+* Добавляет поле стола.
+* @param {object} options   
+* @param {object} style   
+* @param {object} [iconStyle]
+* @return {TableField}
+*/
 FieldManager.prototype.addTableField = function(options, style, iconStyle){
 	var field = this.addField(TableField, options, style, iconStyle);
 	this.table.push(field);
 	return field;
 }
 
+/**
+* Добавляет поле руки игрока.
+* @param {object} options   
+* @param {object} style   
+* @param {object} [badgeStyle]
+* @return {PlayerField}
+*/
 FieldManager.prototype.addPlayerField = function(options, style, badgeStyle){
 	return this.addField(PlayerField, options, style, badgeStyle);
 }
 
+/**
+* Добавляет поле руки оппонента.
+* @param {object} options   
+* @param {object} style   
+* @param {object} [badgeStyle]
+* @return {BadgeField}
+*/
 FieldManager.prototype.addOpponentField = function(options, style, badgeStyle){
 	var field = this.addField(BadgeField, options, style, badgeStyle);
 	this.opponents.push(field);
 	return field;
 }
-
-
-
 
 /**
 * Устанавливает козырь колоде.
@@ -112,57 +140,6 @@ FieldManager.prototype.setTrumpSuit = function(suit, delay){
 		icon.frame = suit;
 		icon.visible = true;
 	}, delay/game.speed);
-};
-
-/**
-* Убирает визуальный замок с поля.
-* @param {string}  id            id поля
-* @param {boolean} [noAnimation] отключает анимацию
-*/
-FieldManager.prototype.unlockField = function(id, noAnimation){
-	var field = this.fields[id];
-	if(!field || !field.icon){
-		console.error('Field manager: cannot unlock field', id, ', no such field or field has no icon');
-		return;
-	}
-	var icon = field.icon;
-	
-	if(game.paused || noAnimation){
-		field.icon.destroy();
-		field.icon = null;
-		return;
-	}
-
-	icon.visible = true;
-	field.iconStyle.shouldHide = false;
-	icon.alpha = 1;
-
-	var lockDelay = 100/game.speed,
-		spinDelay = 300/game.speed,
-		spinTime = 1000/game.speed;
-
-	var tween = game.add.tween(icon);	
-
-	game.seq.start(function(){
-		field.setOwnHighlight(true);
-		tween.to({alpha: 0, angle: 720}, spinTime - lockDelay, Phaser.Easing.Quadratic.In, false, spinDelay);
-		tween.start();	
-	}, lockDelay)
-	.then(function(seq){
-		icon.loadTexture('unlock');
-	}, spinTime + spinDelay - lockDelay)
-	.then(function(seq){
-		tween.stop();
-		icon.destroy();
-		field.icon = null;
-	}, lockDelay)
-	.then(function(){
-		if(!field.playable){
-			field.setOwnHighlight(false);
-		}
-	});
-
-	return game.seq.duration - 500;
 };
 
 /**
@@ -185,6 +162,7 @@ FieldManager.prototype.swapFields = function(field1, field2){
 
 //@include:FieldManagerCard
 //@include:FieldManagerForEach
+//@include:FieldManagerAnim
 
 // ДЕБАГ
 
@@ -205,16 +183,4 @@ FieldManager.prototype.toggleDebugMode = function(){
 			field.toggleDebugMode();
 	});
 	actionHandler.highlightPossibleActions();
-};
-
-/** Применяет скин к полям */
-FieldManager.prototype.applySkin = function(){
-	this.resizeFields();
-	var deck = this.fields.DECK;
-	if(deck && deck.icon && skinManager.skin.hasSuits){
-		var frame = deck.icon.frame;
-		deck.icon.loadTexture(skinManager.skin.suitsName);
-		deck.icon.scale.set(skinManager.skin.scale, skinManager.skin.scale);
-		deck.icon.frame = frame;
-	}
 };

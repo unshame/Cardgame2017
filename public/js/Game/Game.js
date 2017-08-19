@@ -283,6 +283,13 @@ Game.prototype.fixPause = function(){
 	}
 };
 
+/**
+* Трясет фон, поля, карты и кнопку действия.
+* @param  {number} distance дальность тряски
+* @param  {number} duration время тряски
+* @param  {number} sin      аргумент для Math.sin
+* @param  {number} cos      аргумент для Math.cos
+*/
 Game.prototype.shake = function(distance, duration, sin, cos){	
 
 	var elements = [

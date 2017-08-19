@@ -36,10 +36,22 @@ var FieldBuilder = function(manager){
 	*/
 	this.dimensions = {};
 
+	/**
+	* Опции полей противников.
+	* @type {Object}
+	*/
 	this.options = {};
 
+	/**
+	* Стили полей противников.
+	* @type {Object}
+	*/
 	this.styles = {};
 
+	/**
+	* Стили плашек противников.
+	* @type {Object}
+	*/
 	this.badgeStyles = {};
 
 	/**
@@ -48,6 +60,11 @@ var FieldBuilder = function(manager){
 	*/
 	this.minActiveSpace = 10;
 
+	/**
+	* Возможные последовательности полей.
+	* @private
+	* @type {Object}
+	*/
 	this._possibleTableOrders = {	
 		1: [4, 2, 0, 1, 3, 5],		// 1x6
 		2: [2, 3, 0, 1, 4, 5],		// 2x3
@@ -87,14 +104,43 @@ var FieldBuilder = function(manager){
 	*/
 	this._tableCells = 0;
 	
+	/**
+	* Количество противников в трех позициях - левой, верхней и правой.  
+	* `[left, top, right]`
+	* @private
+	* @type {number[]}
+	*/
 	this._opponentPlacement = null;
 
+	/**
+	* Отступы позиций полей оппонентов.
+	* @private
+	* @type {number[]}
+	*/
 	this._opponentsOffset = null;	
 
-	// Magic numbers - game.scalecellRelation
-	this._increaseTopOpponentsSpaceRelation = 1.78;		// ниже этого колода и стопка сброса сдвигаются ближе к краям
-	this._reduceTopOpponentsNumberRelation = 1.13;	// ниже этого больше оппонентов помещается по горизотали чем по вертикали
+	// Magic numbers
+	/**
+	* Ниже этого отношения клеток сетки игры ({@link ScaleManager#cellRelation}) 
+	* колода и стопка сброса сдвигаются ближе к краям.
+	* @private
+	* @type {Number}
+	*/
+	this._increaseTopOpponentsSpaceRelation = 1.78;
+	/**
+	* Ниже этого отношения клеток сетки игры ({@link ScaleManager#cellRelation}) 
+	* больше оппонентов помещается по горизотали чем по вертикали.
+	* @private
+	* @type {Number}
+	*/
+	this._reduceTopOpponentsNumberRelation = 1.13;
 
+	/**
+	* Есть место для поля оппонента сверху.
+	* Если нет, колода и стопка сброса будут сдвинуты.
+	* @private
+	* @type {Boolean}
+	*/
 	this._topOpponentFits = true;
 };
 
@@ -148,7 +194,7 @@ FieldBuilder.prototype.calcSizes = function(){
 };
 
 /**
-* Обобщенные (General) размеры
+* Обобщенные (General) размеры.
 * @private
 */
 FieldBuilder.prototype._calcGenSizes = function(){
@@ -170,7 +216,7 @@ FieldBuilder.prototype._calcGenSizes = function(){
 };
 
 /**
-* Размеры для каждого поля (Specific)
+* Размеры для каждого поля (Specific).
 * @private
 */
 FieldBuilder.prototype._calcSpecSizes = function(){
@@ -186,7 +232,7 @@ FieldBuilder.prototype._calcSpecSizes = function(){
 //@include:FieldBuilderOpponent
 
 /**
-* Размеры для колоды и стопки сброса
+* Размеры для колоды и стопки сброса.
 * @private
 */
 FieldBuilder.prototype._calcDeckDiscardSizes = function(){
@@ -218,8 +264,14 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 };
 
 /**
-* Выводит предупреждение в консоль, если ширина меньше ширины одной карты
+* Выводит предупреждение в консоль, если ширина/высота меньше ширины одной карты.
 * @private
+* @param {string}  [id]          id поля (для вывода в консоль)
+* @param {string}  ref           id поля или обобщенное название, по которому будут найдены размеры ('TABLE', 'player', etc.)
+* @param {number}  [index]       индекс позиции, если поле противника
+* @param {boolean} [silent=true] выключает вывод предупреждения в консоль
+* @param {boolean} [noHeight]    уюирает проверку высоты
+* @param {boolean} [noWidth]     убирает проверку ширины
 * @return {boolean} Меньше ли ширина\высота.
 */
 FieldBuilder.prototype._notEnoughSpace = function(id, ref, index, silent, noHeight, noWidth){
