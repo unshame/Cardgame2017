@@ -52,37 +52,37 @@ SkinManager.prototype.addSkins = function(skins){
 
 /**
 * Добавляет скин, загружает графику.
-* @param {object}   options-------------------------------------------опции скина
+* @param {object}   options                                           опции скина
 *
-* @param {string}   options.name--------------------------------------имя скина, должно соотвтествтовать папке с графикой скина в `assets/skins/`
+* @param {string}   options.name                                      имя скина, должно соотвтествтовать папке с графикой скина в `assets/skins/`
 *                                                                     под этим именем скин будет сохранен в {@link SkinManager#skins} 
 *                                                                     и это имя нужно использовать для установки скина  
 *                                                                     графика карт - `cards.png`  
 *                                                                     графика свечения карт - `glow.png`  
 *                      		                                          графика хвоста карт - `trails.png`  
 *                      		                                          графика отображения козырной масти - `suits.png`  
-* @param {number}   options.width-------------------------------------реальная ширина карты (и ширина кадра графики карты)
-* @param {number}   options.height------------------------------------реальная высота карты (и высота кадра графики карты)
+* @param {number}   options.width                                     реальная ширина карты (и ширина кадра графики карты)
+* @param {number}   options.height                                    реальная высота карты (и высота кадра графики карты)
 *
-* @param {number}   options.glowWidth---------------------------------реальная ширина свечения карты (и ширина кадра графики свечения)
-* @param {number}   options.glowHeight--------------------------------реальная высота свечения карты (и высота кадра графики свечения)
+* @param {number}   options.glowWidth                                 реальная ширина свечения карты (и ширина кадра графики свечения)
+* @param {number}   options.glowHeight                                реальная высота свечения карты (и высота кадра графики свечения)
 *
-* @param {number}   options.trailWidth--------------------------------ширина хвоста карты (и ширина кадра графики хвоста)
-* @param {number}   options.trailHeight-------------------------------высота хвоста карты (и высота кадра графики хвоста)
+* @param {number}   options.trailWidth                                ширина хвоста карты (и ширина кадра графики хвоста)
+* @param {number}   options.trailHeight                               высота хвоста карты (и высота кадра графики хвоста)
 *
-* @param {number}   [options.scale=1]---------------------------------масштаб скина
+* @param {number}   [options.scale=1]                                 масштаб скина
 *
-* @param {number}   [options.numOfFrames=53]--------------------------количество кадров в графике карты
-* @param {number}   [options.firstValueFrame=0]-----------------------кадр графики карт, с которого начинаются карты со значениями
+* @param {number}   [options.numOfFrames=53]                          количество кадров в графике карты
+* @param {number}   [options.firstValueFrame=0]                       кадр графики карт, с которого начинаются карты со значениями
 *
-* @param {number[]} [options.cardbackPossibleFrames=<52>]-------------возможные кадры рубашки карт из графики карт
-* @param {number}   [options.cardbackFrame=cardbackPossibleFrames<0>]-текущий кадр рубашки карт
+* @param {number[]} [options.cardbackPossibleFrames=<52>]             возможные кадры рубашки карт из графики карт
+* @param {number}   [options.cardbackFrame=cardbackPossibleFrames<0>] текущий кадр рубашки карт
 *
-* @param {number}   [options.trumpOffset=0]---------------------------сдвиг для отображения масти карты
+* @param {number}   [options.trumpOffset=0]                           сдвиг для отображения масти карты
 *
-* @param {boolean}  [options.hasSuits=true]---------------------------есть ли графика отображения козырной масти
-* @param {string}   [options.background='blue']-----------------------какой фон соответствует этому скину
-* @param {number}   [options.color=ui.colors.lightBlue]---------------цвет, соответствующий скину
+* @param {boolean}  [options.hasSuits=true]                           есть ли графика отображения козырной масти
+* @param {string}   [options.background='blue']                       какой фон соответствует этому скину
+* @param {number}   [options.color=ui.colors.lightBlue]               цвет, соответствующий скину
 */
 SkinManager.prototype.addSkin = function(options){
 	var skin = {};

@@ -3,13 +3,13 @@
 * @extends {Field}
 * @param {object}  options
 * @param {object}  style
-* @param {object}  iconStyle----------------нешний вид иконки поля. {@link Field#iconStyle} {@link Field#icon}
-* @param {string}  iconStyle.texture=null-----текстура иконки
-* @param {number}  iconStyle.frame=0----------кадр     текстуры иконки
-* @param {number}  iconStyle.scale=1----------масштаб  текстуры иконки
-* @param {object}  iconStyle.offset={x:0,y:0}-отступ   иконки `{x, y}`
-* @param {boolean} iconStyle.shouldHide=false-нужно    ли прятать иконку
-* @param {boolean} iconStyle.visible=true-----спрятана ли иконка по умолчанию
+* @param {object}  iconStyle                  внешний вид иконки поля. {@link Field#iconStyle} {@link Field#icon}
+* @param {string}  iconStyle.texture=null     текстура иконки
+* @param {number}  iconStyle.frame=0          кадр     текстуры иконки
+* @param {number}  iconStyle.scale=1          масштаб  текстуры иконки
+* @param {object}  iconStyle.offset={x:0,y:0} отступ   иконки `{x, y}`
+* @param {boolean} iconStyle.shouldHide=false нужно    ли прятать иконку
+* @param {boolean} iconStyle.visible=true     спрятана ли иконка по умолчанию
 */
 var IconField = function(options, style, iconStyle){
 	Field.call(this, options, style);

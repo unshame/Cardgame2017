@@ -17,59 +17,59 @@
 * @class
 * @extends {external:Phaser.Group}
 * 
-* @param {object}           options--------------------------------------------------Настройки поля. {@link Field#options}. 
+* @param {object}           options                                                  Настройки поля. {@link Field#options}. 
 *                                                                                    Будут пересохранены в `this`, изменения объекта `options` не повлияют на поле.
-* @param {string}           options.id=null------------------------------------------{@link Field#id}	
-* @param {string}           options.type='GENERIC'-----------------------------------{@link Field#type}	
-* @param {string}           options.name=null----------------------------------------{@link Field#name}	
+* @param {string}           options.id=null                                          {@link Field#id}	
+* @param {string}           options.type='GENERIC'                                   {@link Field#type}	
+* @param {string}           options.name=null                                        {@link Field#name}	
 *
-* @param {number}           options.moveTime=cardManager.defaultMoveTime-------------{@link Field#moveTime}	
-* @param {number}           options.delayTime=100------------------------------------{@link Field#delayTime}	
-* @param {boolean}          options.debug=false--------------------------------------{@link Field#inDebugMode}	
-* @param {number}           options.specialId=null-----------------------------------{@link Field#specialId}	
+* @param {number}           options.moveTime=cardManager.defaultMoveTime             {@link Field#moveTime}	
+* @param {number}           options.delayTime=100                                    {@link Field#delayTime}	
+* @param {boolean}          options.debug=false                                      {@link Field#inDebugMode}	
+* @param {number}           options.specialId=null                                   {@link Field#specialId}	
 *
 *
-* @param {object}           style----------------------------------------------------Внешний вид поля. {@link Field#style} 
-* @param {number}           style.x=0------------------------------------------------{@link Field#x} позиция по горизонтали
-* @param {number}           style.y=0------------------------------------------------{@link Field#y} позиция по вертикали
-* @param {number}           style.width=0--------------------------------------------{@link Field#area} ширина поверхности
-* @param {number}           style.height=0-------------------------------------------{@link Field#area} высота поверхности
-* @param {number}           style.margin=0-------------------------------------------Отступ от края поля до видимого края поля.
-* @param {number}           style.padding=10-----------------------------------------Отступ от видимого края поля до карт внутри.
-* @param {number}           style.spacing=10-----------------------------------------Отступ между картами.
+* @param {object}           style -                                                  Внешний вид поля. {@link Field#style} 
+* @param {number}           style.x=0                                                {@link Field#x} позиция по горизонтали
+* @param {number}           style.y=0                                                {@link Field#y} позиция по вертикали
+* @param {number}           style.width=0                                            {@link Field#area} ширина поверхности
+* @param {number}           style.height=0                                           {@link Field#area} высота поверхности
+* @param {number}           style.margin=0                                           Отступ от края поля до видимого края поля.
+* @param {number}           style.padding=10                                         Отступ от видимого края поля до карт внутри.
+* @param {number}           style.spacing=10                                         Отступ между картами.
 * 
-* @param {number}           style.minActiveSpace=fieldManager.builder.minActiveSpace-Минимальная ширина\высота для расположения карт.
-* @param {number}           style.raisedOffset=skinManager.skin.height/2-------------На сколько поднимать карты с `raised == true`
-* @param {(boolean|number)} style.forcedSpace=false----------------------------------Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать заданное значение.
-* @param {number}           style.scaleDiff=0.025------------------------------------На сколько увеличивается масштаб карты при наведении.
+* @param {number}           style.minActiveSpace=fieldManager.builder.minActiveSpace Минимальная ширина\высота для расположения карт.
+* @param {number}           style.raisedOffset=skinManager.skin.height/2             На сколько поднимать карты с `raised == true`
+* @param {(boolean|number)} style.forcedSpace=false                                  Нужно ли рассчитывать сдвиг карт по отношению друг к другу или использовать заданное значение.
+* @param {number}           style.scaleDiff=0.025                                    На сколько увеличивается масштаб карты при наведении.
 * 
-* @param {boolean}          style.focusable=false------------------------------------Нужно ли сдвигать карты при наведении
-* @param {boolean}          style.sortable=false-------------------------------------Нужно ли сортировать карты 
-* @param {boolean}          style.draggable=false------------------------------------Можно ли перетаскивать карты в этом поле
+* @param {boolean}          style.focusable=false                                    Нужно ли сдвигать карты при наведении
+* @param {boolean}          style.sortable=false                                     Нужно ли сортировать карты 
+* @param {boolean}          style.draggable=false                                    Можно ли перетаскивать карты в этом поле
 *          
-* @param {string}           style.horizontalAlign='center'---------------------------Горизонтальное выравнивание поля.  
+* @param {string}           style.horizontalAlign='center'                           Горизонтальное выравнивание поля.  
 *                                                                                    Значения: `'left', 'center', 'right', 'centerLeft'`
-* @param {string}           style.verticalAlign='middle'-----------------------------Вертикальное выравнивание поля.  
+* @param {string}           style.verticalAlign='middle'                             Вертикальное выравнивание поля.  
 *                                                                                    Значения: `'top', 'middle', 'bottom'`
 *          
-* @param {string}           style.axis='horizontal'----------------------------------Ориентация поля.
+* @param {string}           style.axis='horizontal'                                  Ориентация поля.
 *                                                                                    Меняет местами horizontalAlign и verticalAlign (right станет bottom и т.д.), не влияет на width и height.  
 * 	                                                                                 Значения: `'vertical', 'horizontal'`
-* @param {string}           style.direction='forward'--------------------------------Направление поля.  
+* @param {string}           style.direction='forward'                                Направление поля.  
 *                                                                                    Значения: `'forward', 'backward'`
-* @param {string}           style.addTo='front'--------------------------------------В какой конец поля добавляются карты.  
+* @param {string}           style.addTo='front'                                      В какой конец поля добавляются карты.  
 *                                                                                    Значения: `'front', 'back'`
-* @param {boolean}          style.flipped=false--------------------------------------Карты распологаются повернутыми на 180 градусов
-* @param {(boolean|string)} style.randomAngle=false----------------------------------Нужно ли класть карты в поле под случайным углом.  
+* @param {boolean}          style.flipped=false                                      Карты распологаются повернутыми на 180 градусов
+* @param {(boolean|string)} style.randomAngle=false                                  Нужно ли класть карты в поле под случайным углом.  
 *                                                                                    Значения: `false, 'uni', 'bi'`  
 *                                                                                    `'uni'` - карты поворачиваются по направлению поля   
 *                                                                                    `'bi'` - карты поворачиваются в случайную сторону
-* @param {boolean}          style.adjust=true----------------------------------------Нужно ли пытаться двигать карты, которые уже находятся в поле, при добавлении новых.
-* @param {number}           style.alpha=0.35-----------------------------------------Прозрачность поля.
-* @param {number}           style.corner=5-------------------------------------------Радиус закругленного угла.
-* @param {number}           style.border=4-------------------------------------------Ширина рамки.
+* @param {boolean}          style.adjust=true                                        Нужно ли пытаться двигать карты, которые уже находятся в поле, при добавлении новых.
+* @param {number}           style.alpha=0.35                                         Прозрачность поля.
+* @param {number}           style.corner=5                                           Радиус закругленного угла.
+* @param {number}           style.border=4                                           Ширина рамки.
 *
-* @param {(boolean|string)} style.animateAppearance----------------------------------Нужно ли анимировать появление поля и откуда это делать.  
+* @param {(boolean|string)} style.animateAppearance                                  Нужно ли анимировать появление поля и откуда это делать.  
 *                                                                                    Значения: `false, 'left', 'right', 'top', 'bottom'`
 */
 
