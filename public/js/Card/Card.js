@@ -62,7 +62,6 @@ var Card = function (options) {
 	* Должна ли карта быть подсвечена по окончании движения
 	* и каким цветом нужно будет подсветить карту.
 	* @type {(boolean|number)}
-	* @private
 	*/
 	this._shouldHighlight = false;
 
@@ -109,14 +108,12 @@ var Card = function (options) {
 	/**
 	* Твин увеличения яркости свечения карты
 	* @type {Phaser.Tween}
-	* @private
 	*/
 	this._glowIncreaser = null;
 
 	/**
 	* Твин уменьшения яркости свечения карты
 	* @type {Phaser.Tween}
-	* @private
 	*/
 	this._glowDecreaser = null;
 
@@ -133,33 +130,28 @@ var Card = function (options) {
 	this.mover = null;
 	/**
 	* Информация о задержанных твинах.
-	* @private
 	* @type {object<object>}
 	*/
 	this._delayedTweenInfos = {};
 	/**
 	* Твин вращения карты
 	* @type {Phaser.Tween}
-	* @private
 	*/
 	this._rotator = null;
 	/**
 	* Твин переворота карты
 	* @type {Phaser.Tween}
-	* @private
 	*/
 	this._flipper = null;
 
 	/**
 	* Информация для вращения карты вокруг точки.
 	* @type {object}
-	* @private
 	*/
 	this._revolveInfo = null;
 
 	/**
 	* Когда карта будет перемещена вверх группы  
-	* @private
 	* @type {BRING_TO_TOP_ON}
 	* @see  {@link Card#moveTo}
 	*/
@@ -184,7 +176,6 @@ var Card = function (options) {
 	/**
 	* Изменилось ли значение карты
 	* @type {boolean}
-	* @private
 	* @see {@link Card#presetValue}
 	*/
 	this._valueChanged = false;
@@ -197,7 +188,6 @@ var Card = function (options) {
 
 	/**
 	* Минимальное значение яркости карты при перевороте.
-	* @private
 	* @type {number}
 	*/
 	this._lowestTint = 0x666666;

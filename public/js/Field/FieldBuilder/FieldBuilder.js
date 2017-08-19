@@ -62,7 +62,6 @@ var FieldBuilder = function(manager){
 
 	/**
 	* Возможные последовательности полей.
-	* @private
 	* @type {Object}
 	*/
 	this._possibleTableOrders = {	
@@ -93,28 +92,24 @@ var FieldBuilder = function(manager){
 	/**
 	* Отступ между полями стола
 	* @type {Number}
-	* @private
 	*/
 	this._tableOffset = 0;
 
 	/**
 	* Кол-во клеток, занимаемые полями стола
 	* @type {Number}
-	* @private
 	*/
 	this._tableCells = 0;
 	
 	/**
 	* Количество противников в трех позициях - левой, верхней и правой.  
 	* `[left, top, right]`
-	* @private
 	* @type {number[]}
 	*/
 	this._opponentPlacement = null;
 
 	/**
 	* Отступы позиций полей оппонентов.
-	* @private
 	* @type {number[]}
 	*/
 	this._opponentsOffset = null;	
@@ -123,14 +118,12 @@ var FieldBuilder = function(manager){
 	/**
 	* Ниже этого отношения клеток сетки игры ({@link ScaleManager#cellRelation}) 
 	* колода и стопка сброса сдвигаются ближе к краям.
-	* @private
 	* @type {Number}
 	*/
 	this._increaseTopOpponentsSpaceRelation = 1.78;
 	/**
 	* Ниже этого отношения клеток сетки игры ({@link ScaleManager#cellRelation}) 
 	* больше оппонентов помещается по горизотали чем по вертикали.
-	* @private
 	* @type {Number}
 	*/
 	this._reduceTopOpponentsNumberRelation = 1.13;
@@ -138,14 +131,12 @@ var FieldBuilder = function(manager){
 	/**
 	* Есть место для поля оппонента сверху.
 	* Если нет, колода и стопка сброса будут сдвинуты.
-	* @private
 	* @type {Boolean}
 	*/
 	this._topOpponentFits = true;
 
 	/**
 	* Противники не будут распологаться вверху экрана.
-	* @private
 	* @type {Boolean}
 	*/
 	this._noTopOpponents = false;

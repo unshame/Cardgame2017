@@ -86,7 +86,6 @@ var ScaleManager = function(options){
 	/**
 	* Ширина линий сетки для дебага.
 	* @type {number}
-	* @private
 	*/
 	this._thickness = this.options.thickness;
 
@@ -101,14 +100,12 @@ var ScaleManager = function(options){
 	/**
 	* Текстура дебаг сетки.
 	* @type {PIXI.Texture}
-	* @private
 	*/
 	this._gridTexture = null;
 
 	/**
 	* Дебаг сетка.
 	* @type {Phaser.TileSprite}
-	* @private
 	*/
 	this._debugGrid = null;
 
@@ -116,14 +113,12 @@ var ScaleManager = function(options){
 	* Группа спрайтов, подсвечивающих клетки, возвращенные из `{@link ScaleManager#at}`,
 	* если сетка в режиме дебага.
 	* @type {Phaser.Group}
-	* @private
 	*/
 	this._highlights = null;
 
 	/**
 	* Дебаг рамка.
 	* @type {Phaser.Graphics}
-	* @private
 	*/
 	this._border = null;
 

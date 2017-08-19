@@ -44,7 +44,6 @@ var ActionHandler = function(correctState, actionReactions, notificationReaction
 	/**
 	* Ожидает ли модуль информации об игре от сервера
 	* @type {Boolean}
-	* @private
 	*/
 	this._waitingForGameInfo = false;
 };

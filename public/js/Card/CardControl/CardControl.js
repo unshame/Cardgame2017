@@ -41,7 +41,6 @@ var CardControl = function(inDebugMode){
 	/**
 	* Нужно ли прикрепить хвост к текущей карте.
 	* @type {Boolean}
-	* @private
 	*/
 	this._trailShouldReappend = false;
 
@@ -76,7 +75,6 @@ var CardControl = function(inDebugMode){
 	/**
 	* История инерции карты.
 	* @type {Array}
-	* @private
 	*/
 	this._inertiaHistory = [];
 

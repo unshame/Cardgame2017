@@ -38,14 +38,12 @@ var Menu = function(options){
 	/**
 	* Твин анимации фейда меню.
 	* @type {Phaser.Tween}
-	* @private
 	*/
 	this._fader = null;
 	/**
 	* Направление анимации фейда
 	* (-1 - скрывается, 0 - стоит на месте, 1 - показывается).
 	* @type {number}
-	* @private
 	*/
 	this._fading = 0;
 
@@ -73,7 +71,6 @@ var Menu = function(options){
 	/**
 	* Графика фона меню.
 	* @type {Phaser.BitmapData}
-	* @private
 	*/
 	this._bitmapArea = game.make.bitmapData();
 	if(this.options.texture){
@@ -81,7 +78,6 @@ var Menu = function(options){
 		/**
 		* Повторяющаяся текстура фона меню.
 		* @type {CanvasPattern}
-		* @private
 		*/
 		this._pattern = this._bitmapArea.ctx.createPattern(image, 'repeat');
 	}

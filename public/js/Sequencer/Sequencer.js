@@ -93,49 +93,42 @@ var Sequencer = function(inDebugMode){
 	/**
 	* Время пропущенных шагов.
 	* @type {Number}
-	* @private
 	*/
 	this._skippedTime = 0;
 
 	/**
 	* Находится ли список в режиме выполнения без задержек.
 	* @type {Boolean}
-	* @private
 	*/
 	this._finishing = false;
 
 	/**
 	* Таймаут текущего действия.
 	* @type {number}
-	* @private
 	*/
 	this._timeout = null;
 
 	/**
 	* Кол-во пропускаемых действий.
 	* @type {Number}
-	* @private
 	*/
 	this._shouldSkip = 0;
 
 	/**
 	* Следующее действие.
 	* @type {function}
-	* @private
 	*/
 	this._nextAction = null;
 
 	/**
 	* Последний добавленный элемент списка.
 	* @type {object}
-	* @private
 	*/
 	this._lastStep = null;
 
 	/**
 	* Пустой элемент списка, чтобы вызов `then` не крашил игру.
 	* @type {Object}
-	* @private
 	*/
 	this._dummyStep = {
 		then: function(){},

@@ -184,7 +184,6 @@ var Field = function(options, style){
 
 	/**
 	* Задержки карт по id карт.
-	* @private
 	* @type {object<string>}
 	*/
 	this._delays = {};
@@ -192,14 +191,12 @@ var Field = function(options, style){
 	/**
 	* Карты в очереди на добавление.
 	* @type {Card[]}
-	* @private
 	*/
 	this._queuedCards = [];
 
 	/**
 	* Углы карт по id карт.
 	* @type {Object<number>}
-	* @private
 	*/
 	this._angles = {};
 
@@ -219,14 +216,12 @@ var Field = function(options, style){
 
 	/**
 	* Ожидаемая задержка для установки {@link Field#_uninteractibleTimer}
-	* @private
 	* @type {Number}
 	*/
 	this._expectedDelay = 0;
 
 	/**
 	* Расчитанное расстояние между картами для {@link Field#cardIsInside}
-	* @private
 	* @type {Number}
 	*/
 	this._cardSpacing = 0;
@@ -234,14 +229,12 @@ var Field = function(options, style){
 
 	/**
 	* Таймер {@link Field#_setUninteractibleTimer}
-	* @private
 	*/
 	this._uninteractibleTimer = null;
 
 	/**
 	* Твин появления поля.
 	* @type {Phaser.Tween}
-	* @private
 	*/
 	this._entranceTween = null;
 
@@ -258,14 +251,12 @@ var Field = function(options, style){
 	/**
 	* BitmapData поверхности поля.
 	* @type {Phaser.BitmapData}
-	* @private
 	*/
 	this._bitmapArea = game.make.bitmapData();
 
 	/**
 	* Размер активного места поля для дебага.
 	* @type {Phaser.Rectangle}
-	* @private
 	*/
 	this._debugActiveSpace = new Phaser.Rectangle();
 };

@@ -7,21 +7,18 @@ var CardEmitter = function(){
 
 	/**
 	* Время пропадания партиклей эмиттера, когда он остановлен.
-	* @private
 	* @type {Number}
 	*/
 	this.fadeTime = 500;
 
 	/**
 	* Смещение партиклей в сторону
-	* @private
 	* @type {Number}
 	*/
 	this.sway = 0;
 
 	/**
 	* Интервал спавна партиклей.
-	* @private
 	* @type {Number}
 	*/
 	this.interval = 0;
@@ -29,14 +26,12 @@ var CardEmitter = function(){
 	/**
 	* Интервал до того, как к нему были применены ограничения.
 	* @type {Number}
-	* @private
 	*/
 	this._preferedInterval = 0;
 
 	/**
 	* Скорость игры при последнем запуске эмиттера.
 	* @type {number}
-	* @private
 	*/
 	this._cachedGameSpeed = game.speed;
 

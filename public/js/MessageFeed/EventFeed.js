@@ -27,7 +27,6 @@ var EventFeed = function(game, name){
 
 	/**
 	* Масштаб сообщений.
-	* @private
 	* @type {Array}
 	*/
 	this._scales = [1, 0.75, 0.5];

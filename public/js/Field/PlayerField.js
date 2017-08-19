@@ -19,7 +19,6 @@ var PlayerField = function(options, style, badgeStyle){
 	/**
 	* BitmapData полукруглой поверхности поля.
 	* @type {Phaser.BitmapData}
-	* @private
 	*/
 	this._bitmapCircle = game.make.bitmapData();
 };
