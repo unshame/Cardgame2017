@@ -1,57 +1,149 @@
+/**
+* Менеджер очередей анимаций.  
+* Позволяет выполнять действия с задержкой и управлять очередью изнутри выполняемых действий.  
+* Добавление действия (`queueUp`) возвращает объект с функцией `then`, 
+* которая позволяет добавлять следующее действие и т.д.  
+* Добавленные таким образом действия считаются одной очередью.
+* Помимо `then` в возвращенном объекте будет `duration`, равная длительности всех текущих очередей.  
+* Вызов queueUp снова создаст новую очередь.  
+* Из добавляемых действий можно добавлять дополнительные действия (вложенность неограничена)
+* при помощи функции `append`, передаваемой в действия вместе с еще несколькими.
+* `append` также возвращает `then`.  
+* Вызов `append` создает новую очередь, которая будет выполнена сразу после очереди,
+* из действия которой был вызван `append`.  
+* @class
+* @example
+* // Функции выполнятся в порядке нумерации с интервалом в 500мс
+*
+* var sequence = new Sequencer2();
+*
+* function action0(){};
+* function action1(seq){
+* 	seq.append(action3)
+* };
+* function action2(){};
+* function action3(){};
+* function action4(){};
+* 
+* sequence
+* 	.queueUp(action0, 500)
+* 	.then(action1, 500)
+* 	.then(action2, 500);
+* 	
+* sequence
+* 	.queueUp(action4, 500);
+*/
 var Sequencer2 = function(){
+	/**
+	* Все очереди.
+	* @type {Array}
+	*/
 	this._queue = [];
+
+	/**
+	* Еще не добавленные в массив очередей вложенные очереди. 
+	* @type {Array}
+	*/
 	this._nestedQueue = [];
 
+	/**
+	* Время начала очереди.
+	* @type {Number}
+	*/
 	this._startTime = 0;
+
+	/**
+	* Предпологаемая длительность очереди от времени начала.
+	* @type {Number}
+	*/
 	this.duration = 0;
 
+	/**
+	* Время между началом очереди до последнего выполненного действия.
+	* @type {Number}
+	*/
+	this._dt = 0;
+
+	/**
+	* Если `true` очередь выполнится линейно (без `setTimeout`).
+	* @type {Boolean}
+	*/
 	this._isSync = false;
 };
 
 Sequencer2.prototype = {
+
+	/**
+	* Добавляет новое действие в конец очереди.
+	* @param {function} action   действие
+	* @param {number}   duration длительность действия
+	* @param {object}   context  контекст действия
+	*
+	* @return {object} Объект для добавления действий `{then, duration}`.
+	*/
 	queueUp: function(action, duration, context){
 		return this._addQueue(this._queue, action, duration, context);
 	},
 
+	/** Завершает очередь синхронно. */
 	finish: function(){
 		this._resetTimeout();
 		this._isSync = true;
 		this._go();
 	},
 
+	/** Завершает очередь изнутри действия. */
 	_finish: function(){
 		this._resetTimeout();
 		this._isSync = true;
 	},
 
+	/** Прерывает очередь. */
 	abort: function(){
 		this._nestedQueue.length = null;
 		this._queue.length = 0;
 		this._resetFull();
 	},
 
+	/** 
+	* Прерывает очередь изнутри действия.
+	* @param  {object} queue очередь, которую нужно прервать
+	*/
 	_abort: function(queue){
 		this._nestedQueue.length = null;
 		queue.length = 0;
 		this._reset();
 	},
 
+	/** Ресетит таймаут. */
 	_resetTimeout: function(){
 		clearTimeout(this.timeout);
 		this.timeout = null;
 	},
 
+	/** Ресетит очередь. */
 	_reset: function(){
 		this._resetTimeout();
 		this._startTime = 0;
+		this._dt = 0;
 		this.duration = 0;
 	},
 
+	/** Ресетит очередь, включая статус завершения.	*/
 	_resetFull: function(){
 		this._reset();
 		this._isSync = false;
 	},
 
+	/**
+	* Добавляет новую очередь с новым действием в очередь.
+	* @param {object}   queueHolder очередь, в которую будет добавлена новая очередь
+	* @param {function} action      действие
+	* @param {number}   duration    длительность действия
+	* @param {object}   context     контекст действия
+	*
+	* @return {object} Объект для добавления действий `{then, duration}`.
+	*/
 	_addQueue: function(queueHolder, action, duration, context){
 		var queue = [];
 		var next = this._addStep(queue, action, duration, context);
@@ -64,6 +156,15 @@ Sequencer2.prototype = {
 		return next;
 	},
 
+	/**
+	* Добавляет новое действие в очередь.
+	* @param {object}   queue    очеред, в которую будет добавлено действие
+	* @param {function} action   действие
+	* @param {number}   duration длительность действия
+	* @param {object}   context  контекст действия
+	*
+	* @return {object} Объект для добавления действий `{then, duration}`.
+	*/
 	_addStep: function(queue, action, duration, context){
 		if(typeof duration != 'number' || isNaN(duration)){
 			duration = 0;
@@ -83,6 +184,7 @@ Sequencer2.prototype = {
 		return step.next;
 	},
 
+	/** Выполняет текущее действие в очереди и запускает таймаут следующего. */
 	_go: function(){
 		//console.log(JSON.stringify(this._queue, null, '    '))
 		var queue = this._queue[0];
@@ -134,6 +236,10 @@ Sequencer2.prototype = {
 		}
 	},
 
+	/**
+	* Возвращает методы, которые можно вызывать из действий для управления очередью.
+	* @param {array} queue очередь, которую можно завершить
+	*/
 	_getMethods: function(queue){
 		return {
 			append: this._addQueue.bind(this, this._nestedQueue),
@@ -143,20 +249,21 @@ Sequencer2.prototype = {
 	}
 };
 
+// jshint unused:false
 function testSequence(){
 	var seq = new Sequencer2();
 	function action0(seq){
-		seq.append(func('14', action1), 5000)
+		seq.append(func('14', action1), 5000);
 	}
 	function action1(seq){
-		seq.abort()
+		seq.abort();
 		//seq.append(action3, 1000).then(action4, 1000)
 
 	}
 	function action2(seq){
 	}
 	function action3(seq){
-		seq.append(action5, 1000)
+		seq.append(action5, 1000);
 	}
 	function action4(seq){
 		
@@ -169,7 +276,7 @@ function testSequence(){
 	}
 
 	function func(name, action){
-		var func = action || function(){}
+		var func = action || function(){};
 		func._name = name;
 		return func;
 	}
