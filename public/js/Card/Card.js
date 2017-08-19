@@ -247,6 +247,7 @@ Card.prototype.getDefaultOptions = function(){
 */
 Card.prototype._cursorDown = function(sprite, pointer){
 	cardControl.cardClick(this, pointer);
+	ui.hoverNotifier.choose(this);
 };
 
 /**
@@ -266,8 +267,10 @@ Card.prototype._cursorUp = function(sprite, pointer){
 * @param {Phaser.Pointer} pointer вызвавший ивент указатель
 */
 Card.prototype._cursorOver = function(sprite, pointer){
-	if(this.field)
+	if(this.field){
 		this.field.focusOnCard(this, pointer);
+	}
+	ui.hoverNotifier.consider(this);
 };
 
 /**
@@ -276,8 +279,10 @@ Card.prototype._cursorOver = function(sprite, pointer){
 * @param {Phaser.Sprite} sprite {@link Card#sprite}
 */
 Card.prototype._cursorOut = function(sprite){
-	if(this.field)
+	if(this.field){
 		this.field.focusOffCard(this);
+	}
+	ui.hoverNotifier.reject(this);
 };
 
 

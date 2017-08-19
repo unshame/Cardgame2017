@@ -165,6 +165,20 @@ var notificationReactions = {
 		});
 	},
 
+	HOVER_OVER_CARD: function(note){
+		var card = cardManager.cards[note.cid];
+		if(card){
+			card.setHighlight(true, ui.colors.red);
+		}
+	},
+
+	HOVER_OUT_CARD: function(note){
+		var card = cardManager.cards[note.cid];
+		if(card){
+			card.setHighlight(false);
+		}
+	},
+
 	// нужно перенести в отдельный объект
 
 	LEFT_QUEUE: function(){

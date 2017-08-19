@@ -23,7 +23,8 @@ global.server = new Server({allow:[
 	'recievePossibleActions',
 	'recieveCompleteAction',
 	'recieveNotification',
-	'handleLateness'
+	'hoverOverCard',
+	'hoverOutCard'
 ]
 }, process.argv.slice(2));
 

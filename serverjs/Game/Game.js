@@ -358,6 +358,37 @@ class Game{
 	recieveResponseSync(player, action){
 		this.actions.recieve(player, action);
 	}
+
+	hoverOverCard(player, cid){
+		debugger
+		if(this.players.includes(player) && player.statuses.working && this.actions.valid.length && this.cards.byId[cid].field == player.id){
+			if(player.statuses.hover){
+				this.hoverOutCard(player, cid);
+			}
+			player.statuses.hover = cid;
+			var players = [];
+			this.players.forEach((p) => {
+				if(p != player){
+					players.push(p);
+				}
+			});
+			this.players.notify({message: 'HOVER_OVER_CARD', cid: cid, noResponse: true}, null, players);
+		}
+	}
+
+	hoverOutCard(player, cid){
+		if(this.players.includes(player) && player.statuses.hover){
+			
+			var players = [];
+			this.players.forEach((p) => {
+				if(p != player){
+					players.push(p);
+				}
+			})
+			this.players.notify({message: 'HOVER_OUT_CARD', cid: player.statuses.hover, noResponse: true}, null, players);
+			player.statuses.hover = null;
+		}
+	}
 }
 
 module.exports = Game;

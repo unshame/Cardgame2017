@@ -195,6 +195,8 @@ class Actions{
 		// Обнуляем возможные действия
 		this.valid.length = 0;		
 
+		game.hoverOutCard(player);
+
 		return action;
 	}
 

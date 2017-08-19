@@ -108,6 +108,20 @@ module.exports = function(server){
 					server.manager.concedePlayer(player);
 				}
 			}
+		},
+
+		hoverOverCard: function(cid){
+			let player = server.players[this.connection.id];
+			if(player && player.game){
+				player.game.hoverOverCard(player, cid);
+			}
+		},
+
+		hoverOutCard: function(cid){
+			let player = server.players[this.connection.id];
+			if(player && player.game){
+				player.game.hoverOutCard(player, cid);
+			}
 		}
 	};
 };

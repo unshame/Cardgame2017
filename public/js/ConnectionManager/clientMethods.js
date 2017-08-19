@@ -52,7 +52,9 @@ var clientMethods = {
 	},
 
 	recieveNotification: function(note, actions){
-		connection.resetTimer();
+		if(!note.noResponse){
+			connection.resetTimer();
+		}
 		actionHandler.handleNotification(note, actions);
 		if(connection.inDebugMode)
 			console.log(note, actions);
