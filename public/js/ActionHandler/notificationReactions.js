@@ -135,6 +135,9 @@ var notificationReactions = {
 		if(actions){
 			actionHandler.handlePossibleActions(actions, note.time, note.timeSent);
 		}
+		else{
+			actionHandler.reset();
+		}
 	},
 
 	/**
