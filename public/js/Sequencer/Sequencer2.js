@@ -65,11 +65,14 @@ Sequencer2.prototype = {
 	},
 
 	_addStep: function(queue, action, duration, context){
+		if(typeof duration != 'number' || isNaN(duration)){
+			duration = 0;
+		}
 		this.duration += duration;
 		var step = {
 			action: action,
-			name: action.name,
-			duration: duration || 0,
+			name: action.name || action._name,
+			duration: duration,
 			context: context,
 			next: {
 				duration: this.duration,
@@ -105,7 +108,7 @@ Sequencer2.prototype = {
 		// Убираем выполненный шаг из очереди
 		queue.shift();
 
-		var logs = [step.action.name];
+		var logs = [step.name];
 
 		// Переходим к след. шагу с указанной задержкой
 		if(!this._isSync){
@@ -140,3 +143,56 @@ Sequencer2.prototype = {
 	}
 };
 
+function testSequence(){
+	var seq = new Sequencer2();
+	function action0(seq){
+		seq.append(func('14', action1), 5000)
+	}
+	function action1(seq){
+		seq.abort()
+		//seq.append(action3, 1000).then(action4, 1000)
+
+	}
+	function action2(seq){
+	}
+	function action3(seq){
+		seq.append(action5, 1000)
+	}
+	function action4(seq){
+		
+	}
+	function action5(seq){
+		
+	}
+	function action6(seq){
+		
+	}
+
+	function func(name, action){
+		var func = action || function(){}
+		func._name = name;
+		return func;
+	}
+	seq.queueUp(func('1'), 1000);
+	seq.queueUp(func('2'), 1000);
+	seq.queueUp(func('3'), 1000);
+	seq.queueUp(func('4'), 1000);
+	seq.queueUp(func('5'), 1000);
+	seq.queueUp(func('6'), 1000);
+	seq.queueUp(func('7'), 1000);
+	seq.queueUp(func('8'), 1000);
+	seq.queueUp(func('9'), 1000);
+	seq.queueUp(func('10'), 1000);
+	seq.queueUp(func('11'), 1000)
+		.then(func('12', action0), 500)
+		.then(func('13'), 500);
+	seq.queueUp(func('15'), 1000);
+	seq.queueUp(func('16'), 1000);
+	seq.queueUp(func('17'), 1000);
+	seq.queueUp(func('18'), 1000);
+	seq.queueUp(func('19'), 1000);
+	seq.queueUp(func('20'), 1000);
+	seq.queueUp(func('21'), 1000);
+	seq.queueUp(func('22'), 1000);
+	seq.queueUp(func('23'), 1000);
+}
