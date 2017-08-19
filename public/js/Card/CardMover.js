@@ -132,8 +132,8 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	if(this.game.paused){
 		this.applyValue();
 		this.setRelativePosition(x, y);
-		if(this._shouldHighlight){
-			this.setHighlight(true);
+		if(this._shouldHighlight !== false){
+			this.setHighlight(true, this._shouldHighlight);
 		}
 		if(this.mover){
 			this.mover.stop();
@@ -203,7 +203,7 @@ Card.prototype._onMoveComplete = function(){
 		}
 	}
 	if(this._shouldHighlight){
-		this.setHighlight(true);
+		this.setHighlight(true, this._shouldHighlight);
 	}
 	if(this._shouldEnablePhysics){
 		this.enablePhysics(this._shouldEnablePhysics == 2 ? true : false);

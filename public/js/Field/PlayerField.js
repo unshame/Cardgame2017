@@ -137,9 +137,12 @@ Field.prototype._calculateCircleCenter = function(a, b, c){
 };
 
 PlayerField.prototype.setOwnHighlight = function(on, tint){
+	if(tint === undefined){
+		tint = ui.colors.orange;
+	}
 	this.highlighted = on;
 	this.setVisibility(on);
-	this.circle.tint = on ? (tint || ui.colors.orange) : skinManager.skin.color;
+	this.circle.tint = on ? ui.colors.orange : skinManager.skin.color;
 	this.circle.alpha = (this.style.alwaysVisible || on) ? this.style.alpha : 0.15;
 };
 

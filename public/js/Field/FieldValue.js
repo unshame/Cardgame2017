@@ -27,9 +27,12 @@ Field.prototype.setCardsHighlight = function(highlight){
 * @param {number}  [tint=ui.colors.lightBlue] цвет подсветки
 */
 Field.prototype.setOwnHighlight = function(on, tint){
+	if(tint === undefined){
+		tint = ui.colors.orange;
+	}
 	this.highlighted = on;
 	this.setVisibility(on);
-	this.area.tint = on ? (tint || ui.colors.orange) : skinManager.skin.color;
+	this.area.tint = on ? tint : skinManager.skin.color;
 	this.area.alpha = (this.style.alwaysVisible || on) ? this.style.alpha : 0.15;
 };
 

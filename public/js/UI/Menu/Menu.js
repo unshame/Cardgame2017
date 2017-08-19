@@ -32,7 +32,7 @@ var Menu = function(options){
 	*/
 	this.background = game.make.image(0, 0);
 	this.background.inputEnabled = true;
-	this.background.tint = this.options.color || ui.colors.orange;
+	this.background.tint = this.options.color;
 	this.add(this.background);
 
 	/**

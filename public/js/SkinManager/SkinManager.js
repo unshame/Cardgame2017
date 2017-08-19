@@ -92,7 +92,7 @@ SkinManager.prototype.addSkin = function(options){
 	}
 
 	skin.background 	 = options.background || 'blue';
-	skin.color 			 = options.color || ui.colors.lightBlue;
+	skin.color 			 = options.color === undefined ? ui.colors.lightBlue : options.color;
  
 	skin.frameWidth 	 = options.width || 0;
 	skin.frameHeight 	 = options.height || 0;

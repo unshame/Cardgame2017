@@ -12,7 +12,11 @@ Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color)
 	
 	this._glowReset();
 
-	this.glow.tint = color || ui.colors.white;
+	if(color === undefined){
+		color = ui.colors.white;
+	}
+
+	this.glow.tint = color;
 
 	if(this.game.paused){
 		return;

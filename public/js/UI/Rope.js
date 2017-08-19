@@ -78,7 +78,7 @@ Rope.prototype.stop = function(){
 	this.height = 0;
 	this.startTime = 0;
 	this.duration = 0;
-	this.tint = '0xFF8300';
+	this.tint = ui.colors.orange;
 };
 
 /**

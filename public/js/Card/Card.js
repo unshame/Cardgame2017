@@ -59,8 +59,9 @@ var Card = function (options) {
 	this.highlighted = false;
 
 	/**
-	* Должна ли карта быть подсвечена по окончании движения.
-	* @type {Boolean}
+	* Должна ли карта быть подсвечена по окончании движения
+	* и каким цветом нужно будет подсветить карту.
+	* @type {(boolean|number)}
 	* @private
 	*/
 	this._shouldHighlight = false;

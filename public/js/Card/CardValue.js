@@ -151,7 +151,7 @@ Card.prototype.setDraggability = function(draggable){
 */
 Card.prototype.setPlayability = function(playable, tint){
 	if(tint === undefined){
-		tint = tint || ui.colors.orange;
+		tint = ui.colors.orange;
 	}
 
 	this.highlighted = false;
@@ -174,12 +174,11 @@ Card.prototype.setPlayability = function(playable, tint){
 */
 Card.prototype.setHighlight = function(highlighted, tint){
 	if(tint === undefined){
-		tint = tint || ui.colors.orange;
+		tint = ui.colors.orange;
 	}
 
 	if(highlighted && this.mover){
-		this.glow.tint = tint;
-		this._shouldHighlight = true;
+		this._shouldHighlight = tint;
 		return;
 	}
 
