@@ -45,10 +45,10 @@ Background.prototype.setTexture = function(textureName){
 	var transition = game.add.tween(fakebg.position);
 
 	var position = [
-		{y: -game.screenHeight},
-		{y: game.screenHeight},
-		{x: -game.screenWidth},
-		{x: game.screenWidth}
+		{y: -game.screenHeight - this.offset*2},
+		{y: game.screenHeight + this.offset*2},
+		{x: -game.screenWidth - this.offset*2},
+		{x: game.screenWidth + this.offset*2}
 	][ Math.floor(Math.random()*4) ];
 	
 	transition.to(position, 2000, Phaser.Easing.Bounce.Out);
