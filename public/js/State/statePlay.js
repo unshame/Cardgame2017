@@ -85,6 +85,7 @@ var statePlay = new State('play', {
 	*/
 	shutdown: function(){ 
 		actionHandler.resetActions();
+		connection.resetTimer();
 		game.seq.finish();
 		ui.eventFeed.clear();
 		ui.announcer.clear();
