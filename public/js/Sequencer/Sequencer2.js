@@ -26,7 +26,7 @@ Sequencer2.prototype = {
 
 	abort: function(){
 		this._nestedQueue.length = null;
-		queue.length = 0;
+		this._queue.length = 0;
 		this._resetFull();
 	},
 
@@ -130,7 +130,7 @@ Sequencer2.prototype = {
 		step.action.call(step.context || null, this._getMethods(queue));
 
 		if(this._isSync){
-			this._go()
+			this._go();
 		}
 	},
 
