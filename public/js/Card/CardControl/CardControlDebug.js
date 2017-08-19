@@ -2,8 +2,9 @@
 
 // Рисует дебаг хвоста
 CardControl.prototype.updateDebug = function(){
-	if(!this.inDebugMode)
+	if(!this.inDebugMode){
 		return;
+	}
 
 	// База хвоста
 	if(!this.debugBase){
@@ -46,8 +47,9 @@ CardControl.prototype.updateDebug = function(){
 	this.debugSpawn.height = height;
 	game.debug.geom( this.debugSpawn, 'rgba(0,0,255,0.3)' ) ;
 
-	if(this.pointer)
+	if(this.pointer){
 		game.debug.pointer(this.pointer);
+	}
 };
 
 // Переключает дебаг

@@ -65,8 +65,9 @@ class GameTurnStages{
 		let attackers = game.players.attackers;
 
 		// Debug
-		if(!attackers[1])
+		if(!attackers[1]){
 			game.log.error('No ally assigned, but turn stage is SUPPORT');
+		}
 
 		return game.let('ATTACK', attackers[1] || attackers[0]);
 		// Turn stage: DEFENSE
@@ -87,11 +88,13 @@ class GameTurnStages{
 
 		// Если мы были в стадии подкидывания в догонку, передаем все карты со стола
 		// защищающемуся и сообщаем всем игрокам об этом
-		if(this.current == 'FOLLOWUP')
+		if(this.current == 'FOLLOWUP'){
 			return game.let('TAKE', game.players.defender);
+		}
 		// Иначе даем защищаться
-		else
+		else{
 			return game.let('DEFEND', game.players.defender);
+		}
 		// Turn stage: REPEATING_ATTACK, ATTACK, SUPPORT, END
 	}
 

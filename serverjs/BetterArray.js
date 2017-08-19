@@ -65,8 +65,9 @@ class BetterArray extends Array{
 	byKey(key){
 		let obj = {};
 		this.forEach((v) => {
-			if(!v || typeof v != 'object' || !v[key])
+			if(!v || typeof v != 'object' || !v[key]){
 				return;
+			}
 			obj[v[key]] = v;
 		});
 		return obj;

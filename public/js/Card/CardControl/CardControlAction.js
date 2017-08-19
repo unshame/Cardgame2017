@@ -21,11 +21,13 @@ CardControl.prototype.cardPickup = function(card, pointer){
 		return;
 	}
 
-	if(this.inDebugMode)
+	if(this.inDebugMode){
 		console.log('Card control: Picked up', this.card.id);
+	}
 
-	if(this._inertiaHistory.length)
+	if(this._inertiaHistory.length){
 		this._inertiaHistory = [];
+	}
 	this.cardLastX = this.card.x + this.card.sprite.x;
 	this.cardLastY = this.card.y + this.card.sprite.y;
 
@@ -64,8 +66,9 @@ CardControl.prototype.cardPutDown = function(){
 		return;
 	}
 
-	if(this.inDebugMode)
+	if(this.inDebugMode){
 		console.log('Card control: Putting down', this.card.id);
+	}
 
 	var fields = this._cardOnValidField();
 
@@ -99,7 +102,9 @@ CardControl.prototype.cardMoveToField = function(fields){
 	for(var i = 0; i < fields.length; i++){
 		field = fields[i];
 		success = connection.server.sendAction(field, this.card);
-		if (success) break;
+		if(success){
+			break;
+		}
 	}
 
 	if(!success){
@@ -152,8 +157,9 @@ CardControl.prototype.cardReturn = function(){
 
 	this._setTrailResetTimer();
 
-	if(this._inertiaHistory.length)
+	if(this._inertiaHistory.length){
 		this._inertiaHistory = [];
+	}
 
 	var card = this.card;
 	var stillInbound = this._cardPointerInbound();
@@ -166,8 +172,9 @@ CardControl.prototype.cardReturn = function(){
 	}
 
 	if(card.field){
-		if(!stillInbound)
+		if(!stillInbound){
 			card.field.focusedCard = null;
+		}
 		card.field.placeCards([card], BRING_TO_TOP_ON.END_ALL, true);
 	}
 	else{

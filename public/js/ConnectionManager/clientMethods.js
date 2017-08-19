@@ -36,8 +36,9 @@ var clientMethods = {
 		connection.resetTimer();
 
 		actionHandler.handlePossibleActions(newActions, time, timeSent, turnStage);
-		if(connection.inDebugMode)
+		if(connection.inDebugMode){
 			console.log(newActions);
+		}
 	},
 
 	recieveCompleteAction: function(action){
@@ -47,8 +48,9 @@ var clientMethods = {
 			connection.resetTimer();
 			connection.responseTimer = setTimeout(connection.server.sendResponse, !delay && 1 || (delay/game.speed + 300));
 		}
-		if(connection.inDebugMode)
+		if(connection.inDebugMode){
 			console.log(action);
+		}
 	},
 
 	recieveNotification: function(note, actions){
@@ -56,7 +58,8 @@ var clientMethods = {
 			connection.resetTimer();
 		}
 		actionHandler.handleNotification(note, actions);
-		if(connection.inDebugMode)
+		if(connection.inDebugMode){
 			console.log(note, actions);
+		}
 	}
 };

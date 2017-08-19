@@ -15,8 +15,9 @@ Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color)
 
 	this.glow.tint = color || ui.colors.white;
 
-	if(this.game.paused)
+	if(this.game.paused){
 		return;
+	}
 
 	this._glowDecreaser = this.game.add.tween(this.glow);
 	this._glowDecreaser.to(
@@ -37,12 +38,14 @@ Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color)
 	);
 
 	this._glowIncreaser.onComplete.add(function(){
-		if(this.glow.visible && this._glowDecreaser)
+		if(this.glow.visible && this._glowDecreaser){
 			this._glowDecreaser.start();
+		}
 	},this);
 	this._glowDecreaser.onComplete.add(function(){
-		if(this.glow.visible && this._glowIncreaser)
+		if(this.glow.visible && this._glowIncreaser){
 			this._glowIncreaser.start();
+		}
 	},this);
 	this._glowDecreaser.start();
 };

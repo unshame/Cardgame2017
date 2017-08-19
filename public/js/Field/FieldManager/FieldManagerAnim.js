@@ -35,8 +35,9 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 * @param {CardInfo[]} cardsInfo информация о картах
 */
 FieldManager.prototype.hideTrumpCards = function(cardsInfo){
-	if(!cardsInfo || !cardsInfo.length)
+	if(!cardsInfo || !cardsInfo.length){
 		return;
+	}
 		
 	for(var ci = 0; ci < cardsInfo.length; ci++){
 		var c = cardsInfo[ci];

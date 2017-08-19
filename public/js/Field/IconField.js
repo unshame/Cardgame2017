@@ -47,8 +47,8 @@ IconField.prototype.getIconDefaultOptions = function(){
 		offset: {x: 0, y:0},
 		shouldHide: false,
 		visible: true
-	}
-}
+	};
+};
 
 IconField.prototype.setVisibility = function(visible){
 	this.area.visible = this.style.alwaysVisible || visible || this.inDebugMode;
@@ -60,8 +60,9 @@ IconField.prototype.setVisibility = function(visible){
 * @param {boolean} visible видимость
 */
 IconField.prototype.setIconVisibility = function(visible){
-	if(!this.icon)
+	if(!this.icon){
 		return;
+	}
 
 	if(!visible && this.iconStyle.shouldHide || visible && !this.icon.visible){
 		this.icon.visible = visible;

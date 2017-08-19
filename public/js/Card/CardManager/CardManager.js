@@ -122,16 +122,18 @@ CardManager.prototype.reset = function(){
 CardManager.prototype.resetRaised = function(){
 	var raised = false;
 	for(var ci in this.cards){
-		if(!this.cards.hasOwnProperty(ci))
+		if(!this.cards.hasOwnProperty(ci)){
 			continue;
+		}
 		var card = this.cards[ci]; 
 		if(card.raised){
 			card.raised = false;
 			raised = true;
 		}
 	}
-	if(!raised)
+	if(!raised){
 		return;
+	}
 	fieldManager.placeCards();
 };
 
@@ -165,8 +167,9 @@ CardManager.prototype.enablePhysics = function(makeDraggable, except, only){
 	for(var cid in this.cards){
 		// jshint forin:false
 		var card = this.cards[cid];
-		if(!this.cards.hasOwnProperty(cid) || except && except.indexOf && ~except.indexOf(card) || only && !~only.indexOf(card))
+		if(!this.cards.hasOwnProperty(cid) || except && except.indexOf && ~except.indexOf(card) || only && !~only.indexOf(card)){
 			continue;
+		}
 
 		card.enablePhysics(makeDraggable);
 	}
@@ -177,8 +180,9 @@ CardManager.prototype.enablePhysics = function(makeDraggable, except, only){
 CardManager.prototype.disablePhysics = function(){
 
 	for(var cid in this.cards){
-		if(!this.cards.hasOwnProperty(cid))
+		if(!this.cards.hasOwnProperty(cid)){
 			continue;
+		}
 		var card = this.cards[cid];
 		card.disablePhysics();
 	}

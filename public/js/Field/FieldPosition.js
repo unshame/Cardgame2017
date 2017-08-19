@@ -7,20 +7,24 @@
 * @param {boolean} [shouldPlace=false] нужно ли размещать карты после установки
 */
 Field.prototype.setBase = function(x, y, shouldPlace){
-	if(x === null || x === undefined)
+	if(x === null || x === undefined){
 		x = this.style.x;
-	if(y === null || y === undefined)
+	}
+	if(y === null || y === undefined){
 		y = this.style.y;
-	if(shouldPlace === undefined)
+	}
+	if(shouldPlace === undefined){
 		shouldPlace = false;
+	}
 
 	this.endAnimation();
 
 	this.x = this.style.x = Math.round(x);
 	this.y = this.style.y = Math.round(y);
 
-	if(shouldPlace)
+	if(shouldPlace){
 		this.placeCards();
+	}
 };
 
 /**
@@ -30,18 +34,23 @@ Field.prototype.setBase = function(x, y, shouldPlace){
 * @param {boolean} [shouldPlace=false]        нужно ли размещать карты после установки
 */
 Field.prototype.setSize = function(width, height, shouldPlace){
-	if(width === null || width === undefined)
+	if(width === null || width === undefined){
 		width = this.style.width;
-	else
+	}
+	else{
 		this.style.width = width;
+	}
 
-	if(height === null || height === undefined)
+	if(height === null || height === undefined){
 		height = this.style.height;
-	else
+	}
+	else{
 		this.style.height = height;
+	}
 
-	if(shouldPlace === undefined)
+	if(shouldPlace === undefined){
 		shouldPlace = false;
+	}
 
 	var margin = this.style.margin;
 

@@ -23,10 +23,12 @@ function mixin(constructor, mixins){
 	for(var i = 0; i < mixins.length; i++){
 		var mix = mixins[i].prototype;
 		for(var key in mix){
-			if(!mix.hasOwnProperty(key))
+			if(!mix.hasOwnProperty(key)){
 				continue;
-			if(key == 'constructor')
+			}
+			if(key == 'constructor'){
 				continue;
+			}
 			if(constructor.prototype[key]){
 				console.warn('Overwriting method', key, 'in', constructor, 'prototype');
 			}
@@ -188,8 +190,9 @@ function printLayers(){
 * @global
 */
 function moveFirstPlayerCardToTable(i, delay){
-	if(delay === undefined)
+	if(delay === undefined){
 		delay = 3000;
+	}
 	var c = fieldManager.fields[playerManager.pid].cards[0];
 	var ci = {cid: c.id, suit: c.suit, value: c.value};
 	setTimeout(function(){

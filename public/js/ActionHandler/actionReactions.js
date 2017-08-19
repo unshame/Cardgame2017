@@ -14,8 +14,9 @@ var actionReactions = {
 	* @return {number} Время выполнения действия
 	*/
 	TRUMP_CARDS: function(action){
-		if(!action.cards || !action.cards.length)
+		if(!action.cards || !action.cards.length){
 			return 0;		
+		}
 
 		var cardsInfo = action.cards.slice(),
 			pid = action.pid,
@@ -143,8 +144,9 @@ var actionReactions = {
 	*/
 	TAKE: function(action){
 		var delay = 0;
-		if(!action.cards)
+		if(!action.cards){
 			return delay;
+		}
 		actionHandler.reset();
 		var field = fieldManager.fields[action.pid];
 		delay = fieldManager.moveCards(field, action.cards.slice(), BRING_TO_TOP_ON.START);

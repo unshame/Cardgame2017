@@ -67,16 +67,18 @@ class TestBot extends Bot{
 				attackers[0].name,
 				game.players.defender.name
 			];
-			if(attackers[1])
+			if(attackers[1]){
 				before.push(attackers[1].name);
+			}
 			let expected = [];
 			let activePlayers = game.players.active;
 			let parties = activePlayers.length > 2 ? 3 : 2;
 			let ai = activePlayers.indexOf(attackers[0]);
 			for(let i = 0; i < parties; i++){
 				ai++;
-				if(ai >= activePlayers.length)
+				if(ai >= activePlayers.length){
 					ai = 0;
+				}
 				expected.push(activePlayers[ai].name);
 			}
 			let active = activePlayers.slice();
@@ -100,8 +102,9 @@ class TestBot extends Bot{
 					attackers[0].name,
 					game.players.defender.name
 				];
-				if(attackers[1])
+				if(attackers[1]){
 					result.push(attackers[1].name);
+				}
 				if(result.join() != expected.join()){
 					console.log('Test %s failed on %s', this.tests, this.name);
 					console.log('Before:  ', before);

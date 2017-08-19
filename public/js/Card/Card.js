@@ -318,25 +318,33 @@ Card.prototype._destroyFinally = Phaser.Group.prototype.destroy;
 * @param {boolean} [now]     убирает анимацию удаления и игнорирует задержку
 */
 Card.prototype.destroy = function(delay, now) {
-	if(delay === undefined || now)
+	if(delay === undefined || now){
 		delay = 0;
+	}
+
 	var time = 1000,
 		alphaTween = this.game.add.tween(this.sprite),
 		scaleTween = this.game.add.tween(this.sprite.scale);
-	if(cardControl.card == this)
+	
+	if(cardControl.card == this){
 		cardControl.reset('card destroyed');
+	}
 	delete cardManager.cards[this.id];
 	this.setDraggability(false);
 	this.setPlayability(false);
 	this.setHighlight(false);
-	if(this.mover)
+	if(this.mover){
 		this.mover.stop();
-	if(this._rotator)
+	}
+	if(this._rotator){
 		this._rotator.stop();
-	if(this._flipper)
+	}
+	if(this._flipper){
 		this._flipper.stop();
-	if(this.field)
+	}
+	if(this.field){
 		this.field.removeCards([this]);
+	}
 
 	if(this.game.paused || now){
 		this._destroyNow();
@@ -353,10 +361,12 @@ Card.prototype.destroy = function(delay, now) {
 * @private
 */
 Card.prototype._destroyNow = function() {
-	if(cardControl.card == this)
+	if(cardControl.card == this){
 		cardControl.reset('card destroyed');
-	if(ui.cursor.overlappingElement == this)
+	}
+	if(ui.cursor.overlappingElement == this){
 		ui.cursor.overlappingElement = null;
+	}
 	this.sprite.destroy();
 	this.glow.destroy();
 	this.removeAll();
@@ -380,8 +390,9 @@ Card.prototype.update = function() {
 * Обновляет позицию дебаг информации.
 */
 Card.prototype.updateDebug = function(){
-	if(!this.inDebugMode)
+	if(!this.inDebugMode){
 		return;
+	}
 
 	var x = this.x + this.sprite.x - this.skin.width/2;
 	var y = this.y + this.sprite.y + this.skin.height/2 + 12;

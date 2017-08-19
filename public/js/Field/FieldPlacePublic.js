@@ -10,10 +10,12 @@
 */
 Field.prototype.placeCards = function(newCards, bringToTopOn, noDelay){
 
-	if(newCards === undefined)
+	if(newCards === undefined){
 		newCards = null;
-	if(noDelay === undefined)
+	}
+	if(noDelay === undefined){
 		noDelay = false;
+	}
 
 	// Размеры и угол поля
 	var areaWidth = (this.style.axis == 'vertical') ?  this.area.height : this.area.width;

@@ -347,8 +347,9 @@ class DurakPlayers extends GenericPlayers{
 
 			let pid = p.id;
 
-			if(!game.hands.hasOwnProperty(pid))
+			if(!game.hands.hasOwnProperty(pid)){
 				return;
+			}
 
 			let hand = game.hands[pid];
 			let minCard = null;

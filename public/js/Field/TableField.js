@@ -16,8 +16,9 @@ extend(TableField, IconField);
 * @param {boolean} highlight включить ли подсветку
 */
 TableField.prototype.setLastCardHighlight = function(highlight){
-	if(!this.cards.length)
+	if(!this.cards.length){
 		return;
+	}
 
 	this.setCardsHighlight(false);
 	if(highlight){

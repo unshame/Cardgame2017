@@ -11,7 +11,7 @@
   "-W058": true,
   "strict": "global",
   "varstmt": true,
-  "curly": false,
+  "curly": true,
   "globals": {
   	"requirejs": true
   }

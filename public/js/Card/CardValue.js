@@ -7,8 +7,9 @@
 * @param {number}        [value=0]   значение карты
 */
 Card.prototype.presetValue = function(suit, value){
-	if(suit === undefined)
+	if(suit === undefined){
 		suit = null;
+	}
 
 	if(
 		(suit === null && this.suit === null) ||
@@ -32,8 +33,9 @@ Card.prototype.presetValue = function(suit, value){
 * Устанавливает заданные ранее значения и переворачивает карту.
 */
 Card.prototype.applyValue = function(){
-	if(!this._valueChanged)
+	if(!this._valueChanged){
 		return;
+	}
 
 	this._valueChanged = false;
 
@@ -110,11 +112,13 @@ Card.prototype._updateTint = function(){
 */
 Card.prototype.setValue = function(suit, value, animate){
 
-	if(suit === undefined)
+	if(suit === undefined){
 		suit = null;
+	}
 
-	if(animate === undefined)
+	if(animate === undefined){
 		animate = true;
+	}
 
 	if(animate && !this.game.paused){
 		this.presetValue(suit, value);

@@ -15,20 +15,24 @@ class GameReactions{
 		let ci, card;
 
 		let str;
-		if(this.turnStages.current == 'FOLLOWUP')
+		if(this.turnStages.current == 'FOLLOWUP'){
 			str = 'follows up';
-		else if(this.turnStages.current == 'DEFENSE')
+		}
+		else if(this.turnStages.current == 'DEFENSE'){
 			str = 'transfers';
-		else
+		}
+		else{
 			str = 'attacks';
+		}
 
 		this.log.info(player.name,  str);
 
 		card = cardsById[action.cid];
 		ci = this.hands[player.id].indexOf(card);
 
-		if(action.linkedField)
+		if(action.linkedField){
 			action.field = action.linkedField;
+		}
 
 		let field = action.field;
 

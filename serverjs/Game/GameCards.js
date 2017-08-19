@@ -98,23 +98,26 @@ class GameCards extends BetterArray{
 				cardsToSend[pid].unshift(newCard);
 			});
 
+			function addCardInfo(card){
+				let newCard = card.info;
+
+				if(card.field != pid && !reveal){
+					newCard.value = null;
+					newCard.suit = null;			
+				} 
+
+				cardsToSend[pid].push(newCard);
+			}
+
 			// Руки
 			for(let hid in this.hands){
-				if(!this.hands.hasOwnProperty(hid))
+				if(!this.hands.hasOwnProperty(hid)){
 					continue;
+				}
 
 				/*jshint loopfunc: true */
 				let hand = this.hands[hid];
-				hand.forEach((card) => {
-					let newCard = card.info;
-
-					if(card.field != pid && !reveal){
-						newCard.value = null;
-						newCard.suit = null;			
-					} 
-
-					cardsToSend[pid].push(newCard);
-				});
+				hand.forEach(addCardInfo);
 			}	
 
 			// В игре
@@ -288,8 +291,9 @@ class GameCards extends BetterArray{
 			let dealInfo = dealsIn[di];
 			let numOfCards = dealInfo.numOfCards;
 			while (numOfCards--) {
-				if(!this.deck.length)
+				if(!this.deck.length){
 					break;
+				}
 
 				let card = this.deck[0];
 
@@ -501,8 +505,9 @@ class GameCards extends BetterArray{
 
 		let attackField = this.table[this.table.usedFields];
 
-		if(!canTransfer || !attackField)
+		if(!canTransfer || !attackField){
 			return;
+		}
 
 		for(let fi = 0; fi < this.table.length; fi++){
 			let tableField = this.table[fi];
@@ -512,8 +517,9 @@ class GameCards extends BetterArray{
 			}
 		}
 
-		if(!canTransfer)
+		if(!canTransfer){
 			return;
+		}
 
 		let defenseActionFields = actions.map((action) => action.field);
 
@@ -525,15 +531,17 @@ class GameCards extends BetterArray{
 				let cid = card.id;
 				let otherCard = defenseFields[di].attack;
 
-				if(card.value != otherCard.value)
+				if(card.value != otherCard.value){
 					continue;
+				}
 
 				// Все поля, которые уже не находятся в возможных действиях
 				for(let fi = 0; fi < this.table.length; fi++){	
 					let fid = this.table[fi].id;
 
-					if(defenseActionFields.includes(fid))
+					if(defenseActionFields.includes(fid)){
 						continue;
+					}
 
 					let action = {
 						type: 'ATTACK',

@@ -6,15 +6,17 @@ const
 
 function runTest(numBots, duration, debug){
 	console.log('Testing...');
-	if(typeof duration != 'number')
+	if(typeof duration != 'number'){
 		duration = 2000;
+	}
 	let bots = [];
 	let randomNames = ['bot1', 'bot2', 'bot3', 'bot4', 'bot5'];
 	let tester = {
 		running: true
 	};
-	if(!numBots)
+	if(!numBots){
 		numBots = 5;
+	}
 	for(let i = 0; i < numBots; i++){
 		bots.push(new TestBot(tester,randomNames));
 	}

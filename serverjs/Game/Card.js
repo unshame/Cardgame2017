@@ -44,8 +44,9 @@ class Card{
 	get info(){
 		let obj = {};
 		for(let key in this){
-			if(!this.hasOwnProperty(key))
+			if(!this.hasOwnProperty(key)){
 				continue;
+			}
 			obj[key == 'id' ? 'cid' : key] = this[key];
 		}
 		return obj;

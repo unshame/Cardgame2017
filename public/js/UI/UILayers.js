@@ -170,8 +170,9 @@ UILayers.prototype._positionElementsInLayer = function(layer){
 UILayers.prototype.positionElements = function(){
 
 	for(var pname in this.byName){
-		if(!this.byName.hasOwnProperty(pname))
+		if(!this.byName.hasOwnProperty(pname)){
 			continue;
+		}
 
 		var layer = this.byName[pname];
 		if(layer.updatePosition){
@@ -189,12 +190,14 @@ UILayers.prototype.positionElements = function(){
 */
 UILayers.prototype.loadLabels = function(){
 	for(var pname in this.byName){
-		if(!this.byName.hasOwnProperty(pname))
+		if(!this.byName.hasOwnProperty(pname)){
 			continue;
+		}
 
 		var layer = this.byName[pname];
-		if(!(layer instanceof Phaser.Group))
+		if(!(layer instanceof Phaser.Group)){
 			continue;
+		}
 
 		layer.forEach(function(el){
 			if(el.label && el.label.isText){
@@ -248,11 +251,13 @@ UILayers.prototype.updateModalIndex = function(modalLayer){
 */
 UILayers.prototype.updateCursorOverlap = function(el){
 	var parent = el.parent;
-	if(!parent)
+	if(!parent){
 		return;
+	}
 	var i = this.positions.indexOf(parent);
-	if(!~i)
+	if(!~i){
 		return;
+	}
 	var m = this.modalLayerIndex;
 	if(!~m || i >= m){
 		ui.cursor.updateOverlap(el);

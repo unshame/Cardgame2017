@@ -45,8 +45,9 @@ Menu.prototype.disable = function(changeToDefaultFrame){
 /** Включает элементы игры, не входящие в {@link Menu#disabledElements} */
 Menu.prototype.enable = function(){
 	this.forEachElement(function(element){
-		if(~this.disabledElements.indexOf(element))
+		if(~this.disabledElements.indexOf(element)){
 			return;
+		}
 
 		element.enable();
 	}, true);

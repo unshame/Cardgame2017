@@ -67,8 +67,9 @@ extend(Cursor, Phaser.Sprite);
 */
 Cursor.prototype.update = function(cursorinGame, noOverlapCheck){
 
-	if(!Phaser.Device.desktop)
+	if(!Phaser.Device.desktop){
 		return;
+	}
 
 	this.initialized = game.input.x !== 0 || game.input.y !== 0;
 
@@ -83,8 +84,9 @@ Cursor.prototype.update = function(cursorinGame, noOverlapCheck){
 	else if(this.inGame && !game.paused && this.initialized && !this.alive){
 		this.reset();
 	}
-	if(!this.inGame || game.paused || !this.initialized)
+	if(!this.inGame || game.paused || !this.initialized){
 		return;
+	}
 
 	game.canvas.style.cursor = "none";
 	this.x = game.input.x;

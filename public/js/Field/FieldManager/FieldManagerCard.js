@@ -81,8 +81,9 @@ FieldManager.prototype.revealCards = function(cardsInfo){
 * @return {number} Время до начала движения последней перемещаемой карты
 */
 FieldManager.prototype.moveCards = function(field, cardsInfo, bringToTopOn, noDelay){
-	if(!cardsInfo || !cardsInfo.length)
+	if(!cardsInfo || !cardsInfo.length){
 		return 0;
+	}
 
 	if(!field || !this.fields[field.id]){
 		console.error('Field manager: cannot move cards to field', field);

@@ -72,8 +72,9 @@ ModalManager.prototype.openModal = function(menuName){
 };
 
 ModalManager.prototype.closeModal = function(){
-	if(!this.modals.length)
+	if(!this.modals.length){
 		return;
+	}
 	var len = this.modals.length;
 
 	// Верхнее меню

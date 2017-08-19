@@ -9,8 +9,9 @@ var serverMethods = {
 	sendAction: function(field, card){
 		var actions = actionHandler.possibleActions;
 
-		if(!actions)
+		if(!actions){
 			return;
+		}
 
 		for(var ai = 0; ai < actions.length; ai++){
 			var action = actions[ai];
@@ -29,8 +30,9 @@ var serverMethods = {
 
 		var actions = actionHandler.possibleActions;
 
-		if(!actions || !actions.length)
+		if(!actions || !actions.length){
 			return;
+		}
 
 		var actionTypes = actions.map(function(a){return a.type;});
 		if(~actionTypes.indexOf(type)){

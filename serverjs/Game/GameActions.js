@@ -99,6 +99,7 @@ class Actions{
 			// Если больше нет действующих игроков, перестаем ждать ответа и продолжаем ход
 			if(!playersWorking.length){
 				clearTimeout(game.timer);
+				// jshint curly:false
 				while(game.continue());
 			}
 		}
@@ -156,8 +157,9 @@ class Actions{
 		for(let i = 0; i < this.valid.length; i++){
 			let validAction = this.valid[i];
 			for(let k in validAction){
-				if(!validAction.hasOwnProperty(k))
+				if(!validAction.hasOwnProperty(k)){
 					continue;
+				}
 				if((!ignored || !~ignored.indexOf(k)) && validAction[k] != action[k]){
 					continue outer;
 				}
@@ -270,18 +272,21 @@ class Actions{
 				continue;
 			}
 
-			if(action && action.type == 'ACCEPT')
+			if(action && action.type == 'ACCEPT'){
 				numAccepted++;
+			}
 		}
 
 		this.log.info(numAccepted, 'out of', game.players.length, 'voted for rematch');
-		if(!allConnected)
+		if(!allConnected){
 			this.log.info('Some players disconnected');
+		}
 
 		let results = [];
 		for(let pid in this.stored){
-			if(!this.stored.hasOwnProperty(pid))
+			if(!this.stored.hasOwnProperty(pid)){
 				continue;
+			}
 			results.push(Object.assign({}, this.stored[pid]));
 		}
 
@@ -304,8 +309,9 @@ class Actions{
 	completeNotify(){
 		const game = this.game;
 
-		if(!this.complete)
+		if(!this.complete){
 			return;
+		}
 
 		this.complete.noResponse = true;
 		game.players.completeActionNotify(this.complete);

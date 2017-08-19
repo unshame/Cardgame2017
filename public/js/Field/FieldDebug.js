@@ -30,37 +30,49 @@ Field.prototype._setDebugActiveSpace = function(activeWidth, cardHeight, leftMar
 * Обновляет дебаг
 */
 Field.prototype.updateDebug = function(){
-	if(!this.inDebugMode)
+	if(!this.inDebugMode){
 		return;
+	}
 	var ax = this.x + this.area.x;
 	var ay = this.y + this.area.y;
 	var x, y;
-	if(ax < 0)
+	if(ax < 0){
 		x = 0;
-	else if(ax + this.area.width > game.screenWidth)
+	}
+	else if(ax + this.area.width > game.screenWidth){
 		x = game.screenWidth - 300;
-	else
+	}
+	else{
 		x = ax;
+	}
 
-	if(ay < 0)
+	if(ay < 0){
 		y = this.height + ay + 15;
-	else if(ay > game.screenHeight)
+	}
+	else if(ay > game.screenHeight){
 		y = game.screenHeight;
-	else
+	}
+	else{
 		y = ay - 5;
+	}
 
-	if(this.type == 'DUMMY')
+	if(this.type == 'DUMMY'){
 		y += this.area.height + 20;
+	}
 
 	var str;
-	if(this.type == this.id)
+	if(this.type == this.id){
 		str = this.type;
-	else
+	}
+	else{
 		str = this.type + ' ' + this.id;
-	if(this.name !== null && this.name !== undefined)
+	}
+	if(this.name !== null && this.name !== undefined){
 		str += ' ' + this.name;
-	if(this.specialId !== null && this.specialId !== undefined)
+	}
+	if(this.specialId !== null && this.specialId !== undefined){
 		str += ' #' + this.specialId;
+	}
 	str += ' ' + this.cards.length;
 	game.debug.text(str, x, y );
 
@@ -73,6 +85,7 @@ Field.prototype.updateDebug = function(){
 Field.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
 	this.setVisibility(this.inDebugMode);
-	if(!this.inDebugMode)
+	if(!this.inDebugMode){
 		game.debug.reset();
+	}
 };

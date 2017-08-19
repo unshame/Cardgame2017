@@ -17,8 +17,9 @@ CardControl.prototype.trailShift = function(x, y){
 CardControl.prototype.trailReset = function(soft){
 	this._resetTrailResetTimer();
 	this.trail.forEachAlive(function(p){
-		if(soft)
+		if(soft){
 			p.alpha = 0;
+		}
 		else{
 			p.kill();
 		}
@@ -46,15 +47,18 @@ CardControl.prototype.trailApplySkin = function(){
 CardControl.prototype._trailSpawnParticle = function(){
 
 	var	delta = Date.now() - this.lastParticleTime;
-	if(this.lastParticleTime && delta < this.trail.interval)
+	if(this.lastParticleTime && delta < this.trail.interval){
 		return;
+	}
 
 	// Прибавляем интервал к последнему моменту спавна, чтобы кол-во партиклей соответствовало прошедшему времени
 	// Для оптимизации ограничиваем разницу во времени
-	if(delta > this.trail.interval*10)
+	if(delta > this.trail.interval*10){
 		this.lastParticleTime += this.trail.interval*10;
-	else
+	}
+	else{
 		this.lastParticleTime += this.trail.interval;
+	}
 
 	var distance = this.card.sprite.position.distance({
 		x: this.trail.emitX + this.trail.position.x, 

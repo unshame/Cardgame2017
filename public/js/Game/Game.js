@@ -119,13 +119,15 @@ Game.prototype.initialize = function(){
 	this.scale.drawDebugGrid();
 
 	this.onPause.add(function(){
-		if(this.inDebugMode)
+		if(this.inDebugMode){
 			console.log('Game: paused internally');
+		}
 	}, this);
 
 	this.onResume.add(function(){
-		if(this.inDebugMode)
+		if(this.inDebugMode){
 			console.log('Game: unpaused internally');
+		}
 	}, this);
 	/********/
 	
@@ -269,8 +271,9 @@ Game.prototype.checkDebugStatus = function(){
 
 /** Выводит FPS. */
 Game.prototype.updateDebug = function(){
-	if(!this.inDebugMode)
+	if(!this.inDebugMode){
 		return;
+	}
 	this.debug.text(this.time.fps, 2, 14, "#00ff00");
 };
 
@@ -278,8 +281,9 @@ Game.prototype.updateDebug = function(){
 Game.prototype.fixPause = function(){
 	if(this.stage.disableVisibilityChange && this.paused && !this.pausedByViewChange){
 		this.paused = false;
-		if(this.inDebugMode)
+		if(this.inDebugMode){
 			console.log('Game: unpaused forced');
+		}
 	}
 };
 

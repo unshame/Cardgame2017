@@ -85,11 +85,13 @@ Field.prototype._createDelayArray = function(noDelay){
 Field.prototype._calculateCardSpacing = function(activeWidth){
 	var cardSpacing = 0;
 
-	if(this.cards.length > 1)
+	if(this.cards.length > 1){
 		cardSpacing = activeWidth/(this.cards.length-1);
+	}
 	if(this.style.forcedSpace){
-		if(cardSpacing < this.style.forcedSpace && this.cards.length > 1)
+		if(cardSpacing < this.style.forcedSpace && this.cards.length > 1){
 			console.warn("Field", this.id, "wants to space cards out by", this.style.forcedSpace + "px", "but only has", cardSpacing + "px", "available per card\n", this);
+		}
 		cardSpacing = Math.min(cardSpacing, this.style.forcedSpace);
 	}
 	return cardSpacing;
@@ -97,10 +99,10 @@ Field.prototype._calculateCardSpacing = function(activeWidth){
 
 Field.prototype._calculateShift = function(cardWidth, cardSpacing, areaActiveWidth){
 	if(this.focusedCard && cardWidth*(this.cards.length - 1) > areaActiveWidth){		
-		return shift = cardWidth*(1 + this.style.scaleDiff/2) - cardSpacing;
+		return cardWidth*(1 + this.style.scaleDiff/2) - cardSpacing;
 	}
 	return 0;
-}
+};
 
 /**
 * Рассчитывает позицию для карты в соотвествии с индексом и перемещает карту в эту позицию.
@@ -151,8 +153,9 @@ Field.prototype._moveCard = function(
 
 	// Сдвиг поднятых карт
 	var bottomMargin = card.raised ? this.style.raisedOffset : 0;
-	if(this.style.flipped && this.style.axis == 'horizontal' || !this.style.flipped && this.style.axis == 'vertical')
+	if(this.style.flipped && this.style.axis == 'horizontal' || !this.style.flipped && this.style.axis == 'vertical'){
 		bottomMargin = -bottomMargin;
+	}
 
 	// Горизонтальная позиция состоит из сдвига слева, сдвига по отношению
 	// к предыдущим картам, позиции базы поля и сдвига от курсора

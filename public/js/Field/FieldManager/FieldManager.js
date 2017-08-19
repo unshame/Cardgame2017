@@ -85,7 +85,7 @@ FieldManager.prototype.addField = function(Constructor){
 */
 FieldManager.prototype.addGenericField = function(options, style, iconStyle){
 	return this.addField(iconStyle ? IconField : Field, options, style, iconStyle);
-}
+};
 
 /**
 * Добавляет поле стола.
@@ -98,7 +98,7 @@ FieldManager.prototype.addTableField = function(options, style, iconStyle){
 	var field = this.addField(TableField, options, style, iconStyle);
 	this.table.push(field);
 	return field;
-}
+};
 
 /**
 * Добавляет поле руки игрока.
@@ -109,7 +109,7 @@ FieldManager.prototype.addTableField = function(options, style, iconStyle){
 */
 FieldManager.prototype.addPlayerField = function(options, style, badgeStyle){
 	return this.addField(PlayerField, options, style, badgeStyle);
-}
+};
 
 /**
 * Добавляет поле руки оппонента.
@@ -122,7 +122,7 @@ FieldManager.prototype.addOpponentField = function(options, style, badgeStyle){
 	var field = this.addField(BadgeField, options, style, badgeStyle);
 	this.opponents.push(field);
 	return field;
-}
+};
 
 /**
 * Устанавливает козырь колоде.
@@ -133,8 +133,9 @@ FieldManager.prototype.setTrumpSuit = function(suit, delay){
 		console.error('Field manager: cannot set trump suit, no DECK');
 		return;
 	}
-	if(delay === undefined)
+	if(delay === undefined){
 		delay = 1000;
+	}
 	var icon = this.fields.DECK.icon;
 	setTimeout(function(){
 		icon.frame = suit;
@@ -179,8 +180,9 @@ FieldManager.prototype.toggleDebugMode = function(){
 	options.set('debug_fields', this.inDebugMode);
 	options.save();
 	this.forEachField(function(field, si){
-		if(field.inDebugMode != this.inDebugMode)
+		if(field.inDebugMode != this.inDebugMode){
 			field.toggleDebugMode();
+		}
 	});
 	actionHandler.highlightPossibleActions();
 };

@@ -5,18 +5,21 @@
 * @param {Card[]} cardsToRemove карты для удаления
 */
 Field.prototype.removeCards = function(cardsToRemove){
-	if(!cardsToRemove.length)
+	if(!cardsToRemove.length){
 		return;
+	}
 	for(var ci = cardsToRemove.length - 1; ci >= 0; ci--){
 		var card = cardsToRemove[ci];
 		var i = this.cards.indexOf(card);
 		if(~i){
-			if(this.focusedCard && this.focusedCard == card)
+			if(this.focusedCard && this.focusedCard == card){
 				this.focusedCard = null;
+			}
 			this.cards.splice(i, 1);
 			card.field = null;
-			if(card.fieldId == this.id)
+			if(card.fieldId == this.id){
 				card.fieldId = null;
+			}
 			this._angles[card.id] = null;
 		}
 		else{

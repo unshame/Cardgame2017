@@ -68,8 +68,9 @@ Menu.prototype.fadeToggle = function(){
 * @private
 */
 Menu.prototype._stopFader = function(){
-	if(!this._fader)
+	if(!this._fader){
 		return;
+	}
 	this._fader.stop();
 	this._fader = null;
 	this._fading = 0;

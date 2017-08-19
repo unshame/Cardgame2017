@@ -71,17 +71,20 @@ class GamePlayers extends BetterArray{
 	// только если игрок входит в игру
 	// Чтобы остановить цикл, action должно возвратить true
 	forEachOwn(action, players) {
-		if(!action)
+		if(!action){
 			return;
+		}
 
-		if(!players || !players.length)
+		if(!players || !players.length){
 			players = this;
+		}
 
 		for(let i = 0; i < players.length; i++){
 			let p = players[i];
 			if(this.includes(p) && p.game == this.game){
-				if(action(p))
+				if(action(p)){
 					return;
+				}
 			}
 			else{
 				this.log.error('Player isn\'t in this game', p.id);

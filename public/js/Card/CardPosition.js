@@ -8,8 +8,9 @@
 */
 Card.prototype.setPosition = function(x, y, resetMover){
 
-	if(typeof resetMover == 'undefined')
+	if(typeof resetMover == 'undefined'){
 		resetMover = true;
+	}
 
 	if(this.mover && resetMover){
 		this.mover.stop();
@@ -29,8 +30,9 @@ Card.prototype.setPosition = function(x, y, resetMover){
 */
 Card.prototype.setRelativePosition = function(x, y, resetMover){
 
-	if(typeof resetMover == 'undefined')
+	if(typeof resetMover == 'undefined'){
 		resetMover = true;
+	}
 
 	if(this.mover && resetMover){
 		this.mover.stop();
@@ -50,8 +52,9 @@ Card.prototype.setRelativePosition = function(x, y, resetMover){
 */
 Card.prototype.setBase = function(x, y, resetMover){
 
-	if(typeof resetMover == 'undefined')
+	if(typeof resetMover == 'undefined'){
 		resetMover = true;
+	}
 
 	if(this.mover && resetMover){
 		this.mover.stop();
@@ -71,8 +74,9 @@ Card.prototype.setBase = function(x, y, resetMover){
 */
 Card.prototype.setBasePreserving = function(x, y, resetMover){
 
-	if(typeof resetMover == 'undefined')
+	if(typeof resetMover == 'undefined'){
 		resetMover = true;
+	}
 
 	var shiftX = x - this.x,
 		shiftY = y - this.y,

@@ -10,8 +10,9 @@ Menu.prototype.forEachElement = function(callback, includeSpecial){
 	for(; i < this.elements.length; i++){
 		var element = this.elements[i];
 
-		if(~this.specialElements.indexOf(element) && !includeSpecial)
+		if(~this.specialElements.indexOf(element) && !includeSpecial){
 			continue;
+		}
 
 		callback.call(this, this.elements[i], ii, len);
 		ii++;
@@ -44,8 +45,9 @@ Menu.prototype.hideElement = function(name){
 	var el = this.getElementByName(name);
 	var i = this.hiddenElements.indexOf(el);
 
-	if(!el || ~i)
+	if(!el || ~i){
 		return;
+	}
 
 	this.hiddenElements.push(el);
 	if(this._fading != -1){
@@ -66,8 +68,9 @@ Menu.prototype.showElement = function(name){
 	var el = this.getElementByName(name);
 	var i = this.hiddenElements.indexOf(el);
 
-	if(!el || !~i)
+	if(!el || !~i){
 		return;
+	}
 
 	this.hiddenElements.splice(i, 1);
 
@@ -88,8 +91,9 @@ Menu.prototype.disableElement = function(name){
 	var el = this.getElementByName(name);
 	var i = this.disabledElements.indexOf(el);
 
-	if(!el || ~i)
+	if(!el || ~i){
 		return;
+	}
 
 	this.disabledElements.push(el);
 	el.disable();
@@ -103,8 +107,9 @@ Menu.prototype.enableElement = function(name){
 	var el = this.getElementByName(name);
 	var i = this.disabledElements.indexOf(el);
 
-	if(!el || !~i)
+	if(!el || !~i){
 		return;
+	}
 
 	this.disabledElements.splice(i, 1);
 	el.enable();

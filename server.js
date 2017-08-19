@@ -28,7 +28,7 @@ global.server = new Server({allow:[
 ]
 }, process.argv.slice(2));
 
-server.start();
+global.server.start();
 
 
 /**

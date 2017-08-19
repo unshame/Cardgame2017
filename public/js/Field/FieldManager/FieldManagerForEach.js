@@ -10,12 +10,14 @@
 FieldManager.prototype.forEachField = function(callback, context){
 	var returnedValues = [];
 	for(var si in this.fields){
-		if(!this.fields.hasOwnProperty(si))
+		if(!this.fields.hasOwnProperty(si)){
 			continue;
+		}
 		var field = this.fields[si];
 		var returnValue = callback.call(context || this, field, si);
-		if(returnValue !== undefined)
+		if(returnValue !== undefined){
 			returnedValues.push(returnValue);
+		}
 	}
 	return returnedValues;
 };
@@ -60,8 +62,9 @@ FieldManager.prototype.resetHighlights = function(){
 FieldManager.prototype.tryHighlightDummy = function(){
 	var allMarked = true;
 	for(var fid in this.table){
-		if(!this.table.hasOwnProperty(fid))
+		if(!this.table.hasOwnProperty(fid)){
 			continue;
+		}
 		var f = this.table[fid];
 		if(!f.playable){
 			allMarked = false;
@@ -70,8 +73,9 @@ FieldManager.prototype.tryHighlightDummy = function(){
 	}
 	if(allMarked){
 		this.forEachField(function(f){
-			if(f.playable != 'ATTACK')
+			if(f.playable != 'ATTACK'){
 				return;
+			}
 			f.setOwnHighlight(false);
 			f.setIconVisibility(true);
 		});
@@ -100,8 +104,9 @@ FieldManager.prototype.resetPopOut = function(){
 * {@link FieldBuilder#positions} и {@link FieldBuilder#dimensions}.
 */
 FieldManager.prototype.resizeFields = function(){
-	if(!this.networkCreated)
+	if(!this.networkCreated){
 		return;
+	}
 	this.builder.calcSizes();
 	this.forEachField(function(field, id){
 		field.style.padding = this.builder.offsets[id];

@@ -21,7 +21,7 @@ var CardPickNotifier = function(){
 	* @type {Number}
 	*/
 	this.considerDelay = 300;
-}
+};
 
 CardPickNotifier.prototype = {
 
@@ -71,4 +71,4 @@ CardPickNotifier.prototype = {
 			this.delay = null;
 		}
 	}
-}
+};

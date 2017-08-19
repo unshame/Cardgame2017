@@ -17,18 +17,22 @@ var cardSuitString = {
 
 var cardValueToChar = function(value, locale){
 
-	if(value < 10 || value > 14)
+	if(value < 10 || value > 14){
 		return String(value);
-	else
+	}
+	else{
 		return cardValuesChar[locale] && cardValuesChar[locale][value - 11] || String(value);
+	}
 };
 
 var cardValueToString = function(value, locale){
 
-	if(value < 10 || value > 14)
+	if(value < 10 || value > 14){
 		return String(value);
-	else
+	}
+	else{
 		return cardValuesString[locale] && cardValuesString[locale][value - 11] || String(value);
+	}
 };
 
 var getSuitStrings = function(locale){

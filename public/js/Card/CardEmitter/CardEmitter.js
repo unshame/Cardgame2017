@@ -164,8 +164,9 @@ CardEmitter.prototype.start = function(minSpeed, maxSpeed, sway, interval, rotat
 * Останавливает эмиттер карт.
 */
 CardEmitter.prototype.stop = function(){
-	if(!this.on)
+	if(!this.on){
 		return;
+	}
 	this.on = false;
 	this.forEachAlive(function(p){
 		if(p.visible){

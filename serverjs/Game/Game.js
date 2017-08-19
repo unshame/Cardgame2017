@@ -133,6 +133,7 @@ class Game{
 		this.players.notify(note);
 
 		// Начинаем игру
+		// jshint curly:false
 		while(this.continue());
 	}
 
@@ -340,6 +341,7 @@ class Game{
 		else{
 			this.players.working = [];
 			this.actions.valid.length = 0;
+			// jshint curly:false
 			while(this.continue());
 		}	
 	}
@@ -360,13 +362,12 @@ class Game{
 	}
 
 	hoverOverCard(player, cid){
-		debugger
 		if(this.players.includes(player) && player.statuses.working && this.actions.valid.length && this.cards.byId[cid].field == player.id){
 			if(player.statuses.hover){
 				this.hoverOutCard(player, cid);
 			}
 			player.statuses.hover = cid;
-			var players = [];
+			let players = [];
 			this.players.forEach((p) => {
 				if(p != player){
 					players.push(p);
@@ -379,12 +380,12 @@ class Game{
 	hoverOutCard(player, cid){
 		if(this.players.includes(player) && player.statuses.hover){
 			
-			var players = [];
+			let players = [];
 			this.players.forEach((p) => {
 				if(p != player){
 					players.push(p);
 				}
-			})
+			});
 			this.players.notify({message: 'HOVER_OUT_CARD', cid: player.statuses.hover, noResponse: true}, null, players);
 			player.statuses.hover = null;
 		}

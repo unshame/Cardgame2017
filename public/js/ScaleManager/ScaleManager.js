@@ -291,76 +291,27 @@ ScaleManager.prototype._calculateGridSize = function(screenWidth, screenHeight){
 * @param {number} [row=0]            строка ячейки
 * @param {number} [offsetX=0]        отступ слева
 * @param {number} [offsetY=0]        отступ сверху
-* @param {string} [align='top left'] Выравнивание, если считать выравниваемый объект
-*                             		 картой в вертикальном положении.  
-* 		                             Формат аналогичен css `background-align`.
-* 		         		             Если указать только вертикальное выравнивание, горизонтальное будет `center`.
 * 		         		             
 * @return {object} Координаты `{x, y}`
 */
-ScaleManager.prototype.cellAt = function(col, row, offsetX, offsetY, align){
+ScaleManager.prototype.cellAt = function(col, row, offsetX, offsetY){
 
-	if(typeof col != 'number' || isNaN(col))
+	if(typeof col != 'number' || isNaN(col)){
 		col = 0;
-	if(typeof row != 'number' || isNaN(row))
+	}
+	if(typeof row != 'number' || isNaN(row)){
 		row = 0;
+	}
 
-	if(!offsetX)
+	if(!offsetX){
 		offsetX = 0;
-	if(!offsetY)
+	}
+	if(!offsetY){
 		offsetY = 0;
+	}
 	
-	var validAlignVertical = ['top', 'middle', 'bottom'],
-		validAlignHorizontal = ['left', 'center', 'right'];
-
-	if(!align)
-		align = [validAlignVertical[0], validAlignHorizontal[0]];
-	else
-		align = align.split(' ');
-
-	var alignVertical = align[0],
-		alignHorizontal = align[1],
-		alignVerticalIndex = validAlignVertical.indexOf(alignVertical),
-		fallbackIndex = ~alignVerticalIndex ? 1 : 0;
-
-	if(!~alignVerticalIndex)
-		 alignVertical = validAlignVertical[0];
-	if(!~validAlignHorizontal.indexOf(alignHorizontal))
-		 alignHorizontal = validAlignHorizontal[fallbackIndex];
-
-		
-	var adjustCol, adjustRow;
-	switch(alignHorizontal){
-
-		case 'left':
-		adjustCol = 0;
-		break;
-
-		case 'center':
-		adjustCol = Math.floor(this.density/2);
-		break;
-
-		case 'right':
-		adjustCol = this.density + 1;
-		break;
-	}
-	switch(alignVertical){
-
-		case 'top':
-		adjustRow = 0;
-		break;
-
-		case 'middle':
-		adjustRow = Math.floor(this.density/2);
-		break;
-
-		case 'bottom':
-		adjustRow = this.density + 1;
-		break;
-	}
-
-	var x = (col - adjustCol)*this.cellWidth + this.gridOffset.x ,
-		y = (row - adjustRow)*this.cellHeight + this.gridOffset.y ;
+	var x = col*this.cellWidth + this.gridOffset.x ,
+		y = row*this.cellHeight + this.gridOffset.y ;
 
 	if(this._highlights){
 		var highlight = this.game.add.sprite(0, 0, this._gridTexture);	
@@ -405,8 +356,9 @@ ScaleManager.prototype.drawDebugGrid = function(){
 		this._highlights = null;
 	}
 
-	if(!this.inDebugMode)
+	if(!this.inDebugMode){
 		return;
+	}
 
 	var offset = this.gridOffset,
 		width = this.cellWidth,

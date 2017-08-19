@@ -9,8 +9,9 @@
 * @see  {@link Field#placeQueuedCards}
 */
 Field.prototype.queueCards = function(newCards, delay){
-	if(!newCards.length)
+	if(!newCards.length){
 		return;
+	}
 
 	var ci;
 
@@ -58,8 +59,9 @@ Field.prototype.queueCards = function(newCards, delay){
 * @see   {@link Field#queueCards}
 */
 Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
-	if(!this._queuedCards.length)
+	if(!this._queuedCards.length){
 		return;
+	}
 	
 	this._appendCards(this._queuedCards);
 

@@ -25,8 +25,9 @@ var State = function(key, events){
 	this.key = key;
 	
 	for(var e in events){
-		if(!events.hasOwnProperty(e))
+		if(!events.hasOwnProperty(e)){
 			continue;
+		}
 		var event = events[e]; 
 		if(typeof event == 'function'){
 			if(typeof this['_' + e] == 'function'){

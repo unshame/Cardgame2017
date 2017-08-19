@@ -140,8 +140,9 @@ Menu.prototype.updatePosition = function(position){
 		margin = this.options.margin;
 
 	this.forEachElement(function(element, i){
-		if(!element.visible)
+		if(!element.visible){
 			return;
+		}
 
 		element.updatePosition({x: this.background.width/2 - element.width/2, y: y + margin});
 		y += element.height + margin;
@@ -167,8 +168,9 @@ Menu.prototype._resize = function(){
 			element.show();
 		}
 
-		if(!element.visible)
+		if(!element.visible){
 			return;
+		}
 
 		height += element.height;
 

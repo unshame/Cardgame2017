@@ -59,15 +59,17 @@ var Button = function(options){
 	this.input.useHandCursor = false;
 
 	game.add.existing(this);
-	if(this.label)
+	if(this.label){
 		game.add.existing(this.label);
+	}
 
 	// Группа
 	if(this.options.group){
 		this.group = this.options.group;
 		this.group.add(this);
-		if(this.label)
+		if(this.label){
 			this.group.add(this.label);
+		}
 	}
 };
 
@@ -97,21 +99,24 @@ Button.prototype.getDefaultOptions = function(){
 // Прячет кнопку
 Button.prototype.hide = function(){
 	this.visible = false;
-	if(this.label)
+	if(this.label){
 		this.label.visible = false;
+	}
 };
 
 // Показывает кнопку
 Button.prototype.show = function(){
 	this.visible = true;
-	if(this.label)
+	if(this.label){
 		this.label.visible = true;
+	}
 };
 
 // Включает кнопку
 Button.prototype.enable = function(){
-	if(this.inputEnabled)
+	if(this.inputEnabled){
 		return;
+	}
 	this.frame = 0;
 	this.inputEnabled = true;
 
@@ -126,8 +131,9 @@ Button.prototype.enable = function(){
 
 // Выключает кнопку
 Button.prototype.disable = function(changeToDefaultFrame){
-	if(!this.inputEnabled)
+	if(!this.inputEnabled){
 		return;
+	}
 	if(!changeToDefaultFrame){
 		this.frame = 3;
 	}
@@ -147,12 +153,15 @@ Button.prototype.disable = function(changeToDefaultFrame){
 
 // Меняет или восстанавливает заданную позицию
 Button.prototype.updatePosition = function(position){
-	if(position)
+	if(position){
 		this.defaultPosition = position;
-	else
+	}
+	else{
 		position = this.defaultPosition;
-	if(typeof position == 'function')
+	}
+	if(typeof position == 'function'){
 		position = position(this.width, this.height);
+	}
 	this.x = position.x;
 	this.y = position.y;
 
@@ -163,8 +172,9 @@ Button.prototype.updatePosition = function(position){
 			this.label.x++;
 			this.label.y -= this.label.downOffset/2;
 		}
-		if(this.isDown)
+		if(this.isDown){
 			this.label.y += this.label.downOffset;
+		}
 	}
 };
 
@@ -181,16 +191,19 @@ Button.prototype.changeStateFrame = function (state) {
 			this.label.y += this.label.downOffset;
 		}
 	}
-	if(this.label)
+	if(this.label){
 		this.label.state = state;
+	}
 
-	if(this.inputEnabled)
+	if(this.inputEnabled){
 		return supercall(Button).changeStateFrame.call(this, state);
+	}
 };
 
 Button.prototype.cursorIsOver = function(){
-	if(!this.inputEnabled || !this.visible)
+	if(!this.inputEnabled || !this.visible){
 		return false;
+	}
 
 	var gx = 0,
 		gy = 0, 

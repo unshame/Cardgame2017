@@ -11,11 +11,13 @@
 */
 Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
 
-	if(!newCards.length)
+	if(!newCards.length){
 		return;
+	}
 
-	if(bringToTopOn === undefined)
+	if(bringToTopOn === undefined){
 		bringToTopOn = BRING_TO_TOP_ON.START;
+	}
 	if(this.style.sortable){
 		bringToTopOn = BRING_TO_TOP_ON.END_ALL;
 	}
@@ -45,8 +47,9 @@ Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
 */
 Field.prototype._appendCards = function(cards){
 
-	if(!cards || !cards.length)
+	if(!cards || !cards.length){
 		return;
+	}
 
 	var	angle;
 	if(this.style.randomAngle){		

@@ -57,8 +57,9 @@ Field.prototype.setVisibility = function(visible){
 * @param {boolean} popped нужно ли увеличить или восстановить масштаб
 */
 Field.prototype.setPopOut = function(popped){
-	if(popped == this.poppedOut)
+	if(popped == this.poppedOut){
 		return;
+	}
 	this.poppedOut = popped;
 	var scale = popped ? 1 + this.style.scaleDiff : 1;
 	for(var i = 0; i < this.cards.length - 1; i++){
@@ -74,8 +75,9 @@ Field.prototype.setPopOut = function(popped){
 * @private
 */
 Field.prototype._sortCards = function(){
-	if(this.style.sortable)
+	if(this.style.sortable){
 		this.cards.sort(this._compareCards);
+	}
 };
 
 /**
@@ -86,27 +88,36 @@ Field.prototype._sortCards = function(){
 */
 Field.prototype._compareCards = function(a, b){
 	if(!a.suit && a.suit !== 0){
-		if(b.suit || b.suit === 0)
+		if(b.suit || b.suit === 0){
 			return -1;
-		else
+		}
+		else{
 			return 0;
+		}
 	}
 	if(!b.suit && b.suit !== 0){
-		if(a.suit || a.suit === 0)
+		if(a.suit || a.suit === 0){
 			return 1;
-		else
+		}
+		else{
 			return 0;
+		}
 	}
 	if(a.suit == b.suit){
-		if(a.value == b.value)
+		if(a.value == b.value){
 			return 0;
-		else if(a.value > b.value)
+		}
+		else if(a.value > b.value){
 			return 1;
-		else
+		}
+		else{
 			return -1;
+		}
 	}
-	else if(a.suit > b.suit)
+	else if(a.suit > b.suit){
 		return 1;
-	else
+	}
+	else{
 		return -1;
+	}
 };

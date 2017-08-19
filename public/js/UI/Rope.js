@@ -29,11 +29,13 @@ extend(Rope, Phaser.Sprite);
 Rope.prototype.update = function(){
 	var now = Date.now(),
 		burning = false;
-	if(!this.burning && this.startTime && this.startTime < now)
+	if(!this.burning && this.startTime && this.startTime < now){
 		burning = true;
+	}
 
-	else if(!this.burning)
+	else if(!this.burning){
 		return;
+	}
 	var endTime = this.duration + this.startTime,
 		left = endTime - now;
 	if(left <= 0){
@@ -41,8 +43,9 @@ Rope.prototype.update = function(){
 	}
 	else{
 		this.height = left/this.duration* this.maxHeight;
-		if(left <= 5000 && this.tint != ui.colors.red)
+		if(left <= 5000 && this.tint != ui.colors.red){
 			this.tint = ui.colors.red;
+		}
 	}
 };
 
@@ -52,11 +55,13 @@ Rope.prototype.update = function(){
 * @param {number} start    через сколько времени начинать отсчет
 */
 Rope.prototype.start = function(duration, start){
-	if(!duration || isNaN(duration))
+	if(!duration || isNaN(duration)){
 		return false;
+	}
 
-	if(this.burning)
+	if(this.burning){
 		this.stop();
+	}
 
 	var now = Date.now();
 	this.burning = true;

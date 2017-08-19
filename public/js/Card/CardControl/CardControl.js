@@ -80,6 +80,10 @@ var CardControl = function(inDebugMode){
 	*/
 	this._inertiaHistory = [];
 
+	/**
+	* Оповещатель о выборе карт.
+	* @type {CardPickNotifier}
+	*/
 	this.pickNotifier = new CardPickNotifier();
 };
 
@@ -98,14 +102,17 @@ CardControl.prototype.initialize = function(){
 * @param {Phaser.Pointer} pointer указатель, нажавший на карту
 */
 CardControl.prototype.cardClick = function(card, pointer){
-	if(pointer.button == 1 || pointer.button == 4)
+	if(pointer.button == 1 || pointer.button == 4){
 		console.log(card);
+	}
 
-	if(!card.draggable || this.card && this.card != card || !this.card && card.field && !card.field.interactible)
+	if(!card.draggable || this.card && this.card != card || !this.card && card.field && !card.field.interactible){
 		return;
+	}
 
-	if(this.inDebugMode)
+	if(this.inDebugMode){
 		console.log('Card control: Clicked', card.id);
+	}
 
 	if(this.card){
 		this.cardPutDown();
@@ -120,11 +127,13 @@ CardControl.prototype.cardClick = function(card, pointer){
 * @param {Card} card карта
 */
 CardControl.prototype.cardUnclick = function(card){
-	if(!this.card || this.card != card)
+	if(!this.card || this.card != card){
 		return;
+	}
 
-	if(this.inDebugMode)
+	if(this.inDebugMode){
 		console.log('Card control: Unclicked', card.id);
+	}
 
 	if(!this.pointer.withinGame){
 		this.cardReturn();
@@ -157,8 +166,9 @@ CardControl.prototype._cardPointerInbound = function(){
 * @private
 */
 CardControl.prototype._cardOnValidField = function(){
-	if(!this.card.playable)
+	if(!this.card.playable){
 		return false;
+	}
 
 	var fields = fieldManager.forEachField(function(field, si){
 		if(field.playable && field.cardIsInside(this.card, false)){
@@ -200,8 +210,9 @@ CardControl.prototype.update = function(){
 */
 CardControl.prototype.reset = function(reason){
 
-	if(this.inDebugMode)
+	if(this.inDebugMode){
 		console.log('Card control: Reset' + (reason ? ': ' + reason : ''));
+	}
 
 	this.trailReset(true);
 	this.card = null;

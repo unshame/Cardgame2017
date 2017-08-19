@@ -7,8 +7,9 @@
 */
 Field.prototype._setUninteractibleTimer = function(time){
 
-	if(!time || typeof time != 'number' || isNaN(time))
+	if(!time || typeof time != 'number' || isNaN(time)){
 		return;
+	}
 
 	if(this._uninteractibleTimer){
 		clearTimeout(this._uninteractibleTimer);
@@ -16,8 +17,9 @@ Field.prototype._setUninteractibleTimer = function(time){
 		this.interactible = true;
 	}
 
-	if(game.paused)
+	if(game.paused){
 		return;
+	}
 
 	function makeInteracible(){
 		this.zAlignCards();
@@ -38,8 +40,9 @@ Field.prototype._setUninteractibleTimer = function(time){
 * или поле не выделяет карты при наведении
 */
 Field.prototype.focusOnCard = function(card, pointer, forced){
-	if(!card || !~this.cards.indexOf(card) || !forced && (!this.style.focusable || !this.cardIsInside(card) || !pointer.isMouse))
+	if(!card || !~this.cards.indexOf(card) || !forced && (!this.style.focusable || !this.cardIsInside(card) || !pointer.isMouse)){
 		return;
+	}
 
 	this.focusedCard = card;
 	if(!this._uninteractibleTimer || forced){
@@ -63,8 +66,9 @@ Field.prototype.focusOffCard = function(card, forced){
 			card != this.focusedCard ||
 			~this.cards.indexOf(cardControl.card)
 		)
-	)
+	){
 		return;
+	}
 
 	this.focusedCard = null;
 	if(!this._uninteractibleTimer || forced){

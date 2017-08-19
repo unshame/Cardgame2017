@@ -87,12 +87,15 @@ class Server extends Eureca.Server{
 			params.debug = 'debug';
 		}
 
-		if(isNaN(params.port) || !params.port)
+		if(isNaN(params.port) || !params.port){
 			params.port = 5000;
-		if(isNaN(params.numBots))
+		}
+		if(isNaN(params.numBots)){
 			params.numBots = 3;
-		if(isNaN(params.numPlayers) || !params.numPlayers)
+		}
+		if(isNaN(params.numPlayers) || !params.numPlayers){
 			params.numPlayers = 1;
+		}
 
 		return params;
 	}
@@ -121,8 +124,9 @@ class Server extends Eureca.Server{
 	 * @param  {object} conn информация о соединении
 	 */
 	handleConnect(conn){
-		if(this.params.testing)
+		if(this.params.testing){
 			return;
+		}
 
 		// getClient позволяет нам получить доступ к функциям на стороне клиента
 		let remote = this.getClient(conn.id);
@@ -144,8 +148,9 @@ class Server extends Eureca.Server{
 	 * @param  {object} conn информация о соединении
 	 */
 	handleDisconnect(conn){
-		if(this.params.testing)
+		if(this.params.testing){
 			return;
+		}
 
 		this.log.notice('Client disconnected ', conn.id);
 

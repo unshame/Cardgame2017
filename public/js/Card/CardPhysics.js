@@ -16,11 +16,11 @@ Card.prototype.enablePhysics = function(makeDraggable){
 	this.sprite.body.drag = {x: Math.random()*25, y: Math.random()*25};
 	this.sprite.body.angularVelocity = Math.random()*20 - 10;
 	this.sprite.body.angularDrag = Math.random()*5;
-}
+};
 
 Card.prototype.disablePhysics = function(){
 	this._shouldEnablePhysics = false;
 	if(this.sprite.body){
 		this.sprite.body.destroy();
 	}
-}
+};

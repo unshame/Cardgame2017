@@ -213,8 +213,9 @@ Sequencer.prototype.append = function(action, duration, context){
 
 /** Выполняет все действия из текущего списка без задержек. */
 Sequencer.prototype.finish = function(){
-	if(!this.inProgress || this._finishing)
+	if(!this.inProgress || this._finishing){
 		return;
+	}
 	if(!this._nextAction){
 		console.error('Sequencer: finish called, inProgress but no nextAction', this);
 		return;
@@ -244,8 +245,9 @@ Sequencer.prototype.abort = function(){
 * @param {number} [times=1] во пропускаемых действий
 */
 Sequencer.prototype.skip = function(times){
-	if(isNaN(times) || times < 0)
+	if(isNaN(times) || times < 0){
 		times = 1;
+	}
 	this._shouldSkip += times;
 };
 

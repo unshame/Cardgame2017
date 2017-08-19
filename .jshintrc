@@ -36,6 +36,12 @@
     "Logo": true,
     "ModalManager": true,
     "PlayerBadge": true,
+    "CardPickNotifier": true,
+    "Badge": true,
+    "BadgeField": true,
+    "IconField": true,
+    "TableField": true,
+    "PlayerField": true,
     
     "game": true,
     "skinManager": true,
@@ -54,6 +60,7 @@
     "gameSeq": true,
     "eventFeed": true,
     "options": true,
+    "supercall": true,
 
     "skins": true,
     "actionReactions": true,
@@ -86,6 +93,6 @@
   "sub": true,
   "expr": false,
   "-W058": true,
-  "curly": false,
+  "curly": true,
   "devel": true
 }

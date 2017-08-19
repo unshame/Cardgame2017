@@ -14,14 +14,18 @@
 */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn, easing){
 
-	if(relativeToBase === undefined)
+	if(relativeToBase === undefined){
 		relativeToBase = false;
-	if(shouldRebase === undefined)
+	}
+	if(shouldRebase === undefined){
 		shouldRebase = false;
-	if(bringToTopOn === undefined)
+	}
+	if(bringToTopOn === undefined){
 		bringToTopOn = BRING_TO_TOP_ON.INIT;
-	if(time < 0 || isNaN(time))
+	}
+	if(time < 0 || isNaN(time)){
 		time = 0;
+	}
 
 	this._bringToTopOn = bringToTopOn;
 
@@ -90,8 +94,9 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 		console.warn('Moving card', this.id, 'out of screen (' + newBaseX + ', ' + newBaseY + ')\n', this);
 	}
 	// Нет смысла менять базу, если координаты не изменились
-	if(shouldRebase && newBaseX == this.x && newBaseY == this.y)
+	if(shouldRebase && newBaseX == this.x && newBaseY == this.y){
 		shouldRebase = false;
+	}
 
 	if(shouldRebase){
 		// Мы будем двигать карту к новой позиции базы
@@ -142,7 +147,9 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 	// Проверяем и останавливаем текущий мувер
 	if(this.mover){
 		time = this._tryResetMover(x, y, time, delay, shouldRebase);
-		if(time < 0) return;
+		if(time < 0){
+			return;
+		}
 	}
 
 	if(delay){

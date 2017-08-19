@@ -45,8 +45,9 @@ Card.prototype._removeDelayedTweenInfo = function(key){
 */
 Card.prototype._tryStartDelayedTween = function(key, func){
 	var info = this._delayedTweenInfos[key];
-	if(!info || info.startTime > Date.now())
+	if(!info || info.startTime > Date.now()){
 		return;
+	}
 
 	info.args[info.durationIndex] -= Date.now() - info.startTime;
 	delete this._delayedTweenInfos[key];

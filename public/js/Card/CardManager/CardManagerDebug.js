@@ -2,8 +2,9 @@
 
 CardManager.prototype.updateDebug = function(){
 	for(var ci in this.cards){
-		if(!this.cards.hasOwnProperty(ci))
+		if(!this.cards.hasOwnProperty(ci)){
 			continue;
+		}
 		this.cards[ci].updateDebug();
 	}
 };
@@ -13,8 +14,9 @@ CardManager.prototype.toggleDebugMode = function(){
 	options.set('debug_cards', this.inDebugMode);
 	options.save();
 	for(var ci in this.cards){
-		if(this.cards.hasOwnProperty(ci))
+		if(this.cards.hasOwnProperty(ci)){
 			this.cards[ci].inDebugMode = this.inDebugMode;
+		}
 	}
 };
 
@@ -30,17 +32,21 @@ CardManager.prototype.toggleDebugMode = function(){
 * @return {Card[]} Карты.
 */
 CardManager.prototype.getCards = function(num, except){
-	if(!num)
+	if(!num){
 		num = this.cards.length;
+	}
 	var crds = [];
 	for(var cid in this.cards){
-		if(!this.cards.hasOwnProperty(cid))
+		if(!this.cards.hasOwnProperty(cid)){
 			continue;
+		}
 		var card = this.cards[cid];
-		if(except && except.length && ~except.indexOf(card))
+		if(except && except.length && ~except.indexOf(card)){
 			continue;
-		if(num-- <= 0)
+		}
+		if(num-- <= 0){
 			break;
+		}
 		crds.push(card);
 	}
 	return crds;
@@ -54,9 +60,11 @@ CardManager.prototype.getCards = function(num, except){
 */
 CardManager.prototype.getCard = function(except){
 	var card = this.getCards(1, except);
-	if(card.length)
+	if(card.length){
 		card = card[0];
-	else
+	}
+	else{
 		card = null;
+	}
 	return card;
 };

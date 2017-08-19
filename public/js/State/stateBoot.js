@@ -110,8 +110,9 @@ var stateBoot = new State('boot', {
 	* @memberof stateBoot
 	*/
 	updateLoadText: function(text){
-		if(this.loadCounter > 30)
+		if(this.loadCounter > 30){
 			this.loadCounter = 0;
+		}
 		for(var i = 0; i < this.loadCounter; i++){
 			text += '.';
 		}

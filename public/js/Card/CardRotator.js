@@ -73,8 +73,9 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 	// Останавливаем твин, если он есть и угол поворота изменился
 	if(this._rotator){
 		var rotatorData = this._rotator.timeline[this._rotator.current];
-		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle && rotatorData.delay == delay && !this.game.paused)
+		if(rotatorData && rotatorData.vEnd && rotatorData.vEnd.angle == angle && rotatorData.delay == delay && !this.game.paused){
 			return;
+		}
 
 		this._rotator.stop();
 		this._rotator = null;
@@ -111,8 +112,9 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 * @private
 */
 Card.prototype._revolve = function(){
-	if(!this._revolveInfo || this.mover)
+	if(!this._revolveInfo || this.mover){
 		return;
+	}
 
 	var dt = this.game.time.elapsed,
 		angle = this._revolveInfo.speed * dt,

@@ -17,8 +17,9 @@ module.exports = function(server){
 		 * @param  {object} action действие
 		 */
 		recieveCompleteAction: function(action){
-			if(!action)
+			if(!action){
 				return;
+			}
 			let player = server.players[this.connection.id];
 			if(player){
 				player.sendResponse(action);
@@ -102,7 +103,7 @@ module.exports = function(server){
 			let player = server.players[this.connection.id];
 			if(player){
 				if(!player.game && player.queue){
-					server.manager.removePlayerFromQueue(player)
+					server.manager.removePlayerFromQueue(player);
 				}
 				else{
 					server.manager.concedePlayer(player);

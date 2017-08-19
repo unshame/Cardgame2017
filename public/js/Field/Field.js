@@ -29,7 +29,7 @@
 * @param {number}           options.specialId=null                                   {@link Field#specialId}	
 *
 *
-* @param {object}           style -                                                  Внешний вид поля. {@link Field#style} 
+* @param {object}           style                                                    Внешний вид поля. {@link Field#style} 
 * @param {number}           style.x=0                                                {@link Field#x} позиция по горизонтали
 * @param {number}           style.y=0                                                {@link Field#y} позиция по вертикали
 * @param {number}           style.width=0                                            {@link Field#area} ширина поверхности
@@ -278,7 +278,7 @@ Field.prototype.initialize = function(){
 	this.setSize(this.style.width, this.style.height);
 
 	this.setupAnimatedAppearance();
-}
+};
 
 /**
 * Возвращает опции по умолчанию
@@ -384,15 +384,18 @@ Field.prototype._applyOptions = function(options, style){
 */
 Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){
 
-	if(includeSpacing === undefined)
+	if(includeSpacing === undefined){
 		includeSpacing = true;
+	}
 
-	if(includeWholeCard === undefined)
+	if(includeWholeCard === undefined){
 		includeWholeCard = false;
+	}
 
 	var spacing = 0;
-	if(includeSpacing)
+	if(includeSpacing){
 		spacing = skinManager.skin.width - this._cardSpacing;
+	}
 
 	var addX = 0,
 		addY = 0;

@@ -57,8 +57,8 @@ FieldBuilder.prototype._buildTableFields = function(lockedFields){
 				texture: 'lock',
 				shouldHide: true,
 				visible: false
-			}
-		};
+			};
+		}
 		manager.addTableField({
 			type: 'TABLE',
 			id: id,
@@ -87,8 +87,9 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 		players = playerManager.players,
 		i = playerManager.pi + 1,
 		oi = 0;
-	if(i >= players.length)
+	if(i >= players.length){
 		i = 0;
+	}
 	while(i != playerManager.pi){
 		var p = players[i];
 		var field = manager.addOpponentField({
@@ -119,8 +120,9 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 		p.badge = field.badge;
 		oi++;
 		i++;
-		if(i >= players.length)
+		if(i >= players.length){
 			i = 0;
+		}
 	}
 };
 

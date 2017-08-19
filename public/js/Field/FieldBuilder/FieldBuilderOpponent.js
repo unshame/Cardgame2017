@@ -167,7 +167,7 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 		};
 		this.badgeStyles[p.id] = {
 			align: badges[pi]
-		}
+		};
 		this.offsets[p.id] = this.offsets.opponent[pi];
 		this._notEnoughSpace(p.id, 'opponent', pi, false, pi == 1, pi != 1);
 		oi++;
