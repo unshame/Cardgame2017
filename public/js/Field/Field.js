@@ -336,7 +336,6 @@ Field.prototype.getDefaultOptions = function(){
 
 /**
 * Совмещает переданные опции со стандартными и сохраняет их, как свойства объекта.
-* @private
 * @param {object} [options]   Настройки поля.
 * @param {object} [style]     Внешний вид поля.
 */

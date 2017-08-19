@@ -43,7 +43,6 @@ CardControl.prototype.cardPickup = function(card, pointer){
 
 /**
 * Устанавливает путь и время смещения карты к курсору.
-* @private
 */
 CardControl.prototype._cardSetPathToCursor = function(){
 
@@ -233,7 +232,6 @@ CardControl.prototype.cardThrow = function(){
 
 /**
 * Запускает таймер клика по карте.
-* @private
 */
 CardControl.prototype._setCardClickTimer = function(){
 	this._resetCardClickTimer();
@@ -242,7 +240,6 @@ CardControl.prototype._setCardClickTimer = function(){
 
 /**
 * Обнуляет таймер клика по карте
-* @private
 */
 CardControl.prototype._resetCardClickTimer = function(){
 	if(this.cardClickTimer){

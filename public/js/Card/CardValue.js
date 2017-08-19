@@ -81,7 +81,6 @@ Card.prototype.applyValue = function(){
 
 /**
 * Обновляет тинт карты в соответствии с ее переворотом.
-* @private
 */
 Card.prototype._updateTint = function(){
 	var timeline, value,

@@ -65,7 +65,6 @@ Menu.prototype.fadeToggle = function(){
 
 /**
 * Останавливает анимацию меню.
-* @private
 */
 Menu.prototype._stopFader = function(){
 	if(!this._fader){

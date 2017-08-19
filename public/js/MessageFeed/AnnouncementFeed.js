@@ -60,7 +60,6 @@ AnnouncementFeed.prototype.update = function(){
 
 /**
 * Фейдид сообщение при добавлении, если оно первое в списке.
-* @private
 */
 AnnouncementFeed.prototype._fadeInMessage = function(text){
 	text.addTime = Date.now();
@@ -97,7 +96,6 @@ AnnouncementFeed.prototype.clear = function(){
 
 /**
 * Фейдид сообщение, если оно первое в списке.
-* @private
 */
 AnnouncementFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	if(text.moveTween){

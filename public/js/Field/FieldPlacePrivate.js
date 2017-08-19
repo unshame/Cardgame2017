@@ -2,7 +2,6 @@
 
 /**
 * Считает отступы сверху и слева
-* @private
 * @param {number} requiredActiveWidth необходимая ширина для размещения карт
 * @param {number} areaActiveWidth     реальная ширина для размещения карт
 * @param {number} areaWidth           ширина поля
@@ -58,7 +57,6 @@ Field.prototype._calculateMargin = function(requiredActiveWidth, areaActiveWidth
 
 /**
 * Создает массив задержек.
-* @private
 * @param {boolean} noDelay все задержки равны нулю
 *
 * @return {array} Возращает массив задержек.
@@ -77,7 +75,6 @@ Field.prototype._createDelayArray = function(noDelay){
 
 /**
 * Считает отступ между картами.
-* @private
 * @param {number} activeWidth Активная ширина поля.
 *
 * @return {number} Возвращает отступ между картами.
@@ -106,7 +103,6 @@ Field.prototype._calculateShift = function(cardWidth, cardSpacing, areaActiveWid
 
 /**
 * Рассчитывает позицию для карты в соотвествии с индексом и перемещает карту в эту позицию.
-* @private
 * @param {Card}            card         карта
 * @param {number}          index        индекс карты в поле
 * @param {number}          topMargin    отступ сверху
@@ -181,7 +177,6 @@ Field.prototype._moveCard = function(
 
 /**
 * Запускает твины карты.
-* @private
 * @param  {Card} card         
 * @param  {number} angle        
 * @param  {number} x            
@@ -206,7 +201,6 @@ Field.prototype._startCardMovers = function(card, angle, x, y, margin, delay, br
 /**
 * Выставляет перетаскиваемость карты для тех случаев, когда карта была перемещена
 * без использования presetField метода.
-* @private
 * @param {Card} card
 */
 Field.prototype._fixCardDraggability = function(card){
@@ -223,7 +217,6 @@ Field.prototype._fixCardDraggability = function(card){
 
 /**
 * Поворачивает карту и считает корректированную позицию по оси y.
-* @private
 * @param {Card}   card  карта
 * @param {number} angle угол
 * @param {number} x     позиция по x

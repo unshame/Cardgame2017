@@ -203,7 +203,6 @@ FieldBuilder.prototype.calcSizes = function(){
 
 /**
 * Обобщенные (General) размеры.
-* @private
 */
 FieldBuilder.prototype._calcGenSizes = function(){
 
@@ -225,7 +224,6 @@ FieldBuilder.prototype._calcGenSizes = function(){
 
 /**
 * Размеры для каждого поля (Specific).
-* @private
 */
 FieldBuilder.prototype._calcSpecSizes = function(){
 	this._calcDeckDiscardSizes();
@@ -241,7 +239,6 @@ FieldBuilder.prototype._calcSpecSizes = function(){
 
 /**
 * Размеры для колоды и стопки сброса.
-* @private
 */
 FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 	var numOfCards = cardManager.numOfCards,
@@ -285,7 +282,6 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 
 /**
 * Выводит предупреждение в консоль, если ширина/высота меньше ширины одной карты.
-* @private
 * @param {string}  [id]          id поля (для вывода в консоль)
 * @param {string}  ref           id поля или обобщенное название, по которому будут найдены размеры ('TABLE', 'player', etc.)
 * @param {number}  [index]       индекс позиции, если поле противника

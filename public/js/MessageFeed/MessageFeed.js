@@ -74,7 +74,6 @@ MessageFeed.prototype.newMessage = function(message, style, time){
 
 /**
 * Создает текстовый элемент и применяет к нему стиль.
-* @private
 * @param {string} message Сообщение.
 * @param {object} style   Стиль.
 *
@@ -88,7 +87,6 @@ MessageFeed.prototype._createText = function(message, style){
 
 /**
 * Применяет дополнительные стили к тексту.
-* @private
 */
 MessageFeed.prototype._styleText = function(text){
 	text.setShadow(2, 2, 'rgba(0,0,0,0.8)', 2);
@@ -97,7 +95,6 @@ MessageFeed.prototype._styleText = function(text){
 
 /**
 * Возвращает позицию сообщений по горизонтали.
-* @private
 * @return {number} Позиция по горизонтали.
 */
 MessageFeed.prototype._getX = function(){
@@ -106,7 +103,6 @@ MessageFeed.prototype._getX = function(){
 
 /**
 * Возвращает позицию, над которой отображаются новые сообщения.
-* @private
 * @return {number} Позиция по вертикали.
 */
 MessageFeed.prototype._getLowestY = function(){
@@ -180,7 +176,6 @@ MessageFeed.prototype.update = function(){
 
 /**
 * Удаляет сообщение.
-* @private
 * @param {Phaser.Text} text Текст для удаления.
 */
 MessageFeed.prototype._destroyMessage = function(text){
@@ -195,7 +190,6 @@ MessageFeed.prototype._destroyMessage = function(text){
 
 /**
 * Фейдид сообщение перед удалением.
-* @private
 * @param {Phaser.Text} text Текст.
 */
 MessageFeed.prototype._fadeOutMessage = function(text){
@@ -209,7 +203,6 @@ MessageFeed.prototype._fadeOutMessage = function(text){
 
 /**
 * Фейдид сообщение при добавлении.
-* @private
 * @param  {Phaser.Text} text Текст.
 */
 MessageFeed.prototype._fadeInMessage = function(text){
@@ -238,7 +231,6 @@ MessageFeed.prototype.updatePosition = function(){
 
 /**
 * Передвигает сообщение в заданную позицию.
-* @private
 * @param {Phaser.Text} text Сообщение.
 * @param {number}      i    Реальный индекс сообщения в `children`.
 * @param {number}      ii   Индекс сообщения не учитывая сообщения с установленным `destroyTime`.

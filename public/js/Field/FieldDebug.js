@@ -2,7 +2,6 @@
 
 /**
 * Сохраняет размеры активного места для отображения.
-* @private
 * @param {number} activeWidth ширина активного места
 * @param {number} cardHeight  высота карт
 * @param {number} leftMargin  отступ слева

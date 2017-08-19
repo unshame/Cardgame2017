@@ -266,7 +266,6 @@ ActionHandler.prototype.removeActionsWith = function(card, field, doneAction){
 
 /**
 * Возвращает нужно ли удалить действие в соответствии с `turnStage`
-* @private
 */
 ActionHandler.prototype._shouldDeleteAction = function(action, card, field, doneAction){
 	switch(this.turnStage){

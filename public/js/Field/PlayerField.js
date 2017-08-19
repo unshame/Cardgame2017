@@ -68,7 +68,6 @@ PlayerField.prototype._createArea = function(width, height){
 /**
 * Считает и запоминает радиус и центр окружности по ширине и высоте поля и
 * рисует видимую часть окружности. 
-* @private
 * @param {number} width  ширина поля
 * @param {number} height высота поля
 */
@@ -115,7 +114,6 @@ PlayerField.prototype._createCircle = function(width, height){
 
 /**
 * Считает центр круга по трем точкам. Взято со stackoverflow.
-* @private
 * @param {object} a точка a `{x, y}`
 * @param {object} b точка b `{x, y}`
 * @param {object} c точка c `{x, y}`

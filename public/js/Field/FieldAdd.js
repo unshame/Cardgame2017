@@ -42,7 +42,6 @@ Field.prototype.addCards = function(newCards, bringToTopOn, noDelay){
 /**
 * Добавляет карты в {@link Field#cards}.
 * Вычисляет и сохраняет угол карты в {@link Field#_angles}, если указан {@link Field#randomAngle}.
-* @private
 * @param {Card[]} cards карты для добавления
 */
 Field.prototype._appendCards = function(cards){
@@ -86,7 +85,6 @@ Field.prototype._appendCards = function(cards){
 
 /**
 * Возвращает угол последней карты в поле.
-* @private
 * @return {(number|null)} Угол последней карты или `null`.
 */
 Field.prototype._getLastAngle = function(){

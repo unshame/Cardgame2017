@@ -169,7 +169,6 @@ ScaleManager.prototype.updateGameSize = function(){
 
 /**
 * Расчитывает размеры игры.
-* @private
 */
 ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 	this.cellWidth = Math.round(skinManager.skin.width/this.density);
@@ -267,7 +266,6 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 
 /**
 * Расчитывает размеры сетки.
-* @private
 * @param {number} screenWidth  ширина игры
 * @param {number} screenHeight высота игры
 */
@@ -336,7 +334,6 @@ ScaleManager.prototype.toggleDebugMode = function(){
 
 /**
 * Рисует сетку для дебага.
-* @private
 * @param {object} offset отступ от края `{x, y}`
 * @param {number} width  ширина
 * @param {number} height высота

@@ -31,7 +31,6 @@ var UILayers = function(){
 /**
 * Определяет реальные индексы слоев для позиционирования.
 * Исправляет повторяющиеся индексы.
-* @private
 */
 UILayers.prototype._sortPositions = function(){
 	this.positions.sort(function(a, b){
@@ -154,7 +153,6 @@ UILayers.prototype.positionLayers = function(){
 /**
 * Вызывает `updatePosition` у всех элементов слоя.
 * @param {DisplayObject} layer слой
-* @private
 */
 UILayers.prototype._positionElementsInLayer = function(layer){
 	layer.forEach(function(el){

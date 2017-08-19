@@ -246,7 +246,6 @@ Card.prototype.getDefaultOptions = function(){
 
 /**
 * Вызывается при нажатии на карту.
-* @private
 * @param {Phaser.Sprite}  sprite  {@link Card#sprite}
 * @param {Phaser.Pointer} pointer вызвавший ивент указатель
 */
@@ -256,7 +255,6 @@ Card.prototype._cursorDown = function(sprite, pointer){
 
 /**
 * Вызывается при окончании нажатия на карту.
-* @private
 * @param {Phaser.Sprite}  sprite  {@link Card#sprite}
 * @param {Phaser.Pointer} pointer вызвавший ивент указатель
 */
@@ -266,7 +264,6 @@ Card.prototype._cursorUp = function(sprite, pointer){
 
 /**
 * Вызывается при наведении на карту.
-* @private
 * @param {Phaser.Sprite}  sprite  {@link Card#sprite}
 * @param {Phaser.Pointer} pointer вызвавший ивент указатель
 */
@@ -279,7 +276,6 @@ Card.prototype._cursorOver = function(sprite, pointer){
 
 /**
 * Вызывается когда указатель покидает спрайт карты.
-* @private
 * @param {Phaser.Sprite} sprite {@link Card#sprite}
 */
 Card.prototype._cursorOut = function(sprite){
@@ -358,7 +354,6 @@ Card.prototype.destroy = function(delay, now) {
 
 /**
 * Удаляет карту из игры сразу.
-* @private
 */
 Card.prototype._destroyNow = function() {
 	if(cardControl.card == this){

@@ -6,7 +6,6 @@
 *                                Будет изменено непосредственно в переданных аргументах.
 * @param  {number} delayIndex    индекс задержки твина в `args`. 
 *                                Будет обнулено непосредственно в переданных аргументах.
-* @private
 */
 Card.prototype._saveDelayedTweenInfo = function(key, args, durationIndex, delayIndex){
 	var startTime = Date.now() + args[delayIndex];
@@ -29,7 +28,6 @@ Card.prototype._saveDelayedTweenInfo = function(key, args, durationIndex, delayI
 /**
 * Удаляет информацию о твине.
 * @param  {string} key уникальное имя информации
-* @private
 */
 Card.prototype._removeDelayedTweenInfo = function(key){
 	if(this._delayedTweenInfos[key]){
@@ -41,7 +39,6 @@ Card.prototype._removeDelayedTweenInfo = function(key){
 * Запускает функцию, запускающую твин с сохраненными аргументами.
 * @param  {string}   key 	уникальное имя информации о твине
 * @param  {function} func 	функция, которая будет вызывана
-* @private
 */
 Card.prototype._tryStartDelayedTween = function(key, func){
 	var info = this._delayedTweenInfos[key];

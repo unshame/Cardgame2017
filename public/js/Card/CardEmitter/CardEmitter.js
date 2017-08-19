@@ -209,7 +209,6 @@ CardEmitter.prototype.applySkin = function(){
 
 /** 
 * Применяет скин к эмиттеру карт.
-* @private
 */
 CardEmitter.prototype._applySkinToEmitter = function(){
 	this.forEach(function(p){

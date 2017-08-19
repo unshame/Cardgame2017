@@ -72,7 +72,6 @@ Field.prototype.setPopOut = function(popped){
 
 /**
 * Сортирует карты в `{@link Field#cards}` по значению.
-* @private
 */
 Field.prototype._sortCards = function(){
 	if(this.style.sortable){
@@ -82,7 +81,6 @@ Field.prototype._sortCards = function(){
 
 /**
 * Компаратор для сортировки.
-* @private
 * @see  {@link Field#_sortCards}
 * @see  {@link https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/sort?v=control|Array#sort}
 */

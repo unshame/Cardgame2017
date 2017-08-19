@@ -1,6 +1,5 @@
 /**
 * Добавляет действие в список.
-* @private
 * @param {object}   step
 * @param {function} action
 * @param {number}   duration
@@ -79,7 +78,6 @@ Sequencer.prototype._add = function(step, action, duration, context){
 
 /** 
 * Запускает новый список, предварительно завершив предыдущий, сохраняя статус завершения.
-* @private
 * @param {function} action
 * @param {number}   duration
 * @param {number}   delay
@@ -108,7 +106,6 @@ Sequencer.prototype._startFinishing = function(action, duration, delay, context)
 
 /** 
 * Добавляет действие в конец текущего списка или запускает новый, сохраняя статус завершения.
-* @private
 * @param {function} action
 * @param {number}   duration
 * @param {any}      context
@@ -130,7 +127,6 @@ Sequencer.prototype._appendFinishing = function(action, duration, context){
 
 /**
 * Отменяет выполнение всех невыполненых действий и обнуляет список, сохраняя статус завершения.
-* @private
 */
 Sequencer.prototype._abortFinishing = function(){	
 	var finishing = this._finishing;
@@ -146,7 +142,6 @@ Sequencer.prototype._abortFinishing = function(){
 /**
 * Возвращает специальные варианты основных методов,
 * которые позволяют правильно обрабатывать вложенные списки.
-* @private
 * @return {object<function>} `{start, append, abort, finish, skip, unskip}`
 */
 Sequencer.prototype._getMethods = function(){

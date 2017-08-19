@@ -42,7 +42,6 @@ CardControl.prototype.trailApplySkin = function(){
 
 /**
 * Создает хвост карты при движении.
-* @private
 */
 CardControl.prototype._trailSpawnParticle = function(){
 
@@ -78,7 +77,6 @@ CardControl.prototype._trailSpawnParticle = function(){
 
 /**
 * Обновление хвоста карты.
-* @private
 */
 CardControl.prototype._updateTrail = function(){
 	if(this.trail.countLiving() && this.trail.parent != this.trailDefaultBase){
@@ -95,7 +93,6 @@ CardControl.prototype._updateTrail = function(){
 
 /**
 * Прикрепляет хвост к текущей карте.
-* @private
 */
 CardControl.prototype._trailReappend = function(){
 	this.card.addAt(this.trail, 0);
@@ -109,7 +106,6 @@ CardControl.prototype._trailReappend = function(){
 
 /**
 * Устанавливает таймер ресета хвоста.
-* @private
 */
 CardControl.prototype._setTrailResetTimer = function(){
 	this._resetTrailResetTimer();
@@ -118,7 +114,6 @@ CardControl.prototype._setTrailResetTimer = function(){
 
 /**
 * Ресетит таймер ресета хвоста.
-* @private
 */
 CardControl.prototype._resetTrailResetTimer = function(){
 	if(this.trailResetTimer){

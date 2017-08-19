@@ -64,7 +64,6 @@ Card.prototype.returnToBase = function(time, delay){
 
 /**
 * Вычисляет координаты базы и спрайта, к которым будет происходить движение, из переданных координат.
-* @private
 * @param {number} x              позиция по горизонтали
 * @param {number} y              позиция по вертикали
 * @param {number} relativeToBase перемещение происходит относительно базы карты
@@ -122,7 +121,6 @@ Card.prototype._calculateMoveCoordinates = function(x, y, relativeToBase, should
 
 /**
 * Создает и запускает твин передвижения или перемещает карту если игра остановлена.
-* @private
 * @param {number}  x            позиция по горизонтали
 * @param {number}  y            позиция по вертикали
 * @param {number}  time         время перемещения
@@ -175,7 +173,6 @@ Card.prototype._startMover = function(x, y, time, delay, shouldRebase, easing){
 
 /** 
 * Выполняется по началу движения карты 
-* @private
 */
 Card.prototype._onMoveStart = function(){
 	this.delayed = false;
@@ -192,7 +189,6 @@ Card.prototype._onMoveStart = function(){
 
 /** 
 * Выполняется по окончанию движения карты 
-* @private
 */
 Card.prototype._onMoveComplete = function(){
 	this.delayed = false;
@@ -217,7 +213,6 @@ Card.prototype._onMoveComplete = function(){
 /**
 * Останавливает мувер, если время, позиция или задержка изменились.
 * Возвращает уменьшенное время, если они остались прежними.
-* @private
 * @param {number}  x            позиция по горизонтали
 * @param {number}  y            позиция по вертикали
 * @param {number}  time         время перемещения

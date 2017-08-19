@@ -3,7 +3,6 @@
 /**
 * Запускает таймер, во время которого карты не реагируют на курсор.
 * @param {number} time время таймера
-* @private
 */
 Field.prototype._setUninteractibleTimer = function(time){
 

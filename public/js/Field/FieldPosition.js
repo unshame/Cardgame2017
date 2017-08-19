@@ -85,7 +85,6 @@ Field.prototype.setSize = function(width, height, shouldPlace){
 
 /**
 * Запоминает размеры поля и рисует прямоугольник с закругленными углами.
-* @private
 * @param {number} width  ширина поля
 * @param {number} height высота поля
 */

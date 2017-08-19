@@ -1,6 +1,5 @@
 /**
 * Прячет меню.
-* @private
 */
 Menu.prototype._hide = function(){
 	this.visible = false;
@@ -8,7 +7,6 @@ Menu.prototype._hide = function(){
 
 /**
 * Показывает и обновляет позицию меню.
-* @private
 */
 Menu.prototype._show = function(){
 	this.visible = true;

@@ -31,7 +31,6 @@ Card.prototype.rotateTo = function(angle, time, delay, easing){
 
 /**
 * Корректирует угол. 
-* @private
 * @param {number} angle угол
 *
 * @return {(number|boolean)} Возвращает скорректированный угол, если он не равен текущему, или `false`.
@@ -62,7 +61,6 @@ Card.prototype._calculateCorrectAngle = function(angle){
 
 /**
 * Создает и запускает твин поворота или поворачивает карту если игра остановлена.
-* @private
 * @param {number}   angle  угол, к которому будет поворачиваться карта
 * @param {number}   time   время поворота
 * @param {number}   delay  задержка перед поворотом
@@ -109,7 +107,6 @@ Card.prototype._startRotator = function(angle, time, delay, easing){
 /**
 * Поворачивает карту вокруг указанной точки на указанный угол. 
 * Параметры указыны в {@link Card#_revolveInfo}.
-* @private
 */
 Card.prototype._revolve = function(){
 	if(!this._revolveInfo || this.mover){

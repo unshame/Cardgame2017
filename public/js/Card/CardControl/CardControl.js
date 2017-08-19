@@ -146,7 +146,6 @@ CardControl.prototype.cardUnclick = function(card){
 
 /** 
 * Проверка нажатия на базу карты.
-* @private
 */
 CardControl.prototype._cardPointerInbound = function(){
 	var width = this.card.field ? skinManager.skin.width*(1 + this.card.field.style.scaleDiff) : skinManager.skin.width,
@@ -163,7 +162,6 @@ CardControl.prototype._cardPointerInbound = function(){
 
 /**
 * Проверка корректности позиции карты (возащает false или поля).
-* @private
 */
 CardControl.prototype._cardOnValidField = function(){
 	if(!this.card.playable){

@@ -151,7 +151,6 @@ Menu.prototype.updatePosition = function(position){
 
 /**
 * Устанавливает размер фона меню в соответствии с элементами.
-* @private
 */
 Menu.prototype._resize = function(){
 	var width = 0,
@@ -188,7 +187,6 @@ Menu.prototype._resize = function(){
 
 /**
 * Рисует фон меню.
-* @private
 */
 Menu.prototype._createArea = function(width, height){
 

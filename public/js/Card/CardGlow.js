@@ -7,7 +7,6 @@
 * @param {number} speed                   время анимации между minGlow и maxGlow
 * @param {number} [delayRange=0]          максимальное значение задержки начала свечения
 * @param {number} [color=ui.colors.white] цвет свечения
-* @private
 */
 Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color){
 	
@@ -52,7 +51,6 @@ Card.prototype._glowStart = function(minGlow, maxGlow, speed, delayRange, color)
 
 /**
 * Останавливает свечение.
-* @private
 */
 Card.prototype._glowStop = function(){
 	if(this._glowIncreaser){
@@ -70,7 +68,6 @@ Card.prototype._glowStop = function(){
 
 /**
 * Останавливает и восстанавливает свечение.
-* @private
 */
 Card.prototype._glowReset = function(){
 	this._glowStop();
@@ -80,7 +77,6 @@ Card.prototype._glowReset = function(){
 
 /**
 * Обновляет позицию свечения.
-* @private
 */
 Card.prototype._glowUpdatePosition = function(){
 	this.glow.x = this.sprite.x;

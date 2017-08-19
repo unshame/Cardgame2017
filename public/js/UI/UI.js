@@ -127,7 +127,6 @@ UI.prototype.initialize = function(){
 
 /** 
 * Создает меню.
-* @private
 */
 UI.prototype._createMenus = function(){
 	this.menus = {
@@ -181,7 +180,6 @@ UI.prototype._createMenus = function(){
 
 /** 
 * Создает кнопки.
-* @private
 */
 UI.prototype._createButtons = function(){
 	/**

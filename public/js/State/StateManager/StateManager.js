@@ -45,7 +45,6 @@ StateManager.prototype.getCurrentState = StateManager.prototype.getCurrent;
 
 /**
 * Добавляет асинхронное состояние в игру.
-* @private
 * @type {function}
 */
 StateManager.prototype._addAsync = Phaser.StateManager.prototype.add;

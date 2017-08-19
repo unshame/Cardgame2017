@@ -157,7 +157,6 @@ Game.prototype.applySkin = function(){
 
 /**
 * Запускает дебаунс корректировки размеров игры.
-* @private
 */
 Game.prototype._updateCoordinatesDebounce = function(){
 	if(this._dimensionsUpdateTimeout){
@@ -194,7 +193,6 @@ Game.prototype.unpause = function(){
 /**
 * Ставит и снимает игру с паузы в зависимости от видимости окна,
 * корректирует элементы игры после снятия паузы.
-* @private
 */
 Game.prototype._visibilityChangeListener = function(){
 	if (!document[this._hiddenValue]) {
@@ -207,7 +205,6 @@ Game.prototype._visibilityChangeListener = function(){
 
 /**
 * Добавляет листенер изменения видимости вкладки в зависимости от браузера.
-* @private
 */
 Game.prototype._addVisibilityChangeListener = function(){
 	var visibilityChange; 
