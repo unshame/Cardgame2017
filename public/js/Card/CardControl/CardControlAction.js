@@ -85,20 +85,20 @@ CardControl.prototype.cardPutDown = function(){
 
 /**
 * Перемещает карту в новое поле.
-* @param {Field[]} newFields Поля, над котором находится карта.
+* @param {Field[]} fields Поля, над котором находится карта.
 */
-CardControl.prototype.cardMoveToField = function(newFields){
+CardControl.prototype.cardMoveToField = function(fields){
 
 	if(!this.card){
 		console.warn('Card control: cardMoveToField called but no Card assigned.');
 		return;
 	}
 
-	var newField, 
+	var field, 
 		success = false;
-	for(var i = 0; i < newFields.length; i++){
-		newField = newFields[i];
-		success = connection.server.sendAction(newField, this.card);
+	for(var i = 0; i < fields.length; i++){
+		field = fields[i];
+		success = connection.server.sendAction(field, this.card);
 		if (success) break;
 	}
 
@@ -114,17 +114,15 @@ CardControl.prototype.cardMoveToField = function(newFields){
 	var card = this.card;
 	this.card = null;
 	this.pointer = null;
+	if(field.linkedField){
+		if(!field.icon && !field.cards.length){
+			fieldManager.swapFields(field, field.linkedField);
 
-	if(newField.linkedField){
-		if(newField.icon || newField.cards.length){
-			newField = newField.linkedField;
 		}
-		else{
-			fieldManager.swapFields(newField, newField.linkedField);
-		}
+		field = field.linkedField;
 	}
 
-	fieldManager.moveCards(newField, [{
+	fieldManager.moveCards(field, [{
 		cid: card.id,
 		suit: card.suit,
 		value: card.value

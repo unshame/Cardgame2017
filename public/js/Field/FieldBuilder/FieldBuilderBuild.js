@@ -54,7 +54,7 @@ FieldBuilder.prototype._buildTableFields = function(lockedFields){
 		var icon = null;
 		if(~lockedFields.indexOf(id)){
 			icon = {
-				texture: icon,
+				texture: 'lock',
 				shouldHide: true,
 				visible: false
 			}
