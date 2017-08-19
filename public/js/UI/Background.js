@@ -36,7 +36,7 @@ Background.prototype.updatePosition = function(){
 Background.prototype.setTexture = function(textureName){
 	if(textureName == this.surface.textureName)
 		return;
-	var fakebg = game.add.tileSprite(0, 0, game.screenWidth, game.screenHeight, this.surface.textureName);
+	var fakebg = game.add.tileSprite(this.surface.x, this.surface.y, this.surface.width, this.surface.height, this.surface.textureName);
 	this.addChildAt(fakebg, 1);
 	this.surface.loadTexture(textureName);
 	this.surface.textureName = textureName;
