@@ -142,6 +142,13 @@ var FieldBuilder = function(manager){
 	* @type {Boolean}
 	*/
 	this._topOpponentFits = true;
+
+	/**
+	* Противники не будут распологаться вверху экрана.
+	* @private
+	* @type {Boolean}
+	*/
+	this._noTopOpponents = false;
 };
 
 /** Создает поля */
@@ -187,7 +194,8 @@ FieldBuilder.prototype.adjustFieldNetwork = function(lockedFields){
 */
 FieldBuilder.prototype.calcSizes = function(){
 	var numPlayers = playerManager.players.length;
-	this._topOpponentFits = game.scale.cellRelation > this._increaseTopOpponentsSpaceRelation || numPlayers == 3;
+	this._topOpponentFits = game.scale.cellRelation > this._increaseTopOpponentsSpaceRelation;
+	this._noTopOpponents = game.scale.cellRelation < this._reduceTopOpponentsNumberRelation && numPlayers == 3;
 	this._opponentPlacement = this._countOpponentPlacement(numPlayers - 1);
 	this._calcGenSizes();
 	this._calcSpecSizes();
@@ -237,8 +245,20 @@ FieldBuilder.prototype._calcSpecSizes = function(){
 */
 FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 	var numOfCards = cardManager.numOfCards,
-		halfDensity = Math.floor(game.scale.density / 2),
-		addedCells = this._topOpponentFits ? 3 : 0;
+		halfDensity = Math.floor(game.scale.density / 2);
+
+	var addedCells;
+	if(this._topOpponentFits){
+		addedCells = 3;
+	}
+	else{
+		if(this._noTopOpponents){
+			addedCells = 6;
+		}
+		else{
+			addedCells = 0;
+		}
+	}
 
 	this.offsets.DECK = 15;
 	this.minActiveSpaces.DECK = numOfCards/2;
