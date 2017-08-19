@@ -123,6 +123,7 @@ var notificationReactions = {
 		var action = note.action,
 			card = cardManager.cards[action.cid];
 		if(action.cid && card){
+			fieldManager.resetTableOrder();
 			var cardInfo = {
 				cid: card.id,
 				suit: card.suit,

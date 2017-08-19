@@ -160,8 +160,10 @@ FieldManager.prototype.resetNetwork = function(){
 FieldManager.prototype.resetTableOrder = function(){
 	for(var ti = 0; ti < this.table.length; ti++){
 		var table = this.table[ti];
-		table.id = table.savedId;
-		this.fields[table.id] = table;
+		if(table.savedPosition){
+			table.setBase(table.savedPosition.x, table.savedPosition.y, true);
+			table.savedPosition = null;
+		}
 	}
 };
 

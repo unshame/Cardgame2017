@@ -98,10 +98,10 @@ var Field = function(options, style){
 	this.id = this.options.id;
 
 	/**
-	* Запомненное id поля для временной замены 
-	* @type {string}
+	* Запомненная позиция поля ({@link FieldManager#swapFields}).
+	* @type {object}
 	*/
-	this.savedId = this.id;
+	this.savedPosition = this.savedPosition;
 
 	/**
 	* Специальное id поля для полей, пренадлежащих одной группе.
@@ -363,6 +363,7 @@ Field.prototype._applyOptions = function(options, style){
 //@include:FieldPlacePrivate
 //@include:FieldPlacePublic
 //@include:FieldCursor
+//@include:FieldAnimate
 //@include:FieldDebug
 
 //@include:IconField

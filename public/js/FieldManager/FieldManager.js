@@ -171,11 +171,16 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 * @param {Field} field2 второе поле
 */
 FieldManager.prototype.swapFields = function(field1, field2){
-	var tempId = field2.id;
-	this.fields[tempId] = field1;
-	this.fields[field1.id] = field2;
-	field2.id = field1.id;
-	field1.id = tempId;
+	var pos1 = {x: field1.x, y: field1.y};
+	var pos2 = {x: field2.x, y: field2.y};
+	if(!field1.savedPosition){
+		field1.savedPosition = pos1;
+	}
+	if(!field2.savedPosition){
+		field2.savedPosition = pos2;
+	}
+	field1.setBase(pos2.x, pos2.y, true);
+	field2.setBase(pos1.x, pos1.y, true);
 };
 
 //@include:FieldManagerCard
