@@ -79,6 +79,8 @@ var CardControl = function(inDebugMode){
 	* @private
 	*/
 	this._inertiaHistory = [];
+
+	this.pickNotifier = new CardPickNotifier();
 };
 
 /** Инициалищирует модуль - создает хвост карты и группу для него. */

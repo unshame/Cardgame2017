@@ -1,3 +1,8 @@
+//@include:CardManager
+//@include:CardControl
+//@include:CardPickNotifier
+//@include:CardEmitter
+
 /**
 * Конструктор карт.  
 * Два основных компонента: {@link Card#sprite} и {@link Card#glow}.  
@@ -247,7 +252,6 @@ Card.prototype.getDefaultOptions = function(){
 */
 Card.prototype._cursorDown = function(sprite, pointer){
 	cardControl.cardClick(this, pointer);
-	ui.hoverNotifier.choose(this);
 };
 
 /**
@@ -270,7 +274,7 @@ Card.prototype._cursorOver = function(sprite, pointer){
 	if(this.field){
 		this.field.focusOnCard(this, pointer);
 	}
-	ui.hoverNotifier.consider(this);
+	cardControl.pickNotifier.consider(this);
 };
 
 /**
@@ -282,7 +286,7 @@ Card.prototype._cursorOut = function(sprite){
 	if(this.field){
 		this.field.focusOffCard(this);
 	}
-	ui.hoverNotifier.reject(this);
+	cardControl.pickNotifier.reject(this);
 };
 
 

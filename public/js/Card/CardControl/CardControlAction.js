@@ -11,6 +11,8 @@ CardControl.prototype.cardPickup = function(card, pointer){
 		return;
 	}
 
+	this.pickNotifier.choose(card);
+
 	this.card = card;
 	this.pointer = pointer;
 	
@@ -105,6 +107,8 @@ CardControl.prototype.cardMoveToField = function(newFields){
 		return;
 	}
 
+	this.pickNotifier.reject(this.card);
+
 	this._setTrailResetTimer();
 
 	var card = this.card;
@@ -145,6 +149,8 @@ CardControl.prototype.cardReturn = function(){
 	if(this.inDebugMode){
 		console.log('Card control: Returning', this.card.id, 'to base');
 	}
+
+	this.pickNotifier.reject(this.card);
 
 	this._setTrailResetTimer();
 

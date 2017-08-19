@@ -99,8 +99,6 @@ UI.prototype.initialize = function(){
 	*/
 	this.modalManager = new ModalManager();
 
-	this.hoverNotifier = new HoverNotifier();
-
 	this._createMenus();
 	this._createButtons();
 
@@ -405,4 +403,3 @@ UI.prototype.newPixel = function(){
 //@include:Logo
 //@include:Cursor
 //@include:ModalManager
-//@include:HoverNotifier

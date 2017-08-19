@@ -10,15 +10,9 @@
 //@include:OptionManager
 //@include:ActionHandler
 //@include:Card
-//@include:CardControl
-//@include:CardEmitter
-//@include:CardManager
 //@include:ConnectionManager
 //@include:Field
-//@include:FieldBuilder
-//@include:FieldManager
 //@include:Game
-//@include:StateManager
 //@include:State
 //@include:ScaleManager
 //@include:PlayerManager

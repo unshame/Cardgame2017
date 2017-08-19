@@ -1,9 +1,9 @@
-var HoverNotifier = function(){
+var CardPickNotifier = function(){
 	this.card = null;
 	this.delay = null;
 }
 
-HoverNotifier.prototype = {
+CardPickNotifier.prototype = {
 	consider: function(card){
 		this.resetDelay();
 		this.delay = setTimeout(this.choose.bind(this, card), 500);
