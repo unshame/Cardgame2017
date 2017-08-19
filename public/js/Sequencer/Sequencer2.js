@@ -10,8 +10,7 @@ var Sequencer2 = function(){
 
 Sequencer2.prototype = {
 	queueUp: function(action, duration, context){
-		var queue = this._addQueue(this._queue, action, duration, context);
-		return queue[0];
+		return this._addQueue(this._queue, action, duration, context);
 	},
 
 	finish: function(){
@@ -20,9 +19,22 @@ Sequencer2.prototype = {
 		this._go();
 	},
 
+	_finish: function(){
+		this._resetTimeout();
+		this._isSync = true;
+	},
+
 	abort: function(){
-		this._abort(this._queue);
-	}
+		this._nestedQueue.length = null;
+		queue.length = 0;
+		this._resetFull();
+	},
+
+	_abort: function(queue){
+		this._nestedQueue.length = null;
+		queue.length = 0;
+		this._reset();
+	},
 
 	_resetTimeout: function(){
 		clearTimeout(this.timeout);
@@ -31,41 +43,49 @@ Sequencer2.prototype = {
 
 	_reset: function(){
 		this._resetTimeout();
+		this._startTime = 0;
+		this.duration = 0;
+	},
+
+	_resetFull: function(){
+		this._reset();
 		this._isSync = false;
 	},
 
 	_addQueue: function(queueHolder, action, duration, context){
 		var queue = [];
-		this._startTime = Date.now();
-		this._dt = 0;
-		var step = this._addStep(queue, action, duration, context);
+		var next = this._addStep(queue, action, duration, context);
 		queueHolder.push(queue);
 		if(!this.timeout && !this._isSync){
+			this._startTime = Date.now();
+			this._dt = 0;
 			this.timeout = setTimeout(this._go.bind(this), 0);
 		}
-		return queue;
+		return next;
 	},
 
 	_addStep: function(queue, action, duration, context){
+		this.duration += duration;
 		var step = {
 			action: action,
-			duration: duration,
+			name: action.name,
+			duration: duration || 0,
 			context: context,
-			then: this._addStep.bind(this, queue)
+			next: {
+				duration: this.duration,
+				then: this._addStep.bind(this, queue)
+			}	
 		};
 		queue.push(step);
-		return step;
+		return step.next;
 	},
 
 	_go: function(){
-		//console.log(this._log())
+		//console.log(JSON.stringify(this._queue, null, '    '))
 		var queue = this._queue[0];
-		
 		// Больше нет действий
 		if(!queue){
-			this._isSync = false;
-			clearTimeout(this.timeout);
-			console.log('done');
+			this._resetFull();
 			return;
 		}
 
@@ -85,18 +105,23 @@ Sequencer2.prototype = {
 		// Убираем выполненный шаг из очереди
 		queue.shift();
 
-		// Длина шага с корректировкой
-		var duration = this._startTime + this._dt + step.duration - Date.now();
-		
-		console.log(step.action.name, duration, this._startTime, this._dt);
-
-		this._dt += step.duration;
+		var logs = [step.action.name];
 
 		// Переходим к след. шагу с указанной задержкой
 		if(!this._isSync){
+			// Длина шага с корректировкой
+			var duration = this._startTime + this._dt + step.duration - Date.now();
+
+			logs.push(duration);
+			logs.push(this._dt);
+
+			this._dt += step.duration;
+
 			this._resetTimeout();
 			this.timeout = setTimeout(this._go.bind(this), duration);
 		}
+
+		console.log.apply(console, logs);
 
 		// Вызываем действие текущего шага
 		step.action.call(step.context || null, this._getMethods(queue));
@@ -106,41 +131,12 @@ Sequencer2.prototype = {
 		}
 	},
 
-	_finish: function(){
-		this._resetTimeout();
-		this._isSync = true;
-	},
-
-	_abort: function(queue){
-		this._nestedQueue.length = null;
-		queue.length = 0;
-		this._reset();
-	},
-
 	_getMethods: function(queue){
 		return {
 			append: this._addQueue.bind(this, this._nestedQueue),
 			abort: this._abort.bind(this, queue),
 			finish: this._finish.bind(this)
 		};
-	},
-
-	_log: function(){
-		var str = '';
-		this._queue.forEach(function(q, n){
-			q.forEach(function(s, i){
-				if(i !== 0){
-					str += ' -> ';
-				}
-				str += (!n && !i) ? '>' + s.action.name + '<' : s.action.name ;
-			});
-			str += '\n';
-		});
-		if(str.length > 1){
-			str = '===========\n' + str + '===========';
-		}
-		return str;
 	}
-
 };
 
