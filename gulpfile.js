@@ -33,7 +33,8 @@ const otherPaths = [
 const libraryPaths = [
 	'lib/eureca.js',
 	'lib/phaser.js',
-	'lib/phaser.override.js'
+	'lib/phaser.override.js',
+	'lib/phaser.input.js'
 ];
 const jsPath = 'js';
 const minifiedPath = 'durak.js';

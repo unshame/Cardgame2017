@@ -99,6 +99,11 @@ Phaser.Device.whenReady(function(){
 	* @global
 	*/
 	game = new Game(containerName, 1, options.get('debug_game'));
+	
+	// Phaser плагины
+	game.add.plugin(PhaserInput.Plugin);
+
+	// Состояния игры
 	game.state.add(stateMenu, false, false);
 	game.state.add(statePlay, false, false);
 	// Запускаем загрузку игры
