@@ -80,7 +80,8 @@ var Sequencer2 = function(){
 Sequencer2.prototype = {
 
 	/**
-	* Добавляет новое действие в конец очереди.
+	* Создает новую очередь с действием, добавляет ее после всех очередей.
+	* Запускает очередь, если она была пустой.
 	* @param {function} action   действие
 	* @param {number}   duration длительность действия
 	* @param {object}   context  контекст действия
@@ -257,7 +258,7 @@ Sequencer2.prototype = {
 
 		// Вызываем действие текущего шага
 		if(typeof step.action == 'function'){
-			step.action.call(step.context || null, this._getMethods(queue));
+			step.action.call(step.context || null, this._getMethods(queue), this._isSync);
 		}
 
 		if(this._isSync){
