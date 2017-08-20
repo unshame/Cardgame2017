@@ -15,6 +15,7 @@
 * `skip(num)` - будет пропущено `num` следующих действий в текущей очереди  
 * `finish()` - очередь переходит в режим линейного завершения (без `setTimeout`) (влияет на ВСЕ очереди)
 * @class
+* @param {function} onComplete
 * @param {boolean} inDebugMode
 * @example
 * // Функции выполнятся в порядке нумерации с интервалом в 500мс
@@ -29,13 +30,11 @@
 * function action3(){};
 * function action4(){};
 * 
-* sequence
-* 	.queueUp(action0, 500)
+* sequence.queueUp(action0, 500)
 * 	.then(action1, 500)
 * 	.then(action2, 500);
 * 	
-* sequence
-* 	.queueUp(action4, 500);
+* sequence.queueUp(action4, 500);
 *
 * @example
 * // Способы указания длительности действия
@@ -60,13 +59,23 @@
 * sequence.queueUp(action2, 500); // длительность будет 500
 * 
 */
-var Sequencer2 = function(inDebugMode){
+var Sequencer2 = function(onComplete, inDebugMode){
+
+	/**
+	* Метод, выполняемый по завершению всех очередей.
+	* @type {function}
+	*/
+	this.onComplete = onComplete;
+
+	if(typeof this.onComplete != 'function'){
+		this.onComplete = function(){};
+	}
 
 	/**
 	* Будут ли выводиться сообщения о выполняемых действиях в консоль.
 	* @type {Boolean}
 	*/
-	this.inDebugMode = inDebugMode || false;
+	this.inDebugMode = inDebugMode || false;	
 
 	/**
 	* Все очереди.
@@ -92,6 +101,10 @@ var Sequencer2 = function(inDebugMode){
 	*/
 	this._skips = 0;
 
+	/**
+	* Была ли прервана очередь.
+	* @type {Boolean}
+	*/
 	this._wasAborted = false;
 };
 
@@ -112,31 +125,41 @@ Sequencer2.prototype = {
 		return this._addQueue(this._queue, action, duration, context);
 	},
 
-	/** Завершает очередь синхронно. */
-	finish: function(){
+	/** 
+	* Завершает все очереди синхронно.
+	* @param  {boolean} [disableOnComplete] `onComplete` метод не будет выполнен
+	*/
+	finish: function(disableOnComplete){
+		this._disableOnComplete = disableOnComplete || false;
 		this._resetTimeout();
 		this._isSync = true;
 		this._go();
 	},
 
-	/** Завершает очередь изнутри действия. */
-	_finish: function(){
+	/** 
+	* Завершает все очереди синхронно изнутри действия.
+	* @param  {boolean} [disableOnComplete] `onComplete` метод не будет выполнен
+	*/
+	_finish: function(disableOnComplete){
+		this._disableOnComplete = disableOnComplete || false;
 		this._resetTimeout();
 		this._isSync = true;
 	},
 
-	/** Прерывает очередь. */
-	abort: function(){
+	/** 
+	* Прерывает все очереди.
+	* @param  {boolean} [disableOnComplete] `onComplete` метод не будет выполнен
+	*/
+	abort: function(disableOnComplete){
+		this._log('ended');
+		this._disableOnComplete = disableOnComplete || false;
 		this._nestedQueue.length = null;
 		this._queue.length = 0;
 		this._resetFull();
-		if(this.inDebugMode){
-			console.log('aborted');
-		}
 	},
 
 	/** 
-	* Прерывает очередь изнутри действия.
+	* Прерывает указанную очередь изнутри действия.
 	* @param  {object} queue очередь, которую нужно прервать
 	*/
 	_abort: function(queue){
@@ -165,10 +188,18 @@ Sequencer2.prototype = {
 		this._skips = 0;
 	},
 
-	/** Ресетит очередь, включая статус завершения.	*/
+	/** 
+	* Ресетит очередь, включая статус завершения.
+	* Выполняет `onComplete` менеджера, если не был установлен флаг пропуска `onComplete`.
+	* Убирает флаг пропуска `onComplete`.
+	*/
 	_resetFull: function(){
 		this._reset();
 		this._isSync = false;
+		if(!this._disableOnComplete){
+			this.onComplete();
+		}
+		this._disableOnComplete = false;
 	},
 
 	/**
@@ -344,7 +375,7 @@ Sequencer2.prototype = {
 // jshint unused:false
 function testSequence(){
 	var time = 500;
-	var seq = new Sequencer2(true);
+	var seq = new Sequencer2(function(){console.log('done');}, true);
 	function action0(seq){
 		seq.append(func('14', action1), time).then(func('14.5'), time);
 	}
@@ -389,5 +420,6 @@ function testSequence(){
 	seq.queueUp(func('21'), time);
 	seq.queueUp(func('22'), time);
 	seq.queueUp(func('23'), time);
-	//seq.finish();
+	seq.finish(true);
+	return seq;
 }
