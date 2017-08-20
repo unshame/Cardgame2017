@@ -11,7 +11,12 @@
 * `append` также возвращает `then`.  
 * Вызов `append` создает новую очередь, которая будет выполнена сразу после очереди,
 * из действия которой был вызван `append`.  
+* Помимо `append` передаются следующие действия:  
+* `abort()` - прерывает текущую очередь и все вложенные в нее очереди  
+* `skip(num)` - будет пропущено `num` следующих действий в текущей очереди  
+* `finish()` - очередь переходит в режим линейного завершения (без `setTimeout`) (влияет на ВСЕ очереди)
 * @class
+* @param {boolean} inDebugMode
 * @example
 * // Функции выполнятся в порядке нумерации с интервалом в 500мс
 *
@@ -33,7 +38,14 @@
 * sequence
 * 	.queueUp(action4, 500);
 */
-var Sequencer2 = function(){
+var Sequencer2 = function(inDebugMode){
+
+	/**
+	* Будут ли выводиться сообщения о выполняемых действиях в консоль.
+	* @type {Boolean}
+	*/
+	this.inDebugMode = inDebugMode || false;
+
 	/**
 	* Все очереди.
 	* @type {Array}
@@ -82,7 +94,9 @@ Sequencer2.prototype = {
 	/**
 	* Создает новую очередь с действием, добавляет ее после всех очередей.
 	* Запускает очередь, если она была пустой.
-	* @param {function} action   действие
+	* @param {function} action   Действие. При выполнении в него передадутся два параметра:  
+	*                            `seq` - набор методов для управлением очередью (`append, abort, skip, finish`)  
+	*                            `sync` - выполняется ли очередь в реальном времени (на очереди был вызван метод finish)
 	* @param {number}   duration длительность действия
 	* @param {object}   context  контекст действия
 	*
@@ -210,6 +224,9 @@ Sequencer2.prototype = {
 		var queue = this._queue[0];
 		// Больше нет действий
 		if(!queue){
+			if(this.inDebugMode){
+				console.log('ended');
+			}
 			this._resetFull();
 			return;
 		}
@@ -231,10 +248,15 @@ Sequencer2.prototype = {
 		// Убираем выполненный шаг из очереди
 		queue.shift();
 
-		var logs = [step.name];
+		var logs;
+		if(this.inDebugMode){
+			logs = [step.name];
+		}
 
 		if(this._skips !== 0){
-			console.log('skipped', logs[0]);
+			if(logs){
+				console.log('skipped', logs[0]);
+			}
 			this._skips--;
 			this._go();
 			return;
@@ -245,8 +267,10 @@ Sequencer2.prototype = {
 			// Длина шага с корректировкой
 			var duration = this._startTime + this._dt + step.duration - Date.now();
 
-			logs.push(duration);
-			logs.push(this._dt);
+			if(logs){
+				logs.push(duration);
+				logs.push(this._dt);
+			}
 
 			this._dt += step.duration;
 
@@ -254,7 +278,9 @@ Sequencer2.prototype = {
 			this.timeout = setTimeout(this._go.bind(this), duration);
 		}
 
-		console.log.apply(console, logs);
+		if(logs){
+			console.log.apply(console, logs);
+		}
 
 		// Вызываем действие текущего шага
 		if(typeof step.action == 'function'){
