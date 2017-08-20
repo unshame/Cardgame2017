@@ -4,7 +4,6 @@
 * Добавление действия (`queueUp`) возвращает объект с функцией `then`, 
 * которая позволяет добавлять следующее действие и т.д.  
 * Добавленные таким образом действия считаются одной очередью.
-* Помимо `then` в возвращенном объекте будет `duration`, равная длительности всех текущих очередей.  
 * Вызов queueUp снова создаст новую очередь.  
 * Из добавляемых действий можно добавлять дополнительные действия (вложенность неограничена)
 * при помощи функции `append`, передаваемой в действия вместе с еще несколькими.
@@ -37,6 +36,29 @@
 * 	
 * sequence
 * 	.queueUp(action4, 500);
+*
+* @example
+* // Способы указания длительности действия
+*
+* // Аргумент
+* sequence.queueUp(action0, 500);
+*
+* // Возвращается из действия
+* function action1(){
+* 	return 500;
+* } 
+* sequence.queueUp(action1);
+*
+* // Вместо действия
+* sequence.queueUp(500);
+*
+* // Если указать аргументом и возвратить из функции
+* // будет использован аргумент
+* function action2(){
+* 	return 1000;
+* }
+* sequence.queueUp(action2, 500); // длительность будет 500
+* 
 */
 var Sequencer2 = function(inDebugMode){
 
@@ -59,24 +81,6 @@ var Sequencer2 = function(inDebugMode){
 	this._nestedQueue = [];
 
 	/**
-	* Время начала очереди.
-	* @type {Number}
-	*/
-	this._startTime = 0;
-
-	/**
-	* Предпологаемая длительность очереди от времени начала.
-	* @type {Number}
-	*/
-	this.duration = 0;
-
-	/**
-	* Время между началом очереди до последнего выполненного действия.
-	* @type {Number}
-	*/
-	this._dt = 0;
-
-	/**
 	* Если `true` очередь выполнится линейно (без `setTimeout`).
 	* @type {Boolean}
 	*/
@@ -87,6 +91,8 @@ var Sequencer2 = function(inDebugMode){
 	* @type {Number}
 	*/
 	this._skips = 0;
+
+	this._wasAborted = false;
 };
 
 Sequencer2.prototype = {
@@ -97,10 +103,10 @@ Sequencer2.prototype = {
 	* @param {function} action   Действие. При выполнении в него передадутся два параметра:  
 	*                            `seq` - набор методов для управлением очередью (`append, abort, skip, finish`)  
 	*                            `sync` - выполняется ли очередь в реальном времени (на очереди был вызван метод finish)
-	* @param {number}   duration длительность действия
+	* @param {number}   duration Длительность действия. Может быть передана вместо действия или быть возвращена действием.
 	* @param {object}   context  контекст действия
 	*
-	* @return {object} Объект для добавления действий `{then, duration}`.
+	* @return {object} Объект для добавления действий `{then}`.
 	*/
 	queueUp: function(action, duration, context){
 		return this._addQueue(this._queue, action, duration, context);
@@ -137,12 +143,13 @@ Sequencer2.prototype = {
 		if(this.inDebugMode){
 			console.log(
 				'aborted', 
-				queue.map(function(s){return s.name}), 
-				this._nestedQueue.map(function(s){return s.name})
+				queue.map(function(s){return s.name;}), 
+				this._nestedQueue.map(function(s){return s.name;})
 			);
 		}
 		this._nestedQueue.length = null;
 		queue.length = 0;
+		this._wasAborted = true;
 		this._reset();
 	},
 
@@ -155,21 +162,17 @@ Sequencer2.prototype = {
 	/** Ресетит очередь. */
 	_reset: function(){
 		this._resetTimeout();
-		this._startTime = 0;
-		this._dt = 0;
 		this._skips = 0;
 	},
 
 	/** Ресетит очередь, включая статус завершения.	*/
 	_resetFull: function(){
 		this._reset();
-		this.duration = 0;
 		this._isSync = false;
 	},
 
 	/**
 	* Пропускает указанное кол-во шагов текущей очереди.
-	* Не влияет на общую `duration` очереди.
 	* @param  {number} num кол-во пропускаемых шагов
 	*/
 	_skip: function(num){
@@ -186,15 +189,13 @@ Sequencer2.prototype = {
 	* @param {number}   duration    длительность действия
 	* @param {object}   context     контекст действия
 	*
-	* @return {object} Объект для добавления действий `{then, duration}`.
+	* @return {object} Объект для добавления действий `{then}`.
 	*/
 	_addQueue: function(queueHolder, action, duration, context){
 		var queue = [];
 		var next = this._addStep(queue, action, duration, context);
 		queueHolder.push(queue);
 		if(!this.timeout && !this._isSync){
-			this._startTime = Date.now();
-			this._dt = 0;
 			this.timeout = setTimeout(this._go.bind(this), 0);
 		}
 		return next;
@@ -207,20 +208,15 @@ Sequencer2.prototype = {
 	* @param {number}   duration длительность действия
 	* @param {object}   context  контекст действия
 	*
-	* @return {object} Объект для добавления действий `{then, duration}`.
+	* @return {object} Объект для добавления действий `{then}`.
 	*/
 	_addStep: function(queue, action, duration, context){
-		if(typeof duration != 'number' || isNaN(duration)){
-			duration = 0;
-		}
-		this.duration += duration;
 		var step = {
 			action: action,
 			name: action && (action.name || action._name),
 			duration: duration,
 			context: context,
 			next: {
-				duration: this.duration,
 				then: this._addStep.bind(this, queue)
 			}	
 		};
@@ -241,11 +237,9 @@ Sequencer2.prototype = {
 	_next: function(){
 		//console.log(JSON.stringify(this._queue, null, '    '))
 		var queue = this._queue[0];
-		// Больше нет действий
+		// Больше нет очередей, ресетим менеджер и завершаем
 		if(!queue){
-			if(this.inDebugMode){
-				console.log('ended');
-			}
+			this._log('ended');
 			this._resetFull();
 			return false;
 		}
@@ -263,51 +257,67 @@ Sequencer2.prototype = {
 			return true;
 		}
 
-		// Убираем выполненный шаг из очереди
+		// Убираем текущий шаг из очереди
 		queue.shift();
 
-		var logs;
-		if(this.inDebugMode){
-			logs = [step.name];
+		// Пропускаем действие, если указаны пропуски
+		if(this._skips !== 0){
+
+			this._log(step.name, 'skipped');
+
+			this._skips--;
+			return true;
 		}
 
-		if(this._skips !== 0){
-			if(logs){
-				console.log('skipped', logs[0]);
-			}
-			this._skips--;
+		// Вызываем действие текущего шага
+		var duration = this._executeAction(step, queue);
+
+		// Если очередь была прервана из действия, переходим к след. очереди
+		if(this._wasAborted){
+			this._log(step.name);
+			this._wasAborted = false;
 			return true;
 		}
 
 		// Переходим к след. шагу с указанной задержкой
 		if(!this._isSync){
-			// Длина шага с корректировкой
-			var duration = this._startTime + this._dt + step.duration - Date.now();
 
-			if(logs){
-				logs.push(duration);
-				logs.push(this._dt);
-			}
-
-			this._dt += step.duration;
+			this._log(step.name, duration);
 
 			this._resetTimeout();
 			this.timeout = setTimeout(this._go.bind(this), duration);
+			return false;
 		}
 
-		if(logs){
-			console.log.apply(console, logs);
-		}
+		// Переходим к след. шагу без задержки
+		this._log(step.name);
+		return true;
+	},
 
-		// Вызываем действие текущего шага
+	/**
+	* Выполняет действие, если оно есть.
+	* @param {object} step  шаг, к которому пренадледит действие
+	* @param {array}  queue очередь, к которой пренадлежит шаг
+	*
+	* @return {number} длительность действия
+	*/
+	_executeAction: function(step, queue){
+		var duration;
 		if(typeof step.action == 'function'){
-			step.action.call(step.context || null, this._getMethods(queue), this._isSync);
+			duration = step.action.call(step.context || null, this._getMethods(queue), this._isSync);
+		}
+		else if(typeof step.action == 'number' && !isNaN(step.action)){
+			duration = step.action;
 		}
 
-		if(this._isSync){
-			return true;
+		if(typeof step.duration == 'number' && !isNaN(step.duration)){
+			duration = step.duration;
 		}
-		return false;
+
+		if(typeof duration != 'number' || isNaN(duration)){
+			duration = 0;
+		}
+		return duration;
 	},
 
 	/**
@@ -321,28 +331,36 @@ Sequencer2.prototype = {
 			finish: this._finish.bind(this),
 			skip: this._skip.bind(this)
 		};
+	},
+
+	/** Выводит аргументы в лог, если менеджер находится в режиме дебага. */
+	_log: function(){
+		if(this.inDebugMode){
+			console.log.apply(console, arguments);
+		}
 	}
 };
 
 // jshint unused:false
 function testSequence(){
+	var time = 500;
 	var seq = new Sequencer2(true);
 	function action0(seq){
-		seq.append(func('14', action1), 5000).then(func('14.5'), 1000);
+		seq.append(func('14', action1), time).then(func('14.5'), time);
 	}
 	function action1(seq){
 		seq.abort();
-		//seq.append(action3, 1000).then(action4, 1000)
+		seq.append(action3, time).then(action4, time);
 
 	}
 	function action2(seq){
 	}
 	function action3(seq){
 		seq.skip(1);
-		seq.append(action5, 1000);
+		seq.append(action5, time);
 	}
 	function action4(seq){
-		
+		return 1000;
 	}
 	function action5(seq){
 		
@@ -356,27 +374,20 @@ function testSequence(){
 		func._name = name;
 		return func;
 	}
-	seq.queueUp(func('1'), 1000);
-	seq.queueUp(func('2', action3), 1000).then(func('2.5'), 1000).then(func('2.75'), 1000);
-	seq.queueUp(func('3'), 1000);
-	seq.queueUp(func('4'), 1000);
-	seq.queueUp(func('5'), 1000);
-	seq.queueUp(func('6'), 1000);
-	seq.queueUp(func('7'), 1000);
-	seq.queueUp(func('8'), 1000);
-	seq.queueUp(func('9'), 1000);
-	seq.queueUp(func('10'), 1000);
-	seq.queueUp(func('11'), 1000)
-		.then(func('12', action0), 500)
-		.then(func('13'), 500);
-	seq.queueUp(func('15'), 1000);
-	seq.queueUp(func('16'), 1000);
-	seq.queueUp(func('17'), 1000);
-	seq.queueUp(func('18'), 1000);
-	seq.queueUp(func('19'), 1000);
-	seq.queueUp(func('20'), 1000);
-	seq.queueUp(func('21'), 1000);
-	seq.queueUp(func('22'), 1000);
-	seq.queueUp(func('23'), 1000);
+	seq.queueUp(func('1', action4));
+	seq.queueUp(func('2', action3), time).then(func('2.5'), time).then(func('2.75'), time);
+	seq.queueUp(time).then(func('3'), time);
+	seq.queueUp(func('11'), time)
+		.then(func('12', action0), time)
+		.then(func('13'), time);
+	seq.queueUp(func('15'), time);
+	seq.queueUp(func('16'), time);
+	seq.queueUp(func('17'), time);
+	seq.queueUp(func('18'), time);
+	seq.queueUp(func('19'), time);
+	seq.queueUp(func('20'), time);
+	seq.queueUp(func('21'), time);
+	seq.queueUp(func('22'), time);
+	seq.queueUp(func('23'), time);
 	//seq.finish();
 }
