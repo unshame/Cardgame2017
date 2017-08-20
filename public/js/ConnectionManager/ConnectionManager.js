@@ -22,10 +22,11 @@ var ConnectionManager = function(serverMethods, clientMethods, connectState, inD
 	this.exports = clientMethods;
 	this.connectState = connectState;
 
-	this.responseTimer = null;
 	this.inDebugMode = inDebugMode || false;
 
 	this.hasConnected = false;
+
+	this.serverWaiting = false;
 };
 
 extend(ConnectionManager, Eureca.Client);
@@ -68,13 +69,6 @@ ConnectionManager.prototype.handleDisconnection = function(){
 
 ConnectionManager.prototype.handleError = function(){
 	ui.feed.newMessage('Server connection error', 2000);
-};
-
-ConnectionManager.prototype.resetTimer = function(){
-	if(this.responseTimer){
-		clearTimeout(this.responseTimer);
-		this.responseTimer = null;
-	}
 };
 
 //@include:clientMethods

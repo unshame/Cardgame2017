@@ -90,7 +90,7 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
-	game.seq.finish();
+	//game.seq.finish();
 
 	var delay = 0;
 
@@ -190,7 +190,7 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 		actions = this.possibleActions;
 	}
 
-	game.seq.finish();
+	//game.seq.finish();
 
 	if(!fieldManager.networkCreated){
 		console.error('Action handler: field network hasn\'t been created');

@@ -50,7 +50,7 @@ var Game = function(parent, speed, inDebugMode){
 	* Менеджер последовательностей игровых анимаций.
 	* @type {Sequencer}
 	*/
-	this.seq = new Sequencer();
+	this.seq = new Sequencer2(connection.server.sendResponse);
 
 	Phaser.Game.call(
 		this,
