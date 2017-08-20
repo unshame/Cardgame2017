@@ -124,6 +124,9 @@ Sequencer2.prototype = {
 		this._nestedQueue.length = null;
 		this._queue.length = 0;
 		this._resetFull();
+		if(this.inDebugMode){
+			console.log('aborted');
+		}
 	},
 
 	/** 
@@ -131,6 +134,13 @@ Sequencer2.prototype = {
 	* @param  {object} queue очередь, которую нужно прервать
 	*/
 	_abort: function(queue){
+		if(this.inDebugMode){
+			console.log(
+				'aborted', 
+				queue.map(function(s){return s.name}), 
+				this._nestedQueue.map(function(s){return s.name})
+			);
+		}
 		this._nestedQueue.length = null;
 		queue.length = 0;
 		this._reset();
@@ -147,13 +157,13 @@ Sequencer2.prototype = {
 		this._resetTimeout();
 		this._startTime = 0;
 		this._dt = 0;
-		this.duration = 0;
 		this._skips = 0;
 	},
 
 	/** Ресетит очередь, включая статус завершения.	*/
 	_resetFull: function(){
 		this._reset();
+		this.duration = 0;
 		this._isSync = false;
 	},
 
@@ -218,8 +228,17 @@ Sequencer2.prototype = {
 		return step.next;
 	},
 
-	/** Выполняет текущее действие в очереди и запускает таймаут следующего. */
+	/** Запускает выполнение действий. */
 	_go: function(){
+		// jshint curly:false
+		while(this._next());
+	},
+
+	/** 
+	* Выполняет текущее действие в очереди и запускает таймаут следующего.
+	* @return {boolean} Возвращает нужно ли запустить функцию снова.
+	*/
+	_next: function(){
 		//console.log(JSON.stringify(this._queue, null, '    '))
 		var queue = this._queue[0];
 		// Больше нет действий
@@ -228,7 +247,7 @@ Sequencer2.prototype = {
 				console.log('ended');
 			}
 			this._resetFull();
-			return;
+			return false;
 		}
 
 		var step = queue[0];
@@ -241,8 +260,7 @@ Sequencer2.prototype = {
 				this._queue.unshift(this._nestedQueue[i]);
 			}
 			this._nestedQueue.length = 0;
-			this._go();
-			return;
+			return true;
 		}
 
 		// Убираем выполненный шаг из очереди
@@ -258,8 +276,7 @@ Sequencer2.prototype = {
 				console.log('skipped', logs[0]);
 			}
 			this._skips--;
-			this._go();
-			return;
+			return true;
 		}
 
 		// Переходим к след. шагу с указанной задержкой
@@ -288,8 +305,9 @@ Sequencer2.prototype = {
 		}
 
 		if(this._isSync){
-			this._go();
+			return true;
 		}
+		return false;
 	},
 
 	/**
@@ -308,9 +326,9 @@ Sequencer2.prototype = {
 
 // jshint unused:false
 function testSequence(){
-	var seq = new Sequencer2();
+	var seq = new Sequencer2(true);
 	function action0(seq){
-		seq.append(func('14', action1), 5000);
+		seq.append(func('14', action1), 5000).then(func('14.5'), 1000);
 	}
 	function action1(seq){
 		seq.abort();
@@ -360,4 +378,5 @@ function testSequence(){
 	seq.queueUp(func('21'), 1000);
 	seq.queueUp(func('22'), 1000);
 	seq.queueUp(func('23'), 1000);
+	//seq.finish();
 }
