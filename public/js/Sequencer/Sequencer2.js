@@ -69,6 +69,12 @@ var Sequencer2 = function(){
 	* @type {Boolean}
 	*/
 	this._isSync = false;
+
+	/**
+	* Кол-во шагов, которые будут пропущены в текущей очереди.
+	* @type {Number}
+	*/
+	this._skips = 0;
 };
 
 Sequencer2.prototype = {
@@ -127,12 +133,25 @@ Sequencer2.prototype = {
 		this._startTime = 0;
 		this._dt = 0;
 		this.duration = 0;
+		this._skips = 0;
 	},
 
 	/** Ресетит очередь, включая статус завершения.	*/
 	_resetFull: function(){
 		this._reset();
 		this._isSync = false;
+	},
+
+	/**
+	* Пропускает указанное кол-во шагов текущей очереди.
+	* Не влияет на общую `duration` очереди.
+	* @param  {number} num кол-во пропускаемых шагов
+	*/
+	_skip: function(num){
+		if(typeof num != 'number' || isNaN(num)){
+			num = 1;
+		}
+		this._skips += num;
 	},
 
 	/**
@@ -172,7 +191,7 @@ Sequencer2.prototype = {
 		this.duration += duration;
 		var step = {
 			action: action,
-			name: action.name || action._name,
+			name: action && (action.name || action._name),
 			duration: duration,
 			context: context,
 			next: {
@@ -198,6 +217,7 @@ Sequencer2.prototype = {
 		// В текущей очереди нет действий, удаляем ее,
 		// добавляем вложенные очереди в основную очередь и переходим к след. очереди
 		if(!step){
+			this._skips = 0;
 			this._queue.shift();
 			for(var i = this._nestedQueue.length - 1; i >= 0; i--){
 				this._queue.unshift(this._nestedQueue[i]);
@@ -211,6 +231,13 @@ Sequencer2.prototype = {
 		queue.shift();
 
 		var logs = [step.name];
+
+		if(this._skips !== 0){
+			console.log('skipped', logs[0]);
+			this._skips--;
+			this._go();
+			return;
+		}
 
 		// Переходим к след. шагу с указанной задержкой
 		if(!this._isSync){
@@ -229,7 +256,9 @@ Sequencer2.prototype = {
 		console.log.apply(console, logs);
 
 		// Вызываем действие текущего шага
-		step.action.call(step.context || null, this._getMethods(queue));
+		if(typeof step.action == 'function'){
+			step.action.call(step.context || null, this._getMethods(queue));
+		}
 
 		if(this._isSync){
 			this._go();
@@ -244,7 +273,8 @@ Sequencer2.prototype = {
 		return {
 			append: this._addQueue.bind(this, this._nestedQueue),
 			abort: this._abort.bind(this, queue),
-			finish: this._finish.bind(this)
+			finish: this._finish.bind(this),
+			skip: this._skip.bind(this)
 		};
 	}
 };
@@ -263,6 +293,7 @@ function testSequence(){
 	function action2(seq){
 	}
 	function action3(seq){
+		seq.skip(1);
 		seq.append(action5, 1000);
 	}
 	function action4(seq){
@@ -281,7 +312,7 @@ function testSequence(){
 		return func;
 	}
 	seq.queueUp(func('1'), 1000);
-	seq.queueUp(func('2'), 1000);
+	seq.queueUp(func('2', action3), 1000).then(func('2.5'), 1000).then(func('2.75'), 1000);
 	seq.queueUp(func('3'), 1000);
 	seq.queueUp(func('4'), 1000);
 	seq.queueUp(func('5'), 1000);
