@@ -13,7 +13,7 @@ var actionReactions = {
 	*
 	* @return {number} Время выполнения действия
 	*/
-	TRUMP_CARDS: function(action){
+	TRUMP_CARDS: function(action, seq){
 		if(!action.cards || !action.cards.length){
 			return 0;		
 		}
@@ -23,20 +23,19 @@ var actionReactions = {
 			player = playerManager.getPlayer(pid),
 			message;
 
-		game.seq.start(function(){
-			if(player){
-				message = ui.eventFeed.newMessage(player.name + ' is going first', 'positive');
-			}
-			fieldManager.showTrumpCards(cardsInfo, pid);
-		}, 3000/game.speed, 0)
-		.then(function(){
+		if(player){
+			message = ui.eventFeed.newMessage(player.name + ' is going first', 'positive');
+		}
+		fieldManager.showTrumpCards(cardsInfo, pid);
+
+		seq.append(function(){
 			if(message){
 				ui.eventFeed.removeMessage(message);
 			}
 			fieldManager.hideTrumpCards(cardsInfo);
 		}, 500);
 
-		return game.seq.duration;
+		return 3000;
 	},
 
 	/**
@@ -49,7 +48,7 @@ var actionReactions = {
 	*
 	* @return {number} Время до начала добавления последней карты
 	*/
-	GAME_INFO: function(action, noDelay){
+	GAME_INFO: function(action, seq, noDelay){
 
 		cardManager.createCards(action.cards);
 		
@@ -78,23 +77,25 @@ var actionReactions = {
 		cardEmitter.stop();
 		cardControl.reset();
 		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
-		var delay;
+		var duration = 0;
 		if(noDelay){
 			ui.layers.showLayer(ui.actionButtons, true);
 			fieldManager.endFieldAnimations();
-			delay = fieldManager.queueCards(action.cards, noDelay);
+			duration = fieldManager.queueCards(action.cards, noDelay);
 			fieldManager.removeMarkedCards();
 			fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, noDelay);
 		}
 		else{
-			delay = fieldManager.fancyShuffleCards(action.cards);
+			fieldManager.fancyShuffleCards(seq, action.cards);
 		}
 
 		if(hasTrumpSuit){
-			fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? cardManager.defaultMoveTime : delay);
+			seq.append(function(){
+				fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? cardManager.defaultMoveTime : duration);
+			});
 		}
 
-		return delay;
+		return duration;
 	},
 
 	/**
@@ -103,9 +104,9 @@ var actionReactions = {
 	*
 	* @return {number} Время выполнения действия
 	*/
-	GAME_INFO_UPDATE: function(action){
+	GAME_INFO_UPDATE: function(action, seq){
 		ui.feed.newMessage('Reconnected to game', 2000);
-		return this['GAME_INFO'].call(this, action, true);
+		return this.GAME_INFO.call(this, action, seq, true);
 	},
 
 	/**
@@ -115,7 +116,7 @@ var actionReactions = {
 	*
 	* @return {number} Время выполнения действия (0)
 	*/
-	REVEAL: function(action){
+	REVEAL: function(action, seq){
 		fieldManager.revealCards(action.cards);
 		return 0;
 	},
@@ -127,7 +128,7 @@ var actionReactions = {
 	* @return {number} Время до начала добавления последней карты
 	* @memberof actionReactions
 	*/
-	DRAW: function(action){
+	DRAW: function(action, seq){
 		var delay = fieldManager.queueCards(action.cards);
 		fieldManager.removeMarkedCards();
 		fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START_ALL);
@@ -142,7 +143,7 @@ var actionReactions = {
 	*
 	* @return {number} Время выполнения действия
 	*/
-	TAKE: function(action){
+	TAKE: function(action, seq){
 		var delay = 0;
 		if(!action.cards){
 			return delay;
@@ -159,7 +160,7 @@ var actionReactions = {
 	*
 	* @return {number} Время выполнения действия
 	*/
-	DEFENSE: function(action){
+	DEFENSE: function(action, seq){
 		var delay = 0;
 		var card = {
 			cid: action.cid,
@@ -178,7 +179,7 @@ var actionReactions = {
 	*
 	* @return {number} Время выполнения действия
 	*/
-	DISCARD: function(action){
+	DISCARD: function(action, seq){
 		actionHandler.reset();
 		var delay = 0;
 		var cards = [];
@@ -192,7 +193,7 @@ var actionReactions = {
 		var field = fieldManager.fields.DISCARD_PILE;
 		delay = fieldManager.moveCards(field, cards);
 		if(action.unlockedField){
-			delay += fieldManager.unlockField(action.unlockedField);
+			fieldManager.unlockField(seq, action.unlockedField);
 		}
 		return delay;
 	},
@@ -204,7 +205,7 @@ var actionReactions = {
 	*
 	* @return {number} Время выполнения действия
 	*/
-	SKIP: function(action){
+	SKIP: function(action, seq){
 		return 0;
 	}
 };

@@ -7,7 +7,7 @@
 var clientMethods = {
 
 	setId: function(connId, pid){
-		game.seq.finish();
+		actionHandler.sequencer.finish(true);
 		game.pid = pid;
 		var oldId = options.get('connection_id');
 		if(oldId){
@@ -32,6 +32,7 @@ var clientMethods = {
 	},
 
 	recievePossibleActions: function(newActions, time, timeSent, turnStage){	
+		this.serverWaiting = false;
 		actionHandler.handlePossibleActions(newActions, time, timeSent, turnStage);
 		if(connection.inDebugMode){
 			console.log(newActions);
@@ -42,7 +43,7 @@ var clientMethods = {
 		if(!action.noResponse){
 			connection.serverWaiting = true;
 		}
-		var delay = actionHandler.executeAction(action);
+		actionHandler.executeAction(action);
 		if(connection.inDebugMode){
 			console.log(action);
 		}

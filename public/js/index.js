@@ -52,13 +52,6 @@ Phaser.Device.whenReady(function(){
 	options = new OptionManager(appName, containerName);
 
 	/**
-	* Обработчик действий сервера.
-	* @type {ActionHandler}
-	* @global
-	*/
-	actionHandler = new ActionHandler('play', actionReactions, notificationReactions);
-
-	/**
 	* Менеджер игроков.
 	* @type {PlayerManager}
 	* @global
@@ -92,6 +85,13 @@ Phaser.Device.whenReady(function(){
 	* @global
 	*/
 	connection = new ConnectionManager(serverMethods, clientMethods, 'menu', options.get('debug_connection'));
+	
+	/**
+	* Обработчик действий сервера.
+	* @type {ActionHandler}
+	* @global
+	*/
+	actionHandler = new ActionHandler('play', actionReactions, notificationReactions);
 
 	/**
 	* Игра

@@ -69,7 +69,7 @@ class Queue{
 			this.log.notice(p.id, results[p.id]);
 			if(!results[p.id] || results[p.id] != 'ACCEPT'){
 				this.removePlayer(p, false);
-				p.recieveNotification({message: 'LEFT_QUEUE', noResponse: true});
+				p.recieveNotification({message: 'LEFT_QUEUE', instant: true});
 			}
 		}
 
@@ -119,7 +119,7 @@ class Queue{
 		this.players.splice(i, 1);
 		player.queue = null;
 		if(notify){
-			player.recieveNotification({message: 'LEFT_QUEUE', noResponse: true});
+			player.recieveNotification({message: 'LEFT_QUEUE', instant: true});
 			this.notifyPlayers();
 		}
 		this.log.notice('Player %s left queue', player.id, this.id);
