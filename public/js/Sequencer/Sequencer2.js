@@ -13,7 +13,6 @@
 * Помимо `append` передаются следующие действия:  
 * `abort()` - прерывает текущую очередь и все вложенные в нее очереди  
 * `skip(num)` - будет пропущено `num` следующих действий в текущей очереди  
-* `finish()` - очередь переходит в режим линейного завершения (без `setTimeout`) (влияет на ВСЕ очереди)
 * @class
 * @param {function} onComplete
 * @param {boolean} inDebugMode
@@ -114,7 +113,7 @@ Sequencer2.prototype = {
 	* Создает новую очередь с действием, добавляет ее после всех очередей.
 	* Запускает очередь, если она была пустой.
 	* @param {function} action   Действие. При выполнении в него передадутся два параметра:  
-	*                            `seq` - набор методов для управлением очередью (`append, abort, skip, finish`)  
+	*                            `seq` - набор методов для управлением очередью (`append, abort, skip`)  
 	*                            `sync` - выполняется ли очередь в реальном времени (на очереди был вызван метод finish)
 	* @param {number}   duration Длительность действия. Может быть передана вместо действия или быть возвращена действием.
 	* @param {object}   context  контекст действия
@@ -137,21 +136,11 @@ Sequencer2.prototype = {
 	},
 
 	/** 
-	* Завершает все очереди синхронно изнутри действия.
-	* @param  {boolean} [disableOnComplete] `onComplete` метод не будет выполнен
-	*/
-	_finish: function(disableOnComplete){
-		this._disableOnComplete = disableOnComplete || false;
-		this._resetTimeout();
-		this._isSync = true;
-	},
-
-	/** 
 	* Прерывает все очереди.
 	* @param  {boolean} [disableOnComplete] `onComplete` метод не будет выполнен
 	*/
 	abort: function(disableOnComplete){
-		this._log('ended');
+		this._log('aborted');
 		this._disableOnComplete = disableOnComplete || false;
 		this._nestedQueue.length = null;
 		this._queue.length = 0;
@@ -266,25 +255,24 @@ Sequencer2.prototype = {
 	* @return {boolean} Возвращает нужно ли запустить функцию снова.
 	*/
 	_next: function(){
-		//console.log(JSON.stringify(this._queue, null, '    '))
-		var queue = this._queue[0];
+
+		// console.log(JSON.stringify(this._queue, null, '    '))
+		
 		// Больше нет очередей, ресетим менеджер и завершаем
+		var queue = this._queue[0];
 		if(!queue){
 			this._log('ended');
 			this._resetFull();
 			return false;
 		}
 
-		var step = queue[0];
 		// В текущей очереди нет действий, удаляем ее,
 		// добавляем вложенные очереди в основную очередь и переходим к след. очереди
+		var step = queue[0];
 		if(!step){
 			this._skips = 0;
 			this._queue.shift();
-			for(var i = this._nestedQueue.length - 1; i >= 0; i--){
-				this._queue.unshift(this._nestedQueue[i]);
-			}
-			this._nestedQueue.length = 0;
+			this._appendNestedQueue();
 			return true;
 		}
 
@@ -293,9 +281,7 @@ Sequencer2.prototype = {
 
 		// Пропускаем действие, если указаны пропуски
 		if(this._skips !== 0){
-
 			this._log(step.name, 'skipped');
-
 			this._skips--;
 			return true;
 		}
@@ -312,9 +298,7 @@ Sequencer2.prototype = {
 
 		// Переходим к след. шагу с указанной задержкой
 		if(!this._isSync){
-
 			this._log(step.name, duration);
-
 			this._resetTimeout();
 			this.timeout = setTimeout(this._go.bind(this), duration);
 			return false;
@@ -323,6 +307,14 @@ Sequencer2.prototype = {
 		// Переходим к след. шагу без задержки
 		this._log(step.name);
 		return true;
+	},
+
+	/** Добавляет вложенную очередь в начало последовательности. */
+	_appendNestedQueue: function(){
+		for(var i = this._nestedQueue.length - 1; i >= 0; i--){
+			this._queue.unshift(this._nestedQueue[i]);
+		}
+		this._nestedQueue.length = 0;
 	},
 
 	/**
@@ -359,7 +351,6 @@ Sequencer2.prototype = {
 		return {
 			append: this._addQueue.bind(this, this._nestedQueue),
 			abort: this._abort.bind(this, queue),
-			finish: this._finish.bind(this),
 			skip: this._skip.bind(this)
 		};
 	},
