@@ -84,9 +84,8 @@ var statePlay = new State('play', {
 	* @memberof statePlay
 	*/
 	shutdown: function(){ 
+		actionHandler.sequencer.finish(true);
 		actionHandler.resetActions();
-		connection.resetTimer();
-		game.seq.finish();
 		ui.eventFeed.clear();
 		ui.announcer.clear();
 		cardControl.reset();

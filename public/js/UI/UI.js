@@ -377,6 +377,24 @@ UI.prototype._createButtons = function(){
 		textColor: 'white',
 		group: this.cornerButtons
 	});
+
+	// Завершение последовательности
+	new Button({
+		position: function(width, height){
+			return {
+				x: game.screenWidth - 45 - width*3,
+				y: game.screenHeight - 15 - height
+			};
+		},
+		action: actionHandler.sequencer.finish.bind(actionHandler.sequencer, false),
+		text: 'S',
+		context: game,
+		color: 'orange',
+		name: 'debug',
+		size: 'small',
+		textColor: 'white',
+		group: this.cornerButtons
+	});
 };
 
 /** Обновляет позиции всех элементов UI. */

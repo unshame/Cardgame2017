@@ -46,6 +46,12 @@ var ActionHandler = function(correctState, actionReactions, notificationReaction
 	* @type {Boolean}
 	*/
 	this._waitingForGameInfo = false;
+
+	/**
+	* Менеджер последовательностей игровых действий и анимаций.
+	* @type {Sequencer}
+	*/
+	this.sequencer = new Sequencer(connection.server.sendResponse);
 };
 
 // ОБРАБОТКА КОМАНД СЕРВЕРА
@@ -90,18 +96,17 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
-	game.seq.finish();
-
-	var delay = 0;
+	if(action.instant){
+		this.sequencer.finish();
+	}
 
 	var reaction = this.actionReactions[action.type];
 	if(!reaction){
 		console.warn('Action handler: Unknown action type', action.type, action);
 	}
 	else{
-		delay += reaction.call(this.actionReactions, action);
+		this.sequencer.queueUp(reaction.bind(this.actionReactions, action));
 	}
-	return delay;
 };
 
 /**
@@ -127,14 +132,16 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 		return;
 	}
 
-	this.turnStage = turnStage;
+	this.sequencer.queueUp(function(){
+		this.turnStage = turnStage;
 
-	time = time - Date.now();
-	if(time){
-		ui.rope.start(time - 1000);
-	}
+		time = time - Date.now();
+		if(time){
+			ui.rope.start(time - 1000);
+		}
 
-	this.highlightPossibleActions(actions);
+		this.highlightPossibleActions(actions);
+	}, 0, this);
 };
 
 /**
@@ -162,12 +169,16 @@ ActionHandler.prototype.handleNotification = function(note, actions){
 		return;
 	}
 
+	if(note.instant){
+		this.sequencer.finish();
+	}
+
 	var reaction = this.notificationReactions[note.message];
 	if(!reaction){
 		console.warn('Action handler: Unknown notification handler', note.message, note, actions);
 	}
 	else{
-		reaction.call(this.notificationReactions, note, actions);
+		this.sequencer.queueUp(reaction.bind(this.notificationReactions, note, actions));
 	}
 };
 
@@ -189,8 +200,6 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 	else{
 		actions = this.possibleActions;
 	}
-
-	game.seq.finish();
 
 	if(!fieldManager.networkCreated){
 		console.error('Action handler: field network hasn\'t been created');

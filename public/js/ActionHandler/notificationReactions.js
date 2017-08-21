@@ -10,7 +10,7 @@ var notificationReactions = {
 	/**
 	* В игре остались только боты, игра симулируется в ускоренном режиме.
 	*/
-	SIMULATING: function(){
+	SIMULATING: function(note, actions, seq){
 		ui.feed.newMessage('Simulating', 2000);
 	},
 
@@ -18,7 +18,7 @@ var notificationReactions = {
 	* Начало хода.
 	* @param {object} note сообщение
 	*/
-	TURN_STARTED: function(note){
+	TURN_STARTED: function(note, action, seq){
 
 	},
 
@@ -27,7 +27,7 @@ var notificationReactions = {
 	* @param {object} note       сообщение
 	* @param {number} note.index порядковый индекс игры
 	*/
-	GAME_STARTED: function(note){
+	GAME_STARTED: function(note, actions, seq){
 		//ui.eventFeed.newMessage('Game ' + (note.index + 1) + ' Started', 4000);
 	},
 
@@ -35,7 +35,7 @@ var notificationReactions = {
 	* Окончание хода.
 	* @param {object} note сообщение
 	*/
-	TURN_ENDED: function(note){
+	TURN_ENDED: function(note, actions, seq){
 		fieldManager.resetTableOrder();
 	},
 
@@ -46,7 +46,7 @@ var notificationReactions = {
 	* @param {object<object<number>>} note.scores  очки игроков по id игроков в виде `{wins, losses, cardsWhenLost} `
 	* @param {object}                 actions      действия голосования за и против рематча `{ { type: 'ACCEPT' }, { type: 'DECLINE' } }`
 	*/
-	GAME_ENDED: function(note, actions){
+	GAME_ENDED: function(note, actions, seq){
 
 		actionHandler.reset();
 
@@ -64,18 +64,19 @@ var notificationReactions = {
 		delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);	
 		delay += cardManager.defaultMoveTime;
 
-		game.seq.start(function(seq){
+		seq.append(function(seq){
 			discard.removeAllCards();
 			dummy.placeQueuedCards();
 			if(!won){
 				seq.abort();
-				seq.start(function(){
-					ui.announcer.newMessage('Better luck next time');
-					fieldManager.resetFields();
-					cardManager.enablePhysics(true);
-					//game.camera.shake(0.005, 1000);
-					game.shake(15, 800, 20, 50);
-				}, 0, delay - cardManager.defaultMoveTime);
+				seq.append(delay - cardManager.defaultMoveTime)
+					.then(function(){
+						ui.announcer.newMessage('Better luck next time');
+						fieldManager.resetFields();
+						cardManager.enablePhysics(true);
+						//game.camera.shake(0.005, 1000);
+						game.shake(15, 800, 20, 50);
+					}, 0);
 			}
 		}, delay/game.speed)
 		.then(function(){
@@ -107,7 +108,7 @@ var notificationReactions = {
 	* @param {object<object<string>>} note.results результаты голосования по id игроков вида '{type, pid}'
 	* @param {boolean}                successful   удачно ли прошло голосование
 	*/
-	VOTE_RESULTS: function(note){
+	VOTE_RESULTS: function(note, actions, seq){
 		console.log(note);
 	},
 
@@ -119,7 +120,7 @@ var notificationReactions = {
 	* @param {object}             note.timeSent время в которое действия были отправленны с сервера
 	* @param {object<ActionInfo>} actions       действия из которых нужно выбрать одно в замен неверного
 	*/
-	INVALID_ACTION: function(note, actions){
+	INVALID_ACTION: function(note, actions, seq){
 		var action = note.action,
 			card = cardManager.cards[action.cid];
 		if(action.cid && card){
@@ -143,19 +144,19 @@ var notificationReactions = {
 	/**
 	* Игрок отключен от игры.
 	*/
-	CONCEDED: function(){
+	CONCEDED: function(note, actions, seq){
 		ui.feed.newMessage('Disconnected from game', 2000);
 		game.state.change('menu');
 
 	},
 
-	PLAYER_CONCEDED: function(note){
+	PLAYER_CONCEDED: function(note, actions, seq){
 		var player = playerManager.getPlayer(note.pid);
 		ui.eventFeed.newMessage(player.name + ' conceded', 2000);
 		player.name = note.name;
 		var field = fieldManager.fields[note.pid];
 		var duration = field.moveTime/game.speed;
-		game.seq.start(function(){		
+		seq.append(function(){		
 			field.badge.visible = false;		
 			field.badge.updatePosition();
 			field.setupAnimatedAppearance();
@@ -169,14 +170,14 @@ var notificationReactions = {
 		});
 	},
 
-	HOVER_OVER_CARD: function(note){
+	HOVER_OVER_CARD: function(note, actions, seq){
 		var card = cardManager.cards[note.cid];
 		if(card){
 			card.setHighlight(true, ui.colors.red);
 		}
 	},
 
-	HOVER_OUT_CARD: function(note){
+	HOVER_OUT_CARD: function(note, actions, seq){
 		var card = cardManager.cards[note.cid];
 		if(card){
 			card.setHighlight(false);

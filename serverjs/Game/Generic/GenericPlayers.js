@@ -120,7 +120,7 @@ class GenericPlayers extends GamePlayers{
 			this.log.error('Cannot concede a player that isn\'t in this game', player.id);
 			return;
 		}
-		this.notify({message: 'CONCEDED', noResponse: true}, null, [player]);
+		this.notify({message: 'CONCEDED', instant: true}, null, [player]);
 		
 
 		let pi = this.indexOf(player);

@@ -7,8 +7,7 @@
 var clientMethods = {
 
 	setId: function(connId, pid){
-		connection.resetTimer();
-		game.seq.finish();
+		actionHandler.sequencer.finish(true);
 		game.pid = pid;
 		var oldId = options.get('connection_id');
 		if(oldId){
@@ -33,8 +32,7 @@ var clientMethods = {
 	},
 
 	recievePossibleActions: function(newActions, time, timeSent, turnStage){	
-		connection.resetTimer();
-
+		this.serverWaiting = false;
 		actionHandler.handlePossibleActions(newActions, time, timeSent, turnStage);
 		if(connection.inDebugMode){
 			console.log(newActions);
@@ -42,12 +40,10 @@ var clientMethods = {
 	},
 
 	recieveCompleteAction: function(action){
-
-		var delay = actionHandler.executeAction(action);
 		if(!action.noResponse){
-			connection.resetTimer();
-			connection.responseTimer = setTimeout(connection.server.sendResponse, !delay && 1 || (delay/game.speed + 300));
+			connection.serverWaiting = true;
 		}
+		actionHandler.executeAction(action);
 		if(connection.inDebugMode){
 			console.log(action);
 		}
@@ -55,7 +51,7 @@ var clientMethods = {
 
 	recieveNotification: function(note, actions){
 		if(!note.noResponse){
-			connection.resetTimer();
+			connection.serverWaiting = false;
 		}
 		actionHandler.handleNotification(note, actions);
 		if(connection.inDebugMode){

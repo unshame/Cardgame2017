@@ -71,7 +71,7 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 *
 * @return {number} Время анимации.
 */
-FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
+FieldManager.prototype.fancyShuffleCards = function(seq, cardsInfo){
 
 	var	playerField = this.fields[game.pid];
 	// если поле игрока будет анимироваться, нужно это учесть в радиусе вращения карт
@@ -129,7 +129,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 
 	// Передвигает карту из перемешанного массива в точку начала вращения, запускает вращение
 	// и планирует перемещение карты из неперемешанного массива в колоду
-	function revolveCard(i, seq){
+	function revolveCard(i, lastStep){
 		var c = cardManager.cards[shuffledCardsInfo[i].cid]; // перемешанная карта		
 		var rc = cardManager.cards[cardsInfo[i].cid];		 // неперемешанная карта
 		var info = cardsInfo[i];
@@ -140,7 +140,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 		c.moveTo(cx, cy, duration*gameSpeed, delay*gameSpeed, false, true, BRING_TO_TOP_ON.START, Phaser.Easing.Cubic.In);
 		c.revolveAround(hx, cy, da);
 
-		seq.append(function(){
+		return lastStep.then(function(){
 			rc.stopRevolving();
 			var fieldId = info.field;
 			this.moveCards(this.fields[fieldId], [info]);
@@ -159,10 +159,10 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 	*  Конец анимации, ресет эмиттера
 	*/
 
-	game.seq.start(function(seq){
+	seq.append(function(seq){
 		// Меняем свойства хвоста карты, ставим его в центр вращения 
 		// и планируем запуск сразу как первая карта достигнет точки вращения
-		seq.append(function(){
+		var lastStep = seq.append(function(){
 			trail.x = hx;
 			trail.y = height/2 + offset;
 			trail.lifespan = trailLifespan;
@@ -180,11 +180,11 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 
 		// Запускаем перемещение и вращение карт, планируем перемешения в колоду
 		for(var i = 0; i < cardsInfo.length; i++){
-			revolveCard.call(this, i, seq);
+			lastStep = revolveCard.call(this, i, lastStep);
 		}
 
 		// выключаем эмиттер хвоста карты
-		seq.append(function(){
+		lastStep = lastStep.then(function(){
 			trail.on = false;		
 		}, 0);
 
@@ -193,7 +193,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 			if(i == tables.length - 1){
 				timePerTable += tableLitTime;
 			}
-			seq.append(function(){
+			lastStep = lastStep.then(function(){
 				t.setOwnPlayability(true);
 			}, timePerTable);
 		});
@@ -201,13 +201,13 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 		// Выключаем подсветку стола
 		timePerTable = tableLightOutTime/tables.length;
 		tables.forEach(function(t, i){
-			seq.append(function(){
+			lastStep = lastStep.then(function(){
 				t.setOwnPlayability(false);
 			}, timePerTable);
 		});
 
 		// Завершаем анимацию и ресетим хвост карты
-		seq.append(function(){
+		lastStep.then(function(){
 			ui.layers.showLayer(ui.actionButtons, true);
 			fields.forEach(function(f){
 				f.endAnimation();
@@ -215,8 +215,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 			cardControl.trailReset();
 		});
 
-	}, duration, 0, this);
-	return totalTime*gameSpeed;
+	}, duration, this);
 };
 
 /**
@@ -224,7 +223,7 @@ FieldManager.prototype.fancyShuffleCards = function(cardsInfo){
 * @param {string}  id            id поля
 * @param {boolean} [noAnimation] отключает анимацию
 */
-FieldManager.prototype.unlockField = function(id, noAnimation){
+FieldManager.prototype.unlockField = function(seq, id, noAnimation){
 	var field = this.fields[id];
 	if(!field || !field.icon){
 		console.error('Field manager: cannot unlock field', id, ', no such field or field has no icon');
@@ -238,17 +237,16 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 		return;
 	}
 
-	icon.visible = true;
-	field.iconStyle.shouldHide = false;
-	icon.alpha = 1;
-
 	var lockDelay = 100/game.speed,
 		spinDelay = 300/game.speed,
 		spinTime = 1000/game.speed;
 
 	var tween = game.add.tween(icon);	
 
-	game.seq.start(function(){
+	seq.append(function(){
+		icon.visible = true;
+		field.iconStyle.shouldHide = false;
+		icon.alpha = 1;
 		field.setOwnHighlight(true);
 		tween.to({alpha: 0, angle: 720}, spinTime - lockDelay, Phaser.Easing.Quadratic.In, false, spinDelay);
 		tween.start();	
@@ -266,6 +264,4 @@ FieldManager.prototype.unlockField = function(id, noAnimation){
 			field.setOwnHighlight(false);
 		}
 	});
-
-	return game.seq.duration - 500;
 };

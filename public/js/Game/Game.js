@@ -46,12 +46,6 @@ var Game = function(parent, speed, inDebugMode){
 	*/
 	this.isRawLandscape = true;
 
-	/**
-	* Менеджер последовательностей игровых анимаций.
-	* @type {Sequencer}
-	*/
-	this.seq = new Sequencer();
-
 	Phaser.Game.call(
 		this,
 		{

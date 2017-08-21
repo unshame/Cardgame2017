@@ -43,8 +43,10 @@ var serverMethods = {
 	},
 
 	sendResponse: function(){
-		connection.proxy.recieveResponse();
-		connection.resetTimer();
+		if(connection.serverWaiting){
+			connection.serverWaiting = false;
+			connection.proxy.recieveResponse();
+		}
 	},
 	
 	reconnect: function(){
