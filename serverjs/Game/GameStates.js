@@ -31,16 +31,7 @@ class GameStates{
 		const game = this.game;
 		this.current = 'STARTING';
 		game.waitForResponse(game.actions.timeouts.gameStart, game.players);
-		game.players.gameStateNotify(
-			game.players,
-			{
-				cards: true,
-				players: true,
-				suit: true
-			},
-			false,
-			'GAME_INFO'
-		);
+		game.players.gameStateNotify(game.players);
 		return false;
 	}
 
@@ -61,30 +52,8 @@ class GameStates{
 
 	}
 
-	// Находим игрока, делающего первый ход в игре или продолжаем ход
 	STARTED(){
-		const game = this.game;
-		if(!game.players.attackers.length){
-
-			let [minTCards, minTCard] = game.players.findToGoFirst();	
-
-			// Сообщаем игрокам о минимальных козырях
-			if(minTCard){				
-				game.waitForResponse(game.actions.timeouts.trumpCards, game.players);
-				game.players.minTrumpCardsNotify(minTCards, minTCard.field);
-				return false;
-			}
-			// Иначе сообщаем об отсутствии козырей в руках
-			else{
-				game.players.notify({
-					type: 'NO_TRUMP_CARDS'
-				});
-				return true;
-			}
-		}
-		else{
-			return game.doTurn();	
-		}
+		return game.doTurn();
 	}
 }
 

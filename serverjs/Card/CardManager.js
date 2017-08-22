@@ -14,7 +14,7 @@ class GameCards extends BetterArray{
 		this.log = game.log;
 		this.values = [];
 
-		this.CardClass= config.card;
+		this.CardClass = config.card;
 
 		this.deck = new BetterArray();
 

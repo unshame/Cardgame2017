@@ -392,6 +392,9 @@ class Game{
 		this.actions.recieve(player, action);
 	}
 
+
+	// Игрок проносит курсор над картой
+
 	hoverOverCard(player, cid){
 		if(this.players.includes(player) && player.statuses.working && this.actions.valid.length && this.cards.byId[cid].field == player.id){
 			if(player.statuses.hover){

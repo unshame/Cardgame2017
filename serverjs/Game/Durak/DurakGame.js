@@ -5,11 +5,11 @@ const
 	Bot = reqfromroot('Player/Bot'),
 	DurakCards = reqfromroot('Game/Durak/DurakCards'),
 	DurakPlayers = reqfromroot('Game/Durak/DurakPlayers'),
-	GameActions = reqfromroot('Game/GameActions'),
-	GameStates = reqfromroot('Game/GameStates'),
-	GameTurnStages = reqfromroot('Game/GameTurnStages'),
-	GameReactions = reqfromroot('Game/GameReactions'),
-	GameDirectives = reqfromroot('Game/GameDirectives');
+	DurakActions = reqfromroot('Game/Durak/DurakActions'),
+	DurakStates = reqfromroot('Game/Durak/DurakStates'),
+	DurakTurnStages = reqfromroot('Game/Durak/DurakTurnStages'),
+	DurakReactions = reqfromroot('Game/Durak/DurakReactions'),
+	DurakDirectives = reqfromroot('Game/Durak/DurakDirectives');
 
 class DurakGame extends Game{
 	constructor(queue, players, config){
@@ -19,11 +19,11 @@ class DurakGame extends Game{
 			{
 				cards: DurakCards,
 				players: DurakPlayers,
-				actions: GameActions,
-				states: GameStates,
-				turnStages: GameTurnStages,
-				reactions: GameReactions,
-				directives: GameDirectives,
+				actions: DurakActions,
+				states: DurakStates,
+				turnStages: DurakTurnStages,
+				reactions: DurakReactions,
+				directives: DurakDirectives,
 				bot: Bot
 			}, 
 			{

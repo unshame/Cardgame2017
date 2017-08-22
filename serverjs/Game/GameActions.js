@@ -1,7 +1,7 @@
 'use strict';
 
-class Actions{
-	constructor(game){
+class GameActions{
+	constructor(game, timeouts, ignored, prioritised){
 
 		this.game = game;
 		this.log = this.game.log;
@@ -11,21 +11,25 @@ class Actions{
 		this.valid = [];
 		this.stored = [];
 
-		this.takeOccurred = false;
+		this.ignored = ignored || [];
+		this.prioritised = prioritised || [];
 
 		// Время ожидания сервера
-		this.timeouts = {
+		this.timeouts = timeouts || {};
+
+		let requiredTimeouts = {
 			gameStart: 10,
 			gameEnd: 20,
-			trumpCards: 10,
 			deal: 10,
-			discard: 5,
-			take: 5,
 			actionComplete: 3,
-			actionAttack: 20,
-			actionDefend: 20,
 			afk: 5
 		};
+
+		for(let key in requiredTimeouts){
+			if(requiredTimeouts.hasOwnProperty(key) && !this.timeouts.hasOwnProperty(key)){
+				this.timeouts[key] = requiredTimeouts[key];
+			}
+		}
 	}
 
 	reset(){
@@ -33,7 +37,6 @@ class Actions{
 		this.deadline = null;
 		this.valid.length = 0;
 		this.stored.length = 0;
-		this.takeOccurred = false;
 	}
 
 	// Получает и обрабатывает действие
@@ -149,10 +152,6 @@ class Actions{
 	// ignored может быть 1 или массивом игнорируемых свойств действия
 	checkValidity(action, ignored){
 
-		if(ignored && !ignored.indexOf){
-			ignored = [ignored];
-		}
-
 		outer:	// https:// developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/label
 		for(let i = 0; i < this.valid.length; i++){
 			let validAction = this.valid[i];
@@ -174,10 +173,10 @@ class Actions{
 
 		const game = this.game;
 
-		let action = this.checkValidity(incomingAction, 'linkedField');
+		let action = this.checkValidity(incomingAction, this.ignored);
 
 		// Проверка действия
-		if( !action ){
+		if(!action){
 			this.log.warn(
 				'Invalid action', player.id,
 				incomingAction && incomingAction.type, incomingAction, this.valid
@@ -211,7 +210,7 @@ class Actions{
 		let actionIndex = 0;
 		for(let ai = 0; ai < this.valid.length; ai++){
 			let action = this.valid[ai];
-			if(action.type == 'SKIP' || action.type == 'TAKE'){
+			if(this.prioritised.indexOf(action.type)){
 				actionIndex = ai;
 				break;
 			}
@@ -240,7 +239,7 @@ class Actions{
 		// Проверка действия
 		let action = this.checkValidity(incomingAction);
 
-		if( !action ){
+		if(!action){
 			this.log.warn('Invalid action', player.id, incomingAction.type, incomingAction, this.valid);
 			return;
 		}
@@ -320,18 +319,9 @@ class Actions{
 
 	// Записывает действие над картой в лог
 	logAction(card, actionType, from, to){
-		const game = this.game;
-
-		let playersById = game.players.byId;
-		this.log.debug(
-			'%s %s%s %s => %s',
-			actionType,
-			['♥', '♦', '♣', '♠'][card.suit], ['J', 'Q', 'K', 'A'][card.value - 11] || (card.value == 10 ? card.value : card.value + ' '),
-			playersById[from] ? playersById[from].name : from,
-			playersById[to] ? playersById[to].name : to
-		);
+		throw new Error('Must be implemented by subclass');
 	}
 
 }
 
-module.exports = Actions;
+module.exports = GameActions;
