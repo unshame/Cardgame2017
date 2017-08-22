@@ -115,9 +115,6 @@ class GameCards extends CardManager{
 		game.players.forEach((p) => {
 			this.hands[p.id] = [];
 		});
-
-		// Запоминаем козырь
-		this.findTrumpCard();
 	}
 
 	// Раздает карты, возвращает карты для отправки клиентам
