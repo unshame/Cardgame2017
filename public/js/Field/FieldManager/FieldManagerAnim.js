@@ -208,7 +208,6 @@ FieldManager.prototype.fancyShuffleCards = function(seq, cardsInfo){
 
 		// Завершаем анимацию и ресетим хвост карты
 		lastStep.then(function(){
-			ui.layers.showLayer(ui.actionButtons, true);
 			fields.forEach(function(f){
 				f.endAnimation();
 			});

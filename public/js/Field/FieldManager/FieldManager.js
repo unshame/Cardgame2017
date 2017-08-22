@@ -128,19 +128,14 @@ FieldManager.prototype.addOpponentField = function(options, style, badgeStyle){
 * Устанавливает козырь колоде.
 * @param {number} suit козырь
 */
-FieldManager.prototype.setTrumpSuit = function(suit, delay){
+FieldManager.prototype.setTrumpSuit = function(suit){
 	if(!this.fields.DECK || !this.fields.DECK.icon){
 		console.error('Field manager: cannot set trump suit, no DECK');
 		return;
 	}
-	if(delay === undefined){
-		delay = 1000;
-	}
 	var icon = this.fields.DECK.icon;
-	setTimeout(function(){
-		icon.frame = suit;
-		icon.visible = true;
-	}, delay/game.speed);
+	icon.frame = suit;
+	icon.visible = true;
 };
 
 /**

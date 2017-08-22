@@ -109,6 +109,7 @@ class DurakPlayers extends GenericPlayers{
 			p.recieveGameInfo(
 				{
 					type: type || 'GAME_INFO',
+					gameId: game.id,
 					cards: send.cards ? cardsToSend[pid] : [],
 					players: send.players ? playersToSend : [],
 					trumpSuit: send.suit ? game.cards.trumpSuit : null,

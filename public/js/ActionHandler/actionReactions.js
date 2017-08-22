@@ -50,11 +50,30 @@ var actionReactions = {
 	*/
 	GAME_INFO: function(action, seq, noDelay){
 
+		// Ресет модулей
+		actionHandler.resetActions();
+		ui.announcer.clear();
+		cardEmitter.stop();
+		cardControl.reset();
+		cardManager.disablePhysics();
+
+		// Создаем недостающие карты
 		cardManager.createCards(action.cards);
 		
+		// Создаем поля с учетом новой информации об игроках
 		if(action.players.length){
-			playerManager.savePlayers(action.players);
-			cardManager.disablePhysics();
+			// Сохраняем информацию об игроках
+			var gameId = playerManager.gameId;
+			playerManager.savePlayers(action.players, action.gameId);
+
+			// Если id игры не совпадает с локальным id игры, значит каким-то образом
+			// мы переподключились к другой игре, значит удаляем поля
+			if(fieldManager.networkCreated && gameId != action.gameId){
+				fieldManager.resetHighlights();
+				fieldManager.resetNetwork();
+			}
+
+			// Создаем или исправляем поля
 			if(fieldManager.networkCreated){
 				fieldManager.builder.adjustFieldNetwork(action.lockedFields);
 			}
@@ -72,26 +91,31 @@ var actionReactions = {
 			return;
 		}
 
-		actionHandler.resetActions();
-		ui.announcer.clear();
-		cardEmitter.stop();
-		cardControl.reset();
-		var hasTrumpSuit = action.trumpSuit || action.trumpSuit === 0;
+		// Распологаем карты по полям и показываем кнопки действий
 		var duration = 0;
 		if(noDelay){
-			ui.layers.showLayer(ui.actionButtons, true);
+			// Без анимации
+			duration = cardManager.defaultMoveTime;
 			fieldManager.endFieldAnimations();
-			duration = fieldManager.queueCards(action.cards, noDelay);
+			fieldManager.queueCards(action.cards, true);
 			fieldManager.removeMarkedCards();
-			fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, noDelay);
+			fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, true);
+
+			ui.layers.showLayer(ui.actionButtons, true);
 		}
 		else{
+			// С анимацией
 			fieldManager.fancyShuffleCards(seq, action.cards);
-		}
 
-		if(hasTrumpSuit){
 			seq.append(function(){
-				fieldManager.setTrumpSuit(action.trumpSuit, noDelay ? cardManager.defaultMoveTime : duration);
+				ui.layers.showLayer(ui.actionButtons, true);
+			});
+		}	
+
+		// Добавляем колоде текстуру, обозначающую текущую козырную масть
+		if(action.trumpSuit || action.trumpSuit === 0){
+			seq.append(function(){
+				fieldManager.setTrumpSuit(action.trumpSuit);
 			});
 		}
 

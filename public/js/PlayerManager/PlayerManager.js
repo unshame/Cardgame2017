@@ -7,7 +7,8 @@ var PlayerManager = function(){
 	this.reset();
 };
 
-PlayerManager.prototype.savePlayers = function(players){
+PlayerManager.prototype.savePlayers = function(players, gameId){
+	this.gameId = gameId;
 	this.players = players;
 	var playersById = this.playersById = {};
 	this.pid = game.pid;
@@ -22,6 +23,7 @@ PlayerManager.prototype.savePlayers = function(players){
 };
 
 PlayerManager.prototype.reset = function(){
+	this.gameId = null;
 	this.pi = null;
 	this.pid = null;
 	this.players = [];

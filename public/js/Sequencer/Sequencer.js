@@ -121,6 +121,9 @@ Sequencer.prototype = {
 	* @return {object} Объект для добавления действий `{then}`.
 	*/
 	queueUp: function(action, duration, context){
+		if(!this.timeout){
+			this.timeout = setTimeout(this._go.bind(this), 0);
+		}
 		return this._addQueue(this._queue, action, duration, context);
 	},
 
@@ -215,9 +218,6 @@ Sequencer.prototype = {
 		var queue = [];
 		var next = this._addStep(queue, action, duration, context);
 		queueHolder.push(queue);
-		if(!this.timeout && !this._isSync){
-			this.timeout = setTimeout(this._go.bind(this), 0);
-		}
 		return next;
 	},
 
@@ -410,7 +410,7 @@ function testSequence(){
 	seq.queueUp(func('20'), time);
 	seq.queueUp(func('21'), time);
 	seq.queueUp(func('22'), time);
-	seq.queueUp(func('23'), time);
-	seq.finish(true);
+	seq.queueUp(func('23', action0), time);
+	//seq.finish(true);
 	return seq;
 }
