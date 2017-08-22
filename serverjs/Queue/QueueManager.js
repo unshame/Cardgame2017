@@ -2,8 +2,8 @@
 
 const 
 	Log = require('../logger'),
-	Queue = requirejs('Queue/Queue');
-	//Tests = requirejs('Tests/GameTest');
+	Queue = reqfromroot('Queue/Queue');
+	//Tests = reqfromroot('Tests/GameTest');
 
 class QueueManager{
 	

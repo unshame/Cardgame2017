@@ -1,6 +1,6 @@
 'use strict';
 
-const generateId = requirejs('generateId');
+const generateId = reqfromroot('generateId');
 
 class Card{
 	/**

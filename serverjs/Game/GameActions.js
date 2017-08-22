@@ -230,7 +230,7 @@ class Actions{
 
 		game.waitForResponse(this.timeouts.actionComplete, game.players);
 		// Отправляем оповещение о том, что время хода вышло
-		game.players.notify({type: 'TOO_SLOW'}, null, [player]);
+		game.players.notify({type: 'TOO_SLOW'}, [player]);
 		game.players.completeActionNotify(outgoingAction);
 	}
 

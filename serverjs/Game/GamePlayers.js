@@ -10,7 +10,7 @@
 'use strict';
 
 const
-	BetterArray = requirejs('BetterArray.js');
+	BetterArray = reqfromroot('BetterArray.js');
 
 
 function valueToFunc(value){

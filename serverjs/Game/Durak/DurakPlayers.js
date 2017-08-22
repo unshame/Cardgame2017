@@ -7,7 +7,7 @@
 'use strict';
 
 const
-	GenericPlayers = requirejs('Game/Generic/GenericPlayers');
+	GenericPlayers = reqfromroot('Game/Generic/GenericPlayers');
 
 class DurakPlayers extends GenericPlayers{
 

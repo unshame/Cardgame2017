@@ -13,6 +13,6 @@
   "varstmt": true,
   "curly": true,
   "globals": {
-  	"requirejs": true
+  	"reqfromroot": true
   }
 }

@@ -10,7 +10,7 @@
  * @param  {string} name Имя модуля в serverjs (Module) или путь к модулю там же (Folder/Subfolder.../Module).
  * @return {object}      Модуль.
  */
-global.requirejs = function(name) {
+global.reqfromroot = function(name) {
     return require(__dirname + '/serverjs/' + name);
 };
 

@@ -2,7 +2,7 @@
 
 const
 	Log = require('../logger'),
-	generateId = requirejs('generateId');
+	generateId = reqfromroot('generateId');
 
 
 class Queue{
@@ -54,8 +54,9 @@ class Queue{
 			}
 		}
 
-		this.game = new this.config.game(this, players, this.config.transfer, this.config.debug);
+		this.game = new this.config.game(this, players, this.config);
 		this.manager.games[this.game.id] = this.game;
+		this.game.init();
 	}
 
 	endGame(voteResults){

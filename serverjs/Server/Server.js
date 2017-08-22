@@ -11,12 +11,12 @@ const
 
 // Игровые модули
 const 
-	QueueManager = requirejs('Queue/QueueManager'),
-	Game = requirejs('Game/Game'),
-	Bot = requirejs('Players/Bot'),
-	Player = requirejs('Players/Player'),
-	Tests = requirejs('Tests/GameTest'),
-	getRemoteFunctions = requirejs('Server/remoteFunctions');
+	QueueManager = reqfromroot('Queue/QueueManager'),
+	DurakGame = reqfromroot('Game/Durak/DurakGame'),
+	Bot = reqfromroot('Players/Bot'),
+	Player = reqfromroot('Players/Player'),
+	Tests = reqfromroot('Tests/GameTest'),
+	getRemoteFunctions = reqfromroot('Server/remoteFunctions');
 
 class Server extends Eureca.Server{
 
@@ -37,7 +37,7 @@ class Server extends Eureca.Server{
 		}
 
 		this.manager = new QueueManager(this, {
-			game: Game,
+			game: DurakGame,
 			bot: Bot,
 			numPlayers: this.params.numPlayers,
 			numBots: this.params.numBots,

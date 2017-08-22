@@ -11,48 +11,37 @@
 'use strict';
 
 const 
-	generateId = requirejs('generateId'),
-	Bot = requirejs('Players/Bot'),
-	GameCards = requirejs('Game/GameCards'),
-	DurakPlayers = requirejs('Game/Durak/DurakPlayers'),
-	GameActions = requirejs('Game/GameActions'),
-	GameStates = requirejs('Game/GameStates'),
-	GameTurnStages = requirejs('Game/GameTurnStages'),
-	GameReactions = requirejs('Game/GameReactions'),
-	GameDirectives = requirejs('Game/GameDirectives'),
-	Log = requirejs('logger');
+	generateId = reqfromroot('generateId'),
+	Log = reqfromroot('logger');
 
 class Game{
-	constructor(queue, players, canTransfer, debugMode, isTest){
+	constructor(queue, players, Classes, config){
 
 		// Генерируем айди игры
 		let id = generateId();
 		this.id = 'game_' + id;
 
-		this.log = Log(module, id, debugMode);
+		this.log = Log(module, id, config.debug);
 
 		this.queue = queue;
 
 		// Добавляем бота, если игрок один
-		while(players.length < 2){
-			players.push(new Bot(['addedBot']));
+		while(players.length < config.minPlayers){
+			players.push(new Classes.bot(['addedBot']));
 			this.log.warn('Only %s players at the start of the game, adding a bot', players.length);
 		}
 
-		this.states = new GameStates(this);
-		this.turnStages = new GameTurnStages(this);
-		this.actions = new GameActions(this);
-		this.reactions = new GameReactions();
-		this.directives = new GameDirectives();
+		this.states = new Classes.states(this);
+		this.turnStages = new Classes.turnStages(this);
+		this.actions = new Classes.actions(this);
+		this.reactions = new Classes.reactions();
+		this.directives = new Classes.directives();
 
 		// Сохраняем ссылки на игроков локально
-		this.players = new DurakPlayers(this, players.slice());
+		this.players = new Classes.players(this, players.slice());
 
 		// Карты
-		this.cards = new GameCards(this);
-
-		// Можно ли переводить карты
-		this.canTransfer = canTransfer;
+		this.cards = new Classes.cards(this);
 
 		// Номер игры
 		this.index = -1;
@@ -68,11 +57,7 @@ class Game{
 
 		this.fakeDescisionTimer = this.defaultFakeDescisionTimer = 500;
 
-		this.isTest = isTest;
-
-		// Запускаем игру
-		this.reset();
-		this.start();
+		this.isTest = config.test;
 	}
 
 	// Запущена ли игра
@@ -84,6 +69,12 @@ class Game{
 
 
 	// Методы игры
+	
+	// Запуск первой игры
+	init(){
+		this.reset();
+		this.start();
+	}	
 
 	// Ресет игры
 	reset(){
@@ -91,10 +82,7 @@ class Game{
 		// Свойства игры
 		this.index++;
 		this.states.current = 'NOT_STARTED';
-		this.result = {
-			winners: [],
-			loser: null
-		};
+		this.result = this.getDefaultResults();
 
 		this.resetSimulating();
 
@@ -139,32 +127,18 @@ class Game{
 		if(!this.isTest && !this.players.getWithOwn('type', 'player').length){
 			this.log.notice('Abandoning game, no human players left');
 			return;
-		}
-		
-		let results = Object.assign({}, this.result);
-		results.winners = this.result.winners.slice();
-
-		let note = {
-			type: 'GAME_ENDED',
-			scores: this.players.scores,
-			results: results				 
-		};
-		let actionAccept = {
-			type: 'ACCEPT'
-		};
-		let actionDecline = {
-			type: 'DECLINE'
-		};
+		}		
 
 		this.players.gameStateNotify(this.players, {cards: true}, true, 'REVEAL', true);
 
+		let action = this.getResults();
+
 		this.reset();
 		
-		this.actions.valid.push(actionAccept);
-		this.actions.valid.push(actionDecline);
+		this.actions.valid = action.actions.slice();
 
 		this.waitForResponse(this.actions.timeouts.gameEnd, this.players);
-		this.players.notify(note, this.actions.valid.slice());
+		this.players.notify(action);
 	}
 
 	// Перезапускает игру 
@@ -192,6 +166,42 @@ class Game{
 	}
 
 
+	// РЕЗУЛЬТАТЫ
+	getResults(){
+		let results = {};
+		for(let key in this.result){
+			if(!this.result.hasOwnProperty(key)){
+				continue;
+			}
+			let val = this.result[key];
+			if(val.slice){
+				results[key] = this.result[key].slice();
+			}
+			else if(typeof val == 'object'){
+				results[key] = Object.assign({}, val);
+			}
+			else{
+				results[key] = this.result[key];
+			}
+		}
+
+		let action = {
+			type: 'GAME_ENDED',
+			scores: this.players.scores,
+			results: results,
+			actions: [{type: 'ACCEPT'}, {type: 'DECLINE'}] 
+		};
+		return action;
+	}
+
+	getDefaultResults(){
+		return {
+			winners: null,
+			loser: null
+		};
+	}
+
+
 	// СИМУЛЯЦИЯ (когда в игре остались только боты)
 
 	// Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
@@ -200,7 +210,7 @@ class Game{
 		if(!humanActivePlayers.length){
 			this.log.notice('Simulating');
 			let humanPlayers = this.players.getWithOwn('type', 'player');
-			this.players.notify({type: 'SIMULATING'}, null, humanPlayers);
+			this.players.notify({type: 'SIMULATING'}, humanPlayers);
 			this.simulating = true;
 			this.fakeDescisionTimer = 0;
 		}
@@ -210,7 +220,7 @@ class Game{
 	resetSimulating(){
 		if(this.simulating && !this.isTest){
 			let humanPlayers = this.players.getWithOwn('type', 'player');
-			this.players.notify({type: 'STOP_SIMULATING'}, null, humanPlayers);
+			this.players.notify({type: 'STOP_SIMULATING'}, humanPlayers);
 		}
 
 		this.simulating = this.isTest;
@@ -386,7 +396,7 @@ class Game{
 					players.push(p);
 				}
 			});
-			this.players.notify({type: 'HOVER_OVER_CARD', cid: cid, noResponse: true, channel: 'extra'}, null, players);
+			this.players.notify({type: 'HOVER_OVER_CARD', cid: cid, noResponse: true, channel: 'extra'}, players);
 		}
 	}
 
@@ -399,7 +409,7 @@ class Game{
 					players.push(p);
 				}
 			});
-			this.players.notify({type: 'HOVER_OUT_CARD', cid: player.statuses.hover, noResponse: true, channel: 'extra'}, null, players);
+			this.players.notify({type: 'HOVER_OUT_CARD', cid: player.statuses.hover, noResponse: true, channel: 'extra'}, players);
 			player.statuses.hover = null;
 		}
 	}

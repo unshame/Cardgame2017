@@ -146,16 +146,12 @@ var reactSecondary = {
 		}
 	},
 
-	/**
-	* Игрок отключен от игры.
-	*/
-	CONCEDED: function(action, seq){
-		ui.feed.newMessage('Disconnected from game', 2000);
-		game.state.change('menu');
-
-	},
-
 	PLAYER_CONCEDED: function(action, seq){
+		if(action.pid == game.pid){
+			ui.feed.newMessage('Disconnected from game', 2000);
+			game.state.change('menu');
+			return;
+		}
 		var player = playerManager.getPlayer(action.pid);
 		ui.eventFeed.newMessage(player.name + ' conceded', 2000);
 		player.name = action.name;

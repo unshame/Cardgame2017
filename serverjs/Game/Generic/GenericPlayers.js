@@ -7,8 +7,8 @@
 'use strict';
 
 const
-	Bot = requirejs('Players/Bot.js'),
-	GamePlayers = requirejs('Game/GamePlayers');
+	Bot = reqfromroot('Players/Bot.js'),
+	GamePlayers = reqfromroot('Game/GamePlayers');
 
 class GenericPlayers extends GamePlayers{
 
@@ -100,9 +100,13 @@ class GenericPlayers extends GamePlayers{
 
 	// ОПОВЕЩЕНИЕ ИГРОКОВ
 	
-	gameStateNotify(players){}
+	gameStateNotify(){
+		throw new Error('Must be implemented by subclass');
+	}
 
-	gameStateNotifyOnReconnect(player){}
+	gameStateNotifyOnReconnect(){
+		throw new Error('Must be implemented by subclass');
+	}
 
 	reconnect(player){
 		if(!this.includes(player)){
@@ -120,7 +124,7 @@ class GenericPlayers extends GamePlayers{
 			this.log.error('Cannot concede a player that isn\'t in this game', player.id);
 			return;
 		}
-		this.notify({type: 'CONCEDED', instant: true}, null, [player]);
+		this.notify({type: 'PLAYER_CONCEDED', pid: player.id, instant: true}, [player]);
 		
 
 		let pi = this.indexOf(player);
@@ -161,10 +165,7 @@ class GenericPlayers extends GamePlayers{
 	}
 
 	// Отправляет сообщение игрокам с опциональными действиями
-	notify(note, actions, players){
-		if(actions){
-			note.actions = actions;
-		}
+	notify(note, players){
 		this.forEachOwn((p) => {
 			p.recieveNotification(Object.assign({}, note));
 		}, players);
@@ -178,7 +179,9 @@ class GenericPlayers extends GamePlayers{
 
 	// ЛОГ
 
-	logTurnStart(){}
+	logTurnStart(){
+		throw new Error('Must be implemented by subclass');
+	}
 
 	logTimeout(){
 		let playersWorking = this.working;
