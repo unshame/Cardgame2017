@@ -1,7 +1,7 @@
 'use strict';
 
 const
-	Bot = require('../Players/Bot');
+	Bot = require('../Player/Bot');
 
 class TestBot extends Bot{
 
@@ -129,7 +129,7 @@ class TestBot extends Bot{
 		}
 	}
 
-	recieveNotification(note, actions){
+	recieveNotification(note){
 		switch(note.type){
 
 		case 'GAME_ENDED':
@@ -141,7 +141,7 @@ class TestBot extends Bot{
 		case 'TURN_ENDED':
 			this.tester.transfers = 0;
 		}
-		super.recieveNotification(note, actions);
+		super.recieveNotification(note);
 	}
 
 }

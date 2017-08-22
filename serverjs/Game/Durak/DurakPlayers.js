@@ -6,10 +6,9 @@
 
 'use strict';
 
-const
-	GenericPlayers = reqfromroot('Game/Generic/GenericPlayers');
+const GamePlayers = reqfromroot('Game/GamePlayers');
 
-class DurakPlayers extends GenericPlayers{
+class DurakPlayers extends GamePlayers{
 
 	constructor(game, players){
 		super(

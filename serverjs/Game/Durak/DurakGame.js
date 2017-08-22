@@ -2,8 +2,8 @@
 
 const 
 	Game = reqfromroot('Game/Game'),
-	Bot = reqfromroot('Players/Bot'),
-	GameCards = reqfromroot('Game/GameCards'),
+	Bot = reqfromroot('Player/Bot'),
+	GameCards = reqfromroot('Card/CardManager'),
 	DurakPlayers = reqfromroot('Game/Durak/DurakPlayers'),
 	GameActions = reqfromroot('Game/GameActions'),
 	GameStates = reqfromroot('Game/GameStates'),

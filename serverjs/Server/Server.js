@@ -13,8 +13,8 @@ const
 const 
 	QueueManager = reqfromroot('Queue/QueueManager'),
 	DurakGame = reqfromroot('Game/Durak/DurakGame'),
-	Bot = reqfromroot('Players/Bot'),
-	Player = reqfromroot('Players/Player'),
+	Bot = reqfromroot('Player/Bot'),
+	Player = reqfromroot('Player/Player'),
 	Tests = reqfromroot('Tests/GameTest'),
 	getRemoteFunctions = reqfromroot('Server/remoteFunctions');
 
@@ -38,10 +38,12 @@ class Server extends Eureca.Server{
 
 		this.manager = new QueueManager(this, {
 			game: DurakGame,
+			gameConfig: {
+				transfer: this.params.transfer
+			},
 			bot: Bot,
 			numPlayers: this.params.numPlayers,
-			numBots: this.params.numBots,
-			transfer: this.params.transfer,
+			numBots: this.params.numBots,			
 			debug: this.params.debug
 		});
 

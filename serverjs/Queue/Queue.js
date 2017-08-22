@@ -16,6 +16,8 @@ class Queue{
 		this.manager = manager;
 		this.type = type;
 		this.config = config;
+		this.gameConfig = config.gameConfig;
+		this.gameConfig.debug = config.debug;
 		this.players = [];
 	}
 
@@ -54,7 +56,7 @@ class Queue{
 			}
 		}
 
-		this.game = new this.config.game(this, players, this.config);
+		this.game = new this.config.game(this, players, this.gameConfig);
 		this.manager.games[this.game.id] = this.game;
 		this.game.init();
 	}

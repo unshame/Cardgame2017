@@ -25,9 +25,11 @@ class Game{
 
 		this.queue = queue;
 
+		this.BotClass = Classes.bot;
+
 		// Добавляем бота, если игрок один
 		while(players.length < config.minPlayers){
-			players.push(new Classes.bot(['addedBot']));
+			players.push(new this.BotClass(['addedBot']));
 			this.log.warn('Only %s players at the start of the game, adding a bot', players.length);
 		}
 

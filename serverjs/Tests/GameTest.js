@@ -1,7 +1,7 @@
 'use strict';
 
 const
-	Game = require('../Game/Game'),
+	Game = require('../Game/Durak/DurakGame'),
 	TestBot = require('./TestBot');
 
 function runTest(numBots, duration, debug){
@@ -20,7 +20,17 @@ function runTest(numBots, duration, debug){
 	for(let i = 0; i < numBots; i++){
 		bots.push(new TestBot(tester,randomNames));
 	}
-	new Game({endGame: () => {}}, bots, true, debug, true);
+	var fakeQueue = {endGame: () => {}};
+	new Game(
+		fakeQueue,
+		bots, 
+		{
+			transfer: true,
+			debug: debug,
+			test: true
+		}
+	).init();
+
 	setTimeout(() => {
 		console.log('Tests finished...');
 		tester.running = false;
