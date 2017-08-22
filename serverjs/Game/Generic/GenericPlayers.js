@@ -120,7 +120,7 @@ class GenericPlayers extends GamePlayers{
 			this.log.error('Cannot concede a player that isn\'t in this game', player.id);
 			return;
 		}
-		this.notify({message: 'CONCEDED', instant: true}, null, [player]);
+		this.notify({type: 'CONCEDED', instant: true}, null, [player]);
 		
 
 		let pi = this.indexOf(player);
@@ -146,27 +146,34 @@ class GenericPlayers extends GamePlayers{
 			replacement.sendResponse();
 		}
 
-		this.notify({message: 'PLAYER_CONCEDED', pid: player.id, name: replacement.name});
+		this.notify({type: 'PLAYER_CONCEDED', pid: player.id, name: replacement.name});
 
 		this.log.notice('Player conceded', player.id);
 	}
 
 	// Оповещает игроков о совершенном действии
-	completeActionNotify(action){
-		this.forEach((p) => {
+	completeActionNotify(action, players){
+		this.forEachOwn((p) => {
 			let newAction = Object.assign({}, action);
-			if(!newAction.noResponse && this.game.simulating && p.type == 'player'){
-				newAction.noResponse = true;
-			}
+			this.applyNoResponseStatus(newAction, p);
 			p.recieveCompleteAction(newAction);
-		});
+		}, players);
 	}
 
 	// Отправляет сообщение игрокам с опциональными действиями
 	notify(note, actions, players){
+		if(actions){
+			note.actions = actions;
+		}
 		this.forEachOwn((p) => {
-			p.recieveNotification(Object.assign({}, note), actions || null);
+			p.recieveNotification(Object.assign({}, note));
 		}, players);
+	}
+
+	applyNoResponseStatus(action, player){
+		if(!action.noResponse && this.game.simulating && player.type == 'player'){
+			action.noResponse = true;
+		}
 	}
 
 	// ЛОГ

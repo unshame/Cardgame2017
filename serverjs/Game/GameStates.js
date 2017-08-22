@@ -77,7 +77,7 @@ class GameStates{
 			// Иначе сообщаем об отсутствии козырей в руках
 			else{
 				game.players.notify({
-					message: 'NO_TRUMP_CARDS'
+					type: 'NO_TRUMP_CARDS'
 				});
 				return true;
 			}

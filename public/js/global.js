@@ -204,17 +204,17 @@ var animTest = {
 	win: function(){
 		var discard = fieldManager.fields.DISCARD_PILE;			
 		discard.addCards(getCards(30, discard.cards));			
-		actionHandler.notificationReactions.GAME_ENDED.call(actionHandler, {results: {winners: [game.pid]}});
+		actionHandler.reactSecondary.GAME_ENDED.call(actionHandler, {results: {winners: [game.pid]}});
 	},
 	lose: function(){
 		var discard = fieldManager.fields.DISCARD_PILE;			
 		discard.addCards(getCards(30, discard.cards));			
-		actionHandler.notificationReactions.GAME_ENDED.call(actionHandler, {results: {loser: game.pid}});
+		actionHandler.reactSecondary.GAME_ENDED.call(actionHandler, {results: {loser: game.pid}});
 	},
 	eh: function(){
 		var discard = fieldManager.fields.DISCARD_PILE;			
 		discard.addCards(getCards(30, discard.cards));			
-		actionHandler.notificationReactions.GAME_ENDED.call(actionHandler, {});
+		actionHandler.reactSecondary.GAME_ENDED.call(actionHandler, {});
 	},
 	unlockField: function(){
 		fieldManager.unlockField('TABLE5');
@@ -226,7 +226,7 @@ var animTest = {
 			var c = cards[ci];
 			cardsInfo.push({cid: c.id, suit: c.suit, value: c.value, pid: c.fieldId});
 		}
-		actionHandler.actionReactions.TRUMP_CARDS.call(actionHandler, {cards: cardsInfo, pid: game.pid});
+		actionHandler.reactPrimary.TRUMP_CARDS.call(actionHandler, {cards: cardsInfo, pid: game.pid});
 	},
 	eventFeed: function(){
 		for(var i = 0; i < 20; i++){

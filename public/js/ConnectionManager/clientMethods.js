@@ -31,31 +31,7 @@ var clientMethods = {
 		
 	},
 
-	recievePossibleActions: function(newActions, time, timeSent, turnStage){	
-		this.serverWaiting = false;
-		actionHandler.handlePossibleActions(newActions, time, timeSent, turnStage);
-		if(connection.inDebugMode){
-			console.log(newActions);
-		}
-	},
-
-	recieveCompleteAction: function(action){
-		if(!action.noResponse){
-			connection.serverWaiting = true;
-		}
+	recieveAction(action){
 		actionHandler.executeAction(action);
-		if(connection.inDebugMode){
-			console.log(action);
-		}
-	},
-
-	recieveNotification: function(note, actions){
-		if(!note.noResponse){
-			connection.serverWaiting = false;
-		}
-		actionHandler.handleNotification(note, actions);
-		if(connection.inDebugMode){
-			console.log(note, actions);
-		}
 	}
 };

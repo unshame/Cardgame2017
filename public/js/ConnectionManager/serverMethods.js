@@ -10,7 +10,7 @@ var serverMethods = {
 		var actions = actionHandler.possibleActions;
 
 		if(!actions){
-			return;
+			return false;
 		}
 
 		for(var ai = 0; ai < actions.length; ai++){

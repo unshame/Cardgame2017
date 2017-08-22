@@ -96,13 +96,7 @@ class Game{
 			loser: null
 		};
 
-		this.simulating = this.isTest;
-		if(this.simulating){
-			this.fakeDescisionTimer = 0;
-		}
-		else{
-			this.fakeDescisionTimer = this.defaultFakeDescisionTimer;
-		}
+		this.resetSimulating();
 
 		this.players.resetGame();
 		this.cards.reset(true);
@@ -127,7 +121,7 @@ class Game{
 		this.cards.make();
 
 		let note = {
-			message: 'GAME_STARTED',
+			type: 'GAME_STARTED',
 			index: this.index	 
 		};
 		this.players.notify(note);
@@ -151,7 +145,7 @@ class Game{
 		results.winners = this.result.winners.slice();
 
 		let note = {
-			message: 'GAME_ENDED',
+			type: 'GAME_ENDED',
 			scores: this.players.scores,
 			results: results				 
 		};
@@ -197,15 +191,34 @@ class Game{
 		this.queue.endGame(voteResults.results);
 	}
 
+
+	// СИМУЛЯЦИЯ (когда в игре остались только боты)
+
 	// Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
 	trySimulating(){
 		let humanActivePlayers = this.players.getWithOwn('type', 'player', this.players.active);
 		if(!humanActivePlayers.length){
 			this.log.notice('Simulating');
 			let humanPlayers = this.players.getWithOwn('type', 'player');
-			this.players.notify({message: 'SIMULATING'}, null, humanPlayers);
+			this.players.notify({type: 'SIMULATING'}, null, humanPlayers);
 			this.simulating = true;
 			this.fakeDescisionTimer = 0;
+		}
+	}
+
+	// Убирает статус симуляции, оповещает игроков
+	resetSimulating(){
+		if(this.simulating && !this.isTest){
+			let humanPlayers = this.players.getWithOwn('type', 'player');
+			this.players.notify({type: 'STOP_SIMULATING'}, null, humanPlayers);
+		}
+
+		this.simulating = this.isTest;
+		if(this.simulating){
+			this.fakeDescisionTimer = 0;
+		}
+		else{
+			this.fakeDescisionTimer = this.defaultFakeDescisionTimer;
 		}
 	}
 
@@ -224,7 +237,7 @@ class Game{
 		this.actions.reset();
 
 		this.players.resetTurn();
-		this.players.notify({message: 'TURN_ENDED'});
+		this.players.notify({type: 'TURN_ENDED'});
 	}
 
 	// Начинает ход
@@ -238,7 +251,7 @@ class Game{
 		this.turnNumber++;	
 
 		this.players.notify({
-			message: 'TURN_STARTED',
+			type: 'TURN_STARTED',
 			index: this.turnNumber
 		});
 		this.turnStages.setNext('INITIAL_ATTACK');	
@@ -373,7 +386,7 @@ class Game{
 					players.push(p);
 				}
 			});
-			this.players.notify({message: 'HOVER_OVER_CARD', cid: cid, noResponse: true}, null, players);
+			this.players.notify({type: 'HOVER_OVER_CARD', cid: cid, noResponse: true, channel: 'extra'}, null, players);
 		}
 	}
 
@@ -386,7 +399,7 @@ class Game{
 					players.push(p);
 				}
 			});
-			this.players.notify({message: 'HOVER_OUT_CARD', cid: player.statuses.hover, noResponse: true}, null, players);
+			this.players.notify({type: 'HOVER_OUT_CARD', cid: player.statuses.hover, noResponse: true, channel: 'extra'}, null, players);
 			player.statuses.hover = null;
 		}
 	}

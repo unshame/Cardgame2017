@@ -20,9 +20,7 @@ global.server = new Server({allow:[
 	'setId',
 	'updateId',
 	'meetOpponents',
-	'recievePossibleActions',
-	'recieveCompleteAction',
-	'recieveNotification',
+	'recieveAction',
 	'hoverOverCard',
 	'hoverOutCard'
 ]

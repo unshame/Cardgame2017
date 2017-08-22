@@ -31,8 +31,11 @@ class Player{
 	}
 
 	recieveGameInfo(info){
+		if(!info.channel){
+			info.channel = 'primary';
+		}
 		if(this.remote && this.connected){
-			this.remote.recieveCompleteAction(info);
+			this.remote.recieveAction(info);
 		}
 		else if(!this.connected){
 			this.sendResponse();
@@ -42,27 +45,11 @@ class Player{
 	recieveDeals(deals){
 		let action = {
 			type: 'DRAW',
-			cards: []
-		};
-		for(let ci = 0; ci < deals.length; ci++){
-			action.cards.push(deals[ci]);
-		}
-		if(this.remote && this.connected){
-			this.remote.recieveCompleteAction(action);
-		}
-		else if(!this.connected){
-			this.sendResponse();
-		}
-	}
-
-	recieveMinTrumpCards(cards, winner){
-		let action = {
-			type: 'TRUMP_CARDS',
-			cards: cards,
-			pid: winner
+			cards: deals,
+			channel: 'primary'
 		};
 		if(this.remote && this.connected){
-			this.remote.recieveCompleteAction(action);
+			this.remote.recieveAction(action);
 		}
 		else if(!this.connected){
 			this.sendResponse();
@@ -75,7 +62,14 @@ class Player{
 			if(this.afk){
 				time = this.game.actions.timeouts.afk;
 			}
-			this.remote.recievePossibleActions(actions, now + time*1000, now, this.game.turnStages.current);
+			var action = {
+				actions: actions,
+				time: now + time*1000,
+				timeSent: now,
+				turnStage: this.game.turnStages.current,
+				channel: 'possible_actions'
+			};
+			this.remote.recieveAction(action);
 		}
 
 		// Функции для дебага
@@ -85,17 +79,32 @@ class Player{
 
 
 	recieveCompleteAction(action){
+		if(!action.channel){
+			action.channel = 'primary';
+		}
 		if(this.remote && this.connected){
-			this.remote.recieveCompleteAction(action);
+			this.remote.recieveAction(action);
 		}
 		else if(!this.connected && !action.noResponse){
 			this.sendResponse();
 		}
 	}
 
-	recieveNotification(note, actions){
+	recieveQueueAction(action){
+		if(!action.channel){
+			action.channel = 'queue';
+		}
 		if(this.remote && this.connected){
-			this.remote.recieveNotification(note, actions);
+			this.remote.recieveAction(action);
+		}
+	}
+
+	recieveNotification(action){
+		if(!action.channel){
+			action.channel = 'secondary';
+		}
+		if(this.remote && this.connected){
+			this.remote.recieveAction(action);
 		}
 	}
 

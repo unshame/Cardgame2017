@@ -130,10 +130,10 @@ class TestBot extends Bot{
 	}
 
 	recieveNotification(note, actions){
-		switch(note.message){
+		switch(note.type){
 
 		case 'GAME_ENDED':
-			// console.log(note.message);
+			// console.log(note.type);
 			this.tester.bots = this.game.players;
 			// console.log(this.tester.bots.map(b => b.name))
 			break;

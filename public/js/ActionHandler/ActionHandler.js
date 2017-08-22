@@ -3,31 +3,13 @@
 * Подсвечивает возможные действия и управляет кнопкой действия и таймером хода.
 * @class
 * @param {string}           correctState
-* @param {object<function>} actionReactions
-* @param {object<function>} notificationReactions
+* @param {object<function>} reactPrimary
+* @param {object<function>} reactSecondary
 */
 
-var ActionHandler = function(correctState, actionReactions, notificationReactions){
+var ActionHandler = function(){
 
-	/**
-	* Состояние игры в котором можно обрабатывать действия и оповещения.
-	* @type {string}
-	*/
-	this.correctState = correctState;
-
-	/**
-	* Методы, реагирующие на действия переданные от сервера.
-	* @see  {@link actionReactions}
-	* @type {object<function>}
-	*/
-	this.actionReactions = actionReactions;
-
-	/**
-	* Методы, реагирующие на оповещения от сервера.
-	* @see  {@link notificationReactions}
-	* @type {object<function>}
-	*/
-	this.notificationReactions = notificationReactions;
+	this.channels = {};
 
 	/**
 	* Сохраненные возможные действия.
@@ -41,11 +23,7 @@ var ActionHandler = function(correctState, actionReactions, notificationReaction
 	*/
 	this.turnStage = null;
 
-	/**
-	* Ожидает ли модуль информации об игре от сервера
-	* @type {Boolean}
-	*/
-	this._waitingForGameInfo = false;
+	this.simulating = false;
 
 	/**
 	* Менеджер последовательностей игровых действий и анимаций.
@@ -54,59 +32,93 @@ var ActionHandler = function(correctState, actionReactions, notificationReaction
 	this.sequencer = new Sequencer(connection.server.sendResponse);
 };
 
+ActionHandler.prototype.addChannel = function(name, type, states, reactions){
+	if(this.channels[name]){
+		console.error('ActionHandler: channel already exists', name);
+	}
+	var channel = {};
+	channel.name = name;
+	channel.type = type;
+	channel.states = states;
+	channel.reactions = reactions || null;
+	this.channels[name] = channel;
+};
+
 // ОБРАБОТКА КОМАНД СЕРВЕРА
 
 /** Переставляет игру в правильное состояние и запрашивает информацию об игре у сервера */
-ActionHandler.prototype.changeToCorrectState = function(){
+/*ActionHandler.prototype.changeToCorrectState = function(){
 	console.warn('ActionHandler: changing to ' + this.correctState + ' state');
 	this._waitingForGameInfo = true;
 	game.state.change(this.correctState);
 	connection.server.reconnect();
 };
-
+*/
 /**
 * Выполняет действие.
 * @param {object} action      действие
-* @param {string} action.type тип действия по которому будет вызвана соответствующая функция из {@link ActionHandler#actionReactions}
+* @param {string} action.type тип действия по которому будет вызвана соответствующая функция из {@link ActionHandler#reactPrimary}
 *
 * @return {number} Время выполнения действия.
 */
 ActionHandler.prototype.executeAction = function(action){
-
+	
 	if(!action){
 		console.error('Action handler: no action recieved');
 		return;
 	}
 
-	if(this._waitingForGameInfo && action.type == 'GAME_INFO_UPDATE' || action.type == 'GAME_INFO'){
-		this._waitingForGameInfo = false;
-	}
+	var channel = this.channels[action.channel];
 
-	if(game.inDebugMode){
-		ui.feed.newMessage(action.type, 'system', 2000);
-	}
-
-	if(game.state.currentSync != this.correctState){
-		this.changeToCorrectState();
+	if(!channel){
+		console.error('Action handler: channel not found', action.channel);
 		return;
 	}
 
-	if(this._waitingForGameInfo){		
-		console.error('Action handler: waiting for game info, instead got', action.type, action);
+	if(!~channel.states.indexOf(game.state.currentSync)){
+		console.error('Action handler: wrong game state', game.state.currentSync, action.channel, channel.states);
 		return;
 	}
 
-	if(action.instant){
+	switch(channel.type){
+		case CHANNEL_TYPE.USER_INVOLVED:
+		this.handlePossibleActions(action.actions, action.time, action.timeSent, action.turnStage);
+		return;
+
+		case CHANNEL_TYPE.RESPOND:
+		if(!action.noResponse){
+			connection.serverWaiting = true;
+		}
+		else if(!action.noInterrupt){
+			connection.serverWaiting = false;
+		}
+		break;
+
+		case CHANNEL_TYPE.INTERRUPT:
+		if(!action.noInterrupt){
+			connection.serverWaiting = false;
+		}
+		break;
+
+		case CHANNEL_TYPE.NO_ACTION:
+		break;
+
+		default:
+		console.error('ActionHandler: invalid channel type', channel.type, channel);
+		break;
+	}
+
+	var reaction = channel.reactions[action.type];
+	if(!reaction){
+		console.warn('Action handler: unknown action type', action.channel, action.type, action);
+		return;
+	}
+
+	if(this.simulating || action.instant){
 		this.sequencer.finish();
 	}
 
-	var reaction = this.actionReactions[action.type];
-	if(!reaction){
-		console.warn('Action handler: Unknown action type', action.type, action);
-	}
-	else{
-		this.sequencer.queueUp(reaction.bind(this.actionReactions, action));
-	}
+	this.sequencer.queueUp(reaction.bind(channel.reactions, action));
 };
 
 /**
@@ -117,21 +129,6 @@ ActionHandler.prototype.executeAction = function(action){
 * @param {string} turnStage текущая стадия хода
 */
 ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent, turnStage){
-	if(!actions){
-		console.error('Action handler: no actions recieved');
-		return;
-	}
-
-	if(game.state.currentSync != this.correctState){
-		this.changeToCorrectState();
-		return;
-	}
-
-	if(this._waitingForGameInfo){		
-		console.error('Action handler: waiting for game info, instead got possible actions', actions);
-		return;
-	}
-
 	this.sequencer.queueUp(function(){
 		this.turnStage = turnStage;
 
@@ -142,44 +139,6 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 
 		this.highlightPossibleActions(actions);
 	}, 0, this);
-};
-
-/**
-* Реагирует на оповещение от сервера
-* @param  {object} note 		   оповещение
-* @param  {string} note.message    тип оповещения по которому будет вызвана соответствующая функция из {@link ActionHandler#notificationReactions}
-*/
-ActionHandler.prototype.handleNotification = function(note, actions){
-	if(!note){
-		console.error('Action handler: no note recieved');
-		return;
-	}
-
-	if(game.inDebugMode){
-		ui.feed.newMessage(note.message, 'system', 2000);
-	}
-
-	if(game.state.currentSync != this.correctState){
-		this.changeToCorrectState();
-		return;
-	}
-
-	if(this._waitingForGameInfo){		
-		console.error('Action handler: waiting for game info, instead got', note.message, note);
-		return;
-	}
-
-	if(note.instant){
-		this.sequencer.finish();
-	}
-
-	var reaction = this.notificationReactions[note.message];
-	if(!reaction){
-		console.warn('Action handler: Unknown notification handler', note.message, note, actions);
-	}
-	else{
-		this.sequencer.queueUp(reaction.bind(this.notificationReactions, note, actions));
-	}
 };
 
 /**
@@ -307,5 +266,7 @@ ActionHandler.prototype._shouldDeleteAction = function(action, card, field, done
 	}
 };
 
-//@include:actionReactions
-//@include:notificationReactions
+//@include:reactPrimary
+//@include:reactSecondary
+//@include:reactExtra
+//@include:reactQueue

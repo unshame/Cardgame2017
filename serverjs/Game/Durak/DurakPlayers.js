@@ -116,7 +116,8 @@ class DurakPlayers extends GenericPlayers{
 					lockedFields: game.cards.lockedFieldsIds,
 					turnIndex: game.turnNumber,
 					gameIndex: game.index,
-					noResponse: noResponse || false
+					noResponse: noResponse || false,
+					simulating: game.simulating
 				}
 			);
 		}, players);
@@ -165,8 +166,13 @@ class DurakPlayers extends GenericPlayers{
 
 	// Оповещает игроков о минимальных козырях
 	minTrumpCardsNotify(cards, minCardPid){
+		let action = {
+			type: 'TRUMP_CARDS',
+			cards: cards,
+			pid: minCardPid
+		};
 		for(let pi = 0; pi < this.length; pi++){
-			this[pi].recieveMinTrumpCards(cards, minCardPid);
+			this[pi].recieveCompleteAction(action);
 		}	
 	}
 
@@ -196,6 +202,7 @@ class DurakPlayers extends GenericPlayers{
 			else{
 				newAction = action;
 			}
+			this.applyNoResponseStatus(newAction, p);
 			p.recieveCompleteAction(newAction);
 		}
 	}

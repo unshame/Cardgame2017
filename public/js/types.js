@@ -27,6 +27,13 @@ var BRING_TO_TOP_ON = {
 	END_ALL: 5
 };
 
+var CHANNEL_TYPE = {
+	RESPOND: 0,
+	INTERRUPT: 1,
+	USER_INVOLVED: 2,
+	NO_ACTION: 3
+}
+
 
 // EXTERNALS
 

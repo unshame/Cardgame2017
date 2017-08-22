@@ -1,9 +1,9 @@
 /**
 * Действия, выполняемые в ответ на действия сервера  
-* @see  {@link ActionHandler#actionReactions}
-* @namespace actionReactions
+* @see  {@link ActionHandler#reactPrimary}
+* @namespace reactPrimary
 */
-var actionReactions = {
+var reactPrimary = {
 	
 	/**
 	* Наименьшии козырные карты у каждого игрока и наименьшая козырная карта из них.
@@ -56,6 +56,7 @@ var actionReactions = {
 		cardEmitter.stop();
 		cardControl.reset();
 		cardManager.disablePhysics();
+		actionHandler.simulating = action.simulating;
 
 		// Создаем недостающие карты
 		cardManager.createCards(action.cards);
@@ -124,7 +125,7 @@ var actionReactions = {
 
 	/**
 	* Информация об игре при переподключении к игре.
-	* @param {object} action {@link actionReactions.GAME_INFO}
+	* @param {object} action {@link reactPrimary.GAME_INFO}
 	*
 	* @return {number} Время выполнения действия
 	*/
@@ -150,7 +151,7 @@ var actionReactions = {
 	* @param {object} action - Обрабатываемое действие
 	* @param {CardInfo[]} action.cards - Информация о картах
 	* @return {number} Время до начала добавления последней карты
-	* @memberof actionReactions
+	* @memberof reactPrimary
 	*/
 	DRAW: function(action, seq){
 		var delay = fieldManager.queueCards(action.cards);
@@ -237,9 +238,9 @@ var actionReactions = {
 /**
 * Игрок атакует.
 * @method  ATTACK
-* @memberof actionReactions
+* @memberof reactPrimary
 * @param {ActionInfo} action Обрабатываемое действие
 *
 * @return {number} Время выполнения действия
 */
-actionReactions.ATTACK = actionReactions.DEFENSE;
+reactPrimary.ATTACK = reactPrimary.DEFENSE;

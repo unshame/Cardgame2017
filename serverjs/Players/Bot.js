@@ -42,10 +42,6 @@ class Bot extends Player{
 		this.sendDelayedResponse();
 	}
 
-	recieveMinTrumpCards(cards, winner){
-		this.sendDelayedResponse();
-	}
-
 	recieveValidActions(actions){
 		setTimeout(() => {
 			this.sendRandomAction(actions);
@@ -58,9 +54,9 @@ class Bot extends Player{
 		}
 	}
 
-	recieveNotification(note, actions){
-		if(actions){
-			this.sendDelayedResponse(actions[0]);
+	recieveNotification(action){
+		if(action.actions){
+			this.sendDelayedResponse(action.actions[0]);
 		}			
 	}
 

@@ -52,7 +52,7 @@ class Actions{
 			// Сообщаем игроку, что действие пришло не вовремя
 			if(action){
 				game.players.notify({
-					message: 'LATE_OR_UNCALLED_ACTION',
+					type: 'LATE_OR_UNCALLED_ACTION',
 					action: action
 				},
 				null,
@@ -134,7 +134,7 @@ class Actions{
 		else{
 			game.players.notify(
 				{
-					message: 'INVALID_ACTION',
+					type: 'INVALID_ACTION',
 					action: action,
 					time: this.deadline,
 					timeSent: Date.now()
@@ -230,7 +230,7 @@ class Actions{
 
 		game.waitForResponse(this.timeouts.actionComplete, game.players);
 		// Отправляем оповещение о том, что время хода вышло
-		game.players.notify({message: 'TOO_SLOW'}, null, [player]);
+		game.players.notify({type: 'TOO_SLOW'}, null, [player]);
 		game.players.completeActionNotify(outgoingAction);
 	}
 
@@ -291,7 +291,7 @@ class Actions{
 		}
 
 		let note = {
-			message: 'VOTE_RESULTS',
+			type: 'VOTE_RESULTS',
 			results: results
 		};
 

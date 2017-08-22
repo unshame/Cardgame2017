@@ -39,7 +39,7 @@ class Queue{
 	startGame(){
 
 		this.players.forEach((p) => {
-			p.recieveNotification({message: 'QUEUE_FULL'});
+			p.recieveQueueAction({type: 'QUEUE_FULL'});
 		});
 
 		let players = this.players.slice();
@@ -69,7 +69,7 @@ class Queue{
 			this.log.notice(p.id, results[p.id]);
 			if(!results[p.id] || results[p.id] != 'ACCEPT'){
 				this.removePlayer(p, false);
-				p.recieveNotification({message: 'LEFT_QUEUE', instant: true});
+				p.recieveQueueAction({type: 'LEFT_QUEUE', instant: true});
 			}
 		}
 
@@ -95,8 +95,8 @@ class Queue{
 
 	notifyPlayers(){
 		this.players.forEach((p) => {
-			p.recieveNotification({
-				message: 'QUEUE_STATUS',
+			p.recieveQueueAction({
+				type: 'QUEUE_STATUS',
 				playersQueued: this.players.length,
 				playersNeeded: this.config.numPlayers,
 				noResponse: true
@@ -119,7 +119,7 @@ class Queue{
 		this.players.splice(i, 1);
 		player.queue = null;
 		if(notify){
-			player.recieveNotification({message: 'LEFT_QUEUE', instant: true});
+			player.recieveQueueAction({type: 'LEFT_QUEUE', instant: true});
 			this.notifyPlayers();
 		}
 		this.log.notice('Player %s left queue', player.id, this.id);
