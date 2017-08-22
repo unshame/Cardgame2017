@@ -3,7 +3,7 @@
 const 
 	Game = reqfromroot('Game/Game'),
 	Bot = reqfromroot('Player/Bot'),
-	GameCards = reqfromroot('Card/CardManager'),
+	DurakCards = reqfromroot('Game/Durak/DurakCards'),
 	DurakPlayers = reqfromroot('Game/Durak/DurakPlayers'),
 	GameActions = reqfromroot('Game/GameActions'),
 	GameStates = reqfromroot('Game/GameStates'),
@@ -17,7 +17,7 @@ class DurakGame extends Game{
 			queue,
 			players, 
 			{
-				cards: GameCards,
+				cards: DurakCards,
 				players: DurakPlayers,
 				actions: GameActions,
 				states: GameStates,

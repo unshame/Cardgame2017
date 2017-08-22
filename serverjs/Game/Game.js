@@ -45,6 +45,12 @@ class Game{
 		// Карты
 		this.cards = new Classes.cards(this);
 
+		// Добавляем указатели на поля карт
+		this.deck = this.cards.deck;
+		this.discardPile = this.cards.discardPile;
+		this.table = this.cards.table;
+		this.hands = this.cards.hands;
+
 		// Номер игры
 		this.index = -1;
 		this.turnNumber = 0;
