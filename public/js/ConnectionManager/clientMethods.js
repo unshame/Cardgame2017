@@ -31,7 +31,7 @@ var clientMethods = {
 		
 	},
 
-	recieveAction(action){
+	recieveAction: function(action){
 		actionHandler.executeAction(action);
 	}
 };

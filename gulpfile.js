@@ -5,7 +5,8 @@ const
 	path = require('path'),
 	gulp = require('gulp'),
 	newFile = require('gulp-file'),
-	uglify = require('gulp-uglify');
+	uglify = require('gulp-uglify'),
+	pump = require('pump');
 
 // Имена файлов\папок
 const indexName = 'index';
@@ -38,6 +39,19 @@ const libraryPaths = [
 ];
 const jsPath = 'js';
 const minifiedPath = 'durak.js';
+const packPath = 'pack.js';
+
+function concatFiles(folder, paths){
+	let content = '';
+	paths.forEach((filePath) => {
+		filePath = path.join(folder, filePath);
+		if(fs.existsSync(filePath)){
+			content += fs.readFileSync(filePath, "utf8");
+
+		}
+	});
+	return content;
+}
 
 // Рекурсивно заменяет строку //@include:file в контенте указанного файла
 // на контент соответствующих файлов.
@@ -140,7 +154,12 @@ function addLibraryTags(tags, libs){
 }
 
 // Создает билд игры в папке prod
-function build(includeDocs, safeBuild){
+function build(includeDocs, safeBuild, callback){
+
+	// Склеиваем библиотеки
+	let libContent = concatFiles(publicPath, libraryPaths);
+	let libFile = newFile(path.join(publicPath, packPath), libContent);
+
 	// склеиваем все скрипты
 	let jsContent = includeReferenced(path.join(publicPath, jsPath), indexName);
 	if(safeBuild){
@@ -149,22 +168,26 @@ function build(includeDocs, safeBuild){
 	let jsFile = newFile(path.join(publicPath, minifiedPath), jsContent);
 
 	// заменяем пути к скриптам в index.html
-	let tags = addLibraryTags('', libraryPaths.concat(minifiedPath)); 
+	let tags = addLibraryTags('', [packPath, minifiedPath]); 
 	let indexContent = replaceDevCode(publicPath, indexName + '.html', null, tags, true);
 	let indexFile = newFile(path.join(publicPath, indexName + '.html'), indexContent);
 
 	let base = { "base" : "." };
 
 	// Скрипты, которые нужно минифицировать
-	gulp.src(libraryPaths.map((p) => path.join(publicPath, p)), base)
-		.pipe(jsFile)	// Весь остальной js код
-		.pipe(uglify())	// минификация
-		.pipe(gulp.dest(prodPath));
+	pump([
+		libFile,	// библиотеки
+		jsFile,		// весь js код
+		uglify(),	// минификация
+		gulp.dest(prodPath)
+	], callback);
 
 	// Все остальные файлы игры
-	gulp.src(otherPaths, base)
-		.pipe(indexFile)	// index.html с замененными путями к скриптам
-		.pipe(gulp.dest(prodPath));
+	pump([
+		gulp.src(otherPaths, base),
+		indexFile,	// index.html с замененными путями к скриптам
+		gulp.dest(prodPath)
+	], callback);
 
 	// Документация и отчеты по коду
 	if(includeDocs){
@@ -179,23 +202,23 @@ function build(includeDocs, safeBuild){
 }
 
 // Таск создания версии для heroku
-gulp.task('build', () => {
-	build(false);
+gulp.task('build', (callback) => {
+	build(false, false, callback);
 });
 
 // Таск создания версии для heroku с обновлением документации
-gulp.task('buildall', () => {
-	build(true);
+gulp.task('buildall', (callback) => {
+	build(true, false, callback);
 });
 
 // То же, только весь код оборачивается в самовызываемую функцию
 
-gulp.task('buildsafe', () => {
-	build(false, true);
+gulp.task('buildsafe', (callback) => {
+	build(false, true, callback);
 });
 
-gulp.task('buildallsafe', () => {
-	build(true, true);
+gulp.task('buildallsafe', (callback) => {
+	build(true, true, callback);
 });
 
 // Добавляет html скрипт теги в index.html
