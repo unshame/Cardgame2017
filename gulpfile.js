@@ -222,7 +222,7 @@ gulp.task('buildallsafe', (callback) => {
 });
 
 // Добавляет html скрипт теги в index.html
-gulp.task('addtags', () => {
+gulp.task('addtags', (callback) => {
 
 	// Добавляем библиотеки к тегам
 	let libs = addLibraryTags('', libraryPaths); 
@@ -241,11 +241,7 @@ gulp.task('addtags', () => {
 
 	// Перезаписываем index.html
 	fs.truncate(indexHtmlPath, 0, function() {
-		fs.writeFile(indexHtmlPath, indexContent, function (err) {
-			if (err) {
-				return console.log("Error writing file: " + err);
-			}
-		});
+		fs.writeFile(indexHtmlPath, indexContent, callback);
 	});
 
 	console.log(tags);
