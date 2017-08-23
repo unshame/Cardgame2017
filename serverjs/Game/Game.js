@@ -289,7 +289,7 @@ class Game{
 
 		let state = this.states[this.states.current];
 		if(!state){
-			this.log.error('invalid game state', this.states.current);
+			this.log.error(new Error(`invalid game state ${this.states.current}`));
 			return false;
 		}
 		return state.call(this.states);
@@ -301,7 +301,7 @@ class Game{
 
 		let turnStage = this.turnStages[this.turnStages.next];
 		if(!turnStage){
-			this.log.error('Invalid turn stage', this.turnStages.next);
+			this.log.error(new Error(`Invalid turn stage ${this.turnStages.next}`));
 			return false;
 		}
 		return turnStage.call(this.turnStages);
@@ -313,7 +313,7 @@ class Game{
 
 		let directive = this.directives[dirName];
 		if(!directive){
-			this.log.error('Invalid directive', dirName);
+			this.log.error(new Error(`Invalid directive ${dirName}`));
 			return false;
 		}
 		return directive.call(this, ...players);
@@ -353,7 +353,7 @@ class Game{
 			this.timer = setTimeout(this.timeOut.bind(this), duration);
 		}
 		else{
-			this.log.error('Set to wait for response but nobody to wait for');
+			this.log.error(new Error('Set to wait for response but nobody to wait for'));
 			return;
 		}
 	}

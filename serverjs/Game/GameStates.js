@@ -46,7 +46,7 @@ class GameStates{
 			game.players.dealNotify(dealsOut);
 		}
 		else{
-			game.log.error('Couldn\'t deal at the start of the game');
+			game.log.error(new Error('Couldn\'t deal at the start of the game'));
 		}
 		return false;
 

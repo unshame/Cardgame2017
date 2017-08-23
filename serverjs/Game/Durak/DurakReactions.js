@@ -106,7 +106,7 @@ class DurakReactions{
 
 		// Debug
 		if(activePlayers.length > 2 && !attackers[1]){
-			this.log.error('More than 2 players but no ally assigned');
+			this.log.error(new Error('More than 2 players but no ally assigned'));
 		}
 
 		// Если есть помогающий игрок
@@ -140,7 +140,7 @@ class DurakReactions{
 						this.turnStages.setNext('SUPPORT');
 					}
 					else{
-						this.log.error('Invalid action', action.type);
+						this.log.error(new Error(`Invalid action ${action.type}`));
 					}
 
 				}

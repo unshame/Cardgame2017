@@ -108,7 +108,7 @@ class GamePlayers extends PlayerManager{
 
 	reconnect(player){
 		if(!this.includes(player)){
-			this.log.error('Cannot reconnect a player that isn\'t in this game', player.id);
+			this.log.error(new Error(`Cannot reconnect a player that isn\'t in this game ${player.id}`));
 			return;
 		}
 
@@ -119,7 +119,7 @@ class GamePlayers extends PlayerManager{
 
 	concede(player){
 		if(!this.includes(player)){
-			this.log.error('Cannot concede a player that isn\'t in this game', player.id);
+			this.log.error(new Error(`Cannot concede a player that isn\'t in this game ${player.id}`));
 			return;
 		}
 		this.notify({type: 'PLAYER_CONCEDED', pid: player.id, instant: true}, [player]);

@@ -89,7 +89,7 @@ class QueueManager{
 			queue.concedePlayer(player);
 		}
 		else{
-			this.log.error('Player has no queue', player.id);
+			this.log.error(new Error(`Player has no queue ${player.id}`));
 		}
 	}
 

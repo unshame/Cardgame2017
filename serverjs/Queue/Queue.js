@@ -23,7 +23,7 @@ class Queue{
 
 	addPlayer(player){
 		if(this.game){
-			this.log.error('Can\'t add players when game is in progress');
+			this.log.error(new Error('Can\'t add players when game is in progress'));
 			return;
 		}
 
@@ -114,7 +114,7 @@ class Queue{
 			return;
 		}
 		if(!this.players.includes(player)){
-			this.log.error('Player isn\'t in this queue', player.id);
+			this.log.error(new Error(`Player isn't in this queue ${player.id}`));
 			return;
 		}
 

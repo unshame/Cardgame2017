@@ -202,7 +202,7 @@ class GameActions{
 	}
 
 	// Выполняет первое дейтсие из this.valid
-	// Приоритезирует SKIP и TAKE
+	// Приоритизирует SKIP и TAKE
 	executeFirst(){
 		const game = this.game;
 

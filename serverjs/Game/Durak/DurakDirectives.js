@@ -170,7 +170,7 @@ class DurakDirectives{
 
 		// Debug
 		default:
-			this.log.error('Invalid turnStage', lastTurnStage);
+			this.log.error(new Error(`Invalid turnStage ${lastTurnStage}`));
 			break;
 		}
 

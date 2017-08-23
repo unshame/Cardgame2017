@@ -86,7 +86,7 @@ class PlayerManager extends BetterArray{
 				}
 			}
 			else{
-				this.log.error('Player isn\'t in this game', p.id);
+				this.log.error(new Error(`Player isn't in this game ${p.id}`));
 			}
 		}
 	}

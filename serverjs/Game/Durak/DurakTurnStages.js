@@ -53,7 +53,7 @@ class DurakTurnStages extends GameTurnStages{
 
 		// Debug
 		if(!attackers[1]){
-			game.log.error('No ally assigned, but turn stage is SUPPORT');
+			game.log.error(new Error('No ally assigned, but turn stage is SUPPORT'));
 		}
 
 		return game.let('ATTACK', attackers[1] || attackers[0]);
