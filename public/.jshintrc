@@ -86,13 +86,6 @@
     "BRING_TO_TOP_ON": true
   },
   "browser": true,
-  "undef": true,
-  "unused": "vars",
-  "forin": true,
   "node": false,
-  "sub": true,
-  "expr": false,
-  "-W058": true,
-  "curly": true,
   "devel": true
 }

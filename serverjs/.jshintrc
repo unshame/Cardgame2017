@@ -2,16 +2,9 @@
   "browser": false,
   "node": true,
   "esversion": 6,
-  "undef": true,
-  "unused": "vars",
-  "forin": true,
   "node": true,
-  "sub": true,
-  "expr": false,
-  "-W058": true,
   "strict": "global",
   "varstmt": true,
-  "curly": true,
   "globals": {
   	"reqfromroot": true
   }

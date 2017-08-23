@@ -1,0 +1,9 @@
+{
+  "undef": true,
+  "unused": "vars",
+  "forin": true,
+  "sub": true,
+  "expr": false,
+  "-W058": true,
+  "curly": true	
+}
