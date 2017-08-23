@@ -22,7 +22,6 @@ const Server = require(__dirname + '/serverjs/Server/Server');
 global.server = new Server({allow:[
 	'setId',
 	'updateId',
-	'meetOpponents',
 	'recieveAction',
 	'hoverOverCard',
 	'hoverOutCard'

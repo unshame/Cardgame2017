@@ -210,7 +210,7 @@ class GameActions{
 		let actionIndex = 0;
 		for(let ai = 0; ai < this.valid.length; ai++){
 			let action = this.valid[ai];
-			if(this.prioritised.indexOf(action.type)){
+			if(~this.prioritised.indexOf(action.type)){
 				actionIndex = ai;
 				break;
 			}
