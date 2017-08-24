@@ -196,7 +196,12 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 */
 ActionHandler.prototype.setButtonAction = function(button, type){
 	this.buttonAction = type;
+	if(type == 'SKIP'){
+		type = 'PASS';
+	}
 	var typeText = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+	//var typeText = type.toLowerCase();
+	//var typeText = type;
 	button.label.setText(typeText);
 	button.enable();
 };

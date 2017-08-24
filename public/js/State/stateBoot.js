@@ -64,6 +64,7 @@ var stateBoot = new State('boot', {
 		game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 50, 4);
 		game.load.spritesheet('button_grey_small', 'assets/buttons/grey_small.png', 49, 49, 4);
 		game.load.spritesheet('button_orange_wide', 'assets/buttons/orange_wide.png', 190, 50, 4);
+		game.load.spritesheet('button_orange_big', 'assets/buttons/orange_big.png', 190, 80, 4);
 		game.load.spritesheet('button_orange_small', 'assets/buttons/orange_small.png', 49, 49, 4);
 
 		game.load.spritesheet('icon_fullscreen', 'assets/buttons/icon_fullscreen.png', 30, 30, 2);

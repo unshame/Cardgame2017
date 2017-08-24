@@ -180,7 +180,6 @@ UI.prototype._createMenus = function(){
 			z: -3,
 			base: true,
 			color: 'grey',
-			texture: 'menu_blue',
 			elementColor: 'grey',
 			textColor: 'black',
 			name: 'menu_options'
@@ -194,7 +193,6 @@ UI.prototype._createMenus = function(){
 			}, 
 			z: -3,
 			color: 'grey',
-			texture: 'menu_blue',
 			elementColor: 'grey',
 			textColor: 'black',
 			name: 'menu_debug'
@@ -338,9 +336,6 @@ UI.prototype._createButtons = function(){
 	}, 'back','Back');
 
 
-	////////////////////
-	// УГЛОВЫЕ КНОПКИ //
-	////////////////////	
 	// Действие
 	new Button({
 		position: function(width, height){
@@ -348,9 +343,9 @@ UI.prototype._createButtons = function(){
 				x: game.screenWidth/2 - width/2,
 				y: game.scale.cellAt(
 					0,
-					game.scale.numRows - game.scale.density - 1,
+					game.scale.numRows - game.scale.density - 2,
 					0,
-					5
+					20
 				).y
 			};
 		},
@@ -360,11 +355,16 @@ UI.prototype._createButtons = function(){
 		text: 'Take',
 		color: 'orange',
 		name: 'action',
-		size: 'wide',
+		size: 'big',
 		textColor: 'white',
+		fontSize: 60,
 		group: this.actionButtons
 	});
 
+
+	////////////////////
+	// УГЛОВЫЕ КНОПКИ //
+	////////////////////	
 	// На весь экран
 	new Button({
 		position: function(width, height){

@@ -145,9 +145,9 @@ ScaleManager.prototype.getDefaultOptions = function(){
 		thickness: 1,	// толщина линий сетки для дебага
 		debug: false,
 		minColsLandscape:  28,
-		minRowsLandscape: 18,
+		minRowsLandscape: 19,
 		minColsPortrait: 23,
-		minRowsPortrait: 23,
+		minRowsPortrait: 25,
 		cellRelationThreshold: 2.5625
 	};
 };
