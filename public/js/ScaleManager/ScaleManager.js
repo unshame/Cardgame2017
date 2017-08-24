@@ -148,7 +148,7 @@ ScaleManager.prototype.getDefaultOptions = function(){
 		minRowsLandscape: 19,
 		minColsPortrait: 23,
 		minRowsPortrait: 25,
-		cellRelationThreshold: 2.5625
+		cellRelationThreshold: 2.47
 	};
 };
 
@@ -252,7 +252,7 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 		console.log(
 			'cell:', this.cellWidth, 'x', this.cellHeight
 		);
-		console.log('cell relation:', cellRelation, this._cellRelationThreshold);
+		console.log('cell relation:', cellRelation);
 	}
 
 	this.game.screenWidth = screenWidth;
