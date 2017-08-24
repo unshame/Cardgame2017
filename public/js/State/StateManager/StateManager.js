@@ -105,13 +105,13 @@ StateManager.prototype.change = function(key, finishSequence){
 		oldState = this.getCurrent();
 		state = this.statesSync[key];
 
-		oldState.shutdown();
+		oldState.shutdown(key);
 
 		this.currentSync = key;
 
-		state.preload();
-		state.init();
-		state.create();
+		state.preload(oldState.key);
+		state.init(oldState.key);
+		state.create(oldState.key);
 
 		if(this.game.inDebugMode){
 			console.log('StateManager: state changed to', key);

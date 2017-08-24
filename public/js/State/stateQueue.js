@@ -1,14 +1,4 @@
-/**
-* Состояние игры, отвечающее за отображение главного меню игры.  
-* Синхронное состояние.
-* @namespace stateMenu
-* @property {string} key='menu' Название состояния.
-* @see {@link State}
-* @see {@link StateManager}
-*/
-
-/* exported stateMenu */
-var stateMenu = new State('menu', {
+var stateQueue = new State('queue', {
 
 	/**
 	* Выводит дебаг информацию.
@@ -44,12 +34,10 @@ var stateMenu = new State('menu', {
 	* @memberof stateMenu
 	*/
 	create: function(lastState){
-		if(lastState != 'queue'){
+		ui.menus.options.showElement('disconnect');
+		if(lastState != 'menu'){
 			cardEmitter.start(10, 50, 10, 2000, 20, 1);
 		}
-
-		ui.menus.main.fadeIn();
-		ui.logo.fadeIn();
 	},
 
 	/**
@@ -57,10 +45,10 @@ var stateMenu = new State('menu', {
 	* @memberof stateMenu
 	*/
 	shutdown: function(nextState){
-		if(nextState != 'queue'){
+		ui.menus.options.hideElement('disconnect');
+		ui.eventFeed.clear();
+		if(nextState != 'menu'){
 			cardEmitter.stop();
 		}
-		ui.menus.main.fadeOut();
-		ui.logo.fadeOut();
 	}
 });

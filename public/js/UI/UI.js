@@ -239,6 +239,7 @@ UI.prototype._createButtons = function(){
 	////////////////////
 	// Поиск игры
 	this.menus.main.addButton(function(){
+		game.state.change('queue');
 		connection.proxy.quickQueueUpClient();
 	}, 'quickGame','Quick Game');
 

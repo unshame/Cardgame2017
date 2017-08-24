@@ -97,7 +97,7 @@ Phaser.Device.whenReady(function(){
 	actionHandler.addChannel('secondary', CHANNEL_TYPE.INTERRUPT, 'play', reactSecondary);
 	actionHandler.addChannel('possible_actions', CHANNEL_TYPE.USER_INVOLVED, 'play');
 	actionHandler.addChannel('extra', CHANNEL_TYPE.NO_ACTION, 'play', reactExtra);
-	actionHandler.addChannel('queue', CHANNEL_TYPE.INTERRUPT, 'menu', reactQueue);
+	actionHandler.addChannel('queue', CHANNEL_TYPE.INTERRUPT, 'queue', reactQueue);
 
 	/**
 	* Игра
@@ -112,6 +112,7 @@ Phaser.Device.whenReady(function(){
 	// Состояния игры
 	game.state.add(stateMenu, false, false);
 	game.state.add(statePlay, false, false);
+	game.state.add(stateQueue, false, false);
 	// Запускаем загрузку игры
 	game.state.add(stateBoot, true, true);	
 
