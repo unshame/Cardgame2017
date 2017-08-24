@@ -9,6 +9,10 @@
 */
 Card.prototype.rotateTo = function(angle, time, delay, easing){
 
+	if(this._destroyPending){
+		return;
+	}
+
 	// Если карта в поворачивается и указана задержка, откладываем начало поворота
 	if(!this.game.paused && delay && this._rotator){
 		this._saveDelayedTweenInfo('rotator', arguments, 1, 2);

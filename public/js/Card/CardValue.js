@@ -33,7 +33,7 @@ Card.prototype.presetValue = function(suit, value){
 * Устанавливает заданные ранее значения и переворачивает карту.
 */
 Card.prototype.applyValue = function(){
-	if(!this._valueChanged){
+	if(!this._valueChanged || this._destroyPending){
 		return;
 	}
 

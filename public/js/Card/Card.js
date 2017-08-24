@@ -194,6 +194,8 @@ var Card = function (options) {
 
 	this._shouldEnablePhysics = false;
 
+	this._destroyPending = false;
+
 	/**
 	* Скин карты
 	* @type {object}
@@ -312,6 +314,8 @@ Card.prototype.destroy = function(delay, now) {
 	var time = 1000,
 		alphaTween = this.game.add.tween(this.sprite),
 		scaleTween = this.game.add.tween(this.sprite.scale);
+
+	this._destroyPending = true;
 	
 	if(cardControl.card == this){
 		cardControl.reset('card destroyed');

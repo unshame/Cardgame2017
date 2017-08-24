@@ -196,6 +196,19 @@ UI.prototype._createMenus = function(){
 			elementColor: 'grey',
 			textColor: 'black',
 			name: 'menu_debug'
+		}),
+		endGame: new Menu({
+			position: function(){
+				return {
+					x:game.screenWidth/2,
+					y:game.screenHeight/2 + 200
+				};
+			}, 
+			z: -5,
+			color: 'orange',
+			elementColor: 'red',
+			textColor: 'white',
+			name: 'menu_endGame'
 		})
 	};
 	this.modalManager.makeModal([
@@ -297,6 +310,17 @@ UI.prototype._createButtons = function(){
 	this.menus.options.addButton( function(){
 		ui.modalManager.closeModal();
 	}, 'close','Close');
+
+
+	this.menus.endGame.addButton(function(){
+		connection.proxy.recieveCompleteAction({type: 'ACCEPT'});
+		this.fadeOut();
+	}, 'rematch','Rematch');
+
+	this.menus.endGame.addButton(function(){
+		connection.proxy.recieveCompleteAction({type: 'DECLINE'});
+		this.fadeOut();
+	}, 'quit_game','Quit');
 
 
 	////////////////////

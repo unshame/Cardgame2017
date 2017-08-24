@@ -81,7 +81,10 @@ var reactSecondary = {
 						cardManager.enablePhysics(true);
 						//game.camera.shake(0.005, 1000);
 						game.shake(15, 800, 20, 50);
-					}, 0);
+					}, 500)
+					.then(function(){
+						ui.menus.endGame.fadeIn();
+					});
 			}
 		}, delay/game.speed)
 		.then(function(){
@@ -104,6 +107,9 @@ var reactSecondary = {
 				card.destroy(0, true);
 			}
 			cardEmitter.start(300, 500, 100, false, 100, 10);
+		}, 500)
+		.then(function(){
+			ui.menus.endGame.fadeIn();
 		});
 	},
 
@@ -115,6 +121,7 @@ var reactSecondary = {
 	*/
 	VOTE_RESULTS: function(action, seq){
 		console.log(action);
+		ui.menus.endGame.fadeOut();
 	},
 
 	/**

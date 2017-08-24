@@ -96,5 +96,6 @@ var statePlay = new State('play', {
 		ui.rope.stop();
 		ui.layers.hideLayer(ui.actionButtons, true);
 		ui.menus.options.hideElement('disconnect');
+		ui.menus.endGame.fadeOut();
 	}
 });

@@ -58,7 +58,6 @@ class GameActions{
 					type: 'LATE_OR_UNCALLED_ACTION',
 					action: action
 				},
-				null,
 				[player]);
 			}
 			return;
@@ -139,10 +138,10 @@ class GameActions{
 				{
 					type: 'INVALID_ACTION',
 					action: action,
+					actions: this.valid.slice(),
 					time: this.deadline,
 					timeSent: Date.now()
 				},
-				this.valid.slice(),
 				[player]
 			);
 		}		

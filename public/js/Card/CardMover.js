@@ -14,6 +14,10 @@
 */
 Card.prototype.moveTo = function(x, y, time, delay, relativeToBase, shouldRebase, bringToTopOn, easing){
 
+	if(this._destroyPending){
+		return;
+	}
+
 	if(relativeToBase === undefined){
 		relativeToBase = false;
 	}
