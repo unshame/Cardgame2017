@@ -93,7 +93,6 @@ module.exports = function(server){
 		 */
 		quickQueueUpClient: function(){
 			let player = server.players[this.connection.id];
-			server.log.notice(player.type, player.id);
 			if(player){
 				server.manager.addPlayerToQuickQueue(player);
 			}

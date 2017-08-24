@@ -31,8 +31,8 @@ var Menu = function(options){
 	* @type {Phaser.Image}
 	*/
 	this.background = game.make.image(0, 0);
+	this.background.alpha = this.options.alpha;
 	this.background.inputEnabled = true;
-	this.background.tint = this.options.color;
 	this.add(this.background);
 
 	/**
@@ -101,7 +101,7 @@ Menu.prototype.getDefaultOptions = function(){
 		margin: 25,
 		name: 'default',
 		alpha: 0.8,
-		color: ui.colors.orange,
+		color: 'grey',
 		texture: null,
 		elementColor: 'orange',
 		textColor: 'white',
@@ -126,7 +126,7 @@ Menu.prototype.updatePosition = function(position){
 	}
 
 	if(typeof position == 'function'){
-		position = position();
+		position = position(this.background.width, this.background.height);
 	}
 
 	this.x = position.x - this.background.width/2;
@@ -186,18 +186,7 @@ Menu.prototype._resize = function(){
 */
 Menu.prototype._createArea = function(width, height){
 
-	drawRoundedRectangle(
-		this._bitmapArea,
-		width,
-		height,
-		0,
-		0,
-		this.options.corner,
-		this.options.border,
-		this.options.alpha,
-		this._pattern || 'rgba(255, 255, 255, 1)',
-		'rgba(255, 255, 255, 1)'
-	);
+	drawPanel(this._bitmapArea, width, height, 0, 0, this.options.color);
 
 	this.background.loadTexture(this._bitmapArea);	
 };

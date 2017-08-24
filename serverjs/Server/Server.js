@@ -32,10 +32,6 @@ class Server extends Eureca.Server{
 
 		this.log = this.createLogger();
 
-		if(!this.params.testing){
-			this.log.notice('Waiting for players:', this.params.numPlayers);
-		}
-
 		this.manager = new QueueManager(this, {
 			game: DurakGame,
 			gameConfig: {
@@ -80,7 +76,7 @@ class Server extends Eureca.Server{
 			numBots: argv.b === undefined ? Number(argv.bots) : Number(argv.b),
 			numPlayers: argv.p === undefined ? Number(argv.players) : Number(argv.p),
 			transfer: Boolean(process.env.TRANSFER || argv.transfer),
-			testing: argv.t || argv.test || argv.testing,
+			testing: argv.t || argv.test || argv.testing || false,
 			debug: argv.d || argv.debug || 'notice',
 			port: process.env.PORT || Number(argv.port)
 		};
@@ -185,7 +181,7 @@ class Server extends Eureca.Server{
 	/** Запускает сервер */
 	start(){
 		this.httpServer.listen(this.params.port, () => {
-			this.log.notice('Node app is running on port', this.params.port);
+			this.log.notice('Running on port', this.params.port);
 			if(this.params.testing){
 				Tests.runTest(this.params.numBots, this.params.testing, this.params.debug);
 			}

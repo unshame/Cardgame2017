@@ -46,7 +46,11 @@ var stateBoot = new State('boot', {
 		game.load.image('blue', 'assets/backgrounds/blue.png');
 
 		// Для меню
-		game.load.image('menu_blue','assets/backgrounds/menu_blue.jpg');
+		game.load.image('panel_grey_corners','assets/panels/grey_corners.png');
+		game.load.image('panel_orange_corners','assets/panels/orange_corners.png');
+		game.load.image('panel_blue_corners','assets/panels/blue_corners.png');
+		game.load.image('panel_yellow_corners','assets/panels/yellow_corners.png');
+		game.load.image('panel_green_corners','assets/panels/green_corners.png');
 
 		// Для тестов
 		game.load.image('testParticle', 'assets/test_particle.png');
@@ -56,6 +60,7 @@ var stateBoot = new State('boot', {
 		game.load.image('skull', 'assets/skull.png');
 
 		// Кнопки
+		game.load.spritesheet('button_red_wide', 'assets/buttons/red_wide.png', 190, 50, 4);
 		game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 50, 4);
 		game.load.spritesheet('button_grey_small', 'assets/buttons/grey_small.png', 49, 49, 4);
 		game.load.spritesheet('button_orange_wide', 'assets/buttons/orange_wide.png', 190, 50, 4);

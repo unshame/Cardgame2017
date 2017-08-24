@@ -14,7 +14,7 @@
 5. Запустить сервер через Node.js command prompt: `node server`    
 7. В браузере открыть `localhost:5000`  
 8. Должно быть так:   
-![Test](https://i.imgur.com/U5ECBIX.png  "Test")  
+![Menu](https://i.imgur.com/kKb8Hfr.png  "Menu")  
 И если нажать F12:  
 ![DevConsole](https://i.imgur.com/HyQXwbl.png "F12 Developer Console")  
 

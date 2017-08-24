@@ -33,7 +33,34 @@ var UI = function(){
 		red: 0xC93F3F,
 		white: 0xFeFeFe,
 		lightGray: 0xC6C6C6,
-		lightBlue: 0x0072C4
+		lightBlue: 0x0072C4,
+		menu: {
+			grey: {
+				outer: '#999999',
+				inner: '#FFFFFF',
+				background: '#EEEEEE'
+			},
+			orange: {
+				outer: '#CD5D12',
+				inner: '#FA8132',
+				background: '#E86A17'
+			},
+			green: {
+				outer: '#5FB13A',
+				inner: '#88E060',
+				background: '#73CD4B'
+			},
+			yellow: {
+				outer: '#CDA400',
+				inner: '#FFD948',
+				background: '#FFCC00'
+			},
+			blue: {
+				outer: '#1989B8',
+				inner: '#35BAF3',
+				background: '#1EA7E1'
+			}
+		}
 	};
 
 	/**
@@ -66,7 +93,7 @@ UI.prototype.initialize = function(){
 	* @type {Phaser.Image}
 	*/
 	this.logo = new Logo(function(){
-		return {x: game.screenWidth/2, y: game.screenHeight/2 - 200};
+		return {x: game.screenWidth/2, y: game.screenHeight/2 - 225};
 	}, 0.75, 'logo');
 
 	/**
@@ -131,16 +158,17 @@ UI.prototype.initialize = function(){
 UI.prototype._createMenus = function(){
 	this.menus = {
 		main: new Menu({
-			position: function(){
+			position: function(width, height){
 				return {
 					x:game.screenWidth/2,
-					y:game.screenHeight/2 + 150
+					y:game.screenHeight/2 + width/2 + 75
 				};
 			}, 
 			z: 5,
-			alpha: 0.95,
 			name: 'menu_main',
-			texture: 'black'
+			color: 'orange',
+			elementColor: 'red',
+			textColor: 'white'
 		}),
 		options: new Menu({
 			position: function(){
@@ -151,7 +179,7 @@ UI.prototype._createMenus = function(){
 			}, 
 			z: -3,
 			base: true,
-			color: this.colors.white,
+			color: 'grey',
 			texture: 'menu_blue',
 			elementColor: 'grey',
 			textColor: 'black',
@@ -165,7 +193,7 @@ UI.prototype._createMenus = function(){
 				};
 			}, 
 			z: -3,
-			color: this.colors.white,
+			color: 'grey',
 			texture: 'menu_blue',
 			elementColor: 'grey',
 			textColor: 'black',
@@ -202,12 +230,22 @@ UI.prototype._createButtons = function(){
 	this.menus.main.addButton(function(){
 		game.state.change('play');
 		connection.proxy.quickQueueUpClient();
-	}, 'queueUp','Queue Up');
+	}, 'quickGame','Quick Game');
+
+	this.menus.main.addButton(function(){
+	}, 'custom','Create Game');
+
+	this.menus.main.addButton(function(){
+	}, 'join','Join Game');
 
 	// Опции
 	this.menus.main.addButton(function(){
 		ui.modalManager.openModal('options');
 	}, 'options','Options');
+
+	this.menus.main.addButton(function(){
+	}, 'credits','Credits');
+
 
 
 	////////////////////
