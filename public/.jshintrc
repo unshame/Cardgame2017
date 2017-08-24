@@ -87,5 +87,6 @@
   },
   "browser": true,
   "node": false,
-  "devel": true
+  "devel": true,
+  "multistr": true
 }

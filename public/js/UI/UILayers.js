@@ -193,6 +193,10 @@ UILayers.prototype.loadLabels = function(){
 		}
 
 		var layer = this.byName[pname];
+		if(layer instanceof Phaser.Text){
+			layer.setText(layer.text);
+			continue;
+		}
 		if(!(layer instanceof Phaser.Group)){
 			continue;
 		}

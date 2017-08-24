@@ -113,6 +113,7 @@ Phaser.Device.whenReady(function(){
 	game.state.add(stateMenu, false, false);
 	game.state.add(statePlay, false, false);
 	game.state.add(stateQueue, false, false);
+	game.state.add(stateCredits, false, false);
 	// Запускаем загрузку игры
 	game.state.add(stateBoot, true, true);	
 

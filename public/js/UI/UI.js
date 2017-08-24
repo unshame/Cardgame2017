@@ -126,6 +126,8 @@ UI.prototype.initialize = function(){
 	*/
 	this.modalManager = new ModalManager();
 
+	this.credits = new Credits(creditsText, game.state.change.bind(game.state, 'menu'));
+
 	this._createMenus();
 	this._createButtons();
 
@@ -137,6 +139,7 @@ UI.prototype.initialize = function(){
 		[cardEmitter, 4],
 		// this.menus.main, 5
 		[this.logo, 5],
+		[this.credits, 5],
 		[this.feed, 6],
 		[this.eventFeed, 6],
 		[this.announcer, 7],
@@ -255,6 +258,7 @@ UI.prototype._createButtons = function(){
 	}, 'options','Options');
 
 	this.menus.main.addButton(function(){
+		game.state.change('credits');
 	}, 'credits','Credits');
 
 
@@ -422,6 +426,22 @@ UI.prototype._createButtons = function(){
 		group: this.cornerButtons
 	});
 
+	new Button({
+		position: function(width, height){
+			return {
+				x: 15,
+				y: game.screenHeight - 15 - height
+			};
+		},
+		action: game.state.change.bind(game.state, 'menu'),
+		text: '<',
+		textColor: 'white',
+		color: 'orange',
+		name: 'to_main_menu',
+		size: 'small',
+		group: this.cornerButtons
+	}).hide();
+
 	// Дебаг
 	new Button({
 		position: function(width, height){
@@ -481,3 +501,4 @@ UI.prototype.newPixel = function(){
 //@include:Logo
 //@include:Cursor
 //@include:ModalManager
+//@include:Credits

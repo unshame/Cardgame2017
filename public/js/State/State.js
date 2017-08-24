@@ -102,6 +102,7 @@ State.prototype.applySkin = function(){};
 //@include:statePlay
 //@include:stateMenu
 //@include:stateQueue
+//@include:stateCredits
 
 
 /**
