@@ -37,6 +37,8 @@ var stateBoot = new State('boot', {
 		game.load.image('logo', 'assets/logo.png');
 
 		// Фон
+		game.load.image('vignette', 'assets/vignette.png');
+
 		game.load.image('wood_light', 'assets/backgrounds/wood_light.png');
 		game.load.image('wood_dark', 'assets/backgrounds/wood_dark.png');
 		game.load.image('green', 'assets/backgrounds/green.png');

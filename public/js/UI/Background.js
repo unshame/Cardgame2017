@@ -23,7 +23,13 @@ var Background = function(){
 	this.surface = game.add.tileSprite(-this.offset/2, -this.offset/2, game.screenWidth + this.offset, game.screenHeight + this.offset, textureName);
 	this.surface.name = 'surface';
 	this.surface.textureName = textureName;
+
+	this.vignette = game.add.image(0, 0, 'vignette');
+	this.vignette.width = game.screenWidth;
+	this.vignette.height =  game.screenHeight;
+
 	this.add(this.surface);
+	this.add(this.vignette);
 };
 
 extend(Background, Phaser.Group);
@@ -31,6 +37,8 @@ extend(Background, Phaser.Group);
 Background.prototype.updatePosition = function(){
 	this.surface.width = game.screenWidth + this.offset;
 	this.surface.height =  game.screenHeight + this.offset;
+	this.vignette.width = game.screenWidth;
+	this.vignette.height =  game.screenHeight;
 };
 
 Background.prototype.setTexture = function(textureName){

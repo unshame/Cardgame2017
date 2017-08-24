@@ -15,6 +15,7 @@
 7. В браузере открыть `localhost:5000`  
 8. Должно быть так:   
 ![Menu](https://i.imgur.com/kKb8Hfr.png  "Menu")  
+![Gameplay](https://i.imgur.com/CkgYyii.jpg  "Gameplay")  
 И если нажать F12:  
 ![DevConsole](https://i.imgur.com/HyQXwbl.png "F12 Developer Console")  
 
