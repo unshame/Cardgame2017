@@ -77,7 +77,11 @@ StateManager.prototype.add = function(state, isAsync, start){
 * поэтому такие переходы не рекомендуются и кидают предупреждение в консоль.
 * @param {string} key название состояния
 */
-StateManager.prototype.change = function(key){
+StateManager.prototype.change = function(key, finishSequence){
+	if(finishSequence === undefined){
+		finishSequence = true;
+	}
+
 	var oldState, state;
 
 	if(this.states[key]){
@@ -93,6 +97,10 @@ StateManager.prototype.change = function(key){
 		this.start(key, false, false);
 	}
 	else if(this.statesSync[key]){
+
+		if(finishSequence){
+			actionHandler.sequencer.finish(true);
+		}
 
 		oldState = this.getCurrent();
 		state = this.statesSync[key];

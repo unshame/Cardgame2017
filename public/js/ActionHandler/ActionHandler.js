@@ -113,11 +113,12 @@ ActionHandler.prototype.executeAction = function(action){
 	}
 	
 	this.sequencer.queueUp(function(seq, sync){
-		if(!~channel.states.indexOf(game.state.currentSync)){
-			console.error('Action handler: wrong game state', game.state.currentSync, action.channel, channel.states, action);
+		if(channel.state != game.state.currentSync){
+			console.warn('Action handler: wrong game state', game.state.currentSync, action.channel, channel.state, action);
+			game.state.change(channel.state);
 			return;
 		}
-		reaction.call(channel.reactions, action, seq, sync)
+		reaction.call(channel.reactions, action, seq, sync);
 	});
 };
 
@@ -130,6 +131,13 @@ ActionHandler.prototype.executeAction = function(action){
 */
 ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent, turnStage){
 	this.sequencer.queueUp(function(){
+		var state = this.channels.possible_actions.state;
+		if(state != game.state.currentSync){
+			console.warn('Action handler: wrong game state', game.state.currentSync, state);
+			game.state.change(channel.state);
+			return;
+		}
+
 		this.turnStage = turnStage;
 
 		time = time - Date.now();

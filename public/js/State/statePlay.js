@@ -84,7 +84,6 @@ var statePlay = new State('play', {
 	* @memberof statePlay
 	*/
 	shutdown: function(){ 
-		actionHandler.sequencer.finish(true);
 		actionHandler.resetActions();
 		ui.eventFeed.clear();
 		ui.announcer.clear();

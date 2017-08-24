@@ -124,10 +124,9 @@ var reactSecondary = {
 	* @param {boolean}                successful   удачно ли прошло голосование
 	*/
 	VOTE_RESULTS: function(action, seq){
-		console.log(action);
 		ui.menus.endGame.fadeOut();
-		if(!voteResults.successful){
-			game.state.change('menu');
+		if(!action.results.successful){
+			game.state.change('menu', false);
 		}
 	},
 
@@ -163,7 +162,7 @@ var reactSecondary = {
 	PLAYER_CONCEDED: function(action, seq){
 		if(action.pid == game.pid){
 			ui.feed.newMessage('Disconnected from game', 2000);
-			game.state.change('menu');
+			game.state.change('menu', false);
 			return;
 		}
 		var player = playerManager.getPlayer(action.pid);
@@ -186,7 +185,7 @@ var reactSecondary = {
 	},
 
 	DISCONNECTED: function(action, seq){
-		game.state.change('menu');
+		game.state.change('menu', false);
 	},
 
 	TOO_SLOW: function(){

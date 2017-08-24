@@ -7,7 +7,7 @@ var reactQueue = {
 
 	QUEUE_LEFT: function(){
 		ui.feed.newMessage('Left queue', 2000);
-		game.state.change('menu');
+		game.state.change('menu', false);
 	},
 
 	QUEUE_STATUS: function(action){
@@ -16,6 +16,6 @@ var reactQueue = {
 
 	QUEUE_FULL: function(){
 		ui.eventFeed.clear();
-		game.state.change('play');
+		game.state.change('play', false);
 	}
 };
