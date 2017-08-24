@@ -32,14 +32,14 @@ var ActionHandler = function(){
 	this.sequencer = new Sequencer(connection.server.sendResponse);
 };
 
-ActionHandler.prototype.addChannel = function(name, type, states, reactions){
+ActionHandler.prototype.addChannel = function(name, type, state, reactions){
 	if(this.channels[name]){
 		console.error('ActionHandler: channel already exists', name);
 	}
 	var channel = {};
 	channel.name = name;
 	channel.type = type;
-	channel.states = states;
+	channel.state = state;
 	channel.reactions = reactions || null;
 	this.channels[name] = channel;
 };
