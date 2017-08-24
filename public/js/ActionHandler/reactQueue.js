@@ -11,7 +11,14 @@ var reactQueue = {
 	},
 
 	QUEUE_STATUS: function(action){
-		ui.eventFeed.newMessage('Players in queue: ' + action.playersQueued + '/' + action.playersNeeded);
+		var playersWaiting = action.playersNeeded - action.playersQueued;
+		ui.eventFeed.newMessage(
+			'Waiting for ' + 
+			playersWaiting + 
+			' more ' +
+			(playersWaiting == 1 ? 'player' : 'players') + 
+			'...'
+		);
 	},
 
 	QUEUE_FULL: function(){

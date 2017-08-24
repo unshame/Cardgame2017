@@ -118,7 +118,7 @@ ActionHandler.prototype.executeAction = function(action){
 			game.state.change(channel.state);
 			return;
 		}
-		reaction.call(channel.reactions, action, seq, sync);
+		return reaction.call(channel.reactions, action, seq, sync);
 	});
 };
 

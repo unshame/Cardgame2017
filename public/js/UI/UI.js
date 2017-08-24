@@ -212,6 +212,19 @@ UI.prototype._createMenus = function(){
 			elementColor: 'red',
 			textColor: 'white',
 			name: 'menu_endGame'
+		}),
+		queue: new Menu({
+			position: function(){
+				return {
+					x:game.screenWidth/2,
+					y:game.screenHeight/2
+				};
+			}, 
+			z: -5,
+			color: 'orange',
+			elementColor: 'red',
+			textColor: 'white',
+			name: 'menu_queue'
 		})
 	};
 	this.modalManager.makeModal([
@@ -325,6 +338,11 @@ UI.prototype._createButtons = function(){
 		connection.proxy.recieveCompleteAction({type: 'DECLINE'});
 		this.fadeOut();
 	}, 'quit_game','Quit');
+
+
+	this.menus.queue.addButton(function(){
+		connection.server.disconnect();
+	}, 'leave_queue','Leave Queue');
 
 
 	////////////////////
