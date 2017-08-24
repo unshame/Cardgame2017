@@ -79,6 +79,7 @@ Phaser.Device.whenReady(function(){
 	*/
 	cardControl = new CardControl(options.get('debug_control'));
 
+
 	/**
 	* Менеджер соединения с сервером
 	* @type {ConnectionManager}
@@ -96,7 +97,7 @@ Phaser.Device.whenReady(function(){
 	actionHandler.addChannel('secondary', CHANNEL_TYPE.INTERRUPT, ['play'], reactSecondary);
 	actionHandler.addChannel('possible_actions', CHANNEL_TYPE.USER_INVOLVED, ['play']);
 	actionHandler.addChannel('extra', CHANNEL_TYPE.NO_ACTION, ['play'], reactExtra);
-	actionHandler.addChannel('queue', CHANNEL_TYPE.INTERRUPT, ['menu', 'play'], reactQueue);
+	actionHandler.addChannel('queue', CHANNEL_TYPE.INTERRUPT, ['menu'], reactQueue);
 
 	/**
 	* Игра

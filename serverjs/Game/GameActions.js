@@ -246,6 +246,10 @@ class GameActions{
 		action.pid = player.id;
 
 		this.stored[player.id] = Object.assign({}, action);
+
+		if(action.type != 'ACCEPT'){
+			this.game.players.disconnect(player);
+		}
 	}
 
 	// Считает сохраненные голоса и возвращает результаты
@@ -253,52 +257,54 @@ class GameActions{
 
 		const game = this.game;
 
-		// Считаем голоса
-		let numAccepted = 0;
-
-		let minAcceptedNeeded = game.players.length; 
-		
+		let allAccepted = true;
 		let allConnected = true;
+		let allVoted = true;
+		let successful = true;
 
-		for(let pi = 0; pi < game.players.length; pi++){
-			let player = game.players[pi];
-			let pid = player.id;
-			let action = this.stored[pid];
-
-			if(!player.connected){
-				allConnected = false;
-				continue;
-			}
-
-			if(action && action.type == 'ACCEPT'){
-				numAccepted++;
-			}
-		}
-
-		this.log.info(numAccepted, 'out of', game.players.length, 'voted for rematch');
-		if(!allConnected){
-			this.log.info('Some players disconnected');
-		}
-
+		// Проверяем, что все, кто проголосовал, проголосовали за
 		let results = [];
 		for(let pid in this.stored){
 			if(!this.stored.hasOwnProperty(pid)){
 				continue;
 			}
-			results.push(Object.assign({}, this.stored[pid]));
+			let action = this.stored[pid];
+			if(allAccepted && action.type != 'ACCEPT'){
+				allAccepted = false;
+			}
+			results.push(Object.assign({}, action));
+		}
+
+		// Проверяем, что все подключены и все проголосовали
+		for(let i = game.players.length - 1; i >= 0; i--){			
+			let player = game.players[i];
+			if(allConnected && !player.connected){
+				allConnected = false;
+			}
+			if(!this.stored[player.id]){
+				allVoted = false;
+				game.players.disconnect(player);
+			}
+		}
+
+		if(!allAccepted){
+			this.log.info('Some players voted against rematch');
+		}
+		else if(!allConnected){
+			this.log.info('Some players disconnected');
+		}else if(!allVoted){
+			this.log.info('Some players didn\'t vote');
+		}
+
+		if(!allAccepted || !allConnected || !allVoted){
+			successful = false;
 		}
 
 		let note = {
 			type: 'VOTE_RESULTS',
-			results: results
+			results: results,
+			successful: successful
 		};
-
-		if(allConnected && numAccepted >= minAcceptedNeeded){
-			note.successful = true;
-		}
-		else{
-			note.successful = false;
-		}
 
 		return note;
 	}

@@ -94,10 +94,6 @@ StateManager.prototype.change = function(key){
 	}
 	else if(this.statesSync[key]){
 
-		if(this.game.inDebugMode){
-			console.log('StateManager: changing state', key);
-		}
-
 		oldState = this.getCurrent();
 		state = this.statesSync[key];
 
@@ -108,6 +104,10 @@ StateManager.prototype.change = function(key){
 		state.preload();
 		state.init();
 		state.create();
+
+		if(this.game.inDebugMode){
+			console.log('StateManager: state changed to', key);
+		}
 	}
 	else{
 		console.error('StateManager: state not found', key);

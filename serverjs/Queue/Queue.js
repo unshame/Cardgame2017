@@ -12,6 +12,7 @@ class Queue{
 
 		this.log = Log(module, this.id, config.debug);
 
+		this.active = true;
 		this.game = null;
 		this.manager = manager;
 		this.type = type;
@@ -29,6 +30,8 @@ class Queue{
 
 		this.players.push(player);
 		player.queue = this;
+
+		player.recieveQueueAction({type: 'QUEUE_ENTERED'});
 
 		if(this.players.length >= this.config.numPlayers){
 			this.startGame();
@@ -69,10 +72,11 @@ class Queue{
 		voteResults.forEach(r => results[r.pid] = r.type);
 		for(let i = this.players.length - 1; i >= 0; i--){
 			let p = this.players[i];
-			this.log.notice(p.id, results[p.id]);
-			if(!results[p.id] || results[p.id] != 'ACCEPT'){
+
+			this.log.debug(p.id, 'voted', results[p.id] || 'no vote');
+
+			if(!p.connected || !results[p.id] || results[p.id] != 'ACCEPT'){
 				this.removePlayer(p, false);
-				p.recieveQueueAction({type: 'LEFT_QUEUE', instant: true});
 			}
 		}
 
@@ -82,17 +86,25 @@ class Queue{
 		if(!this.players.length){
 			this.shutdown();
 		}
+		else if(this.players.length >= this.config.numPlayers){
+			this.startGame();
+		}
 		else{
 			this.notifyPlayers();
 		}
 	}
 
 	shutdown(){
+		if(!this.active){
+			return;
+		}
+		this.log.notice('Shutting down');
 		if(this.players.length){
 			for(let i = this.players.length - 1; i >= 0; i--){
 				this.removePlayer(this.players[i], false);
 			}
 		}
+		this.active = false;
 		this.manager.removeQueue(this);
 	}
 
@@ -122,7 +134,7 @@ class Queue{
 		this.players.splice(i, 1);
 		player.queue = null;
 		if(notify){
-			player.recieveQueueAction({type: 'LEFT_QUEUE', instant: true});
+			player.recieveQueueAction({type: 'QUEUE_LEFT', instant: true});
 			this.notifyPlayers();
 		}
 		this.log.notice('Player %s left queue', player.id, this.id);
@@ -137,7 +149,6 @@ class Queue{
 		if(game){
 			player.queue = null;
 			game.players.concede(player);
-			this.log.notice('Player %s disconnected from game %s', player.id, game.id);
 			this.removePlayer(player, false);
 		} 
 		else{

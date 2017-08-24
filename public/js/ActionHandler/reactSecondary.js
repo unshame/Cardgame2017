@@ -7,6 +7,10 @@
 /* exported reactSecondary */
 var reactSecondary = {
 
+	NO_TRUMP_CARDS: function(action, seq){
+
+	},
+
 	/**
 	* В игре остались только боты, игра симулируется в ускоренном режиме.
 	*/
@@ -122,6 +126,9 @@ var reactSecondary = {
 	VOTE_RESULTS: function(action, seq){
 		console.log(action);
 		ui.menus.endGame.fadeOut();
+		if(!voteResults.successful){
+			game.state.change('menu');
+		}
 	},
 
 	/**
@@ -176,6 +183,10 @@ var reactSecondary = {
 		.then(function(){
 			field.endAnimation();
 		});
+	},
+
+	DISCONNECTED: function(action, seq){
+		game.state.change('menu');
 	},
 
 	TOO_SLOW: function(){

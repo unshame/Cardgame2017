@@ -56,7 +56,7 @@ class Bot extends Player{
 
 	recieveNotification(action){
 		if(action.actions){
-			this.sendDelayedResponse(action.actions[0]);
+			this.sendDelayedResponse(action.actions[1]);
 		}			
 	}
 

@@ -117,6 +117,24 @@ class GamePlayers extends PlayerManager{
 		this.log.notice('Player reconnected', player.id);
 	}
 
+	disconnect(player){
+		if(!this.includes(player)){
+			this.log.error(new Error(`Cannot disconnect a player that isn\'t in this game ${player.id}`));
+			return;
+		}
+		this.notify({type: 'DISCONNECTED', instant: true}, [player]);
+		let pi = this.indexOf(player);
+		this.splice(pi, 1);
+
+		player.game = null;
+		player.statuses = {};
+		if(player.queue){
+			player.queue.removePlayer(player, false);
+		}
+
+		this.log.notice('Player disconnected', player.id);
+	}
+
 	concede(player){
 		if(!this.includes(player)){
 			this.log.error(new Error(`Cannot concede a player that isn\'t in this game ${player.id}`));
@@ -135,6 +153,9 @@ class GamePlayers extends PlayerManager{
 		
 		player.game = null;
 		player.statuses = {};
+		if(player.queue){
+			player.queue.removePlayer(player, false);
+		}
 
 		let i = this.length - 1;
 		while(i > pi){

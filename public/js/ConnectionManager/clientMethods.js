@@ -32,6 +32,9 @@ var clientMethods = {
 	},
 
 	recieveAction: function(action){
+		if(connection.inDebugMode){
+			console.log(action);
+		}
 		actionHandler.executeAction(action);
 	}
 };

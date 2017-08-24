@@ -23,19 +23,20 @@ var reactPrimary = {
 			player = playerManager.getPlayer(pid),
 			message;
 
-		if(player){
-			message = ui.eventFeed.newMessage(player.name + ' is going first', 'positive');
-		}
-		fieldManager.showTrumpCards(cardsInfo, pid);
+		seq.append(200)
+			.then(function(){
+				if(player){
+					message = ui.eventFeed.newMessage(player.name + ' is going first', 'positive');
+				}
+				fieldManager.showTrumpCards(cardsInfo, pid);
+			}, 3000)
+			.then(function(){
+				if(message){
+					ui.eventFeed.removeMessage(message);
+				}
+				fieldManager.hideTrumpCards(cardsInfo);
+			}, 500);
 
-		seq.append(function(){
-			if(message){
-				ui.eventFeed.removeMessage(message);
-			}
-			fieldManager.hideTrumpCards(cardsInfo);
-		}, 500);
-
-		return 3000;
 	},
 
 	/**

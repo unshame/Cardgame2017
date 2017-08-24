@@ -67,16 +67,10 @@ ActionHandler.prototype.executeAction = function(action){
 		console.error('Action handler: no action recieved');
 		return;
 	}
-
 	var channel = this.channels[action.channel];
 
 	if(!channel){
-		console.error('Action handler: channel not found', action.channel);
-		return;
-	}
-
-	if(!~channel.states.indexOf(game.state.currentSync)){
-		console.error('Action handler: wrong game state', game.state.currentSync, action.channel, channel.states);
+		console.error('Action handler: channel not found', action.channel, action);
 		return;
 	}
 
@@ -104,7 +98,7 @@ ActionHandler.prototype.executeAction = function(action){
 		break;
 
 		default:
-		console.error('ActionHandler: invalid channel type', channel.type, channel);
+		console.error('ActionHandler: invalid channel type', channel.type, channel, action);
 		break;
 	}
 
@@ -117,8 +111,14 @@ ActionHandler.prototype.executeAction = function(action){
 	if(this.simulating || action.instant){
 		this.sequencer.finish();
 	}
-
-	this.sequencer.queueUp(reaction.bind(channel.reactions, action));
+	
+	this.sequencer.queueUp(function(seq, sync){
+		if(!~channel.states.indexOf(game.state.currentSync)){
+			console.error('Action handler: wrong game state', game.state.currentSync, action.channel, channel.states, action);
+			return;
+		}
+		reaction.call(channel.reactions, action, seq, sync)
+	});
 };
 
 /**

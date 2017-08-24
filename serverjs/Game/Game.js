@@ -396,7 +396,7 @@ class Game{
 	// Игрок проносит курсор над картой
 
 	hoverOverCard(player, cid){
-		if(this.players.includes(player) && player.statuses.working && this.actions.valid.length && this.cards.byId[cid].field == player.id){
+		if(this.isRunning && this.players.includes(player) && player.statuses.working && this.actions.valid.length && this.cards.byId[cid].field == player.id){
 			if(player.statuses.hover){
 				this.hoverOutCard(player, cid);
 			}
@@ -412,7 +412,7 @@ class Game{
 	}
 
 	hoverOutCard(player, cid){
-		if(this.players.includes(player) && player.statuses.hover){
+		if(this.isRunning && this.players.includes(player) && player.statuses.hover){
 			
 			let players = [];
 			this.players.forEach((p) => {

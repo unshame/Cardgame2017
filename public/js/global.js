@@ -99,6 +99,19 @@ function mergeOptions(dest, source){
 	return dest;
 }
 
+function getSequentialMethod(sequencer, obj, key){
+	var method = obj[key];
+	return function(){
+		var args = [obj],
+			len = arguments.length;
+		for(var i = 0; i < len; i++) {
+			args[i + 1] = arguments[i];
+		}
+		var binded = method.bind.apply(method, args);
+		sequencer.queueUp(binded, 0);
+	};
+}
+
 /**
 * Добавляет нули перед строкой до указанного кол-ва.
 * @global
