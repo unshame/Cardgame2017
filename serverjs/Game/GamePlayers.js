@@ -131,8 +131,9 @@ class GamePlayers extends PlayerManager{
 		if(player.queue){
 			player.queue.removePlayer(player, false);
 		}
-
-		this.log.notice('Player disconnected', player.id);
+		if(player.type == 'player'){
+			this.log.notice('Player disconnected', player.id);
+		}
 	}
 
 	concede(player){
