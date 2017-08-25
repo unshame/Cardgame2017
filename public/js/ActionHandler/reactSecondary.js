@@ -85,14 +85,13 @@ var reactSecondary = {
 						cardManager.enablePhysics(true);
 						//game.camera.shake(0.005, 1000);
 						game.shake(15, 800, 20, 50);
-					}, 500)
-					.then(function(){
 						ui.menus.endGame.fadeIn();
-					});
+					})
 			}
 		}, delay/game.speed)
 		.then(function(){
 			ui.announcer.newMessage('YOU WON!');
+			ui.menus.endGame.fadeIn();
 			for(var ci = 0; ci < dummy.cards.length; ci++){
 				var card = dummy.cards[ci],
 					x = card.sprite.x + card.x + (10*(ci - dummy.cards.length/2)),
@@ -112,9 +111,6 @@ var reactSecondary = {
 			}
 			cardEmitter.start(300, 500, 100, false, 100, 10);
 		}, 500)
-		.then(function(){
-			ui.menus.endGame.fadeIn();
-		});
 	},
 
 	/**

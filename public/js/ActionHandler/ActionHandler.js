@@ -115,8 +115,7 @@ ActionHandler.prototype.executeAction = function(action){
 	this.sequencer.queueUp(function(seq, sync){
 		if(channel.state != game.state.currentSync){
 			console.warn('Action handler: wrong game state', game.state.currentSync, action.channel, channel.state, action);
-			game.state.change(channel.state);
-			return;
+			game.state.change(channel.state, false);
 		}
 		return reaction.call(channel.reactions, action, seq, sync);
 	});
