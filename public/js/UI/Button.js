@@ -48,7 +48,7 @@ var Button = function(options){
 	}	
 	if(this.label){
 		this.label.state = 'Out';
-		this.label.downOffset = 4;
+		this.label.downOffset = this.options.downOffset;
 		this.label.anchor.set(0.5, 0.5);
 	}
 
@@ -87,6 +87,7 @@ Button.prototype.getDefaultOptions = function(){
 		text: null,
 		icon: null,
 		name: null,
+		downOffset: 4,
 		textColor: 'black',
 		font: '28px Exo',
 		fontSize: 30,
@@ -169,7 +170,7 @@ Button.prototype.updatePosition = function(position){
 		this.label.x = this.centerX;
 		this.label.y = this.centerY;
 		if(!this.label.isText){
-			this.label.x++;
+			//this.label.x++;
 			this.label.y -= this.label.downOffset/2;
 		}
 		if(this.isDown){

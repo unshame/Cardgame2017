@@ -58,6 +58,10 @@ Menu.prototype.updatePosition = function(position){
 		y += row.height + margin;
 
 	}, this);
+
+	this.specialElements.forEach(function(el){
+		el.updatePosition();
+	});
 };
 
 /**

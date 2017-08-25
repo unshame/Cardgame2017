@@ -85,8 +85,12 @@ var Menu = function(options){
 	}
 
 	this._elementTypeMap = this._getTypeMap();
-	
+
 	ui.layers.addExistingLayer(this, this.options.z);	
+
+	if(this.options.closeButton){
+		this.addCloseButton(this.options.closeButton);
+	}
 
 	if(this.options.layout){
 		this.createLayout(this.options.layout);
@@ -116,7 +120,8 @@ Menu.prototype.getDefaultOptions = function(){
 		corner: 10,
 		border: 4,
 		fadeTime: 200,
-		layout: null
+		layout: null,
+		closeButton: null
 	};
 };
 
@@ -126,7 +131,7 @@ Menu.prototype._getTypeMap = function(){
 		// slider: this._addSlider.bind(this),
 		// add more
 	};
-}
+};
 
 Menu.button = function(options){
 	return {

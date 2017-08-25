@@ -15,6 +15,27 @@ Menu.prototype.createLayout = function(layout){
 	}
 };
 
+Menu.prototype.addCloseButton = function(action){
+	if(typeof action != 'function'){
+		action = this.fadeOut.bind(this);
+	}
+	function getPosition(width, height){
+		return {
+			x: this.background.width - width*0.75,
+			y: -height*0.25
+		};
+	}
+	var button = this._addButton({
+		position: getPosition.bind(this),
+		action: this.options.closeButton,
+		color: this.options.elementColor,
+		icon: this.options.elementColor + '_cross',
+		downOffset: 0,
+		size: 'circle'
+	});
+	this.specialElements.push(button);
+};
+
 Menu.prototype._addElement = function(element){
 	if(!element.type || !element.options){
 		element = Menu.button(element);
@@ -46,7 +67,7 @@ Menu.prototype._addButton = function(options){
 	var button = new Button(options);
 	button.disable(true);
 	this.elements.push(button);
-	this.add(button);
+	//this.add(button);
 	return button;
 };
 

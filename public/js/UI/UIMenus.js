@@ -53,7 +53,7 @@ UI.prototype._createMenus = function(){
 				}
 			]
 		}),
-		
+
 
 		// ОПЦИИ
 		options: new Menu({
@@ -69,6 +69,9 @@ UI.prototype._createMenus = function(){
 			elementColor: 'grey',
 			textColor: 'black',
 			name: 'menu_options',
+			closeButton: function(){
+				ui.modalManager.closeModal();
+			},
 			layout: [
 				{
 					action: function(){
@@ -125,13 +128,6 @@ UI.prototype._createMenus = function(){
 					},
 					name: 'debug',
 					text: 'Debug'
-				},
-				{
-					action: function(){
-						ui.modalManager.closeModal();
-					}, 
-					name: 'close',
-					text: 'Close'
 				}
 			]
 		}),
@@ -209,6 +205,9 @@ UI.prototype._createMenus = function(){
 			elementColor: 'grey',
 			textColor: 'black',
 			name: 'menu_debug',
+			closeButton: function(){
+				ui.modalManager.closeModal();
+			},			
 			layout: [
 				{
 					action: function(){
@@ -268,14 +267,7 @@ UI.prototype._createMenus = function(){
 						name: 'cards',
 						text: 'Cards'
 					}
-				],
-				{
-					action: function(){
-						ui.modalManager.closeModal();
-					},
-					name: 'back',
-					text: 'Back'
-				}
+				]
 			]
 		})
 	};
