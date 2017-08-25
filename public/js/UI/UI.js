@@ -128,7 +128,12 @@ UI.prototype.initialize = function(){
 
 	this.credits = new Credits(creditsText, game.state.change.bind(game.state, 'menu'));
 
-	this._createMenus();
+	this.menus = this._createMenus();
+	this.menus.options.hideElement('disconnect');
+	this.modalManager.makeModal([
+		this.menus.options,
+		this.menus.debug
+	]);
 	this._createButtons();
 
 	this.layers.addExistingLayers([

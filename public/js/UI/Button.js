@@ -231,3 +231,19 @@ Button.prototype.update = function(){
 		ui.layers.updateCursorOverlap(this);
 	}
 };
+
+Button.prototype.destroy = function(){
+	if(this.label){
+		this.label.destroy();
+	}
+	supercall(Button).destroy();
+};
+
+Button.prototype.removeFromParent = function(destroy){
+	if(this.parent){
+		if(this.label){
+			this.parent.remove(this.label);
+		}
+		this.parent.remove(this, destroy);
+	}
+}

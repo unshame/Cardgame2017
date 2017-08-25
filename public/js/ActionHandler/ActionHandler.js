@@ -46,14 +46,6 @@ ActionHandler.prototype.addChannel = function(name, type, state, reactions){
 
 // ОБРАБОТКА КОМАНД СЕРВЕРА
 
-/** Переставляет игру в правильное состояние и запрашивает информацию об игре у сервера */
-/*ActionHandler.prototype.changeToCorrectState = function(){
-	console.warn('ActionHandler: changing to ' + this.correctState + ' state');
-	this._waitingForGameInfo = true;
-	game.state.change(this.correctState);
-	connection.server.reconnect();
-};
-*/
 /**
 * Выполняет действие.
 * @param {object} action      действие

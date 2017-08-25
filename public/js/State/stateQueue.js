@@ -35,7 +35,6 @@ var stateQueue = new State('queue', {
 	*/
 	create: function(lastState){
 		//ui.menus.options.showElement('disconnect');
-		ui.menus.queue.fadeIn();
 		if(lastState != 'menu'){
 			cardEmitter.start(10, 50, 10, 2000, 20, 1);
 		}

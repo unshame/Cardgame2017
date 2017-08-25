@@ -68,6 +68,8 @@ var Menu = function(options){
 	*/
 	this.disabledElements = [];
 
+	this.layout = [];
+
 	/**
 	* Графика фона меню.
 	* @type {Phaser.BitmapData}
@@ -82,7 +84,13 @@ var Menu = function(options){
 		this._pattern = this._bitmapArea.ctx.createPattern(image, 'repeat');
 	}
 
+	this._elementTypeMap = this._getTypeMap();
+	
 	ui.layers.addExistingLayer(this, this.options.z);	
+
+	if(this.options.layout){
+		this.createLayout(this.options.layout);
+	}
 };
 
 extend(Menu, Phaser.Group);
@@ -107,90 +115,52 @@ Menu.prototype.getDefaultOptions = function(){
 		textColor: 'white',
 		corner: 10,
 		border: 4,
-		fadeTime: 200
+		fadeTime: 200,
+		layout: null
 	};
 };
 
-/**
-* Позиционирует меню и элементы.
-* @param {object} [position] новая позиция меню `{x, y}`.
-*/
-Menu.prototype.updatePosition = function(position){
-	this._resize();
+Menu.prototype._getTypeMap = function(){
+	return {
+		button: this._addButton.bind(this),
+		// slider: this._addSlider.bind(this),
+		// add more
+	};
+}
 
-	if(position){
-		this.options.position = position;
-	}
-	else{
-		position = this.options.position;
-	}
-
-	if(typeof position == 'function'){
-		position = position(this.background.width, this.background.height);
-	}
-
-	this.x = position.x - this.background.width/2;
-	this.y = position.y - this.background.height/2;
-
-	var y = 0,
-		margin = this.options.margin;
-
-	this.forEachElement(function(element, i){
-		if(!element.visible){
-			return;
-		}
-
-		element.updatePosition({x: this.background.width/2 - element.width/2, y: y + margin});
-		y += element.height + margin;
-	});
+Menu.button = function(options){
+	return {
+		type: 'button',
+		options: options
+	};
 };
 
-/**
-* Устанавливает размер фона меню в соответствии с элементами.
-*/
-Menu.prototype._resize = function(){
-	var width = 0,
-		height = 0,
-		margin = this.options.margin;
+/*Menu.slider = function(options){
+	return {
+		type: 'slider',
+		options: options
+	};
+};*/
 
-	this.forEachElement(function(element, i, len){
-		var h = this.hiddenElements.indexOf(element);
-
-		if(element.visible && ~h){
-			element.hide();
-		}
-		else if(!element.visible && !~h){
-			element.show();
-		}
-
-		if(!element.visible){
-			return;
-		}
-
-		height += element.height;
-
-		if(i < len - 1){
-			height += margin;
-		}
-
-		if(width < element.width){
-			width = element.width;
-		}
-	});
-
-	this._createArea(width + margin*2, height + margin*2);
+Menu.alignLeft = function(){
+	var row = [];
+	row.align = 'left';
+	for(var i = 0, len = arguments.length; i < len; i++){
+		row.push(arguments[i]);
+	}
+	return row;
 };
 
-/**
-* Рисует фон меню.
-*/
-Menu.prototype._createArea = function(width, height){
-
-	drawPanel(this._bitmapArea, width, height, 0, 0, this.options.color);
-
-	this.background.loadTexture(this._bitmapArea);	
+Menu.alignRight = function(){
+	var row = [];
+	row.align = 'right';
+	for(var i = 0, len = arguments.length; i < len; i++){
+		row.push(arguments[i]);
+	}
+	return row;
 };
 
+//@include:MenuPosition
 //@include:MenuState
 //@include:MenuElement
 //@include:MenuAdd

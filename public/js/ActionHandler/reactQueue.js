@@ -1,8 +1,7 @@
 var reactQueue = {
 
 	QUEUE_ENTERED: function(){
-		ui.menus.main.fadeOut();
-		ui.logo.fadeOut();
+		ui.menus.queue.fadeIn();
 	},
 
 	QUEUE_LEFT: function(){

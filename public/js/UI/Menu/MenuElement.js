@@ -19,6 +19,12 @@ Menu.prototype.forEachElement = function(callback, includeSpecial){
 	}
 };
 
+Menu.prototype.removeAllElements = function(destroy){
+	this.forEachElement(function(el){
+		el.removeFromParent(destroy);
+	});
+};
+
 /**
 * Возвращает элемент меню с указанным именем.
 * @param {string} name Имя элемента.
