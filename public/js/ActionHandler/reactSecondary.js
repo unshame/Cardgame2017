@@ -59,7 +59,6 @@ var reactSecondary = {
 
 		actionHandler.reset();
 
-		// Ставим стопку сброса по центру экрана
 		var discard = fieldManager.fields.DISCARD_PILE,
 			dummy = fieldManager.fields.dummy, 
 			won = action.results && action.results.winners && ~action.results.winners.indexOf(game.pid),
@@ -86,12 +85,14 @@ var reactSecondary = {
 						//game.camera.shake(0.005, 1000);
 						game.shake(15, 800, 20, 50);
 						ui.menus.endGame.fadeIn();
+						ui.layers.hideLayer(ui.actionButtons, true);
 					})
 			}
 		}, delay/game.speed)
 		.then(function(){
 			ui.announcer.newMessage('YOU WON!');
 			ui.menus.endGame.fadeIn();
+			ui.layers.hideLayer(ui.actionButtons, true);
 			for(var ci = 0; ci < dummy.cards.length; ci++){
 				var card = dummy.cards[ci],
 					x = card.sprite.x + card.x + (10*(ci - dummy.cards.length/2)),
