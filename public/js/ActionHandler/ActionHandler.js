@@ -179,7 +179,7 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
-		if(action.type == 'SKIP' || action.type == 'TAKE'){
+		if(action.type == 'PASS' || action.type == 'TAKE'){
 			this.setButtonAction(button, action.type);
 			continue;
 		}
@@ -203,9 +203,6 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 */
 ActionHandler.prototype.setButtonAction = function(button, type){
 	this.buttonAction = type;
-	if(type == 'SKIP'){
-		type = 'PASS';
-	}
 	var typeText = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
 	//var typeText = type.toLowerCase();
 	//var typeText = type;

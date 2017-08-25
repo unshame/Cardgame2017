@@ -231,7 +231,7 @@ var reactPrimary = {
 	*
 	* @return {number} Время выполнения действия
 	*/
-	SKIP: function(action, seq){
+	PASS: function(action, seq){
 		return 0;
 	}
 };

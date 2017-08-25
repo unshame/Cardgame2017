@@ -20,7 +20,7 @@ class DurakActions extends GameActions{
 				afk: 5
 			},
 			['linkedField'],
-			['SKIP', 'TAKE']
+			['PASS', 'TAKE']
 		);
 
 		this.takeOccurred = false;

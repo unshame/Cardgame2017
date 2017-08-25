@@ -133,7 +133,7 @@ class Player{
 
 	sendRandomAction(actions){
 		let randomIndex;
-		if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'SKIP')){
+		if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'PASS')){
 			randomIndex = Math.floor(Math.random()*(actions.length-1));
 		}
 		else{
@@ -144,7 +144,7 @@ class Player{
 	}
 
 	sendTakeOrSkipAction(actions){
-		if(actions.length == 1 && (actions[0].type == 'TAKE' || actions[0].type == 'SKIP')){
+		if(actions.length == 1 && (actions[0].type == 'TAKE' || actions[0].type == 'PASS')){
 			let action = actions[0];
 			this.sendResponse(action);
 		}

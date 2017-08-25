@@ -97,7 +97,7 @@ class DurakReactions{
 	}
 
 	// Ходящий игрок пропустил ход
-	SKIP(player, action){
+	PASS(player, action){
 
 		let activePlayers = this.players.active;
 		let attackers = this.players.attackers;

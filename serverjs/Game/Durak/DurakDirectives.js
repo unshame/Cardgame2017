@@ -97,7 +97,7 @@ class DurakDirectives{
 		// Добавляем возможность пропустить ход, если это не атака в начале хода
 		if(turnStage != 'INITIAL_ATTACK'){
 			let action = {
-				type: 'SKIP'
+				type: 'PASS'
 			};
 			actions.push(action);	
 		}
