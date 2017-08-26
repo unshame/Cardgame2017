@@ -11,11 +11,11 @@ UI.Button = function(options){
 	this.action = this.options.action;
 	var thisButton = this;
 	function actionWrapper(button, pointer, isOver){
-		if(isOver || (!Phaser.Device.desktop && !this.options.mobileClickProtect)){
+		if(isOver || (Phaser.Device.desktop && !this.options.mobileClickProtect)){
 			if(cardControl.card){
 				cardControl.cardReturn();
 			}
-			thisButton.action.call(this, button, pointer, isOver);
+			thisButton.action.call(this.options.context || this, button, pointer, isOver);
 		}
 	}
 
@@ -26,7 +26,7 @@ UI.Button = function(options){
 		0,
 		'button_' + this.options.color + '_' + this.options.size,
 		actionWrapper,
-		this.options.context || this,
+		this,
 		1, 0, 2, 0
 	);
 
