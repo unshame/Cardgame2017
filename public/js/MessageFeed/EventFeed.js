@@ -15,12 +15,24 @@ var EventFeed = function(game, name){
 	* Стили текста.
 	* @type {Object}
 	* @property {object} system Красный текст 50px
-	* @property {object} important Красный текст 100px
 	*/
 	this.styles = {
-		'system': {fill: 'red', font: '50px Exo'},
-		'positive': {fill: 'green', font: '50px Exo'},
-		'important': {fill: 'red', font: '100px Exo'}
+		'system': {
+			fill: ui.colors.menu.red.background, 
+			stroke: ui.colors.menu.red.outer, 
+			font: '50px Exo', 
+			strokeThickness: 2, 
+			wordWrap: true,
+			align: 'center'
+		},
+		'positive': {
+			fill: ui.colors.menu.green.background, 
+			stroke: ui.colors.menu.green.outer, 
+			font: '50px Exo',
+			strokeThickness: 2, 
+			wordWrap: true,
+			align: 'center'
+		}
 	};
 
 	this.name = name || 'eventFeed';
@@ -35,7 +47,7 @@ var EventFeed = function(game, name){
 extend(EventFeed, MessageFeed);
 
 EventFeed.prototype._styleText = function(text){
-	text.setShadow(2, 2, 'rgba(0,0,0,0.8)', 2);
+	text.setShadow(2, 2, 'rgba(0,0,0,1)', 5);
 	text.anchor.set(0.5, 0.5);
 };
 

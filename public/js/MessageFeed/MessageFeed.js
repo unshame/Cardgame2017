@@ -14,8 +14,8 @@ var MessageFeed = function(game, name){
 	* @property {object} warning Красный текст 40px
 	*/
 	this.styles = {
-		system: {fill: 'white', font: '30px Exo'},
-		warning: {fill: 'red', font: '40px Exo'}
+		system: {fill: 'white', font: '30px Exo', wordWrap: true},
+		warning: {fill: 'red', font: '40px Exo',wordWrap: true}
 	};
 
 	/**
@@ -223,6 +223,7 @@ MessageFeed.prototype.updatePosition = function(){
 		if(text.destroyTime !== undefined){
 			continue;
 		}
+		text.wordWrapWidth = game.screenWidth;
 		this._moveMessage(text, i, ii, x, y);
 		y -= text.height/Math.min(text.scale.y, 1);
 		ii--;

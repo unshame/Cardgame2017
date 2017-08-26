@@ -17,7 +17,14 @@ var AnnouncementFeed = function(game, name){
 	* @property {object} system Темно-оранжевый текст 100px
 	*/
 	this.styles = {
-		'system': {fill: numberToHexColor(ui.colors.orange), font: '100px Exo'}
+		'system': {
+			fill: ui.colors.menu.orange.background,
+			stroke: ui.colors.menu.orange.outer,
+			font: '100px Exo',
+			strokeThickness: 2, 
+			wordWrap: true,
+			align: 'center'
+		}
 	};
 
 	this.name = name || 'announcer';
@@ -26,6 +33,7 @@ var AnnouncementFeed = function(game, name){
 extend(AnnouncementFeed, MessageFeed);
 
 AnnouncementFeed.prototype._styleText = function(text){
+	text.word
 	text.setShadow(2, 2, 'rgba(0,0,0,0.8)', 2);
 	text.anchor.set(0.5, 0.5);
 };

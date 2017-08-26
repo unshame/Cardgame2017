@@ -59,6 +59,11 @@ var UI = function(){
 				outer: '#1989B8',
 				inner: '#35BAF3',
 				background: '#1EA7E1'
+			},
+			red: {
+				outer: '#E00505',
+				inner: '#FF2F2F',
+				background: '#F91E1E'				
 			}
 		}
 	};
