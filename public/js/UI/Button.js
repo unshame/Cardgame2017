@@ -9,13 +9,12 @@ UI.Button = function(options){
 
 	// Действие
 	this.action = this.options.action;
-	var thisButton = this;
 	function actionWrapper(button, pointer, isOver){
 		if(isOver || (!Phaser.Device.desktop && !this.options.mobileClickProtect)){
 			if(cardControl.card){
 				cardControl.cardReturn();
 			}
-			thisButton.action.call(this.options.context || this, button, pointer, isOver);
+			this.action.call(this.options.context || this, button, pointer, isOver);
 		}
 	}
 
