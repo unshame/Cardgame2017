@@ -44,6 +44,7 @@ Menu.prototype.disable = function(changeToDefaultFrame){
 Menu.prototype.enable = function(){
 	this.forEachElement(function(element){
 		if(~this.disabledElements.indexOf(element)){
+			element.disable();
 			return;
 		}
 

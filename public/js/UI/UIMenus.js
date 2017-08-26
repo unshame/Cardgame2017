@@ -17,6 +17,7 @@ UI.prototype._createMenus = function(){
 			name: 'menu_main',
 			color: 'orange',
 			elementColor: 'red',
+			alpha: 0.8,
 			textColor: 'white',
 			//header: 'Main Menu',
 			//headerColor: 'red',
@@ -189,6 +190,17 @@ UI.prototype._createMenus = function(){
 			header: 'Queue Options',
 			headerColor: 'red',
 			layout: [
+				{
+					action: function(){},
+					fontSize: 24,
+					name: 'invite',
+					text: 'Copy Invite Link'
+				},
+				{
+					action: function(){},
+					name: 'vs_bots',
+					text: 'Play VS Bots'
+				},
 				{
 					action: function(){
 						connection.server.disconnect();

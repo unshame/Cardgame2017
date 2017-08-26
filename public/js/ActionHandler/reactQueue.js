@@ -15,8 +15,7 @@ var reactQueue = {
 			'Waiting for ' + 
 			playersWaiting + 
 			' more ' +
-			(playersWaiting == 1 ? 'player' : 'players') + 
-			'...'
+			(playersWaiting == 1 ? 'player' : 'players')
 		);
 	},
 

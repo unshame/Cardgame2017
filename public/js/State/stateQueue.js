@@ -38,6 +38,8 @@ var stateQueue = new State('queue', {
 		if(lastState != 'menu'){
 			cardEmitter.start(10, 50, 10, 2000, 20, 1);
 		}
+		this.dotCounter = 1;
+		this.lastDot = 0;
 	},
 
 	/**
@@ -50,6 +52,34 @@ var stateQueue = new State('queue', {
 		ui.eventFeed.clear();
 		if(nextState != 'menu'){
 			cardEmitter.stop();
+		}
+	},
+
+	update: function(){
+		var len = ui.eventFeed.length
+		var textElement = ui.eventFeed.children[len - 1];
+		if(len > 1){
+			ui.eventFeed.removeMessage(ui.eventFeed.children[len - 2]);
+		}
+		var now = Date.now();
+		if(textElement && now - this.lastDot > 500){
+			if(this.dotCounter > 3){
+				this.dotCounter = 1;
+			}
+			var dots = '';
+			var stod = '';
+			var i = this.dotCounter;
+			while(i--){
+				dots += '.';
+				stod = '.' + stod;
+			}
+			var text = dots + (textElement.savedText || textElement.text) + dots;
+			if(!textElement.savedText){
+				textElement.savedText = textElement.text;
+			}
+			textElement.setText(text);
+			this.dotCounter++;
+			this.lastDot = now;
 		}
 	}
 });

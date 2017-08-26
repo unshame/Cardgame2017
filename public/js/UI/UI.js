@@ -139,6 +139,14 @@ UI.prototype.initialize = function(){
 		this.menus.options,
 		this.menus.debug
 	]);
+
+	/* Временно выключенные кнопки */
+	this.menus.main.disableElement('custom');
+	this.menus.main.disableElement('join');
+	this.menus.queue.disableElement('invite');
+	this.menus.queue.disableElement('vs_bots');
+	this.menus.queue.disableElement('invite');
+
 	this._createButtons();
 
 	this.layers.addExistingLayers([

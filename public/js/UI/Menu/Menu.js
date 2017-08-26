@@ -89,8 +89,9 @@ var Menu = function(options){
 	ui.layers.addExistingLayer(this, this.options.z);	
 
 	if(this.options.header){
-		this.header = game.add.text(0, 0, this.options.header, {fill: this.options.headerTextColor, font: '24px Exo'}, this);
+		this.header = game.add.text(0, 0, this.options.header, {fill: this.options.headerTextColor, font: '22px Exo'}, this);
 		this.header.anchor.set(0.5, 0.5);
+		this.header.setShadow(1, 1, 'rgba(0,0,0,0.5)', 1);
 		this.add(this.header);
 	}
 

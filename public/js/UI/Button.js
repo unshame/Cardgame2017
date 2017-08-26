@@ -89,7 +89,7 @@ Button.prototype.getDefaultOptions = function(){
 		name: null,
 		downOffset: 4,
 		textColor: 'black',
-		font: '28px Exo',
+		font: 'Exo',
 		fontSize: 26,
 		context: null,
 		group: null,
@@ -133,9 +133,6 @@ Button.prototype.enable = function(){
 
 // Выключает кнопку
 Button.prototype.disable = function(changeToDefaultFrame){
-	if(!this.inputEnabled){
-		return;
-	}
 	if(!changeToDefaultFrame){
 		this.frame = 3;
 	}
