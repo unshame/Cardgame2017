@@ -75,7 +75,7 @@ PopupManager.prototype.updatePosition = function(){
 		return;
 	}
 	if(!ui.cursor.inGame){
-		this.visible = false;
+		this.hoverOut();
 		return;
 	}
 	if(!this.visible){
