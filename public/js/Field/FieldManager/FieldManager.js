@@ -81,10 +81,10 @@ FieldManager.prototype.addField = function(Constructor){
 * @param {object} options   
 * @param {object} style   
 * @param {object} [iconStyle]
-* @return {(Field|IconField)}
+* @return {(Field|Field.IconField)}
 */
 FieldManager.prototype.addGenericField = function(options, style, iconStyle){
-	return this.addField(iconStyle ? IconField : Field, options, style, iconStyle);
+	return this.addField(iconStyle ? Field.IconField : Field, options, style, iconStyle);
 };
 
 /**
@@ -92,10 +92,10 @@ FieldManager.prototype.addGenericField = function(options, style, iconStyle){
 * @param {object} options   
 * @param {object} style   
 * @param {object} [iconStyle]
-* @return {TableField}
+* @return {Field.TableField}
 */
 FieldManager.prototype.addTableField = function(options, style, iconStyle){
-	var field = this.addField(TableField, options, style, iconStyle);
+	var field = this.addField(Field.TableField, options, style, iconStyle);
 	this.table.push(field);
 	return field;
 };
@@ -105,10 +105,10 @@ FieldManager.prototype.addTableField = function(options, style, iconStyle){
 * @param {object} options   
 * @param {object} style   
 * @param {object} [badgeStyle]
-* @return {PlayerField}
+* @return {Field.PlayerField}
 */
 FieldManager.prototype.addPlayerField = function(options, style, badgeStyle){
-	return this.addField(PlayerField, options, style, badgeStyle);
+	return this.addField(Field.PlayerField, options, style, badgeStyle);
 };
 
 /**
@@ -116,10 +116,10 @@ FieldManager.prototype.addPlayerField = function(options, style, badgeStyle){
 * @param {object} options   
 * @param {object} style   
 * @param {object} [badgeStyle]
-* @return {BadgeField}
+* @return {Field.BadgeField}
 */
 FieldManager.prototype.addOpponentField = function(options, style, badgeStyle, popupStyle){
-	var field = this.addField(BadgeField, options, style, badgeStyle, popupStyle);
+	var field = this.addField(Field.BadgeField, options, style, badgeStyle, popupStyle);
 	this.opponents.push(field);
 	return field;
 };

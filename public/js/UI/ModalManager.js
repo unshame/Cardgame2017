@@ -5,7 +5,7 @@
 * @class 
 * @extends {Phaser.Image}
 */
-var ModalManager = function(){
+UI.ModalManager = function(){
 	Phaser.Image.call(this, game, 0, 0);
 	this.name = 'modal';
 	this.inputEnabled = true;
@@ -15,18 +15,18 @@ var ModalManager = function(){
 	this.updatePosition();
 };
 
-extend(ModalManager, Phaser.Image);
+extend(UI.ModalManager, Phaser.Image);
 
-ModalManager.prototype.updatePosition = function(){
+UI.ModalManager.prototype.updatePosition = function(){
 	this.width = game.screenWidth;
 	this.height = game.screenHeight;
 };
 
-ModalManager.prototype.makeModal = function(menus){
+UI.ModalManager.prototype.makeModal = function(menus){
 	for(var i = 0; i < menus.length; i++){
 		var menu = menus[i];
 		if(!menu.fadeIn || !menu.fadeOut){
-			console.error('ModalManager: menu doesn\'t have required methods');
+			console.error('UI.ModalManager: menu doesn\'t have required methods');
 			continue;
 		}
 		menu.modal = true;
@@ -37,11 +37,11 @@ ModalManager.prototype.makeModal = function(menus){
 	}
 };
 
-ModalManager.prototype._preventDirectCall = function(){
-	console.error('ModalManager: menu should be opened/closed through ModalManager', this);
+UI.ModalManager.prototype._preventDirectCall = function(){
+	console.error('UI.ModalManager: menu should be opened/closed through UI.ModalManager', this);
 };
 
-ModalManager.prototype.openModal = function(menuName){
+UI.ModalManager.prototype.openModal = function(menuName){
 	var menu = ui.menus[menuName],
 		len = this.modals.length,
 		i = this.modals.indexOf(menu);
@@ -71,7 +71,7 @@ ModalManager.prototype.openModal = function(menuName){
 	ui.layers.updateModalIndex(menu);
 };
 
-ModalManager.prototype.closeModal = function(){
+UI.ModalManager.prototype.closeModal = function(){
 	if(!this.modals.length){
 		return;
 	}
@@ -98,7 +98,7 @@ ModalManager.prototype.closeModal = function(){
 	ui.layers.updateModalIndex(subtop);
 };
 
-ModalManager.prototype.updateVisibility = function(){
+UI.ModalManager.prototype.updateVisibility = function(){
 	var len = this.modals.length;
 	if(len && !this.visible){
 		this.visible = true;
@@ -108,7 +108,7 @@ ModalManager.prototype.updateVisibility = function(){
 	}
 };
 
-ModalManager.prototype.toggleModals = function(menuName){
+UI.ModalManager.prototype.toggleModals = function(menuName){
 	if(this.modals.length){
 		this.closeModal();
 	}
@@ -119,7 +119,7 @@ ModalManager.prototype.toggleModals = function(menuName){
 
 /*
 // Вариант функции, сохраняющий и восстанавливающий открытые меню
-ModalManager.prototype.toggleModals = function(){
+UI.ModalManager.prototype.toggleModals = function(){
 	var len = this.modals.length
 	if(this.visible){
 		this.modals[len - 1]._fadeOut();

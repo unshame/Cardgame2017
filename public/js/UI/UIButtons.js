@@ -15,7 +15,7 @@ UI.prototype._createButtons = function(){
 	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons');
 
 	// Действие
-	new Button({
+	new UI.Button({
 		position: function(width, height){
 			return {
 				x: game.screenWidth/2 - width/2,
@@ -43,7 +43,7 @@ UI.prototype._createButtons = function(){
 
 	// УГЛОВЫЕ КНОПКИ
 	// На весь экран
-	new Button({
+	new UI.Button({
 		position: function(width, height){
 			return {
 				x: game.screenWidth - 15 - width,
@@ -60,7 +60,7 @@ UI.prototype._createButtons = function(){
 	});
 
 	// Открытие меню
-	new Button({
+	new UI.Button({
 		position: function(width, height){
 			return {
 				x: game.screenWidth - 15 - width,
@@ -75,7 +75,7 @@ UI.prototype._createButtons = function(){
 		group: this.cornerButtons
 	});
 
-	new Button({
+	new UI.Button({
 		position: function(width, height){
 			return {
 				x: 15,
@@ -92,7 +92,7 @@ UI.prototype._createButtons = function(){
 	}).hide();
 
 	// Дебаг
-	new Button({
+	new UI.Button({
 		position: function(width, height){
 			return {
 				x: game.screenWidth - 30 - width*2,
@@ -110,7 +110,7 @@ UI.prototype._createButtons = function(){
 	});
 
 	// Завершение последовательности
-	new Button({
+	new UI.Button({
 		position: function(width, height){
 			return {
 				x: game.screenWidth - 45 - width*3,

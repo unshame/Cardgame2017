@@ -7,7 +7,7 @@
 * z-index < 0 - начиная с верха (-1 - самый верхний слой)
 * @class
 */
-var UILayers = function(){
+UI.Layers = function(){
 
 	/**
 	* Слои интерфейса.
@@ -32,7 +32,7 @@ var UILayers = function(){
 * Определяет реальные индексы слоев для позиционирования.
 * Исправляет повторяющиеся индексы.
 */
-UILayers.prototype._sortPositions = function(){
+UI.Layers.prototype._sortPositions = function(){
 	this.positions.sort(function(a, b){
 		a = a.index;
 		b = b.index;
@@ -54,9 +54,9 @@ UILayers.prototype._sortPositions = function(){
 *
 * @return {Phaser.Group} Созданный слой.
 */
-UILayers.prototype.addLayer = function(i, name){
+UI.Layers.prototype.addLayer = function(i, name){
 	if(this.byName[name]){
-		console.error('UILayers: Layer name must be unique', name);
+		console.error('UI.Layers: Layer name must be unique', name);
 		return null;
 	}
 	var layer = game.add.group();
@@ -74,9 +74,9 @@ UILayers.prototype.addLayer = function(i, name){
 *
 * @return {DisplayObject} Добавленный слой.
 */
-UILayers.prototype.addExistingLayer = function(layer, i){
+UI.Layers.prototype.addExistingLayer = function(layer, i){
 	if(this.byName[layer.name]){
-		console.error('UILayers: Layer name must be unique', layer.name);
+		console.error('UI.Layers: Layer name must be unique', layer.name);
 		return null;
 	}
 	layer.parent = game.world;
@@ -90,7 +90,7 @@ UILayers.prototype.addExistingLayer = function(layer, i){
 * Добавляет существующие элементы игры как слои из массива.
 * @param {array} layers Слои `[layer, i]`
 */
-UILayers.prototype.addExistingLayers = function(layers){
+UI.Layers.prototype.addExistingLayers = function(layers){
 	for(var i = 0; i < layers.length; i++){
 		var layer = layers[i];
 		this.addExistingLayer(layer[0], layer[1], layer[2]);
@@ -103,7 +103,7 @@ UILayers.prototype.addExistingLayers = function(layers){
 * @param {DisplayObject} layer         слой
 * @param {boolean}       shouldDisable нужно ли отключать элементы
 */
-UILayers.prototype.hideLayer = function(layer, shouldDisable){
+UI.Layers.prototype.hideLayer = function(layer, shouldDisable){
 	layer.forEach(function(el){
 		if(el.hide){
 			el.hide();
@@ -120,7 +120,7 @@ UILayers.prototype.hideLayer = function(layer, shouldDisable){
 * @param {DisplayObject} layer         слой
 * @param {boolean}       shouldDisable нужно ли отключать элементы
 */
-UILayers.prototype.showLayer = function(layer, shouldDisable){
+UI.Layers.prototype.showLayer = function(layer, shouldDisable){
 	layer.forEach(function(el){
 		if(el.show){
 			el.show();
@@ -137,7 +137,7 @@ UILayers.prototype.showLayer = function(layer, shouldDisable){
 * @param {DisplayObject} layer слой
 * @param {number}        i     index слоя
 */
-UILayers.prototype.setLayerIndex = function(layer, i){
+UI.Layers.prototype.setLayerIndex = function(layer, i){
 	layer.index = i;
 	this.positionLayers();
 };
@@ -145,7 +145,7 @@ UILayers.prototype.setLayerIndex = function(layer, i){
 /**
 * Позиционирует все слои по вертикали.
 */
-UILayers.prototype.positionLayers = function(){
+UI.Layers.prototype.positionLayers = function(){
 	this._sortPositions();
 	game.world.children = this.positions;
 };
@@ -154,7 +154,7 @@ UILayers.prototype.positionLayers = function(){
 * Вызывает `updatePosition` у всех элементов слоя.
 * @param {DisplayObject} layer слой
 */
-UILayers.prototype._positionElementsInLayer = function(layer){
+UI.Layers.prototype._positionElementsInLayer = function(layer){
 	layer.forEach(function(el){
 		if(el.updatePosition){
 			el.updatePosition();
@@ -165,7 +165,7 @@ UILayers.prototype._positionElementsInLayer = function(layer){
 /**
 * Вызывает `updatePosition` у всех элементов всех слоев, которые относятся к `Phaser.Group`.
 */
-UILayers.prototype.positionElements = function(){
+UI.Layers.prototype.positionElements = function(){
 
 	for(var pname in this.byName){
 		if(!this.byName.hasOwnProperty(pname)){
@@ -186,7 +186,7 @@ UILayers.prototype.positionElements = function(){
 /**
 * Перезагружает текст всех элементов всех слоев, относящихся к `Phaser.Group`, у готорых есть `label` и `label.isText`.
 */
-UILayers.prototype.loadLabels = function(){
+UI.Layers.prototype.loadLabels = function(){
 	for(var pname in this.byName){
 		if(!this.byName.hasOwnProperty(pname)){
 			continue;
@@ -217,7 +217,7 @@ UILayers.prototype.loadLabels = function(){
 * `layers` содержит соответствующие слои (`{@link DisplayObject}`), если они есть.
 * @see  {@link printLayers}
 */
-UILayers.prototype.getOrder = function(){
+UI.Layers.prototype.getOrder = function(){
 	var arr = {
 		world: game.world.children.map(function(c){
 			return c.name;
@@ -230,10 +230,10 @@ UILayers.prototype.getOrder = function(){
 };
 
 /**
-* Вызывается из {@link ModalManager} и обновляет индекс модального слоя.
+* Вызывается из {@link UI.ModalManager} и обновляет индекс модального слоя.
 * @param {DisplayObject} modalLayer слой, который стал модальным
 */
-UILayers.prototype.updateModalIndex = function(modalLayer){
+UI.Layers.prototype.updateModalIndex = function(modalLayer){
 	if(!modalLayer){
 		this.modalLayerIndex = -1;
 		return;
@@ -251,7 +251,7 @@ UILayers.prototype.updateModalIndex = function(modalLayer){
 * над которым находится курсор модальным слоем и соответственно обновляет курсор.
 * @param {DisplayObject} el объект над которым находится курсор
 */
-UILayers.prototype.updateCursorOverlap = function(el){
+UI.Layers.prototype.updateCursorOverlap = function(el){
 	var parent = el.parent;
 	if(!parent){
 		return;

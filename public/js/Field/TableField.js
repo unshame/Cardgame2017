@@ -1,21 +1,22 @@
 /**
 * Поле стола с подсветкой верхней карты.
-* @extends {IconField}
+* @class
+* @extends {Field.IconField}
 * @param {object} options
 * @param {object} style
 * @param {object} iconStyle
 */
-var TableField = function(options, style, iconStyle){
-	IconField.call(this, options, style, iconStyle);
+Field.TableField = function(options, style, iconStyle){
+	Field.IconField.call(this, options, style, iconStyle);
 };
 
-extend(TableField, IconField);
+extend(Field.TableField, Field.IconField);
 
 /**
 * Подсвечивает последнюю карту.
 * @param {boolean} highlight включить ли подсветку
 */
-TableField.prototype.setLastCardHighlight = function(highlight){
+Field.TableField.prototype.setLastCardHighlight = function(highlight){
 	if(!this.cards.length){
 		return;
 	}
@@ -27,13 +28,13 @@ TableField.prototype.setLastCardHighlight = function(highlight){
 	}
 };
 
-TableField.prototype.setOwnHighlight = function(on, tint){
+Field.TableField.prototype.setOwnHighlight = function(on, tint){
 	if(this.cards.length){
 		this.highlighted = on;
 		this.setVisibility(false);
 		this.setLastCardHighlight(on);
 	}
 	else{
-		supercall(TableField).setOwnHighlight.call(this, on, tint);
+		supercall(Field.TableField).setOwnHighlight.call(this, on, tint);
 	}
 };

@@ -4,7 +4,7 @@
 * @extends {external:Phaser.Group}
 */
 
-var Background = function(){
+UI.Background = function(){
 	Phaser.Group.call(this, game);
 	this.name = 'background';
 	this.offset = 40;
@@ -32,16 +32,16 @@ var Background = function(){
 	this.add(this.vignette);
 };
 
-extend(Background, Phaser.Group);
+extend(UI.Background, Phaser.Group);
 
-Background.prototype.updatePosition = function(){
+UI.Background.prototype.updatePosition = function(){
 	this.surface.width = game.screenWidth + this.offset;
 	this.surface.height =  game.screenHeight + this.offset;
 	this.vignette.width = game.screenWidth;
 	this.vignette.height =  game.screenHeight;
 };
 
-Background.prototype.setTexture = function(textureName){
+UI.Background.prototype.setTexture = function(textureName){
 	if(textureName == this.surface.textureName){
 		return;
 	}
@@ -67,7 +67,7 @@ Background.prototype.setTexture = function(textureName){
 	transition.start();
 };
 
-Background.prototype.nextTexture = function(){
+UI.Background.prototype.nextTexture = function(){
 	var ti = this.textures.indexOf(this.surface.textureName);
 	ti++;
 	if(!this.textures[ti]){

@@ -5,14 +5,12 @@
 * @listens document.mouseleave
 * @listens document.mouseenter
 */
-
-var Cursor = function(textureName){
+UI.Cursor = function(textureName){
 
 	Phaser.Sprite.call(this, game, -32, -32, textureName);
 
 	/**
 	* Ширина курсора.
-	* @param Cursor#width
 	* @type {number}
 	* @default 32
 	*/
@@ -20,7 +18,6 @@ var Cursor = function(textureName){
 	
 	/**
 	* Высота курсора.
-	* @param Cursor#height
 	* @type {number}
 	* @default 32
 	*/
@@ -28,7 +25,6 @@ var Cursor = function(textureName){
 
 	/**
 	* Находится ли курсор внутри окна.
-	* @param Cursor#inGame
 	* @type {boolean}
 	* @default true
 	*/
@@ -37,7 +33,6 @@ var Cursor = function(textureName){
 	/**
 	* Инициализирован ли курсор.
 	* Курсор инициализирован, если он сдвинулся с позиции `{x: 0, y: 0}`.
-	* @param Cursor#initialized
 	* @type {boolean}
 	* @default false
 	*/
@@ -58,14 +53,14 @@ var Cursor = function(textureName){
 
 };
 
-extend(Cursor, Phaser.Sprite);
+extend(UI.Cursor, Phaser.Sprite);
 
 /**
 * Обновляет позицию и внешний вид курсора.
-* @param {boolean} [cursorinGame=Cursor#inGame] находится ли уазатель пользователя в окне
+* @param {boolean} [cursorinGame=UI.Cursor#inGame] находится ли уазатель пользователя в окне
 * @param {boolean} [noOverlapCheck]             курсор считает что находится над элементом без проверки
 */
-Cursor.prototype.update = function(cursorinGame, noOverlapCheck){
+UI.Cursor.prototype.update = function(cursorinGame, noOverlapCheck){
 
 	if(!Phaser.Device.desktop){
 		return;
@@ -120,7 +115,7 @@ Cursor.prototype.update = function(cursorinGame, noOverlapCheck){
 * Запоминает объект над которым находится курсор и обновляет курсор.
 * @param {DisplayObject} el элемент над которым находится курсор
 */
-Cursor.prototype.updateOverlap = function(el){
+UI.Cursor.prototype.updateOverlap = function(el){
 	if(this.overlappingElement != el){
 		this.overlappingElement = el;
 		this.update(undefined, true);

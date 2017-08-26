@@ -56,7 +56,7 @@ var CHANNEL_TYPE = {
 // TYPE DEFS
 
 /**
-* Объекты классов `Phaser.Group`, `Phaser.Sprite`, `Phaser.Text`, `Phaser.Button` и все производные от них классы.
+* Объекты классов `Phaser.Group`, `Phaser.Sprite`, `Phaser.Text`, `Phaser.UI.Button` и все производные от них классы.
 * @typedef {object} DisplayObject
 * @see  {@link http://phaser.io/docs/2.6.2/global.html#DisplayObject|DisplayObject}
 */
@@ -90,7 +90,7 @@ var CHANNEL_TYPE = {
 /**
 * Класс из {@link external:Phaser|Phaser}.  
 * Группа игровых элементов. Позволяет размещать и контролировать множество элементов.  
-* Должна быть добавлена в {@link UILayers} для корректного отображения по вертикали.  
+* Должна быть добавлена в {@link UI.Layers} для корректного отображения по вертикали.  
 * Далее описаны полезные свойства и методы. По ссылке ниже можно найти полную документацию.
 * @class external:Phaser.Group
 * @param {Phaser.Game}        game                  игра

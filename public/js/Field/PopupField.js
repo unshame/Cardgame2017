@@ -1,5 +1,14 @@
-var PopupField = function(options, style, popupStyle, iconStyle){
-	IconField.call(this, options, style, iconStyle);
+/**
+* Поле стола с сообщением при наведении.
+* @class
+* @extends {Field.IconField}
+* @param {object} options
+* @param {object} style
+* @param {object} popupStyle настройки сообщения при наведении
+* @param {object} iconStyle
+*/
+Field.PopupField = function(options, style, popupStyle, iconStyle){
+	Field.IconField.call(this, options, style, iconStyle);
 
 	this.popupStyle = mergeOptions(this.getPopupDefaultOptions(), popupStyle);
 
@@ -18,9 +27,9 @@ var PopupField = function(options, style, popupStyle, iconStyle){
 	}
 };
 
-extend(PopupField, IconField);
+extend(Field.PopupField, Field.IconField);
 
-PopupField.prototype.getPopupDefaultOptions = function(){
+Field.PopupField.prototype.getPopupDefaultOptions = function(){
 	return {
 		numCardsText: 'Cards',
 		area: 'area',
@@ -28,7 +37,7 @@ PopupField.prototype.getPopupDefaultOptions = function(){
 	};
 };
 
-PopupField.prototype.getHoverText = function(anyway){
+Field.PopupField.prototype.getHoverText = function(anyway){
 	if(!this._hoverTextChanged && !anyway){
 		return false;
 	}
@@ -41,16 +50,16 @@ PopupField.prototype.getHoverText = function(anyway){
 	}
 };
 
-PopupField.prototype.placeCards = function(){
+Field.PopupField.prototype.placeCards = function(){
 	this._hoverTextChanged = true;
-	supercall(PopupField).placeCards.apply(this, arguments);
+	supercall(Field.PopupField).placeCards.apply(this, arguments);
 };
 
-PopupField.prototype.removeCards = function(cardsToRemove){
+Field.PopupField.prototype.removeCards = function(cardsToRemove){
 	this._hoverTextChanged = true;
-	supercall(PopupField).removeCards.call(this, cardsToRemove);
+	supercall(Field.PopupField).removeCards.call(this, cardsToRemove);
 };
 
-PopupField.prototype._cursorOver = function(now){
+Field.PopupField.prototype._cursorOver = function(now){
 	ui.popupManager.hoverOver(this, this.getHoverText(true), now);
 };

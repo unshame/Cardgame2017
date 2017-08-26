@@ -3,7 +3,7 @@
 * @class
 * @extends {Phaser.Sprite}
 */
-var Rope = function(){
+UI.Rope = function(){
 	var pixel = ui.newPixel();
 	Phaser.Sprite.call(this, game, 0, 0, pixel.generateTexture());
 	this.tint = ui.colors.orange;
@@ -21,12 +21,12 @@ var Rope = function(){
 
 };
 
-extend(Rope, Phaser.Sprite);
+extend(UI.Rope, Phaser.Sprite);
 
 /**
 * Обновляет прогресс таймера.
 */
-Rope.prototype.update = function(){
+UI.Rope.prototype.update = function(){
 	var now = Date.now(),
 		burning = false;
 	if(!this.burning && this.startTime && this.startTime < now){
@@ -54,7 +54,7 @@ Rope.prototype.update = function(){
 * @param {number} duration время таймера
 * @param {number} start    через сколько времени начинать отсчет
 */
-Rope.prototype.start = function(duration, start){
+UI.Rope.prototype.start = function(duration, start){
 	if(!duration || isNaN(duration)){
 		return false;
 	}
@@ -73,7 +73,7 @@ Rope.prototype.start = function(duration, start){
 /**
 * Останавливает таймер.
 */
-Rope.prototype.stop = function(){
+UI.Rope.prototype.stop = function(){
 	this.burning = false;
 	this.height = 0;
 	this.startTime = 0;
@@ -84,6 +84,6 @@ Rope.prototype.stop = function(){
 /**
 * Обновляет позицию таймера.
 */
-Rope.prototype.updatePosition = function(){
+UI.Rope.prototype.updatePosition = function(){
 	this.maxHeight = this.y = game.screenHeight;
 };

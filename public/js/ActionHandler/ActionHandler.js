@@ -190,7 +190,7 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 /**
 * Устанавливает текст и действие кнопки действия.
-* @param {Button} button кнопка действия
+* @param {UI.Button} button кнопка действия
 * @param {string} type   тип действия
 */
 ActionHandler.prototype.setButtonAction = function(button, type){

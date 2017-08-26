@@ -1,15 +1,15 @@
 /**
-* Поле с плашкой информации игрока {@link BadgeField#badge} ({@link Badge}).
+* Поле с плашкой информации игрока {@link Field.BadgeField#badge} ({@link Badge}).
 * @class 
-* @extends {PopupField}
+* @extends {Field.PopupField}
 * @param {object} options
 * @param {object} style
 * @param {object} badgeStyle       Стиль плашки информации игрока.
 * @param {string} badgeStyle.align Выравнивание плашки.
 *                                  Значения: `'left', 'right', 'top', 'bottom'`
 */
-var BadgeField = function(options, style, badgeStyle, popupStyle){
-	PopupField.call(this, options, style, popupStyle);
+Field.BadgeField = function(options, style, badgeStyle, popupStyle){
+	Field.PopupField.call(this, options, style, popupStyle);
 
 	this.badgeStyle = mergeOptions(this.getBadgeDefaultOptions(), badgeStyle);
 
@@ -21,16 +21,16 @@ var BadgeField = function(options, style, badgeStyle, popupStyle){
 	this.add(this.badge);
 };
 
-extend(BadgeField, PopupField);
+extend(Field.BadgeField, Field.PopupField);
 
-BadgeField.prototype.getBadgeDefaultOptions = function(){
+Field.BadgeField.prototype.getBadgeDefaultOptions = function(){
 	return {
 		align: 'top'
 	};
 };
 
-BadgeField.prototype.setSize = function(width, height, shouldPlace){
-	supercall(BadgeField).setSize.call(this, width, height, shouldPlace);
+Field.BadgeField.prototype.setSize = function(width, height, shouldPlace){
+	supercall(Field.BadgeField).setSize.call(this, width, height, shouldPlace);
 	if(this.badge){
 		this.badge.updatePosition();
 	}

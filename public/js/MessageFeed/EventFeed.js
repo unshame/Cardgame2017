@@ -7,7 +7,7 @@
 * @class 
 * @extends {MessageFeed}
 */
-var EventFeed = function(game, name){
+MessageFeed.EventFeed = function(game, name){
 
 	MessageFeed.call(this, game);
 
@@ -44,29 +44,29 @@ var EventFeed = function(game, name){
 	this._scales = [1, 0.75, 0.5];
 };
 
-extend(EventFeed, MessageFeed);
+extend(MessageFeed.EventFeed, MessageFeed);
 
-EventFeed.prototype._styleText = function(text){
+MessageFeed.EventFeed.prototype._styleText = function(text){
 	text.setShadow(2, 2, 'rgba(0,0,0,1)', 5);
 	text.anchor.set(0.5, 0.5);
 };
 
-EventFeed.prototype._getX = function(){
+MessageFeed.EventFeed.prototype._getX = function(){
 	return this.game.screenWidth/2;
 };
 
-EventFeed.prototype._getLowestY = function(){
+MessageFeed.EventFeed.prototype._getLowestY = function(){
 	return this.game.screenHeight*0.25;
 };
 
-EventFeed.prototype._destroyMessage = function(text){
+MessageFeed.EventFeed.prototype._destroyMessage = function(text){
 	if(text.scaleTween){
 		text.scaleTween.stop();
 	}
-	supercall(EventFeed)._destroyMessage.call(this, text);
+	supercall(MessageFeed.EventFeed)._destroyMessage.call(this, text);
 };
 
-EventFeed.prototype._moveMessage = function(text, i, ii, x, y){
+MessageFeed.EventFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	if(text.moveTween){
 		text.moveTween.stop();
 	}

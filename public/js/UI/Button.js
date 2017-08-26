@@ -3,7 +3,7 @@
 * @class
 */
 
-var Button = function(options){
+UI.Button = function(options){
 
 	this.options = mergeOptions(this.getDefaultOptions(), options);
 
@@ -73,9 +73,9 @@ var Button = function(options){
 	}
 };
 
-extend(Button, Phaser.Button);
+extend(UI.Button, Phaser.Button);
 
-Button.prototype.getDefaultOptions = function(){
+UI.Button.prototype.getDefaultOptions = function(){
 	return {
 		position: {
 			x: 0,
@@ -99,7 +99,7 @@ Button.prototype.getDefaultOptions = function(){
 };
 
 // Прячет кнопку
-Button.prototype.hide = function(){
+UI.Button.prototype.hide = function(){
 	this.visible = false;
 	if(this.label){
 		this.label.visible = false;
@@ -107,7 +107,7 @@ Button.prototype.hide = function(){
 };
 
 // Показывает кнопку
-Button.prototype.show = function(){
+UI.Button.prototype.show = function(){
 	this.visible = true;
 	if(this.label){
 		this.label.visible = true;
@@ -115,7 +115,7 @@ Button.prototype.show = function(){
 };
 
 // Включает кнопку
-Button.prototype.enable = function(){
+UI.Button.prototype.enable = function(){
 	if(this.inputEnabled){
 		return;
 	}
@@ -132,7 +132,7 @@ Button.prototype.enable = function(){
 };
 
 // Выключает кнопку
-Button.prototype.disable = function(changeToDefaultFrame){
+UI.Button.prototype.disable = function(changeToDefaultFrame){
 	if(!changeToDefaultFrame){
 		this.frame = 3;
 	}
@@ -151,7 +151,7 @@ Button.prototype.disable = function(changeToDefaultFrame){
 };
 
 // Меняет или восстанавливает заданную позицию
-Button.prototype.updatePosition = function(position){
+UI.Button.prototype.updatePosition = function(position){
 	if(position){
 		this.defaultPosition = position;
 	}
@@ -177,9 +177,9 @@ Button.prototype.updatePosition = function(position){
 	}
 };
 
-// Расширение Phaser.Button.changeStateFrame, для добавления изменения позиции текста
+// Расширение Phaser.UI.Button.changeStateFrame, для добавления изменения позиции текста
 // при изменении состоянии кнопки
-Button.prototype.changeStateFrame = function (state) {
+UI.Button.prototype.changeStateFrame = function (state) {
 	if(this.label && this.inputEnabled){
 		if(state != 'Down' && this.isDown){
 			this.isDown = false;
@@ -195,11 +195,11 @@ Button.prototype.changeStateFrame = function (state) {
 	}
 
 	if(this.inputEnabled){
-		return supercall(Button).changeStateFrame.call(this, state);
+		return supercall(UI.Button).changeStateFrame.call(this, state);
 	}
 };
 
-Button.prototype.cursorIsOver = function(){
+UI.Button.prototype.cursorIsOver = function(){
 	if(!this.inputEnabled || !this.visible){
 		return false;
 	}
@@ -225,20 +225,20 @@ Button.prototype.cursorIsOver = function(){
 	);
 };
 
-Button.prototype.update = function(){
+UI.Button.prototype.update = function(){
 	if(this.cursorIsOver()){
 		ui.layers.updateCursorOverlap(this);
 	}
 };
 
-Button.prototype.destroy = function(){
+UI.Button.prototype.destroy = function(){
 	if(this.label){
 		this.label.destroy();
 	}
-	supercall(Button).destroy();
+	supercall(UI.Button).destroy();
 };
 
-Button.prototype.removeFromParent = function(destroy){
+UI.Button.prototype.removeFromParent = function(destroy){
 	if(this.parent){
 		if(this.label){
 			this.parent.remove(this.label);

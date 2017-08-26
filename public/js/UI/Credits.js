@@ -1,4 +1,4 @@
-var Credits = function(text, onClick){
+UI.Credits = function(text, onClick){
     Phaser.Text.call(this, game, 0, 0, text, {
           font: "bold 50px Exo",
           fill: "white",
@@ -16,16 +16,16 @@ var Credits = function(text, onClick){
     this.updatePosition();
 };
 
-extend(Credits, Phaser.Text);
+extend(UI.Credits, Phaser.Text);
 
-Credits.prototype.updatePosition = function(){
+UI.Credits.prototype.updatePosition = function(){
     this.x = game.screenWidth / 2;
     var multiplier = game.isRawLandscape ? 0.8 : 1;
     this.fontSize = game.isRawLandscape ? 50 : 45;
     this.wordWrapWidth = game.screenWidth * multiplier;
 };
 
-Credits.prototype.update = function(){
+UI.Credits.prototype.update = function(){
     if(!this.visible){
         return;
     }
@@ -36,7 +36,7 @@ Credits.prototype.update = function(){
     this.y -= dt*this.yPerMs;
 };
 
-Credits.prototype.start = function(){
+UI.Credits.prototype.start = function(){
     if(this.fader){
         this.fader.stop();
         this.fader = null;
@@ -46,7 +46,7 @@ Credits.prototype.start = function(){
     this.visible = true;
 };
 
-Credits.prototype.stop = function(){
+UI.Credits.prototype.stop = function(){
     if(this.fader){
         this.fader.stop();
     }

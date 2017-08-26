@@ -84,7 +84,7 @@ Menu.prototype._addElement = function(element){
 };
 
 /**
-* Создает и добавляет кнопку {@link Button} в меню.
+* Создает и добавляет кнопку {@link UI.Button} в меню.
 */
 Menu.prototype._addButton = function(options){
 	options.group = this;
@@ -100,7 +100,7 @@ Menu.prototype._addButton = function(options){
 	else if(!options.context){
 		options.context = this;
 	}
-	var button = new Button(options);
+	var button = new UI.Button(options);
 	button.disable(true);
 	this.elements.push(button);
 	//this.add(button);

@@ -70,9 +70,9 @@ var UI = function(){
 
 	/**
 	* Менеджер "слоев" элементов интерфейса.
-	* @type {UILayers}
+	* @type {UI.Layers}
 	*/
-	this.layers = new UILayers();
+	this.layers = new UI.Layers();
 };
 
 /**
@@ -83,29 +83,29 @@ UI.prototype.initialize = function(){
 
 	/**
 	* Курсор.
-	* @type {Cursor}
+	* @type {UI.Cursor}
 	*/
-	this.cursor = new Cursor('cursor_orange');
+	this.cursor = new UI.Cursor('cursor_orange');
 
 	/**
 	* Фон.
-	* @type {Background}
+	* @type {UI.Background}
 	*/
-	this.background = new Background();	
+	this.background = new UI.Background();	
 
 	/**
 	* Лого игры.
 	* @type {Phaser.Image}
 	*/
-	this.logo = new Logo(function(){
+	this.logo = new UI.Logo(function(){
 		return {x: game.screenWidth/2, y: game.screenHeight/2 - 225};
 	}, 0.75, 'logo');
 
 	/**
 	* Таймер хода.
-	* @type {Rope}
+	* @type {UI.Rope}
 	*/
-	this.rope = new Rope();
+	this.rope = new UI.Rope();
 
 	/**
 	* Фид системных сообщений.
@@ -115,25 +115,25 @@ UI.prototype.initialize = function(){
 
 	/**
 	* Фид важных сообщений.
-	* @type {AnnouncementFeed}
+	* @type {MessageFeed.AnnounceFeed}
 	*/
-	this.announcer = new AnnouncementFeed(game);	
+	this.announcer = new MessageFeed.AnnounceFeed(game);	
 
 	/**
 	* Фид событий.
-	* @type {EventFeed}
+	* @type {MessageFeed.EventFeed}
 	*/
-	this.eventFeed = new EventFeed(game);	
+	this.eventFeed = new MessageFeed.EventFeed(game);	
 	
 	/**
 	* Менеджер модальных меню.
-	* @type {ModalManager}
+	* @type {UI.ModalManager}
 	*/
-	this.modalManager = new ModalManager();
+	this.modalManager = new UI.ModalManager();
 
-	this.popupManager = new PopupManager();
+	this.popupManager = new UI.PopupManager();
 
-	this.credits = new Credits(creditsText, game.state.change.bind(game.state, 'menu'));
+	this.credits = new UI.Credits(creditsText, game.state.change.bind(game.state, 'menu'));
 
 	this.menus = this._createMenus();
 	this.menus.options.hideElement('disconnect');
@@ -194,11 +194,12 @@ UI.prototype.newPixel = function(){
 //@include:UIMenus
 //@include:UIButtons
 
-//@include:UILayers
+//@include:Menu
+
+//@include:Layers
 //@include:Background
 //@include:Button
 //@include:Rope
-//@include:Menu
 //@include:Logo
 //@include:Cursor
 //@include:ModalManager

@@ -190,7 +190,7 @@ var	getCard,
 * Выводит в консоль имена слоев интерфейса и сами слои
 * @type {function}
 * @global
-* @see  {@link UILayers#getOrder}
+* @see  {@link UI.Layers#getOrder}
 */
 function printLayers(){
 	console.table(ui.layers.getOrder());

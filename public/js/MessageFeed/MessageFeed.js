@@ -27,7 +27,7 @@ var MessageFeed = function(game, name){
 	Phaser.Group.call(this, game);
 
 	/**
-	* Имя фида для {@link UILayers}.
+	* Имя фида для {@link UI.Layers}.
 	* @type {string}
 	*/
 	this.name = name || 'feed';
@@ -245,5 +245,5 @@ MessageFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	text.moveTween.to({x: x, y: y}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
 };
 
-//@include:AnnouncementFeed
+//@include:AnnounceFeed
 //@include:EventFeed

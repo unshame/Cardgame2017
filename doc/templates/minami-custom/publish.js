@@ -417,11 +417,12 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
       else if(al < bl){
         return -1;
       }
-      
-      if(a.name > b.name){
+      var aname = a.longname.replace('external:', '');
+      var bname = b.longname.replace('external:', '');
+      if(aname > bname){
           return 1;
       }
-      else if(a.name < b.name){
+      else if(aname < bname){
           return -1;
       }
       return 0;
@@ -439,7 +440,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
       
       if (!hasOwnProp.call(itemsSeen, item.longname)) {
         if (!!conf.default.useLongnameInNav) {
-          displayName = item.longname
+          displayName = item.longname.replace('external:', '')
 
           if (conf.default.useLongnameInNav > 0 && conf.default.useLongnameInNav !== true) {
             var num = conf.default.useLongnameInNav

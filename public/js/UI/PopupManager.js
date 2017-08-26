@@ -1,4 +1,4 @@
-var PopupManager = function(){
+UI.PopupManager = function(){
 	Phaser.Group.call(this, game, null, 'popupManager');
 
 	this.delay = null;
@@ -17,9 +17,9 @@ var PopupManager = function(){
 	this.visible = false;
 };
 
-extend(PopupManager, Phaser.Group);
+extend(UI.PopupManager, Phaser.Group);
 
-PopupManager.prototype.hoverOver = function(el, text, now){
+UI.PopupManager.prototype.hoverOver = function(el, text, now){
 	if(this.overElement == el){
 		return;
 	}
@@ -34,7 +34,7 @@ PopupManager.prototype.hoverOver = function(el, text, now){
 	}
 };
 
-PopupManager.prototype.hoverOut = function(){
+UI.PopupManager.prototype.hoverOut = function(){
 	if(!this.overElement){
 		return;
 	}
@@ -48,13 +48,13 @@ PopupManager.prototype.hoverOut = function(){
 };
 
 
-PopupManager.prototype._showPopup = function(){
+UI.PopupManager.prototype._showPopup = function(){
 	this.showing = true;
 	this._updateText(this.overText);
 	this.updatePosition();
 };
 
-PopupManager.prototype._updateText = function(text){
+UI.PopupManager.prototype._updateText = function(text){
 	this.text.setText(text);
 	Menu.drawPanel(
 		this._bitmapData, 
@@ -70,7 +70,7 @@ PopupManager.prototype._updateText = function(text){
 	this.text.y = this.background.height/2 + 3;
 }
 
-PopupManager.prototype.updatePosition = function(){
+UI.PopupManager.prototype.updatePosition = function(){
 	if(!this.showing){
 		return;
 	}
@@ -94,11 +94,11 @@ PopupManager.prototype.updatePosition = function(){
 	this.y = y;
 };
 
-PopupManager.prototype.update = function(){
+UI.PopupManager.prototype.update = function(){
 	this.updatePosition();
 }
 
-PopupManager.prototype._resetDelay = function(){
+UI.PopupManager.prototype._resetDelay = function(){
 	if(this.delay){
 		clearTimeout(this.delay);
 		this.delay = null;

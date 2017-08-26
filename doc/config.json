@@ -7,5 +7,10 @@
 	"plugins": [
 	    "plugins/markdown",
 	    "node_modules/jsdoc-autoprivate/autoprivate.js"
-	]
+	],
+	"templates": {
+		"default":{
+			"useLongnameInNav": true
+		}
+	}
 }

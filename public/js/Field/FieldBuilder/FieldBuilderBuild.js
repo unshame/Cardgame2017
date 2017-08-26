@@ -144,7 +144,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 			visible: false
 		};
 	}
-	manager.addField(PopupField, {
+	manager.addField(Field.PopupField, {
 		type: 'DECK',
 		id: 'DECK',
 		delayTime: 50,
@@ -178,7 +178,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 // Discard pile
 FieldBuilder.prototype._buildDiscardField = function(){
 	var manager = this.manager;
-	manager.addField(PopupField, {
+	manager.addField(Field.PopupField, {
 		type: 'DISCARD_PILE',
 		id: 'DISCARD_PILE',
 		debug: manager.inDebugMode

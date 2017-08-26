@@ -1,13 +1,13 @@
 /**
-* Поле руки игрока с расположением карт по дуге {@link PlayerField#circle}.
+* Поле руки игрока с расположением карт по дуге {@link Field.PlayerField#circle}.
 * @class 
-* @extends {BadgeField}
+* @extends {Field.BadgeField}
 * @param {object} options
 * @param {object} style
 * @param {object} badgeStyle
 */
-var PlayerField = function(options, style, badgeStyle){
-	BadgeField.call(this, options, style, badgeStyle);
+Field.PlayerField = function(options, style, badgeStyle){
+	Field.BadgeField.call(this, options, style, badgeStyle);
 
 	/**
 	* Полукруглая поверхность поля, если `style.area == 'curved'`.
@@ -23,9 +23,9 @@ var PlayerField = function(options, style, badgeStyle){
 	this._bitmapCircle = game.make.bitmapData();
 };
 
-extend(PlayerField, BadgeField);
+extend(Field.PlayerField, Field.BadgeField);
 
-PlayerField.prototype._rotateCard = function(card, angle, x, y, margin, delay){
+Field.PlayerField.prototype._rotateCard = function(card, angle, x, y, margin, delay){
 
 	// Находим угол и сдвигаем y
 	var toCenter = this.circleCenter.x - x + this.x,
@@ -39,7 +39,7 @@ PlayerField.prototype._rotateCard = function(card, angle, x, y, margin, delay){
 	return y;
 };
 
-PlayerField.prototype._startCardMovers = function(card, angle, x, y, margin, delay, bringToTopOn){
+Field.PlayerField.prototype._startCardMovers = function(card, angle, x, y, margin, delay, bringToTopOn){
 	// Запускаем поворот карты
 	y = this._rotateCard(card, angle, x, y, margin, delay);
 
@@ -54,13 +54,13 @@ PlayerField.prototype._startCardMovers = function(card, angle, x, y, margin, del
 	this._fixCardDraggability(card);
 };
 
-PlayerField.prototype._calculateShift = function(cardWidth, cardSpacing, areaActiveWidth){
-	var shift = supercall(PlayerField)._calculateShift.call(this, cardWidth, cardSpacing, areaActiveWidth);
+Field.PlayerField.prototype._calculateShift = function(cardWidth, cardSpacing, areaActiveWidth){
+	var shift = supercall(Field.PlayerField)._calculateShift.call(this, cardWidth, cardSpacing, areaActiveWidth);
 	return Math.max(0, shift - 5);
 };
 
-PlayerField.prototype._createArea = function(width, height){
-	supercall(PlayerField)._createArea.call(this, width, height);
+Field.PlayerField.prototype._createArea = function(width, height){
+	supercall(Field.PlayerField)._createArea.call(this, width, height);
 	this._createCircle(width, height);
 };
 
@@ -70,7 +70,7 @@ PlayerField.prototype._createArea = function(width, height){
 * @param {number} width  ширина поля
 * @param {number} height высота поля
 */
-PlayerField.prototype._createCircle = function(width, height){
+Field.PlayerField.prototype._createCircle = function(width, height){
 	var total = Math.max(2500, width),	// ширина квадрата, в который точно помещается окружность
 		extra = (total - width)/2,		// на сколько окружность выходит за пределы экрана
 		a = {
@@ -135,7 +135,7 @@ Field.prototype._calculateCircleCenter = function(a, b, c){
 	return new Phaser.Point(x, y);
 };
 
-PlayerField.prototype.setOwnHighlight = function(on, tint){
+Field.PlayerField.prototype.setOwnHighlight = function(on, tint){
 	if(tint === undefined){
 		tint = ui.colors.orange;
 	}
@@ -145,6 +145,6 @@ PlayerField.prototype.setOwnHighlight = function(on, tint){
 	this.circle.alpha = (this.style.alwaysVisible || on) ? this.style.alpha : 0.15;
 };
 
-PlayerField.prototype.setVisibility = function(visible){
+Field.PlayerField.prototype.setVisibility = function(visible){
 	this.circle.visible = this.style.alwaysVisible || visible || this.inDebugMode;
 };

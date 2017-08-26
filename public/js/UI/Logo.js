@@ -5,9 +5,9 @@
 *                                   возвращающей объект вида `{x, y}`;                                  
 * @param {number}          scale    Максимальный масштаб лого (будет уменьшен, если лого не влезает в экран).
 * @param {string}          texture  Название текстуры лого.
-* @param {string}          [name]   Имя лого в {@link UILayers}.
+* @param {string}          [name]   Имя лого в {@link UI.Layers}.
 */
-var Logo = function(position, scale, texture, name){
+UI.Logo = function(position, scale, texture, name){
 	Phaser.Image.call(this, game, 0, 0, texture);
 	this.name = name || 'logo';
 	this.defaultPosition = position;
@@ -17,12 +17,12 @@ var Logo = function(position, scale, texture, name){
 	this.updatePosition();	
 };
 
-extend(Logo, Phaser.Image);
+extend(UI.Logo, Phaser.Image);
 
 /**
 * Обновляет позицию и масштаб лого.
 */
-Logo.prototype.updatePosition = function(){
+UI.Logo.prototype.updatePosition = function(){
 	var position = this.defaultPosition;	
 	var width = this.width/this.scale.x;
 	var scale = this.defaultScale;
@@ -40,7 +40,7 @@ Logo.prototype.updatePosition = function(){
 };
 
 /** Плавно показывает лого */
-Logo.prototype.fadeIn = function(){
+UI.Logo.prototype.fadeIn = function(){
 	if(this.fader){
 		this.fader.stop();
 	}
@@ -55,7 +55,7 @@ Logo.prototype.fadeIn = function(){
 };
 
 /** Плавно прячет лого */
-Logo.prototype.fadeOut = function(){
+UI.Logo.prototype.fadeOut = function(){
 	if(this.fader){
 		this.fader.stop();
 	}

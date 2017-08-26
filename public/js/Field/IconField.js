@@ -1,5 +1,6 @@
 /**
-* Поле с иконкой {@link IconField#icon}.
+* Поле с иконкой {@link Field.IconField#icon}.
+* @class
 * @extends {Field}
 * @param {object}  options
 * @param {object}  style
@@ -11,7 +12,7 @@
 * @param {boolean} iconStyle.shouldHide=false нужно    ли прятать иконку
 * @param {boolean} iconStyle.visible=true     спрятана ли иконка по умолчанию
 */
-var IconField = function(options, style, iconStyle){
+Field.IconField = function(options, style, iconStyle){
 	Field.call(this, options, style);
 
 	if(iconStyle){
@@ -37,9 +38,9 @@ var IconField = function(options, style, iconStyle){
 };
 
 
-extend(IconField, Field);
+extend(Field.IconField, Field);
 
-IconField.prototype.getIconDefaultOptions = function(){
+Field.IconField.prototype.getIconDefaultOptions = function(){
 	return {
 		texture: null,
 		frame: 0,
@@ -50,7 +51,7 @@ IconField.prototype.getIconDefaultOptions = function(){
 	};
 };
 
-IconField.prototype.setVisibility = function(visible){
+Field.IconField.prototype.setVisibility = function(visible){
 	this.area.visible = this.style.alwaysVisible || visible || this.inDebugMode;
 	this.setIconVisibility(visible);
 };
@@ -59,7 +60,7 @@ IconField.prototype.setVisibility = function(visible){
 * Устанавливает видимость иконки поля.
 * @param {boolean} visible видимость
 */
-IconField.prototype.setIconVisibility = function(visible){
+Field.IconField.prototype.setIconVisibility = function(visible){
 	if(!this.icon){
 		return;
 	}
@@ -69,8 +70,8 @@ IconField.prototype.setIconVisibility = function(visible){
 	}
 };
 
-IconField.prototype.setSize = function(width, height, shouldPlace){
-	supercall(IconField).setSize.call(this, width, height, shouldPlace);
+Field.IconField.prototype.setSize = function(width, height, shouldPlace){
+	supercall(Field.IconField).setSize.call(this, width, height, shouldPlace);
 
 	if(this.icon){
 		this.icon.x = this.area.width/2 + this.iconStyle.offset.x;
