@@ -58,11 +58,11 @@ var stateQueue = new State('queue', {
 	update: function(){
 		var len = ui.eventFeed.length
 		var textElement = ui.eventFeed.children[len - 1];
-		if(len > 1){
-			ui.eventFeed.removeMessage(ui.eventFeed.children[len - 2]);
-		}
 		var now = Date.now();
 		if(textElement && now - this.lastDot > 500){
+			if(len > 1){
+				ui.eventFeed.removeMessage(ui.eventFeed.children[len - 2]);
+			}
 			if(this.dotCounter > 3){
 				this.dotCounter = 1;
 			}
