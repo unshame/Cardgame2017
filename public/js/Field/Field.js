@@ -264,6 +264,7 @@ var Field = function(options, style){
 extend(Field, Phaser.Group);
 
 Field.prototype.initialize = function(){
+
 	this.setOwnHighlight(false);
 	this.setBase(this.style.x, this.style.y);
 	this.setSize(this.style.width, this.style.height);
@@ -348,22 +349,6 @@ Field.prototype._applyOptions = function(options, style){
 
 };
 
-//@include:FieldPosition
-//@include:FieldValue
-//@include:FieldQueue
-//@include:FieldAdd
-//@include:FieldDelete
-//@include:FieldPlacePrivate
-//@include:FieldPlacePublic
-//@include:FieldCursor
-//@include:FieldAnimate
-//@include:FieldDebug
-
-//@include:IconField
-//@include:BadgeField
-//@include:PlayerField
-//@include:TableField
-
 /**
 * Проверяет нахождение карты внутри поля (по координатам).
 * @param {Card}    card                     проверяемая карта
@@ -403,3 +388,20 @@ Field.prototype.cardIsInside = function(card, includeSpacing, includeWholeCard){
 		card.y + card.sprite.y
 	);
 };
+
+//@include:FieldPosition
+//@include:FieldValue
+//@include:FieldQueue
+//@include:FieldAdd
+//@include:FieldDelete
+//@include:FieldPlacePrivate
+//@include:FieldPlacePublic
+//@include:FieldCursor
+//@include:FieldAnimate
+//@include:FieldDebug
+
+//@include:IconField
+//@include:PopupField
+//@include:BadgeField
+//@include:PlayerField
+//@include:TableField

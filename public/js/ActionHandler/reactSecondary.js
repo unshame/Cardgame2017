@@ -55,8 +55,7 @@ var reactSecondary = {
 	* @param {object<object<number>>} action.scores  очки игроков по id игроков в виде `{wins, losses, cardsWhenLost} `
 	* @param {object}                 action.actions      действия голосования за и против рематча `{ { type: 'ACCEPT' }, { type: 'DECLINE' } }`
 	*/
-	GAME_ENDED: function(action, seq){
-
+	GAME_ENDED: function(action, seq, sync){
 		actionHandler.reset();
 
 		var discard = fieldManager.fields.DISCARD_PILE,
@@ -78,12 +77,14 @@ var reactSecondary = {
 			if(!won){
 				seq.abort();
 				seq.append(delay - cardManager.defaultMoveTime)
-					.then(function(){
+					.then(function(seq, sync){
 						ui.announcer.newMessage('Better luck next time');
 						fieldManager.resetFields();
 						cardManager.enablePhysics(true);
 						//game.camera.shake(0.005, 1000);
-						game.shake(15, 800, 20, 50);
+						if(!sync){
+							game.shake(15, 800, 20, 50);
+						}
 						ui.menus.endGame.fadeIn();
 						ui.layers.hideLayer(ui.actionButtons, true);
 					})

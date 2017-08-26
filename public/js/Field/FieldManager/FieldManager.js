@@ -118,8 +118,8 @@ FieldManager.prototype.addPlayerField = function(options, style, badgeStyle){
 * @param {object} [badgeStyle]
 * @return {BadgeField}
 */
-FieldManager.prototype.addOpponentField = function(options, style, badgeStyle){
-	var field = this.addField(BadgeField, options, style, badgeStyle);
+FieldManager.prototype.addOpponentField = function(options, style, badgeStyle, popupStyle){
+	var field = this.addField(BadgeField, options, style, badgeStyle, popupStyle);
 	this.opponents.push(field);
 	return field;
 };

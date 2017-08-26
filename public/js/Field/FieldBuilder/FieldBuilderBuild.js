@@ -116,6 +116,9 @@ FieldBuilder.prototype._buildOpponentFields = function(){
 		},
 		{
 			align: this.badgeStyles[p.id].align
+		},
+		{
+			numCardsText: 'Cards in hand'
 		});
 		p.badge = field.badge;
 		oi++;
@@ -141,7 +144,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 			visible: false
 		};
 	}
-	manager.addGenericField({
+	manager.addField(PopupField, {
 		type: 'DECK',
 		id: 'DECK',
 		delayTime: 50,
@@ -160,13 +163,22 @@ FieldBuilder.prototype._buildDeckField = function(){
 		addTo: 'back',
 		adjust: false
 	},
+	{
+		area: 'icon',
+		getTextFunction: function(){
+			return (
+				'Cards in deck: ' + this.cards.length + '\n' +
+			    'Trump suit: ' + getSuitStrings('EN')[this.icon.frame]
+			);
+		}
+	},
 	iconStyle);
 };
 
 // Discard pile
 FieldBuilder.prototype._buildDiscardField = function(){
 	var manager = this.manager;
-	manager.addGenericField({
+	manager.addField(PopupField, {
 		type: 'DISCARD_PILE',
 		id: 'DISCARD_PILE',
 		debug: manager.inDebugMode
@@ -186,6 +198,9 @@ FieldBuilder.prototype._buildDiscardField = function(){
 		adjust: false,
 		animateAppearance: 'top',
 		alpha: 0.15
+	},
+	{
+		numCardsText: 'Cards discarded'
 	},
 	{
 		texture: 'skull',

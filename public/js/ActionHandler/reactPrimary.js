@@ -104,22 +104,24 @@ var reactPrimary = {
 			fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, true);
 
 			ui.layers.showLayer(ui.actionButtons, true);
+
+			// Добавляем колоде текстуру, обозначающую текущую козырную масть
+			if(action.trumpSuit || action.trumpSuit === 0){
+				seq.append(function(){
+					fieldManager.setTrumpSuit(action.trumpSuit);
+				});
+			}
 		}
 		else{
 			// С анимацией
-			fieldManager.fancyShuffleCards(seq, action.cards);
+			fieldManager.fancyShuffleCards(seq, action.cards, action.trumpSuit);
 
 			seq.append(function(){
 				ui.layers.showLayer(ui.actionButtons, true);
 			});
 		}	
 
-		// Добавляем колоде текстуру, обозначающую текущую козырную масть
-		if(action.trumpSuit || action.trumpSuit === 0){
-			seq.append(function(){
-				fieldManager.setTrumpSuit(action.trumpSuit);
-			});
-		}
+
 
 		return duration;
 	},

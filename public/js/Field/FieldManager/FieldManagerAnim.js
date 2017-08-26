@@ -71,7 +71,7 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 *
 * @return {number} Время анимации.
 */
-FieldManager.prototype.fancyShuffleCards = function(seq, cardsInfo){
+FieldManager.prototype.fancyShuffleCards = function(seq, cardsInfo, trumpSuit){
 
 	var	playerField = this.fields[game.pid];
 	// если поле игрока будет анимироваться, нужно это учесть в радиусе вращения карт
@@ -183,10 +183,15 @@ FieldManager.prototype.fancyShuffleCards = function(seq, cardsInfo){
 			lastStep = revolveCard.call(this, i, lastStep);
 		}
 
-		// выключаем эмиттер хвоста карты
 		lastStep = lastStep.then(function(){
-			trail.on = false;		
-		}, 0);
+			// выключаем эмиттер хвоста карты
+			trail.on = false;
+
+			// Добавляем колоде текстуру, обозначающую текущую козырную масть
+			if(trumpSuit || trumpSuit === 0){
+				this.setTrumpSuit(trumpSuit);
+			}
+		}, 0, this);
 
 		// Подсвечиваем стол
 		tables.forEach(function(t, i){

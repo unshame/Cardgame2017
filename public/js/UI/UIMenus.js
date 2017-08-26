@@ -66,7 +66,7 @@ UI.prototype._createMenus = function(){
 					y:game.screenHeight/2
 				};
 			}, 
-			z: -3,
+			z: -4,
 			base: true,
 			color: 'grey',
 			elementColor: 'grey',
@@ -146,7 +146,7 @@ UI.prototype._createMenus = function(){
 					y:game.screenHeight/2 + 200
 				};
 			}, 
-			z: -5,
+			z: -6,
 			color: 'orange',
 			elementColor: 'red',
 			textColor: 'white',
@@ -182,7 +182,7 @@ UI.prototype._createMenus = function(){
 					y:game.screenHeight/2
 				};
 			}, 
-			z: -5,
+			z: -6,
 			color: 'orange',
 			elementColor: 'red',
 			textColor: 'white',
@@ -220,7 +220,7 @@ UI.prototype._createMenus = function(){
 					y:game.screenHeight/2
 				};
 			}, 
-			z: -3,
+			z: -4,
 			color: 'grey',
 			elementColor: 'grey',
 			textColor: 'black',

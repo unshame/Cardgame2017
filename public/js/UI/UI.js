@@ -131,6 +131,8 @@ UI.prototype.initialize = function(){
 	*/
 	this.modalManager = new ModalManager();
 
+	this.popupManager = new PopupManager();
+
 	this.credits = new Credits(creditsText, game.state.change.bind(game.state, 'menu'));
 
 	this.menus = this._createMenus();
@@ -162,9 +164,11 @@ UI.prototype.initialize = function(){
 		[this.eventFeed, 6],
 		[this.announcer, 7],
 		[this.rope, 7],
-		[this.modalManager, -4],
-		// модальные меню, -3
-		// this.cornerButtons, -2
+		// игровые меню, -6
+		[this.modalManager, -5],
+		// модальные меню, -4
+		// this.cornerButtons, -3
+		[this.popupManager, -2],
 		[this.cursor, -1]
 	]);
 
@@ -199,3 +203,4 @@ UI.prototype.newPixel = function(){
 //@include:Cursor
 //@include:ModalManager
 //@include:Credits
+//@include:PopupManager

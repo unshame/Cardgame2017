@@ -12,7 +12,7 @@ UI.prototype._createButtons = function(){
 	* Угловые кнопки.
 	* @type {Phaser.Group}
 	*/
-	this.cornerButtons = this.layers.addLayer(-2, 'cornerButtons');
+	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons');
 
 	// Действие
 	new Button({

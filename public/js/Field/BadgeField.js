@@ -1,15 +1,15 @@
 /**
 * Поле с плашкой информации игрока {@link BadgeField#badge} ({@link Badge}).
 * @class 
-* @extends {Field}
+* @extends {PopupField}
 * @param {object} options
 * @param {object} style
 * @param {object} badgeStyle       Стиль плашки информации игрока.
 * @param {string} badgeStyle.align Выравнивание плашки.
 *                                  Значения: `'left', 'right', 'top', 'bottom'`
 */
-var BadgeField = function(options, style, badgeStyle){
-	Field.call(this, options, style);
+var BadgeField = function(options, style, badgeStyle, popupStyle){
+	PopupField.call(this, options, style, popupStyle);
 
 	this.badgeStyle = mergeOptions(this.getBadgeDefaultOptions(), badgeStyle);
 
@@ -21,7 +21,7 @@ var BadgeField = function(options, style, badgeStyle){
 	this.add(this.badge);
 };
 
-extend(BadgeField, Field);
+extend(BadgeField, PopupField);
 
 BadgeField.prototype.getBadgeDefaultOptions = function(){
 	return {
