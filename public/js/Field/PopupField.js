@@ -19,12 +19,12 @@ Field.PopupField = function(options, style, popupStyle, iconStyle){
 
 	if(Phaser.Device.desktop){
 		popupArea.events.onInputOver.add(this._cursorOver, this);
-		popupArea.events.onInputOut.add(ui.popupManager.hoverOut.bind(ui.popupManager));
 	}
 	else{
 		popupArea.events.onInputDown.add(this._cursorOver.bind(this, true));
 		popupArea.events.onInputUp.add(ui.popupManager.hoverOut.bind(ui.popupManager));
 	}
+	popupArea.events.onInputOut.add(ui.popupManager.hoverOut.bind(ui.popupManager));
 };
 
 extend(Field.PopupField, Field.IconField);
