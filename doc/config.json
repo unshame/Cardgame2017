@@ -6,7 +6,7 @@
 	},
 	"plugins": [
 	    "plugins/markdown",
-	    "node_modules/jsdoc-autoprivate/autoprivate.js"
+	    "doc/jsdoc-custom-plugin.js"
 	],
 	"templates": {
 		"default":{

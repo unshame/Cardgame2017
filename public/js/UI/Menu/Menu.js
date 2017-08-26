@@ -68,6 +68,10 @@ var Menu = function(options){
 	*/
 	this.disabledElements = [];
 
+	/**
+	* Макет меню.
+	* @type {Array}
+	*/
 	this.layout = [];
 
 	/**
@@ -84,6 +88,10 @@ var Menu = function(options){
 		this._pattern = this._bitmapArea.ctx.createPattern(image, 'repeat');
 	}
 
+	/**
+	* Методы добавления элементов по типу элемента.
+	* @type {object}
+	*/
 	this._elementTypeMap = this._getTypeMap();
 
 	ui.layers.addExistingLayer(this, this.options.z);	
@@ -200,7 +208,7 @@ Menu.alignRight = function(){
 };
 
 /**
-* Рисует фон меню
+* Рисует фон меню.
 * @static
 * @param {Phaser.BitmapData} bitmap где рисовать
 * @param {number}            width  ширина
@@ -270,9 +278,6 @@ Menu.drawPanel = function(bitmap, width, height, x, y, color, header, headerColo
 	ctx.fillRect(x + cs, height - y - cs + dif, width - x*2 - cs*2, bs);	
 	ctx.fillRect(x + bs, offset + y + cs, bs, height - offset - y*2 - cs*2);
 	ctx.fillRect(width - x - cs + dif, offset + y + cs, bs, height - offset - y*2 - cs*2);
-
-	//ctx.fillStyle = ;
-	//ctx.fillStyle = ;
 
 	bitmap.update();
 };

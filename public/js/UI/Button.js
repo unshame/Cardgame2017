@@ -1,13 +1,39 @@
 /**
-* Конструктор кнопок с текстом
+* Конструктор кнопок с текстом/иконкой.  
+* Состоит из двух элементов: кнопки ({@link UI.Button|this}) и опционального текста\иконки ({@link UI.Button#label|label}).  
+* Элементы не связаны группой, поэтому многие функции движка (добавление в группы например) работают некорректно, нужно использовать методы кнопки.
 * @class
+* @extends {Phaser.Button}
+* @param {object}            [options]                        Настройки кнопки.
+* @param {(object|function)} options.position={x:0,y:0}       Позиция кнопки в виде объекта или функции, возвращающий объект вида `{x, y}`. 
+*                                                             В функцию передаются следующие параметры: `width, height`.
+* @param {string}            options.color='grey'             Цвет кнопки.
+* @param {string}            options.size='wide'              Тип кнопки (`'small', 'big', 'wide', 'circle'`)
+* @param {function}          options.action                   Действие кнопки.
+* @param {any}               options.context=null             Контекст действия.
+* @param {Phaser.Group}      options.group=null               Группа, в которую будет помещена кнопка.
+* @param {number}            options.scale=1                  Масштаб кнопки.
+* @param {string}            options.text=null                Текст кнопки.
+* @param {string}            options.textColor='black'        Цвет текста.
+* @param {string}            options.font='Exo'               Шрифт текста.
+* @param {number}            options.fontSize=26              Размер шрифта.
+* @param {string}            options.icon=null                Иконка кнопки.
+* @param {string}            options.name=null                Имя кнопки.
+* @param {number}            options.downOffset=4             На сколько сдвигать текст\иконку кнопку, когда она нажата.
+* @param {boolean}           options.mobileClickProtect=false На мобильных устройствах можно отменить нажатие кнопки, отведя от нее палец.
 */
-
 UI.Button = function(options){
 
+	/**
+	* Опции.
+	* @type {object}
+	*/
 	this.options = mergeOptions(this.getDefaultOptions(), options);
 
-	// Действие
+	/**
+	* Действие.
+	* @type {function}
+	*/
 	this.action = this.options.action;
 	function actionWrapper(button, pointer, isOver){
 		if(isOver || (!Phaser.Device.desktop && !this.options.mobileClickProtect)){
@@ -30,13 +56,24 @@ UI.Button = function(options){
 	);
 
 	this.name = this.options.name;
+
+	/**
+	* Находится ли кнопка в нажатом положении (нажата или отключена).
+	* @type {Boolean}
+	*/
 	this.isDown = false;
 
 	this.scale.set(this.options.scale, this.options.scale);
 
-	//Текст
+	/**
+	* Текст или иконка кнопки.
+	* @type {(Phaser.Text|Phaser.Image)}
+	* @property {boolean} isText является ли элемент текстом
+	*/
+	this.label = null;
 	var style = { font: this.options.font, fontSize: this.options.fontSize, fill: this.options.textColor, align: 'center' };
 	if(this.options.text){
+
 		this.label = game.make.text(this.centerX, this.centerY, this.options.text, style);
 		this.label.setShadow(1, 1, 'rgba(0,0,0,0.5)', 1);
 		this.label.isText = true;
@@ -45,22 +82,14 @@ UI.Button = function(options){
 		this.label = game.make.image(0, 0, 'icon_' + this.options.icon);
 		this.label.isText = false;
 	}	
+
 	if(this.label){
 		this.label.state = 'Out';
-		this.label.downOffset = this.options.downOffset;
 		this.label.anchor.set(0.5, 0.5);
 	}
 
-	this.updatePosition(this.options.position);
-
-
 	// Убираем дефолтный курсор
 	this.input.useHandCursor = false;
-
-	game.add.existing(this);
-	if(this.label){
-		game.add.existing(this.label);
-	}
 
 	// Группа
 	if(this.options.group){
@@ -70,10 +99,22 @@ UI.Button = function(options){
 			this.group.add(this.label);
 		}
 	}
+	else{
+		game.add.existing(this);
+		if(this.label){
+			game.add.existing(this.label);
+		}
+	}
+
+	this.updatePosition(this.options.position);
 };
 
 extend(UI.Button, Phaser.Button);
 
+/**
+* Возвращает опции по умолчанию.
+* @return {object}
+*/
 UI.Button.prototype.getDefaultOptions = function(){
 	return {
 		position: {
@@ -97,7 +138,7 @@ UI.Button.prototype.getDefaultOptions = function(){
 	};
 };
 
-// Прячет кнопку
+/** Прячет кнопку */
 UI.Button.prototype.hide = function(){
 	this.visible = false;
 	if(this.label){
@@ -105,7 +146,7 @@ UI.Button.prototype.hide = function(){
 	}
 };
 
-// Показывает кнопку
+/** Показывает кнопку. */
 UI.Button.prototype.show = function(){
 	this.visible = true;
 	if(this.label){
@@ -113,7 +154,7 @@ UI.Button.prototype.show = function(){
 	}
 };
 
-// Включает кнопку
+/** Включает кнопку. */
 UI.Button.prototype.enable = function(){
 	if(this.inputEnabled){
 		return;
@@ -130,7 +171,10 @@ UI.Button.prototype.enable = function(){
 	}
 };
 
-// Выключает кнопку
+/**
+* Выключает кнопку.
+* @param  {boolean} changeToDefaultFrame Текстура кнопки переходит в обычное состояние, вместо выключенного.
+*/
 UI.Button.prototype.disable = function(changeToDefaultFrame){
 	if(!changeToDefaultFrame){
 		this.frame = 3;
@@ -143,13 +187,16 @@ UI.Button.prototype.disable = function(changeToDefaultFrame){
 	if(this.label && !changeToDefaultFrame){
 		this.label.alpha = 0.55;
 		if(!this.isDown){
-			this.label.y += this.label.downOffset;
+			this.label.y += this.options.downOffset;
 			this.isDown = true;
 		}
 	}
 };
 
-// Меняет или восстанавливает заданную позицию
+/**
+* Меняет или восстанавливает заданную позицию.
+* @param  {(object|function)} position позиция
+*/
 UI.Button.prototype.updatePosition = function(position){
 	if(position){
 		this.defaultPosition = position;
@@ -168,16 +215,20 @@ UI.Button.prototype.updatePosition = function(position){
 		this.label.y = this.centerY;
 		if(!this.label.isText){
 			//this.label.x++;
-			this.label.y -= this.label.downOffset/2;
+			this.label.y -= this.options.downOffset/2;
 		}
 		if(this.isDown){
-			this.label.y += this.label.downOffset;
+			this.label.y += this.options.downOffset;
 		}
 	}
 };
 
-// Расширение Phaser.UI.Button.changeStateFrame, для добавления изменения позиции текста
-// при изменении состоянии кнопки
+/**
+* Вызывается игрой для смены состояния кнопки.
+* @param {string} state новое состояние
+*
+* @return {boolean} Было ли присвоено новое состояние.
+*/
 UI.Button.prototype.changeStateFrame = function (state) {
 	if(this.label && this.inputEnabled){
 		if(state != 'Down' && this.isDown){
@@ -186,7 +237,7 @@ UI.Button.prototype.changeStateFrame = function (state) {
 		}
 		else if(state == 'Down' && !this.isDown){
 			this.isDown = true;
-			this.label.y += this.label.downOffset;
+			this.label.y += this.options.downOffset;
 		}
 	}
 	if(this.label){
@@ -198,6 +249,10 @@ UI.Button.prototype.changeStateFrame = function (state) {
 	}
 };
 
+/**
+* Возвращает находится ли курсор над кнопкой.
+* @return {boolean}
+*/
 UI.Button.prototype.cursorIsOver = function(){
 	if(!this.inputEnabled || !this.visible){
 		return false;
@@ -224,12 +279,14 @@ UI.Button.prototype.cursorIsOver = function(){
 	);
 };
 
+/** Проверяет находится ли курсор над кнопкой. */
 UI.Button.prototype.update = function(){
 	if(this.cursorIsOver()){
 		ui.layers.updateCursorOverlap(this);
 	}
 };
 
+/** Уничтожает кнопку. */
 UI.Button.prototype.destroy = function(){
 	if(this.label){
 		this.label.destroy();
@@ -237,6 +294,11 @@ UI.Button.prototype.destroy = function(){
 	supercall(UI.Button).destroy();
 };
 
+/**
+* Удаляет кнопку с текстом/иконкой из родительской группы.
+* Опционально уничтожает кнопку.
+* @param  {boolean} destroy нужно ли уничтожать кнопку
+*/
 UI.Button.prototype.removeFromParent = function(destroy){
 	if(this.parent){
 		if(this.label){
@@ -244,4 +306,4 @@ UI.Button.prototype.removeFromParent = function(destroy){
 		}
 		this.parent.remove(this, destroy);
 	}
-}
+};

@@ -3,7 +3,6 @@
 * @class
 * @extends {external:Phaser.Group}
 */
-
 UI.Background = function(){
 	Phaser.Group.call(this, game);
 	this.name = 'background';

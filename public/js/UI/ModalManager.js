@@ -17,6 +17,7 @@ UI.ModalManager = function(){
 
 extend(UI.ModalManager, Phaser.Image);
 
+/** Обновляет позицию блокировщика нажатий. */
 UI.ModalManager.prototype.updatePosition = function(){
 	this.width = game.screenWidth;
 	this.height = game.screenHeight;

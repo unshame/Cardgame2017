@@ -36,7 +36,6 @@
     "gulp": "^3.9.1",
     "gulp-file": "^0.3.0",
     "gulp-uglify": "^3.0.0",
-    "jsdoc-autoprivate": "0.0.1",
     "pump": "^1.0.2"
   },
   "author": "UnShame"
