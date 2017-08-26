@@ -11,7 +11,7 @@ UI.Button = function(options){
 	this.action = this.options.action;
 	var thisButton = this;
 	function actionWrapper(button, pointer, isOver){
-		if(isOver || (Phaser.Device.desktop && !this.options.mobileClickProtect)){
+		if(isOver || (!Phaser.Device.desktop && !this.options.mobileClickProtect)){
 			if(cardControl.card){
 				cardControl.cardReturn();
 			}
