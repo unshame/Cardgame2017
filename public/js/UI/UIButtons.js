@@ -36,6 +36,7 @@ UI.prototype._createButtons = function(){
 		size: 'big',
 		textColor: 'white',
 		fontSize: 60,
+		mobileClickProtect: true,
 		group: this.actionButtons
 	});
 

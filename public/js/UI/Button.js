@@ -11,7 +11,7 @@ var Button = function(options){
 	this.action = this.options.action;
 	var thisButton = this;
 	function actionWrapper(button, pointer, isOver){
-		if(isOver || !Phaser.Device.desktop){
+		if(isOver || (!Phaser.Device.desktop && !this.options.mobileClickProtect)){
 			if(cardControl.card){
 				cardControl.cardReturn();
 			}
@@ -93,6 +93,7 @@ Button.prototype.getDefaultOptions = function(){
 		fontSize: 30,
 		context: null,
 		group: null,
+		mobileClickProtect: false,
 		scale: 1
 	};
 };

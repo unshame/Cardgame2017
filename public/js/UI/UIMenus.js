@@ -79,7 +79,8 @@ UI.prototype._createMenus = function(){
 						ui.modalManager.closeModal();
 					}, 
 					name: 'disconnect',
-					text: 'Disconnect'
+					text: 'Disconnect',
+					mobileClickProtect: true
 				},
 				{
 					action: function(button, pointer){
