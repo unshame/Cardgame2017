@@ -18,6 +18,8 @@ UI.prototype._createMenus = function(){
 			color: 'orange',
 			elementColor: 'red',
 			textColor: 'white',
+			//header: 'Main Menu',
+			//headerColor: 'red',
 			layout: [
 				{
 					action: function(){
@@ -69,6 +71,7 @@ UI.prototype._createMenus = function(){
 			elementColor: 'grey',
 			textColor: 'black',
 			name: 'menu_options',
+			header: 'Options',
 			closeButton: function(){
 				ui.modalManager.closeModal();
 			},
@@ -102,7 +105,7 @@ UI.prototype._createMenus = function(){
 						}
 
 					},
-					name: 'CHS',
+					name: 'change_skin',
 					text: 'Change skin'
 				},
 				{
@@ -147,6 +150,8 @@ UI.prototype._createMenus = function(){
 			elementColor: 'red',
 			textColor: 'white',
 			name: 'menu_endGame',
+			header: 'Another one?',
+			headerColor: 'red',
 			layout: [[
 				{
 					action: function(){
@@ -181,6 +186,8 @@ UI.prototype._createMenus = function(){
 			elementColor: 'red',
 			textColor: 'white',
 			name: 'menu_queue',
+			header: 'Queue Options',
+			headerColor: 'red',
 			layout: [
 				{
 					action: function(){
@@ -206,6 +213,7 @@ UI.prototype._createMenus = function(){
 			elementColor: 'grey',
 			textColor: 'black',
 			name: 'menu_debug',
+			header: 'Debug',
 			closeButton: function(){
 				ui.modalManager.closeModal();
 			},			

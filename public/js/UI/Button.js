@@ -90,7 +90,7 @@ Button.prototype.getDefaultOptions = function(){
 		downOffset: 4,
 		textColor: 'black',
 		font: '28px Exo',
-		fontSize: 30,
+		fontSize: 26,
 		context: null,
 		group: null,
 		mobileClickProtect: false,

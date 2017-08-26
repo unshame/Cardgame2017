@@ -53,6 +53,7 @@ var stateBoot = new State('boot', {
 		game.load.image('panel_blue_corners','assets/panels/blue_corners.png');
 		game.load.image('panel_yellow_corners','assets/panels/yellow_corners.png');
 		game.load.image('panel_green_corners','assets/panels/green_corners.png');
+		game.load.image('panel_red_corners','assets/panels/red_corners.png');
 
 		// Для тестов
 		game.load.image('testParticle', 'assets/test_particle.png');

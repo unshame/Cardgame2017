@@ -1,4 +1,3 @@
-
 /**
 * Позиционирует меню и элементы.
 * @param {object} [position] новая позиция меню `{x, y}`.
@@ -20,7 +19,7 @@ Menu.prototype.updatePosition = function(position){
 	this.x = position.x - this.background.width/2;
 	this.y = position.y - this.background.height/2;
 
-	var y = 0,
+	var y = this.options.header ? this.options.headerHeight : 0,
 		margin = this.options.margin,
 		menuWidth = this.background.width - margin*2;
 
@@ -62,6 +61,11 @@ Menu.prototype.updatePosition = function(position){
 	this.specialElements.forEach(function(el){
 		el.updatePosition();
 	});
+
+	if(this.header){
+		this.header.x = this.background.width/2;
+		this.header.y = this.options.headerHeight/2 + 4;
+	}
 };
 
 /**
@@ -117,7 +121,16 @@ Menu.prototype._resize = function(){
 */
 Menu.prototype._createArea = function(width, height){
 
-	drawPanel(this._bitmapArea, width, height, 0, 0, this.options.color);
+	Menu.drawPanel(
+		this._bitmapArea, 
+		width, 
+		height, 
+		0, 
+		0, 
+		this.options.color, 
+		this.options.header && this.options.headerHeight, 
+		this.options.headerColor
+	);
 
 	this.background.loadTexture(this._bitmapArea);	
 };

@@ -180,43 +180,6 @@ function drawRoundedRectangle(bitmap, width, height, x, y, radius, lineWidth, al
 	bitmap.update();
 }
 
-function drawPanel(bitmap, width, height, x, y, color){
-	var ctx = bitmap.ctx;
-	bitmap.clear();
-	bitmap.resize(width, height);
-	var corner = game.cache.getImage('panel_' + color + '_corners');
-	var cs = 8;
-	var bs = 2;
-	var dif = cs - bs*2;
-	var colors = ui.colors.menu[color];
-
-
-	ctx.fillStyle = colors.background;
-	ctx.fillRect(x + bs, y + bs, width - x*2 - bs*2, height - y*2 - bs*2);
-
-	ctx.drawImage(corner, 0, 0, cs, cs, x, y, cs, cs);
-	ctx.drawImage(corner, cs, 0, cs, cs, width - x*2 - cs, y, cs, cs);
-	ctx.drawImage(corner, 0, cs, cs, cs, x, height - y*2 - cs, cs, cs);
-	ctx.drawImage(corner, cs, cs, cs, cs, width - x*2 - cs, height - y*2 - cs, cs, cs);
-
-	ctx.fillStyle = colors.outer;
-	ctx.fillRect(x + cs, y, width - x*2 - cs*2, bs);	
-	ctx.fillRect(x + cs, height - y - cs + dif + bs, width - x*2 - cs*2, bs);	
-	ctx.fillRect(x, y + cs, bs, height - y*2 - cs*2);
-	ctx.fillRect(width - x - cs + dif + bs, y + cs, bs, height - y*2 - cs*2);
-
-	ctx.fillStyle = colors.inner;
-	ctx.fillRect(x + cs, y + bs, width - x*2 - cs*2, bs);	
-	ctx.fillRect(x + cs, height - y - cs + dif, width - x*2 - cs*2, bs);	
-	ctx.fillRect(x + bs, y + cs, bs, height - y*2 - cs*2);
-	ctx.fillRect(width - x - cs + dif, y + cs, bs, height - y*2 - cs*2);
-
-	//ctx.fillStyle = ;
-	//ctx.fillStyle = ;
-
-	bitmap.update();
-}
-
 
 // TEST AND DEBUG FUNCTIONS
 

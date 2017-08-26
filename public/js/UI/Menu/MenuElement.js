@@ -14,15 +14,23 @@ Menu.prototype.forEachElement = function(callback, includeSpecial){
 			continue;
 		}
 
-		callback.call(this, this.elements[i], ii, len);
+		callback.call(this, this.elements[i], ii, i, len);
 		ii++;
 	}
 };
 
+/**
+* Удаляет и опционально уничтожает все элементы меню.
+* @param  {boolean} [destroy] нужно ли уничтожать объекты
+*/
 Menu.prototype.removeAllElements = function(destroy){
 	this.forEachElement(function(el){
 		el.removeFromParent(destroy);
 	});
+	this.layout.length = 0;
+	this.hiddenElements.length = 0;
+	this.disabledElements.length = 0;
+	this.elements = this.specialElements.slice();
 };
 
 /**
