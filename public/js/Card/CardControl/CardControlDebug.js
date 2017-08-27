@@ -64,4 +64,5 @@ CardControl.prototype.toggleDebugMode = function(){
 	else{
 		console.log('Card control: Debug mode ON');
 	}
+	ui.setDebugButtonText('control', 'Control', this.inDebugMode);
 };

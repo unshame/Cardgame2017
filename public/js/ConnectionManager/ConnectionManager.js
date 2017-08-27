@@ -71,5 +71,11 @@ ConnectionManager.prototype.handleError = function(){
 	ui.feed.newMessage('Server connection error', 2000);
 };
 
+ConnectionManager.prototype.toggleDebugMode = function(){
+	connection.inDebugMode = !connection.inDebugMode;
+	options.set('debug_connection', this.inDebugMode);
+	ui.setDebugButtonText('connection', 'Connection', this.inDebugMode);
+};
+
 //@include:clientMethods
 //@include:serverMethods

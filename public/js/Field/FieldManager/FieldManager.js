@@ -180,4 +180,5 @@ FieldManager.prototype.toggleDebugMode = function(){
 		}
 	});
 	actionHandler.highlightPossibleActions();
+	ui.setDebugButtonText('fields', 'Fields', this.inDebugMode);
 };

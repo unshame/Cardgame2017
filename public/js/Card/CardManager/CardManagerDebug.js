@@ -18,6 +18,7 @@ CardManager.prototype.toggleDebugMode = function(){
 			this.cards[ci].inDebugMode = this.inDebugMode;
 		}
 	}
+	ui.setDebugButtonText('cards', 'Cards', this.inDebugMode);
 };
 
 

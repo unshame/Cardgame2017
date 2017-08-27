@@ -189,6 +189,9 @@ UI.prototype.newPixel = function(){
 	return pixel;
 };
 
+UI.prototype.setDebugButtonText = function(name, text, on){
+	ui.menus.debug.getByName(name).label.setText(text + ': ' + (on ? 'on' : 'off'));
+}
 //@include:UIMenus
 //@include:UIButtons
 

@@ -220,8 +220,9 @@ Game.prototype.toggleAllDebugModes = function(){
 
 	this.toggleDebugMode();
 
-	connection.inDebugMode = this.inDebugMode;
-	options.set('debug_connection', this.inDebugMode);
+	if(connection.inDebugMode != this.inDebugMode){
+		connection.toggleDebugMode();
+	}
 
 	if(this.scale.inDebugMode != this.inDebugMode){
 		this.scale.toggleDebugMode();
@@ -246,18 +247,7 @@ Game.prototype.toggleDebugMode = function(){
 	this.time.advancedTiming = this.inDebugMode;
 	options.set('debug_game', this.inDebugMode);
 	options.save();
-};
-
-/** Выводит состояние дебаг режима всех модулей. */
-Game.prototype.checkDebugStatus = function(){
-	console.log(
-		'game:', this.inDebugMode,
-		'\nconnection:', connection.inDebugMode,
-		'\nscale:', this.scale.inDebugMode,
-		'\ncardControl:', cardControl.inDebugMode,
-		'\nfieldManager:', fieldManager.inDebugMode,
-		'\ncardManager:', cardManager.inDebugMode
-	);
+	ui.setDebugButtonText('game', 'Game', this.inDebugMode);
 };
 
 /** Выводит FPS. */

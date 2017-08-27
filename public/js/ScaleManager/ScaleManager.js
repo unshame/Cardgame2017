@@ -325,6 +325,7 @@ ScaleManager.prototype.toggleDebugMode = function(){
 	options.set('debug_grid', this.inDebugMode);
 	options.save();
 	this.drawDebugGrid();
+	ui.setDebugButtonText('grid', 'Grid', this.inDebugMode);
 };
 
 /**

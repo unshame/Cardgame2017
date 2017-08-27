@@ -160,7 +160,7 @@ UI.prototype._createMenus = function(){
 						this.fadeOut();
 					}, 
 					name: 'rematch',
-					text: 'Rematch'
+					text: 'Yes'
 				},
 				{
 					action: function(){
@@ -168,7 +168,7 @@ UI.prototype._createMenus = function(){
 						this.fadeOut();
 					},
 					name: 'quit_game',
-					text: 'Quit'
+					text: 'No'
 				}
 			]]
 		}),
@@ -249,14 +249,14 @@ UI.prototype._createMenus = function(){
 							game.toggleDebugMode();
 						},
 						name: 'game',
-						text: 'Game'
+						text: 'Game: ' + (game.inDebugMode ? 'on' : 'off')
 					},
 					{
 						action: function(){
-							connection.inDebugMode = !connection.inDebugMode;
+							connection.toggleDebugMode();
 						},
 						name: 'connection',
-						text: 'Connection'
+						text: 'Connection: ' + (connection.inDebugMode ? 'on' : 'off')
 					}
 				],
 				[
@@ -265,14 +265,14 @@ UI.prototype._createMenus = function(){
 							game.scale.toggleDebugMode();
 						},
 						name: 'grid',
-						text: 'Grid'
+						text: 'Grid: ' + (game.scale.inDebugMode ? 'on' : 'off')
 					},
 					{
 						action: function(){
 							cardControl.toggleDebugMode();
 						},
-						name: 'ctrl',
-						text: 'Control'
+						name: 'control',
+						text: 'Control: ' + (cardControl.inDebugMode ? 'on' : 'off')
 					}
 				],
 				[
@@ -281,14 +281,14 @@ UI.prototype._createMenus = function(){
 							fieldManager.toggleDebugMode();
 						},
 						name: 'fields',
-						text: 'Fields'
+						text: 'Fields: ' + (fieldManager.inDebugMode ? 'on' : 'off')
 					},
 					{
 						action: function(){
 							cardManager.toggleDebugMode();
 						},
 						name: 'cards',
-						text: 'Cards'
+						text: 'Cards: ' + (cardManager.inDebugMode ? 'on' : 'off')
 					}
 				]
 			]
