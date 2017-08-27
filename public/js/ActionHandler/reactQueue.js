@@ -8,6 +8,7 @@ var reactQueue = {
 	QUEUE_LEFT: function(){
 		ui.menus.queue.disableElement('vs_bots');
 		ui.feed.newMessage('Left queue', 2000);
+		ui.menus.queue.fadeOut();
 		game.state.change('menu', false);
 	},
 

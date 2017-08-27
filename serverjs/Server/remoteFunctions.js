@@ -105,7 +105,7 @@ module.exports = function(server){
 
 		startQueuedGameVsBots: function(){
 			let player = server.players[this.connection.id];
-			if(!player || !player.queue || player.queue.players.length != 1){
+			if(!player || !player.queue || player.queue.game || player.queue.players.length != 1){
 				return;
 			}
 			var numPlayers = player.queue.config.numPlayers;

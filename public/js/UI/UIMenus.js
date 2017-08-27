@@ -204,11 +204,13 @@ UI.prototype._createMenus = function(){
 				}),
 				Menu.buttonPopup({
 					action: function(){
-						connection.proxy.startQueuedGameVsBots()
+						connection.proxy.startQueuedGameVsBots();
+						this.disable();
 					},
 					name: 'vs_bots',
 					text: 'Play VS Bots',
-					hoverText: 'Play versus bots if we can\'t find real people to play against you.'
+					hoverText: 'Play versus bots if we can\'t find real people to pitch against you.',
+					context: false
 				}),
 				{
 					action: function(){

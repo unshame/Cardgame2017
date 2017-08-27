@@ -44,6 +44,10 @@ class Queue{
 	}
 
 	startGame(){
+		if(this.game){
+			this.log.error(new Error('Can\'t start a game, another one is already in progress'));
+			return;
+		}
 
 		this.players.forEach((p) => {
 			p.recieveQueueAction({type: 'QUEUE_FULL'});
@@ -68,7 +72,7 @@ class Queue{
 
 	endGame(voteResults){
 		if(!this.game){
-			console.error('No game to end');
+			console.error(new Error('No game to end'));
 			return;
 		}
 		this.log.notice('Game ended');
@@ -118,6 +122,9 @@ class Queue{
 	}
 
 	notifyPlayers(){
+		if(this.game){
+			return;
+		}
 		this.players.forEach((p) => {
 			p.recieveQueueAction({
 				type: 'QUEUE_STATUS',
