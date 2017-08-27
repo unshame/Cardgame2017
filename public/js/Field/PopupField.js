@@ -12,7 +12,7 @@ Field.PopupField = function(options, style, popupStyle, iconStyle){
 
 	this.popupStyle = mergeOptions(this.getPopupDefaultOptions(), popupStyle);
 
-	UI.PopupComponent.call(this, this[this.popupStyle.area]);
+	UI.PopupComponent.call(this, this[this.popupStyle.area], style.popupPlacement);
 };
 
 extend(Field.PopupField, Field.IconField);

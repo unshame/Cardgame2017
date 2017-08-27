@@ -160,13 +160,18 @@ UI.PopupManager.prototype._getPopupPosition = function(){
 		break;
 
 		case 'top':
-		x = popupArea.x - this.background.width/2;
-		y = popupArea.y - this.background.height - this.offset;
+		x = popupArea.parent.x + popupArea.x - this.background.width/2;
+		y = popupArea.parent.y + popupArea.y - this.background.height - this.offset;
 		break;
 
 		case 'bottom':
-		x = popupArea.x - this.background.width/2;
-		y = game.input.y + ui.cursor.height + this.offset;
+		x = popupArea.parent.x + popupArea.x - this.background.width/2;
+		y = popupArea.parent.y + popupArea.y + ui.cursor.height + this.offset;
+		break;
+
+		case 'middle':
+		x = popupArea.parent.x + popupArea.x + popupArea.width/2 - this.background.width/2;
+		y = popupArea.parent.y + popupArea.y + popupArea.height/2 - this.background.height/2;
 		break;
 
 		default:

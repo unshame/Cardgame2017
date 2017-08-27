@@ -97,7 +97,7 @@ Phaser.Device.whenReady(function(){
 	actionHandler.addChannel('secondary', CHANNEL_TYPE.INTERRUPT, 'play', reactSecondary);
 	actionHandler.addChannel('possible_actions', CHANNEL_TYPE.USER_INVOLVED, 'play');
 	actionHandler.addChannel('extra', CHANNEL_TYPE.NO_ACTION, 'play', reactExtra);
-	actionHandler.addChannel('queue', CHANNEL_TYPE.INTERRUPT, 'queue', reactQueue);
+	actionHandler.addChannel('queue', CHANNEL_TYPE.INTERRUPT, 'queue', reactQueue, ['menu', 'play']);
 
 	/**
 	* Игра

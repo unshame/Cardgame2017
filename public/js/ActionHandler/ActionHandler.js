@@ -2,13 +2,13 @@
 * Модуль отвечает за обработку действий и оповещений от сервера.
 * Подсвечивает возможные действия и управляет кнопкой действия и таймером хода.
 * @class
-* @param {string}           correctState
-* @param {object<function>} reactPrimary
-* @param {object<function>} reactSecondary
 */
-
 var ActionHandler = function(){
 
+	/**
+	* Каналы с действиями.
+	* @type {Object}
+	*/
 	this.channels = {};
 
 	/**
@@ -23,6 +23,11 @@ var ActionHandler = function(){
 	*/
 	this.turnStage = null;
 
+	/**
+	* Находится игра в режиме быстрой симуляции.
+	* Если `true`, все запланированные действия будут завершены перед добавлением новых
+	* @type {Boolean}
+	*/
 	this.simulating = false;
 
 	/**
@@ -32,7 +37,18 @@ var ActionHandler = function(){
 	this.sequencer = new Sequencer(connection.server.sendResponse);
 };
 
-ActionHandler.prototype.addChannel = function(name, type, state, reactions){
+/**
+* Добавляет канал для управление игрой с сервера.
+* @param {string}           name               уникальное имя канала
+* @param {CHANNEL_TYPE}     type               тип канала
+* @param {string}           state              Состояние игры, в котором она должна быть для выполнения действий этого канала.
+*                                              Если действие выполняется в неверном состоянии, игра будет переведена в верное состояние.  
+* @param {object<function>} [reactions]        объект с функциями, соответствующие типу действий от сервера
+* @param {array}            [additionalStates] Дополнительные состояния игры, в которых действия этого канала не могут выполняться,
+*                                              но в которых эти действия могут быть приняты. Избавляется от выведения предупреждения
+*                                              при получении действия в другом канале, нежеле указаном в `state`.
+*/
+ActionHandler.prototype.addChannel = function(name, type, state, reactions, additionalStates){
 	if(this.channels[name]){
 		console.error('ActionHandler: channel already exists', name);
 	}
@@ -41,6 +57,7 @@ ActionHandler.prototype.addChannel = function(name, type, state, reactions){
 	channel.type = type;
 	channel.state = state;
 	channel.reactions = reactions || null;
+	channel.additionalStates = additionalStates || [];
 	this.channels[name] = channel;
 };
 
@@ -48,8 +65,9 @@ ActionHandler.prototype.addChannel = function(name, type, state, reactions){
 
 /**
 * Выполняет действие.
-* @param {object} action      действие
-* @param {string} action.type тип действия по которому будет вызвана соответствующая функция из {@link ActionHandler#reactPrimary}
+* @param {object} action         действие
+* @param {string} action.type    тип действия по которому будет вызвана соответствующая функция из.
+* @param {string} action.channel канал, по которому будет вызвано действие
 *
 * @return {number} Время выполнения действия.
 */
@@ -106,7 +124,9 @@ ActionHandler.prototype.executeAction = function(action){
 	
 	this.sequencer.queueUp(function(seq, sync){
 		if(channel.state != game.state.currentSync){
-			console.warn('Action handler: wrong game state', game.state.currentSync, action.channel, channel.state, action);
+			if(!~channel.additionalStates.indexOf(game.state.currentSync)){
+				console.warn('Action handler: wrong game state', game.state.currentSync, action.channel, channel.state, action);
+			}
 			game.state.change(channel.state, false);
 		}
 		return reaction.call(channel.reactions, action, seq, sync);
@@ -191,7 +211,7 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 /**
 * Устанавливает текст и действие кнопки действия.
 * @param {UI.Button} button кнопка действия
-* @param {string} type   тип действия
+* @param {string}    type   тип действия
 */
 ActionHandler.prototype.setButtonAction = function(button, type){
 	this.buttonAction = type;
