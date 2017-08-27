@@ -21,7 +21,7 @@ function runTest(numBots, duration, debug){
 		bots.push(new TestBot(tester,randomNames));
 	}
 	var fakeQueue = {endGame: () => {}};
-	new Game(
+	var game = new Game(
 		fakeQueue,
 		bots, 
 		{
@@ -29,12 +29,13 @@ function runTest(numBots, duration, debug){
 			debug: debug,
 			test: true
 		}
-	).init();
+	);
+	game.init();
 
 	setTimeout(() => {
-		console.log('Tests finished...');
 		tester.running = false;
-		bots[0].connected = false;
+		game.shutdown();
+		console.log('Tests finished...');
 		for(let bi = 0; bi < bots.length; bi++){
 			let bot = bots[bi];			
 			console.log('Bot %s: failed %s out of %s', bot.name, bot.failedTests, bot.tests);

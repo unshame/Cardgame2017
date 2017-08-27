@@ -45,7 +45,6 @@ UI.Logo.prototype.fadeIn = function(){
 		this.fader.stop();
 	}
 	this.visible = true;
-	this.alpha = 0;
 	this.fader = game.add.tween(this);
 	this.fader.to({alpha: 1}, 200);
 	this.fader.onComplete.addOnce(function(){
@@ -59,7 +58,6 @@ UI.Logo.prototype.fadeOut = function(){
 	if(this.fader){
 		this.fader.stop();
 	}
-	this.alpha = 1;
 	this.fader = game.add.tween(this);
 	this.fader.to({alpha: 0}, 200);
 	this.fader.onComplete.addOnce(function(){

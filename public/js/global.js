@@ -49,11 +49,11 @@ function supercall(constructor){
 }
 
 /**
-* Fisher–Yates Shuffle (сортировка массивов).
+* Fisher–Yates Shuffle (перемешивание массивов).
 * @global
-* @param {array} a массив для сортировки
+* @param {array} a массив для перемешивания
 *
-* @return {array} отсортированный массив (тот же, что и на входе)
+* @return {array} перемешанный массив (тот же, что и на входе)
 */
 function shuffleArray(a){
 	var currentIndex = a.length,

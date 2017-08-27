@@ -28,6 +28,8 @@ class Queue{
 			return;
 		}
 
+		this.log.notice('Player connected', player.id);
+
 		this.players.push(player);
 		player.queue = this;
 
@@ -66,10 +68,14 @@ class Queue{
 
 	endGame(voteResults){
 		if(!this.game){
+			console.error('No game to end');
 			return;
 		}
+		this.log.notice('Game ended');
 		let results = {};
-		voteResults.forEach(r => results[r.pid] = r.type);
+		if(voteResults){
+			voteResults.forEach(r => results[r.pid] = r.type);
+		}
 		for(let i = this.players.length - 1; i >= 0; i--){
 			let p = this.players[i];
 
@@ -99,6 +105,9 @@ class Queue{
 			return;
 		}
 		this.log.notice('Shutting down');
+		if(this.game){
+			this.game.shutdown();
+		}
 		if(this.players.length){
 			for(let i = this.players.length - 1; i >= 0; i--){
 				this.removePlayer(this.players[i], false);
@@ -152,7 +161,7 @@ class Queue{
 			this.removePlayer(player, false);
 		} 
 		else{
-			this.log.warn('Player %s isn\'t in a game, cannot concede', player.id);
+			this.log.notice('Player %s isn\'t in a game, cannot concede', player.id);
 		}
 	}
 } 

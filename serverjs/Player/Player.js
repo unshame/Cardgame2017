@@ -111,20 +111,20 @@ class Player{
 	// Синхронно посылает асинхронный ответ серверу
 	sendResponse(action){
 		if(!this.game){
-			this.log.error(new Error('No game has been assigned'), action);
+			this.log.warn('No game has been assigned', action);
 			return;
 		}
-		this.game.recieveResponse(this, action ? action : null);
+		this.game.recieveResponse(this, action || null);
 	}
 
 	// Асинхронно посылает синхронный ответ серверу с коллбэком (для тестов)
 	sendResponseWithCallback(action, callback){
 		if(!this.game){
-			this.log.error(new Error('No game has been assigned'), action);
+			this.log.warn('No game has been assigned', action);
 			return;
 		}
 		setTimeout(() => {
-			this.game.recieveResponseSync(this, action ? action : null);
+			this.game.recieveResponseSync(this, action || null);
 			if(callback){
 				callback();
 			}

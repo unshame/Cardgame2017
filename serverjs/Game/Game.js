@@ -66,6 +66,8 @@ class Game{
 		this.fakeDescisionTimer = this.defaultFakeDescisionTimer = 500;
 
 		this.isTest = config.test;
+
+		this.active = false;
 	}
 
 	// Запущена ли игра
@@ -80,6 +82,7 @@ class Game{
 	
 	// Запуск первой игры
 	init(){
+		this.active = true;
 		this.reset();
 		this.start();
 	}	
@@ -130,12 +133,7 @@ class Game{
 	// Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч
 	end(){
 
-		this.log.info('Game ended', this.id, '\n\n');
-
-		if(!this.isTest && !this.players.getWithOwn('type', 'player').length){
-			this.log.notice('Abandoning game, no human players left');
-			return;
-		}		
+		this.log.info('Game ended', this.id, '\n\n');	
 
 		this.players.gameStateNotify(this.players, {cards: true}, true, 'REVEAL', true);
 
@@ -147,6 +145,15 @@ class Game{
 
 		this.waitForResponse(this.actions.timeouts.gameEnd, this.players);
 		this.players.notify(action);
+	}
+
+	// Преждевременное завершение игры
+	// Не производит правильное отключение игроков, используется только, если все игроки боты
+	shutdown(){
+		this.active = false;
+		this.log.notice('Shutting down');
+		clearTimeout(this.timer);
+		this.players.forEach(p => p.game = null);
 	}
 
 	// Перезапускает игру 
@@ -163,14 +170,18 @@ class Game{
 	}
 
 	// Возвращает игру в лобби
-	backToLobby(voteResults){
+	backToQueue(voteResults){
+		this.active = false;
+
 		// Оповещаем игроков о результате голосования
-		this.players.notify(voteResults);
+		if(voteResults){
+			this.players.notify(voteResults);
+		}
 
 		this.players.forEach(p => p.game = null);
 
 		this.log.info('No rematch');
-		this.queue.endGame(voteResults.results);
+		this.queue.endGame(voteResults ? voteResults.results : null);
 	}
 
 
@@ -182,7 +193,7 @@ class Game{
 				continue;
 			}
 			let val = this.result[key];
-			if(val.slice){
+			if(val && val.slice){
 				results[key] = this.result[key].slice();
 			}
 			else if(typeof val == 'object'){
@@ -382,13 +393,25 @@ class Game{
 
 	// Получает ответ от игрока асинхронно
 	recieveResponse(player, action){
+		if(!this.active){
+			this.log.warn('Game inactive, can\'t recieve response', player.id, action);
+			return;
+		}
 		setTimeout(() => {
+			if(!this.active){
+				this.log.warn('Game inactive, can\'t recieve response', player.id, action);
+				return;
+			}
 			this.actions.recieve(player, action);
 		}, 0);
 	}
 
 	// Получает ответ от игрока синхронно
 	recieveResponseSync(player, action){
+		if(!this.active){
+			this.log.warn('Game inactive, can\'t recieve response', player, action);
+			return;
+		}
 		this.actions.recieve(player, action);
 	}
 

@@ -27,6 +27,9 @@ class Bot extends Player{
 	}
 
 	getDescisionTime(){
+		if(!this.game){
+			return 0;
+		}
 		let fakeTime = 1,
 			minTime = this.game.fakeDescisionTimer || 0;
 		return Math.random()*fakeTime + minTime;
@@ -56,7 +59,7 @@ class Bot extends Player{
 
 	recieveNotification(action){
 		if(action.actions){
-			this.sendDelayedResponse(action.actions[1]);
+			this.sendDelayedResponse((this.game && this.game.isTest) ? action.actions[0] : action.actions[1]);
 		}			
 	}
 

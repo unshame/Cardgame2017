@@ -59,7 +59,7 @@
 *                                                                                    Значения: `'forward', 'backward'`
 * @param {string}           style.addTo='front'                                      В какой конец поля добавляются карты.  
 *                                                                                    Значения: `'front', 'back'`
-* @param {boolean}          style.flipped=false                                      Карты распологаются повернутыми на 180 градусов
+* @param {boolean}          style.flipped=false                                      Карты располагаются повернутыми на 180 градусов
 * @param {(boolean|string)} style.randomAngle=false                                  Нужно ли класть карты в поле под случайным углом.  
 *                                                                                    Значения: `false, 'uni', 'bi'`  
 *                                                                                    `'uni'` - карты поворачиваются по направлению поля   

@@ -136,7 +136,7 @@ var FieldBuilder = function(manager){
 	this._topOpponentFits = true;
 
 	/**
-	* Противники не будут распологаться вверху экрана.
+	* Противники не будут располагаться вверху экрана.
 	* @type {Boolean}
 	*/
 	this._noTopOpponents = false;
@@ -241,13 +241,11 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 	if(this._topOpponentFits){
 		addedCells = 3;
 	}
+	else if(this._noTopOpponents){		
+		addedCells = 6;
+	}
 	else{
-		if(this._noTopOpponents){
-			addedCells = 6;
-		}
-		else{
-			addedCells = 0;
-		}
+		addedCells = 0;
 	}
 
 	this.offsets.DECK = 15;
@@ -279,7 +277,7 @@ FieldBuilder.prototype._calcDeckDiscardSizes = function(){
 * @param {string}  ref           id поля или обобщенное название, по которому будут найдены размеры ('TABLE', 'player', etc.)
 * @param {number}  [index]       индекс позиции, если поле противника
 * @param {boolean} [silent=true] выключает вывод предупреждения в консоль
-* @param {boolean} [noHeight]    уюирает проверку высоты
+* @param {boolean} [noHeight]    убирает проверку высоты
 * @param {boolean} [noWidth]     убирает проверку ширины
 * @return {boolean} Меньше ли ширина\высота.
 */

@@ -21,7 +21,7 @@ class GameStates{
 		}
 		// Иначе, не запускаем игру
 		else{
-			game.backToLobby(voteResults);	
+			game.backToQueue(voteResults);	
 		}
 		return false;
 	}

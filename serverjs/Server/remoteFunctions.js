@@ -71,7 +71,12 @@ module.exports = function(server){
 				}
 				server.log.notice(str);
 				let newPlayer = server.players[newConnId];
-				newPlayer.connected = true;
+
+				// Если новый игрок успел подключиться к чему-то до окончания подключения
+				server.manager.concedePlayer(newPlayer);
+				server.manager.removePlayerFromQueue(newPlayer);
+
+				// Сообщаем игроку, что переподключиться не удалось
 				newPlayer.updateRemote();
 			}
 		},
@@ -96,6 +101,17 @@ module.exports = function(server){
 			if(player){
 				server.manager.addPlayerToQuickQueue(player);
 			}
+		},
+
+		quickQueueUpClientVsBots: function(){
+			let player = server.players[this.connection.id];
+			if(!player){
+				return;
+			}
+			if(player.queue){
+				server.exports.concedeClient.call(this);
+			}
+			server.manager.addPlayerToQuickQueue(player, true);
 		},
 
 		concedeClient: function(){

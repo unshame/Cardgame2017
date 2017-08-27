@@ -197,7 +197,9 @@ UI.prototype._createMenus = function(){
 					text: 'Copy Invite Link'
 				},
 				{
-					action: function(){},
+					action: function(){
+						connection.proxy.quickQueueUpClientVsBots()
+					},
 					name: 'vs_bots',
 					text: 'Play VS Bots'
 				},
