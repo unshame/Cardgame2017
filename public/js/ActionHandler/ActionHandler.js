@@ -61,8 +61,6 @@ ActionHandler.prototype.addChannel = function(name, type, state, reactions, addi
 	this.channels[name] = channel;
 };
 
-// ОБРАБОТКА КОМАНД СЕРВЕРА
-
 /**
 * Выполняет действие.
 * @param {object} action         действие
@@ -86,6 +84,7 @@ ActionHandler.prototype.executeAction = function(action){
 
 	switch(channel.type){
 		case CHANNEL_TYPE.USER_INVOLVED:
+		connection.serverWaiting = false;
 		this.handlePossibleActions(action.actions, action.time, action.timeSent, action.turnStage);
 		return;
 

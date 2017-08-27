@@ -14,7 +14,7 @@ UI.PopupComponent = function(displayObject, placement){
 
 	/**
 	* Элемент, который будет обрабатывать наведение курсора.
-	* @type {[type]}
+	* @type {DisplayObject}
 	*/
 	this.popupArea = displayObject;
 	this.popupArea.inputEnabled = true;

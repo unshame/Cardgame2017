@@ -2,6 +2,7 @@
 * Поле стола с сообщением при наведении.
 * @class
 * @extends {Field.IconField}
+* @extends {UI.PopupComponent}
 * @param {object} options
 * @param {object} style
 * @param {object} popupStyle настройки сообщения при наведении
@@ -15,9 +16,7 @@ Field.PopupField = function(options, style, popupStyle, iconStyle){
 	UI.PopupComponent.call(this, this[this.popupStyle.area], style.popupPlacement);
 };
 
-extend(Field.PopupField, Field.IconField);
-
-mixin(Field.PopupField, [UI.PopupComponent]);
+extend(Field.PopupField, Field.IconField, [UI.PopupComponent]);
 
 Field.PopupField.prototype.getPopupDefaultOptions = function(){
 	return {
@@ -27,7 +26,12 @@ Field.PopupField.prototype.getPopupDefaultOptions = function(){
 	};
 };
 
-Field.PopupField.prototype.getCustomHoverText = function(anyway){
+/**
+* Возвращает количество карт или результат из `popupStyle.getTextFunction`
+* для вывода в тексте при наведении.
+* @return {string}
+*/
+Field.PopupField.prototype.getCustomHoverText = function(){
 	if(typeof this.popupStyle.getTextFunction == 'function'){
 		return this.popupStyle.getTextFunction.call(this);
 	}

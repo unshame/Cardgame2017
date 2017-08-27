@@ -3,25 +3,45 @@
 // Глобальные методы
 
 /**
-* Делает `constructor` подклассом `parent`.
-* @param {function} constructor
-* @param {function} parent
+* Делает `constructor` подклассом `extendee` и
+* копирует свойства прототипов классов из `shallowExtendees` в прототип `contrustor`.
+* @param {function}   constructor
+* @param {function}   extendees
+* @param {function[]} [shallowExtendees]
 * @global
 */
-function extend(constructor, parent){
-	constructor.prototype = Object.create(parent.prototype);
+function extend(constructor, extendee, shallowExtendees){
+	constructor.prototype = Object.create(extendee.prototype);
 	constructor.prototype.constructor = constructor;
+	if(!shallowExtendees){
+		return;
+	}
+	for(var i = 0; i < shallowExtendees.length; i++){
+		var mix = shallowExtendees[i].prototype;
+		for(var key in mix){
+			if(!mix.hasOwnProperty(key)){
+				continue;
+			}
+			if(key == 'constructor'){
+				continue;
+			}
+			if(constructor.prototype[key]){
+				console.warn('Overwriting method', key, 'in', constructor, 'prototype');
+			}
+			constructor.prototype[key] = mix[key];
+		}
+	}
 }
 
 /**
-* Добавляет методы из прототипов `mixins` в прототип `constructor`.
+* Добавляет методы из `mixins` в прототип `constructor`.
 * @param {function}   constructor
 * @param {function[]} mixins
 * @global
 */
 function mixin(constructor, mixins){
 	for(var i = 0; i < mixins.length; i++){
-		var mix = mixins[i].prototype;
+		var mix = mixins[i];
 		for(var key in mix){
 			if(!mix.hasOwnProperty(key)){
 				continue;
