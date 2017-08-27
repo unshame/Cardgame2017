@@ -103,15 +103,15 @@ module.exports = function(server){
 			}
 		},
 
-		quickQueueUpClientVsBots: function(){
+		startQueuedGameVsBots: function(){
 			let player = server.players[this.connection.id];
-			if(!player){
+			if(!player || !player.queue || player.queue.players.length != 1){
 				return;
 			}
-			if(player.queue){
-				server.exports.concedeClient.call(this);
-			}
-			server.manager.addPlayerToQuickQueue(player, true);
+			var numPlayers = player.queue.config.numPlayers;
+			player.queue.config.numBots += numPlayers;
+			player.queue.config.numPlayers = 1;
+			player.queue.startGame();
 		},
 
 		concedeClient: function(){

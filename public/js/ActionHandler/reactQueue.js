@@ -1,10 +1,12 @@
 var reactQueue = {
 
 	QUEUE_ENTERED: function(){
+		ui.menus.queue.disableElement('vs_bots');
 		ui.menus.queue.fadeIn();
 	},
 
 	QUEUE_LEFT: function(){
+		ui.menus.queue.disableElement('vs_bots');
 		ui.feed.newMessage('Left queue', 2000);
 		game.state.change('menu', false);
 	},
@@ -17,6 +19,12 @@ var reactQueue = {
 			' more ' +
 			(playersWaiting == 1 ? 'player' : 'players')
 		);
+		if(action.playersQueued == 1){
+			ui.menus.queue.enableElement('vs_bots');
+		}
+		else{
+			ui.menus.queue.disableElement('vs_bots');
+		}
 	},
 
 	QUEUE_FULL: function(){

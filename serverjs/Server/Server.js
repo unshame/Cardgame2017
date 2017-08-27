@@ -89,10 +89,10 @@ class Server extends Eureca.Server{
 			params.port = 5000;
 		}
 		if(isNaN(params.numBots)){
-			params.numBots = 3;
+			params.numBots = 0;
 		}
 		if(isNaN(params.numPlayers) || !params.numPlayers){
-			params.numPlayers = 1;
+			params.numPlayers = 3;
 		}
 
 		return params;

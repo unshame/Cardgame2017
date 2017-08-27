@@ -13,8 +13,6 @@ class QueueManager{
 		this.log = Log(module, null, quickConfig.debug);
 
 		this.quickQueueConfig = quickConfig;
-		this.quickBotMatchConfig = Object.assign({}, quickConfig);
-		this.quickBotMatchConfig.numPlayers = 1;
 
 		this.games = {};
 		this.queues = {};
@@ -29,7 +27,7 @@ class QueueManager{
 	 * Добавляет игрока в очередь и запускает игру, если очередь заполнена
 	 * @param {Player} player игрок
 	 */
-	addPlayerToQuickQueue(player, isBotMatch){
+	addPlayerToQuickQueue(player){
 
 		if(!this.playerIsFree(player)){
 			return;
@@ -43,12 +41,14 @@ class QueueManager{
 			}
 		}
 		if(!queue){
-			queue = this.addQueue('quick', isBotMatch ? this.quickBotMatchConfig : this.quickQueueConfig);
+			queue = this.addQueue('quick', this.quickQueueConfig);
 		}
 		queue.addPlayer(player);
 	}
 
 	addQueue(type, config){
+		config = Object.assign({}, config);
+		config.gameConfig = Object.assign({}, config.gameConfig);
 		let queue = new Queue(this, type, config);
 		this.queues[queue.id] = queue;
 		if(type == 'quick'){
