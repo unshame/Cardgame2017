@@ -10,7 +10,11 @@ function runTest(numBots, duration, debug){
 		duration = 2000;
 	}
 	let bots = [];
-	let randomNames = ['bot1', 'bot2', 'bot3', 'bot4', 'bot5'];
+	let randomNames = [];
+	let i = numBots;
+	while(i--){
+		randomNames.push('bot' + i);
+	}
 	let tester = {
 		running: true
 	};
