@@ -307,3 +307,5 @@ UI.Button.prototype.removeFromParent = function(destroy){
 		this.parent.remove(this, destroy);
 	}
 };
+
+//@include:ButtonPopup

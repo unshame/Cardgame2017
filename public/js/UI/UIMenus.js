@@ -3,6 +3,7 @@
 */
 UI.prototype._createMenus = function(){
 	var renderer = options.get('system_renderer');
+	var rendererText = (renderer === Phaser.WEBGL ? 'Canvas' : 'WebGL');
 	return {
 
 		// ГЛАВНОЕ МЕНЮ
@@ -77,21 +78,23 @@ UI.prototype._createMenus = function(){
 				ui.modalManager.closeModal();
 			},
 			layout: [
-				{
+				Menu.buttonPopup({
 					action: function(){
-						connection.server.disconnect();
+						connection.server.concede();
 						ui.modalManager.closeModal();
 					}, 
-					name: 'disconnect',
-					text: 'Disconnect',
-					mobileClickProtect: true
-				},
+					name: 'concede',
+					text: 'Concede',
+					mobileClickProtect: true,
+					hoverText: 'Leave current game.\n You will be replaced by a bot (how shameful).'
+				}),
 				{
 					action: function(button, pointer){
 						ui.background.nextTexture();
 					},
 					name: 'background',
-					text: 'Background'
+					text: 'Change Background',
+					fontSize: 20
 				},
 				{
 					action: function(button, pointer){
@@ -109,24 +112,26 @@ UI.prototype._createMenus = function(){
 					name: 'change_skin',
 					text: 'Change skin'
 				},
-				{
+				Menu.buttonPopup({
 					action: function(){
 						options.set('system_renderer', renderer === Phaser.WEBGL ? Phaser.CANVAS : Phaser.WEBGL);
 						options.save();
 						location.href = location.href;
 					}, 
 					name: 'renderer',
-					text: (renderer === Phaser.WEBGL ? 'Canvas' : 'WebGL')
-				},
-				{	
+					text: rendererText,
+					hoverText: 'Change renderer to ' + rendererText + '. WebGL runs much better on mobile devices.'
+				}),
+				Menu.buttonPopup({	
 					action: function(){
 						options.restoreAllDefaults();
 						options.save();
 						location.href = location.href;
 					}, 
 					name: 'restore',
-					text: 'Restore'
-				},
+					text: 'Restore',
+					hoverText: 'Get rid of all saved data (including your session id!).'
+				}),
 				{
 					action: function(){
 						ui.modalManager.openModal('debug');
@@ -190,22 +195,24 @@ UI.prototype._createMenus = function(){
 			header: 'Queue Options',
 			headerColor: 'red',
 			layout: [
-				{
+				Menu.buttonPopup({
 					action: function(){},
 					fontSize: 24,
 					name: 'invite',
-					text: 'Copy Invite Link'
-				},
-				{
+					text: 'Copy Invite Link',
+					hoverText: 'Share this link with anybody to invite them to join you.'
+				}),
+				Menu.buttonPopup({
 					action: function(){
 						connection.proxy.quickQueueUpClientVsBots()
 					},
 					name: 'vs_bots',
-					text: 'Play VS Bots'
-				},
+					text: 'Play VS Bots',
+					hoverText: 'Play versus bots if you can\'t find real people to play against.'
+				}),
 				{
 					action: function(){
-						connection.server.disconnect();
+						connection.server.concede();
 					},
 					name: 'leave_queue',
 					text: 'Leave Queue'

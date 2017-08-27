@@ -12,22 +12,12 @@ Field.PopupField = function(options, style, popupStyle, iconStyle){
 
 	this.popupStyle = mergeOptions(this.getPopupDefaultOptions(), popupStyle);
 
-	this._hoverTextChanged = false;
-
-	var popupArea = this[this.popupStyle.area];
-	popupArea.inputEnabled = true;
-
-	if(Phaser.Device.desktop){
-		popupArea.events.onInputOver.add(this._cursorOver, this);
-	}
-	else{
-		popupArea.events.onInputDown.add(this._cursorOver.bind(this, true));
-		popupArea.events.onInputUp.add(ui.popupManager.hoverOut.bind(ui.popupManager));
-	}
-	popupArea.events.onInputOut.add(ui.popupManager.hoverOut.bind(ui.popupManager));
+	UI.PopupComponent.call(this, this[this.popupStyle.area]);
 };
 
 extend(Field.PopupField, Field.IconField);
+
+mixin(Field.PopupField, [UI.PopupComponent]);
 
 Field.PopupField.prototype.getPopupDefaultOptions = function(){
 	return {
@@ -37,11 +27,7 @@ Field.PopupField.prototype.getPopupDefaultOptions = function(){
 	};
 };
 
-Field.PopupField.prototype.getHoverText = function(anyway){
-	if(!this._hoverTextChanged && !anyway){
-		return false;
-	}
-	this._hoverTextChanged = false;
+Field.PopupField.prototype.getCustomHoverText = function(anyway){
 	if(typeof this.popupStyle.getTextFunction == 'function'){
 		return this.popupStyle.getTextFunction.call(this);
 	}
@@ -58,10 +44,6 @@ Field.PopupField.prototype.placeCards = function(){
 Field.PopupField.prototype.removeCards = function(cardsToRemove){
 	this._hoverTextChanged = true;
 	supercall(Field.PopupField).removeCards.call(this, cardsToRemove);
-};
-
-Field.PopupField.prototype._cursorOver = function(now){
-	ui.popupManager.hoverOver(this, this.getHoverText(true), now);
 };
 
 Field.PopupField.prototype.destroy = function(){

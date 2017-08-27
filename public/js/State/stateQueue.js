@@ -34,7 +34,7 @@ var stateQueue = new State('queue', {
 	* @memberof stateMenu
 	*/
 	create: function(lastState){
-		//ui.menus.options.showElement('disconnect');
+		//ui.menus.options.showElement('concede');
 		if(lastState != 'menu'){
 			cardEmitter.start(10, 50, 10, 2000, 20, 1);
 		}
@@ -47,7 +47,7 @@ var stateQueue = new State('queue', {
 	* @memberof stateMenu
 	*/
 	shutdown: function(nextState){
-		//ui.menus.options.hideElement('disconnect');
+		//ui.menus.options.hideElement('concede');
 		ui.menus.queue.fadeOut();
 		ui.eventFeed.clear();
 		if(nextState != 'menu'){

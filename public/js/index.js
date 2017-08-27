@@ -11,6 +11,7 @@
 //@include:ActionHandler
 //@include:Card
 //@include:ConnectionManager
+//@include:UI
 //@include:Field
 //@include:Game
 //@include:State
@@ -18,7 +19,6 @@
 //@include:PlayerManager
 //@include:Sequencer
 //@include:SkinManager
-//@include:UI
 //@include:MessageFeed
 //@include:Badge
 

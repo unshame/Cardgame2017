@@ -86,7 +86,7 @@ Menu.prototype._addElement = function(element){
 /**
 * Создает и добавляет кнопку {@link UI.Button} в меню.
 */
-Menu.prototype._addButton = function(options){
+Menu.prototype._addButton = function(options, withPopup){
 	options.group = this;
 	if(!options.color && options.color !== 0){
 		options.color = this.options.elementColor;
@@ -100,12 +100,16 @@ Menu.prototype._addButton = function(options){
 	else if(!options.context){
 		options.context = this;
 	}
-	var button = new UI.Button(options);
+	var button = withPopup ? new UI.ButtonPopup(options) : new UI.Button(options);
 	button.disable(true);
 	this.elements.push(button);
 	//this.add(button);
 	return button;
 };
+
+Menu.prototype._addButtonPopup = function(options){
+	return this._addButton(options, true);
+}
 
 Menu.prototype._addSlider = function(){
 

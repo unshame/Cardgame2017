@@ -53,7 +53,7 @@ var serverMethods = {
 		connection.proxy.requestGameInfo();
 	},
 
-	disconnect: function(){
+	concede: function(){
 		connection.proxy.concedeClient();
 	}
 };

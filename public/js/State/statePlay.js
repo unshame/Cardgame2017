@@ -76,7 +76,7 @@ var statePlay = new State('play', {
 	*/
 	create: function(){
 		cardControl.trailApplySkin();
-		ui.menus.options.showElement('disconnect');
+		ui.menus.options.showElement('concede');
 	},
 
 	/**
@@ -94,7 +94,7 @@ var statePlay = new State('play', {
 		playerManager.reset();
 		ui.rope.stop();
 		ui.layers.hideLayer(ui.actionButtons, true);
-		ui.menus.options.hideElement('disconnect');
+		ui.menus.options.hideElement('concede');
 		ui.menus.endGame.fadeOut();
 	}
 });

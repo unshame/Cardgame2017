@@ -136,7 +136,7 @@ UI.prototype.initialize = function(){
 	this.credits = new UI.Credits(creditsText, game.state.change.bind(game.state, 'menu'));
 
 	this.menus = this._createMenus();
-	this.menus.options.hideElement('disconnect');
+	this.menus.options.hideElement('concede');
 	this.modalManager.makeModal([
 		this.menus.options,
 		this.menus.debug
@@ -197,6 +197,7 @@ UI.prototype.setDebugButtonText = function(name, text, on){
 
 //@include:Menu
 
+//@include:PopupManager
 //@include:Layers
 //@include:Background
 //@include:Button
@@ -205,4 +206,3 @@ UI.prototype.setDebugButtonText = function(name, text, on){
 //@include:Cursor
 //@include:ModalManager
 //@include:Credits
-//@include:PopupManager

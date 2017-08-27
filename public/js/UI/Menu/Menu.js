@@ -151,6 +151,7 @@ Menu.prototype.getDefaultOptions = function(){
 Menu.prototype._getTypeMap = function(){
 	return {
 		button: this._addButton.bind(this),
+		buttonPopup: this._addButtonPopup.bind(this),
 		// slider: this._addSlider.bind(this),
 		// add more
 	};
@@ -164,6 +165,13 @@ Menu.prototype._getTypeMap = function(){
 Menu.button = function(options){
 	return {
 		type: 'button',
+		options: options
+	};
+};
+
+Menu.buttonPopup = function(options){
+	return {
+		type: 'buttonPopup',
 		options: options
 	};
 };

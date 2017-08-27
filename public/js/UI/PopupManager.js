@@ -24,6 +24,8 @@ UI.PopupManager = function(){
 	*/
 	this.margin = 10;
 
+	this.offset = 5;
+
 	/**
 	* Показывается ли текст.
 	* @type {Boolean}
@@ -116,14 +118,14 @@ UI.PopupManager.prototype._updateText = function(text){
 
 	this.text.x = this.background.width/2;
 	this.text.y = this.background.height/2 + 3;
-}
+};
 
 /** Обновляет позицию текста в соответствии с позицией курсора. */
 UI.PopupManager.prototype.updatePosition = function(){
 	if(!this.showing){
 		return;
 	}
-	if(!ui.cursor.inGame){
+	if(!ui.cursor.inGame || !this.overElement){
 		this.hoverOut();
 		return;
 	}
@@ -134,19 +136,55 @@ UI.PopupManager.prototype.updatePosition = function(){
 	if(text){
 		this._updateText(text);
 	}
-	var x = Math.max(Math.min(game.input.x - this.background.width/2, game.screenWidth - this.background.width), 0);
-	var y = Math.min(game.input.y - this.background.height - 5, game.screenHeight - this.background.height);
-	if(y < 0){
-		y = Math.max(game.input.y + ui.cursor.height + 5, 0);
+	var position = this._getPopupPosition();
+
+	this.x = position.x;
+	this.y = position.y;
+};
+
+UI.PopupManager.prototype._getPopupPosition = function(){
+	if(!this.overElement){
+		return {};
 	}
-	this.x = x;
-	this.y = y;
+	var popupArea = this.overElement.popupArea;
+	switch(this.overElement.popupPlacement){
+
+		case 'right':
+		x = popupArea.parent.x + popupArea.x + popupArea.width + this.offset;
+		y = popupArea.parent.y + popupArea.y + popupArea.height/2 - this.background.height/2;
+		break;
+
+		case 'left':
+		x = popupArea.parent.x + popupArea.x - this.background.width - this.offset;
+		y = popupArea.parent.y + popupArea.y + popupArea.height/2 - this.background.height/2;
+		break;
+
+		case 'top':
+		x = popupArea.x - this.background.width/2;
+		y = popupArea.y - this.background.height - this.offset;
+		break;
+
+		case 'bottom':
+		x = popupArea.x - this.background.width/2;
+		y = game.input.y + ui.cursor.height + this.offset;
+		break;
+
+		default:
+		x = Math.max(Math.min(game.input.x - this.background.width/2, game.screenWidth - this.background.width), 0);
+		y = Math.min(game.input.y - this.background.height - this.offset, game.screenHeight - this.background.height);
+		if(y < 0){
+			y = Math.max(game.input.y + ui.cursor.height + this.offset, 0);
+		}
+
+		break;
+	}
+	return {x: x, y: y};
 };
 
 /** Вызывается игрой, обновляет позицию. */
 UI.PopupManager.prototype.update = function(){
 	this.updatePosition();
-}
+};
 
 /** Отменяет запланированный показ текста. */
 UI.PopupManager.prototype._resetDelay = function(){
@@ -155,3 +193,5 @@ UI.PopupManager.prototype._resetDelay = function(){
 		this.delay = null;
 	}
 };
+
+//@include:PopupComponent
