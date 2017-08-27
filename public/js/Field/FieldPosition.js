@@ -89,7 +89,7 @@ Field.prototype.setSize = function(width, height, shouldPlace){
 * @param {number} height высота поля
 */
 Field.prototype._createArea = function(width, height){
-	drawRoundedRectangle(
+	Menu.drawRoundedRectangle(
 		this._bitmapArea, 
 		width, 
 		height, 

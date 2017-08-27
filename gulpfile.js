@@ -102,11 +102,11 @@ function includeReferenced(dir, fileName, tags, base, addSelf){
 		});
 	}
 	else{
-		console.log('File %s not found\n', fileName);
+		console.log('File %s not found\n', fileName, filePath, fileAltPath);
 		content = '';
 	}
 
-	console.log(path.join(dir, fileName + '.js'));
+	//console.log(path.join(dir, fileName + '.js'));
 
 	return tags || content;
 }
@@ -246,5 +246,4 @@ gulp.task('addtags', (callback) => {
 		fs.writeFile(indexHtmlPath, indexContent, callback);
 	});
 
-	console.log(tags);
 });
