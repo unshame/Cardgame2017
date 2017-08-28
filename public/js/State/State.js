@@ -11,7 +11,7 @@
 * Существующие состояния и что они делают расписаны в разделе Namespaces (state*Key*).  
 * @class
 * @param {string} key    название состояния
-* @param {object} events методы состояния
+* @param {object} events методы и свойства состояния
 * @extends {Phaser.State}
 * @see  {@link http://phaser.io/docs/2.6.2/Phaser.State.html}
 */
@@ -29,13 +29,11 @@ var State = function(key, events){
 			continue;
 		}
 		var event = events[e]; 
-		if(typeof event == 'function'){
-			if(typeof this['_' + e] == 'function'){
-				this['_' + e] = event;
-			}
-			else{
-				this[e] = event;
-			}
+		if(typeof this['_' + e] == 'function'){
+			this['_' + e] = event;
+		}
+		else{
+			this[e] = event;
 		}
 	}
 };

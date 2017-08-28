@@ -26,6 +26,18 @@ var stateBoot = new State('boot', {
 		loading.style.backgroundImage = 'url("assets/loading.gif")';
 	},
 
+	/**
+	* Загружает спрайты по шаблону `'key1_color_key2', 'path1_color_path2', [width], [height], [frames]`,
+	* где `color` это цвета из {@link stateBoot.colors}.
+	* @memberof stateBoot
+	* @param  {string} key1
+	* @param  {string} key2  
+	* @param  {string} path1 
+	* @param  {string} path2 
+	* @param  {number} [width] 
+	* @param  {number} [height]
+	* @param  {number} [frames]
+	*/
 	loadAllColors(key1, key2, path1, path2, width, height, frames){
 		this.colors.forEach(function(color){
 			if(width || width === 0){
@@ -39,15 +51,19 @@ var stateBoot = new State('boot', {
 	},
 
 	/**
+	* Цвета элементов интерфейса.
+	* @type {Array}
+	* @memberof stateBoot
+	*/
+	colors: ['grey', 'orange', 'red', 'blue', 'yellow', 'green'],
+
+	/**
 	* Загружает ассеты.
 	* @memberof stateBoot
 	*/
 	preload: function(){
 
 		console.log('Preloading');
-
-		// Цвета элементов интерфейса
-		this.colors = ['grey', 'orange', 'red', 'blue', 'yellow', 'green'];
 
 		// Лого
 		game.load.image('logo', 'assets/logo.png');
