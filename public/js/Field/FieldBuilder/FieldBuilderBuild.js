@@ -161,14 +161,16 @@ FieldBuilder.prototype._buildDeckField = function(){
 		axis: 'vertical',
 		direction: 'backward',
 		addTo: 'back',
-		adjust: false
+		adjust: false,
+		alwaysVisible: true,
+		alpha: 0
 	},
 	{
 		area: iconStyle ? 'icon' : 'area',
 		getTextFunction: function(){
 			return (
 				'Cards in deck: ' + this.cards.length + '\n' +
-			    'Trump suit: ' + getSuitStrings('EN')[this.icon.frame]
+			    'Trump suit: ' + getSuitStrings('EN')[this.icon ? this.icon.frame : -1]
 			);
 		}
 	},
