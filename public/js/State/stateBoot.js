@@ -70,12 +70,9 @@ var stateBoot = new State('boot', {
 		this.loadAllColors('panel', 'corners', 'assets/panels/', 'corners.png');
 
 		// Кнопки
-		game.load.spritesheet('button_red_wide', 'assets/buttons/red_wide.png', 190, 50, 4);
-		game.load.spritesheet('button_grey_wide', 'assets/buttons/grey_wide.png', 190, 50, 4);
-		game.load.spritesheet('button_grey_small', 'assets/buttons/grey_small.png', 49, 49, 4);
-		game.load.spritesheet('button_orange_wide', 'assets/buttons/orange_wide.png', 190, 50, 4);
-		game.load.spritesheet('button_orange_big', 'assets/buttons/orange_big.png', 190, 80, 4);
-		game.load.spritesheet('button_orange_small', 'assets/buttons/orange_small.png', 49, 49, 4);
+		this.loadAllColors('button', 'wide', 'assets/buttons/', 'wide.png', 190, 50, 4);
+		this.loadAllColors('button', 'small', 'assets/buttons/', 'small.png', 49, 49, 4);
+		this.loadAllColors('button', 'big', 'assets/buttons/', 'big.png', 190, 80, 4);
 
 		this.loadAllColors('button', 'circle', 'assets/buttons/', 'circle.png');
 		this.loadAllColors('button', 'radial', 'assets/buttons/', 'radial.png', 40, 38, 2);
