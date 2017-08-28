@@ -1,4 +1,4 @@
-'use strict';
+ 'use strict';
 
 /**
  * @module
@@ -108,10 +108,7 @@ module.exports = function(server){
 			if(!player || !player.queue || player.queue.game || player.queue.players.length != 1){
 				return;
 			}
-			var numPlayers = player.queue.config.numPlayers;
-			player.queue.config.numBots += numPlayers;
-			player.queue.config.numPlayers = 1;
-			player.queue.startGame();
+			player.queue.startGameWithBots();
 		},
 
 		concedeClient: function(){

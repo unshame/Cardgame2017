@@ -70,6 +70,13 @@ class Queue{
 		this.game.init();
 	}
 
+	startGameWithBots(){
+		var numPlayers = this.config.numPlayers;
+		this.config.numBots += numPlayers - this.players.length;
+		this.config.numPlayers = this.players.length;
+		this.startGame();
+	}
+
 	endGame(voteResults){
 		if(!this.game){
 			console.error(new Error('No game to end'));
