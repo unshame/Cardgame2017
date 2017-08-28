@@ -61,6 +61,7 @@ var reactSecondary = {
 		var discard = fieldManager.fields.DISCARD_PILE,
 			dummy = fieldManager.fields.dummy, 
 			won = action.results && action.results.winners && ~action.results.winners.indexOf(game.pid),
+			lost = action.results && action.results.loser && action.results.loser == game.pid,
 			delay = 0;
 			
 		if(!discard || !dummy){
@@ -78,7 +79,12 @@ var reactSecondary = {
 				seq.abort();
 				seq.append(delay - cardManager.defaultMoveTime)
 					.then(function(seq, sync){
-						ui.announcer.newMessage('Better luck next time');
+						if(lost){
+							ui.announcer.newMessage('You lost');
+						}
+						else{
+							ui.announcer.newMessage('Better luck next time');
+						}
 						fieldManager.resetFields();
 						cardManager.enablePhysics(true);
 						//game.camera.shake(0.005, 1000);

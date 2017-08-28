@@ -139,7 +139,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 			scale: skinManager.skin.scale,
 			offset: {
 				x: 0,
-				y: skinManager.skin.trumpOffset + skinManager.skin.height/2 - 20 - skinManager.skin.width / 2
+				y: skinManager.skin.trumpOffset + cardManager.numOfCards/4
 			},
 			visible: false
 		};
