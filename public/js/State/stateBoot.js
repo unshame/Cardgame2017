@@ -26,6 +26,18 @@ var stateBoot = new State('boot', {
 		loading.style.backgroundImage = 'url("assets/loading.gif")';
 	},
 
+	loadAllColors(key1, key2, path1, path2, width, height, frames){
+		this.colors.forEach(function(color){
+			if(width || width === 0){
+				game.load.spritesheet(key1 + '_' + color + '_' + key2, path1 + color + '_' + path2, width, height, frames);
+			}
+			else{				
+				game.load.image(key1 + '_' + color + '_' + key2, path1 + color + '_' + path2);
+			}
+
+		});
+	},
+
 	/**
 	* Загружает ассеты.
 	* @memberof stateBoot
@@ -34,9 +46,13 @@ var stateBoot = new State('boot', {
 
 		console.log('Preloading');
 
+		// Цвета элементов интерфейса
+		this.colors = ['grey', 'orange', 'red', 'blue', 'yellow', 'green'];
+
+		// Лого
 		game.load.image('logo', 'assets/logo.png');
 
-		// Фон
+		// Фоны
 		game.load.image('vignette', 'assets/vignette.png');
 
 		game.load.image('wood_light', 'assets/backgrounds/wood_light.png');
@@ -47,20 +63,11 @@ var stateBoot = new State('boot', {
 		game.load.image('brown', 'assets/backgrounds/brown.png');
 		game.load.image('blue', 'assets/backgrounds/blue.png');
 
-		// Для меню
-		game.load.image('panel_grey_corners','assets/panels/grey_corners.png');
-		game.load.image('panel_orange_corners','assets/panels/orange_corners.png');
-		game.load.image('panel_blue_corners','assets/panels/blue_corners.png');
-		game.load.image('panel_yellow_corners','assets/panels/yellow_corners.png');
-		game.load.image('panel_green_corners','assets/panels/green_corners.png');
-		game.load.image('panel_red_corners','assets/panels/red_corners.png');
-
 		// Для тестов
 		game.load.image('testParticle', 'assets/test_particle.png');
 
-		game.load.image('lock', 'assets/lock.png');
-		game.load.image('unlock', 'assets/unlock.png');
-		game.load.image('skull', 'assets/skull.png');
+		// Углы меню
+		this.loadAllColors('panel', 'corners', 'assets/panels/', 'corners.png');
 
 		// Кнопки
 		game.load.spritesheet('button_red_wide', 'assets/buttons/red_wide.png', 190, 50, 4);
@@ -70,15 +77,30 @@ var stateBoot = new State('boot', {
 		game.load.spritesheet('button_orange_big', 'assets/buttons/orange_big.png', 190, 80, 4);
 		game.load.spritesheet('button_orange_small', 'assets/buttons/orange_small.png', 49, 49, 4);
 
-		game.load.image('button_grey_circle', 'assets/buttons/grey_circle.png');
+		this.loadAllColors('button', 'circle', 'assets/buttons/', 'circle.png');
+		this.loadAllColors('button', 'radial', 'assets/buttons/', 'radial.png', 40, 38, 2);
+		this.loadAllColors('button', 'checkbox', 'assets/buttons/', 'checkbox.png', 40, 38, 2);
+		this.loadAllColors('button', 'arrow', 'assets/buttons/', 'arrow.png', 40, 38, 2);
 
-		game.load.image('icon_grey_cross', 'assets/buttons/grey_cross.png');
+		// Иконки кнопок
+		this.colors.push('white');
+		this.loadAllColors('icon', 'cross', 'assets/icons/', 'cross.png');
+		this.loadAllColors('icon', 'checkmark', 'assets/icons/', 'checkmark.png');
 
-		game.load.spritesheet('icon_fullscreen', 'assets/buttons/icon_fullscreen.png', 30, 30, 2);
-		game.load.image('icon_menu', 'assets/buttons/icon_menu.png');
+		game.load.spritesheet('icon_fullscreen', 'assets/icons/fullscreen.png', 30, 30, 2);
+		game.load.image('icon_menu', 'assets/icons/menu.png');
 
-		game.load.spritesheet('cursor_yellow', 'assets/cursors/yellow.png', 128, 128, 3);
+		// Курсоры
 		game.load.spritesheet('cursor_orange', 'assets/cursors/orange.png', 128, 128, 3);
+
+		// Фоны полей
+		game.load.image('lock', 'assets/icons/lock.png');
+		game.load.image('unlock', 'assets/icons/unlock.png');
+		game.load.image('skull', 'assets/icons/skull.png');
+
+		// Поля ввода
+		game.load.image('field_wide', 'assets/fields/wide.png');
+		
 
 		/**
 		* Google WebFont Loader  
