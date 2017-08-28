@@ -15,7 +15,7 @@ UI.Background = function(){
 		'wood_light',
 		'wood_dark'
 	];
-	var textureName = options.get('ui_background');
+	var textureName = gameOptions.get('ui_background');
 	if(!~this.textures.indexOf(textureName)){
 		textureName = skinManager.skin.background;
 	}
@@ -48,8 +48,8 @@ UI.Background.prototype.setTexture = function(textureName){
 	this.addChildAt(fakebg, 1);
 	this.surface.loadTexture(textureName);
 	this.surface.textureName = textureName;
-	options.set('ui_background', textureName);
-	options.save();
+	gameOptions.set('ui_background', textureName);
+	gameOptions.save();
 	var transition = game.add.tween(fakebg.position);
 
 	var position = [

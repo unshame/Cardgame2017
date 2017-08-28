@@ -43,6 +43,7 @@ OptionManager.prototype = {
 			'debug_connection': false,
 
 			'system_renderer': Phaser.Device.desktop ? Phaser.CANVAS : Phaser.WEBGL,
+			'system_scale': 1,
 
 			'ui_skin': 'modern',
 			'ui_background': 'blue',

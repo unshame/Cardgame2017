@@ -11,8 +11,8 @@ CardManager.prototype.updateDebug = function(){
 
 CardManager.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
-	options.set('debug_cards', this.inDebugMode);
-	options.save();
+	gameOptions.set('debug_cards', this.inDebugMode);
+	gameOptions.save();
 	for(var ci in this.cards){
 		if(this.cards.hasOwnProperty(ci)){
 			this.cards[ci].inDebugMode = this.inDebugMode;

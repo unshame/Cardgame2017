@@ -23,7 +23,7 @@
 //@include:Badge
 
 // Глобальные модули
-var options,
+var gameOptions,
 	actionHandler,
 	playerManager,
 	ui,
@@ -49,7 +49,7 @@ Phaser.Device.whenReady(function(){
 	* @global
 	* @type {OptionManager}
 	*/
-	options = new OptionManager(appName, containerName);
+	gameOptions = new OptionManager(appName, containerName);
 
 	/**
 	* Менеджер игроков.
@@ -70,14 +70,14 @@ Phaser.Device.whenReady(function(){
 	* @type {SkinManager}
 	* @global
 	*/
-	skinManager = new SkinManager(options.get('ui_skin'));
+	skinManager = new SkinManager(gameOptions.get('ui_skin'));
 
 	/**
 	* Контроллер карт
 	* @type {CardControl}
 	* @global
 	*/
-	cardControl = new CardControl(options.get('debug_control'));
+	cardControl = new CardControl(gameOptions.get('debug_control'));
 
 
 	/**
@@ -85,7 +85,7 @@ Phaser.Device.whenReady(function(){
 	* @type {ConnectionManager}
 	* @global
 	*/
-	connection = new ConnectionManager(serverMethods, clientMethods, 'menu', options.get('debug_connection'));
+	connection = new ConnectionManager(serverMethods, clientMethods, 'menu', gameOptions.get('debug_connection'));
 	
 	/**
 	* Обработчик действий сервера.
@@ -104,7 +104,7 @@ Phaser.Device.whenReady(function(){
 	* @type {Game}
 	* @global
 	*/
-	game = new Game(containerName, 1, options.get('debug_game'));
+	game = new Game(containerName, 1, gameOptions.get('debug_game'));
 	
 	// Phaser плагины
 	game.add.plugin(PhaserInput.Plugin);

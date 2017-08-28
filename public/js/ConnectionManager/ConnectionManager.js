@@ -73,7 +73,7 @@ ConnectionManager.prototype.handleError = function(){
 
 ConnectionManager.prototype.toggleDebugMode = function(){
 	connection.inDebugMode = !connection.inDebugMode;
-	options.set('debug_connection', this.inDebugMode);
+	gameOptions.set('debug_connection', this.inDebugMode);
 	ui.setDebugButtonText('connection', 'Connection', this.inDebugMode);
 };
 

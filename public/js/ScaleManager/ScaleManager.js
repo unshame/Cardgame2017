@@ -89,6 +89,8 @@ var ScaleManager = function(options){
 	*/
 	this._thickness = this.options.thickness;
 
+	this.scaleMultiplier = gameOptions.get('system_scale');
+
 	/**
 	* Нужно ли выводить дебаг информацию.
 	* @type {boolean}
@@ -177,8 +179,8 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 		container = document.getElementById(game.parent).getBoundingClientRect();
 	}
 
-	var width = container.width/window.devicePixelRatio,
-		height = container.height/window.devicePixelRatio,
+	var width = container.width/window.devicePixelRatio*this.scaleMultiplier,
+		height = container.height/window.devicePixelRatio*this.scaleMultiplier,
 		widthRel = width/height,
 		minWidth, minHeight;
 
@@ -322,8 +324,8 @@ ScaleManager.prototype.cellAt = function(col, row, offsetX, offsetY){
 */
 ScaleManager.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
-	options.set('debug_grid', this.inDebugMode);
-	options.save();
+	gameOptions.set('debug_grid', this.inDebugMode);
+	gameOptions.save();
 	this.drawDebugGrid();
 	ui.setDebugButtonText('grid', 'Grid', this.inDebugMode);
 };

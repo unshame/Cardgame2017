@@ -2,7 +2,7 @@
 * Создает меню.
 */
 UI.prototype._createMenus = function(){
-	var renderer = options.get('system_renderer');
+	var renderer = gameOptions.get('system_renderer');
 	var rendererText = (renderer === Phaser.WEBGL ? 'Canvas' : 'WebGL');
 	return {
 
@@ -114,8 +114,8 @@ UI.prototype._createMenus = function(){
 				},
 				Menu.buttonPopup({
 					action: function(){
-						options.set('system_renderer', renderer === Phaser.WEBGL ? Phaser.CANVAS : Phaser.WEBGL);
-						options.save();
+						gameOptions.set('system_renderer', renderer === Phaser.WEBGL ? Phaser.CANVAS : Phaser.WEBGL);
+						gameOptions.save();
 						location.href = location.href;
 					}, 
 					name: 'renderer',
@@ -124,8 +124,8 @@ UI.prototype._createMenus = function(){
 				}),
 				Menu.buttonPopup({	
 					action: function(){
-						options.restoreAllDefaults();
-						options.save();
+						gameOptions.restoreAllDefaults();
+						gameOptions.save();
 						location.href = location.href;
 					}, 
 					name: 'restore',

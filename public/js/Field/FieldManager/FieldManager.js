@@ -172,8 +172,8 @@ FieldManager.prototype.updateDebug = function(){
 /** Переключает режим дебага в каждом поле */
 FieldManager.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
-	options.set('debug_fields', this.inDebugMode);
-	options.save();
+	gameOptions.set('debug_fields', this.inDebugMode);
+	gameOptions.save();
 	this.forEachField(function(field, si){
 		if(field.inDebugMode != this.inDebugMode){
 			field.toggleDebugMode();

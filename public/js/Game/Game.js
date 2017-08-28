@@ -51,7 +51,7 @@ var Game = function(parent, speed, inDebugMode){
 		{
 			width: this.screenWidth,
  			height: this.screenHeight, 
-			renderer: options.get('system_renderer'), 
+			renderer: gameOptions.get('system_renderer'), 
 			parent: parent,
 			transparent: true
 		}
@@ -88,14 +88,14 @@ Game.prototype.initialize = function(){
 	* @type {FieldManager}
 	* @global
 	*/
-	fieldManager = new FieldManager(options.get('debug_fields'));
+	fieldManager = new FieldManager(gameOptions.get('debug_fields'));
 
 	/**
 	* Менеджер карт
 	* @type {CardManager}
 	* @global
 	*/
-	cardManager = new CardManager(options.get('debug_connection'));
+	cardManager = new CardManager(gameOptions.get('debug_connection'));
 
 	/**
 	* Эмиттер карт
@@ -245,8 +245,8 @@ Game.prototype.toggleAllDebugModes = function(){
 Game.prototype.toggleDebugMode = function(){
 	this.inDebugMode = !this.inDebugMode;
 	this.time.advancedTiming = this.inDebugMode;
-	options.set('debug_game', this.inDebugMode);
-	options.save();
+	gameOptions.set('debug_game', this.inDebugMode);
+	gameOptions.save();
 	ui.setDebugButtonText('game', 'Game', this.inDebugMode);
 };
 

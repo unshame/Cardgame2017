@@ -164,7 +164,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 		adjust: false
 	},
 	{
-		area: 'icon',
+		area: iconStyle ? 'icon' : 'area',
 		getTextFunction: function(){
 			return (
 				'Cards in deck: ' + this.cards.length + '\n' +
