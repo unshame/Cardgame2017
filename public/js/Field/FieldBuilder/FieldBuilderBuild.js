@@ -180,7 +180,16 @@ FieldBuilder.prototype._buildDeckField = function(){
 // Discard pile
 FieldBuilder.prototype._buildDiscardField = function(){
 	var manager = this.manager;
-	manager.addField(Field.PopupField, {
+	var iconStyle = {
+		texture: 'skull',
+		shouldHide: false,
+		visible: true,
+		offset: {
+			x:0,
+			y: game.scale.cellHeight/2
+		}
+	};
+	manager.addField(Phaser.Device.desktop ? Field.PopupField : Field.IconField, {
 		type: 'DISCARD_PILE',
 		id: 'DISCARD_PILE',
 		debug: manager.inDebugMode
@@ -201,16 +210,8 @@ FieldBuilder.prototype._buildDiscardField = function(){
 		animateAppearance: 'top',
 		alpha: 0.15
 	},
-	{
+	Phaser.Device.desktop ? {
 		numCardsText: 'Cards discarded'
-	},
-	{
-		texture: 'skull',
-		shouldHide: false,
-		visible: true,
-		offset: {
-			x:0,
-			y: game.scale.cellHeight/2
-		}
-	});
+	} : iconStyle,
+	iconStyle);
 };

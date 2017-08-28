@@ -19,7 +19,7 @@ Menu.button = function(options){
 */
 Menu.buttonPopup = function(options){
 	return {
-		type: 'buttonPopup',
+		type: Phaser.Device.desktop ? 'buttonPopup' : 'button',
 		options: options
 	};
 };
