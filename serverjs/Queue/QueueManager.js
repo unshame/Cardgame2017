@@ -172,9 +172,9 @@ class QueueManager{
 	}
 
 	/**
-	 * Создает очередь со стандартными настройками и добавляет в нее игрока.
-	 * @param {Player} player игрок
-	 */
+	* Создает очередь со стандартными настройками и добавляет в нее игрока.
+	* @param {Player} player игрок
+	*/
 	addPlayerToQuickQueue(player){
 		let playerIsBusy = this.playerIsBusy(player);
 

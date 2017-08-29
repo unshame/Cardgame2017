@@ -1,15 +1,15 @@
 /**
- * @module
- */
+* @module
+*/
 
 'use strict';
 
 const crypto = require('crypto');
 
 /**
- * Создает случайный семизначный id.
- * @return {string} Случайный id.
- */
+* Создает случайный семизначный id.
+* @return {string} Случайный id.
+*/
 module.exports = function(){
 	let chars = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 	let howMany = 7;

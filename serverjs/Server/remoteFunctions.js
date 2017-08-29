@@ -1,21 +1,21 @@
  'use strict';
 
 /**
- * @module
- */
+* @module
+*/
 
 /**
- * Создает функции для вызова клиентами.
- * @param  {Server} server сервер, которые вызвается клиентами
- * @return {object<function>}        Копии функций, описанных ниже.
- */
+* Создает функции для вызова клиентами.
+* @param  {Server} server сервер, которые вызвается клиентами
+* @return {object<function>}        Копии функций, описанных ниже.
+*/
 module.exports = function(server){
 	return {
 
 		/**
-		 * Принимает выполненое действие от клиента
-		 * @param  {object} action действие
-		 */
+		* Принимает выполненое действие от клиента
+		* @param  {object} action действие
+		*/
 		recieveCompleteAction: function(action){
 			if(!action){
 				return;
@@ -27,8 +27,8 @@ module.exports = function(server){
 		},
 
 		/**
-		 * Принимает пустой ответ от клиента
-		 */
+		* Принимает пустой ответ от клиента
+		*/
 		recieveResponse: function(){
 			let player = server.players[this.connection.id];
 			if(player){
@@ -37,9 +37,9 @@ module.exports = function(server){
 		},
 
 		/**
-		 * Переподключает клиента к существующему экземпляру игрока
-		 * @param  {string} connId старый id клиента
-		 */
+		* Переподключает клиента к существующему экземпляру игрока
+		* @param  {string} connId старый id клиента
+		*/
 		reconnectClient: function(connId){
 			let newConnId = this.connection.id;
 			let player = server.players[connId];
@@ -81,10 +81,10 @@ module.exports = function(server){
 		},
 
 		/**
-		 * Финализация переподключения игрока.
-		 * Запрашивает полную информацию об игре от игры и разрешает экземпляру
-		 * игрока передавать информацию от игры клиенту.
-		 */
+		* Финализация переподключения игрока.
+		* Запрашивает полную информацию об игре от игры и разрешает экземпляру
+		* игрока передавать информацию от игры клиенту.
+		*/
 		requestGameInfo: function(){
 			let player = server.players[this.connection.id];
 			if(player){
@@ -133,8 +133,8 @@ module.exports = function(server){
 		},
 
 		/**
-		 * Добавляет игрока в очередь
-		 */
+		* Добавляет игрока в очередь
+		*/
 		quickQueueUpClient: function(){
 			let player = server.players[this.connection.id];
 			if(player){

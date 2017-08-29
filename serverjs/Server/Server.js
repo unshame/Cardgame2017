@@ -22,9 +22,9 @@ class Server extends Eureca.Server{
 
 	/**
  	 * Сервер на основе eureca.io
-	 * @param  {object} config    конфигурация Eureca.io сервера
-	 * @param  {array} paramLine  параметры командной строки
-	 */
+	* @param  {object} config    конфигурация Eureca.io сервера
+	* @param  {array} paramLine  параметры командной строки
+	*/
 	constructor(config, paramLine){
 		super(config);
 
@@ -109,10 +109,10 @@ class Server extends Eureca.Server{
 	}
 
 	/**
-	 * Обрабатывает параметры при помощи minimist.
-	 * @param  {array} paramLine параметры командной строки
-	 * @return {object}          Обработанные параметры.
-	 */
+	* Обрабатывает параметры при помощи minimist.
+	* @param  {array} paramLine параметры командной строки
+	* @return {object}          Обработанные параметры.
+	*/
 	parseParams(paramLine){
 		let argv = minimist(paramLine);
 		let params = {
@@ -142,9 +142,9 @@ class Server extends Eureca.Server{
 	}
 
 	/**
-	 * Создает winston логгер.
-	 * @return {winston.Logger} Логгер.
-	 */
+	* Создает winston логгер.
+	* @return {winston.Logger} Логгер.
+	*/
 	createLogger(){
 		let log = Log(module, null, this.params.debug);
 
@@ -161,9 +161,9 @@ class Server extends Eureca.Server{
 	}
 
 	/**
-	 * Обработка подключения нового клиента.
-	 * @param  {object} conn информация о соединении
-	 */
+	* Обработка подключения нового клиента.
+	* @param  {object} conn информация о соединении
+	*/
 	handleConnect(conn){
 		if(this.params.testing){
 			return;
@@ -185,9 +185,9 @@ class Server extends Eureca.Server{
 	}
 
 	/**
-	 * Обработка отключения клиента.
-	 * @param  {object} conn информация о соединении
-	 */
+	* Обработка отключения клиента.
+	* @param  {object} conn информация о соединении
+	*/
 	handleDisconnect(conn){
 		if(this.params.testing){
 			return;
@@ -214,9 +214,9 @@ class Server extends Eureca.Server{
 	}
 
 	/** 
-	 * Выполняется при любом ответе от клиента.
-	 * @param  {object} conn информация о соединении
-	 */
+	* Выполняется при любом ответе от клиента.
+	* @param  {object} conn информация о соединении
+	*/
 	handleMessage(conn){
 
 	}
@@ -234,7 +234,7 @@ class Server extends Eureca.Server{
 }
 
 /**
- * {@link Server}
- * @module 
- */
+* {@link Server}
+* @module 
+*/
 module.exports = Server;
