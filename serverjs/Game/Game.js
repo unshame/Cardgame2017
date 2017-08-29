@@ -409,7 +409,7 @@ class Game{
 	// Получает ответ от игрока синхронно
 	recieveResponseSync(player, action){
 		if(!this.active){
-			this.log.warn('Game inactive, can\'t recieve response', player, action);
+			this.log.warn('Game inactive, can\'t recieve response', player.id, action);
 			return;
 		}
 		this.actions.recieve(player, action);

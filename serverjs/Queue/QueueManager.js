@@ -207,7 +207,6 @@ class QueueManager{
 		}
 		if(player.queue){
 			this.log.notice('Player %s already in queue', player.id, player.queue.id);
-			this.reconnectPlayer(player);
 			return false;
 		}
 		return true;
