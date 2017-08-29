@@ -6,13 +6,15 @@
 
 const
 	generateId = require('../generateId'),
+	Log = require('../logger'),
 	Player = require('./Player');
 
 
 class Bot extends Player{
 	constructor(randomNames){
-		super();
+		super(null, null, null, false);
 		this.id = 'bot_' + generateId();
+		this.log = Log(module, this.id);
 		this.type = 'bot';
 		this.connected = true;
 

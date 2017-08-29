@@ -1,13 +1,3 @@
-/*
- * Конструктор игры
- * Раздает карты и управляет правилами игры
- *
- * Отправляет информацию игрокам через экземпляры игроков (Player) и группу игроков (GamePlayers)
- * После каждого отправления ожидает ответа от игроков (waitForResponse)
- * После ответа игроков (recieveResponse) или по истечении времени (setResponseTimer)
- * автоматически продолжает игру (continue)
- */
-
 'use strict';
 
 const 
@@ -15,16 +5,44 @@ const
 	Log = reqfromroot('logger');
 
 class Game{
+	/**
+	* Базовый класс игры.  
+	* Предоставляет игровой цикл.
+	* Предоставляет методы для ожидания и получения действий от игроков.
+	* Создает игровые компоненты и управляет ими.
+	* @param  {Queue} queue   очередь, к которой принадлежит игра 
+	* @param  {Player[]} players массив игроков.
+	* @param  {object<class>} Classes классы, из которых создаются игровые компоненты
+	* @param  {object} config  настройки игры
+	*/
 	constructor(queue, players, Classes, config){
 
 		// Генерируем айди игры
 		let id = generateId();
+
+		/**
+		* id игры
+		* @type {String}
+		*/
 		this.id = 'game_' + id;
 
+		/**
+		* Логгер игры.
+		* @type {winston.Logger}
+		*/
 		this.log = Log(module, id, config.debug);
 
+		/**
+		* Очередь, создавшая игру.
+		* @type {Queue}
+		*/
 		this.queue = queue;
 
+		/**
+		* Класс ботов для добавления, если не хватает игроков,
+		* и для замены вышедших игроков.
+		* @type {Player}
+		*/
 		this.BotClass = Classes.bot;
 
 		// Добавляем бота, если игрок один
@@ -33,46 +51,133 @@ class Game{
 			this.log.warn('Only %s players at the start of the game, adding a bot', players.length);
 		}
 
+		/**
+		* Игровые состояния.
+		* @type {GameStates}
+		*/
 		this.states = new Classes.states(this);
+
+		/**
+		* Стадии ходов игры.
+		* @type {GameTurnStages}
+		*/
 		this.turnStages = new Classes.turnStages(this);
+
+		/**
+		* Обработчик ответа от игроков.
+		* @type {GameActions}
+		*/
 		this.actions = new Classes.actions(this);
+
+		/**
+		* Методы, выполняемые в ответ на действия от игроков.
+		* @type {GameReactions}
+		*/
 		this.reactions = new Classes.reactions();
+
+		/**
+		* Методы, позволяющие игрокам выполнять действия.
+		* @type {GameDirectives}
+		*/
 		this.directives = new Classes.directives();
 
-		// Сохраняем ссылки на игроков локально
+		/**
+		* Менеджер игроков и ботов, учавствующих в игре.
+		* @type {GamePlayers}
+		*/
 		this.players = new Classes.players(this, players.slice());
 
-		// Карты
+		/**
+		* Менеджер игровых карт.
+		* @type {GameCards}
+		*/
 		this.cards = new Classes.cards(this);
 
 		// Добавляем указатели на поля карт
+		/**
+		* Колода карт из {@Game#cards}.
+		* @type {array}
+		*/
 		this.deck = this.cards.deck;
+		/**
+		* Стопка сброса из {@Game#cards}.
+		* @type {array}
+		*/
 		this.discardPile = this.cards.discardPile;
+		/**
+		* Стол из {@Game#cards}.
+		* @type {array}
+		*/
 		this.table = this.cards.table;
+		/**
+		* Руки игроков из {@Game#cards}.
+		* @type {array}
+		*/
 		this.hands = this.cards.hands;
 
-		// Номер игры
+		/**
+		* Индекс игры.
+		* @type {Number}
+		*/
 		this.index = -1;
+		/**
+		* Индекс хода.
+		* @type {Number}
+		*/
 		this.turnNumber = 0;
 
+		/**
+		* Таймер ожидания ответа от игроков.
+		* @type {Timer}
+		*/
 		this.timer = null;
 
+		/**
+		* Время начала текущего хода.
+		* @type {number}
+		*/
 		this.turnStartTime = null;
 
+		/**
+		* Результаты игры.
+		* @type {object}
+		*/
 		this.result = null;
 
+		/**
+		* Находится ли игра в ускоренном режиме.
+		* @type {Boolean}
+		*/
 		this.simulating = false;
 
-		this.fakeDescisionTimer = this.defaultFakeDescisionTimer = 500;
+		/**
+		* Время ответа ботов.
+		* Уменьшается, если стоит флаг `simulating`.
+		* @type {number}
+		*/
+		this.fakeDescisionTimer = 500;
+		this.defaultFakeDescisionTimer = this.fakeDescisionTimer;
 
+		/**
+		* Является ли игра тестом.
+		* @type {Boolean}
+		*/
 		this.isTest = config.test;
 
+		/**
+		* Активна ли игра.
+		* Неактивные игры удаляются из менеджера игры, но ссылки на них могут оставаться у ботов.
+		* @type {Boolean}
+		*/
 		this.active = false;
 	}
 
-	// Запущена ли игра
-	// Игра не запущена, когда идет голосование о рестарте
-	// Это не тоже самое, что game.states.current == 'STARTED'
+	/**
+	* Запущена ли игра.
+	* Игра не запущена, когда идет голосование о рестарте.
+	* Это не тоже самое, что game.states.current == 'STARTED'
+	* @return {Boolean}
+	*/
 	get isRunning(){
 		return this.states.current != 'NOT_STARTED';
 	}
@@ -80,14 +185,14 @@ class Game{
 
 	// Методы игры
 	
-	// Запуск первой игры
+	/** Инициализация и запуск первой игры. */
 	init(){
 		this.active = true;
 		this.reset();
 		this.start();
 	}	
 
-	// Ресет игры
+	/** Ресет игры */
 	reset(){
 
 		// Свойства игры
@@ -107,7 +212,7 @@ class Game{
 		this.turnStages.next = 'DEFAULT';
 	}
 
-	// Подготовка и начало игры
+	/** Подготовка и начало игры */
 	start(){
 		this.log.notice('Game started', this.index);
 
@@ -130,7 +235,7 @@ class Game{
 		while(this.continue());
 	}
 
-	// Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч
+	/** Заканчивает игру, оповещает игроков и позволяет им голосовать за рематч */
 	end(){
 
 		this.log.info('Game ended', this.id, '\n\n');	
@@ -147,8 +252,10 @@ class Game{
 		this.players.notify(action);
 	}
 
-	// Преждевременное завершение игры
-	// Не производит правильное отключение игроков, используется только, если все игроки боты
+	/**
+	* Преждевременное завершение игры.
+	* Не производит правильное отключение игроков, используется только, если все игроки боты.
+	*/
 	shutdown(){
 		this.active = false;
 		this.log.notice('Shutting down');
@@ -156,7 +263,10 @@ class Game{
 		this.players.forEach(p => p.game = null);
 	}
 
-	// Перезапускает игру 
+	/**
+	* Перезапускает игру. Оповещает игроков о результатах голосования.
+	* @param  {object} voteResults результаты голосования за рематч.
+	*/
 	rematch(voteResults){
 		this.log.info('Rematch');
 
@@ -169,7 +279,10 @@ class Game{
 		this.start();
 	}
 
-	// Возвращает игру в лобби
+	/**
+	* Возвращает игру в лобби. Оповещает игроков о результатах голосования.
+	* @param  {object} voteResults результаты голосования за рематч.
+	*/
 	backToQueue(voteResults){
 		this.active = false;
 
@@ -186,6 +299,10 @@ class Game{
 
 
 	// РЕЗУЛЬТАТЫ
+	/**
+	* Возвращает результаты игры для передачи игрокам.
+	* @return {object}
+	*/
 	getResults(){
 		let results = {};
 		for(let key in this.result){
@@ -213,6 +330,10 @@ class Game{
 		return action;
 	}
 
+	/**
+	* Возвращает объект, в который будут записываться результаты игры.
+	* @return {objec}
+	*/
 	getDefaultResults(){
 		return {
 			winners: null,
@@ -223,7 +344,7 @@ class Game{
 
 	// СИМУЛЯЦИЯ (когда в игре остались только боты)
 
-	// Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру
+	/** Если остались только боты, убираем игроков из списка ожидания ответа, чтобы ускорить игру. */
 	trySimulating(){
 		let humanActivePlayers = this.players.getWithOwn('type', 'player', this.players.active);
 		if(!humanActivePlayers.length){
@@ -235,7 +356,7 @@ class Game{
 		}
 	}
 
-	// Убирает статус симуляции, оповещает игроков
+	/** Убирает статус симуляции, оповещает игроков. */
 	resetSimulating(){
 		if(this.simulating && !this.isTest){
 			let humanPlayers = this.players.getWithOwn('type', 'player');
@@ -254,7 +375,7 @@ class Game{
 
 	// Методы хода
 
-	// Сбрасываем счетчики и стадию игры
+	/** Сбрасываем счетчики и стадию игры */
 	resetTurn(){
 
 		this.log.info('Turn Ended', (Date.now() - this.turnStartTime)/1000);
@@ -269,7 +390,7 @@ class Game{
 		this.players.notify({type: 'TURN_ENDED'});
 	}
 
-	// Начинает ход
+	/** Начинает ход */
 	startTurn(){
 
 		this.players.logTurnStart();
@@ -289,8 +410,10 @@ class Game{
 
 	// Методы выбора статуса игры и стадии хода
 
-	// Выполняет следующую стадию игры
-	// Возвращает нужно ли продолжать игру, или ждать игроков
+	/**
+	* Выполняет следующую стадию игры.
+	* @return {boolean} Возвращает нужно ли продолжать игру, или ждать игроков.
+	*/
 	continue(){
 
 		/*this.players.notify({
@@ -306,8 +429,10 @@ class Game{
 		return state.call(this.states);
 	}
 
-	// Выполняет следующую стадию хода
-	// Возвращает нужно ли продолжать игру, или ждать игроков
+	/**
+	* Выполняет следующую стадию хода
+	* @return {boolean} Возвращает нужно ли продолжать игру, или ждать игроков.
+	*/
 	doTurn(){
 
 		let turnStage = this.turnStages[this.turnStages.next];
@@ -318,8 +443,13 @@ class Game{
 		return turnStage.call(this.turnStages);
 	}
 
-	// Позволяет игроку выполнить действие
-	// Возвращает нужно ли продолжать игру, или ждать игроков
+	/**
+	* Позволяет игроку выполнить действие
+	* @param {string}    dirName название выполняемого действия
+	* @param {...Player} players игроки, которым разрешено действовать
+	*
+	* @return {boolean} Возвращает нужно ли продолжать игру, или ждать игроков.
+	*/
 	let(dirName, ...players){
 
 		let directive = this.directives[dirName];
@@ -333,7 +463,11 @@ class Game{
 
 	// Методы установки таймера действий
 
-	// Ждет ответа от игроков
+	/**
+	* Ждет ответа от игроков.
+	* @param {number}   time    время ожидания в секундах
+	* @param {Player[]} players игроки, которых нужно ждать
+	*/
 	waitForResponse(time, players){
 
 		if(this.timer){
@@ -369,8 +503,10 @@ class Game{
 		}
 	}
 
-	// Выполняется по окончанию таймера ответа игроков 
-	// Выполняет случайное действие или продолжает игру
+	/**
+	* Выполняется по окончанию таймера ответа игроков
+	* Выполняет случайное действие или продолжает игру
+	*/
 	timeOut(){
 		this.timer = null;
 		this.players.logTimeout();
@@ -391,25 +527,34 @@ class Game{
 
 	// Методы обработки действий
 
-	// Получает ответ от игрока асинхронно
+	/**
+	* Получает ответ от игрока асинхронно.
+	* @param  {Player} player
+	* @param  {object} action выполненное игроком действие
+	*/
 	recieveResponse(player, action){
 		if(!this.active){
-			this.log.warn('Game inactive, can\'t recieve response', player.id, action);
+			this.log.warn('Game inactive, can\'t recieve response', player.id, player.type, action);
 			return;
 		}
 		setTimeout(() => {
 			if(!this.active){
-				this.log.warn('Game inactive, can\'t recieve response', player.id, action);
+				this.log.warn('Game inactive, can\'t recieve response', player.id, player.type, action);
 				return;
 			}
 			this.actions.recieve(player, action);
 		}, 0);
 	}
 
-	// Получает ответ от игрока синхронно
+	/**
+	* Получает ответ от игрока синхронно.  
+	* Используется для тестов, асинхронность должна быть добавлена при вызове функции для корректной работы.
+	* @param  {Player} player
+	* @param  {object} action выполненное игроком действие
+	*/
 	recieveResponseSync(player, action){
 		if(!this.active){
-			this.log.warn('Game inactive, can\'t recieve response', player.id, action);
+			this.log.warn('Game inactive, can\'t recieve response', player.id, player.type, action);
 			return;
 		}
 		this.actions.recieve(player, action);
@@ -418,6 +563,11 @@ class Game{
 
 	// Игрок проносит курсор над картой
 
+	/**
+	* Сообщает игрокам, что игрок держит курсор над определенной картой.
+	* @param  {Player} player
+	* @param  {string} cid    id карты
+	*/
 	hoverOverCard(player, cid){
 		if(this.isRunning && this.players.includes(player) && player.statuses.working && this.actions.valid.length && this.cards.byId[cid].field == player.id){
 			if(player.statuses.hover){
@@ -434,6 +584,11 @@ class Game{
 		}
 	}
 
+	/**
+	* Сообщает игрокам, что игрок убрал курсор с карты.
+	* @param {Player} player
+	* @param {string} [cid]  id карты
+	*/
 	hoverOutCard(player, cid){
 		if(this.isRunning && this.players.includes(player) && player.statuses.hover){
 			
@@ -449,8 +604,27 @@ class Game{
 	}
 }
 
+/**
+* Максимальное кол-во игроков в игре.
+* @type {Number}
+*/
 Game.maxPlayers = 6;
+
+/**
+* Минимальное кол-во игроков в игре.
+* @type {Number}
+*/
 Game.minPlayers = 2;
+
+/**
+* Название режима игры.
+* @type {string}
+* @default 'game'
+*/
 Game.modeName = 'game';
 
+/**
+* {@link Game}
+* @module
+*/
 module.exports = Game;

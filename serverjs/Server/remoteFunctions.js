@@ -73,8 +73,7 @@ module.exports = function(server){
 				let newPlayer = server.players[newConnId];
 
 				// Если новый игрок успел подключиться к чему-то до окончания подключения
-				server.manager.concedePlayer(newPlayer);
-				server.manager.removePlayerFromQueue(newPlayer);
+				server.manager.freePlayer(newPlayer);
 
 				// Сообщаем игроку, что переподключиться не удалось
 				newPlayer.updateRemote();
@@ -138,12 +137,7 @@ module.exports = function(server){
 		concedeClient: function(){
 			let player = server.players[this.connection.id];
 			if(player){
-				if(!player.game && player.queue){
-					server.manager.removePlayerFromQueue(player);
-				}
-				else{
-					server.manager.concedePlayer(player);
-				}
+				server.manager.freePlayer(player);
 			}
 		},
 

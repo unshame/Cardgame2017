@@ -77,11 +77,11 @@ class Server extends Eureca.Server{
 	parseParams(paramLine){
 		let argv = minimist(paramLine);
 		let params = {
-			numBots: argv.b === undefined ? Number(argv.bots) : Number(argv.b),
-			numPlayers: argv.p === undefined ? Number(argv.players) : Number(argv.p),
+			numBots: Number(process.env.BOTS) || (argv.b === undefined ? Number(argv.bots) : Number(argv.b)),
+			numPlayers: Number(process.env.PLAYERS) || (argv.p === undefined ? Number(argv.players) : Number(argv.p)),
 			transfer: Boolean(process.env.TRANSFER || argv.transfer),
 			testing: argv.t || argv.test || argv.testing || false,
-			debug: argv.d || argv.debug || 'notice',
+			debug: process.env.DEBUG || argv.d || argv.debug || 'notice',
 			port: process.env.PORT || Number(argv.port)
 		};
 

@@ -6,12 +6,15 @@ const
 
 class Player{
 
-	constructor(remote, connId, name){
+	constructor(remote, connId, name, createLog = true){
+
 		let id = generateId();
 		this.id = 'player_' + id;
 		this.type = 'player';
 
-		this.log = Log(module, id);
+		if(createLog){
+			this.log = Log(module, this.id);
+		}
 
 		this.remote = remote;
 		this.connId = connId;

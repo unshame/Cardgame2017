@@ -6,15 +6,51 @@ const
 
 
 class Queue{
+
+	/**
+	* Очередь.
+	* @class
+	* @param  {QueueManager} manager менеджер очередей
+	* @param  {string} type    тип очереди
+	* @param  {object} config  конфигурация очереди
+	*/
 	constructor(manager, type, config){
 
+		/**
+		* id очереди
+		* @type {String}
+		*/
 		this.id = 'queue_' + generateId();
 
+		/**
+		* Логгер очереди.
+		* @type {winston.Logger}
+		*/
 		this.log = Log(module, this.id, config.debug);
 
+		/**
+		* Активна ли очередь 
+		* (неактивные очереди были удалены из менеджера, но у игроков может остаться на них ссылка).
+		* @type {Boolean}
+		*/
 		this.active = true;
+
+		/**
+		* Запущенная очередью игра.
+		* @type {Game}
+		*/
 		this.game = null;
+
+		/**
+		* Менеджер очереди.
+		* @type {QueueManager}
+		*/
 		this.manager = manager;
+
+		/**
+		* Тип очереди.
+		* @type {string}
+		*/
 		this.type = type;
 
 		if(typeof config.numPlayers != 'number' || isNaN(config.numPlayers)){
@@ -28,14 +64,31 @@ class Queue{
 		){
 			config.numBots = 0;
 		}
+
+		/**
+		* Конфигурация очереди.
+		* @type {object}
+		*/
 		this.config = config;
 
-
+		/**
+		* Конфигурация игры, запускаемой этой очередью.
+		* @type {object}
+		*/
 		this.gameConfig = config.gameConfig;
 		this.gameConfig.debug = config.debug;
+
+		/**
+		* Игроки в этой очереди.
+		* @type {Array}
+		*/
 		this.players = [];
 	}
 
+	/**
+	* Информация об очереди.
+	* @return {object}
+	*/
 	get info(){
 		return {
 			id: this.id,
@@ -48,6 +101,12 @@ class Queue{
 		};
 	}
 
+	/**
+	* Добавляет игрока в очередь.
+	* Оповещает игроков о новом игроке в очереди.
+	* Запускает очередь, если в ней достаточное кол-во игроков.
+	* @param {Player} player
+	*/
 	addPlayer(player){
 		if(this.game){
 			this.log.notice('Can\'t add players when game is in progress');
@@ -76,6 +135,10 @@ class Queue{
 		}
 	}
 
+	/**
+	* Создает и запускает новую игру.
+	* Оповещает игроков о том, что очередь заполнилась.
+	*/
 	startGame(){
 		if(this.game){
 			this.log.error(new Error('Can\'t start a game, another one is already in progress'));
@@ -105,14 +168,26 @@ class Queue{
 		this.game.init();
 	}
 
+	/**
+	* Изменяет настройки очереди, чтобы заполнить пустые места ботами,
+	* создает и начинает игру.
+	*/
 	startGameWithBots(){
-		var numPlayers = this.config.numPlayers;
+		let numPlayers = this.config.numPlayers;
 		this.config.numBots += numPlayers - this.players.length;
 		this.config.numPlayers = this.players.length;
 		this.type = 'botmatch';
 		this.startGame();
 	}
 
+	/**
+	* Удаляет игру и неактивных игроков из очереди по окончании игры.
+	* Вызывается из игры.  
+	* Запускает новую игру, если в очереди достаточно игроков.  
+	* Удаляет очередь, если в ней не осталось игроков.  
+	* Оповещает игроков о состоянии очереди в остальных случаях.  
+	* @param  {array} [voteResults] результаты голосования за рематч
+	*/
 	endGame(voteResults){
 		if(!this.game){
 			console.error(new Error('No game to end'));
@@ -148,6 +223,9 @@ class Queue{
 		}
 	}
 
+	/**
+	* Прерывает игру, удаляет всех игроков и удаляет очередь из менеджера.
+	*/
 	shutdown(){
 		if(!this.active){
 			return;
@@ -165,6 +243,9 @@ class Queue{
 		this.manager.removeQueue(this);
 	}
 
+	/**
+	* Сообщает игрокам о состоянии очереди.
+	*/
 	notifyPlayers(){
 		if(this.game){
 			return;
@@ -180,6 +261,13 @@ class Queue{
 		this.log.notice('Waiting for players:', this.config.numPlayers - this.players.length);
 	}
 
+	/**
+	* Удаляет игрока из очереди.
+	* Оповещает игроков об удаленном игроке.
+	* Удаляет очередь, если в ней не осталось игроков.
+	* @param  {Player}  player
+	* @param  {Boolean} notify нужно ли оповещать игроков об удалении игрока из очереди
+	*/
 	removePlayer(player, notify = true){
 		if(player.game){
 			this.log.warn('Cannot remove player in a game from queue', player.id, player.game.id);
@@ -204,6 +292,10 @@ class Queue{
 		}
 	}
 
+	/**
+	* Если игра запущена, убирает игрока из игры и очереди.
+	* @param  {Player} player
+	*/
 	concedePlayer(player){
 		let game = player.game;
 		if(game){
@@ -217,4 +309,8 @@ class Queue{
 	}
 } 
 
+/**
+* {@link Queue}
+* @module
+*/
 module.exports = Queue;
