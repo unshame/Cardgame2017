@@ -32,34 +32,75 @@ Menu.buttonPopup = function(options){
 };*/
 
 /**
-* Возвращает массив с настройками элементов для передачи в {@link Menu#createLayout},
-* как строка с выравниванием по левому краю.
+* Элементы будут выравнены по левому краю.
 * @static
-* @param {...object} options опции элементов меню
+* @see {@link Menu.align}
+* @param {(array|...object)} options опции элементов меню
 * @return {array} Возвращает массив с настройками элементов и флагом выравнивания.
 */
 Menu.alignLeft = function(){
-	var row = [];
-	row.align = 'left';
-	for(var i = 0, len = arguments.length; i < len; i++){
-		row.push(arguments[i]);
-	}
-	return row;
+	return Menu.align('left', arguments);
 };
 
 /**
-* Возвращает массив с настройками элементов для передачи в {@link Menu#createLayout},
-* как строка с выравниванием по левому краю.
+* Элементы будут выравнены по правому краю.
 * @static
-* @param {...object} options опции элементов меню
+* @see {@link Menu.align}
+* @param {(array|...object)} options опции элементов меню
 * @return {array} Возвращает массив с настройками элементов и флагом выравнивания.
 */
 Menu.alignRight = function(){
-	var row = [];
-	row.align = 'right';
-	for(var i = 0, len = arguments.length; i < len; i++){
-		row.push(arguments[i]);
+	return Menu.align('right', arguments);
+};
+
+/**
+* Первый элемент будет выравнен по левому краю, последний - по правому, остальные - по центру.
+* @static
+* @see {@link Menu.align}
+* @param {(array|...object)} options опции элементов меню
+* @return {array} Возвращает массив с настройками элементов и флагом выравнивания.
+*/
+Menu.alignJustify = function(){
+	return Menu.align('justify', arguments);
+};
+
+/**
+* Четные элементы будут выравнены по левому краю, нечетные - по правому.
+* @static
+* @see {@link Menu.align}
+* @param {(array|...object)} options опции элементов меню
+* @return {array} Возвращает массив с настройками элементов и флагом выравнивания.
+*/
+Menu.alignAlternate = function(){
+	return Menu.align('alternate', arguments);
+};
+
+/**
+* Возвращает массив с настройками элементов для передачи в {@link Menu#createLayout}
+* с установленным флагом выравневания.
+* @static
+* @param {string}            align   значения флага выравнивания
+* @param {(array|...object)} options опции элементов меню
+*
+* @return {array} Возвращает массив с настройками элементов и флагом выравнивания.
+*/
+Menu.align = function(align, options){
+	var row;
+	if(options){
+		if(!Array.isArray(options[0])){
+			row = [];
+			for(var i = 0, len = options.length; i < len; i++){
+				row.push(options[i]);
+			}
+		}
+		else{
+			row = options[0];
+		}
 	}
+	else{
+		row = [];
+	}
+	row.align = align;
 	return row;
 };
 

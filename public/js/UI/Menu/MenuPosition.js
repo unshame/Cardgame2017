@@ -30,20 +30,7 @@ Menu.prototype.updatePosition = function(position){
 		row.forEach(function(element, ei){
 			if(element.visible){
 				rowVisible = true;
-				var align;
-				switch(row.align){
-					case 'left':
-					align = 0;
-					break;
-
-					case 'right':
-					align = menuWidth - row.width;
-					break;
-
-					default:
-					align = (menuWidth - row.width)/2;
-					break;
-				}
+				var align = this._calculateAlign(row.align, ei, menuWidth, row.width, row.length);
 				var ex = margin + align + margin*ei + offset;
 				var ey = margin + y + row.height/2 - element.height/2;
 				element.updatePosition({x: ex, y: ey});
@@ -65,6 +52,44 @@ Menu.prototype.updatePosition = function(position){
 	if(this.header){
 		this.header.x = this.background.width/2;
 		this.header.y = this.options.headerHeight/2 + 4;
+	}
+};
+
+/**
+* Возвращает отступ для выравнивания элемента.
+* @return {number}
+*/
+Menu.prototype._calculateAlign = function(rowAlign, i, menuWidth, rowWidth, rowLength){
+	switch(rowAlign){
+		case 'justify':
+		switch(i){
+			case 0:
+			rowAlign = 'left';
+			break;
+
+			case (rowLength - 1):						
+			rowAlign = 'right';
+			break;
+
+			default:
+			rowAlign = 'center';
+			break;
+		}
+		break;
+
+		case 'alternate':
+		rowAlign = ((i % 2) == 1) ? 'right' : 'left';
+	}
+	switch(rowAlign){
+
+		case 'left':
+		return 0;
+
+		case 'right':
+		return menuWidth - rowWidth;
+
+		default:
+		return (menuWidth - rowWidth)/2;
 	}
 };
 
