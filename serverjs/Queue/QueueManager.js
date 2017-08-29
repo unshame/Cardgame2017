@@ -62,16 +62,16 @@ class QueueManager{
 	* @param {object} config       настройки очереди
 	* @param {object} [gameConfig] настройки игры
 	*/
-	addPlayerToCustomQueue(player, isPrivate, gameMode, config, gameConfig){
+	addCustomQueue(player, isPrivate, gameMode, config, gameConfig){
 		if(player.queue || player.game){
 			return;
 		}
 		if(!config || typeof config != 'object'){
-			player.recieveMenuNotification({'QUEUE_INVALID'});
+			player.recieveMenuNotification({type: 'QUEUE_INVALID'});
 			return;
 		}
 		if(!this.server.gameModes.hasOwnProperty(gameMode)){
-			player.recieveMenuNotification({'QUEUE_INVALID'});
+			player.recieveMenuNotification({type: 'QUEUE_INVALID'});
 			return;
 		}
 		let gameClass = this.server.gameModes[gameMode];
@@ -85,6 +85,15 @@ class QueueManager{
 
 		let queue = this.addQueue(isPrivate ? 'private' : 'custom', config);
 		queue.addPlayer(player);
+	}
+
+	addPlayerToCustomQueue(player, qid){
+		if(this.queues.hasOwnProperty(qid)){
+			this.queues[qid].addPlayer(player);
+		}
+		else{
+			player.recieveMenuNotification({type: 'QUEUE_INACTIVE'});
+		}
 	}
 
 	/**

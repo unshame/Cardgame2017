@@ -108,13 +108,13 @@ module.exports = function(server){
 			if(!player){
 				return;
 			}
-			server.manager.addPlayerToCustomQueue(player, isPrivate, gameMode, config, gameConfig);
+			server.manager.addCustomQueue(player, isPrivate, gameMode, config, gameConfig);
 		},
 
 		joinCustomQueue: function(id){
 			let player = server.players[this.connection.id];
-			if(player && server.manager.queues.hasOwnProperty(id)){
-				server.manager.queues[id].addPlayer(player);
+			if(player){
+				server.manager.addPlayerToCustomQueue(player, id);
 			}
 		},
 

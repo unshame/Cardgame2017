@@ -55,6 +55,12 @@ class Queue{
 			return;
 		}
 
+		if(this.inactive){
+			this.log.notice('Can\'t add players to an inactive queue');
+			player.recieveMenuNotification({type: 'QUEUE_INACTIVE'});
+			return;
+		}
+
 		this.log.notice('Player connected', player.id);
 
 		this.players.push(player);
