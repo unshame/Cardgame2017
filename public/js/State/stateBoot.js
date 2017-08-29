@@ -97,6 +97,7 @@ var stateBoot = new State('boot', {
 
 		// Иконки кнопок
 		this.colors.push('white');
+		this.colors.push('black');
 		this.loadAllColors('icon', 'cross', 'assets/icons/', 'cross.png');
 		this.loadAllColors('icon', 'checkmark', 'assets/icons/', 'checkmark.png');
 

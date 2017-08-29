@@ -77,6 +77,7 @@ UI.prototype._createMenus = function(){
 			closeButton: function(){
 				ui.modalManager.closeModal();
 			},
+			closeButtonCrossColor: 'grey',
 			layout: [
 				Menu.buttonPopup({
 					action: function(){
@@ -240,6 +241,7 @@ UI.prototype._createMenus = function(){
 			closeButton: function(){
 				ui.modalManager.closeModal();
 			},			
+			closeButtonCrossColor: 'grey',
 			layout: [
 				{
 					action: function(){

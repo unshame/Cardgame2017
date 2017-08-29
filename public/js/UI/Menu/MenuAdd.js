@@ -61,7 +61,7 @@ Menu.prototype.addCloseButton = function(action){
 		position: getPosition.bind(this),
 		action: this.options.closeButton,
 		color: this.options.elementColor,
-		icon: this.options.elementColor + '_cross',
+		icon: (this.options.closeButtonCrossColor || this.options.color) + '_cross',
 		downOffset: 0,
 		size: 'circle'
 	});

@@ -137,6 +137,7 @@ Menu.prototype.getDefaultOptions = function(){
 		fadeTime: 200,
 		layout: null,
 		closeButton: null,
+		closeButtonCrossColor: 'white',
 		header: false,
 		headerHeight: 40,
 		headerColor: 'orange',
