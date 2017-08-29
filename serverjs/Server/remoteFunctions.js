@@ -92,6 +92,11 @@ module.exports = function(server){
 			}
 		},
 
+		/**
+		* Отправляет игроку список очередей.
+		* @param  {number} page       страница очередей
+		* @param  {number} pagination кол-во очередей на страницу
+		*/
 		requestQueueList: function(page, pagination){
 			let player = server.players[this.connection.id];
 			if(!player){
@@ -101,6 +106,13 @@ module.exports = function(server){
 			player.recieveMenuNotification(action);
 		},
 
+		/**
+		* Передает менеджеру очередей информацию для создания новой очереди.
+		* @param  {Boolean} isPrivate  является ли очередь скрытой
+		* @param  {string}  gameMode   режим игры
+		* @param  {object}  config     конфигурация очереди
+		* @param  {object}  gameConfig конфигурация игры
+		*/
 		createCustomQueue: function(isPrivate, gameMode, config, gameConfig){
 			let player = server.players[this.connection.id];
 			if(!player){
@@ -109,6 +121,10 @@ module.exports = function(server){
 			server.manager.addCustomQueue(player, isPrivate, gameMode, config, gameConfig);
 		},
 
+		/**
+		* Подключает игрока к очереди по id.
+		* @param  {string} id
+		*/
 		joinCustomQueue: function(id){
 			let player = server.players[this.connection.id];
 			if(player){
@@ -126,6 +142,9 @@ module.exports = function(server){
 			}
 		},
 
+		/**
+		* Сообщает менеджеру очередей, что нужно запустить очередь в которой находится игрок с ботами.
+		*/
 		startQueuedGameVsBots: function(){
 			let player = server.players[this.connection.id];
 			if(!player || !player.queue || player.queue.game || player.queue.players.length != 1){
@@ -134,6 +153,9 @@ module.exports = function(server){
 			player.queue.startGameWithBots();
 		},
 
+		/**
+		* Сообщает менеджеру, что нужно убрать игрока из игры.
+		*/
 		concedeClient: function(){
 			let player = server.players[this.connection.id];
 			if(player){
@@ -141,6 +163,10 @@ module.exports = function(server){
 			}
 		},
 
+		/**
+		* Сообщает игре, в которой находится игрок, что курсор находится над картой с указанным id.
+		* @param  {string} cid id карты
+		*/
 		hoverOverCard: function(cid){
 			let player = server.players[this.connection.id];
 			if(player && player.game){
@@ -148,6 +174,10 @@ module.exports = function(server){
 			}
 		},
 
+		/**
+		* Сообщает игре, в которой находится игрок, что курсор больше не находится над картой с указанным id.
+		* @param  {string} [cid] id карты
+		*/
 		hoverOutCard: function(cid){
 			let player = server.players[this.connection.id];
 			if(player && player.game){

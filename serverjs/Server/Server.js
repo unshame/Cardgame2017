@@ -28,14 +28,30 @@ class Server extends Eureca.Server{
 	constructor(config, paramLine){
 		super(config);
 
+		/**
+		* Параметры сервера.
+		* @type {object}
+		*/
 		this.params = this.parseParams(paramLine);
 
+		/**
+		* Логгер сервера.
+		* @type {winston.Logger}
+		*/
 		this.log = this.createLogger();
 
+		/**
+		* Существующие режимы игры в виде `[GameClass, BotClass]`.
+		* @type {Object<array>}
+		*/
 		this.gameModes = {
 			'durak': [DurakGame, Bot]
 		};
 
+		/**
+		* Менеджер очередей и игр.
+		* @type {QueueManager}
+		*/
 		this.manager = new QueueManager(this, {
 			game: this.gameModes['durak'][0],
 			gameConfig: {
@@ -47,13 +63,26 @@ class Server extends Eureca.Server{
 			debug: this.params.debug
 		});
 
-		// express
 		let rootPath = '/../../';
+		/**
+		* Express приложение.
+		* @see {@link https://expressjs.com/}
+		* @type {function}
+		*/
 		this.app = express();
 		this.app.use(express.static(path.join(__dirname, rootPath, '/public')));
 
-		this.clients = {};		// подключенные клиенты
-		this.players = {};		// Все игроки
+		/**
+		* Подключенные клиенты
+		* @type {Object<Object>}
+		*/
+		this.clients = {};
+
+		/**
+		* Игроки.
+		* @type {Object<Player>}
+		*/
+		this.players = {};
 
 		// Биндим функции на ивенты
 		this.on('connect', this.handleConnect);
@@ -61,10 +90,20 @@ class Server extends Eureca.Server{
 		this.on('error', this.handleError);
 		this.on('message', this.handleMessage);
 
-		// Функции, доступные со стороны клиента
+		/**
+		* Функции, доступные со стороны клиента.
+		* @see {@link module:serverjs/Server/remoteFunctions|remoteFunctions}
+		* @type {object}
+		*/
 		this.exports = getRemoteFunctions(this);
 
-		// Подключаем сервер к порту
+		/**
+		* Node.js http сервер.
+		* {@link Server#app} прикрепляется сюда, как колбэк.  
+		* http сервер затем прикрепляется к Eureca.Server (расширением которого является текущий класс)
+		* и обрабатывается им.
+		* @type {http.Server}
+		*/
 		this.httpServer = http.createServer(this.app);
 		this.attach(this.httpServer);
 	}
