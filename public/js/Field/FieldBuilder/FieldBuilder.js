@@ -175,11 +175,11 @@ FieldBuilder.prototype.adjustFieldNetwork = function(lockedFields){
 	manager.opponents.length = 0;
 
 	this.calcSizes();
+	this.manager.resizeFields();
 	this._buildOpponentFields();
 	//this._buildDiscardField();
 	this._buildTableFields(lockedFields);
 
-	this.manager.resizeFields();
 };
 
 /**

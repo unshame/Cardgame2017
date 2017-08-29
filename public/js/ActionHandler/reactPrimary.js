@@ -61,7 +61,7 @@ var reactPrimary = {
 
 		// Создаем недостающие карты
 		cardManager.createCards(action.cards);
-		
+
 		// Создаем поля с учетом новой информации об игроках
 		if(action.players.length){
 			// Сохраняем информацию об игроках
@@ -119,9 +119,7 @@ var reactPrimary = {
 			seq.append(function(){
 				ui.layers.showLayer(ui.actionButtons, true);
 			});
-		}	
-
-
+		}
 
 		return duration;
 	},

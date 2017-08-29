@@ -129,7 +129,7 @@ var reactSecondary = {
 	*/
 	VOTE_RESULTS: function(action, seq){
 		ui.menus.endGame.fadeOut();
-		if(!action.results.successful){
+		if(!action.successful){
 			game.state.change('queue', false);
 		}
 	},
