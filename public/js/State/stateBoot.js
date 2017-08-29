@@ -38,7 +38,7 @@ var stateBoot = new State('boot', {
 	* @param  {number} [height]
 	* @param  {number} [frames]
 	*/
-	loadAllColors(key1, key2, path1, path2, width, height, frames){
+	loadAllColors: function(key1, key2, path1, path2, width, height, frames){
 		this.colors.forEach(function(color){
 			if(width || width === 0){
 				game.load.spritesheet(key1 + '_' + color + '_' + key2, path1 + color + '_' + path2, width, height, frames);

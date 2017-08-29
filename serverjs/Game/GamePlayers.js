@@ -26,6 +26,7 @@ class GamePlayers extends PlayerManager{
 			losses: 0
 		};
 		p.statuses.working = false;
+		p.statuses.hover = null;
 		super.push(p);
 	}
 
