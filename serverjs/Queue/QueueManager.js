@@ -24,15 +24,19 @@ class QueueManager{
 		this.randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavonne','Leola','Arlena','Marilynn','Shawnna','Alanna','Armando','Julieann','Alyson','Rutha','Wilber','Marty','Tyrone','Mammie','Shalon','Faith','Mi','Denese','Flora','Josphine','Christa','Sharonda','Sofia','Collene','Marlyn','Herma','Mac','Marybelle','Casimira','Nicholle','Ervin','Evia','Noriko','Yung','Devona','Kenny','Aliza','Stacey','Toni','Brigette','Lorri','Bernetta','Sonja','Margaretta', 'Johnny Cocksucker III'];
 	}
 
-	getQueueList(page){
+	getQueueList(page, pagination){
 		let list = [];
-		if(typeof page != 'number' || isNaN(page)){
+		if(typeof page != 'number' || isNaN(page) || page < 0){
 			page = 0;
 		}
-		let pageLength = 10;
+		if(typeof pagination != 'number' || isNaN(pagination) || pagination <= 0){
+			pagination = 10;
+		}
+		let pageLength = pagination;
 		let skip = page * pageLength;
 		if(skip >= this.queueList.length){
-			skip = Math.max(skip - pageLength, 0);
+			skip = Math.max(this.queueList.length - pageLength, 0);
+			page = Math.max(this.queueList.length/pageLength, 1) - 1;
 		}
 		let moreBefore = (skip > 0);
 		let moreAfter = false;
@@ -42,7 +46,8 @@ class QueueManager{
 				continue;
 			}
 			if(pageLength <= 0){
-				if(this.queueList[i + 1]){
+				console.log(this.queueList[i])
+				if(this.queueList[i]){
 					moreAfter = true;
 				}
 				break;
@@ -51,8 +56,7 @@ class QueueManager{
 			list.push(queue.info);
 			pageLength--;
 		}
-
-		return {list, moreBefore, moreAfter};
+		return {type: 'QUEUE_LIST', list, moreBefore, moreAfter, page, pagination};
 	}
 
 	/**

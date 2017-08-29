@@ -93,13 +93,12 @@ module.exports = function(server){
 			}
 		},
 
-		requestQueueList: function(){
+		requestQueueList: function(page, pagination){
 			let player = server.players[this.connection.id];
 			if(!player){
 				return;
 			}
-			let action = server.manager.getQueueList();
-			action.type = 'QUEUE_LIST';
+			let action = server.manager.getQueueList(page, pagination);
 			player.recieveMenuNotification(action);
 		},
 
