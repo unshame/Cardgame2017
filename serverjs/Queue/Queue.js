@@ -16,15 +16,42 @@ class Queue{
 		this.game = null;
 		this.manager = manager;
 		this.type = type;
+
+		if(typeof config.numPlayers != 'number' || isNaN(config.numPlayers)){
+			config.numPlayers = config.game.minPlayers;
+		}
+		config.numPlayers = Math.min(config.numPlayers, config.game.maxPlayers);
+
+		if(
+			typeof config.numBots != 'number' || isNaN(config.numBots) ||
+			config.numPlayers + config.numBots > config.game.maxPlayers
+		){
+			config.numBots = 0;
+		}
 		this.config = config;
+
+
 		this.gameConfig = config.gameConfig;
 		this.gameConfig.debug = config.debug;
 		this.players = [];
 	}
 
+	get info(){
+		return {
+			id: this.id,
+			type: this.type,
+			gameMode: this.config.game.modeName,
+			numPlayers: this.players.length,
+			numPlayersRequired: this.config.numPlayers,
+			numBots: this.config.numBots,
+			gameConfig: this.gameConfig
+		};
+	}
+
 	addPlayer(player){
 		if(this.game){
-			this.log.error(new Error('Can\'t add players when game is in progress'));
+			this.log.notice('Can\'t add players when game is in progress');
+			player.recieveMenuNotification({type: 'QUEUE_FULL'});
 			return;
 		}
 
@@ -33,7 +60,7 @@ class Queue{
 		this.players.push(player);
 		player.queue = this;
 
-		player.recieveQueueAction({type: 'QUEUE_ENTERED'});
+		player.recieveQueueAction({type: 'QUEUE_ENTERED', qid: this.id});
 
 		if(this.players.length >= this.config.numPlayers){
 			this.startGame();
@@ -50,7 +77,7 @@ class Queue{
 		}
 
 		this.players.forEach((p) => {
-			p.recieveQueueAction({type: 'QUEUE_FULL'});
+			p.recieveQueueAction({type: 'QUEUE_READY'});
 		});
 
 		let players = this.players.slice();
@@ -61,12 +88,14 @@ class Queue{
 
 			for (let n = 0; n < numBots; n++) {
 				let bot = new this.config.bot(randomNamesCopy);
+				bot.queue = this;
 				players.push(bot);
 			}
 		}
 
 		this.game = new this.config.game(this, players, this.gameConfig);
 		this.manager.games[this.game.id] = this.game;
+		this.manager.removeQueueFromList(this);
 		this.game.init();
 	}
 
@@ -74,6 +103,7 @@ class Queue{
 		var numPlayers = this.config.numPlayers;
 		this.config.numBots += numPlayers - this.players.length;
 		this.config.numPlayers = this.players.length;
+		this.type = 'botmatch';
 		this.startGame();
 	}
 
@@ -107,6 +137,7 @@ class Queue{
 			this.startGame();
 		}
 		else{
+			this.manager.addQueueToList(this);
 			this.notifyPlayers();
 		}
 	}

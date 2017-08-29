@@ -34,7 +34,7 @@ var CardControl = function(inDebugMode){
 
 	/**
 	* База хвоста карты, когда он не прикреплен к карте.
-	* @type {Phaser.Group}
+	* @type {external:Phaser.Group}
 	*/
 	this.trailDefaultBase = null;
 	

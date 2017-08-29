@@ -28,7 +28,7 @@ var reactQueue = {
 		}
 	},
 
-	QUEUE_FULL: function(){
+	QUEUE_READY: function(){
 		ui.eventFeed.clear();
 		game.state.change('play', false);
 	}

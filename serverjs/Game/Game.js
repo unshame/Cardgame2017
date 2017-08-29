@@ -449,4 +449,8 @@ class Game{
 	}
 }
 
+Game.maxPlayers = 6;
+Game.minPlayers = 2;
+Game.modeName = 'game';
+
 module.exports = Game;

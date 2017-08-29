@@ -52,7 +52,7 @@ UI.Layers.prototype._sortPositions = function(){
 * @param {number} i    index слоя
 * @param {string} name имя слоя, должно быть уникальным
 *
-* @return {Phaser.Group} Созданный слой.
+* @return {external:Phaser.Group} Созданный слой.
 */
 UI.Layers.prototype.addLayer = function(i, name){
 	if(this.byName[name]){

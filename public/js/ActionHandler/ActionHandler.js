@@ -290,3 +290,4 @@ ActionHandler.prototype._shouldDeleteAction = function(action, card, field, done
 //@include:reactSecondary
 //@include:reactExtra
 //@include:reactQueue
+//@include:reactMenu

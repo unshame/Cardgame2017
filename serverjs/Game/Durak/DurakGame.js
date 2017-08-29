@@ -27,14 +27,13 @@ class DurakGame extends Game{
 				bot: Bot
 			}, 
 			{
-				minPlayers: 2,
+				minPlayers: DurakGame.minPlayers,
 				debug: config.debug,
 				test: config.test
 			}
 		);
-
 		// Можно ли переводить карты
-		this.canTransfer = config.transfer;
+		this.canTransfer = Boolean(config.transfer);
 	}
 
 	getDefaultResults(){
@@ -44,5 +43,9 @@ class DurakGame extends Game{
 		};
 	}
 }
+
+DurakGame.maxPlayers = 6;
+DurakGame.minPlayers = 2;
+DurakGame.modeName = 'durak';
 
 module.exports = DurakGame;

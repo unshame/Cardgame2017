@@ -108,6 +108,15 @@ class Player{
 		}
 	}
 
+	recieveMenuNotification(action){
+		if(!action.channel){
+			action.channel = 'menu';
+		}
+		if(this.remote && this.connected){
+			this.remote.recieveAction(action);
+		}
+	}
+
 	// Синхронно посылает асинхронный ответ серверу
 	sendResponse(action){
 		if(!this.game){

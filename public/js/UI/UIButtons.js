@@ -4,13 +4,13 @@
 UI.prototype._createButtons = function(){
 	/**
 	* Кнопки игровых действий.
-	* @type {Phaser.Group}
+	* @type {external:Phaser.Group}
 	*/
 	this.actionButtons = this.layers.addLayer(1, 'actionButtons');
 
 	/**
 	* Угловые кнопки.
-	* @type {Phaser.Group}
+	* @type {external:Phaser.Group}
 	*/
 	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons');
 

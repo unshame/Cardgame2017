@@ -1,7 +1,7 @@
 /**
 * Менеджер текста при наведении на элементы игры.
 * @class
-* @extends {Phaser.Group}
+* @extends {external:Phaser.Group}
 */
 UI.PopupManager = function(){
 	Phaser.Group.call(this, game, null, 'popupManager');

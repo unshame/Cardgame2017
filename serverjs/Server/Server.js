@@ -32,12 +32,16 @@ class Server extends Eureca.Server{
 
 		this.log = this.createLogger();
 
+		this.gameModes = {
+			'durak': [DurakGame, Bot]
+		};
+
 		this.manager = new QueueManager(this, {
-			game: DurakGame,
+			game: this.gameModes['durak'][0],
 			gameConfig: {
 				transfer: this.params.transfer
 			},
-			bot: Bot,
+			bot: this.gameModes['durak'][1],
 			numPlayers: this.params.numPlayers,
 			numBots: this.params.numBots,			
 			debug: this.params.debug

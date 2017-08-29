@@ -16,6 +16,7 @@ class QueueManager{
 
 		this.games = {};
 		this.queues = {};
+		this.queueList = [];
 
 		this.quickQueues = [];
 
@@ -23,8 +24,71 @@ class QueueManager{
 		this.randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavonne','Leola','Arlena','Marilynn','Shawnna','Alanna','Armando','Julieann','Alyson','Rutha','Wilber','Marty','Tyrone','Mammie','Shalon','Faith','Mi','Denese','Flora','Josphine','Christa','Sharonda','Sofia','Collene','Marlyn','Herma','Mac','Marybelle','Casimira','Nicholle','Ervin','Evia','Noriko','Yung','Devona','Kenny','Aliza','Stacey','Toni','Brigette','Lorri','Bernetta','Sonja','Margaretta', 'Johnny Cocksucker III'];
 	}
 
+	getQueueList(page){
+		let list = [];
+		if(typeof page != 'number' || isNaN(page)){
+			page = 0;
+		}
+		let pageLength = 10;
+		let skip = page * pageLength;
+		if(skip >= this.queueList.length){
+			skip = Math.max(skip - pageLength, 0);
+		}
+		let moreBefore = (skip > 0);
+		let moreAfter = false;
+		for(let i = 0, len = this.queueList.length; i < len; i++){
+			if(skip > 0){
+				skip--;
+				continue;
+			}
+			if(pageLength <= 0){
+				if(this.queueList[i + 1]){
+					moreAfter = true;
+				}
+				break;
+			}
+			let queue = this.queueList[i];
+			list.push(queue.info);
+			pageLength--;
+		}
+
+		return {list, moreBefore, moreAfter};
+	}
+
 	/**
-	 * Добавляет игрока в очередь и запускает игру, если очередь заполнена
+	* СОздает очередь с заданными настройками и добавляет в нее игрока.
+	* @param {Player} player       игрок
+	* @param {string} gameMode     режим игры
+	* @param {object} config       настройки очереди
+	* @param {object} [gameConfig] настройки игры
+	*/
+	addPlayerToCustomQueue(player, isPrivate, gameMode, config, gameConfig){
+		if(player.queue || player.game){
+			return;
+		}
+		if(!config || typeof config != 'object'){
+			player.recieveMenuNotification({'QUEUE_INVALID'});
+			return;
+		}
+		if(!this.server.gameModes.hasOwnProperty(gameMode)){
+			player.recieveMenuNotification({'QUEUE_INVALID'});
+			return;
+		}
+		let gameClass = this.server.gameModes[gameMode];
+		config.game = gameClass[0];
+		config.bot = gameClass[1];
+		config.debug = this.server.params.debug;
+		if(!gameConfig || typeof gameConfig != 'object'){
+			gameConfig = {};
+		}
+		config.gameConfig = gameConfig;
+
+		let queue = this.addQueue(isPrivate ? 'private' : 'custom', config);
+		queue.addPlayer(player);
+	}
+
+	/**
+	 * Создает очередь со стандартными настройками и добавляет в нее игрока.
 	 * @param {Player} player игрок
 	 */
 	addPlayerToQuickQueue(player){
@@ -51,20 +115,37 @@ class QueueManager{
 		config.gameConfig = Object.assign({}, config.gameConfig);
 		let queue = new Queue(this, type, config);
 		this.queues[queue.id] = queue;
+		this.addQueueToList(queue);
+
 		if(type == 'quick'){
 			this.quickQueues.push(queue);
 		}
 		return queue;
 	}
 
+	addQueueToList(queue){
+		let i = this.queueList.indexOf(queue);
+		if(!~i && queue.type != 'private' && queue.type != 'botmatch'){
+			this.queueList.unshift(queue);
+		}
+	}
+
 	removeQueue(queue){
 		if(!this.queues[queue.id]){
 			return;
 		}
+		this.removeQueueFromList(queue);
 		delete this.queues[queue.id];
 		let i = this.quickQueues.indexOf(queue);
 		if(~i) {
 			this.quickQueues.splice(i, 1);
+		}
+	}
+
+	removeQueueFromList(queue){
+		let i = this.queueList.indexOf(queue);
+		if(~i){
+			this.queueList.splice(i, 1);
 		}
 	}
 

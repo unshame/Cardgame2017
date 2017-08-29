@@ -11,7 +11,7 @@
 * @param {string}            options.size='wide'              Тип кнопки (`'small', 'big', 'wide', 'circle'`)
 * @param {function}          options.action                   Действие кнопки.
 * @param {any}               options.context=null             Контекст действия.
-* @param {Phaser.Group}      options.group=null               Группа, в которую будет помещена кнопка.
+* @param {external:Phaser.Group}      options.group=null               Группа, в которую будет помещена кнопка.
 * @param {number}            options.scale=1                  Масштаб кнопки.
 * @param {string}            options.text=null                Текст кнопки.
 * @param {string}            options.textColor='black'        Цвет текста.

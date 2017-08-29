@@ -114,7 +114,7 @@ var ScaleManager = function(options){
 	/**
 	* Группа спрайтов, подсвечивающих клетки, возвращенные из `{@link ScaleManager#at}`,
 	* если сетка в режиме дебага.
-	* @type {Phaser.Group}
+	* @type {external:Phaser.Group}
 	*/
 	this._highlights = null;
 

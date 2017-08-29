@@ -93,6 +93,31 @@ module.exports = function(server){
 			}
 		},
 
+		requestQueueList: function(){
+			let player = server.players[this.connection.id];
+			if(!player){
+				return;
+			}
+			let action = server.manager.getQueueList();
+			action.type = 'QUEUE_LIST';
+			player.recieveMenuNotification(action);
+		},
+
+		createCustomQueue: function(isPrivate, gameMode, config, gameConfig){
+			let player = server.players[this.connection.id];
+			if(!player){
+				return;
+			}
+			server.manager.addPlayerToCustomQueue(player, isPrivate, gameMode, config, gameConfig);
+		},
+
+		joinCustomQueue: function(id){
+			let player = server.players[this.connection.id];
+			if(player && server.manager.queues.hasOwnProperty(id)){
+				server.manager.queues[id].addPlayer(player);
+			}
+		},
+
 		/**
 		 * Добавляет игрока в очередь
 		 */

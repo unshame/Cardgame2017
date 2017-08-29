@@ -729,21 +729,6 @@ article>div h5, article>div div.description {
   margin: 6px 6px 6px 0;
 }
 
-td.name {
-  width: 100px;
-}
-td.type {
-  width: 125px;
-}
-td.attributes {
-  width: 100px;
-}
-td.default {
-  width: 100px;
-  max-width:175px;
-  word-wrap: break-word;
-}
-
 .nav-item-name{
   display: inline-block;
   max-width: 186px;
