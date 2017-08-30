@@ -53,6 +53,18 @@ class GamePlayers extends PlayerManager{
 		return scores;
 	}
 
+	// ТИПЫ ИГРОКОВ
+	
+	// Люди
+	get humans(){
+		return this.getWithOwn('type', 'player');
+	}
+
+	// Боты
+	get bots(){
+		return this.getWithOwn('type', 'bot');
+	}
+
 	// СТАТУСЫ
 
 	// Активные
@@ -172,13 +184,14 @@ class GamePlayers extends PlayerManager{
 			i--;
 		}
 
-		if(replacement.statuses.working){
-			replacement.sendResponse();
-		}
-
 		this.notify({type: 'PLAYER_CONCEDED', pid: player.id, name: replacement.name});
 
 		this.log.notice('Player conceded', player.id);
+
+		// Посылаем ответ от бота, чтобы продолжить игру, если от бота ожидается ответ и в игре остались реальные игроки
+		if(this.humans.length && replacement.statuses.working){
+			replacement.sendResponse();
+		}
 	}
 
 	// Оповещает игроков о совершенном действии

@@ -83,6 +83,8 @@ class Queue{
 		* @type {Array}
 		*/
 		this.players = [];
+
+		this.log.notice('Queue initialized');
 	}
 
 	/**
@@ -145,6 +147,8 @@ class Queue{
 			return;
 		}
 
+		this.log.notice('Starting game');
+
 		this.players.forEach((p) => {
 			p.recieveQueueAction({type: 'QUEUE_READY'});
 		});
@@ -173,6 +177,7 @@ class Queue{
 	* создает и начинает игру.
 	*/
 	startGameWithBots(){
+		this.log.notice('Switching to botmatch');
 		let numPlayers = this.config.numPlayers;
 		this.config.numBots += numPlayers - this.players.length;
 		this.config.numPlayers = this.players.length;

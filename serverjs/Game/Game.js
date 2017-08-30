@@ -349,8 +349,7 @@ class Game{
 		let humanActivePlayers = this.players.getWithOwn('type', 'player', this.players.active);
 		if(!humanActivePlayers.length){
 			this.log.notice('Simulating');
-			let humanPlayers = this.players.getWithOwn('type', 'player');
-			this.players.notify({type: 'SIMULATING'}, humanPlayers);
+			this.players.notify({type: 'SIMULATING'}, this.players.humans);
 			this.simulating = true;
 			this.fakeDescisionTimer = 0;
 		}
@@ -359,8 +358,7 @@ class Game{
 	/** Убирает статус симуляции, оповещает игроков. */
 	resetSimulating(){
 		if(this.simulating && !this.isTest){
-			let humanPlayers = this.players.getWithOwn('type', 'player');
-			this.players.notify({type: 'STOP_SIMULATING'}, humanPlayers);
+			this.players.notify({type: 'STOP_SIMULATING'}, this.players.humans);
 		}
 
 		this.simulating = this.isTest;

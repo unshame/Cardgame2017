@@ -126,6 +126,9 @@ class Player{
 			this.log.warn('No game has been assigned', action);
 			return;
 		}
+		if(!this.game.active){
+			return;
+		}
 		this.game.recieveResponse(this, action || null);
 	}
 
@@ -136,6 +139,9 @@ class Player{
 			return;
 		}
 		setTimeout(() => {
+			if(!this.game || !this.game.active){
+				return;
+			}
 			this.game.recieveResponseSync(this, action || null);
 			if(callback){
 				callback();
