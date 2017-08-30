@@ -34,7 +34,6 @@ UI.Rope.prototype.update = function(){
 	if(!this.burning && this.startTime && this.startTime < now){
 		burning = true;
 	}
-
 	else if(!this.burning){
 		return;
 	}

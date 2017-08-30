@@ -203,9 +203,9 @@ class GamePlayers extends PlayerManager{
 		}, players);
 	}
 
-	validActionsNotify(timeout){
+	validActionsNotify(deadline){
 		this.forEach((p) => {
-			p.recieveValidActions(this.game.actions.valid[p.id], timeout);
+			p.recieveValidActions(this.game.actions.valid[p.id], deadline);
 		});
 	}
 

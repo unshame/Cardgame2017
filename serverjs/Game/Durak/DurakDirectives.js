@@ -108,8 +108,8 @@ class DurakDirectives{
 		this.log.silly(actions);
 
 		this.actions.valid[pid] = actions;
-		this.waitForResponse(this.actions.timeouts.actionAttack, [player]);
-		this.players.validActionsNotify(this.actions.timeouts.actionAttack);	
+		let deadline = this.waitForResponse(this.actions.timeouts.actionAttack, [player]);
+		this.players.validActionsNotify(deadline);	
 		return false;
 	}
 
@@ -174,8 +174,8 @@ class DurakDirectives{
 			break;
 		}
 
-		this.waitForResponse(this.actions.timeouts.actionDefend, [player]);
-		this.players.validActionsNotify(this.actions.timeouts.actionAttack);	
+		let deadline = this.waitForResponse(this.actions.timeouts.actionDefend, [player]);
+		this.players.validActionsNotify(deadline);	
 
 		return false;
 	}

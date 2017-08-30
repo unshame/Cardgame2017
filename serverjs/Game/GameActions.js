@@ -70,7 +70,7 @@ class GameActions{
 		if(this.valid[player.id].length && !action){
 			this.log.warn(player.name, 'Wating for action but no action recieved');
 			if(game.isRunning){
-				player.recieveValidActions(this.valid[player.id].slice(), (this.deadline - Date.now())/1000);
+				player.recieveValidActions(this.valid[player.id].slice(), this.deadline);
 			}
 			return;
 		}

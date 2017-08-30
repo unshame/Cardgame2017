@@ -59,15 +59,12 @@ class Player{
 		}
 	}
 
-	recieveValidActions(actions, time){
+	recieveValidActions(actions, deadline){
 		if(this.remote && this.connected){
 			let now = Date.now();
-			if(this.afk){
-				time = this.game.actions.timeouts.afk;
-			}
 			var action = {
 				actions: actions,
-				time: now + time*1000,
+				time: deadline,
 				timeSent: now,
 				turnStage: this.game.turnStages.current,
 				channel: 'possible_actions'

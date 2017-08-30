@@ -494,10 +494,11 @@ class Game{
 
 			this.actions.deadline = Date.now() + duration;
 			this.timer = setTimeout(this.timeOut.bind(this), duration);
+			return this.actions.deadline;
 		}
 		else{
 			this.log.error(new Error('Set to wait for response but nobody to wait for'));
-			return;
+			return 0;
 		}
 	}
 
