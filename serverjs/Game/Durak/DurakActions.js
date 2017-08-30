@@ -3,10 +3,11 @@
 const GameActions = reqfromroot('Game/GameActions');
 
 class DurakActions extends GameActions{
-	constructor(game){
+	constructor(game, players){
 
 		super(
 			game,
+			players,
 			{
 				gameStart: 10,
 				gameEnd: 20,

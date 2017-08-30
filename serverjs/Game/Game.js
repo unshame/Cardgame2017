@@ -67,7 +67,7 @@ class Game{
 		* Обработчик ответа от игроков.
 		* @type {GameActions}
 		*/
-		this.actions = new Classes.actions(this);
+		this.actions = new Classes.actions(this, players);
 
 		/**
 		* Методы, выполняемые в ответ на действия от игроков.
@@ -246,7 +246,7 @@ class Game{
 
 		this.reset();
 		
-		this.actions.valid = action.actions.slice();
+		this.actions.setValid(action.actions);
 
 		this.waitForResponse(this.actions.timeouts.gameEnd, this.players);
 		this.players.notify(action);
@@ -510,13 +510,13 @@ class Game{
 		this.players.logTimeout();
 
 		// Если есть действия, выполняем первое попавшееся действие
-		if(this.actions.valid.length && this.states.current == 'STARTED'){
+		if(this.actions.hasValid() && this.states.current == 'STARTED'){
 			this.actions.executeFirst();
 		}
 		// Иначе, обнуляем действующих игроков, возможные действия и продолжаем ход
 		else{
 			this.players.working = [];
-			this.actions.valid.length = 0;
+			this.actions.clearValid();
 			// jshint curly:false
 			while(this.continue());
 		}	

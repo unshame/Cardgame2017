@@ -107,7 +107,7 @@ class DurakDirectives{
 
 		this.log.silly(actions);
 
-		this.actions.valid = actions;
+		this.actions.valid[pid] = actions;
 		this.waitForResponse(this.actions.timeouts.actionAttack, [player]);
 		player.recieveValidActions(actions.slice(), this.actions.timeouts.actionAttack);	
 		return false;
@@ -147,7 +147,7 @@ class DurakDirectives{
 		};
 		actions.push(action);
 
-		this.actions.valid = actions;
+		this.actions.valid[pid] = actions;
 
 		// Выставляем новую стадию хода в зависимости от предыдущей
 		switch(lastTurnStage){

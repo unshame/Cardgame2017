@@ -1,14 +1,17 @@
 'use strict';
 
 class GameActions{
-	constructor(game, timeouts, ignored, prioritised){
+	constructor(game, players, timeouts, ignored, prioritised){
 
 		this.game = game;
 		this.log = this.game.log;
 
 		this.complete = null;
 		this.deadline = null;
-		this.valid = [];
+		this.valid = {};
+		players.forEach((p) =>{
+			this.valid[p.id] = [];
+		});
 		this.stored = [];
 
 		this.ignored = ignored || [];
@@ -35,8 +38,8 @@ class GameActions{
 	reset(){
 		this.complete = null;
 		this.deadline = null;
-		this.valid.length = 0;
 		this.stored.length = 0;
+		this.clearValid();
 	}
 
 	// Получает и обрабатывает действие
@@ -64,10 +67,10 @@ class GameActions{
 		}
 
 		// Ожидается действие, но действие не получено, перепосылаем действия
-		if(this.valid.length && !action){
+		if(this.valid[player.id].length && !action){
 			this.log.warn(player.name, 'Wating for action but no action recieved');
 			if(game.isRunning){
-				player.recieveValidActions(this.valid.slice(), (this.deadline - Date.now())/1000);
+				player.recieveValidActions(this.valid[player.id].slice(), (this.deadline - Date.now())/1000);
 			}
 			return;
 		}
@@ -138,7 +141,7 @@ class GameActions{
 				{
 					type: 'INVALID_ACTION',
 					action: action,
-					actions: this.valid.slice(),
+					actions: this.valid[player.id].slice(),
 					time: this.deadline,
 					timeSent: Date.now()
 				},
@@ -149,11 +152,12 @@ class GameActions{
 
 	// Находит и возвращает локальную копию переданного действия или null
 	// ignored может быть 1 или массивом игнорируемых свойств действия
-	checkValidity(action, ignored){
+	checkValidity(pid, action, ignored){
 
+		let validActions = this.valid[pid];
 		outer:	// https:// developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/label
-		for(let i = 0; i < this.valid.length; i++){
-			let validAction = this.valid[i];
+		for(let i = 0; i < validActions.length; i++){
+			let validAction = validActions[i];
 			for(let k in validAction){
 				if(!validAction.hasOwnProperty(k)){
 					continue;
@@ -167,12 +171,37 @@ class GameActions{
 		return null;
 	}
 
+	setValid(actions){
+		for(let pid in this.valid){
+			if(this.valid.hasOwnProperty(pid)){
+				this.valid[pid] = actions.slice();
+			}
+		}
+	}
+
+	clearValid(){
+		for(let pid in this.valid){
+			if(this.valid.hasOwnProperty(pid)){
+				this.valid[pid].length = 0;
+			}
+		}
+	}
+
+	hasValid(){
+		for(let pid in this.valid){
+			if(this.valid.hasOwnProperty(pid) && this.valid[pid].length){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// Обрабатывает полученное от игрока действие, возвращает исходящее действие
 	execute(player, incomingAction){
 
 		const game = this.game;
 
-		let action = this.checkValidity(incomingAction, this.ignored);
+		let action = this.checkValidity(player.id, incomingAction, this.ignored);
 
 		// Проверка действия
 		if(!action){
@@ -193,7 +222,7 @@ class GameActions{
 		action.pid = player.id;
 
 		// Обнуляем возможные действия
-		this.valid.length = 0;		
+		this.clearValid();
 
 		game.hoverOutCard(player);
 
@@ -206,29 +235,40 @@ class GameActions{
 		const game = this.game;
 
 		let playersWorking = game.players.working;
+		let player;
+		let validActions;
 		let actionIndex = 0;
-		for(let ai = 0; ai < this.valid.length; ai++){
-			let action = this.valid[ai];
-			if(~this.prioritised.indexOf(action.type)){
-				actionIndex = ai;
-				break;
+		outer:
+		for(let pid in this.valid){
+			if(!this.valid.hasOwnProperty(pid)){
+				continue;
+			}
+			validActions = this.valid[pid];
+			for(let ai = 0; ai < validActions.length; ai++){
+				let action = validActions[ai];
+				if(~this.prioritised.indexOf(action.type)){
+					player = game.players.byId[pid];
+					actionIndex = ai;
+					break outer;
+				}
 			}
 		}
 
-		// У нас поддерживается только одно действие от одного игрока за раз
-		let player = playersWorking[0];	
+		if(!player){
+			player = playersWorking[0];
+			validActions = this.valid[player.id];
+		}
 
 		// Устанавливаем, что игрок не выбрал действие
 		player.afk = true;
+		let outgoingAction = this.execute(player, validActions[actionIndex]);
 
-		let outgoingAction = this.execute(player, this.valid[actionIndex]);
-
-		// Убираем игрока из списка действующих
+		// Обнуляем список действующих
 		game.players.working = [];
 
 		game.waitForResponse(this.timeouts.actionComplete, game.players);
 		// Отправляем оповещение о том, что время хода вышло
-		game.players.notify({type: 'TOO_SLOW'}, [player]);
+		game.players.notify({type: 'TOO_SLOW'}, playersWorking);
 		game.players.completeActionNotify(outgoingAction);
 	}
 
@@ -236,7 +276,7 @@ class GameActions{
 	store(player, incomingAction){
 
 		// Проверка действия
-		let action = this.checkValidity(incomingAction);
+		let action = this.checkValidity(player.id, incomingAction);
 
 		if(!action){
 			this.log.warn('Invalid action', player.id, incomingAction.type, incomingAction, this.valid);
