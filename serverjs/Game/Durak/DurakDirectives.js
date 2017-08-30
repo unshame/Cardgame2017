@@ -109,7 +109,7 @@ class DurakDirectives{
 
 		this.actions.valid[pid] = actions;
 		this.waitForResponse(this.actions.timeouts.actionAttack, [player]);
-		player.recieveValidActions(actions.slice(), this.actions.timeouts.actionAttack);	
+		this.players.validActionsNotify(this.actions.timeouts.actionAttack);	
 		return false;
 	}
 
@@ -175,7 +175,7 @@ class DurakDirectives{
 		}
 
 		this.waitForResponse(this.actions.timeouts.actionDefend, [player]);
-		player.recieveValidActions(actions.slice(), this.actions.timeouts.actionDefend);	
+		this.players.validActionsNotify(this.actions.timeouts.actionAttack);	
 
 		return false;
 	}

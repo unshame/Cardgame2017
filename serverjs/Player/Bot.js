@@ -48,9 +48,11 @@ class Bot extends Player{
 	}
 
 	recieveValidActions(actions){
-		setTimeout(() => {
-			this.sendRandomAction(actions);
-		}, this.getDescisionTime());
+		if(actions.length){
+			setTimeout(() => {
+				this.sendRandomAction(actions);
+			}, this.getDescisionTime());
+		}
 	}
 
 	recieveCompleteAction(action){

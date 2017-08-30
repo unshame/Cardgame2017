@@ -203,6 +203,12 @@ class GamePlayers extends PlayerManager{
 		}, players);
 	}
 
+	validActionsNotify(timeout){
+		this.forEach((p) => {
+			p.recieveValidActions(this.game.actions.valid[p.id], timeout);
+		});
+	}
+
 	// Отправляет сообщение игрокам с опциональными действиями
 	notify(note, players){
 		this.forEachOwn((p) => {

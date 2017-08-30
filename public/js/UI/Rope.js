@@ -18,6 +18,8 @@ UI.Rope = function(){
 	this.duration = 0;
 	this.burning = false;
 	this.maxHeight = game.screenHeight;
+	this.showTime = 15000;
+	this.redTime = 5000;
 
 };
 
@@ -41,11 +43,15 @@ UI.Rope.prototype.update = function(){
 	if(left <= 0){
 		this.stop();
 	}
-	else{
-		this.height = left/this.duration* this.maxHeight;
-		if(left <= 5000 && this.tint != ui.colors.red){
+	else if(left <= this.showTime){
+		this.visible = true;
+		this.height = left/this.showTime * this.maxHeight;
+		if(left <= this.redTime && this.tint != ui.colors.red){
 			this.tint = ui.colors.red;
 		}
+	}
+	else{
+		this.visible = false;
 	}
 };
 

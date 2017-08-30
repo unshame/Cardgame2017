@@ -128,7 +128,7 @@ class GameActions{
 			game.continue();
 
 			// Сообщаем игрокам о действии
-			// Если дальнейших действий пока нет, даем игрокам время на обработку выполненного времени
+			// Если дальнейших действий пока нет, даем игрокам время на обработку выполненного действия
 			if(this.complete == outgoingAction){
 				this.complete = null;
 				game.waitForResponse(this.timeouts.actionComplete, game.players);
