@@ -53,6 +53,16 @@ class GamePlayers extends PlayerManager{
 		return scores;
 	}
 
+	get roles(){
+		let roles = {};
+		this.forEach((p) => {
+			roles[p.id] = {
+				role: p.statuses.role
+			};
+		});
+		return roles;
+	}
+
 	// ТИПЫ ИГРОКОВ
 	
 	// Люди
@@ -205,7 +215,7 @@ class GamePlayers extends PlayerManager{
 
 	validActionsNotify(deadline){
 		this.forEach((p) => {
-			p.recieveValidActions(this.game.actions.valid[p.id], deadline);
+			p.recieveValidActions(this.game.actions.valid[p.id].slice(), deadline, this.roles);
 		});
 	}
 

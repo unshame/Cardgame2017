@@ -39,3 +39,18 @@ PlayerManager.prototype.getPlayer = function(pid){
 		return null;
 	}
 };
+
+PlayerManager.prototype.updateRoles = function(roles){
+	this.players.forEach(function(p){
+		var role = roles && roles[p.id] && roles[p.id].role;
+		if(!role){
+			p.role = null;
+		}
+		else if(role != p.role){
+			if(p.id == this.pid){
+				ui.eventFeed.newMessage('You\'re the ' + role, 'neutral', 2000);
+			}
+			p.role = roles[p.id].role;
+		}
+	}, this);
+};

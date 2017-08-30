@@ -85,7 +85,7 @@ ActionHandler.prototype.executeAction = function(action){
 	switch(channel.type){
 		case CHANNEL_TYPE.USER_INVOLVED:
 		connection.serverWaiting = false;
-		this.handlePossibleActions(action.actions, action.time, action.timeSent, action.turnStage);
+		this.handlePossibleActions(action.actions, action.time, action.timeSent, action.turnStage, action.roles);
 		return;
 
 		case CHANNEL_TYPE.RESPOND:
@@ -139,7 +139,7 @@ ActionHandler.prototype.executeAction = function(action){
 * @param {number} timeSent время в которое действия были отправлены с сервера
 * @param {string} turnStage текущая стадия хода
 */
-ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent, turnStage){
+ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent, turnStage, roles){
 	this.sequencer.queueUp(function(){
 		var state = this.channels.possible_actions.state;
 		if(state != game.state.currentSync){
@@ -153,6 +153,11 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 		time = time - Date.now();
 		if(time){
 			ui.rope.start(time - 1000);
+		}
+
+		if(roles){
+			playerManager.updateRoles(roles);
+			fieldManager.updateBadges();
 		}
 
 		this.highlightPossibleActions(actions);

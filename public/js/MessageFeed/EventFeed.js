@@ -32,6 +32,14 @@ MessageFeed.EventFeed = function(game, name){
 			strokeThickness: 2, 
 			wordWrap: true,
 			align: 'center'
+		},
+		'neutral': {
+			fill: ui.colors.menu.orange.background, 
+			stroke: ui.colors.menu.orange.outer, 
+			font: '50px Exo',
+			strokeThickness: 2, 
+			wordWrap: true,
+			align: 'center'
 		}
 	};
 

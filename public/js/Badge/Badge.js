@@ -3,7 +3,6 @@ var Badge = function(field, pid){
 	this.field = field;
 	this.status = game.add.text(0, 0, '', {fill: 'white', font: '24px Exo'}, this);
 	this.name = game.add.text(0, 0, name, {fill: 'white', font: '24px Exo'}, this);
-	this.statusText = '';
 	this.player = playerManager.getPlayer(pid);
 	this.updatePosition();
 };
@@ -15,17 +14,19 @@ Badge.prototype.updatePosition = function(){
 	var width = this.field.area.width;
 	var align = this.field.badgeStyle.align;
 	var nameText = this.player.name;
+	var statusText = this.player.role;
 	switch(align){
 		case 'top':
 		// this.name.x = 0;
 		// this.name.y = 0;
 		// this.name.anchor.set(0, 1);
 		this.name.visible = false;
+		this.status.visible = false;
 
-		this.status.x = field.area.width;
-		this.status.y = 0;
+		//this.status.x = field.area.width;
+		//this.status.y = 0;
 
-		this.status.anchor.set(1, 1);
+		//this.status.anchor.set(1, 1);
 		break;
 
 		case 'bottom':
@@ -69,7 +70,12 @@ Badge.prototype.updatePosition = function(){
 		break;
 	}
 	this._limitTextWidth(this.name, nameText, width);
-	this._limitTextWidth(this.status, this.statusText, width);
+	if(statusText){
+		this._limitTextWidth(this.status, statusText, width);
+	}
+	else{
+		this.status.setText('');
+	}
 };
 
 Badge.prototype._limitTextWidth = function(textDisplay, text, width){

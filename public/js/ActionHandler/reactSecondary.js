@@ -46,6 +46,8 @@ var reactSecondary = {
 	*/
 	TURN_ENDED: function(action, seq){
 		fieldManager.resetTableOrder();
+		playerManager.updateRoles();
+		fieldManager.updateBadges();
 	},
 
 	/**

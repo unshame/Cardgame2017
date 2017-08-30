@@ -176,3 +176,11 @@ FieldManager.prototype.applySkin = function(){
 		deck.icon.frame = frame;
 	}
 };
+
+FieldManager.prototype.updateBadges = function(){
+	this.forEachField(function(f){
+		if(f.badge){
+			f.badge.updatePosition();
+		}
+	});
+}
