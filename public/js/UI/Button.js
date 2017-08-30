@@ -309,3 +309,4 @@ UI.Button.prototype.removeFromParent = function(destroy){
 };
 
 //@include:ButtonPopup
+//@include:ButtonAltStyle

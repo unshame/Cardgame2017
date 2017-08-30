@@ -191,11 +191,12 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 	fieldManager.resetHighlights();
 
 	var button = ui.actionButtons.getByName('action');
-	button.disable();
+	var hasButtonAction = false;
 
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
 		if(action.type == 'PASS' || action.type == 'TAKE'){
+			hasButtonAction = true;
 			this.setButtonAction(button, action.type);
 			continue;
 		}
@@ -209,7 +210,22 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 			}
 		}
 	}
+
+	if(hasButtonAction){
+		if(actions.length == 1){
+			button.changeStyle(1);
+		}
+		else if(actions.length > 1){
+			button.changeStyle(0);
+		}
+	}
+	else{
+		button.disable();
+		button.changeStyle(0);
+	}
+
 	fieldManager.tryHighlightDummy();
+
 };
 
 /**
@@ -235,9 +251,12 @@ ActionHandler.prototype.resetActions = function(){
 /** Убирает все возможные действия и ресетит связанные с ними элементы игры */
 ActionHandler.prototype.reset = function(){
 	this.resetActions();
-	fieldManager.resetHighlights();
-	ui.actionButtons.getByName('action').disable();
+	fieldManager.resetHighlights();	
+	var button = ui.actionButtons.getByName('action');
+	button.disable();
+	button.changeStyle(0);
 	ui.rope.stop();
+
 };
 
 /** Убирает определенные действия из `possibleActions` в соответствии с `turnStage`. */

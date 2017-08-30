@@ -15,7 +15,7 @@ UI.prototype._createButtons = function(){
 	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons');
 
 	// Действие
-	new UI.Button({
+	new UI.ButtonAltStyles({
 		position: function(width, height){
 			return {
 				x: game.screenWidth/2 - width/2,
@@ -37,7 +37,10 @@ UI.prototype._createButtons = function(){
 		textColor: 'white',
 		fontSize: 50,
 		mobileClickProtect: true,
-		group: this.actionButtons
+		group: this.actionButtons,
+		styles: [
+			{key: 'button_red_big'}
+		]
 	});
 
 
