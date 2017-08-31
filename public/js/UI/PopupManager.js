@@ -58,22 +58,52 @@ UI.PopupManager = function(){
 	this.text.setShadow(1, 1, 'rgba(0,0,0,0.5)', 3);
 
 	this.visible = false;
+
+	/**
+	* Элемент, у которого есть `PopupComponent`, который вызвал показ вплывающего текста.
+	* @type {any}
+	*/
+	this.overElement = null;
+
+	/**
+	* Элемент, над которым находится курсор.
+	* @type {DisplayObject}
+	*/
+	this.overArea = null;
+
+	/**
+	* Функция получения текста или статичный текст.
+	* @type {(function|string)}
+	*/
+	this.overTextGetter = null;
+
+	/**
+	* Позиция показа текста.  
+	* Может быть `'left', 'right', 'top', 'bottom', 'middle'`.  
+	* Отсутствие значение приведет к выводу текста над\под курсором.
+	* @type {string}
+	*/
+	this.overPlacement = null;
 };
 
 extend(UI.PopupManager, Phaser.Group);
 
 /**
 * Запускает таймер до показа текста при наведении на элемент.
-* @param  {DisplayObject} el элемент, над которым находится курсор
-* @param  {string} text текст, который нужно показать
-* @param  {boolean} now  показывает текст без задержки
+* @param {any}               el         {@link UI.PopupComponent#overElement|overElement}
+* @param {DisplayObject}     area       {@link UI.PopupComponent#overArea|overArea}
+* @param {(function|string)} textGetter {@link UI.PopupComponent#overTextGetter|overTextGetter}
+* @param {string}            placement  {@link UI.PopupComponent#overPlacement|overPlacement}
+* @param {boolean}           now        показывает текст без задержки
 */
-UI.PopupManager.prototype.hoverOver = function(el, text, now){
+UI.PopupManager.prototype.hoverOver = function(el, area, textGetter, placement, now){
 	if(this.overElement == el){
 		return;
 	}
 	this.overElement = el;
-	this.overText = text;
+	this.overArea = area;
+	this.overTextGetter = textGetter;
+	this.overPlacement = placement;
 	this._resetDelay();
 	if(now){
 		this._showPopup();
@@ -93,15 +123,32 @@ UI.PopupManager.prototype.hoverOut = function(){
 		this.visible = false;
 	}
 	this.overElement = null;
-	this.overText = null;
+	this.overArea = null;
+	this.overTextGetter = null;
+	this.overPlacement = null;
 	this._resetDelay();
 };
 
 /** Обновляет и показывает попап с текстом */
 UI.PopupManager.prototype._showPopup = function(){
 	this.showing = true;
-	this._updateText(this.overText);
+	var text = this._getText(true);
+	this._updateText(text);
 	this.updatePosition();
+};
+
+/**
+* Получает текст из `overTextGetter`.
+* @param  {boolean} anyway передается в `overTextGetter`, сообщает, что нужно вернуть текст, даже если он не изменился
+* @return {string} Возвращает текст.
+*/
+UI.PopupManager.prototype._getText = function(anyway){
+	if(typeof this.overTextGetter == 'function'){
+		return this.overTextGetter.call(this.overElement, anyway);
+	}
+	else{
+		return this.overTextGetter;
+	}
 };
 
 /** 
@@ -136,7 +183,7 @@ UI.PopupManager.prototype.updatePosition = function(){
 	if(!this.visible){
 		this.visible = true;
 	}
-	var text = this.overElement.getHoverText();
+	var text = this._getText();
 	if(text){
 		this._updateText(text);
 	}
@@ -146,14 +193,19 @@ UI.PopupManager.prototype.updatePosition = function(){
 	this.y = position.y;
 };
 
+/**
+* Возвращает позицию всплывающего текста в зависимости от `overPlacement`.
+* @return {object} `{x, y}`
+*/
 UI.PopupManager.prototype._getPopupPosition = function(){
 	if(!this.overElement){
 		return {};
 	}
-	var popupArea = this.overElement.popupArea;
+	var popupArea = this.overArea;
+	var x, y;
 	var ax = popupArea.parent.worldPosition.x + popupArea.x - popupArea.anchor.x*popupArea.width;
 	var ay = popupArea.parent.worldPosition.y + popupArea.y - popupArea.anchor.y*popupArea.height;
-	switch(this.overElement.popupPlacement){
+	switch(this.overPlacement){
 
 		case 'right':
 		x = ax + popupArea.width + this.offset;
