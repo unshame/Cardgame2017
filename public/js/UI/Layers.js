@@ -30,7 +30,8 @@ UI.Layers = function(){
 
 /**
 * Определяет реальные индексы слоев для позиционирования.
-* Исправляет повторяющиеся индексы.
+* Исправляет повторяющиеся индексы.  
+* Сортировка слоев нестабильная, т.е. слои с одинаковым индексом могут поменять последовательность после сортировки.  
 */
 UI.Layers.prototype._sortPositions = function(){
 	this.positions.sort(function(a, b){
@@ -93,7 +94,7 @@ UI.Layers.prototype.addExistingLayer = function(layer, i){
 UI.Layers.prototype.addExistingLayers = function(layers){
 	for(var i = 0; i < layers.length; i++){
 		var layer = layers[i];
-		this.addExistingLayer(layer[0], layer[1], layer[2]);
+		this.addExistingLayer(layer[0], layer[1]);
 	}
 };
 
@@ -184,7 +185,7 @@ UI.Layers.prototype.positionElements = function(){
 };
 
 /**
-* Перезагружает текст всех элементов всех слоев, относящихся к `Phaser.Group`, у готорых есть `label` и `label.isText`.
+* Перезагружает текст всех элементов всех слоев, относящихся к `Phaser.Group`, у которых есть `label` и `label.isText`.
 */
 UI.Layers.prototype.loadLabels = function(){
 	for(var pname in this.byName){
@@ -213,8 +214,8 @@ UI.Layers.prototype.loadLabels = function(){
 /**
 * Дебаг функция для получения списка слоев.
 * @return {object} Возвращает `{world: [], layers: []}`.  
-* `world` содержит имена `{@link DisplayObject}` в `game.world.children`.  
-* `layers` содержит соответствующие слои (`{@link DisplayObject}`), если они есть.
+*                  `world` содержит имена `{@link DisplayObject}` в `game.world.children`.  
+*                  `layers` содержит соответствующие слои (`{@link DisplayObject}`), если они есть.
 * @see  {@link printLayers}
 */
 UI.Layers.prototype.getOrder = function(){
@@ -247,8 +248,8 @@ UI.Layers.prototype.updateModalIndex = function(modalLayer){
 };
 
 /**
-* Вызывается элементами игры и проверяет не заблокирован ли элемент
-* над которым находится курсор модальным слоем и соответственно обновляет курсор.
+* Вызывается элементами игры и проверяет, не заблокирован ли элемент
+* над которым находится курсор модальным слоем, и соответственно обновляет курсор.
 * @param {DisplayObject} el объект над которым находится курсор
 */
 UI.Layers.prototype.updateCursorOverlap = function(el){

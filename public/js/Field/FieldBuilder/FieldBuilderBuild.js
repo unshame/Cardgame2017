@@ -172,7 +172,8 @@ FieldBuilder.prototype._buildDeckField = function(){
 				'Cards in deck: ' + this.cards.length + '\n' +
 			    'Trump suit: ' + getSuitStrings('EN')[this.icon ? this.icon.frame : -1]
 			);
-		}
+		},
+		placement: Phaser.Device.desktop ? null : 'bottom'
 	},
 	iconStyle);
 };

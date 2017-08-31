@@ -24,7 +24,11 @@ UI.PopupManager = function(){
 	*/
 	this.margin = 10;
 
-	this.offset = 5;
+	/**
+	* Отступ от курсора/элемента.
+	* @type {Number}
+	*/
+	this.offset = Phaser.Device.desktop ? 5 : 50;
 
 	/**
 	* Показывается ли текст.
@@ -147,31 +151,33 @@ UI.PopupManager.prototype._getPopupPosition = function(){
 		return {};
 	}
 	var popupArea = this.overElement.popupArea;
+	var ax = popupArea.parent.worldPosition.x + popupArea.x - popupArea.anchor.x*popupArea.width;
+	var ay = popupArea.parent.worldPosition.y + popupArea.y - popupArea.anchor.y*popupArea.height;
 	switch(this.overElement.popupPlacement){
 
 		case 'right':
-		x = popupArea.parent.x + popupArea.x + popupArea.width + this.offset;
-		y = popupArea.parent.y + popupArea.y + popupArea.height/2 - this.background.height/2;
+		x = ax + popupArea.width + this.offset;
+		y = ay + popupArea.height/2 - this.background.height/2;
 		break;
 
 		case 'left':
-		x = popupArea.parent.x + popupArea.x - this.background.width - this.offset;
-		y = popupArea.parent.y + popupArea.y + popupArea.height/2 - this.background.height/2;
+		x = ax - this.background.width - this.offset;
+		y = ay + popupArea.height/2 - this.background.height/2;
 		break;
 
 		case 'top':
-		x = popupArea.parent.x + popupArea.x - this.background.width/2;
-		y = popupArea.parent.y + popupArea.y - this.background.height - this.offset;
+		x = ax + popupArea.width/2 - this.background.width/2;
+		y = ay - this.background.height - this.offset;
 		break;
 
 		case 'bottom':
-		x = popupArea.parent.x + popupArea.x - this.background.width/2;
-		y = popupArea.parent.y + popupArea.y + ui.cursor.height + this.offset;
+		x = ax + popupArea.width/2 - this.background.width/2;
+		y = ay + popupArea.height + this.offset;
 		break;
 
 		case 'middle':
-		x = popupArea.parent.x + popupArea.x + popupArea.width/2 - this.background.width/2;
-		y = popupArea.parent.y + popupArea.y + popupArea.height/2 - this.background.height/2;
+		x = ax + popupArea.width/2 - this.background.width/2;
+		y = ay + popupArea.height/2 - this.background.height/2;
 		break;
 
 		default:

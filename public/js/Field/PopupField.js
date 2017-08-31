@@ -13,7 +13,7 @@ Field.PopupField = function(options, style, popupStyle, iconStyle){
 
 	this.popupStyle = mergeOptions(this.getPopupDefaultOptions(), popupStyle);
 
-	UI.PopupComponent.call(this, this[this.popupStyle.area], style.popupPlacement);
+	UI.PopupComponent.call(this, this[this.popupStyle.area], this.popupStyle.placement);
 };
 
 extend(Field.PopupField, Field.IconField, [UI.PopupComponent]);
@@ -22,7 +22,8 @@ Field.PopupField.prototype.getPopupDefaultOptions = function(){
 	return {
 		numCardsText: 'Cards',
 		area: 'area',
-		getTextFunction: null
+		getTextFunction: null,
+		placement: null
 	};
 };
 
