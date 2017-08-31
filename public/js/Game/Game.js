@@ -95,7 +95,7 @@ Game.prototype.initialize = function(){
 	* @type {CardManager}
 	* @global
 	*/
-	cardManager = new CardManager(gameOptions.get('debug_connection'));
+	cardManager = new CardManager(gameOptions.get('debug_cards'));
 
 	/**
 	* Эмиттер карт

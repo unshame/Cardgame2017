@@ -56,6 +56,7 @@ class DurakCards extends GameCards{
 		return tableField;
 	}
 
+	// Возвращает столы с заполненным attackField, но пустым defendField
 	get defenseFields(){
 		let defenseFields = [];
 		this.table.forEach((tableField) => {
@@ -66,6 +67,7 @@ class DurakCards extends GameCards{
 		return defenseFields;
 	}
 
+	// Возвращает id закрытых столов
 	get lockedFieldsIds(){
 		let lockedFields = [];
 		for(let i = this.table.fullLength; i < this.table.maxLength; i++){
@@ -77,6 +79,7 @@ class DurakCards extends GameCards{
 
 	// Поля
 
+	// Колода с козырной картой на дне
 	addDeckInfo(cardsInfo, pid, reveal){
 		this.deck.forEach((card) => {
 			let newCard = card.info;
@@ -93,6 +96,7 @@ class DurakCards extends GameCards{
 		});
 	}
 
+	// Стол с несколькими полями и attackField и defendField на каждом поле
 	addTableInfo(cardsInfo, pid, reveal){
 		this.table.forEach((tableField) => {
 			if(tableField.attack){
@@ -108,7 +112,7 @@ class DurakCards extends GameCards{
 		});
 	}
 
-	// Обнуляет карты
+	// Обнуляет карты или перемешивает их id
 	reset(soft){
 
 		super.reset(soft);
@@ -203,7 +207,7 @@ class DurakCards extends GameCards{
 	}
 
 	// Убирает карты со стола в указанное поле
-	// Возвращает информацию об убранных картах
+	// Возвращает действие с информацией об убранных картах
 	moveCardsFromTable(field, fieldId, actionType, flipCards){
 		let cardsInfo = [];
 		this.table.forEach((tableField) => {
@@ -274,6 +278,7 @@ class DurakCards extends GameCards{
 		}
 	}
 
+	// Переносит карты в руку игрока, возвращает действие для отправки клиентам
 	take(player){
 		let action = this.moveCardsFromTable(this.hands[player.id], player.id, 'TAKE', false);
 		action.pid = action.field;

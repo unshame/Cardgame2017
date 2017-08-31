@@ -17,7 +17,7 @@ GameInfo.prototype.savePlayers = function(players, gameId){
 		return p.id;
 	}).indexOf(this.pid);
 	if(!~this.pi){
-		console.error('Player manager: Player', this.pid, 'not found in players\n', players);
+		console.error('Game info: Player', this.pid, 'not found in players\n', players);
 		return;
 	}
 };
@@ -58,7 +58,7 @@ GameInfo.prototype.getPlayer = function(pid){
 		return this.playersById[pid];
 	}
 	else{
-		console.error('Player manager: Player', pid, 'not found in players\n', this.players);
+		console.error('Game info: Player', pid, 'not found in players\n', this.players);
 		return null;
 	}
 };
@@ -111,7 +111,7 @@ GameInfo.prototype.updateRoles = function(roles, turnStage){
 			break;
 
 			default:
-			console.error('Player manager: unknown player role', player.role);
+			console.error('Game info: unknown player role', player.role);
 		}
 		messageStyle = 'neutral';
 	}

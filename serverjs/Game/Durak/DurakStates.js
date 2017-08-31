@@ -11,7 +11,7 @@ class DurakStates extends GameStates{
 	}
 
 	// Сообщаем игрокам о колоде и друг друге
-	SHOULD_START(){		
+	SHOULD_START(){
 		const game = this.game;
 		this.current = 'STARTING';
 		game.waitForResponse(game.actions.timeouts.gameStart, game.players);

@@ -38,7 +38,10 @@ var reactPrimary = {
 					ui.eventFeed.removeMessage(message);
 				}
 				fieldManager.hideTrumpCards(cardsInfo);
-			}, 500);
+			}, 500)
+			.then(function(){
+				ui.layers.setLayerIndex(ui.eventFeed, 2);
+			});
 
 	},
 
@@ -105,6 +108,7 @@ var reactPrimary = {
 			fieldManager.queueCards(action.cards, true);
 			fieldManager.removeMarkedCards();
 			fieldManager.placeQueuedCards(BRING_TO_TOP_ON.START, true);
+			ui.layers.setLayerIndex(ui.eventFeed, 2);
 
 			ui.layers.showLayer(ui.actionButtons, true);
 

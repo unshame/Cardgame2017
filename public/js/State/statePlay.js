@@ -96,5 +96,6 @@ var statePlay = new State('play', {
 		ui.layers.hideLayer(ui.actionButtons, true);
 		ui.menus.options.hideElement('concede');
 		ui.menus.endGame.fadeOut();
+		ui.layers.setLayerIndex(ui.eventFeed, 6);
 	}
 });
