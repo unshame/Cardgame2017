@@ -124,6 +124,9 @@ UI.prototype.initialize = function(){
 	* @type {MessageFeed.EventFeed}
 	*/
 	this.eventFeed = new MessageFeed.EventFeed(game);	
+
+	this.eventFeed.zIndexBelowCards = 2;
+	this.eventFeed.zIndexAboveCards = 6;
 	
 	/**
 	* Менеджер модальных меню.
@@ -159,7 +162,7 @@ UI.prototype.initialize = function(){
 		[this.logo, 5],
 		[this.credits, 5],
 		[this.feed, 6],
-		[this.eventFeed, 6],
+		[this.eventFeed, this.eventFeed.zIndexAboveCards],
 		[this.announcer, 7],
 		[this.rope, 7],
 		// игровые меню, -6

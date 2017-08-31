@@ -8,7 +8,7 @@
 var reactSecondary = {
 
 	NO_TRUMP_CARDS: function(action, seq){
-		ui.layers.setLayerIndex(ui.eventFeed, 2);
+		ui.layers.setLayerIndex(ui.eventFeed, ui.eventFeed.zIndexBelowCards);
 	},
 
 	/**
@@ -61,7 +61,7 @@ var reactSecondary = {
 		gameInfo.resetTurnInfo();
 		fieldManager.updateBadges();
 
-		ui.layers.setLayerIndex(ui.eventFeed, 6);
+		ui.layers.setLayerIndex(ui.eventFeed, ui.eventFeed.zIndexAboveCards);
 
 		var discard = fieldManager.fields.DISCARD_PILE,
 			dummy = fieldManager.fields.dummy, 
