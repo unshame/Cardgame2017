@@ -1,17 +1,17 @@
 // Player hand
 FieldBuilder.prototype._buildPlayerField = function(){
 	var manager = this.manager;
-	var player = playerManager.players[playerManager.pi];
+	var player = gameInfo.players[gameInfo.pi];
 	var field = manager.addPlayerField({
 		type: 'HAND',
-		id: playerManager.pid,
+		id: gameInfo.pid,
 		name: player.name,
-		specialId: playerManager.pi,
+		specialId: gameInfo.pi,
 		debug: manager.inDebugMode
 	},
 	{
-		x:this.positions[playerManager.pid].x,
-		y:this.positions[playerManager.pid].y,
+		x:this.positions[gameInfo.pid].x,
+		y:this.positions[gameInfo.pid].y,
 		width:this.dimensions.player.width,
 		alwaysVisible: true,
 		minActiveSpace: this.minActiveSpaces.player,
@@ -84,13 +84,13 @@ FieldBuilder.prototype._buildTableFields = function(lockedFields){
 // Opponents
 FieldBuilder.prototype._buildOpponentFields = function(){
 	var manager = this.manager,
-		players = playerManager.players,
-		i = playerManager.pi + 1,
+		players = gameInfo.players,
+		i = gameInfo.pi + 1,
 		oi = 0;
 	if(i >= players.length){
 		i = 0;
 	}
-	while(i != playerManager.pi){
+	while(i != gameInfo.pi){
 		var p = players[i];
 		var field = manager.addOpponentField({
 			type: 'HAND_OPPONENT',

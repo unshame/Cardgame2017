@@ -57,7 +57,8 @@ class GamePlayers extends PlayerManager{
 		let roles = {};
 		this.forEach((p) => {
 			roles[p.id] = {
-				role: p.statuses.role
+				role: p.statuses.role,
+				roleIndex: p.statuses.roleIndex
 			};
 		});
 		return roles;
@@ -214,9 +215,9 @@ class GamePlayers extends PlayerManager{
 	}
 
 	validActionsNotify(deadline){
-		this.forEach((p) => {
+		this.forEachOwn((p) => {
 			p.recieveValidActions(this.game.actions.valid[p.id].slice(), deadline, this.roles);
-		});
+		}, this.game.simulating ? this.bots : this);
 	}
 
 	// Отправляет сообщение игрокам с опциональными действиями

@@ -76,7 +76,14 @@ class DurakTurnStages extends GameTurnStages{
 		// Если мы были в стадии подкидывания в догонку, передаем все карты со стола
 		// защищающемуся и сообщаем всем игрокам об этом
 		if(this.current == 'FOLLOWUP'){
-			return game.let('TAKE', game.players.defender);
+			let action = game.cards.take(game.players.defender);
+
+			game.actions.takeOccurred = true;
+			game.turnStages.setNext('END');
+
+			game.waitForResponse(game.actions.timeouts.take, game.players);
+			game.players.takeNotify(action);
+			return false;
 		}
 		// Иначе даем защищаться
 		else{

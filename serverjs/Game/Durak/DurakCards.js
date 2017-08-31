@@ -202,41 +202,62 @@ class DurakCards extends GameCards{
 		}
 	}
 
-	// Сбрасывает карты, возвращает карты для отправки клиентам
-	discard(){
-
-		let action = {
-			type: 'DISCARD',
-			ids: []
-		};
-
-		// Убираем карты со всех позиций на столе
+	// Убирает карты со стола в указанное поле
+	// Возвращает информацию об убранных картах
+	moveCardsFromTable(field, fieldId, actionType, flipCards){
+		let cardsInfo = [];
 		this.table.forEach((tableField) => {
 
 			if(tableField.attack){
-				let card = tableField.attack;
-				this.game.actions.logAction(card, 'DISCARD', card.field, 'DISCARD_PILE');
-				card.field = 'DISCARD_PILE';
 
-				action.ids.push(tableField.attack.id);
-				this.discardPile.push(tableField.attack);
+				let card = tableField.attack;
+				this.game.actions.logAction(card, actionType, card.field, fieldId);
+				card.field = fieldId;
+
+				field.push(tableField.attack);
 				tableField.attack = null;
+
+				let cardToSend = {
+					cid: card.id,
+					suit: flipCards ? null : card.suit,
+					value: flipCards ? undefined : card.value
+				};
+
+				cardsInfo.push(cardToSend);
 			}
 
 			if(tableField.defense){
-				let card = tableField.defense;
-				this.game.actions.logAction(card, 'DISCARD', card.field, 'DISCARD_PILE');
-				card.field = 'DISCARD_PILE';
 
-				action.ids.push(tableField.defense.id);
-				this.discardPile.push(tableField.defense);
+				let card = tableField.defense;
+				this.game.actions.logAction(card, actionType, card.field, fieldId);
+				card.field = fieldId;
+
+				field.push(tableField.defense);
 				tableField.defense = null;
+
+				let cardToSend = {
+					cid: card.id,
+					suit: flipCards ? null : card.suit,
+					value: flipCards ? undefined : card.value
+				};
+
+				cardsInfo.push(cardToSend);
 			}
 
 		});
+		return {
+			type: actionType,
+			cards: cardsInfo,
+			field: fieldId
+		};
+	}
+
+	// Сбрасывает карты, возвращает карты для отправки клиентам
+	discard(){
+		let action = this.moveCardsFromTable(this.discardPile, 'DISCARD_PILE', 'DISCARD', true);
 
 		// Если карты были убраны, оповещаем игроков и переходим в фазу раздачи карт игрокам
-		if(action.ids.length){
+		if(action.cards.length){
 
 			// После первого сброса на стол можно класть больше карт
 			if(this.table.fullLength < this.table.maxLength){
@@ -247,11 +268,17 @@ class DurakCards extends GameCards{
 
 			return action;
 		}
-
 		// Иначе раздаем карты и переходим в фазу конца хода
 		else{
 			return null;
 		}
+	}
+
+	take(player){
+		let action = this.moveCardsFromTable(this.hands[player.id], player.id, 'TAKE', false);
+		action.pid = action.field;
+		delete action.field;
+		return action;
 	}
 
 	// Действия
@@ -377,58 +404,6 @@ class DurakCards extends GameCards{
 				}
 			}
 		}
-	}
-
-	getDiscardAction(player){
-		let pid = player.id;
-		let cardsInfo = [];
-		let actionType = 'TAKE';
-
-		for(let fi = 0; fi < this.table.length; fi++){
-			let tableField = this.table[fi];
-
-			if(tableField.attack){
-
-				let card = tableField.attack;
-				this.game.actions.logAction(card, actionType, card.field, pid);
-				card.field = pid;
-
-				this.hands[pid].push(tableField.attack);
-				tableField.attack = null;
-
-				let cardToSend = {
-					cid: card.id,
-					suit: card.suit,
-					value: card.value
-				};
-
-				cardsInfo.push(cardToSend);
-			}
-
-			if(tableField.defense){
-
-				let card = tableField.defense;
-				this.game.actions.logAction(card, actionType, card.field, pid);
-				card.field = pid;
-
-				this.hands[pid].push(tableField.defense);
-				tableField.defense = null;
-
-				let cardToSend = {
-					cid: card.id,
-					suit: card.suit,
-					value: card.value
-				};
-
-				cardsInfo.push(cardToSend);
-			}
-
-		}
-		return {
-			type: actionType,
-			cards: cardsInfo,
-			pid: pid
-		};
 	}
 }
 

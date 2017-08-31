@@ -20,13 +20,16 @@ var reactPrimary = {
 
 		var cardsInfo = action.cards.slice(),
 			pid = action.pid,
-			player = playerManager.getPlayer(pid),
+			player = gameInfo.getPlayer(pid),
 			message;
 
 		seq.append(200)
 			.then(function(){
 				if(player){
-					message = ui.eventFeed.newMessage(player.name + ' is going first', 'positive');
+					message = ui.eventFeed.newMessage(
+						(player.id == game.pid ? 'You\'re going first' : player.name + ' is going first'),
+						'positive'
+					);
 				}
 				fieldManager.showTrumpCards(cardsInfo, pid);
 			}, 3000)
@@ -65,8 +68,8 @@ var reactPrimary = {
 		// Создаем поля с учетом новой информации об игроках
 		if(action.players.length){
 			// Сохраняем информацию об игроках
-			var gameId = playerManager.gameId;
-			playerManager.savePlayers(action.players, action.gameId);
+			var gameId = gameInfo.gameId;
+			gameInfo.savePlayers(action.players, action.gameId);
 
 			// Если id игры не совпадает с локальным id игры, значит каким-то образом
 			// мы переподключились к другой игре, значит удаляем поля
@@ -175,6 +178,7 @@ var reactPrimary = {
 			return delay;
 		}
 		actionHandler.reset();
+		gameInfo.resetTurnInfo();
 		var field = fieldManager.fields[action.pid];
 		delay = fieldManager.moveCards(field, action.cards.slice(), BRING_TO_TOP_ON.START);
 		return delay;
@@ -207,17 +211,9 @@ var reactPrimary = {
 	*/
 	DISCARD: function(action, seq){
 		actionHandler.reset();
-		var delay = 0;
-		var cards = [];
-		for(var i = 0; i < action.ids.length; i++){
-			cards.push({
-				cid: action.ids[i],
-				suit: null,
-				value: 0
-			});
-		}
+		gameInfo.resetTurnInfo();
 		var field = fieldManager.fields.DISCARD_PILE;
-		delay = fieldManager.moveCards(field, cards);
+		var delay = fieldManager.moveCards(field, action.cards);
 		if(action.unlockedField){
 			fieldManager.unlockField(seq, action.unlockedField);
 		}

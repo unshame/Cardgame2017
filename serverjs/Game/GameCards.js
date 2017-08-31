@@ -172,28 +172,42 @@ class GameCards extends CardManager{
 	// Сбрасывает карты, возвращает карты для отправки клиентам
 	discard(){
 
-		let action = {
-			type: 'DISCARD',
-			ids: []
-		};
-
-		// Убираем карты со всех позиций на столе
-		this.table.forEach((card) => {
-			this.game.actions.logAction(card, 'DISCARD', card.field, 'DISCARD_PILE');
-			card.field = 'DISCARD_PILE';
-			action.ids.push(card.id);
-			this.discardPile.push(card);
-		});
-		this.table.length = 0;
+		let action = this.moveCardsFromTable(this.discardPile, 'DISCARD_PILE', 'DISCARD', true);
 
 		// Если карты были убраны, оповещаем игроков и переходим в фазу раздачи карт игрокам
-		if(action.ids.length){
+		if(action.cards.length){
 			return action;
 		}
 		// Иначе раздаем карты и переходим в фазу конца хода
 		else{
 			return null;
 		}
+	}
+
+	moveCardsFromTable(field, fieldId, actionType, flipCards){
+		let cardsInfo = [];
+		// Убираем карты со всех позиций на столе
+		this.table.forEach((card) => {
+			this.game.actions.logAction(card, actionType, card.field, fieldId);
+
+			card.field = fieldId;
+			this.discardPile.push(card);			
+
+			let cardToSend = {
+				cid: card.id,
+				suit: flipCards ? null : card.suit,
+				value: flipCards ? undefined : card.value
+			};
+			cardsInfo.push(cardToSend);
+
+		});
+		this.table.length = 0;
+
+		return {
+			type: actionType,
+			cards: cardsInfo,
+			field: fieldId
+		};
 	}
 }
 

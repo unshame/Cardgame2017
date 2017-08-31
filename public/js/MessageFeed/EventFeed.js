@@ -64,7 +64,7 @@ MessageFeed.EventFeed.prototype._getX = function(){
 };
 
 MessageFeed.EventFeed.prototype._getLowestY = function(){
-	return this.game.screenHeight*0.25;
+	return game.scale.cellRelation < 1.6 ? game.scale.cellAt(0, 4).y : this.game.screenHeight*0.25;
 };
 
 MessageFeed.EventFeed.prototype._destroyMessage = function(text){

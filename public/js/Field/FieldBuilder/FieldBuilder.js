@@ -186,7 +186,7 @@ FieldBuilder.prototype.adjustFieldNetwork = function(lockedFields){
 * Расчитывает размеры и позиции полей.
 */
 FieldBuilder.prototype.calcSizes = function(){
-	var numPlayers = playerManager.players.length;
+	var numPlayers = gameInfo.players.length;
 	this._topOpponentFits = game.scale.cellRelation > this._increaseTopOpponentsSpaceRelation;
 	this._noTopOpponents = game.scale.cellRelation < this._reduceTopOpponentsNumberRelation && numPlayers == 3;
 	this._opponentPlacement = this._countOpponentPlacement(numPlayers - 1);

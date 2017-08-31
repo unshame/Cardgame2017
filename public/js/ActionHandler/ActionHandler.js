@@ -18,12 +18,6 @@ var ActionHandler = function(){
 	this.possibleActions = null;
 
 	/**
-	* Текущая стадия хода.
-	* @type {string}
-	*/
-	this.turnStage = null;
-
-	/**
 	* Находится игра в режиме быстрой симуляции.
 	* Если `true`, все запланированные действия будут завершены перед добавлением новых
 	* @type {Boolean}
@@ -148,15 +142,13 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 			return;
 		}
 
-		this.turnStage = turnStage;
-
 		time = time - Date.now();
 		if(time){
 			ui.rope.start(time - 1000);
 		}
 
 		if(roles){
-			playerManager.updateRoles(roles);
+			gameInfo.updateRoles(roles, turnStage);
 			fieldManager.updateBadges();
 		}
 
@@ -245,7 +237,6 @@ ActionHandler.prototype.setButtonAction = function(button, type){
 /** Убирает все возможные действия */
 ActionHandler.prototype.resetActions = function(){
 	this.possibleActions = null;
-	this.turnStage = null;
 };
 
 /** Убирает все возможные действия и ресетит связанные с ними элементы игры */
@@ -279,7 +270,7 @@ ActionHandler.prototype.removeActionsWith = function(card, field, doneAction){
 * Возвращает нужно ли удалить действие в соответствии с `turnStage`
 */
 ActionHandler.prototype._shouldDeleteAction = function(action, card, field, doneAction){
-	switch(this.turnStage){
+	switch(gameInfo.turnStage){
 		case 'INITIAL_ATTACK':
 		return card.id === action.cid || card.value !== cardManager.cards[action.cid].value;
 

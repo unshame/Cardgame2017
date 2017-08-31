@@ -16,7 +16,7 @@
 //@include:Game
 //@include:State
 //@include:ScaleManager
-//@include:PlayerManager
+//@include:GameInfo
 //@include:Sequencer
 //@include:SkinManager
 //@include:MessageFeed
@@ -25,7 +25,7 @@
 // Глобальные модули
 var gameOptions,
 	actionHandler,
-	playerManager,
+	gameInfo,
 	ui,
 	skinManager,
 	cardControl,
@@ -53,10 +53,10 @@ Phaser.Device.whenReady(function(){
 
 	/**
 	* Менеджер игроков.
-	* @type {PlayerManager}
+	* @type {GameInfo}
 	* @global
 	*/
-	playerManager = new PlayerManager();
+	gameInfo = new GameInfo();
 
 	/**
 	* Менеджер интерфейса.

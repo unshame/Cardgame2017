@@ -72,7 +72,7 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 			this._topOpponentFits ? Math.floor(game.scale.density*2) + 1 : game.scale.density + 1,
 			-halfDensity,
 			-this.offsets.opponent[1],
-			-this.offsets.opponent[1]
+			-this.offsets.opponent[1] + game.scale.cellHeight/2
 		),
 		game.scale.cellAt(
 			game.scale.numCols - game.scale.density,
@@ -88,9 +88,9 @@ FieldBuilder.prototype._calcGenOpponentSizes = function(){
 
 // Размеры для полей противников
 FieldBuilder.prototype._calcSpecOpponentSizes = function(){
-	var players = playerManager.players,
+	var players = gameInfo.players,
 		opponentsOffset = this._opponentsOffset,
-		i = playerManager.pi + 1,	// индекс первого противника по кругу после игрока
+		i = gameInfo.pi + 1,	// индекс первого противника по кругу после игрока
 		oi = 0,	// Счетчик размещенных полей
 		pi = 0;	// Индекс позиции для размещения
 
@@ -123,7 +123,7 @@ FieldBuilder.prototype._calcSpecOpponentSizes = function(){
 	// расчитываем и сохраняем позиции и свойства полей противников 
 	// для трех позиций их размещения в соответствии с рассчитанным ранее
 	// количеством оппонентов в каждой позиции
-	while(i != playerManager.pi){
+	while(i != gameInfo.pi){
 		
 		// Достаточно игроков расположено в текущей позиции, переходим в следующую
 		if(!placement[pi]){

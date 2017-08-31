@@ -4,23 +4,23 @@
 * Элементы не связаны группой, поэтому многие функции движка (добавление в группы например) работают некорректно, нужно использовать методы кнопки.
 * @class
 * @extends {Phaser.Button}
-* @param {object}            [options]                        Настройки кнопки.
-* @param {(object|function)} options.position={x:0,y:0}       Позиция кнопки в виде объекта или функции, возвращающий объект вида `{x, y}`. 
-*                                                             В функцию передаются следующие параметры: `width, height`.
-* @param {string}            options.color='grey'             Цвет кнопки.
-* @param {string}            options.size='wide'              Тип кнопки (`'small', 'big', 'wide', 'circle'`)
-* @param {function}          options.action                   Действие кнопки.
-* @param {any}               options.context=null             Контекст действия.
-* @param {external:Phaser.Group}      options.group=null               Группа, в которую будет помещена кнопка.
-* @param {number}            options.scale=1                  Масштаб кнопки.
-* @param {string}            options.text=null                Текст кнопки.
-* @param {string}            options.textColor='black'        Цвет текста.
-* @param {string}            options.font='Exo'               Шрифт текста.
-* @param {number}            options.fontSize=26              Размер шрифта.
-* @param {string}            options.icon=null                Иконка кнопки.
-* @param {string}            options.name=null                Имя кнопки.
-* @param {number}            options.downOffset=4             На сколько сдвигать текст\иконку кнопку, когда она нажата.
-* @param {boolean}           options.mobileClickProtect=false На мобильных устройствах можно отменить нажатие кнопки, отведя от нее палец.
+* @param {object}                [options]                        Настройки кнопки.
+* @param {(object|function)}     options.position={x:0,y:0}       Позиция кнопки в виде объекта или функции, возвращающий объект вида `{x, y}`.
+*                                                                 В функцию передаются следующие параметры: `width, height`.
+* @param {string}                options.color='grey'             Цвет кнопки.
+* @param {string}                options.size='wide'              Тип кнопки (`'small', 'big', 'wide', 'circle'`)
+* @param {function}              options.action                   Действие кнопки.
+* @param {any}                   options.context=null             Контекст действия.
+* @param {external:Phaser.Group} options.group=null               Группа, в которую будет помещена кнопка.
+* @param {number}                options.scale=1                  Масштаб кнопки.
+* @param {string}                options.text=null                Текст кнопки.
+* @param {string}                options.textColor='black'        Цвет текста.
+* @param {string}                options.font='Exo'               Шрифт текста.
+* @param {number}                options.fontSize=26              Размер шрифта.
+* @param {string}                options.icon=null                Иконка кнопки.
+* @param {string}                options.name=null                Имя кнопки.
+* @param {number}                options.downOffset=4             На сколько сдвигать текст\иконку кнопку, когда она нажата.
+* @param {boolean}               options.mobileClickProtect=false На мобильных устройствах можно отменить нажатие кнопки, отведя от нее палец.
 */
 UI.Button = function(options){
 

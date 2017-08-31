@@ -23,7 +23,7 @@ FieldManager.prototype.showTrumpCards = function(cardsInfo, pid){
 
 		card.raised = true;
 
-		if(card.field.id != playerManager.field){	
+		if(card.field.id != gameInfo.field){	
 			card.presetValue(c.suit, c.value);	
 		}
 		card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);
@@ -56,7 +56,7 @@ FieldManager.prototype.hideTrumpCards = function(cardsInfo){
 			continue;
 		}
 
-		if(card.field.id != playerManager.pid){					
+		if(card.field.id != gameInfo.pid){					
 			card.presetValue(null, null);
 		}
 		card.field.placeCards(null, BRING_TO_TOP_ON.INIT, true);

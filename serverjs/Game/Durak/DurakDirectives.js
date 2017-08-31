@@ -179,24 +179,6 @@ class DurakDirectives{
 
 		return false;
 	}
-
-	// Игрок берет карты со стола
-	TAKE(player){
-
-		// В данный момент происходит переход между стадиями хода
-		// Откомментировать по необходимости
-		// let turnStage = this.turnStages.next;
-		// let lastTurnStage = this.turnStages.current;
-
-		let action = this.cards.getDiscardAction(player);
-
-		this.actions.takeOccurred = true;
-		this.turnStages.setNext('END');
-
-		this.waitForResponse(this.actions.timeouts.take, this.players);
-		this.players.takeNotify(action);
-		return false;
-	}
 }
 
 module.exports = DurakDirectives;

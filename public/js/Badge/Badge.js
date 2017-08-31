@@ -3,7 +3,7 @@ var Badge = function(field, pid){
 	this.field = field;
 	this.status = game.add.text(0, 0, '', {fill: 'white', font: '24px Exo'}, this);
 	this.name = game.add.text(0, 0, name, {fill: 'white', font: '24px Exo'}, this);
-	this.player = playerManager.getPlayer(pid);
+	this.player = gameInfo.getPlayer(pid);
 	this.updatePosition();
 };
 

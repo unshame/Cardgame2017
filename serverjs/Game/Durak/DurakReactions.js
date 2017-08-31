@@ -55,6 +55,7 @@ class DurakReactions{
 			this.turnStages.setNext('FOLLOWUP');
 		}
 		else if(this.turnStages.current == 'DEFENSE'){
+			this.players.notify({type: 'EVENT', message: 'transfered', pid: player.id, showForSelf: false, channel: 'extra'});
 			this.players.shiftAttacker();			
 			this.turnStages.setNext('DEFENSE');	
 		}

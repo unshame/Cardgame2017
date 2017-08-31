@@ -23,13 +23,13 @@ FieldBuilder.prototype._calcGenPlayerSizes = function(){
 };
 
 FieldBuilder.prototype._calcSpecPlayerSizes = function(){
-	this.positions[playerManager.pid] = {
+	this.positions[gameInfo.pid] = {
 		x: this.positions.player.x,
 		y: this.positions.player.y
 	};
-	this.dimensions[playerManager.pid] = {
+	this.dimensions[gameInfo.pid] = {
 		width:this.dimensions.player.width
 	};
-	this.offsets[playerManager.pid] = this.offsets.player;
-	this._notEnoughSpace(playerManager.pid, 'player');
+	this.offsets[gameInfo.pid] = this.offsets.player;
+	this._notEnoughSpace(gameInfo.pid, 'player');
 };

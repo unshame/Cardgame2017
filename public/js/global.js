@@ -192,7 +192,7 @@ function moveFirstPlayerCardToTable(i, delay){
 	if(delay === undefined){
 		delay = 3000;
 	}
-	var c = fieldManager.fields[playerManager.pid].cards[0];
+	var c = fieldManager.fields[gameInfo.pid].cards[0];
 	var ci = {cid: c.id, suit: c.suit, value: c.value};
 	setTimeout(function(){
 		fieldManager.moveCards(fieldManager.fields['TABLE' + (i || 0)], [ci]);

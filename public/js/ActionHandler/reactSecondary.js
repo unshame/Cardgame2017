@@ -46,8 +46,7 @@ var reactSecondary = {
 	*/
 	TURN_ENDED: function(action, seq){
 		fieldManager.resetTableOrder();
-		playerManager.updateRoles();
-		fieldManager.updateBadges();
+		gameInfo.resetTurnInfo();
 	},
 
 	/**
@@ -59,6 +58,8 @@ var reactSecondary = {
 	*/
 	GAME_ENDED: function(action, seq, sync){
 		actionHandler.reset();
+		gameInfo.resetTurnInfo();
+		fieldManager.updateBadges();
 
 		var discard = fieldManager.fields.DISCARD_PILE,
 			dummy = fieldManager.fields.dummy, 
@@ -154,7 +155,7 @@ var reactSecondary = {
 				suit: card.suit,
 				value: card.value
 			};
-			var field = fieldManager.fields[playerManager.pid];
+			var field = fieldManager.fields[gameInfo.pid];
 			fieldManager.moveCards(field, [cardInfo], BRING_TO_TOP_ON.END_ALL);
 		}
 		if(action.actions){
@@ -171,7 +172,7 @@ var reactSecondary = {
 			game.state.change('menu', false);
 			return;
 		}
-		var player = playerManager.getPlayer(action.pid);
+		var player = gameInfo.getPlayer(action.pid);
 		ui.eventFeed.newMessage(player.name + ' conceded', 2000);
 		player.name = action.name;
 		var field = fieldManager.fields[action.pid];

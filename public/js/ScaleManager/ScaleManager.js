@@ -147,7 +147,7 @@ ScaleManager.prototype.getDefaultOptions = function(){
 		thickness: 1,	// толщина линий сетки для дебага
 		debug: false,
 		minColsLandscape:  28,
-		minRowsLandscape: 19,
+		minRowsLandscape: 20,
 		minColsPortrait: 23,
 		minRowsPortrait: 25,
 		cellRelationThreshold: 2.47
@@ -181,10 +181,10 @@ ScaleManager.prototype._calculateScreenSize = function(reduceMinHeight){
 
 	var width = container.width/window.devicePixelRatio*this.scaleMultiplier,
 		height = container.height/window.devicePixelRatio*this.scaleMultiplier,
-		widthRel = width/height,
+		widthRel = (width/this.cellWidth)/(height/this.cellHeight),
 		minWidth, minHeight;
 
-	if(widthRel >= 1){
+	if(widthRel >= 1.15){
 		if(reduceMinHeight){
 			minHeight = (this._minRowsLandscape - 2)*this.cellHeight;
 		}
