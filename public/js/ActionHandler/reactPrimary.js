@@ -40,7 +40,7 @@ var reactPrimary = {
 				fieldManager.hideTrumpCards(cardsInfo);
 			}, 500)
 			.then(function(){
-				ui.layers.setLayerIndex(ui.eventFeed, 2);
+				ui.layers.setLayerIndex(ui.eventFeed, ui.eventFeed.zIndexBelowCards);
 			});
 
 	},

@@ -125,8 +125,8 @@ UI.prototype.initialize = function(){
 	*/
 	this.eventFeed = new MessageFeed.EventFeed(game);	
 
-	this.eventFeed.zIndexBelowCards = 2;
-	this.eventFeed.zIndexAboveCards = 6;
+	this.eventFeed.zIndexBelowCards = 3;
+	this.eventFeed.zIndexAboveCards = 7;
 	
 	/**
 	* Менеджер модальных меню.
@@ -156,15 +156,16 @@ UI.prototype.initialize = function(){
 		[this.background, 0],
 		// this.actionButtons, 1
 		[fieldManager, 2],
-		[cardManager, 3],
-		[cardEmitter, 4],
-		// this.menus.main, 5
-		[this.logo, 5],
-		[this.credits, 5],
-		[this.feed, 6],
+		// this.eventFeed, 3 (zIndexBelowCards)
+		[cardManager, 4],
+		[cardEmitter, 5],
+		// this.menus.main, 6
+		[this.logo, 6],
+		[this.credits, 6],
+		[this.feed, 7],
 		[this.eventFeed, this.eventFeed.zIndexAboveCards],
-		[this.announcer, 7],
-		[this.rope, 7],
+		[this.announcer, 8],
+		[this.rope, 8],
 		// игровые меню, -6
 		[this.modalManager, -5],
 		// модальные меню, -4

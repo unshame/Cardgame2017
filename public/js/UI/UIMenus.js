@@ -14,7 +14,7 @@ UI.prototype._createMenus = function(){
 					y:game.screenHeight/2 + width/2 + 75
 				};
 			}, 
-			z: 5,
+			z: 6,
 			name: 'menu_main',
 			color: 'orange',
 			elementColor: 'red',
