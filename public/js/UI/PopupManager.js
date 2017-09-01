@@ -135,7 +135,7 @@ UI.PopupManager.prototype._hoverOver = function(el, area, textGetter, placement,
 * @param  {any} el {@link UI.PopupComponent#overElement|overElement}
 */
 UI.PopupManager.prototype._hoverOut = function(el){
-	if(!this.overElement || el != this.overElement){
+	if(!this.overElement || el && el != this.overElement){
 		return;
 	}
 	if(this.showing){

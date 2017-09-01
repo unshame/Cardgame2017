@@ -21,7 +21,7 @@ UI.PopupComponent = function(displayObject, placement, text){
 	this._popupArea.inputEnabled = true;
 
 	if(Phaser.Device.desktop){
-		this._popupArea.events.onInputOver.add(this._notifyPopupManager.bind(this, true), this);
+		this._popupArea.events.onInputOver.add(this._notifyPopupManager.bind(this, true));
 	}
 	else{
 		this._popupArea.events.onInputDown.add(this._notifyPopupManager.bind(this, true, true));
