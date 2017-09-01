@@ -34,11 +34,19 @@ GameInfo.prototype.reset = function(){
 		ui.eventFeed.removeMessage(this.message);
 	}
 	this.message = null;
+
 	/**
 	* Текущая стадия хода.
 	* @type {string}
 	*/
 	this.turnStage = null;
+
+	/**
+	* Находится игра в режиме быстрой симуляции.
+	* Если `true`, все запланированные действия будут завершены перед добавлением новых
+	* @type {Boolean}
+	*/
+	this.simulating = false;
 };
 
 GameInfo.prototype.resetTurnInfo = function(){
@@ -82,7 +90,7 @@ GameInfo.prototype.updateRoles = function(roles, turnStage){
 			}
 		}
 		else if(role != p.role){
-			if(role == 'defender'){
+			if(role == 'defender' || role == 'takes'){
 				this.defender = p;
 			}
 			else if(role == 'attacker' && roleIndex == 1){

@@ -78,7 +78,6 @@ class DurakTurnStages extends GameTurnStages{
 		if(this.current == 'FOLLOWUP'){
 			let action = game.cards.take(game.players.defender);
 
-			game.actions.takeOccurred = true;
 			game.turnStages.setNext('END');
 
 			game.waitForResponse(game.actions.timeouts.take, game.players);

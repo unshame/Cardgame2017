@@ -16,11 +16,11 @@ var reactSecondary = {
 	*/
 	SIMULATING: function(action, seq){
 		ui.feed.newMessage('Simulating', 2000);
-		actionHandler.simulating = true;
+		gameInfo.simulating = true;
 	},
 
 	STOP_SIMULATING: function(){
-		actionHandler.simulating = false;
+		gameInfo.simulating = false;
 	},
 
 	/**

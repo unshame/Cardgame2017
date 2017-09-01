@@ -64,7 +64,7 @@ var reactPrimary = {
 		cardEmitter.stop();
 		cardControl.reset();
 		cardManager.disablePhysics();
-		actionHandler.simulating = action.simulating;
+		gameInfo.simulating = action.simulating;
 
 		// Создаем недостающие карты
 		cardManager.createCards(action.cards);

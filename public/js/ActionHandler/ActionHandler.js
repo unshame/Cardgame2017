@@ -18,13 +18,6 @@ var ActionHandler = function(){
 	this.possibleActions = null;
 
 	/**
-	* Находится игра в режиме быстрой симуляции.
-	* Если `true`, все запланированные действия будут завершены перед добавлением новых
-	* @type {Boolean}
-	*/
-	this.simulating = false;
-
-	/**
 	* Менеджер последовательностей игровых действий и анимаций.
 	* @type {Sequencer}
 	*/
@@ -111,7 +104,7 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
-	if(this.simulating || action.instant){
+	if(gameInfo.simulating || action.instant){
 		this.sequencer.finish();
 	}
 	

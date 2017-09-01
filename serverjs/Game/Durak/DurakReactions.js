@@ -154,6 +154,7 @@ class DurakReactions{
 	// Защищающийся берет карты
 	TAKE(player, action){
 		this.log.info(player.name, "takes");
+		this.actions.takeOccurred = true;
 		this.skipCounter = 0;
 		this.turnStages.setNext('FOLLOWUP');
 		return action;

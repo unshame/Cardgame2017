@@ -54,14 +54,7 @@ class GamePlayers extends PlayerManager{
 	}
 
 	get roles(){
-		let roles = {};
-		this.forEach((p) => {
-			roles[p.id] = {
-				role: p.statuses.role,
-				roleIndex: p.statuses.roleIndex
-			};
-		});
-		return roles;
+		return {};
 	}
 
 	// ТИПЫ ИГРОКОВ
