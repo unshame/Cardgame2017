@@ -111,7 +111,7 @@ GameInfo.prototype.updateRoles = function(roles, turnStage){
 	else if(player.role){
 		switch(player.role){
 			case 'attacker':
-			messageText = 'You\'re attacking ' + this.defender.name;
+			messageText = (this.defender.role == 'takes' ? 'You\'re following up on ' : 'You\'re attacking ') + this.defender.name;
 			break;
 
 			case 'defender':
@@ -124,7 +124,7 @@ GameInfo.prototype.updateRoles = function(roles, turnStage){
 		messageStyle = 'neutral';
 	}
 	else if(this.defender){
-		messageText = this.defender.name + ' is defending';
+		messageText = this.defender.name + (this.defender.role == 'takes' ? ' takes' : ' is defending');
 		messageStyle = 'system';
 	}
 	if(!oldMessage || oldMessage.text != messageText){
