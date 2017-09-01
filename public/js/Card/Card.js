@@ -226,143 +226,6 @@ Card.prototype.getDefaultOptions = function(){
 	};
 };
 
-//@include:CardValue
-//@include:CardPosition
-//@include:CardMover
-//@include:CardRotator
-//@include:CardSkin
-//@include:CardGlow
-//@include:CardDelayedTweens
-//@include:CardPhysics
-
-// СОБЫТИЯ
-
-/**
-* Вызывается при нажатии на карту.
-* @param {Phaser.Sprite}  sprite  {@link Card#sprite}
-* @param {Phaser.Pointer} pointer вызвавший ивент указатель
-*/
-Card.prototype._cursorDown = function(sprite, pointer){
-	cardControl.cardClick(this, pointer);
-};
-
-/**
-* Вызывается при окончании нажатия на карту.
-* @param {Phaser.Sprite}  sprite  {@link Card#sprite}
-* @param {Phaser.Pointer} pointer вызвавший ивент указатель
-*/
-Card.prototype._cursorUp = function(sprite, pointer){
-	cardControl.cardUnclick(this, pointer);
-};
-
-/**
-* Вызывается при наведении на карту.
-* @param {Phaser.Sprite}  sprite  {@link Card#sprite}
-* @param {Phaser.Pointer} pointer вызвавший ивент указатель
-*/
-Card.prototype._cursorOver = function(sprite, pointer){
-	if(this.field){
-		this.field.focusOnCard(this, pointer);
-	}
-	cardControl.pickNotifier.consider(this);
-};
-
-/**
-* Вызывается когда указатель покидает спрайт карты.
-* @param {Phaser.Sprite} sprite {@link Card#sprite}
-*/
-Card.prototype._cursorOut = function(sprite){
-	if(this.field){
-		this.field.focusOffCard(this);
-	}
-	cardControl.pickNotifier.reject(this);
-};
-
-
-// БУЛЕВЫ ФУНКЦИИ
-
-/**
-* Находится ли указатель над картой.
-* @return {boolean}
-*/
-Card.prototype.cursorIsOver = function(){
-	return Phaser.Rectangle.containsRaw(
-		this.x + this.sprite.x - this.sprite.width/2,
-		this.y + this.sprite.y - this.sprite.height/2,
-		this.sprite.width,
-		this.sprite.height,
-		this.game.input.x,
-		this.game.input.y
-	) && this.draggable;
-};
-
-
-// DESTROY, UPDATE
-
-Card.prototype._destroyFinally = Phaser.Group.prototype.destroy;
-
-/**
-* Полностью удаляет карту из игры с анимацией.
-* @param {number}  [delay=0] задержка перед удалением
-* @param {boolean} [now]     убирает анимацию удаления и игнорирует задержку
-*/
-Card.prototype.destroy = function(delay, now) {
-	if(delay === undefined || now){
-		delay = 0;
-	}
-
-	var time = 1000,
-		alphaTween = this.game.add.tween(this.sprite),
-		scaleTween = this.game.add.tween(this.sprite.scale);
-
-	this._destroyPending = true;
-	
-	if(cardControl.card == this){
-		cardControl.reset('card destroyed');
-	}
-	delete cardManager.cards[this.id];
-	this.setDraggability(false);
-	this.setPlayability(false);
-	this.setHighlight(false);
-	if(this.mover){
-		this.mover.stop();
-	}
-	if(this._rotator){
-		this._rotator.stop();
-	}
-	if(this._flipper){
-		this._flipper.stop();
-	}
-	if(this.field){
-		this.field.removeCards([this]);
-	}
-
-	if(this.game.paused || now){
-		this._destroyNow();
-	}
-	else{
-		alphaTween.to({alpha: 0}, time/this.game.speed, Phaser.Easing.Linear.None, true, delay/this.game.speed);
-		scaleTween.to({x: 0.6, y: 0.6}, time/this.game.speed, Phaser.Easing.Linear.None, true, delay/this.game.speed);
-		alphaTween.onComplete.addOnce(this._destroyNow, this);
-	}
-};
-
-/**
-* Удаляет карту из игры сразу.
-*/
-Card.prototype._destroyNow = function() {
-	if(cardControl.card == this){
-		cardControl.reset('card destroyed');
-	}
-	if(ui.cursor.overlappingElement == this){
-		ui.cursor.overlappingElement = null;
-	}
-	this.sprite.destroy();
-	this.glow.destroy();
-	this.removeAll();
-	this._destroyFinally();
-};
-
 /**
 * Обновление карты.  
 */
@@ -400,3 +263,14 @@ Card.prototype.updateDebug = function(){
 		x, y 
 	);
 };
+
+//@include:CardCursor
+//@include:CardValue
+//@include:CardPosition
+//@include:CardMover
+//@include:CardRotator
+//@include:CardSkin
+//@include:CardGlow
+//@include:CardDelayedTweens
+//@include:CardPhysics
+//@include:CardDestroy

@@ -63,7 +63,7 @@ class Bot extends Player{
 
 	recieveNotification(action){
 		if(action.actions){
-			var ai = (this.game && this.game.isTest || this.queue && this.queue.type == 'botmatch') ? 0 : 1;
+			let ai = (this.game && this.game.isTest || this.queue && this.queue.type == 'botmatch') ? 0 : 1;
 			this.sendDelayedResponse(action.actions[ai]);
 		}			
 	}

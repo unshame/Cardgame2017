@@ -3,6 +3,7 @@
 * @see  {@link ActionHandler#reactPrimary}
 * @namespace reactPrimary
 */
+/* exported reactPrimary */
 var reactPrimary = {
 	
 	/**

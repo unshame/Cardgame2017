@@ -32,22 +32,16 @@ UI.ButtonPopup = function(options){
 extend(UI.ButtonPopup, UI.Button, [UI.PopupComponent]);
 
 UI.ButtonPopup.prototype.destroy = function(){
-	if(ui.popupManager.overElement == this){
-		ui.popupManager.hoverOut();
-	}
+	ui.popupManager.onHoverOut.dispatch(this);
 	supercall(UI.ButtonPopup).destroy.call(this);
 };
 
 UI.ButtonPopup.prototype.disable = function(changeToDefaultFrame){
-	if(ui.popupManager.overElement == this){
-		ui.popupManager.hoverOut();
-	}
+	ui.popupManager.onHoverOut.dispatch(this);
 	supercall(UI.ButtonPopup).disable.call(this, changeToDefaultFrame);
 };
 
 UI.ButtonPopup.prototype.hide = function(){
-	if(ui.popupManager.overElement == this){
-		ui.popupManager.hoverOut();
-	}
+	ui.popupManager.onHoverOut.dispatch(this);
 	supercall(UI.ButtonPopup).hide.call(this);
 };

@@ -62,7 +62,7 @@ class Player{
 	recieveValidActions(actions, deadline, roles){
 		if(this.remote && this.connected){
 			let now = Date.now();
-			var action = {
+			let action = {
 				actions: actions,
 				time: deadline,
 				timeSent: now,

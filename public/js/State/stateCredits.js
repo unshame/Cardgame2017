@@ -1,3 +1,4 @@
+/* exported stateCredits */
 var stateCredits = new State('credits', {
 
 	/**

@@ -59,6 +59,7 @@ UI.Credits.prototype.stop = function(){
     this.fader.start();
 };
 
+/* exported creditsText */
 var creditsText = 
 'Lorem ipsum DOLOR SIT AMET, AMET CONSECTETUR\n\n\
 \

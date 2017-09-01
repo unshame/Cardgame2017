@@ -53,7 +53,7 @@ class GameStates{
 	}
 
 	STARTED(){
-		return game.doTurn();
+		return this.game.doTurn();
 	}
 }
 

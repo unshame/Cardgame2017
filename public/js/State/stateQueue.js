@@ -1,3 +1,4 @@
+/* exported stateQueue */
 var stateQueue = new State('queue', {
 
 	/**
@@ -56,7 +57,7 @@ var stateQueue = new State('queue', {
 	},
 
 	update: function(){
-		var len = ui.eventFeed.length
+		var len = ui.eventFeed.length;
 		var textElement = ui.eventFeed.children[len - 1];
 		var now = Date.now();
 		if(textElement && now - this.lastDot > 500){

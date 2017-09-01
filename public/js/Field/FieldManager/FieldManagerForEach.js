@@ -183,4 +183,4 @@ FieldManager.prototype.updateBadges = function(){
 			f.badge.updatePosition();
 		}
 	});
-}
+};

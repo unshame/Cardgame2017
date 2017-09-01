@@ -21,13 +21,13 @@ UI.PopupComponent = function(displayObject, placement, text){
 	this._popupArea.inputEnabled = true;
 
 	if(Phaser.Device.desktop){
-		this._popupArea.events.onInputOver.add(this._notifyPopupManager.bind(this), this);
+		this._popupArea.events.onInputOver.add(this._notifyPopupManager.bind(this, true), this);
 	}
 	else{
-		this._popupArea.events.onInputDown.add(this._notifyPopupManager.bind(this, true));
-		this._popupArea.events.onInputUp.add(ui.popupManager.hoverOut.bind(ui.popupManager));
+		this._popupArea.events.onInputDown.add(this._notifyPopupManager.bind(this, true, true));
+		this._popupArea.events.onInputUp.add(this._notifyPopupManager.bind(this, false));
 	}
-	this._popupArea.events.onInputOut.add(ui.popupManager.hoverOut.bind(ui.popupManager));
+	this._popupArea.events.onInputOut.add(this._notifyPopupManager.bind(this, false));
 
 	/**
 	* Позиция всплывающего текста.
@@ -71,7 +71,12 @@ UI.PopupComponent.prototype = {
 	* Оповещает {@link PopupManager} о том, что курсор находится над элементом.
 	* @param  {boolean} now нужно ли вывести сообщение сразу
 	*/
-	_notifyPopupManager: function(now){
-		ui.popupManager.hoverOver(this, this._popupArea, this._popupText || this._getHoverText, this._popupPlacement, now);
+	_notifyPopupManager: function(isOver, now){
+		if(isOver){
+			ui.popupManager.onHoverOver.dispatch(this, this._popupArea, this._popupText || this._getHoverText, this._popupPlacement, now);
+		}
+		else{
+			ui.popupManager.onHoverOut.dispatch(this);
+		}
 	}
 };

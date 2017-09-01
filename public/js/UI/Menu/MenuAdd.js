@@ -109,7 +109,7 @@ Menu.prototype._addButton = function(options, withPopup){
 
 Menu.prototype._addButtonPopup = function(options){
 	return this._addButton(options, true);
-}
+};
 
 Menu.prototype._addSlider = function(){
 

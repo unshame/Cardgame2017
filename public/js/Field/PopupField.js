@@ -52,8 +52,6 @@ Field.PopupField.prototype.removeCards = function(cardsToRemove){
 };
 
 Field.PopupField.prototype.destroy = function(){
-	if(ui.popupManager.overElement == this){
-		ui.popupManager.hoverOut();
-	}
+	ui.popupManager.onHoverOut.dispatch(this);
 	supercall(Field.PopupField).destroy.call(this);
 };

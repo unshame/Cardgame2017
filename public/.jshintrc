@@ -1,6 +1,7 @@
 {
   "globals": {
     "Phaser": true,
+    "PhaserInput": true,
     "Eureca": true,
     "PIXI": true,
 
@@ -14,7 +15,7 @@
     "Rope": true,
     "ActionHandler": true,
     "FieldBuilder": true,
-    "PlayerManager": true,
+    "GameInfo": true,
     "CardManager": true,
     "CardControl": true,
     "Cursor": true,
@@ -48,42 +49,49 @@
     "controller": true,
     "fieldManager": true,
     "actionHandler": true,
-    "playerManager": true,
+    "gameInfo": true,
     "cardManager": true,
     "cardControl": true,
     "cursor": true,
     "cardEmitter": true,
     "connection": true,
     "ui": true,
-    "announcer": true,
-    "feed": true,
     "gameSeq": true,
-    "eventFeed": true,
-    "options": true,
-    "supercall": true,
+    "gameOptions": true,
 
+    "creditsText": true,
     "skins": true,
-    "actionReactions": true,
-    "notificationReactions": true,
+
+    "reactPrimary": true,
+    "reactSecondary": true,
+    "reactExtra": true,
+    "reactMenu": true,
+    "reactQueue": true,
+
     "clientMethods": true,
     "serverMethods": true,
     
     "statePlay": true,
     "stateBoot": true,
     "stateMenu": true,
+    "stateCredits": true,
+    "stateQueue": true,
     
     "extend": true,
     "mixin": true,
+    "supercall": true,
     "drawRoundedRectangle": true,
     "shuffleArray": true,
     "mergeOptions": true,
     "numberToHexColor": true,
     "getCards": true,
     "getCard": true,
+    
     "getSuitStrings": true,
     "cardValueToString": true,
 
-    "BRING_TO_TOP_ON": true
+    "BRING_TO_TOP_ON": true,
+    "CHANNEL_TYPE": true
   },
   "browser": true,
   "node": false,

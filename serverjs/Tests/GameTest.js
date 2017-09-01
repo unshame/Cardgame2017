@@ -24,8 +24,8 @@ function runTest(numBots, duration, debug){
 	for(let i = 0; i < numBots; i++){
 		bots.push(new TestBot(tester,randomNames));
 	}
-	var fakeQueue = {endGame: () => {}};
-	var game = new Game(
+	let fakeQueue = {endGame: () => {}};
+	let game = new Game(
 		fakeQueue,
 		bots, 
 		{

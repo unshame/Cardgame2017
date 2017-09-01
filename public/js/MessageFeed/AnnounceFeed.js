@@ -33,7 +33,6 @@ MessageFeed.AnnounceFeed = function(game, name){
 extend(MessageFeed.AnnounceFeed, MessageFeed);
 
 MessageFeed.AnnounceFeed.prototype._styleText = function(text){
-	text.word
 	text.setShadow(2, 2, 'rgba(0,0,0,0.8)', 2);
 	text.anchor.set(0.5, 0.5);
 };

@@ -138,7 +138,7 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 		var state = this.channels.possible_actions.state;
 		if(state != game.state.currentSync){
 			console.warn('Action handler: wrong game state', game.state.currentSync, state);
-			game.state.change(channel.state);
+			game.state.change(state);
 			return;
 		}
 

@@ -84,19 +84,35 @@ UI.PopupManager = function(){
 	* @type {string}
 	*/
 	this.overPlacement = null;
+
+	/**
+	* Сигнал, отправляемый, когда над элементом с `PopupComponent` проносится курсор.
+	* @type {Phaser.Signal}
+	*/
+	this.onHoverOver = new Phaser.Signal();
+
+	/**
+	* Сигнал, отправляемый, когда курсор уходит с элемента с `PopupComponent`.
+	* @type {Phaser.Signal}
+	*/
+	this.onHoverOut = new Phaser.Signal();
+
+	this.onHoverOver.add(this._hoverOver.bind(this));
+	this.onHoverOut.add(this._hoverOut.bind(this));
 };
 
 extend(UI.PopupManager, Phaser.Group);
 
 /**
-* Запускает таймер до показа текста при наведении на элемент.
+* Запускает таймер до показа текста при наведении на элемент.  
+* Вызывается при отправке сигнала {@link UI.PopupManager#onHoverOver|onHoverOver}.
 * @param {any}               el         {@link UI.PopupComponent#overElement|overElement}
 * @param {DisplayObject}     area       {@link UI.PopupComponent#overArea|overArea}
 * @param {(function|string)} textGetter {@link UI.PopupComponent#overTextGetter|overTextGetter}
 * @param {string}            placement  {@link UI.PopupComponent#overPlacement|overPlacement}
 * @param {boolean}           now        показывает текст без задержки
 */
-UI.PopupManager.prototype.hoverOver = function(el, area, textGetter, placement, now){
+UI.PopupManager.prototype._hoverOver = function(el, area, textGetter, placement, now){
 	if(this.overElement == el){
 		return;
 	}
@@ -113,9 +129,13 @@ UI.PopupManager.prototype.hoverOver = function(el, area, textGetter, placement, 
 	}
 };
 
-/** Убирает текст при наведении или отменяет запланированный показ текста. */
-UI.PopupManager.prototype.hoverOut = function(){
-	if(!this.overElement){
+/** 
+* Убирает текст при наведении или отменяет запланированный показ текста.
+* Вызывается при отправке сигнала {@link UI.PopupManager#onHoverOut|onHoverOut}.
+* @param  {any} el {@link UI.PopupComponent#overElement|overElement}
+*/
+UI.PopupManager.prototype._hoverOut = function(el){
+	if(!this.overElement || el != this.overElement){
 		return;
 	}
 	if(this.showing){
@@ -177,7 +197,7 @@ UI.PopupManager.prototype.updatePosition = function(){
 		return;
 	}
 	if(!ui.cursor.inGame || !this.overElement){
-		this.hoverOut();
+		this._hoverOut();
 		return;
 	}
 	if(!this.visible){

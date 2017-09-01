@@ -1,3 +1,4 @@
+/* exported reactExtra */
 var reactExtra = {
 	HOVER_OVER_CARD: function(action, seq){
 		var card = cardManager.cards[action.cid];
@@ -24,4 +25,4 @@ var reactExtra = {
 		}
 		ui.eventFeed.newMessage(message, 2000);
 	}
-}
+};

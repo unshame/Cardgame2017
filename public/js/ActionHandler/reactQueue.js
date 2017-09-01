@@ -1,3 +1,4 @@
+/* exported reactQueue */
 var reactQueue = {
 
 	QUEUE_ENTERED: function(){

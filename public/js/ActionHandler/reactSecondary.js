@@ -98,7 +98,7 @@ var reactSecondary = {
 						}
 						ui.menus.endGame.fadeIn();
 						ui.layers.hideLayer(ui.actionButtons, true);
-					})
+					});
 			}
 		}, delay/game.speed)
 		.then(function(){
@@ -123,7 +123,7 @@ var reactSecondary = {
 				card.destroy(0, true);
 			}
 			cardEmitter.start(300, 500, 100, false, 100, 10);
-		}, 500)
+		}, 500);
 	},
 
 	/**
@@ -148,9 +148,9 @@ var reactSecondary = {
 	* @param {object<ActionInfo>} action.actions       действия из которых нужно выбрать одно в замен неверного
 	*/
 	INVALID_ACTION: function(action, seq){
-		var action = action.action,
+		var undoAction = action.action,
 			card = cardManager.cards[action.cid];
-		if(action.cid && card){
+		if(undoAction.cid && card){
 			fieldManager.resetTableOrder();
 			var cardInfo = {
 				cid: card.id,
