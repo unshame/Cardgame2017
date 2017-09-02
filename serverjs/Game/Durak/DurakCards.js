@@ -113,9 +113,9 @@ class DurakCards extends GameCards{
 	}
 
 	// Обнуляет карты или перемешивает их id
-	reset(soft){
+	reset(hard){
 
-		super.reset(soft);
+		super.reset(hard);
 		
 		this.table.length = this.table.maxLength;		
 		this.table.fullLength = this.table.zeroDiscardLength;

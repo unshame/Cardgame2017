@@ -47,6 +47,18 @@ class PlayerManager extends BetterArray{
 		}
 	}
 
+	reset(hard, players){
+		this.forEachOwn((player) => this.resetPlayer(player, hard), players);
+	}
+
+	resetPlayer(player, hard){
+		player.statuses = {};
+
+		if(hard){
+			player.game = null;
+		}
+	}
+
 	// Игроки по id
 	get byId(){
 		return this.byKey('id');
@@ -81,7 +93,7 @@ class PlayerManager extends BetterArray{
 		for(let i = 0; i < players.length; i++){
 			let p = players[i];
 			if(this.includes(p) && p.game == this.game){
-				if(action(p)){
+				if(action.call(this, p)){
 					return;
 				}
 			}

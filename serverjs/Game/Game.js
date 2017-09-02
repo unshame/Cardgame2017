@@ -202,8 +202,9 @@ class Game{
 
 		this.resetSimulating();
 
+		this.players.reset();
 		this.players.resetGame();
-		this.cards.reset(true);
+		this.cards.reset();
 		this.actions.reset();
 		this.skipCounter = 0;
 
@@ -264,8 +265,7 @@ class Game{
 		this.active = false;
 		this.log.notice('Shutting down');
 		clearTimeout(this.timer);
-		this.players.forEach(p => p.game = null);
-		this.players.length = 0;
+		this.players.reset(true);
 	}
 
 	/**
@@ -296,7 +296,7 @@ class Game{
 			this.players.notify(voteResults);
 		}
 
-		this.players.forEach(p => p.game = null);
+		this.players.reset(true);
 
 		this.log.info('No rematch');
 		this.queue.endGame(voteResults ? voteResults.results : null);

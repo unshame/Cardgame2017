@@ -114,7 +114,9 @@ GameInfo.prototype.updateInfo = function(roles, turnStage){
 	else if(player.role){
 		switch(player.role){
 			case 'attacker':
-			messageText = (this.defender.role == 'takes' ? 'You\'re following up on ' : 'You\'re attacking ') + this.defender.name;
+			if(fieldManager.fields[this.pid].cards.length > 0){
+				messageText = (this.defender.role == 'takes' ? 'You\'re following up on ' : 'You\'re attacking ') + this.defender.name;
+			}
 			break;
 
 			case 'defender':

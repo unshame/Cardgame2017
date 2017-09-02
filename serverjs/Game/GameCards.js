@@ -90,9 +90,9 @@ class GameCards extends CardManager{
 	}
 
 	// Обнуляет карты
-	reset(soft){
+	reset(hard){
 
-		super.reset(soft);
+		super.reset(hard);
 		
 		// Стопка сброса
 		this.discardPile.length = 0;

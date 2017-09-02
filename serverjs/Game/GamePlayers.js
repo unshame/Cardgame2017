@@ -27,6 +27,7 @@ class GamePlayers extends PlayerManager{
 		};
 		p.statuses.working = false;
 		p.statuses.hover = null;
+		p.afk = false;
 		super.push(p);
 	}
 
@@ -42,6 +43,15 @@ class GamePlayers extends PlayerManager{
 		this.forEach((p) => {
 			this.setStatuses(p, this.gameStartStatus);
 		});
+	}
+
+	resetPlayer(player, hard){
+		super.resetPlayer(player, hard);
+		player.afk = false;
+		
+		if(hard){
+			player.score = null;
+		}
 	}
 
 	// Счеты
@@ -149,8 +159,7 @@ class GamePlayers extends PlayerManager{
 		let pi = this.indexOf(player);
 		this.splice(pi, 1);
 
-		player.game = null;
-		player.statuses = {};
+		this.resetPlayer(player, true);
 		if(player.queue){
 			player.queue.removePlayer(player, false, true);
 		}
@@ -179,8 +188,7 @@ class GamePlayers extends PlayerManager{
 		replacement.statuses = player.statuses;
 		replacement.id = player.id;
 		
-		player.game = null;
-		player.statuses = {};
+		this.resetPlayer(player, true);
 
 		let i = this.length - 1;
 		while(i > pi){

@@ -30,10 +30,10 @@ class GameCards extends BetterArray{
 	}
 
 	// Обнуляет карты
-	reset(soft){
+	reset(hard){
 
 		// Убираем уже существующие карты
-		if(!soft){
+		if(hard){
 			this.length = 0;
 		}
 
