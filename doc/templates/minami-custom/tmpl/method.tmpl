@@ -3,7 +3,11 @@ var data = obj;
 var self = this;
 ?>
 
-<div class="section-method">
+<div class="
+    section-method
+    <?js= (data.inherited && data.inherits && !data.overrides) ? 'quickaccess-inhereted' : '' ?>
+    <?js= (data.access && data.access == 'private') ? 'quickaccess-private' : '' ?>
+">
 <?js if (data.kind !== 'module') { ?>
     <?js if (data.kind === 'class' && data.classdesc) { ?>
     <h2>Constructor</h2>

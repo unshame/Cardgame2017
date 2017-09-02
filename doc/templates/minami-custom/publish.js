@@ -433,6 +433,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
       var members = find({ kind: "member", memberof: item.longname })
       var displayName
 
+
       if (!hasOwnProp.call(item, "longname")) {
         nav.push(buildNavItem(linkfoFn('', item.name)))
         return
@@ -466,7 +467,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
             if (method.inherited && conf.showInheritedInNav === false) {
               return
             }
-            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name)), memberName))
+            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name)), memberName, getQuickAcessClasses(method)))
           })
         }
         if (methods.length) {
@@ -475,7 +476,7 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
               return
             }
 
-            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name)), memberName))
+            nav.push(buildNavItem(buildNavType(method.kind, linkto(method.longname, method.name)), memberName, getQuickAcessClasses(method)))
           })
         }
 
@@ -486,6 +487,17 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
   }
 
   return nav
+}
+
+function getQuickAcessClasses(data){
+  var classes = [];
+  if(data.inherited && data.inherits && !data.overrides){
+    classes.push('quickaccess-inhereted');
+  }
+  if(data.access && data.access == 'private'){
+    classes.push('quickaccess-private');
+  }
+  return classes;
 }
 
 function linktoTutorial(longName, name) {
@@ -534,11 +546,15 @@ function buildNavHeading (content) {
  * @param {String} itemContent navigation item content
  * @return {String}
  */
-function buildNavItem (itemContent, itemName) {
+function buildNavItem (itemContent, itemName, classes) {
   if(!itemName)
     itemName = 'global';
+  var classString = '';
+  if(classes){
+    classes.forEach((c) => classString += ' ' + c);
+  }
   return [
-    '<li class="nav-item ' + itemName + '">',
+    '<li class="nav-item ' + itemName + classString + '">',
     itemContent,
     '</li>'
   ].join('')

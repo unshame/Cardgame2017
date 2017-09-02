@@ -2,7 +2,11 @@
 var data = obj;
 var self = this;
 ?>
-<div class="section-members">
+<div class="
+    section-members
+    <?js= (data.inherited && data.inherits && !data.overrides) ? 'quickaccess-inhereted' : '' ?>
+    <?js= (data.access && data.access == 'private') ? 'quickaccess-private' : '' ?>
+">
 <h4 class="name" id="<?js= id ?>"><?js= data.attribs + name + (data.signature ? data.signature : '') ?></h4>
 
 <?js if (data.summary) { ?>

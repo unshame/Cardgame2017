@@ -1,3 +1,7 @@
+// jshint browser:true
+/* globals $:true */
+/* globals console:true */
+
 var firstScroll = true;	//Скролл при загрузке страницы обрабатывается без анимации
 
 $(function () {
@@ -53,15 +57,15 @@ $(function () {
 
 	//Заменяем слеши в классах элементов боковой панели
 	$('.nav-item').each(function(i){
-		var c = $(this).attr('class')
+		var c = $(this).attr('class');
 		$(this).attr('class', c.replace(/\//g, '_'));
-	})
+	});
 
 	//Показываем элементы боковой панели, относящиеся к текущему классу или global
 	if(className){
 	  $('.nav-item.' + className.replace(/\./g, '_')).show();
 	}
-	  console.log($('.nav-item.' + className))
+	console.log($('.nav-item.' + className));
 
 	//Пытается найти элементы с определенной ссылкой (в основном не используется)
 	function tryLink(className, hash, prefix){
@@ -83,13 +87,13 @@ $(function () {
 		if(!forced && parseInt(navbar.css('left')) < 0){
 			return;
 		}
-		var link = className + '.html#' + hash;
 		var target = tryLink(className, hash);
 		if(!target.size()){
 			target = tryLink(hash, '', 'global.html#');
 		}
-		if(target.size())
+		if(target.size()){
 			highlight(container, target, shouldScroll);
+		}
 	}
 
 	$(document).scroll(function () {
@@ -97,11 +101,15 @@ $(function () {
 			lastDistance = Infinity,
 			selector = 'h4.name, h1.page-title';
 
-		if(className)
+		if(className){
 			selector += ', h3.subsection-title';
+		}
 
 		//Находим текущий раздел
 		$(selector).each(function () {
+			if($(this).parent().css('display') == 'none'){
+				return;
+			}
 			var top = window.pageYOffset;
 			var distance = top - $(this).offset().top;
 			var hash = $(this).attr('id');
@@ -119,29 +127,19 @@ $(function () {
 		}
 	});
 
-	var dl, dd, li,
+	var li,
 		methods = $('#methods'),
 		members = $('#members'),
 		typedefs = $('#typedefs');
 
 	//Создаем контейнер для ссылок к разделам вверху страницы
 	if(methods.size() || members.size() || typedefs.size()){
-		dl = $('.container-overview .details');
-		if(!dl.size()){
-			dl = $('<dl class="details">');
-			
-			title.after(dl);
-		}
-		dl.append('<dt class="tag-source">Jump to:</dt>');
-		dd = $('<dd>');
-		dd.html('<ul class="dummy"><li></li></ul>');
-		dl.append(dd);
-		li = dd.find('li');
+		li = addTag('Jump to:', title);
 	}
 
 	//Members
 	if(members.size()){
-		addLinks(methods, navbar, li, className, 'members', 'type-member', 'Members');
+		addLinks(members, navbar, li, className, 'members', 'type-member', 'Members');
 	}
 
 	//Methods
@@ -165,8 +163,71 @@ $(function () {
 	//Подсветка элемента при загрузке страницы
 	currentHash = document.location.hash.substr(1);
 	highlightCurrent(currentHash);
+	
+	// Прячим определенные типы элементов
+	var inhereted = $('.quickaccess-inhereted').filter(function(){
+		return $(this).css('display') != 'none';
+	});
+	var private = $('.quickaccess-private').filter(function(){
+		return $(this).css('display') != 'none';
+	});
+
+	if(inhereted.size() || private.size()){
+		li = addTag('Toggle:', title);
+		addToggle(inhereted, 'inhereted', 'jsdoc-quickaccess-hide-inhereted', li);
+		addToggle(private, 'private', 'jsdoc-quickaccess-hide-private', li);
+	}
 
 });
+
+function addTag(text, title){
+	var dl = $('.container-overview .details');
+	if(!dl.size()){
+		dl = $('<dl class="details">');
+		
+		title.after(dl);
+	}
+	dl.append('<dt class="tag-source">' + text + '</dt>');
+	var dd = $('<dd>');
+	dd.html('<ul class="dummy"><li></li></ul>');
+	dl.append(dd);
+	var li = dd.find('li');
+	return li;
+}
+
+function addToggle(selection, name, key, container){	
+
+	var hidden = !!localStorage.getItem(key);
+	var a = $('<a>');
+	var hideStr = 'Hide ' + name;
+	var showStr = 'Show ' + name;
+	var str = hidden ? showStr : hideStr;
+	a.html(str);
+	a.click(function(){
+		if(hidden){
+			hidden = false;
+			localStorage.removeItem(key);
+			$(this).html(hideStr);
+			selection.show();
+		}
+		else{
+			hidden = true;
+			localStorage.setItem(key, 'true');
+			$(this).html(showStr);
+			selection.hide();
+		}
+	});
+	a.css({
+		'font-weight': 'bold',
+		'cursor': 'pointer'
+	});
+	container.append(a);
+	container.append(' ');
+	if(hidden){
+		selection.hide();
+	}
+
+}
 
 //Подсвечивает элемент в боковой панели
 function highlight(container, target, shouldScroll){
