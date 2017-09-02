@@ -147,6 +147,7 @@ class QueueManager{
 		config.game = gameClass[0];
 		config.bot = gameClass[1];
 		config.debug = this.server.params.debug;
+		config.name = player.name + '\'s Queue';
 
 		if(!gameConfig || typeof gameConfig != 'object'){
 			gameConfig = {};

@@ -60,7 +60,8 @@ class Server extends Eureca.Server{
 			bot: this.gameModes['durak'][1],
 			numPlayers: this.params.numPlayers,
 			numBots: this.params.numBots,			
-			debug: this.params.debug
+			debug: this.params.debug,
+			name: 'Quick Queue'
 		});
 
 		let rootPath = '/../../';

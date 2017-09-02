@@ -53,6 +53,12 @@ class Queue{
 		*/
 		this.type = type;
 
+		/**
+		* Имя очереди.
+		* @type {string}
+		*/
+		this.name = config.name || 'Unnamed Queue';
+
 		if(typeof config.numPlayers != 'number' || isNaN(config.numPlayers)){
 			config.numPlayers = config.game.minPlayers;
 		}
@@ -99,7 +105,8 @@ class Queue{
 			numPlayers: this.players.length,
 			numPlayersRequired: this.config.numPlayers,
 			numBots: this.config.numBots,
-			gameConfig: this.gameConfig
+			gameConfig: this.gameConfig,
+			name: this.name
 		};
 	}
 
