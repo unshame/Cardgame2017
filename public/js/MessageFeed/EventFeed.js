@@ -49,7 +49,7 @@ MessageFeed.EventFeed = function(game, name){
 	* Масштаб сообщений.
 	* @type {Array}
 	*/
-	this._scales = [1, 0.75, 0.5];
+	this._scales = [1, 0.75];
 };
 
 extend(MessageFeed.EventFeed, MessageFeed);
