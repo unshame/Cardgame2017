@@ -293,6 +293,11 @@ Sequencer.prototype = {
 		if(this._wasAborted){
 			this._log(step.name);
 			this._wasAborted = false;
+			if(!this._isSync){
+				this._resetTimeout();
+				this.timeout = setTimeout(this._go.bind(this), 0);
+				return false;
+			}
 			return true;
 		}
 
@@ -376,6 +381,8 @@ function testSequence(){
 
 	}
 	function action2(seq){
+		seq.abort();
+		seq.append(action6, 2000);
 	}
 	function action3(seq){
 		seq.skip(1);
@@ -397,8 +404,8 @@ function testSequence(){
 		return func;
 	}
 	seq.queueUp(func('1', action4));
-	seq.queueUp(func('2', action3), time).then(func('2.5'), time).then(func('2.75'), time);
-	seq.queueUp(time).then(func('3'), time);
+	seq.queueUp(func('2', action2), time).then(func('2.5'), time).then(func('2.75'), time);
+/*	seq.queueUp(time).then(func('3'), time);
 	seq.queueUp(func('11'), time)
 		.then(func('12', action0), time)
 		.then(func('13'), time);
@@ -410,7 +417,7 @@ function testSequence(){
 	seq.queueUp(func('20'), time);
 	seq.queueUp(func('21'), time);
 	seq.queueUp(func('22'), time);
-	seq.queueUp(func('23', action0), time);
+	seq.queueUp(func('23', action0), time);*/
 	//seq.finish(true);
 	return seq;
 }
