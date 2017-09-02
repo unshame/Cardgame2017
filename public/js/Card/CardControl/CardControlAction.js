@@ -97,16 +97,16 @@ CardControl.prototype.cardMoveToField = function(fields){
 	}
 
 	var field, 
-		success = false;
+		action = null;
 	for(var i = 0; i < fields.length; i++){
 		field = fields[i];
-		success = connection.server.sendAction(field, this.card);
-		if(success){
+		action = connection.server.sendAction(field, this.card);
+		if(action){
 			break;
 		}
 	}
 
-	if(!success){
+	if(!action){
 		this.cardReturn();
 		return;
 	}
@@ -118,13 +118,8 @@ CardControl.prototype.cardMoveToField = function(fields){
 	var card = this.card;
 	this.card = null;
 	this.pointer = null;
-	if(field.linkedField){
-		if(!field.icon && !field.cards.length){
-			fieldManager.swapFields(field, field.linkedField);
-
-		}
-		field = field.linkedField;
-	}
+	
+	field = gameInfo.findAppropriateField(field);
 
 	fieldManager.moveCards(field, [{
 		cid: card.id,
@@ -132,6 +127,7 @@ CardControl.prototype.cardMoveToField = function(fields){
 		value: card.value
 	}], BRING_TO_TOP_ON.START, true);
 
+	actionHandler.removeActionsWith(card, field, action);
 	actionHandler.highlightPossibleActions();
 };
 

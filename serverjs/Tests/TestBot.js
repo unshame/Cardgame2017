@@ -17,7 +17,7 @@ class TestBot extends Bot{
 		return 0;
 	}
 
-	recieveValidActions(actions){
+	recieveValidActions(actions, deadline, roles){
 		// console.log('Here we\'ll send info to tester', this.name, this.game.id)	
 		let game = this.game;
 		let types = actions.map(a => a.type),

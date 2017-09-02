@@ -180,17 +180,20 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 	for(var ai = 0; ai < actions.length; ai++){
 		var action = actions[ai];
-		if(action.type == 'PASS' || action.type == 'TAKE'){
+
+		if(~gameInfo.buttonActions.indexOf(action.type)){
 			hasButtonAction = true;
 			this.setButtonAction(button, action.type);
 			continue;
 		}
+
 		var card = cardManager.cards[action.cid];
 		var field = fieldManager.fields[action.field];
-		if(action.cid && card && (!cardHolding || (cardHolding == card || cardHolding.value == card.value && action.type != 'DEFENSE'))){
+
+		if(gameInfo.cardIsPlayable(card, action, cardHolding)){
 			card.setPlayability(true);
 			field.setOwnPlayability(action.type, action.linkedField);
-			if(action.type == 'DEFENSE'){
+			if(gameInfo.actionIsDefensive(action)){
 				field.validCards.push(card);				
 			}
 		}
@@ -250,49 +253,15 @@ ActionHandler.prototype.removeActionsWith = function(card, field, doneAction){
 	}
 	for(var i = this.possibleActions.length - 1; i >= 0; i--){
 		var action = this.possibleActions[i];
-		if(this._shouldDeleteAction(action, card, field, doneAction)){
+		if(gameInfo.shouldDeleteAction(action, card, field, doneAction)){
 			this.possibleActions.splice(i, 1);
 		}
 	}
-	if(this.possibleActions.length == 1 && this.possibleActions[0].type == 'TAKE'){
+	if(gameInfo.shouldResetActions(this.possibleActions)){
 		this.possibleActions.length = 0;
 	}
 };
 
-/**
-* Возвращает нужно ли удалить действие в соответствии с `turnStage`
-*/
-ActionHandler.prototype._shouldDeleteAction = function(action, card, field, doneAction){
-	switch(gameInfo.turnStage){
-		case 'INITIAL_ATTACK':
-		return card.id === action.cid || card.value !== cardManager.cards[action.cid].value;
-
-		case 'REPEATING_ATTACK':
-		/* falls through */
-
-		case 'ATTACK':
-		/* falls through */
-
-		case 'SUPPORT':
-		/* falls through */
-
-		case 'FOLLOWUP':
-		return card.id === action.cid || field.id === action.linkedField;
-
-		case 'DEFENSE':
-		if(doneAction.type == 'ATTACK'){
-			return true;
-		}
-		else{
-			return card.id === action.cid || field.id === action.field || action.type == 'ATTACK';
-		}
-		break;
-		
-		default:
-		console.error('ActionHandler: unknown turnStage', this.turnStage);
-		break;
-	}
-};
 
 //@include:reactPrimary
 //@include:reactSecondary

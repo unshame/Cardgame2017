@@ -312,15 +312,12 @@ class DurakCards extends GameCards{
 		hand.forEach((card) => {
 			let cid = card.id;
 			if(!validValues || ~validValues.indexOf(card.value)){		
-				this.table.forEach((tableField) => {	
-					let action = {
-						type: 'ATTACK',
-						cid: cid,
-						field: tableField.id,
-						linkedField: emptyTable.id
-					};
-					actions.push(action);
-				});
+				let action = {
+					type: 'ATTACK',
+					cid: cid,
+					field: emptyTable.id
+				};
+				actions.push(action);
 			}
 		});
 	}
@@ -377,35 +374,13 @@ class DurakCards extends GameCards{
 			return;
 		}
 
-		let defenseActionFields = actions.map((action) => action.field);
-
-		let emptyTable = this.firstEmptyTable;
-
 		for(let di = 0; di < defenseFields.length; di++){
 			for(let ci = 0; ci < hand.length; ci++){
 				let card = hand[ci];
-				let cid = card.id;
 				let otherCard = defenseFields[di].attack;
 
 				if(card.value != otherCard.value){
 					continue;
-				}
-
-				// Все поля, которые уже не находятся в возможных действиях
-				for(let fi = 0; fi < this.table.length; fi++){	
-					let fid = this.table[fi].id;
-
-					if(defenseActionFields.includes(fid)){
-						continue;
-					}
-
-					let action = {
-						type: 'ATTACK',
-						cid: cid,
-						field: fid,
-						linkedField: emptyTable.id
-					};
-					actions.push(action);
 				}
 			}
 		}

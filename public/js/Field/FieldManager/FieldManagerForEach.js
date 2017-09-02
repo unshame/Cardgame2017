@@ -150,13 +150,22 @@ FieldManager.prototype.resetNetwork = function(){
 
 /** Восстанавливает порядок полей стола */
 FieldManager.prototype.resetTableOrder = function(){
-	for(var ti = 0; ti < this.table.length; ti++){
-		var table = this.table[ti];
+	for(var i = 0; i < this.table.length; i++){
+		var table = this.table[i];
 		if(table.savedPosition){
 			table.setBase(table.savedPosition.x, table.savedPosition.y, true);
 			table.savedPosition = null;
 		}
 	}
+};
+
+FieldManager.prototype.getFirstEmptyTable = function(){
+	for(var i = 0; i < this.table.length; i++){
+		if(this.table[i].cards.length === 0 && !this.table[i].icon){
+			return this.table[i];
+		}
+	}
+	return null;
 };
 
 FieldManager.prototype.endFieldAnimations = function(){

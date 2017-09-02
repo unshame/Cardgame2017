@@ -5,6 +5,8 @@
 
 var GameInfo = function(){
 	this.reset();
+
+	this.buttonActions = ['PASS', 'TAKE'];
 };
 
 GameInfo.prototype.savePlayers = function(players, gameId){
@@ -29,6 +31,7 @@ GameInfo.prototype.reset = function(){
 	this.defender = null;
 	this.attacker = null;
 	this.players = [];
+	this.player = null;
 	this.playersById = {};
 	if(this.message){
 		ui.eventFeed.removeMessage(this.message);
@@ -118,6 +121,9 @@ GameInfo.prototype.updateRoles = function(roles, turnStage){
 			messageText = 'You\'re defending';
 			break;
 
+			case 'takes':
+			break;
+
 			default:
 			console.error('Game info: unknown player role', player.role);
 		}
@@ -137,5 +143,79 @@ GameInfo.prototype.updateRoles = function(roles, turnStage){
 	}
 	if(oldMessage && (oldMessage.text != messageText || !this.message)){
 		actionHandler.sequencer.queueUp(300).then(ui.eventFeed.removeMessage.bind(ui.eventFeed, oldMessage));
+	}
+};
+
+GameInfo.prototype.findAppropriateField = function(field){
+	if(field.linkedField && !field.icon && !field.cards.length){
+		fieldManager.swapFields(field, field.linkedField);
+		return field.linkedField;
+	}
+	if(field.type == 'TABLE' && field.playable == 'ATTACK'){
+		var emptyTable = fieldManager.getFirstEmptyTable();
+		if(emptyTable){
+			return emptyTable;
+		}
+	}
+	return field;
+};
+
+GameInfo.prototype.cardIsPlayable = function(card, action, cardHolding){
+	return action.cid && card && (!cardHolding || (cardHolding == card || cardHolding.value == card.value && action.type != 'DEFENSE'));
+};
+
+GameInfo.prototype.actionIsDefensive = function(action){
+	return action.type == 'DEFENSE';
+};
+
+GameInfo.prototype.shouldResetActions = function(actions){
+	return actions.length == 1 && actions[0].type == 'TAKE';
+}
+
+/**
+* Возвращает нужно ли удалить действие в соответствии с `turnStage`
+*/
+GameInfo.prototype.shouldDeleteAction = function(action, card, field, doneAction){
+	switch(this.turnStage){
+		case 'INITIAL_ATTACK':
+		if(card.value !== cardManager.cards[action.cid].value){
+			return true;
+		}
+		/* falls through */
+
+		case 'REPEATING_ATTACK':
+		/* falls through */
+
+		case 'ATTACK':
+		/* falls through */
+
+		case 'SUPPORT':
+		/* falls through */
+
+		case 'FOLLOWUP':
+		if(card.id === action.cid){
+			return true;
+		}
+		if(field.id === action.field){
+			var table = fieldManager.getFirstEmptyTable();
+			if(table){
+				action.field = table.id;
+				return false;
+			}
+			return true;
+		}
+
+		case 'DEFENSE':
+		if(doneAction.type == 'ATTACK'){
+			return true;
+		}
+		else{
+			return card.id === action.cid || field.id === action.field || action.type == 'ATTACK';
+		}
+		break;
+		
+		default:
+		console.error('ActionHandler: unknown turnStage', this.turnStage);
+		break;
 	}
 };
