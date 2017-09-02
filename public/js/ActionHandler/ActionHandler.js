@@ -131,7 +131,7 @@ ActionHandler.prototype.executeAction = function(action){
 			game.state.change(channel.state, false);
 		}
 		return reaction.call(this, action, seq, sync);
-	}, 0, context);
+	}, null, context);
 };
 
 /**
