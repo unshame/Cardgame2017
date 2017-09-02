@@ -30,7 +30,7 @@ class DurakReactions{
 		card = cardsById[action.cid];
 		ci = this.hands[player.id].indexOf(card);
 
-		let field = action.field;
+		let field = this.cards.firstEmptyTable.id;
 
 		this.actions.logAction(card, action.type, card.field, field );
 

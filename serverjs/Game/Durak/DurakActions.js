@@ -20,7 +20,6 @@ class DurakActions extends GameActions{
 				actionDefend: 20,
 				afk: 5
 			},
-			[],
 			['PASS', 'TAKE']
 		);
 
@@ -30,6 +29,13 @@ class DurakActions extends GameActions{
 	reset(){
 		super.reset();
 		this.takeOccurred = false;
+	}
+
+	getIgnoredKeys(action){
+		if(action.type == 'ATTACK' && this.game.cards.firstEmptyTable){
+			return ['field'];
+		}
+		return null;
 	}
 
 	// Записывает действие над картой в лог

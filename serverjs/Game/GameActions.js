@@ -1,7 +1,7 @@
 'use strict';
 
 class GameActions{
-	constructor(game, players, timeouts, ignored, prioritised){
+	constructor(game, players, timeouts, prioritised){
 
 		this.game = game;
 		this.log = this.game.log;
@@ -14,7 +14,6 @@ class GameActions{
 		});
 		this.stored = [];
 
-		this.ignored = ignored || [];
 		this.prioritised = prioritised || [];
 
 		// Время ожидания сервера
@@ -196,12 +195,17 @@ class GameActions{
 		return false;
 	}
 
+	// Возвращает названия свойств действий, которые будут игнорироваться при сверении действия
+	getIgnoredKeys(action){
+		return null;
+	}
+
 	// Обрабатывает полученное от игрока действие, возвращает исходящее действие
 	execute(player, incomingAction){
 
 		const game = this.game;
 
-		let action = this.checkValidity(player.id, incomingAction, this.ignored);
+		let action = this.checkValidity(player.id, incomingAction, this.getIgnoredKeys(incomingAction));
 
 		// Проверка действия
 		if(!action){
