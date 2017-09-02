@@ -139,6 +139,12 @@ class GamePlayers extends PlayerManager{
 			this.log.error(new Error(`Cannot disconnect a player that isn\'t in this game ${player.id}`));
 			return;
 		}
+
+		if(this.game.isRunning){
+			this.log.error(new Error(`Can't disconnect when the game is running, use concede instead`));
+			return;
+		}
+
 		this.notify({type: 'DISCONNECTED', instant: true}, [player]);
 		let pi = this.indexOf(player);
 		this.splice(pi, 1);
@@ -147,7 +153,7 @@ class GamePlayers extends PlayerManager{
 		player.statuses = {};
 		if(player.queue){
 			if(player.type == 'player'){
-				player.queue.removePlayer(player, false);
+				player.queue.removePlayer(player, false, true);
 			}
 			else{
 				player.queue = null;
@@ -160,11 +166,15 @@ class GamePlayers extends PlayerManager{
 
 	concede(player){
 		if(!this.includes(player)){
-			this.log.error(new Error(`Cannot concede a player that isn\'t in this game ${player.id}`));
+			this.log.error(new Error(`Cannot concede a player that isn't in this game ${player.id}`));
 			return;
 		}
-		this.notify({type: 'PLAYER_CONCEDED', pid: player.id, instant: true}, [player]);
-		
+		if(!this.game.isRunning){
+			this.log.error(new Error(`Can't concede when the game isn't running, use disconnect instead`));
+			return;
+		}
+
+		this.notify({type: 'PLAYER_CONCEDED', pid: player.id, instant: true}, [player]);		
 
 		let pi = this.indexOf(player);
 		this.splice(pi, 1);
@@ -176,9 +186,6 @@ class GamePlayers extends PlayerManager{
 		
 		player.game = null;
 		player.statuses = {};
-		if(player.queue){
-			player.queue.removePlayer(player, false);
-		}
 
 		let i = this.length - 1;
 		while(i > pi){

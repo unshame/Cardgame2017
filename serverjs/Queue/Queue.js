@@ -168,7 +168,6 @@ class Queue{
 
 			for (let n = 0; n < numBots; n++) {
 				let bot = new this.config.bot(randomNamesCopy);
-				bot.queue = this;
 				players.push(bot);
 			}
 		}
@@ -243,13 +242,13 @@ class Queue{
 			return;
 		}
 		this.log.notice('Shutting down');
-		if(this.game){
-			this.game.shutdown();
-		}
 		if(this.players.length){
 			for(let i = this.players.length - 1; i >= 0; i--){
-				this.removePlayer(this.players[i], false);
+				this.removePlayer(this.players[i], false, true);
 			}
+		}
+		if(this.game){
+			this.game.shutdown();
 		}
 		this.active = false;
 		this.manager.removeQueue(this);
@@ -277,10 +276,11 @@ class Queue{
 	* Удаляет игрока из очереди.
 	* Оповещает игроков об удаленном игроке.
 	* Удаляет очередь, если в ней не осталось игроков.
-	* @param  {Player}  player
-	* @param  {Boolean} notify нужно ли оповещать игроков об удалении игрока из очереди
+	* @param {Player}  player
+	* @param {Boolean} notify              нужно ли оповещать игроков об удалении игрока из очереди
+	* @param {Boolean} alreadyShuttingDown отменяет остановку очереди, которая может произойти, если в ней не осталось игроков
 	*/
-	removePlayer(player, notify = true){
+	removePlayer(player, notify = true, alreadyShuttingDown = false){
 		if(player.game){
 			this.log.warn('Cannot remove player in a game from queue', player.id, player.game.id);
 			return;
@@ -299,7 +299,7 @@ class Queue{
 		}
 		this.log.notice('Player %s left queue', player.id, this.id);
 
-		if(!this.players.length){
+		if(!this.players.length && !alreadyShuttingDown){
 			this.shutdown();
 		}
 	}
@@ -309,14 +309,12 @@ class Queue{
 	* @param  {Player} player
 	*/
 	concedePlayer(player){
-		let game = player.game;
-		if(game){
-			player.queue = null;
-			game.players.concede(player);
+		if(this.game && this.game.isRunning){
+			this.game.players.concede(player);
 			this.removePlayer(player, false);
 		} 
 		else{
-			this.log.notice('Player %s isn\'t in a game, cannot concede', player.id);
+			this.log.notice('Player %s isn\'t in a game or game has ended, cannot concede', player.id);
 		}
 	}
 } 

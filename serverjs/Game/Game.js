@@ -257,10 +257,15 @@ class Game{
 	* Не производит правильное отключение игроков, используется только, если все игроки боты.
 	*/
 	shutdown(){
+		if(this.players.humans.length){
+			this.log.error(new Error(`Can't shutdown game with human players in it`));
+			return;
+		}
 		this.active = false;
 		this.log.notice('Shutting down');
 		clearTimeout(this.timer);
 		this.players.forEach(p => p.game = null);
+		this.players.length = 0;
 	}
 
 	/**
@@ -419,6 +424,11 @@ class Game{
 			turnStages.next: this.turnStages.next
 		})*/
 
+		if(!this.active){
+			this.log.error(new Error('Game inactive'));
+			return;
+		}
+
 		let state = this.states[this.states.current];
 		if(!state){
 			this.log.error(new Error(`invalid game state ${this.states.current}`));
@@ -503,7 +513,7 @@ class Game{
 	}
 
 	/**
-	* Выполняется по окончанию таймера ответа игроков
+	* Выполняется по окончании таймера ответа игроков
 	* Выполняет случайное действие или продолжает игру
 	*/
 	timeOut(){
@@ -532,16 +542,8 @@ class Game{
 	* @param  {object} action выполненное игроком действие
 	*/
 	recieveResponse(player, action){
-		if(!this.active){
-			this.log.warn('Game inactive, can\'t recieve response', player.id, player.type, action);
-			return;
-		}
 		setTimeout(() => {
-			if(!this.active){
-				this.log.warn('Game inactive, can\'t recieve response', player.id, player.type, action);
-				return;
-			}
-			this.actions.recieve(player, action);
+			this.recieveResponseSync.call(this, player, action);
 		}, 0);
 	}
 
