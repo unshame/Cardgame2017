@@ -16,21 +16,10 @@ function extend(constructor, extendee, shallowExtendees){
 	if(!shallowExtendees){
 		return;
 	}
-	for(var i = 0; i < shallowExtendees.length; i++){
-		var mix = shallowExtendees[i].prototype;
-		for(var key in mix){
-			if(!mix.hasOwnProperty(key)){
-				continue;
-			}
-			if(key == 'constructor'){
-				continue;
-			}
-			if(constructor.prototype[key]){
-				console.warn('Overwriting method', key, 'in', constructor, 'prototype');
-			}
-			constructor.prototype[key] = mix[key];
-		}
-	}
+	var mixins = shallowExtendees.map(function(c){
+		return c.prototype;
+	});
+	mixin(constructor, mixins);
 }
 
 /**
