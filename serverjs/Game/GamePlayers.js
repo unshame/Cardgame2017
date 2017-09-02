@@ -216,7 +216,7 @@ class GamePlayers extends PlayerManager{
 
 	validActionsNotify(deadline){
 		this.forEachOwn((p) => {
-			p.recieveValidActions(this.game.actions.valid[p.id].slice(), deadline, this.roles);
+			p.recieveValidActions(this.game.actions.valid[p.id].slice(), deadline, this.roles, this.game.turnStages.current);
 		}, this.game.simulating ? this.bots : this);
 	}
 

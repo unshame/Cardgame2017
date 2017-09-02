@@ -74,7 +74,7 @@ GameInfo.prototype.getPlayer = function(pid){
 	}
 };
 
-GameInfo.prototype.updateRoles = function(roles, turnStage){
+GameInfo.prototype.updateInfo = function(roles, turnStage){
 	var oldMessage = this.message;
 
 	var player = this.playersById[this.pid];
@@ -164,13 +164,9 @@ GameInfo.prototype.cardIsPlayable = function(card, action, cardHolding){
 	return action.cid && card && (!cardHolding || (cardHolding == card || cardHolding.value == card.value && action.type != 'DEFENSE'));
 };
 
-GameInfo.prototype.actionIsDefensive = function(action){
-	return action.type == 'DEFENSE';
-};
-
 GameInfo.prototype.shouldResetActions = function(actions){
 	return actions.length == 1 && actions[0].type == 'TAKE';
-}
+};
 
 /**
 * Возвращает нужно ли удалить действие в соответствии с `turnStage`
@@ -197,25 +193,112 @@ GameInfo.prototype.shouldDeleteAction = function(action, card, field, doneAction
 			return true;
 		}
 		if(field.id === action.field){
-			var table = fieldManager.getFirstEmptyTable();
-			if(table){
-				action.field = table.id;
-				return false;
-			}
-			return true;
+			return this._fixActionField(action);
 		}
+		return true;
 
 		case 'DEFENSE':
 		if(doneAction.type == 'ATTACK'){
-			return true;
+			if(action.type == 'ATTACK'){
+				return this._fixActionField(action);
+			}
+			else{
+				return true;
+			}
 		}
-		else{
-			return card.id === action.cid || field.id === action.field || action.type == 'ATTACK';
-		}
-		break;
+		return card.id === action.cid || field.id === action.field || action.type == 'ATTACK';
 		
 		default:
 		console.error('ActionHandler: unknown turnStage', this.turnStage);
 		break;
 	}
+};
+
+GameInfo.prototype._fixActionField = function(action){
+	var table = fieldManager.getFirstEmptyTable();
+	if(table){
+		action.field = table.id;
+		return false;
+	}
+	return true;
+}
+
+GameInfo.prototype.applyInteractivity = function(actions, button){
+	var cardHolding = cardControl.card;
+	var hasButtonAction = false;
+
+	var defenseFields = [];
+	actions.forEach(function(action){
+		if(action.type == 'DEFENSE'){
+			defenseFields.push(fieldManager.fields[action.field]);
+		}
+	});
+
+	var emptyTable = fieldManager.getFirstEmptyTable();
+
+	for(var ai = 0; ai < actions.length; ai++){
+		var action = actions[ai];
+
+		if(~this.buttonActions.indexOf(action.type)){
+			hasButtonAction = true;
+			this._setButtonAction(button, action.type);
+			continue;
+		}
+
+		var card = cardManager.cards[action.cid];
+		var field = fieldManager.fields[action.field];
+
+		if(this.cardIsPlayable(card, action, cardHolding)){
+			this._makeInteractible(card, field, action, defenseFields, emptyTable);
+		}
+	}
+
+	if(hasButtonAction){
+		if(actions.length == 1){
+			button.changeStyle(1);
+		}
+		else if(actions.length > 1){
+			button.changeStyle(0);
+		}
+	}
+	else{
+		button.serverAction = null;
+		button.disable();
+		button.changeStyle(0);
+	}
+};
+
+GameInfo.prototype._makeInteractible = function(card, field, action, defenseFields, emptyTable){
+	card.setPlayability(true);
+	field.setOwnPlayability(action.type);
+	switch(action.type){
+		case 'DEFENSE':
+		field.validCards.push(card);				
+		break;
+
+		case 'ATTACK':
+		if(!emptyTable){
+			break;
+		}
+		fieldManager.table.forEach(function(f){
+			if(!~defenseFields.indexOf(f)){
+				f.setOwnPlayability(action.type, emptyTable);
+			}
+		});
+		break;		
+	}
+};
+
+/**
+* Устанавливает текст и действие кнопки действия.
+* @param {UI.Button} button кнопка действия
+* @param {string}    type   тип действия
+*/
+GameInfo.prototype._setButtonAction = function(button, type){
+	button.serverAction = type;
+	var typeText = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+	//var typeText = type.toLowerCase();
+	//var typeText = type;
+	button.label.setText(typeText);
+	button.enable();
 };

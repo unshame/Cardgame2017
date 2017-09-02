@@ -374,14 +374,24 @@ class DurakCards extends GameCards{
 			return;
 		}
 
+		let emptyTable = this.firstEmptyTable; 
+
 		for(let di = 0; di < defenseFields.length; di++){
 			for(let ci = 0; ci < hand.length; ci++){
 				let card = hand[ci];
+				let cid = card.id; 
 				let otherCard = defenseFields[di].attack;
 
 				if(card.value != otherCard.value){
 					continue;
 				}
+
+				let action = { 
+				    type: 'ATTACK', 
+				    cid: cid, 
+				    field: emptyTable.id
+				}; 
+				actions.push(action); 
 			}
 		}
 	}

@@ -100,7 +100,7 @@ CardControl.prototype.cardMoveToField = function(fields){
 		action = null;
 	for(var i = 0; i < fields.length; i++){
 		field = fields[i];
-		action = connection.server.sendAction(field, this.card);
+		action = connection.server.sendAction(field.linkedField || field, this.card);
 		if(action){
 			break;
 		}

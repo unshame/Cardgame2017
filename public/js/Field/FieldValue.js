@@ -41,10 +41,10 @@ Field.prototype.setOwnHighlight = function(on, tint){
 * @param {(string|boolean)} playable             играбильность и тип применимого действия
 * @param {string}           [linkedFieldId=null] связанное поле, используется `{@link CardControl#cardMoveToField}`
 */
-Field.prototype.setOwnPlayability = function(playable, linkedFieldId){
+Field.prototype.setOwnPlayability = function(playable, linkedField){
 	this.playable = playable;
 	this.setOwnHighlight(playable, ui.colors.orange);
-	this.linkedField = fieldManager.fields[linkedFieldId] || null;
+	this.linkedField = linkedField || null;
 };
 
 /**

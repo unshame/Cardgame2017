@@ -30,10 +30,6 @@ class DurakReactions{
 		card = cardsById[action.cid];
 		ci = this.hands[player.id].indexOf(card);
 
-		if(action.linkedField){
-			action.field = action.linkedField;
-		}
-
 		let field = action.field;
 
 		this.actions.logAction(card, action.type, card.field, field );

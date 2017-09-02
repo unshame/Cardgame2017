@@ -15,7 +15,7 @@ UI.prototype._createButtons = function(){
 	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons');
 
 	// Действие
-	new UI.ButtonAltStyles({
+	actionHandler.actionButton = new UI.ButtonAltStyles({
 		position: function(width, height){
 			return {
 				x: game.screenWidth/2 - width/2,
@@ -28,7 +28,7 @@ UI.prototype._createButtons = function(){
 			};
 		},
 		action: function(){
-			connection.server.sendButtonAction(actionHandler.buttonAction);
+			connection.server.sendButtonAction(this.serverAction);
 		},
 		text: 'Take',
 		color: 'orange',

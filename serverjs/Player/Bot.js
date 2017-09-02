@@ -47,7 +47,7 @@ class Bot extends Player{
 		this.sendDelayedResponse();
 	}
 
-	recieveValidActions(actions){
+	recieveValidActions(actions, deadline, roles, turnStage){
 		if(actions.length){
 			setTimeout(() => {
 				this.sendRandomAction(actions);

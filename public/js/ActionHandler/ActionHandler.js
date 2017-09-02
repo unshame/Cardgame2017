@@ -18,6 +18,12 @@ var ActionHandler = function(){
 	this.possibleActions = null;
 
 	/**
+	* Кнопка действия.
+	* @type {UI.Button}
+	*/
+	this.actionButton = null;
+
+	/**
 	* Менеджер последовательностей игровых действий и анимаций.
 	* @type {Sequencer}
 	*/
@@ -69,11 +75,15 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
+	var reaction;
+	var context = null;
+
 	switch(channel.type){
 		case CHANNEL_TYPE.USER_INVOLVED:
 		connection.serverWaiting = false;
-		this.handlePossibleActions(action.actions, action.time, action.timeSent, action.turnStage, action.roles);
-		return;
+		reaction = this.handlePossibleActions;
+		context = this;
+		break;
 
 		case CHANNEL_TYPE.RESPOND:
 		if(!action.noResponse){
@@ -98,16 +108,21 @@ ActionHandler.prototype.executeAction = function(action){
 		break;
 	}
 
-	var reaction = channel.reactions[action.type];
+	if(!reaction){
+		reaction = channel.reactions[action.type];
+	}
 	if(!reaction){
 		console.warn('Action handler: unknown action type', action.channel, action.type, action);
 		return;
+	}
+	if(!context){
+		context = channel.reactions;
 	}
 
 	if(gameInfo.simulating || action.instant){
 		this.sequencer.finish();
 	}
-	
+
 	this.sequencer.queueUp(function(seq, sync){
 		if(channel.state != game.state.currentSync){
 			if(!~channel.additionalStates.indexOf(game.state.currentSync)){
@@ -115,8 +130,8 @@ ActionHandler.prototype.executeAction = function(action){
 			}
 			game.state.change(channel.state, false);
 		}
-		return reaction.call(channel.reactions, action, seq, sync);
-	});
+		return reaction.call(this, action, seq, sync);
+	}, 0, context);
 };
 
 /**
@@ -126,27 +141,18 @@ ActionHandler.prototype.executeAction = function(action){
 * @param {number} timeSent время в которое действия были отправлены с сервера
 * @param {string} turnStage текущая стадия хода
 */
-ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent, turnStage, roles){
-	this.sequencer.queueUp(function(){
-		var state = this.channels.possible_actions.state;
-		if(state != game.state.currentSync){
-			console.warn('Action handler: wrong game state', game.state.currentSync, state);
-			game.state.change(state);
-			return;
-		}
+ActionHandler.prototype.handlePossibleActions = function(action){
+	var time = action.time - Date.now();
+	if(time){
+		ui.rope.start(time - 1000);
+	}
 
-		time = time - Date.now();
-		if(time){
-			ui.rope.start(time - 1000);
-		}
+	if(action.roles){
+		gameInfo.updateInfo(action.roles, action.turnStage);
+		fieldManager.updateBadges();
+	}
 
-		if(roles){
-			gameInfo.updateRoles(roles, turnStage);
-			fieldManager.updateBadges();
-		}
-
-		this.highlightPossibleActions(actions);
-	}, 0, this);
+	this.highlightPossibleActions(action.actions);
 };
 
 /**
@@ -154,12 +160,9 @@ ActionHandler.prototype.handlePossibleActions = function(actions, time, timeSent
 * @param {object} actions 	возможные действия
 */
 ActionHandler.prototype.highlightPossibleActions = function(actions){
-
 	if(!actions && !this.possibleActions){
 		return;
 	}
-
-	var cardHolding = cardControl.card;
 
 	if(actions){
 		this.possibleActions = actions;
@@ -175,73 +178,24 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 
 	fieldManager.resetHighlights();
 
-	var button = ui.actionButtons.getByName('action');
-	var hasButtonAction = false;
-
-	for(var ai = 0; ai < actions.length; ai++){
-		var action = actions[ai];
-
-		if(~gameInfo.buttonActions.indexOf(action.type)){
-			hasButtonAction = true;
-			this.setButtonAction(button, action.type);
-			continue;
-		}
-
-		var card = cardManager.cards[action.cid];
-		var field = fieldManager.fields[action.field];
-
-		if(gameInfo.cardIsPlayable(card, action, cardHolding)){
-			card.setPlayability(true);
-			field.setOwnPlayability(action.type, action.linkedField);
-			if(gameInfo.actionIsDefensive(action)){
-				field.validCards.push(card);				
-			}
-		}
-	}
-
-	if(hasButtonAction){
-		if(actions.length == 1){
-			button.changeStyle(1);
-		}
-		else if(actions.length > 1){
-			button.changeStyle(0);
-		}
-	}
-	else{
-		button.disable();
-		button.changeStyle(0);
-	}
+	gameInfo.applyInteractivity(actions, this.actionButton);
 
 	fieldManager.tryHighlightDummy();
 
 };
 
-/**
-* Устанавливает текст и действие кнопки действия.
-* @param {UI.Button} button кнопка действия
-* @param {string}    type   тип действия
-*/
-ActionHandler.prototype.setButtonAction = function(button, type){
-	this.buttonAction = type;
-	var typeText = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
-	//var typeText = type.toLowerCase();
-	//var typeText = type;
-	button.label.setText(typeText);
-	button.enable();
-};
-
 /** Убирает все возможные действия */
 ActionHandler.prototype.resetActions = function(){
 	this.possibleActions = null;
+	this.actionButton.serverAction = null;
 };
 
 /** Убирает все возможные действия и ресетит связанные с ними элементы игры */
 ActionHandler.prototype.reset = function(){
 	this.resetActions();
 	fieldManager.resetHighlights();	
-	var button = ui.actionButtons.getByName('action');
-	button.disable();
-	button.changeStyle(0);
+	this.actionButton.disable();
+	this.actionButton.changeStyle(0);
 	ui.rope.stop();
 
 };

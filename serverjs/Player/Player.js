@@ -59,14 +59,14 @@ class Player{
 		}
 	}
 
-	recieveValidActions(actions, deadline, roles){
+	recieveValidActions(actions, deadline, roles, turnStage){
 		if(this.remote && this.connected){
 			let now = Date.now();
 			let action = {
 				actions: actions,
 				time: deadline,
 				timeSent: now,
-				turnStage: this.game.turnStages.current,
+				turnStage: turnStage,
 				roles: roles,
 				channel: 'possible_actions'
 			};

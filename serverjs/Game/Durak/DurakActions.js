@@ -20,7 +20,7 @@ class DurakActions extends GameActions{
 				actionDefend: 20,
 				afk: 5
 			},
-			['linkedField'],
+			[],
 			['PASS', 'TAKE']
 		);
 
