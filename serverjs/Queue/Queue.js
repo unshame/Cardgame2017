@@ -201,7 +201,7 @@ class Queue{
 	*/
 	endGame(voteResults){
 		if(!this.game){
-			console.error(new Error('No game to end'));
+			this.log.error(new Error('No game to end'));
 			return;
 		}
 		this.log.notice('Game ended');
