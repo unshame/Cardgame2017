@@ -10,10 +10,10 @@ class Game{
 	* Предоставляет игровой цикл.
 	* Предоставляет методы для ожидания и получения действий от игроков.
 	* Создает игровые компоненты и управляет ими.
-	* @param  {Queue} queue   очередь, к которой принадлежит игра 
-	* @param  {Player[]} players массив игроков.
-	* @param  {object<class>} Classes классы, из которых создаются игровые компоненты
-	* @param  {object} config  настройки игры
+	* @param {Queue}         queue   очередь, к которой принадлежит игра
+	* @param {Player[]}      players массив игроков.
+	* @param {object<class>} Classes классы, из которых создаются игровые компоненты
+	* @param {object}        config  настройки игры
 	*/
 	constructor(queue, players, Classes, config){
 
@@ -95,22 +95,22 @@ class Game{
 
 		// Добавляем указатели на поля карт
 		/**
-		* Колода карт из {@Game#cards}.
+		* Колода карт из {@link Game#cards}.
 		* @type {array}
 		*/
 		this.deck = this.cards.deck;
 		/**
-		* Стопка сброса из {@Game#cards}.
+		* Стопка сброса из {@link Game#cards}.
 		* @type {array}
 		*/
 		this.discardPile = this.cards.discardPile;
 		/**
-		* Стол из {@Game#cards}.
+		* Стол из {@link Game#cards}.
 		* @type {array}
 		*/
 		this.table = this.cards.table;
 		/**
-		* Руки игроков из {@Game#cards}.
+		* Руки игроков из {@link Game#cards}.
 		* @type {array}
 		*/
 		this.hands = this.cards.hands;
@@ -570,7 +570,7 @@ class Game{
 	* @param  {string} cid    id карты
 	*/
 	hoverOverCard(player, cid){
-		if(this.isRunning && this.players.includes(player) && player.statuses.working && this.actions.valid.length && this.cards.byId[cid].field == player.id){
+		if(this.isRunning && this.players.includes(player) && player.statuses.working && this.actions.valid[player.id].length && this.cards.byId[cid].field == player.id){
 			if(player.statuses.hover){
 				this.hoverOutCard(player, cid);
 			}
@@ -582,6 +582,7 @@ class Game{
 				}
 			});
 			this.players.notify({type: 'HOVER_OVER_CARD', cid: cid, noResponse: true, channel: 'extra'}, players);
+			this.log.silly('Hovering over', cid, player.id);
 		}
 	}
 
@@ -601,6 +602,7 @@ class Game{
 			});
 			this.players.notify({type: 'HOVER_OUT_CARD', cid: player.statuses.hover, noResponse: true, channel: 'extra'}, players);
 			player.statuses.hover = null;
+			this.log.silly('Hovering out');
 		}
 	}
 }
