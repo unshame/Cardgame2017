@@ -53,17 +53,26 @@ class Bot extends Player{
 			setTimeout(() => {
 	//			this.sendResponse(this.chooseBestActions(actions));
 
-				if ((this.nextActions.length) && (this.game.table[this.nextActions[this.nextActions.length - 1].attack] == null)){
+				console.log('RECEIVED ACTIONS: ', actions);
+				console.log('SAVED ACTIONS (NEXT ACTIONS ARRAY): ', this.nextActions);
+
+				if (this.nextActions.length){
 					this.sendResponse(this.nextActions.pop());
 				} else {
-					let chosenActions = this.chooseBestActions(actions); 
+					let chosenActions = this.chooseBestActions(actions);
+					/*
+					* chosenActions может быть либо массивом объектов, либо 1 объектом.
+					*/
 
-					for (let i = 0; i < actions.length; i++){
-//						console.log(actions[i]);
-						this.nextActions.push(actions[i]);
+					if (chosenActions[0]){
+						for (let i = 0; i < chosenActions.length; i++){
+							this.nextActions.push(chosenActions[i]);
+						}
+
+						this.sendResponse(this.nextActions.pop());
 					}
 
-					this.sendResponse(this.nextActions.pop());
+					this.sendResponse(chosenActions);
 				}
 
 
@@ -112,32 +121,43 @@ class Bot extends Player{
         }
 		
 		let lowestCardAction =  this.findLowestCardAction(actions);
-		let maxCardsBelowJID = this.findMaxCardsBelowJIDs(lowestCardAction);
+		let allowedCardsIDs = this.getAllowedCardsIDs(actions);
+		let passAction = this.findPassAction(actions);
+		let takeAction = this.findTakeAction(actions);
+		let maxCardsBelowJID = this.findMaxCardsBelowJIDs(lowestCardAction, allowedCardsIDs);
+		console.log('Lowest card action ', lowestCardAction);
 		
-        switch (this.defineTurnType(actions)){
+        switch (this.defineTurnType()){
             case 'ATTACK':
 				if (maxCardsBelowJID){
 					return this.changeCardsIDsIntoAttackActions(actions, maxCardsBelowJID);
 				}
 
-                return lowestCardAction;
+				if (passAction && ((!lowestCardAction) || (lowestCardAction.cvalue > 10) || (lowestCardAction.csuit === this.game.cards.trumpSuit))){
+					return passAction;
+				}
+
+				return lowestCardAction;
             
             case 'SUPPORT':
 				/*
 				* Придумать алгоритм выбора карты.
+				* Написать функцию, проверяющую, эффективно ли подкидывание.
 				*/
                 if (lowestCardAction && (lowestCardAction.cvalue < 11) && (lowestCardAction.csuit !== this.game.cards.trumpSuit)){
 					return lowestCardAction;
                 }
                 
-				return this.findPassAction(actions);
+				return passAction;
                 
             case 'DEFENSE':
+				if ((!lowestCardAction) || ((lowestCardAction.csuit === this.game.cards.trumpSuit) && (this.findAllCardsOnTheTable() === 1))){
+					return takeAction;
+				}
+
                 if (lowestCardAction){
                     return lowestCardAction;
                 }
-                
-                return this.findTakeAction(actions);
         }
     }
 
@@ -228,19 +248,17 @@ class Bot extends Player{
         } 
     }
 
-    defineTurnType(actions){
+    defineTurnType(){
         /**
         * Метод, определяющий тип действия, которое нужно совершить боту.
         */
-        if ((actions[0].type === 'DEFENSE') || (actions[0].type === 'TAKE')){
+        if (this.statuses.role === 'defender'){
             return 'DEFENSE';
         }
         
-        for (let i = 0; i < actions.length; i++){
-            if (actions[i].type === 'PASS'){
-                return 'SUPPORT';
-            }
-        }
+       if ((this.statuses.role === 'attacker') && (this.statuses.roleIndex > 1)){
+		   return 'SUPPORT';
+	   }
 		
         return 'ATTACK';
     }
@@ -277,14 +295,14 @@ class Bot extends Player{
         return cards;
     }
 
-    findAttackCardsOnTheTable(){
+    findNullDefenseCardsOnTheTable(){
         /**
         * Метод, возвращающий карты атакующих на столе.
         */
         let cards = [];
         
         for (let i = 0; i < this.game.table.length; i++){
-            if (this.game.table[i].attack !== null){
+            if ((this.game.table[i].attack !== null) && (this.game.table[i].defense === null)){
                 cards.push(this.game.table[i].attack);
             }
         }
@@ -326,8 +344,9 @@ class Bot extends Player{
         return false;
     }
 
-    findMaxCardsBelowJIDs(lowestCardAction){
+    findMaxCardsBelowJIDs(lowestCardAction, allowedCardsIDs){
         /*
+		* !!!! Подумать над тем, как использовать это метод при защите. Как найти карту(ы), которую надо побить данной картой(ами). (minDifference???)
         * Метод, находящий id пары или тройки карт одного типа, которые не являются козырными и меньше J.
 		* При этом разница между этой парой(тройкой) и минимальной картой, которой можно походить, не 
 		* должна быть больше 2.
@@ -343,7 +362,7 @@ class Bot extends Player{
 		*/
 		for (let i = 0; i < cardsInHand.length; i++){
 			if ((cardsInHand[i].suit !== this.game.cards.trumpSuit) && (cardsInHand[i].value < 11) &&
-			   (cardsInHand[i].value < (lowestCardAction.cvalue + 2))){
+			   (cardsInHand[i].value <= (lowestCardAction.cvalue + 2) && (~allowedCardsIDs.indexOf(cardsInHand[i].id)))){
 				if (!cardsByValue[cardsInHand[i].value]){
 					cardsByValue[cardsInHand[i].value] = [];
 				}
@@ -354,13 +373,18 @@ class Bot extends Player{
 
 		let maxCardsIDs = [];
 
+		console.log('CARDS BY VALUE: ');
+		console.log(cardsByValue);
+
 		for (let value in cardsByValue){
 			if (cardsByValue[value].length > maxCardsIDs.length){
 				maxCardsIDs = cardsByValue[value];
 			}
 		}
 
-		return maxCardsIDs;
+		if (maxCardsIDs.length){
+			return maxCardsIDs;
+		}
     }
 
 	findRareSuit(){
@@ -453,11 +477,23 @@ class Bot extends Player{
 			if ((~cardIndex) && (actions[i].field === ('TABLE' + j))){
 				j++;
 				newActions.push(actions[i]);
-				cardsIDs[cardIndex] = [];
+				cardsIDs[cardIndex] = null;
 			}
 		}
 
 		return newActions;
+	}
+
+	getAllowedCardsIDs(actions){
+		let allowedCardsIDs = [];
+
+		for (let i = 0; i < actions.length; i++){
+			if (!~allowedCardsIDs.indexOf(actions[i].cid)){
+				allowedCardsIDs.push(actions[i].cid);
+			}
+		}
+
+		return allowedCardsIDs;
 	}
 }
 
