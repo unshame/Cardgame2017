@@ -129,7 +129,7 @@ class DurakPlayers extends GamePlayers{
 					cards: send.cards ? cardsToSend[pid] : [],
 					players: send.players ? playersToSend : [],
 					trumpSuit: send.suit ? game.cards.trumpSuit : null,
-					lockedFields: game.cards.lockedFieldsIds,
+					lockedFields: game.cards.lockedTablesIds,
 					turnIndex: game.turnNumber,
 					gameIndex: game.index,
 					noResponse: noResponse || false,

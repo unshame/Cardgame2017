@@ -21,7 +21,7 @@ class GameTurnStages{
 	setNext(stage){
 		this.current = this.next;
 		this.next = stage;
-		this.game.log.debug(stage);
+		this.game.log.debug(this.current, '->', this.next);
 	}
 
 	// Действия

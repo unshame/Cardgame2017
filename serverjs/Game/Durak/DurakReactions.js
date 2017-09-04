@@ -86,7 +86,7 @@ class DurakReactions{
 		action.value = card.value;
 		action.suit = card.suit;
 
-		if(this.cards.defenseFields.length){
+		if(this.cards.defenseTables.length){
 			this.turnStages.setNext('DEFENSE');
 		}
 

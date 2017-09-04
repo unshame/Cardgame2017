@@ -63,15 +63,27 @@ class DurakDirectives{
 		let pid = player.id;
 		let hand = this.hands[pid];
 		let defHand = this.hands[this.players.defender.id];
+		let numFilledFields = this.table.length - this.cards.emptyTables.length;
 
-		if(!this.cards.firstEmptyTable || turnStage != 'FOLLOWUP' && !defHand.length){
-
-			this.log.info(!this.firstEmptyTable && 'Field is full' || 'Defender has no cards');
+		if(
+			!this.cards.firstEmptyTable || 
+			(turnStage != 'FOLLOWUP' || this.limitFollowup) && (defHand.length === 0 || numFilledFields >= defHand.length)
+		){
+			if(!this.cards.firstEmptyTable){
+				this.log.info('Field is full');
+			}
+			else if(turnStage == 'FOLLOWUP'){				
+				this.log.info('Defender has as many cards as he takes');
+			}
+			else{
+				this.log.info('Defender has no cards');
+			}
 
 			this.turnStages.setNext('DEFENSE');
 			return true;
 		}
-		else if(!hand.length){
+		
+		if(!hand.length){
 			this.log.info('Attacker has no cards');
 
 			if(this.skipCounter < 2 && this.players.attackers[1]){
@@ -122,10 +134,10 @@ class DurakDirectives{
 		let lastTurnStage = this.turnStages.current;
 
 		// Находим карту, которую нужно отбивать
-		let defenseFields = this.cards.defenseFields;
+		let defenseTables = this.cards.defenseTables;
 
 		// Если ни одной карты не найдено, значит игрок успешно отбился, можно завершать ход
-		if(!defenseFields.length){
+		if(!defenseTables.length){
 			this.log.info(player.name, 'successfully defended');
 			this.turnStages.setNext('END');
 			return true;
@@ -135,10 +147,10 @@ class DurakDirectives{
 		let pid = player.id;
 		let hand = this.hands[pid];	
 
-		this.cards.getDefenseActions(hand, actions, defenseFields);
+		this.cards.getDefenseActions(hand, actions, defenseTables);
 
 		if(this.canTransfer){
-			this.cards.getTransferActions(hand, actions, defenseFields);
+			this.cards.getTransferActions(hand, actions, defenseTables);
 		}
 
 		// Добавляем возможность взять карты

@@ -57,23 +57,33 @@ class DurakCards extends GameCards{
 	}
 
 	// Возвращает столы с заполненным attackField, но пустым defendField
-	get defenseFields(){
-		let defenseFields = [];
+	get defenseTables(){
+		let defenseTables = [];
 		this.table.forEach((tableField) => {
 			if(tableField.attack && !tableField.defense){
-				defenseFields.push(tableField);
+				defenseTables.push(tableField);
 			} 
 		});
-		return defenseFields;
+		return defenseTables;
 	}
 
 	// Возвращает id закрытых столов
-	get lockedFieldsIds(){
+	get lockedTablesIds(){
 		let lockedFields = [];
 		for(let i = this.table.fullLength; i < this.table.maxLength; i++){
 			lockedFields.push(this.table[i].id);
 		}
 		return lockedFields;
+	}
+
+	get emptyTables(){
+		let emptyTables = [];
+		this.table.forEach((tableField) => {
+			if(!tableField.attack && !tableField.defense){
+				emptyTables.push(tableField);
+			} 
+		});
+		return emptyTables;
 	}
 
 
@@ -322,10 +332,10 @@ class DurakCards extends GameCards{
 		});
 	}
 
-	getDefenseActions(hand, actions, defenseFields){
+	getDefenseActions(hand, actions, defenseTables){
 
 		// Создаем список возможных действий защищающегося
-		defenseFields.forEach((defenseField) => {
+		defenseTables.forEach((defenseField) => {
 			let fid = defenseField.id;
 			hand.forEach((card) => {
 				let cid = card.id;
@@ -348,7 +358,7 @@ class DurakCards extends GameCards{
 		});
 	}
 
-	getTransferActions(hand, actions, defenseFields){
+	getTransferActions(hand, actions, defenseTables){
 		// Узнаем, можно ли переводить
 		let attackers = this.game.players.attackers;
 		let canTransfer = 
@@ -376,11 +386,11 @@ class DurakCards extends GameCards{
 
 		let emptyTable = this.firstEmptyTable; 
 
-		for(let di = 0; di < defenseFields.length; di++){
+		for(let di = 0; di < defenseTables.length; di++){
 			for(let ci = 0; ci < hand.length; ci++){
 				let card = hand[ci];
 				let cid = card.id; 
-				let otherCard = defenseFields[di].attack;
+				let otherCard = defenseTables[di].attack;
 
 				if(card.value != otherCard.value){
 					continue;

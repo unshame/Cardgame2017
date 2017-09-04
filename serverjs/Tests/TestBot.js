@@ -25,20 +25,20 @@ class TestBot extends Bot{
 			defenseIndex = types.indexOf('DEFENSE');
 
 		if(this.tester.running && game.turnStages.current != 'FOLLOWUP' && game.turnStages.next == 'DEFENSE' && ~attackIndex && !~defenseIndex){
-			let defenseFields = 0;
+			let defenseTables = 0;
 			this.tests++;
 			for(let fi = 0; fi < game.table.length; fi++){
 				let tableField = game.table[fi];
 
 				if(tableField.attack && !tableField.defense){
-					defenseFields++;
+					defenseTables++;
 				} 
 
 			}
 			let handSize = game.hands[game.players.defender.id].length;
-			if(handSize <= defenseFields){
+			if(handSize <= defenseTables){
 				console.log('Test %s (attack) failed on %s', this.tests, this.name);
-				console.log('%s cards to beat but %s cards in hand', defenseFields + 1, handSize);
+				console.log('%s cards to beat but %s cards in hand', defenseTables + 1, handSize);
 				console.log('----------------\n');
 				this.failedTests++;
 			}
