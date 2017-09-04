@@ -16,7 +16,7 @@ UI.ButtonPopup = function(options){
 	UI.Button.call(this, options);
 	UI.PopupComponent.call(
 		this,
-		this,
+		this.button,
 		options.hoverPlacement || 'right',
 		options.hoverText
 	);

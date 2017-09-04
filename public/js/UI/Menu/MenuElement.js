@@ -25,7 +25,7 @@ Menu.prototype.forEachElement = function(callback, includeSpecial){
 */
 Menu.prototype.removeAllElements = function(destroy){
 	this.forEachElement(function(el){
-		el.removeFromParent(destroy);
+		this.remove(el, destroy);
 	});
 	this.layout.length = 0;
 	this.hiddenElements.length = 0;
