@@ -360,8 +360,8 @@ function buildNav(members) {
     members.globals.sort(function(a,b){
       var kinda = a.kind,
         kindb = b.kind,
-        namea = a.name.toUpperCase(),
-        nameb = b.name.toUpperCase();
+        namea = a.name,
+        nameb = b.name;
       if(kinda == 'function')
         kinda = 'method';
       if(kindb == 'function')

@@ -30,6 +30,7 @@ var BRING_TO_TOP_ON = {
 /**
 * Тип канала {@link ActionHandler}.  
 * Влияет на то, будет ли поставлен или снят флаг {@link ConnectionManager#serverWaiting}.
+* @readonly
 * @enum {number}
 * @global
 */

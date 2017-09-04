@@ -2,7 +2,7 @@
 * Конструктор кнопок с текстом/иконкой.  
 * Состоит из двух элементов: кнопки ({@link UI.Button#button|button}) и опционального текста\иконки ({@link UI.Button#label|label}).  
 * @class
-* @extends {UI.ButtonBase}
+* @extends {external:Phaser.Group}
 * @param {object}                [options]                        Настройки кнопки.
 * @param {(object|function)}     options.position={x:0,y:0}       Позиция кнопки в виде объекта или функции, возвращающий объект вида `{x, y}`.
 *                                                                 В функцию передаются следующие параметры: `width, height`.

@@ -65,7 +65,6 @@ $(function () {
 	if(className){
 	  $('.nav-item.' + className.replace(/\./g, '_')).show();
 	}
-	console.log($('.nav-item.' + className));
 
 	//Пытается найти элементы с определенной ссылкой (в основном не используется)
 	function tryLink(className, hash, prefix){
