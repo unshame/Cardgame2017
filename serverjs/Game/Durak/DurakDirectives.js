@@ -63,15 +63,13 @@ class DurakDirectives{
 		let pid = player.id;
 		let hand = this.hands[pid];
 		let defHand = this.hands[this.players.defender.id];
-		let emptyTables = this.cards.emptyTables;
-		let firstEmptyTable = emptyTables[0];
 		let numFilledTables = this.table.length - this.cards.emptyTables.length;
 
 		if(
-			!firstEmptyTable || 
+			!this.cards.firstEmptyTable || 
 			(turnStage != 'FOLLOWUP' || this.limitFollowup) && (defHand.length === 0 || turnStage == 'FOLLOWUP' && numFilledTables >= defHand.length)
 		){
-			if(!firstEmptyTable){
+			if(!this.cards.firstEmptyTable){
 				this.log.info('Field is full');
 			}
 			else if(turnStage == 'FOLLOWUP'){				
