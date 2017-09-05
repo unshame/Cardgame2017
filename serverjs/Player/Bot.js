@@ -135,7 +135,7 @@ class Bot extends Player{
 					return this.changeCardIntoAction(actions, maxQtyCardBelowJ);
 				}
 
-				if ((!lowestAction) || ((lowestAction.csuit === this.game.cards.trumpSuit) && (this.findCardsOnTheTable() === 1) && (gameStage !== 'END_GAME'))){
+				if ((!lowestAction) || ((lowestAction.csuit === this.game.cards.trumpSuit) && (this.findCardsOnTheTable().length === 1) && (gameStage !== 'END_GAME'))){
 					return takeAction;
 				}
 
