@@ -139,8 +139,8 @@ class Bot extends Player{
 					return this.changeCardIntoAction(actions, maxQtyCard);
 				}
 
-				if ((!minAction) || ((minAction.csuit === this.game.cards.trumpSuit) && (this.findCardsOnTheTable().length === 1) &&
-									 (gameStage !== 'END_GAME') && (this.game.hands[this.id].length < 7))){
+				if ((!minAction) || (gameStage !== 'END_GAME') && (minAction.csuit === this.game.cards.trumpSuit) && ((this.game.table.usedFields === 1) &&
+									 (this.game.hands[this.id].length < 7) || (this.game.table.usedFields === 2) && (minAction.cvalue > 10))){
 					return takeAction;
 				}
 
@@ -486,7 +486,7 @@ class Bot extends Player{
 			}
 		}
 
-		return suits.indexOf(Math.min(suits[0], suits[1], suits[2], suits[3],))
+		return suits.indexOf(Math.min(suits[0], suits[1], suits[2], suits[3]));
 	}
 
 	findCommonSuit(){
