@@ -159,7 +159,7 @@ class Bot extends Player{
 
 			if ((lowestAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit)){
 				lowestAction = actions[i];
-				break;
+				continue;
 			}
             
             if (actions[i].cvalue < lowestAction.cvalue){
