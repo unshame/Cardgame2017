@@ -41,7 +41,7 @@ class DurakGame extends Game{
 
 		this.freeForAll = Boolean(config.freeForAll);
 
-		this.attackOccured = false;
+		this.defenseOccured = false;
 	}
 
 	getDefaultResults(){
@@ -53,12 +53,12 @@ class DurakGame extends Game{
 
 	reset(){
 		super.reset();
-		this.attackOccured = false;
+		this.defenseOccured = false;
 	}
 
 	resetTurn(){
 		super.resetTurn();
-		this.attackOccured = false;
+		this.defenseOccured = false;
 	}
 }
 

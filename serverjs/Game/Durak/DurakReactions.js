@@ -53,14 +53,6 @@ class DurakReactions{
 				this.turnStages.setNext('ATTACK_DEFENSE');	
 			}
 		}
-		else if(this.turnStages.current != 'FOLLOWUP'){
-			if(this.freeForAll){
-				this.players.set('passed', false, this.players.attackers);
-			}
-			else{
-				this.attackOccured = true;
-			}
-		}
 
 		return action;
 	}
@@ -86,6 +78,16 @@ class DurakReactions{
 		action.value = card.value;
 		action.suit = card.suit;
 
+		if(this.freeForAll){
+			this.players.set('passed', false, this.players.attackers);
+		}else{
+			this.defenseOccured = true;
+		}
+
+		if(this.turnStages.next != 'ATTACK_DEFENSE'){
+			this.turnStages.setNext('ATTACK_DEFENSE');
+		}
+
 		return action;
 	}
 
@@ -94,7 +96,7 @@ class DurakReactions{
 
 		this.log.info(player.name, 'passes');
 
-		if(this.turnStages.current != 'FOLLOWUP' && this.attackOccured){
+		if(this.turnStages.current != 'FOLLOWUP' && this.defenseOccured){
 			let attackers = this.players.attackers;
 			let lastActiveAttacker = null;
 			attackers.forEach((attacker) => {
@@ -109,7 +111,7 @@ class DurakReactions{
 
 		player.statuses.passed = true;
 
-		this.attackOccured = false;
+		this.defenseOccured = false;
 
 		return action;
 	}
