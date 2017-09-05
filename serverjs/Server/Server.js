@@ -55,7 +55,8 @@ class Server extends Eureca.Server{
 		this.manager = new QueueManager(this, {
 			game: this.gameModes['durak'][0],
 			gameConfig: {
-				transfer: this.params.transfer
+				transfer: this.params.transfer,
+				limitFollowup: !this.params.followup
 			},
 			bot: this.gameModes['durak'][1],
 			numPlayers: this.params.numPlayers,
@@ -120,6 +121,7 @@ class Server extends Eureca.Server{
 			numBots: Number(process.env.BOTS) || (argv.b === undefined ? Number(argv.bots) : Number(argv.b)),
 			numPlayers: Number(process.env.PLAYERS) || (argv.p === undefined ? Number(argv.players) : Number(argv.p)),
 			transfer: Boolean(process.env.TRANSFER || argv.transfer),
+			followup: Boolean(process.env.FOLLOWUP || argv.followup),
 			testing: argv.t || argv.test || argv.testing || false,
 			debug: process.env.DEBUG || argv.d || argv.debug || 'notice',
 			port: process.env.PORT || Number(argv.port)

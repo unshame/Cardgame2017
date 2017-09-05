@@ -10,7 +10,7 @@ Field.PlayerField = function(options, style, badgeStyle){
 	Field.BadgeField.call(this, options, style, badgeStyle);
 
 	/**
-	* Полукруглая поверхность поля, если `style.area == 'curved'`.
+	* Полукруглая поверхность поля.
 	* @type {Phaser.Image}
 	*/
 	this.circle = game.add.image(0, 0);

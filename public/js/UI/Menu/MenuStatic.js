@@ -181,7 +181,6 @@ Menu.drawPanel = function(bitmap, width, height, x, y, color, header, headerColo
 
 /**
 * Рисует прямоугольник с загругленными углами.
-* @global
 * @param {Phaser.BitmapData}      bitmap      где рисовать
 * @param {number}                 width       ширина
 * @param {number}                 height      высота

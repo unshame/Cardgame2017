@@ -59,8 +59,8 @@ UI.ButtonAltStyles.prototype.changeStyle = function(index){
 	if(!style || index === this.currentStyle){
 		return;
 	}
-	var frame = this.frame;
-	this.loadTexture(style.key);
+	var frame = this.button.frame;
+	this.button.loadTexture(style.key);
 	this.frame = frame;
 	if(this.label && this.label.isText){
 		this.label.font = style.font;

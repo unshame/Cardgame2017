@@ -130,7 +130,33 @@
         <h3 class="subsection-title" id="members">Members</h3>
 
         <div class="subsection-links">
-            <?js members.forEach(function(p) { ?>
+            <?js 
+            if(isGlobalPage){
+                members.sort(function(a,b){
+                  var kinda = a.kind,
+                    kindb = b.kind,
+                    namea = a.name,
+                    nameb = b.name;
+                  if(kinda == 'function')
+                    kinda = 'method';
+                  if(kindb == 'function')
+                    kindb = 'method';
+                  if(kinda < kindb){
+                    return -1;
+                  }
+                  else if(kinda > kindb){
+                    return 1;
+                  }
+                  else if(namea < nameb){
+                    return -1;
+                  }
+                  else if(namea > nameb){
+                    return 1;
+                  }
+                  else return 0;
+                });
+            }
+            members.forEach(function(p) { ?>
                  <?js= self.partial('list.tmpl', p) ?>
 
             <?js }); ?>

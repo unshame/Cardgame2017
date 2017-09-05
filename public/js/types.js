@@ -30,6 +30,7 @@ var BRING_TO_TOP_ON = {
 /**
 * Тип канала {@link ActionHandler}.  
 * Влияет на то, будет ли поставлен или снят флаг {@link ConnectionManager#serverWaiting}.
+* @readonly
 * @enum {number}
 * @global
 */
@@ -124,7 +125,7 @@ var CHANNEL_TYPE = {
 * Далее описаны полезные свойства и методы. По ссылке ниже можно найти полную документацию.
 * @class external:Phaser.Group
 * @param {Phaser.Game}        game                  игра
-* @param {DisplayObject|null} [parent=(game world)] родительская группа
+* @param {DisplayObject|null} [parent=(game.world)] родительская группа
 * @param {string}             [name='group']        имя группы
 * @see  {@link https://phaser.io/docs/2.6.2/Phaser.Group.html|Phaser.Group полная документация}
 */

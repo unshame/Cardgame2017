@@ -34,6 +34,10 @@ class DurakGame extends Game{
 		);
 		// Можно ли переводить карты
 		this.canTransfer = Boolean(config.transfer);
+
+		// Ограничивать ли количество подкладываемых карт кол-вом карт в руке защищающегося
+		// после того, как защищающийся решил брать карты
+		this.limitFollowup = Boolean(config.limitFollowup);
 	}
 
 	getDefaultResults(){
