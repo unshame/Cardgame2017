@@ -83,6 +83,8 @@ class Bot extends Player{
         /**
         * Метод, возвращающий наиболее выгодное для бота действие.
         */
+		console.log('TABLE', this.game.table);
+
 		let gameStage = this.defineGameStage(),
         	transferAction = this.findTransferAction(actions);
 
@@ -90,64 +92,67 @@ class Bot extends Player{
             return transferAction;
         }
 		
-		let lowestAction =  this.findlowestAction(actions),
+		let minAction =  this.findMinAction(actions),
 			allowedCardsIDs = this.getAllowedCardsIDs(actions),
 			passAction = this.findPassAction(actions),
 			takeAction = this.findTakeAction(actions),
-			maxQtyCardBelowJ = this.findMaxQtyCardBelowJ(lowestAction, allowedCardsIDs),
+			maxQtyCard = this.findMaxQtyCard(minAction, allowedCardsIDs, gameStage),
 			trumpCardsQty = this.findTrumpCardsQty();
 
-		console.log('Lowest card action ', lowestAction);
+		console.log('Min Action ', minAction);
 		
         switch (this.defineTurnType()){
             case 'ATTACK':
-				if (maxQtyCardBelowJ){
-					return this.changeCardIntoAction(actions, maxQtyCardBelowJ);
+				if (maxQtyCard){
+					return this.changeCardIntoAction(actions, maxQtyCard);
 				}
 
-				if (passAction && ((!lowestAction) || (lowestAction.cvalue > 10) || (lowestAction.csuit === this.game.cards.trumpSuit))){
+				if (passAction && ((!minAction) || (minAction.cvalue > 10) || (minAction.csuit === this.game.cards.trumpSuit))){
 					return passAction;
 				}
 
-				return lowestAction;
+				return minAction;
             
             case 'SUPPORT':
 				/*
 				* Придумать более глубокий алгоритм выбора карты.
 				* Написать функцию, проверяющую, эффективно ли подкидывание.
 				*/
-                if (lowestAction && (lowestAction.cvalue < 11) && (lowestAction.csuit !== this.game.cards.trumpSuit)){
-					return lowestAction;
+                if (minAction && (minAction.cvalue < 11) && (minAction.csuit !== this.game.cards.trumpSuit)){
+					return minAction;
                 }
                 
 				return passAction;
                 
             case 'DEFENSE':
-				let lowestActionWithValueOnTheTable = this.findLowestActionWithValueOnTheTable(actions);
-				console.log('lowestActionWithValueOnTheTable: ', lowestActionWithValueOnTheTable);
+				let cardsOnTheTableValues = this.findCardsOnTheTableValues(),
+					minActionWithValueOnTheTable = this.findMinAction(actions, cardsOnTheTableValues);
+				console.log('lowestActionWithValueOnTheTable: ', minActionWithValueOnTheTable);
 
-				if (lowestActionWithValueOnTheTable && (lowestActionWithValueOnTheTable.value - (this.findAttackCardOnTheTable(lowestActionWithValueOnTheTable.field)).value <= 3)
-					&& (lowestActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit) ){
-					return lowestActionWithValueOnTheTable;
+				if (minActionWithValueOnTheTable && (minActionWithValueOnTheTable.value - (this.findAttackCardOnTheTable(minActionWithValueOnTheTable.field)).value <= 3)
+					&& ((gameStage === 'EARLY_GAME') && (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit) ||
+						(minActionWithValueOnTheTable.value < 11) || (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit))){
+					return minActionWithValueOnTheTable;
 				}
 
-            	if (maxQtyCardBelowJ){
-					return this.changeCardIntoAction(actions, maxQtyCardBelowJ);
+            	if (maxQtyCard){
+					return this.changeCardIntoAction(actions, maxQtyCard);
 				}
 
-				if ((!lowestAction) || ((lowestAction.csuit === this.game.cards.trumpSuit) && (this.findCardsOnTheTable().length === 1) && (gameStage !== 'END_GAME'))){
+				if ((!minAction) || ((minAction.csuit === this.game.cards.trumpSuit) && (this.findCardsOnTheTable().length === 1) &&
+									 (gameStage !== 'END_GAME') && (this.game.hands[this.id].length < 7))){
 					return takeAction;
 				}
 
-				return lowestAction;
+				return minAction;
         }
 	}
 
-    findlowestAction(actions){
+    findMinAction(actions, cardsOnTheTableValues){
         /** 
         * Метод, возврающий наименьшую карту из тех, которыми можно походить.
         */  
-        let lowestAction = {
+        let minAction = {
             cvalue: Infinity
         };
     
@@ -157,25 +162,28 @@ class Bot extends Player{
                 continue;
             }
 
-			if ((lowestAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit)){
-				console.log('ACTIONS[i]', actions[i]);
-				console.log('lowestAction[i]', lowestAction);
-				lowestAction = actions[i];
+			if (cardsOnTheTableValues && (!~cardsOnTheTableValues.indexOf(actions[i].cvalue))){
+				continue;
+			}
+
+			if ((minAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit)){
+				minAction = actions[i];
 				continue;
 			}
             
-            if ((actions[i].cvalue < lowestAction.cvalue) && (((lowestAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit === this.game.cards.trumpSuit))
-															  || ((lowestAction.csuit !== this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit)))){
-                lowestAction = actions[i];
+            if ((actions[i].cvalue < minAction.cvalue) &&
+				((actions[i].csuit === this.game.cards.trumpSuit) && ((minAction.csuit === this.game.cards.trumpSuit) || (minAction.csuit === undefined))) ||
+				((minAction.csuit !== this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit))){
+                minAction = actions[i];
             }
          }
 		
-        if (lowestAction.cvalue !== Infinity){
+        if (minAction.cvalue !== Infinity){
             /**
             * Если наиболее выгодное действие было найдено, 
             * то метод возвращает его
             */
-            return lowestAction;
+            return minAction;
         }
     }
 
@@ -237,7 +245,7 @@ class Bot extends Player{
         */
         let gameStages = ['EARLY_GAME', 'END_GAME'];
         
-        if (this.game.deck.length < 10){
+        if (this.game.deck.length < 5){
             return gameStages[1];
         }
         
@@ -250,20 +258,22 @@ class Bot extends Player{
 		*
         * В начале игры перевод выгоден, если бот не переводит козырем или козырем, меньшем 5.
         */
-        if ((gameStage === 'EARLY_GAME') && ((transferAction.csuit !== this.game.cards.trumpSuit) || (transferAction.cvalue < 5))){
+		let trumpSuitQty = this.findTrumpCardsQty();
+
+        if ((gameStage === 'EARLY_GAME') && ((transferAction.csuit !== this.game.cards.trumpSuit) || ((transferAction.cvalue < 5) && (trumpSuitQty > 1)))){
             return true;
         }
         /**
         * В конце игры перевод выгоден, если бот не переводит козырем или козырем, меньшем J.
         */
-        if ((gameStage === 'END_GAME') && ((transferAction.csuit !== this.game.cards.trumpSuit) || (transferAction.cvalue < 11) ) ){
+        if ((gameStage === 'END_GAME') && ((transferAction.csuit !== this.game.cards.trumpSuit) || ((transferAction.cvalue < 11) && (trumpSuitQty > 0)))){
             return true;
         }
         
         return false;
     }
 
-    findMaxQtyCardBelowJ(lowestAction, allowedCardsIDs){
+    findMaxQtyCard(minAction, allowedCardsIDs, gameStage){
         /*
 		* !!!! Подумать над тем, как использовать это метод при защите. Как найти карту(ы), которую надо побить данной картой(ами). (minDifference???)
         * Метод, находящий id пары или тройки карт одного типа, которые не являются козырными и меньше J.
@@ -271,7 +281,7 @@ class Bot extends Player{
 		* должна быть больше 2.
 		* В итоге выводится одно из этих действий. В приоритете выбор с самой частой мастью. Или мастью не равной самой редкой.
         */
-		if (!lowestAction){
+		if (!minAction){
 			return undefined;
 		}
 		
@@ -281,8 +291,8 @@ class Bot extends Player{
 		* Заполяем объект cardsByValue
 		*/
 		for (let i = 0; i < cardsInHand.length; i++){
-			if ((cardsInHand[i].suit !== this.game.cards.trumpSuit) && (cardsInHand[i].value < 11) &&
-			   (cardsInHand[i].value <= (lowestAction.cvalue + 2) && (~allowedCardsIDs.indexOf(cardsInHand[i].id)))){
+			if ((cardsInHand[i].suit !== this.game.cards.trumpSuit) && ((gameStage === 'END_GAME') || (cardsInHand[i].value < 11)) &&
+			   (cardsInHand[i].value <= (minAction.cvalue + 2) && (~allowedCardsIDs.indexOf(cardsInHand[i].id)))){
 				if (!cardsByValue[cardsInHand[i].value]){
 					cardsByValue[cardsInHand[i].value] = [];
 				}
@@ -381,22 +391,9 @@ class Bot extends Player{
 	* Методы, работающие со столом.
 	*
 	*/
-	findLowestActionWithValueOnTheTable(actions){
-		let LowestAction;
-		let cardsValues = this.findCardsValuesOnTheTable();
-
-		for (let i = 0; i < actions.length; i++){
-			if ((~cardsValues.indexOf(actions[i].value)) && (actions[i].value < LowestAction[value])){
-				LowestAction = actions[i];
-			}
-		}
-
-		return LowestAction;
-	}
-
 	findAttackCardOnTheTable(field){
 		for (let i = 0; i < this.game.table.length; i++){
-			if (this.game.table[i].field === field){
+			if (this.game.table[i].id === field){
                 return this.game.table[i].attack;
             }
 		}
@@ -421,7 +418,7 @@ class Bot extends Player{
         return cards;
     }
 
-	findCardsValuesOnTheTable(){
+	findCardsOnTheTableValues(){
         /**
         * Метод, возвращающий все карты на столе.
         */
@@ -525,8 +522,6 @@ class Bot extends Player{
 
 		return trumpCardsQty;
 	}
-
-
 }
 
 module.exports = Bot;
