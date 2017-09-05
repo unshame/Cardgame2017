@@ -29,7 +29,7 @@ class DurakTurnStages extends GameTurnStages{
 	}
 
 	DEFENSE_TRANSFER(){
-		return this.game.let('DEFEND', this.game.players.defender, this.canTransfer);
+		return this.game.let('DEFEND', this.game.players.defender, this.game.canTransfer);
 		// Turn stage: DEFENSE_TRANSFER, ATTACK_DEFENSE, FOLLOWUP
 	}
 

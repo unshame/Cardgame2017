@@ -79,6 +79,8 @@ class DurakDirectives{
 			actions.push(action);
 		}
 
+		this.turnStages.setNext('ATTACK_DEFENSE');
+
 		let deadline = this.waitForResponse(this.actions.timeouts.actionAttack, workingPlayers);
 		this.players.validActionsNotify(deadline);	
 		return false;
@@ -115,6 +117,8 @@ class DurakDirectives{
 
 		this.actions.valid[pid] = actions;
 
+		this.turnStages.setNext(canTransfer ? 'DEFENSE_TRANSFER' : 'DEFENSE');
+
 		let deadline = this.waitForResponse(this.actions.timeouts.actionDefend, [defender]);
 		this.players.validActionsNotify(deadline);	
 
@@ -146,6 +150,8 @@ class DurakDirectives{
 			this.turnStages.setNext('TAKE');
 			return true;
 		}
+
+		this.turnStages.setNext('FOLLOWUP');
 
 		let deadline = this.waitForResponse(this.actions.timeouts.actionAttack, workingPlayers);
 		this.players.validActionsNotify(deadline);	
