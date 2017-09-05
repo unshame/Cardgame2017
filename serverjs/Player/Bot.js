@@ -127,7 +127,7 @@ class Bot extends Player{
 				console.log('lowestActionWithValueOnTheTable: ', lowestActionWithValueOnTheTable);
 
 				if (lowestActionWithValueOnTheTable && (lowestActionWithValueOnTheTable.value - (this.findAttackCardOnTheTable(lowestActionWithValueOnTheTable.field)).value <= 3)
-					&& (lowestActionWithValueOnTheTable.csuit != this.game.cards.trumpSuit) ){
+					&& (lowestActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit) ){
 					return lowestActionWithValueOnTheTable;
 				}
 
@@ -158,11 +158,14 @@ class Bot extends Player{
             }
 
 			if ((lowestAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit)){
+				console.log('ACTIONS[i]', actions[i]);
+				console.log('lowestAction[i]', lowestAction);
 				lowestAction = actions[i];
 				continue;
 			}
             
-            if (actions[i].cvalue < lowestAction.cvalue){
+            if ((actions[i].cvalue < lowestAction.cvalue) && (((lowestAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit === this.game.cards.trumpSuit))
+															  || ((lowestAction.csuit !== this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit)))){
                 lowestAction = actions[i];
             }
          }
