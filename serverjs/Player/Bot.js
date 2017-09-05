@@ -83,30 +83,21 @@ class Bot extends Player{
         /**
         * Метод, возвращающий наиболее выгодное для бота действие.
         */
-        if (this.defineGameStage() === 'EARLY_GAME'){
-                return this.chooseEarlyGameAction(actions);
-        }
-        
-        return this.chooseEarlyGameAction(actions);
-    }
+		let gameStage = this.defineGameStage(),
+        	transferAction = this.findTransferAction(actions);
 
-    chooseEarlyGameAction(actions){
-        /**
-        * Метод, возвращающий наиболее выгодное для бота действие на ранней стадии игры.
-        */
-        let transferAction = this.findTransferAction(actions);
-        
-        if ((transferAction) && this.isTransferBeneficial('EARLY_GAME', transferAction)){
+        if ((transferAction) && this.isTransferBeneficial(gameStage, transferAction)){
             return transferAction;
         }
 		
-		let lowestCardAction =  this.findLowestCardAction(actions),
+		let lowestAction =  this.findlowestAction(actions),
 			allowedCardsIDs = this.getAllowedCardsIDs(actions),
 			passAction = this.findPassAction(actions),
 			takeAction = this.findTakeAction(actions),
-			maxQtyCardBelowJ = this.findMaxQtyCardBelowJ(lowestCardAction, allowedCardsIDs);
+			maxQtyCardBelowJ = this.findMaxQtyCardBelowJ(lowestAction, allowedCardsIDs),
+			trumpCardsQty = this.findTrumpCardsQty();
 
-		console.log('Lowest card action ', lowestCardAction);
+		console.log('Lowest card action ', lowestAction);
 		
         switch (this.defineTurnType()){
             case 'ATTACK':
@@ -114,67 +105,49 @@ class Bot extends Player{
 					return this.changeCardIntoAction(actions, maxQtyCardBelowJ);
 				}
 
-				if (passAction && ((!lowestCardAction) || (lowestCardAction.cvalue > 10) || (lowestCardAction.csuit === this.game.cards.trumpSuit))){
+				if (passAction && ((!lowestAction) || (lowestAction.cvalue > 10) || (lowestAction.csuit === this.game.cards.trumpSuit))){
 					return passAction;
 				}
 
-				return lowestCardAction;
+				return lowestAction;
             
             case 'SUPPORT':
 				/*
 				* Придумать более глубокий алгоритм выбора карты.
 				* Написать функцию, проверяющую, эффективно ли подкидывание.
 				*/
-                if (lowestCardAction && (lowestCardAction.cvalue < 11) && (lowestCardAction.csuit !== this.game.cards.trumpSuit)){
-					return lowestCardAction;
+                if (lowestAction && (lowestAction.cvalue < 11) && (lowestAction.csuit !== this.game.cards.trumpSuit)){
+					return lowestAction;
                 }
                 
 				return passAction;
                 
             case 'DEFENSE':
-//            	if (maxQtyCardBelowJ){
-//					return this.changeCardIntoAction(actions, maxQtyCardBelowJ);
-//				}
+				let lowestActionWithValueOnTheTable = this.findLowestActionWithValueOnTheTable(actions);
+				console.log('lowestActionWithValueOnTheTable: ', lowestActionWithValueOnTheTable);
 
-				if ((!lowestCardAction) || ((lowestCardAction.csuit === this.game.cards.trumpSuit) && (this.findAllCardsOnTheTable() === 1))){
+				if (lowestActionWithValueOnTheTable && (lowestActionWithValueOnTheTable.value - (this.findAttackCardOnTheTable(lowestActionWithValueOnTheTable.field)).value <= 3)
+					&& (lowestActionWithValueOnTheTable.csuit != this.game.cards.trumpSuit) ){
+					return lowestActionWithValueOnTheTable;
+				}
+
+            	if (maxQtyCardBelowJ){
+					return this.changeCardIntoAction(actions, maxQtyCardBelowJ);
+				}
+
+				if ((!lowestAction) || ((lowestAction.csuit === this.game.cards.trumpSuit) && (this.findCardsOnTheTable() === 1) && (gameStage !== 'END_GAME'))){
 					return takeAction;
 				}
 
-				return lowestCardAction;
+				return lowestAction;
         }
-    }
+	}
 
-    chooseEndGameAction(actions){
-        /**
-        * Метод, возвращающий наиболее выгодное для бота действие на поздней стадии игры.
-        */
-        let transferAction = this.findTransferAction(actions);
-        
-        if ((transferAction) && this.isTransferBeneficial('END_GAME', transferAction)){
-            return transferAction;
-        }
-        
-        let lowestCardAction =  this.findLowestCardAction(actions),
-			allowedCardsIDs = this.getAllowedCardsIDs(actions),
-			passAction = this.findPassAction(actions),
-			takeAction = this.findTakeAction(actions),
-			maxQtyCardBelowJ = this.findMaxQtyCardBelowJ(lowestCardAction, allowedCardsIDs);
-
-
-        switch (this.defineActionType(actions)){
-            case 'ATTACK':
-            
-            case 'SUPPORT':
-                
-            case 'DEFENSE':
-        }
-    }
-
-    findLowestCardAction(actions){
+    findlowestAction(actions){
         /** 
         * Метод, возврающий наименьшую карту из тех, которыми можно походить.
         */  
-        let lowestCardAction = {
+        let lowestAction = {
             cvalue: Infinity
         };
     
@@ -184,24 +157,24 @@ class Bot extends Player{
                 continue;
             }
             
-            if (actions[i].cvalue < lowestCardAction.cvalue){
+            if (actions[i].cvalue < lowestAction.cvalue){
                 /**
                 * Если текущая карта меньше минимальной, то делаем текущую минимальной, если:
                 * Минимальная карта козырная или
                 * Минимальная и текущая карты не козырные
                 */
-                lowestCardAction = (lowestCardAction.cvalue === Infinity) ? actions[i] : 
-                (lowestCardAction.csuit === this.game.cards.trumpSuit) ? actions[i] :
-                (actions[i].csuit === this.game.cards.trumpSuit) ? lowestCardAction : actions[i];
+                lowestAction = (lowestAction.cvalue === Infinity) ? actions[i] :
+                (lowestAction.csuit === this.game.cards.trumpSuit) ? actions[i] :
+                (actions[i].csuit === this.game.cards.trumpSuit) ? lowestAction : actions[i];
             }
          }
 		
-        if (lowestCardAction.cvalue !== Infinity){
+        if (lowestAction.cvalue !== Infinity){
             /**
             * Если наиболее выгодное действие было найдено, 
             * то метод возвращает его
             */
-            return lowestCardAction;
+            return lowestAction;
         }
     }
 
@@ -270,55 +243,6 @@ class Bot extends Player{
         return gameStages[0];
     }
 
-    findAllCardsOnTheTable(){
-        /**
-        * Метод, возвращающий все карты на столе.
-        */
-        let cards = [];
-        
-        for (let i = 0; i < this.game.table.length; i++){
-            if (this.game.table[i].attack !== null){
-                cards.push(this.game.table[i].attack);
-            }
-            
-            if (this.game.table[i].defense !== null){
-                cards.push(this.game.table[i].defense);
-            }
-        }
-        
-        return cards;
-    }
-
-    findNullDefenseCardsOnTheTable(){
-        /**
-        * Метод, возвращающий карты атакующих на столе.
-        */
-        let cards = [];
-        
-        for (let i = 0; i < this.game.table.length; i++){
-            if ((this.game.table[i].attack !== null) && (this.game.table[i].defense === null)){
-                cards.push(this.game.table[i].attack);
-            }
-        }
-        
-        return cards;
-    }
-
-    findDefenseCardsOnTheTable(){
-        /**
-        * Метод, возвращающий карты защищающегося на столе.
-        */
-        let cards = [];
-        
-        for (let i = 0; i < this.game.table.length; i++){
-            if (this.game.table[i].defense !== null){
-                cards.push(this.game.table[i].defense);
-            }
-        }
-        
-        return cards;
-    }
-
     isTransferBeneficial(gameStage, transferAction){
         /**
         * Метод, определяющий эффективность перевода.
@@ -338,7 +262,7 @@ class Bot extends Player{
         return false;
     }
 
-    findMaxQtyCardBelowJ(lowestCardAction, allowedCardsIDs){
+    findMaxQtyCardBelowJ(lowestAction, allowedCardsIDs){
         /*
 		* !!!! Подумать над тем, как использовать это метод при защите. Как найти карту(ы), которую надо побить данной картой(ами). (minDifference???)
         * Метод, находящий id пары или тройки карт одного типа, которые не являются козырными и меньше J.
@@ -346,7 +270,7 @@ class Bot extends Player{
 		* должна быть больше 2.
 		* В итоге выводится одно из этих действий. В приоритете выбор с самой частой мастью. Или мастью не равной самой редкой.
         */
-		if (!lowestCardAction){
+		if (!lowestAction){
 			return undefined;
 		}
 		
@@ -357,7 +281,7 @@ class Bot extends Player{
 		*/
 		for (let i = 0; i < cardsInHand.length; i++){
 			if ((cardsInHand[i].suit !== this.game.cards.trumpSuit) && (cardsInHand[i].value < 11) &&
-			   (cardsInHand[i].value <= (lowestCardAction.cvalue + 2) && (~allowedCardsIDs.indexOf(cardsInHand[i].id)))){
+			   (cardsInHand[i].value <= (lowestAction.cvalue + 2) && (~allowedCardsIDs.indexOf(cardsInHand[i].id)))){
 				if (!cardsByValue[cardsInHand[i].value]){
 					cardsByValue[cardsInHand[i].value] = [];
 				}
@@ -396,58 +320,6 @@ class Bot extends Player{
 			return maxQtyCards[0];
 		}
     }
-
-	findRareSuit(){
-		/**
-		* Метод, определяющий наиболее редкую масть в руке бота (помимо козыря).
-		*/
-		let cardsInHand = this.game.hands[this.id],
-			suits = [0, 0, 0, 0];
-
-		suits[this.game.cards.trumpSuit] = Infinity;
-
-		for (let i = 0; i < cardsInHand.length; i++){
-			if (cardsInHand[i].suit !== this.game.cards.trumpSuit){
-				suits[cardsInHand[i].suit]++;
-			}
-		}
-
-		return suits.indexOf(Math.min(suits[0], suits[1], suits[2], suits[3],))
-	}
-
-	findCommonSuit(){
-		/**
-		* Метод, определяющий наиболее частую масть в руке бота (помимо козыря).
-		*/
-		let cardsInHand = this.game.hands[this.id],
-			suits = [0, 0, 0, 0];
-
-		suits[this.game.cards.trumpSuit] = -Infinity;
-
-		for (let i = 0; i < cardsInHand.length; i++){
-			if (cardsInHand[i].suit !== this.game.cards.trumpSuit){
-				suits[cardsInHand[i].suit]++;
-			}
-		}
-
-		return suits.indexOf(Math.max(suits[0], suits[1], suits[2], suits[3],))
-	}
-
-	findTrumpSuitQty(){
-		/**
-		* Метод, находящий количество козырей в руке у бота.
-		*/
-		let cardsInHand = this.game.hands[this.id];
-		let trumpSuitQty = 0;
-
-		for (let i = 0; i < cardsInHand.length; i++){
-			if (cardsInHand[i].suit === this.game.cards.trumpSuit){
-				trumpSuitQty++;
-			}
-		}
-
-		return trumpSuitQty;
-	}
 
 	isTrumpAttackBeneficial(){
 		// Подкидывать(ходить) козырем, если у бота их много.
@@ -503,6 +375,157 @@ class Bot extends Player{
 
 		return allowedCardsIDs;
 	}
+	/*
+	*
+	* Методы, работающие со столом.
+	*
+	*/
+	findLowestActionWithValueOnTheTable(actions){
+		let LowestAction;
+		let cardsValues = this.findCardsValuesOnTheTable();
+
+		for (let i = 0; i < actions.length; i++){
+			if ((~cardsValues.indexOf(actions[i].value)) && (actions[i].value < LowestAction[value])){
+				LowestAction = actions[i];
+			}
+		}
+
+		return LowestAction;
+	}
+
+	findAttackCardOnTheTable(field){
+		for (let i = 0; i < this.game.table.length; i++){
+			if (this.game.table[i].field === field){
+                return this.game.table[i].attack;
+            }
+		}
+	}
+
+	findCardsOnTheTable(){
+        /**
+        * Метод, возвращающий все карты на столе.
+        */
+        let cards = [];
+
+        for (let i = 0; i < this.game.table.length; i++){
+            if (this.game.table[i].attack !== null){
+                cards.push(this.game.table[i].attack);
+            }
+
+            if (this.game.table[i].defense !== null){
+                cards.push(this.game.table[i].defense);
+            }
+        }
+
+        return cards;
+    }
+
+	findCardsValuesOnTheTable(){
+        /**
+        * Метод, возвращающий все карты на столе.
+        */
+        let cardsValues = [];
+
+        for (let i = 0; i < this.game.table.length; i++){
+            if (this.game.table[i].attack !== null){
+                cardsValues.push(this.game.table[i].attack.value);
+            }
+
+            if (this.game.table[i].defense !== null){
+                cardsValues.push(this.game.table[i].defense.value);
+            }
+        }
+
+        return cardsValues;
+    }
+
+    findNullDefenseCardsOnTheTable(){
+        /**
+        * Метод, возвращающий карты атакующих на столе.
+        */
+        let cards = [];
+
+        for (let i = 0; i < this.game.table.length; i++){
+            if ((this.game.table[i].attack !== null) && (this.game.table[i].defense === null)){
+                cards.push(this.game.table[i].attack);
+            }
+        }
+
+        return cards;
+    }
+
+    findDefenseCardsOnTheTable(){
+        /**
+        * Метод, возвращающий карты защищающегося на столе.
+        */
+        let cards = [];
+
+        for (let i = 0; i < this.game.table.length; i++){
+            if (this.game.table[i].defense !== null){
+                cards.push(this.game.table[i].defense);
+            }
+        }
+
+        return cards;
+    }
+	/*
+	*
+	* Методы, работающие с рукой бота.
+	*
+	*/
+	findRareSuit(){
+		/**
+		* Метод, определяющий наиболее редкую масть в руке бота (помимо козыря).
+		*/
+		let cardsInHand = this.game.hands[this.id],
+			suits = [0, 0, 0, 0];
+
+		suits[this.game.cards.trumpSuit] = Infinity;
+
+		for (let i = 0; i < cardsInHand.length; i++){
+			if (cardsInHand[i].suit !== this.game.cards.trumpSuit){
+				suits[cardsInHand[i].suit]++;
+			}
+		}
+
+		return suits.indexOf(Math.min(suits[0], suits[1], suits[2], suits[3],))
+	}
+
+	findCommonSuit(){
+		/**
+		* Метод, определяющий наиболее частую масть в руке бота (помимо козыря).
+		*/
+		let cardsInHand = this.game.hands[this.id],
+			suits = [0, 0, 0, 0];
+
+		suits[this.game.cards.trumpSuit] = -Infinity;
+
+		for (let i = 0; i < cardsInHand.length; i++){
+			if (cardsInHand[i].suit !== this.game.cards.trumpSuit){
+				suits[cardsInHand[i].suit]++;
+			}
+		}
+
+		return suits.indexOf(Math.max(suits[0], suits[1], suits[2], suits[3],))
+	}
+
+	findTrumpCardsQty(){
+		/**
+		* Метод, находящий количество козырей в руке у бота.
+		*/
+		let cardsInHand = this.game.hands[this.id];
+		let trumpCardsQty = 0;
+
+		for (let i = 0; i < cardsInHand.length; i++){
+			if (cardsInHand[i].suit === this.game.cards.trumpSuit){
+				trumpCardsQty++;
+			}
+		}
+
+		return trumpCardsQty;
+	}
+
+
 }
 
 module.exports = Bot;
