@@ -23,72 +23,43 @@ class DurakTurnStages extends GameTurnStages{
 		return true;
 	}
 
-	// Первая атака
 	INITIAL_ATTACK(){
-		const game = this.game;
-		return game.let('ATTACK', game.players.attackers[0]);
-		// Turn stage: DEFENSE
+		return this.game.let('ATTACK', this.game.players.attackers[0]);
+		// Turn stage: DEFENSE_TRANSFER, ATTACK_DEFENSE
 	}
 
-	// Атакующий игрок атакует повторно
-	REPEATING_ATTACK(){
-		const game = this.game;
-		return game.let('ATTACK', game.players.attackers[0]);
-		// Turn stage: DEFENSE
+	DEFENSE_TRANSFER(){
+		return this.game.let('DEFEND', this.game.players.defender, this.canTransfer);
+		// Turn stage: DEFENSE_TRANSFER, ATTACK_DEFENSE, FOLLOWUP
 	}
 
-	// Атакующий игрок атакует после помогающего игрока
-	ATTACK(){
-		const game = this.game;
-		return game.let('ATTACK', game.players.attackers[0]);
-		// Turn stage: DEFENSE
+	ATTACK_DEFENSE(){
+		return this.game.let('ATTACK_DEFEND', this.game.players.attackers, this.game.players.defender);
+		// Turn stage: ATTACK_DEFENSE, DEFENSE, FOLLOWUP
 	}
 
-	// Помогающий игрок атакует
-	SUPPORT(){
-
-		const game = this.game;
-
-		let attackers = game.players.attackers;
-
-		// Debug
-		if(!attackers[1]){
-			game.log.error(new Error('No ally assigned, but turn stage is SUPPORT'));
-		}
-
-		return game.let('ATTACK', attackers[1] || attackers[0]);
-		// Turn stage: DEFENSE
+	DEFENSE(){
+		return this.game.let('DEFEND', this.game.players.defender);
+		// Turn stage: DEFENSE, FOLLOWUP
 	}
 
 	// Подкладывание карт в догонку
 	FOLLOWUP(){
-		const game = this.game;
-
-		let attackers = game.players.attackers;
-		return game.let('ATTACK', !game.skipCounter ? attackers[0] : (attackers[1] || attackers[0]));
-		// Turn stage: DEFENSE
+		return this.game.let('FOLLOWUP', this.game.players.attackers);
+		// Turn stage: FOLLOWUP, END
 	}
 
-	// Защищающийся игрок ходит
-	DEFENSE(){
+	TAKE(){
 		const game = this.game;
 
-		// Если мы были в стадии подкидывания в догонку, передаем все карты со стола
-		// защищающемуся и сообщаем всем игрокам об этом
-		if(this.current == 'FOLLOWUP'){
-			let action = game.cards.take(game.players.defender);
+		let action = game.cards.take(game.players.defender);
 
-			game.turnStages.setNext('END');
+		game.turnStages.setNext('END');
 
-			game.waitForResponse(game.actions.timeouts.take, game.players);
-			game.players.takeNotify(action);
-			return false;
-		}
-		// Иначе даем защищаться
-		else{
-			return game.let('DEFEND', game.players.defender);
-		}
-		// Turn stage: REPEATING_ATTACK, ATTACK, SUPPORT, END
+		game.waitForResponse(game.actions.timeouts.take, game.players);
+		game.players.takeNotify(action);
+		return false;
+		// Turn stage: END
 	}
 
 	// Начало конца хода, убираем карты со стола
@@ -103,6 +74,7 @@ class DurakTurnStages extends GameTurnStages{
 			return false;
 		}
 		return true;
+		// Turn stage: END_DEAL
 	}
 
 	// Раздаем карты после окончания хода
@@ -117,6 +89,7 @@ class DurakTurnStages extends GameTurnStages{
 			return false;
 		}
 		return true;
+		// Turn stage: ENDED
 	}
 
 	// Конец конца хода

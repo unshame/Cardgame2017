@@ -80,7 +80,7 @@ GameInfo.prototype.updateInfo = function(roles, turnStage){
 	var player = this.playersById[this.pid];
 
 	this.turnStage = turnStage;
-
+	return
 	this.attacker = null;
 	this.players.forEach(function(p){
 		var role = roles && roles[p.id] && roles[p.id].role;
@@ -92,7 +92,7 @@ GameInfo.prototype.updateInfo = function(roles, turnStage){
 				this.defender = null;
 			}
 		}
-		else if(role != p.role){
+		else if(role != p.role || roleIndex != p.roleIndex){
 			if(role == 'defender' || role == 'takes'){
 				this.defender = p;
 			}
@@ -174,6 +174,7 @@ GameInfo.prototype.shouldResetActions = function(actions){
 * Возвращает нужно ли удалить действие в соответствии с `turnStage`
 */
 GameInfo.prototype.shouldDeleteAction = function(action, card, field, doneAction){
+	return true;
 	switch(this.turnStage){
 		case 'INITIAL_ATTACK':
 		if(card.value !== cardManager.cards[action.cid].value){

@@ -206,7 +206,6 @@ class Game{
 		this.players.resetGame();
 		this.cards.reset();
 		this.actions.reset();
-		this.skipCounter = 0;
 
 		// Свойства хода
 		this.turnNumber = 1;
@@ -384,7 +383,6 @@ class Game{
 		this.log.info('Turn Ended', (Date.now() - this.turnStartTime)/1000);
 		
 		this.table.usedFields = 0;
-		this.skipCounter = 0;
 		this.turnStages.reset();
 
 		this.actions.reset();

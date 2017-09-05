@@ -156,9 +156,7 @@ class Queue{
 
 		this.log.notice('Starting game');
 
-		this.players.forEach((p) => {
-			p.recieveQueueAction({type: 'QUEUE_READY'});
-		});
+		this.players.forEach((p) => p.recieveQueueAction({type: 'QUEUE_READY'}));
 
 		let players = this.players.slice();
 
@@ -230,6 +228,7 @@ class Queue{
 		}
 		else{
 			this.manager.addQueueToList(this);
+			this.players.forEach((p) => p.recieveQueueAction({type: 'QUEUE_ENTERED', qid: this.id}));
 			this.notifyPlayers();
 		}
 	}

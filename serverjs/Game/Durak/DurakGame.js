@@ -38,6 +38,10 @@ class DurakGame extends Game{
 		// Ограничивать ли количество подкладываемых карт кол-вом карт в руке защищающегося
 		// после того, как защищающийся решил брать карты
 		this.limitFollowup = Boolean(config.limitFollowup);
+
+		this.freeForAll = Boolean(config.freeForAll);
+
+		this.attackOccured = false;
 	}
 
 	getDefaultResults(){
@@ -45,6 +49,16 @@ class DurakGame extends Game{
 			winners: [],
 			loser: null
 		};
+	}
+
+	reset(){
+		super.reset();
+		this.attackOccured = false;
+	}
+
+	resetTurn(){
+		super.resetTurn();
+		this.attackOccured = false;
 	}
 }
 

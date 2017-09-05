@@ -17,6 +17,7 @@ class Bot extends Player{
 		this.log = Log(module, this.id);
 		this.type = 'bot';
 		this.connected = true;
+		this.actionTimeout = null;
 
 		let nameIndex = Math.floor(Math.random()*randomNames.length);
 		if(randomNames.length){
@@ -48,8 +49,9 @@ class Bot extends Player{
 	}
 
 	recieveValidActions(actions, deadline, roles, turnStage){
+		clearTimeout(this.actionTimeout);
 		if(actions.length){
-			setTimeout(() => {
+			this.actionTimeout = setTimeout(() => {
 				this.sendRandomAction(actions);
 			}, this.getDescisionTime());
 		}
@@ -62,6 +64,9 @@ class Bot extends Player{
 	}
 
 	recieveNotification(action){
+		if(!action.noInterrupt){
+			clearTimeout(this.actionTimeout);
+		}
 		if(action.actions){
 			let ai = (this.game && this.game.isTest || this.game.queue && this.game.queue.type == 'botmatch') ? 0 : 1;
 			this.sendDelayedResponse(action.actions[ai]);
@@ -69,7 +74,8 @@ class Bot extends Player{
 	}
 
 	sendDelayedResponse(action){
-		setTimeout(() => {
+		clearTimeout(this.actionTimeout);
+		this.actionTimeout = setTimeout(() => {
 			this.sendResponse(action);
 		}, this.getDescisionTime());
 	}

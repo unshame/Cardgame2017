@@ -76,17 +76,6 @@ class DurakCards extends GameCards{
 		return lockedFields;
 	}
 
-	get emptyTables(){
-		let emptyTables = [];
-		this.table.forEach((tableField) => {
-			if(!tableField.attack && !tableField.defense){
-				emptyTables.push(tableField);
-			} 
-		});
-		return emptyTables;
-	}
-
-
 	// Поля
 
 	// Колода с козырной картой на дне
@@ -298,6 +287,41 @@ class DurakCards extends GameCards{
 
 	// Действия
 	
+	getAttackActionsForPlayers(players, actionHolder, freeForAll){
+		let workingPlayers = [];
+		for(let i = 0, len = players.length; i < len; i++){
+			let player = players[i];
+			let pid = player.id;
+			let hand = this.hands[pid];
+			if(player.statuses.passed){
+				continue;
+			}
+			if(!hand.length){
+				player.statuses.passed = true;
+				continue;
+			}
+
+			workingPlayers.push(player);
+
+			let actions = [];
+
+			this.getAttackActions(hand, actions);
+
+			// Добавляем возможность пропустить ход
+			let action = {
+				type: 'PASS'
+			};
+			actions.push(action);
+
+			actionHolder[pid] = actions;
+			console.log(player.name)
+			if(!freeForAll){
+				break;
+			}
+		}
+		return workingPlayers;
+	}
+
 	getAttackActions(hand, actions){
 		// Находим значения карт, которые можно подбрасывать
 		let validValues = [];

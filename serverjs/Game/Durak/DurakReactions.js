@@ -10,26 +10,25 @@ class DurakReactions{
 	// Игрок походил
 	ATTACK(player, action){
 
-		let cardsById = this.cards.byId;
-		let tableFields = this.table.byKey('id');
-		let ci, card;
-
 		let str;
-		if(this.turnStages.current == 'FOLLOWUP'){
+		switch(this.turnStages.current){
+			case 'FOLLOWUP':
 			str = 'follows up';
-		}
-		else if(this.turnStages.current == 'DEFENSE'){
+			break;
+
+			case 'DEFENSE_TRANSFER':
 			str = 'transfers';
-		}
-		else{
+			break;
+
+			default:
 			str = 'attacks';
 		}
 
 		this.log.info(player.name,  str);
 
-		card = cardsById[action.cid];
-		ci = this.hands[player.id].indexOf(card);
-
+		let tableFields = this.table.byKey('id');
+		let card = this.cards.byId[action.cid];
+		let ci = this.hands[player.id].indexOf(card);
 		let field = this.cards.firstEmptyTable.id;
 
 		this.actions.logAction(card, action.type, card.field, field );
@@ -46,34 +45,30 @@ class DurakReactions{
 		// Увеличиваем кол-во занятых мест на столе
 		this.table.usedFields++;
 
-		// Если игрок клал карту в догонку, даем ему воможность положить еще карту
-		if(this.turnStages.current == 'FOLLOWUP'){
-			this.turnStages.setNext('FOLLOWUP');
-		}
-		else if(this.turnStages.current == 'DEFENSE'){
+		if(this.turnStages.current == 'DEFENSE_TRANSFER'){
 			this.players.notify({type: 'EVENT', message: 'transfered', pid: player.id, showForSelf: false, channel: 'extra'});
-			this.players.shiftAttacker();			
-			this.turnStages.setNext('DEFENSE');	
+			this.players.shiftAttacker();
+
+			if(!this.cards.firstEmptyTable){
+				this.turnStages.setNext('ATTACK_DEFENSE');	
+			}
 		}
-		else{
-			this.skipCounter = 0;	// Если же это просто ход, сбрасываем счетчик пропущенных ходов
+		else if(this.turnStages.current != 'FOLLOWUP'){
+			this.attackOccured = true;
 		}
 
 		return action;
-
 	}
 
 	// Игрок отбивается
 	DEFENSE(player, action){
 
-		let cardsById = this.cards.byId;
-		let tableFields = this.table.byKey('id');
-		let ci, card;
-
 		this.log.info(player.name, 'defends');
 
-		card = cardsById[action.cid];
-		ci = this.hands[player.id].indexOf(card);
+		let cardsById = this.cards.byId;
+		let tableFields = this.table.byKey('id');
+		let card = cardsById[action.cid];
+		let ci = this.hands[player.id].indexOf(card);
 
 		this.actions.logAction(card, action.type, card.field, action.field );
 
@@ -86,73 +81,42 @@ class DurakReactions{
 		action.value = card.value;
 		action.suit = card.suit;
 
-		if(this.cards.defenseTables.length){
-			this.turnStages.setNext('DEFENSE');
-		}
-
 		return action;
 	}
 
 	// Ходящий игрок пропустил ход
 	PASS(player, action){
 
-		let activePlayers = this.players.active;
-		let attackers = this.players.attackers;
-
 		this.log.info(player.name, 'skips turn');
 
-		// Debug
-		if(activePlayers.length > 2 && !attackers[1]){
-			this.log.error(new Error('More than 2 players but no ally assigned'));
-		}
-
-		// Если есть помогающий игрок
-		if(attackers[1]){
-			switch(this.turnStages.current){
-
-			// Если игра в режиме докладывания карт в догонку и только ходящий игрок походил,
-			// даем возможность другому игроку доложить карты
-			case 'FOLLOWUP':
-				if(!this.skipCounter){
-					this.skipCounter++;
-					this.turnStages.setNext('FOLLOWUP');
+		if(this.turnStages.current != 'FOLLOWUP' && !this.freeForAll && this.attackOccured){
+			let attackers = this.players.attackers;
+			let lastActiveAttacker = null;
+			attackers.forEach((attacker) => {
+				if(!attacker.statuses.passed){
+					lastActiveAttacker = attacker;
 				}
-				break;
-
-			// Атакующий не доложил карту, переходим к помогающему
-			case 'REPEATING_ATTACK':
-				this.skipCounter++;
-				this.turnStages.setNext('SUPPORT');
-				break;
-
-			default:
-				// Если кто-то из игроков еще не походил, даем ему возможность 
-				this.skipCounter++;
-				if(this.skipCounter < 2){
-
-					if(this.turnStages.current == 'SUPPORT'){
-						this.turnStages.setNext('ATTACK');
-					}
-					else if(this.turnStages.current == 'ATTACK'){
-						this.turnStages.setNext('SUPPORT');
-					}
-					else{
-						this.log.error(new Error(`Invalid action ${action.type}`));
-					}
-
-				}
-				break;
+			});
+			if(player == lastActiveAttacker){
+				this.players.set('passed', false, attackers);
 			}
 		}
+
+		player.statuses.passed = true;
+
+		this.attackOccured = false;
+
 		return action;
 	}
 
 	// Защищающийся берет карты
 	TAKE(player, action){
 		this.log.info(player.name, "takes");
+
 		this.actions.takeOccurred = true;
-		this.skipCounter = 0;
+
 		this.turnStages.setNext('FOLLOWUP');
+
 		return action;
 	}
 }

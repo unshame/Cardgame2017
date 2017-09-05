@@ -17,12 +17,14 @@ class DurakPlayers extends GamePlayers{
 			{
 				role: null,
 				roleIndex: null,
-				originalAttacker: false
+				originalAttacker: false,
+				passed: false
 			},
 			{
 				role: null,
 				roleIndex: null,
 				originalAttacker: false,
+				passed: false,
 				active: true
 			}
 		);
