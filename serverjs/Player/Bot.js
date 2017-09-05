@@ -29,13 +29,18 @@ class Bot extends Player{
 		}
 	}
 
-	getDescisionTime(){
+	getDescisionTime(addedTime){
 		if(!this.game){
 			return 0;
 		}
-		let fakeTime = 1,
-			minTime = this.game.fakeDescisionTimer || 0;
-		return Math.random()*fakeTime + minTime;
+		if(addedTime === undefined){
+			addedTime = 0;
+		}
+		let minTime = this.game.fakeDescisionTimer || 0;
+		if(minTime === 0){
+			addedTime = 0;
+		}
+		return Math.random()*addedTime + minTime;
 	}
 
 	recieveGameInfo(info){
@@ -53,7 +58,7 @@ class Bot extends Player{
 		if(actions.length){
 			this.actionTimeout = setTimeout(() => {
 				this.sendRandomAction(actions);
-			}, this.getDescisionTime());
+			}, this.getDescisionTime(1500));
 		}
 	}
 
@@ -64,9 +69,10 @@ class Bot extends Player{
 	}
 
 	recieveNotification(action){
-		if(!action.noInterrupt){
-			clearTimeout(this.actionTimeout);
+		if(action.noResponse){
+			return;
 		}
+		clearTimeout(this.actionTimeout);
 		if(action.actions){
 			let ai = (this.game && this.game.isTest || this.game.queue && this.game.queue.type == 'botmatch') ? 0 : 1;
 			this.sendDelayedResponse(action.actions[ai]);

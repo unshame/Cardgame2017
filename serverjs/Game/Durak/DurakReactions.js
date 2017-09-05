@@ -54,7 +54,12 @@ class DurakReactions{
 			}
 		}
 		else if(this.turnStages.current != 'FOLLOWUP'){
-			this.attackOccured = true;
+			if(this.freeForAll){
+				this.players.set('passed', false, this.players.attackers);
+			}
+			else{
+				this.attackOccured = true;
+			}
 		}
 
 		return action;
@@ -87,9 +92,9 @@ class DurakReactions{
 	// Ходящий игрок пропустил ход
 	PASS(player, action){
 
-		this.log.info(player.name, 'skips turn');
+		this.log.info(player.name, 'passes');
 
-		if(this.turnStages.current != 'FOLLOWUP' && !this.freeForAll && this.attackOccured){
+		if(this.turnStages.current != 'FOLLOWUP' && this.attackOccured){
 			let attackers = this.players.attackers;
 			let lastActiveAttacker = null;
 			attackers.forEach((attacker) => {

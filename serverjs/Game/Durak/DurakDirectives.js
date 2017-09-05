@@ -60,7 +60,7 @@ class DurakDirectives{
 		}
 
 		// Действия атакующих
-		let workingPlayers = this.cards.getAttackActionsForPlayers(attackers, this.actions.valid, this.freeForAll);
+		let workingPlayers = this.cards.getAttackActionsForPlayers(attackers, this.actions.valid, defenseTables, this.freeForAll);
 
 		if(!workingPlayers.length){
 			this.log.info('Attackers passed or have no cards');
@@ -139,7 +139,7 @@ class DurakDirectives{
 			return true;
 		}
 
-		let workingPlayers = this.cards.getAttackActionsForPlayers(attackers, this.actions.valid, this.freeForAll);
+		let workingPlayers = this.cards.getAttackActionsForPlayers(attackers, this.actions.valid, [], this.freeForAll);
 
 		if(!workingPlayers.length){
 			this.log.info('Attackers passed or have no cards');

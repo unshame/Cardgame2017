@@ -204,7 +204,7 @@ var reactPrimary = {
 		};
 		var field = fieldManager.fields[action.field];
 		delay = fieldManager.moveCards(field, [card]);
-		return delay || field.moveTime;
+		return 0;
 	},
 
 	/**

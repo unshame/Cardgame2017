@@ -287,7 +287,7 @@ class DurakCards extends GameCards{
 
 	// Действия
 	
-	getAttackActionsForPlayers(players, actionHolder, freeForAll){
+	getAttackActionsForPlayers(players, actionHolder, defenseFields, freeForAll){
 		let workingPlayers = [];
 		for(let i = 0, len = players.length; i < len; i++){
 			let player = players[i];
@@ -308,13 +308,14 @@ class DurakCards extends GameCards{
 			this.getAttackActions(hand, actions);
 
 			// Добавляем возможность пропустить ход
-			let action = {
-				type: 'PASS'
-			};
-			actions.push(action);
+			if(!defenseFields.length){
+				let action = {
+					type: 'PASS'
+				};
+				actions.push(action);
+			}
 
 			actionHolder[pid] = actions;
-			console.log(player.name)
 			if(!freeForAll){
 				break;
 			}
