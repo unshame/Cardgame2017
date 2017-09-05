@@ -156,16 +156,14 @@ class Bot extends Player{
 				(actions[i].type === 'PASS')){
                 continue;
             }
+
+			if ((lowestAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit)){
+				lowestAction = actions[i];
+				break;
+			}
             
             if (actions[i].cvalue < lowestAction.cvalue){
-                /**
-                * Если текущая карта меньше минимальной, то делаем текущую минимальной, если:
-                * Минимальная карта козырная или
-                * Минимальная и текущая карты не козырные
-                */
-                lowestAction = (lowestAction.cvalue === Infinity) ? actions[i] :
-                (lowestAction.csuit === this.game.cards.trumpSuit) ? actions[i] :
-                (actions[i].csuit === this.game.cards.trumpSuit) ? lowestAction : actions[i];
+                lowestAction = actions[i];
             }
          }
 		
