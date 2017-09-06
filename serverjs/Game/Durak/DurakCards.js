@@ -98,16 +98,13 @@ class DurakCards extends GameCards{
 	// Стол с несколькими полями и attackField и defendField на каждом поле
 	addTableInfo(cardsInfo, pid, reveal){
 		this.table.forEach((tableField) => {
-			if(tableField.attack){
-				let card = tableField.attack;
-				let newCard = card.info;
-				cardsInfo.push(newCard);
-			}
-			if(tableField.defense){
-				let card = tableField.defense;
-				let newCard = card.info;
-				cardsInfo.push(newCard);
-			}		
+			['attack', 'defense'].forEach((key) => {
+				if(tableField[key]){
+					let card = tableField[key];
+					let newCard = card.info;
+					cardsInfo.push(newCard);
+				}
+			});	
 		});
 	}
 
@@ -219,15 +216,17 @@ class DurakCards extends GameCards{
 	moveCardsFromTable(field, fieldId, actionType, flipCards){
 		let cardsInfo = [];
 		this.table.forEach((tableField) => {
+			['attack', 'defense'].forEach((key) => {
+				if(!tableField[key]){
+					return;
+				}
 
-			if(tableField.attack){
-
-				let card = tableField.attack;
+				let card = tableField[key];
 				this.game.actions.logAction(card, actionType, card.field, fieldId);
 				card.field = fieldId;
 
-				field.push(tableField.attack);
-				tableField.attack = null;
+				field.push(card);
+				tableField[key] = null;
 
 				let cardToSend = {
 					cid: card.id,
@@ -236,26 +235,7 @@ class DurakCards extends GameCards{
 				};
 
 				cardsInfo.push(cardToSend);
-			}
-
-			if(tableField.defense){
-
-				let card = tableField.defense;
-				this.game.actions.logAction(card, actionType, card.field, fieldId);
-				card.field = fieldId;
-
-				field.push(tableField.defense);
-				tableField.defense = null;
-
-				let cardToSend = {
-					cid: card.id,
-					suit: flipCards ? null : card.suit,
-					value: flipCards ? undefined : card.value
-				};
-
-				cardsInfo.push(cardToSend);
-			}
-
+			});
 		});
 		return {
 			type: actionType,
@@ -337,14 +317,12 @@ class DurakCards extends GameCards{
 		// Находим значения карт, которые можно подбрасывать
 		let validValues = [];
 		this.table.forEach((tableField) => {
-			if(tableField.attack){
-				let card = tableField.attack;
-				validValues.push(card.value);
-			}
-			if(tableField.defense){
-				let card = tableField.defense;
-				validValues.push(card.value);
-			}
+			['attack', 'defense'].forEach((key) => {
+				if(tableField[key]){
+					let card = tableField[key];
+					validValues.push(card.value);
+				}
+			});
 		});
 
 		if(!validValues.length){

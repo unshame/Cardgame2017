@@ -96,6 +96,39 @@ class DurakDirectives{
 		return false;
 	}
 
+	// Отправляет атакующему возможные ходы
+	FOLLOWUP(attackers){
+
+		let defHand = this.hands[this.players.defender.id];
+		let firstEmptyTable = this.cards.firstEmptyTable;
+
+		if(!firstEmptyTable || this.limitFollowup && this.table.usedFields >= defHand.defenseStartLength){
+			if(!firstEmptyTable){
+				this.log.info('Field is full');
+			}
+			else{				
+				this.log.info('Defender has as many cards as he takes');
+			}
+
+			this.turnStages.setNext('TAKE');
+			return true;
+		}
+
+		let workingPlayers = this.cards.getAttackActionsForPlayers(attackers, this.actions.valid, [], this.freeForAll);
+
+		if(!workingPlayers.length){
+			this.log.info('Attackers passed or have no cards');
+			this.turnStages.setNext('TAKE');
+			return true;
+		}
+
+		this.turnStages.setNext('FOLLOWUP');
+
+		let deadline = this.waitForResponse(this.actions.timeouts.actionAttack, workingPlayers);
+		this.players.validActionsNotify(deadline);	
+		return false;
+	}
+
 	// Отправляет защищающемуся возможные ходы
 	DEFEND(defender, canTransfer){
 
@@ -132,39 +165,6 @@ class DurakDirectives{
 		let deadline = this.waitForResponse(this.actions.timeouts.actionDefend, [defender]);
 		this.players.validActionsNotify(deadline);	
 
-		return false;
-	}
-
-	// Отправляет атакующему возможные ходы
-	FOLLOWUP(attackers){
-
-		let defHand = this.hands[this.players.defender.id];
-		let firstEmptyTable = this.cards.firstEmptyTable;
-
-		if(!firstEmptyTable || this.limitFollowup && this.table.usedFields >= defHand.defenseStartLength){
-			if(!firstEmptyTable){
-				this.log.info('Field is full');
-			}
-			else{				
-				this.log.info('Defender has as many cards as he takes');
-			}
-
-			this.turnStages.setNext('TAKE');
-			return true;
-		}
-
-		let workingPlayers = this.cards.getAttackActionsForPlayers(attackers, this.actions.valid, [], this.freeForAll);
-
-		if(!workingPlayers.length){
-			this.log.info('Attackers passed or have no cards');
-			this.turnStages.setNext('TAKE');
-			return true;
-		}
-
-		this.turnStages.setNext('FOLLOWUP');
-
-		let deadline = this.waitForResponse(this.actions.timeouts.actionAttack, workingPlayers);
-		this.players.validActionsNotify(deadline);	
 		return false;
 	}
 }

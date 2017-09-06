@@ -87,8 +87,13 @@ class DurakReactions{
 		action.suit = card.suit;
 
 		// Запоминаем, что защита произошла, если игроки атакуют по одному
-		if(this.turnStages.current == 'ATTACK_DEFENSE' && !this.freeForAll){
-			this.actions.defenseOccured = true;
+		if(this.turnStages.current == 'ATTACK_DEFENSE'){
+			if(this.freeForAll){
+				this.players.set('passed', false, this.players.attackers);
+			}
+			else{
+				this.actions.defenseOccured = true;
+			}
 		}
 
 		return action;
