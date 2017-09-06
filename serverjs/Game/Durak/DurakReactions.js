@@ -111,10 +111,7 @@ class DurakReactions{
 		// при этом защищающийся не берет карты,
 		// проверяем, является ли текущий игрок последним пасующим,
 		// и, если да, то даем всем игрокам атаковать снова
-		if(
-			this.turnStages.current != 'FOLLOWUP' && this.actions.defenseOccurred &&
-			this.players.getLastActiveAttacker() == player
-		){			
+		if(this.actions.defenseOccurred && this.players.getLastActiveAttacker() == player){			
 			this.players.set('passed', false, this.players.attackers);
 		}
 
@@ -134,8 +131,13 @@ class DurakReactions{
 		// Запоминаем, что игрок взял
 		this.actions.takeOccurred = true;
 
-		// Позволяем всем подкидывать
-		this.players.set('passed', false, this.players.attackers);
+		if(this.freeForAll){
+			this.players.set('passed', false, this.players.attackers);
+		}
+		else{
+			this.actions.defenseOccurred = true;
+		}
+		
 		this.turnStages.setNext('FOLLOWUP');
 
 		return action;
