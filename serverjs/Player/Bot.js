@@ -485,7 +485,7 @@ class Bot extends Player{
 			}
 		}
 
-		return suits.indexOf(Math.max(suits[0], suits[1], suits[2], suits[3],))
+		return suits.indexOf(Math.max(suits[0], suits[1], suits[2], suits[3]));
 	}
 
 	findTrumpCardsQty(){
