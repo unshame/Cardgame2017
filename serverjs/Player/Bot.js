@@ -86,13 +86,7 @@ class Bot extends Player{
 		console.log('TABLE', this.game.table);
 
 		let gameStage = this.defineGameStage(),
-        	transferAction = this.findTransferAction(actions);
-
-        if ((transferAction) && this.isTransferBeneficial(gameStage, transferAction)){
-            return transferAction;
-        }
-		
-		let minAction =  this.findMinAction(actions),
+			minAction =  this.findMinAction(actions),
 			allowedCardsIDs = this.getAllowedCardsIDs(actions),
 			passAction = this.findPassAction(actions),
 			takeAction = this.findTakeAction(actions),
@@ -107,7 +101,8 @@ class Bot extends Player{
 					return this.changeCardIntoAction(actions, maxQtyCard);
 				}
 
-				if (passAction && ((!minAction) || (minAction.cvalue > 10) || (minAction.csuit === this.game.cards.trumpSuit))){
+				if (passAction && ((!minAction) || (minAction.cvalue > 10) ||
+								   (minAction.csuit === this.game.cards.trumpSuit))){
 					return passAction;
 				}
 
@@ -126,11 +121,16 @@ class Bot extends Player{
                 
             case 'DEFENSE':
 				let cardsOnTheTableValues = this.findCardsOnTheTableValues(),
-					minActionWithValueOnTheTable = this.findMinAction(actions, cardsOnTheTableValues);
+					minActionWithValueOnTheTable = this.findMinAction(actions, cardsOnTheTableValues),
+					bestTransferAction = this.findMinAction(actions, undefined , true);
 				console.log('lowestActionWithValueOnTheTable: ', minActionWithValueOnTheTable);
 
-				if (minActionWithValueOnTheTable && (minActionWithValueOnTheTable.value - (this.findAttackCardOnTheTable(minActionWithValueOnTheTable.field)).value <= 3)
-					&& ((gameStage === 'EARLY_GAME') && (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit) ||
+				if ((bestTransferAction) && this.isTransferBeneficial(gameStage, bestTransferAction)){
+            		return bestTransferAction;
+				}
+
+				if (minActionWithValueOnTheTable && (minActionWithValueOnTheTable.value - (this.findAttackCardOnTheTable(minActionWithValueOnTheTable.field)).value <= 3) &&
+					((gameStage === 'EARLY_GAME') && (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit) ||
 						(minActionWithValueOnTheTable.value < 11) || (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit))){
 					return minActionWithValueOnTheTable;
 				}
@@ -148,7 +148,7 @@ class Bot extends Player{
         }
 	}
 
-    findMinAction(actions, cardsOnTheTableValues){
+    findMinAction(actions, cardsOnTheTableValues, isTransfer){
         /** 
         * Метод, возврающий наименьшую карту из тех, которыми можно походить.
         */  
@@ -157,14 +157,10 @@ class Bot extends Player{
         };
     
         for (let i = 0; i < actions.length; i++){
-            if ((actions[i].type === 'TAKE') || (actions[i].type === 'TRANSFER') || 
-				(actions[i].type === 'PASS')){
+            if ((actions[i].type === 'TAKE') || (actions[i].type === 'PASS') || (isTransfer && (actions[i].type === 'DEFENSE')) ||
+			   (cardsOnTheTableValues && ((actions[i].type !== 'DEFENSE') || (!~cardsOnTheTableValues.indexOf(actions[i].cvalue))))){
                 continue;
             }
-
-			if (cardsOnTheTableValues && (!~cardsOnTheTableValues.indexOf(actions[i].cvalue))){
-				continue;
-			}
 
 			if ((minAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit)){
 				minAction = actions[i];
@@ -184,21 +180,6 @@ class Bot extends Player{
             * то метод возвращает его
             */
             return minAction;
-        }
-    }
-
-    findTransferAction(actions){
-        /**
-        * Метод, возвращающий действие типа 'TRANSFER', если такое есть. Иначе возвращается undefined.
-        */
-        if (this.game.turnStages.current !== 'DEFENSE'){
-        	return undefined;
-        }
-
-        for (let i = 0; i < actions.length; i++){
-            if (actions[i].type === 'ATTACK'){
-                return actions[i];
-            }
         }
     }
 
