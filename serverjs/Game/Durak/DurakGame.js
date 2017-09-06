@@ -40,6 +40,8 @@ class DurakGame extends Game{
 		this.limitFollowup = Boolean(config.limitFollowup);
 
 		this.freeForAll = Boolean(config.freeForAll);
+
+		this.players.maxInvolved = Boolean(config.limitAttack) ? 3 : Infinity;
 	}
 
 	getDefaultResults(){

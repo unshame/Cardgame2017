@@ -57,6 +57,7 @@ class Server extends Eureca.Server{
 			gameConfig: {
 				transfer: this.params.transfer,
 				limitFollowup: !this.params.followup,
+				limitAttack: !this.params.attack,
 				freeForAll: this.params.freeForAll
 			},
 			bot: this.gameModes['durak'][1],
@@ -124,6 +125,7 @@ class Server extends Eureca.Server{
 			transfer: Boolean(process.env.TRANSFER || argv.transfer),
 			followup: Boolean(process.env.FOLLOWUP || argv.followup),
 			freeForAll: Boolean(process.env.FREEFORALL || argv.ffa || argv.freeforall),
+			attack: Boolean(process.env.ATTACK || argv.attack),
 			testing: argv.t || argv.test || argv.testing || false,
 			debug: process.env.DEBUG || argv.d || argv.debug || 'notice',
 			port: process.env.PORT || Number(argv.port)

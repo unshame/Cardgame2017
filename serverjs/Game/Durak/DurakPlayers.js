@@ -357,18 +357,12 @@ class DurakPlayers extends GamePlayers{
 			let pi = activePlayers.map(p => p.id).indexOf(pid);
 
 			this.findToGoNext(pi - 1);
-
-			this.log.info('Player to go first: ', this.attackers[0].name);
 		}
 		// В противном случае, берем первого попавшегося игрока и начинаем ход
 		else{
-			let attackers = [this[0]];
-			if(this[2]){
-				attackers.push(this[2]);
-			}
-			this.attackers = attackers;
-			this.defender = this[1];
+			this.findToGoNext(-1);
 		}
+		this.log.info('Player to go first: ', this.attackers[0].name);
 		return [minCards, minCard];
 	}
 
@@ -420,24 +414,25 @@ class DurakPlayers extends GamePlayers{
 	findToGoNext(currentAttackerIndex){	
 
 		let activePlayers = this.active;
-		let attackers = this.attackers;
 
-		let numInvolved = Math.min(activePlayers.length, 3);
-		let involved = [];
+		let numInvolved = Math.min(activePlayers.length, this.maxInvolved);
+		let attackers = [];
 		let i = currentAttackerIndex + 1;
-		while(numInvolved--){
+		let n = 0;
+		while(n < numInvolved){
 			if(i >= activePlayers.length){
 				i = 0;
 			}
-			involved.push(activePlayers[i]);
+			if(n == 1){
+				this.defender = activePlayers[i];
+			}
+			else{
+				attackers.push(activePlayers[i]);
+			}
 			i++;
+			n++;
 		}
-		attackers = [involved[0]];
-		if(involved[2]){
-			attackers.push(involved[2]);
-		}
-		this.attackers = attackers;
-		this.defender = involved[1];
+		this.attackers = attackers;		
 	}
 
 	// Находим проигравшего
@@ -466,13 +461,14 @@ class DurakPlayers extends GamePlayers{
 	logTurnStart(){
 		const game = this.game;
 		let attackers = this.attackers;
-		this.log.info();
+		let attacker = attackers.splice(0, 1)[0];
+		this.log.info('==================================');
 		this.log.info(
 			'Turn %d %s => %s <= %s',
 			game.turnNumber,
-			attackers[0].name,
+			attacker.name,
 			this.defender.name,
-			attackers[1] ? attackers[1].name : ''
+			attackers.map(a => a.name).join(', ')
 		);
 		this.log.info('Cards in deck:', game.deck.length);
 		for(let pi = 0; pi < this.length; pi++){

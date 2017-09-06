@@ -15,7 +15,9 @@ function runTest(params){
 	if(typeof duration != 'number'){
 		duration = 2000;
 	}
-
+	if(!numBots){
+		numBots = 5;
+	}
 	let bots = [];
 	let randomNames = [];
 	let i = numBots;
@@ -25,11 +27,9 @@ function runTest(params){
 	let tester = {
 		running: true
 	};
-	if(!numBots){
-		numBots = 5;
-	}
+
 	for(let i = 0; i < numBots; i++){
-		bots.push(new TestBot(tester,randomNames));
+		bots.push(new TestBot(tester, randomNames));
 	}
 	let fakeQueue = {endGame: () => {}};
 	let game = global.game = new Game(
@@ -37,6 +37,7 @@ function runTest(params){
 		bots, 
 		{
 			limitFollowup: !params.followup,
+			limitAttack: !params.attack,
 			freeForAll: params.freeForAll,
 			transfer: params.transfer,
 			debug: debug,

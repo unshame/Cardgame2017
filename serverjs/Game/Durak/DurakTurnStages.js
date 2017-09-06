@@ -8,7 +8,7 @@ class DurakTurnStages extends GameTurnStages{
 	* Класс содержит действия, выполняемые в различные стадии хода.  
 	* Выполняется в своем собственном контексте.
 	* Визуальное представление хода:  
-	* ![DurakTurnStages](https://i.imgur.com/aSTuvja.png)
+	* ![DurakTurnStages](https://i.imgur.com/Lje4C0D.png)
 	*/
 	constructor(game){
 		super(game);
