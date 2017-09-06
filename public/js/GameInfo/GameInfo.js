@@ -80,59 +80,68 @@ GameInfo.prototype.updateInfo = function(roles, turnStage){
 	var player = this.playersById[this.pid];
 
 	this.turnStage = turnStage;
-	return
-	this.attacker = null;
+	console.log('------')
+	this.players.forEach(function(p){
+		var role = roles[p.id];
+		console.log(p.name, role.role, role.roleIndex, role.working)
+	})
 	this.players.forEach(function(p){
 		var role = roles && roles[p.id] && roles[p.id].role;
 		var roleIndex = role && roles[p.id].roleIndex;
+		var working = role && roles[p.id].working;
 		if(!role){
 			p.role = null;
 			p.roleIndex = null;
-			if(p.role == 'defender'){
+			p.working = false;
+			if(p.role == 'defender' || role == 'takes'){
 				this.defender = null;
 			}
+			if(p.role == 'attacker'){
+				this.attacker = null;
+			}
 		}
-		else if(role != p.role || roleIndex != p.roleIndex){
+		else if(role != p.role || roleIndex != p.roleIndex || working != p.working){
+			p.role = roles[p.id].role;
+			p.roleIndex = roleIndex;
+			p.working = working;
 			if(role == 'defender' || role == 'takes'){
 				this.defender = p;
 			}
-			else if(role == 'attacker' && roleIndex == 1){
+			else if(role == 'attacker' && working){
 				this.attacker = p;
 			}
-			p.role = roles[p.id].role;
-			p.roleIndex = roleIndex;
 		}
 	}, this);
 
 	var messageText = '',
 		messageStyle = null;
-	if(this.turnStage == 'INITIAL_ATTACK' && this.attacker != player){
-		var defenderName = this.defender.id == game.pid ? 'you' : this.defender.name;
-		messageText = this.attacker.name + ' is attacking ' + defenderName;
-		messageStyle = 'system';
-	}
-	else if(player.role){
+
+	if(player == this.defender || player == this.attacker){
 		switch(player.role){
 			case 'attacker':
 			if(fieldManager.fields[this.pid].cards.length > 0){
 				messageText = (this.defender.role == 'takes' ? 'You\'re following up on ' : 'You\'re attacking ') + this.defender.name;
 			}
+			messageStyle = 'neutral';
 			break;
 
 			case 'defender':
 			messageText = 'You\'re defending';
+			messageStyle = 'neutral';
 			break;
 
 			case 'takes':
+			messageText = 'Following up...';
+			messageStyle = 'system';
 			break;
 
 			default:
 			console.error('Game info: unknown player role', player.role);
 		}
-		messageStyle = 'neutral';
 	}
-	else if(this.defender){
-		messageText = this.defender.name + (this.defender.role == 'takes' ? ' takes' : ' is defending');
+	else if(this.attacker){
+		var defenderName = this.defender.id == game.pid ? 'you' : this.defender.name;
+		messageText = this.attacker.name + (this.defender.role == 'takes' ? ' is following up on ' : ' is attacking ') + defenderName;
 		messageStyle = 'system';
 	}
 	if(!oldMessage || oldMessage.text != messageText){

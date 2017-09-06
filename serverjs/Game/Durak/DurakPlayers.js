@@ -43,13 +43,11 @@ class DurakPlayers extends GamePlayers{
 		this.forEach((p) => {
 			let role = p.statuses.role;
 			let roleIndex = p.statuses.roleIndex;
+			let working = p.statuses.working;
 			if(role == 'defender' && game.actions.takeOccurred){
 				role = 'takes';
 			}
-			roles[p.id] = {
-				role: role,
-				roleIndex: roleIndex
-			};
+			roles[p.id] = {role, roleIndex, working};
 		});
 		return roles;
 	}
