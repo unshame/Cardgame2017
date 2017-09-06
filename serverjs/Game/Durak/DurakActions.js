@@ -24,11 +24,13 @@ class DurakActions extends GameActions{
 		);
 
 		this.takeOccurred = false;
+		this.defenseOccured = false;
 	}
 
 	reset(){
 		super.reset();
 		this.takeOccurred = false;
+		this.defenseOccured = false;
 	}
 
 	getIgnoredKeys(action){

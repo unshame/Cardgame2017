@@ -138,6 +138,15 @@ class DurakCards extends GameCards{
 		this.findTrumpCard();
 	}
 
+	rememberHandLengths(){
+		for(let pid in this.hands){
+			if(this.hands.hasOwnProperty(pid)){
+				let hand = this.hands[pid];
+				hand.defenseStartLength = hand.length;
+			}
+		}
+	}
+
 	// Находит козырную карту
 	findTrumpCard(){
 		// Находим первый попавшийся не туз и кладем его на дно колоды, это наш козырь
@@ -289,6 +298,7 @@ class DurakCards extends GameCards{
 	
 	getAttackActionsForPlayers(players, actionHolder, defenseFields, freeForAll){
 		let workingPlayers = [];
+		
 		for(let i = 0, len = players.length; i < len; i++){
 			let player = players[i];
 			let pid = player.id;
@@ -384,32 +394,14 @@ class DurakCards extends GameCards{
 	}
 
 	getTransferActions(hand, actions, defenseTables){
-		// Узнаем, можно ли переводить
 		let attackers = this.game.players.attackers;
-		let canTransfer = 
-			this.hands[
-				attackers[1] && attackers[1].id || attackers[0].id
-			].length > this.table.usedFields;
+		let nextPlayer = attackers[1] || attackers[0];
+		let emptyTable = this.firstEmptyTable;
 
-		let attackField = this.table[this.table.usedFields];
-
-		if(!canTransfer || !attackField){
+		// Узнаем, можно ли переводить
+		if(this.hands[nextPlayer.id].length <= this.table.usedFields || !emptyTable){
 			return;
 		}
-
-		for(let fi = 0; fi < this.table.length; fi++){
-			let tableField = this.table[fi];
-			if(tableField.defense){
-				canTransfer = false;
-				break;
-			}
-		}
-
-		if(!canTransfer){
-			return;
-		}
-
-		let emptyTable = this.firstEmptyTable; 
 
 		for(let di = 0; di < defenseTables.length; di++){
 			for(let ci = 0; ci < hand.length; ci++){

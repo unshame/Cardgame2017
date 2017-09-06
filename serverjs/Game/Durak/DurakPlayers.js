@@ -241,6 +241,19 @@ class DurakPlayers extends GamePlayers{
 		this.findToGoNext(currentAttackerIndex);
 	}
 
+	getLastActiveAttacker(attackers){
+		if(!attackers){
+			attackers = this.attackers;
+		}
+		let lastActiveAttacker = null;
+		this.forEachOwn((attacker) => {
+			if(!attacker.statuses.passed){
+				lastActiveAttacker = attacker;
+			}
+		}, attackers);
+		return lastActiveAttacker;
+	}
+
 	// Устанавливает игроков, вышедших из игры
 	// Возвращает индекс текущего игрока
 	findInactive(){

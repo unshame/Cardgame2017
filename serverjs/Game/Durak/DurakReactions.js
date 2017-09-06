@@ -45,13 +45,21 @@ class DurakReactions{
 		// Увеличиваем кол-во занятых мест на столе
 		this.table.usedFields++;
 
+		// Сдвигаем атакующего, если это был перевод и даем ему защищаться\переводить
 		if(this.turnStages.current == 'DEFENSE_TRANSFER'){
 			this.players.notify({type: 'EVENT', message: 'transfered', pid: player.id, showForSelf: false, channel: 'extra'});
 			this.players.shiftAttacker();
+			this.cards.rememberHandLengths();
 
-			if(!this.cards.firstEmptyTable){
-				this.turnStages.setNext('ATTACK_DEFENSE');	
+			// Даем следующему игроку переводить, если есть место на столе
+			// (при 5-6 местах и 4-х мастях оно всегда будет)
+			if(this.cards.firstEmptyTable){ 
+				this.turnStages.setNext('DEFENSE_TRANSFER');
 			}
+			else{
+			    this.turnStages.setNext('DEFENSE');     
+			} 
+			
 		}
 
 		return action;
@@ -69,7 +77,7 @@ class DurakReactions{
 
 		this.actions.logAction(card, action.type, card.field, action.field );
 
-		// Перемещаем карту на стол и убираем карту из рукиs
+		// Перемещаем карту на стол и убираем карту из руки
 		card.field = action.field;
 		this.hands[player.id].splice(ci, 1);
 		tableFields[action.field].defense = card;
@@ -78,14 +86,9 @@ class DurakReactions{
 		action.value = card.value;
 		action.suit = card.suit;
 
-		if(this.freeForAll){
-			this.players.set('passed', false, this.players.attackers);
-		}else{
-			this.defenseOccured = true;
-		}
-
-		if(this.turnStages.next != 'ATTACK_DEFENSE'){
-			this.turnStages.setNext('ATTACK_DEFENSE');
+		// Запоминаем, что защита произошла, если игроки атакуют по одному
+		if(this.turnStages.current == 'ATTACK_DEFENSE' && !this.freeForAll){
+			this.actions.defenseOccured = true;
 		}
 
 		return action;
@@ -96,22 +99,22 @@ class DurakReactions{
 
 		this.log.info(player.name, 'passes');
 
-		if(this.turnStages.current != 'FOLLOWUP' && this.defenseOccured){
-			let attackers = this.players.attackers;
-			let lastActiveAttacker = null;
-			attackers.forEach((attacker) => {
-				if(!attacker.statuses.passed){
-					lastActiveAttacker = attacker;
-				}
-			});
-			if(player == lastActiveAttacker){
-				this.players.set('passed', false, attackers);
-			}
+		// Если произошла защита и игроки атакуют по одному,
+		// при этом защищающийся не берет карты,
+		// проверяем, является ли текущий игрок последним пасующим,
+		// и, если да, то даем всем игрокам атаковать снова
+		if(
+			this.turnStages.current != 'FOLLOWUP' && this.actions.defenseOccured &&
+			this.players.getLastActiveAttacker() == player
+		){			
+			this.players.set('passed', false, this.players.attackers);
 		}
 
+		// Устанавливаем, что игрок спасовал
 		player.statuses.passed = true;
 
-		this.defenseOccured = false;
+		// Убираем флаг того, что произошла защита
+		this.actions.defenseOccured = false;
 
 		return action;
 	}
@@ -120,8 +123,11 @@ class DurakReactions{
 	TAKE(player, action){
 		this.log.info(player.name, "takes");
 
+		// Запоминаем, что игрок взял
 		this.actions.takeOccurred = true;
 
+		// Позволяем всем подкидывать
+		this.players.set('passed', false, this.players.attackers);
 		this.turnStages.setNext('FOLLOWUP');
 
 		return action;

@@ -59,11 +59,21 @@ class DurakDirectives{
 			return true;
 		}
 
+		// Даем всем игрокам атаковать, если защищающийся походил и у последнего атакующего нет карт
+		if(this.actions.defenseOccured){
+			let lastActiveAttacker = this.players.getLastActiveAttacker(attackers);
+			let hand = this.hands[lastActiveAttacker.id];
+			if(!hand.length){
+				this.players.set('passed', false, attackers);
+				this.actions.defenseOccured = false;
+			}
+		}
+
 		// Действия атакующих
 		let workingPlayers = this.cards.getAttackActionsForPlayers(attackers, this.actions.valid, defenseTables, this.freeForAll);
 
 		if(!workingPlayers.length){
-			this.log.info('Attackers passed or have no cards');
+			this.log.info('Attackers have no cards');
 			this.turnStages.setNext('DEFENSE');
 			return true;
 		}
@@ -117,7 +127,7 @@ class DurakDirectives{
 
 		this.actions.valid[pid] = actions;
 
-		this.turnStages.setNext(canTransfer ? 'DEFENSE_TRANSFER' : 'DEFENSE');
+		this.turnStages.setNext(canTransfer ? 'ATTACK_DEFENSE' : 'DEFENSE');
 
 		let deadline = this.waitForResponse(this.actions.timeouts.actionDefend, [defender]);
 		this.players.validActionsNotify(deadline);	
@@ -131,7 +141,7 @@ class DurakDirectives{
 		let defHand = this.hands[this.players.defender.id];
 		let firstEmptyTable = this.cards.firstEmptyTable;
 
-		if(!firstEmptyTable || this.limitFollowup && this.table.usedFields >= defHand.length){
+		if(!firstEmptyTable || this.limitFollowup && this.table.usedFields >= defHand.defenseStartLength){
 			if(!firstEmptyTable){
 				this.log.info('Field is full');
 			}

@@ -218,9 +218,11 @@ class GamePlayers extends PlayerManager{
 	}
 
 	validActionsNotify(deadline){
+		const game = this.game;
+		game.log.silly(game.actions.valid);
 		this.forEachOwn((p) => {
-			p.recieveValidActions(this.game.actions.valid[p.id].slice(), deadline, this.roles, this.game.turnStages.current);
-		}, this.game.simulating ? this.bots : this);
+			p.recieveValidActions(game.actions.valid[p.id].slice(), deadline, this.roles, game.turnStages.current);
+		}, game.simulating ? this.bots : this);
 	}
 
 	// Отправляет сообщение игрокам с опциональными действиями

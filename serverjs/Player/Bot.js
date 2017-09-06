@@ -33,15 +33,16 @@ class Bot extends Player{
 		if(!this.game){
 			return 0;
 		}
-		if(addedTime === undefined){
-			addedTime = 0;
-		}
 		let minTime = this.game.fakeDescisionTimer || 0;
-		if(minTime === 0){
+
+		if(addedTime === undefined || minTime === 0){
 			addedTime = 0;
 		}
 		return Math.random()*addedTime + minTime;
 	}
+
+
+	// Получение действий //
 
 	recieveGameInfo(info){
 		if(!info.noResponse){
@@ -57,7 +58,7 @@ class Bot extends Player{
 		clearTimeout(this.actionTimeout);
 		if(actions.length){
 			this.actionTimeout = setTimeout(() => {
-				this.sendRandomAction(actions);
+				this.sendResponseSync(this.findRandomAction(actions));
 			}, this.getDescisionTime(1500));
 		}
 	}
@@ -79,11 +80,42 @@ class Bot extends Player{
 		}			
 	}
 
+
+	// Отправка ответов //
+
 	sendDelayedResponse(action){
 		clearTimeout(this.actionTimeout);
 		this.actionTimeout = setTimeout(() => {
-			this.sendResponse(action);
+			this.sendResponseSync(action);
 		}, this.getDescisionTime());
+	}
+
+	// Синхронно посылает синхронный ответ серверу
+	// Асинхронность должна быть создана перед вызовом
+	sendResponseSync(action){
+		if(!this.game){
+			this.log.warn('No game has been assigned', action);
+			return;
+		}
+		if(!this.game.active){
+			return;
+		}
+		this.game.recieveResponseSync(this, action || null);
+	}
+
+	// Асинхронно посылает синхронный ответ серверу с коллбэком (для тестов)
+	sendResponseWithCallback(action, callback){
+		if(!this.game){
+			this.log.warn('No game has been assigned', action);
+			return;
+		}
+		clearTimeout(this.actionTimeout);
+		this.actionTimeout = setTimeout(() => {
+			this.sendResponseSync(action);
+			if(callback){
+				callback();
+			}
+		},0);
 	}
 
 }

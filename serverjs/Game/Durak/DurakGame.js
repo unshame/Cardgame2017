@@ -40,8 +40,6 @@ class DurakGame extends Game{
 		this.limitFollowup = Boolean(config.limitFollowup);
 
 		this.freeForAll = Boolean(config.freeForAll);
-
-		this.defenseOccured = false;
 	}
 
 	getDefaultResults(){
@@ -51,14 +49,9 @@ class DurakGame extends Game{
 		};
 	}
 
-	reset(){
-		super.reset();
-		this.defenseOccured = false;
-	}
-
 	resetTurn(){
 		super.resetTurn();
-		this.defenseOccured = false;
+		this.cards.rememberHandLengths();
 	}
 }
 
