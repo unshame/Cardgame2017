@@ -142,16 +142,16 @@ ActionHandler.prototype.executeAction = function(action){
 * @param {string} turnStage текущая стадия хода
 */
 ActionHandler.prototype.handlePossibleActions = function(action){
-	if(action.actions){
+	if(action.actions.length){
 		var time = action.time - Date.now();
 		if(time){
 			ui.rope.start(time - 1000);
 		}
 
-		if(action.roles){
-			gameInfo.updateInfo(action.roles, action.turnStage);
-			fieldManager.updateBadges();
-		}
+	}
+	if(action.roles){
+		gameInfo.updateInfo(action.roles, action.turnStage);
+		fieldManager.updateBadges();
 	}
 
 	this.highlightPossibleActions(action.actions);

@@ -149,7 +149,7 @@ var reactSecondary = {
 	*/
 	INVALID_ACTION: function(action, seq){
 		var undoAction = action.action,
-			card = cardManager.cards[action.cid];
+			card = cardManager.cards[undoAction.cid];
 		if(undoAction.cid && card){
 			fieldManager.resetTableOrder();
 			var cardInfo = {
