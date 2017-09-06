@@ -49,6 +49,8 @@ class DurakReactions{
 		if(this.turnStages.current == 'DEFENSE_TRANSFER'){
 			this.players.notify({type: 'EVENT', message: 'transfered', pid: player.id, showForSelf: false, channel: 'extra'});
 			this.players.shiftAttacker();
+
+			// Перезапоминаем кол-ва карт в руках
 			this.cards.rememberHandLengths();
 
 			// Даем следующему игроку переводить, если есть место на столе
@@ -87,12 +89,13 @@ class DurakReactions{
 		action.suit = card.suit;
 
 		// Запоминаем, что защита произошла, если игроки атакуют по одному
+		// или даем всем атаковать, если игроки атакуют сразу
 		if(this.turnStages.current == 'ATTACK_DEFENSE'){
 			if(this.freeForAll){
 				this.players.set('passed', false, this.players.attackers);
 			}
 			else{
-				this.actions.defenseOccured = true;
+				this.actions.defenseOccurred = true;
 			}
 		}
 
@@ -109,7 +112,7 @@ class DurakReactions{
 		// проверяем, является ли текущий игрок последним пасующим,
 		// и, если да, то даем всем игрокам атаковать снова
 		if(
-			this.turnStages.current != 'FOLLOWUP' && this.actions.defenseOccured &&
+			this.turnStages.current != 'FOLLOWUP' && this.actions.defenseOccurred &&
 			this.players.getLastActiveAttacker() == player
 		){			
 			this.players.set('passed', false, this.players.attackers);
@@ -119,7 +122,7 @@ class DurakReactions{
 		player.statuses.passed = true;
 
 		// Убираем флаг того, что произошла защита
-		this.actions.defenseOccured = false;
+		this.actions.defenseOccurred = false;
 
 		return action;
 	}

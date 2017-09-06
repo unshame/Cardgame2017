@@ -1,15 +1,15 @@
-/*
-* Класс содержит действия, выполняемые в различные стадии хода
-* Выполняется в своем собственном контексте.
-*/
 'use strict';
 
 const GameTurnStages = reqfromroot('Game/GameTurnStages');
 
 class DurakTurnStages extends GameTurnStages{
 
-	// INITIAL_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> REPEATING_ATTACK -> DEFENSE -> ... ->
-	// SUPPORT -> DEFENSE -> ATTACK -> DEFENSE -> ... -> FOLLOWUP -> DEFENSE -> END -> END_DEAL -> ENDED
+	/**
+	* Класс содержит действия, выполняемые в различные стадии хода.  
+	* Выполняется в своем собственном контексте.
+	* Визуальное представление хода:  
+	* ![DurakTurnStages](https://i.imgur.com/aSTuvja.png)
+	*/
 	constructor(game){
 		super(game);
 	}

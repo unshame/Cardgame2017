@@ -8,7 +8,7 @@
 
 class DurakDirectives{
 
-	// Отправляет атакующему возможные ходы
+	// Отправляет атакующему возможные ходы в стадии начальной атаки
 	ATTACK(attacker){
 
 		let pid = attacker.id;
@@ -36,6 +36,7 @@ class DurakDirectives{
 		return false;
 	}
 
+	// Отправляет атакующим и защищающемуся возможные ходы
 	ATTACK_DEFEND(attackers, defender){
 		let defHand = this.hands[defender.id];
 		if(!defHand.length){
@@ -47,6 +48,8 @@ class DurakDirectives{
 		let defenseTables = this.cards.defenseTables;
 		let firstEmptyTable = this.cards.firstEmptyTable;
 
+		// Переходим в стадию защиты, если поле заполнено
+		// или у защищающегося в руке столько же карт, сколько ему нужно побить
 		if(!firstEmptyTable || defenseTables.length >= defHand.length){
 			if(!firstEmptyTable){
 				this.log.info('Field is full');
@@ -60,12 +63,12 @@ class DurakDirectives{
 		}
 
 		// Даем всем игрокам атаковать, если защищающийся походил и у последнего атакующего нет карт
-		if(this.actions.defenseOccured){
+		if(this.actions.defenseOccurred){
 			let lastActiveAttacker = this.players.getLastActiveAttacker(attackers);
 			let hand = this.hands[lastActiveAttacker.id];
 			if(!hand.length){
 				this.players.set('passed', false, attackers);
-				this.actions.defenseOccured = false;
+				this.actions.defenseOccurred = false;
 			}
 		}
 
@@ -96,12 +99,14 @@ class DurakDirectives{
 		return false;
 	}
 
-	// Отправляет атакующему возможные ходы
+	// Отправляет атакующим возможные ходы в стадии подброса
 	FOLLOWUP(attackers){
 
 		let defHand = this.hands[this.players.defender.id];
 		let firstEmptyTable = this.cards.firstEmptyTable;
 
+		// Даем защищающемуся взять, если стол заполнен или на столе столько же карт,
+		// как было у защищающегося в начале хода (и подкиджывание ограничено)
 		if(!firstEmptyTable || this.limitFollowup && this.table.usedFields >= defHand.defenseStartLength){
 			if(!firstEmptyTable){
 				this.log.info('Field is full');
@@ -114,8 +119,10 @@ class DurakDirectives{
 			return true;
 		}
 
+		// Действия атакующих
 		let workingPlayers = this.cards.getAttackActionsForPlayers(attackers, this.actions.valid, [], this.freeForAll);
 
+		// Все игроки спасовали или у них больше нет карт, даем защищающемуся взять
 		if(!workingPlayers.length){
 			this.log.info('Attackers passed or have no cards');
 			this.turnStages.setNext('TAKE');
@@ -129,13 +136,13 @@ class DurakDirectives{
 		return false;
 	}
 
-	// Отправляет защищающемуся возможные ходы
+	// Отправляет защищающемуся возможные ходы после первой атаки (если можно переводить) 
+	// и когда атакующие не могут больше ходить
 	DEFEND(defender, canTransfer){
 
-		// Находим карту, которую нужно отбивать
 		let defenseTables = this.cards.defenseTables;
 
-		// Если ни одной карты не найдено, значит игрок успешно отбился, можно завершать ход
+		// Если больше нечего отбивать, завершаем ход
 		if(!defenseTables.length){
 			this.log.info('Defender successfully defended');
 			this.turnStages.setNext('END');
@@ -146,8 +153,10 @@ class DurakDirectives{
 		let pid = defender.id;
 		let hand = this.hands[pid];	
 
+		// Действия защищающегося
 		this.cards.getDefenseActions(hand, actions, defenseTables);
 
+		// Действия перевода
 		if(canTransfer){
 			this.cards.getTransferActions(hand, actions, defenseTables);
 		}

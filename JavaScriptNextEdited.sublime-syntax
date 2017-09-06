@@ -123,8 +123,8 @@ contexts:
           captures:
             1: string.quoted.double.js
 
-        # // comments
-        - match: //.*$
+        # // Comments
+        - match: \s//.*$
           scope: string.quoted.double.js
 
         # /JS-DOC COMMENT HIGHLIGHTING #
