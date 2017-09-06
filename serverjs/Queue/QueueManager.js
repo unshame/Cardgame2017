@@ -61,7 +61,7 @@ class QueueManager{
 		* Случайные имена ботов.
 		* @type {Array}
 		*/
-		this.randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavonne','Leola','Arlena','Marilynn','Shawnna','Alanna','Armando','Julieann','Alyson','Rutha','Wilber','Marty','Tyrone','Mammie','Shalon','Faith','Mi','Denese','Flora','Josphine','Christa','Sharonda','Sofia','Collene','Marlyn','Herma','Mac','Marybelle','Casimira','Nicholle','Ervin','Evia','Noriko','Yung','Devona','Kenny','Aliza','Stacey','Toni','Brigette','Lorri','Bernetta','Sonja','Margaretta', 'Johnny Cocksucker III'];
+		this.randomNames = ['John Snow','Gandalf','Joel','Ellie','Batman','Joker','Yoh','Geralt','Cirilla Fiona Elen Riannon','Triss','Yennefer','Harry','Hermione','Ron','Arya Stark','Sherlock','Neo','Marty McFly','Chester','Jodie','Aiden','Aloy','Doctor','Severus','Alan','Regis','Nemo','Walter White','Jesse','Heisenberg','Merlin','House M.D.','Bilbo','Legolas','Strider','Aragorn','Frodo','Sam','Merry','Pippin','Tess','Kenny','Ted','Barney','Marshall','Robin','Lily','Oleg','Sergey','Georgy', 'Johnny Cocksucker III'];
 	}
 
 	/**
