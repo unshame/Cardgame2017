@@ -131,12 +131,15 @@ class DurakReactions{
 		// Запоминаем, что игрок взял
 		this.actions.takeOccurred = true;
 
+		//TODO: подумать, нужно ли давать спасовавшим подкидывать
+		/*
 		if(this.freeForAll){
 			this.players.set('passed', false, this.players.attackers);
 		}
 		else{
 			this.actions.defenseOccurred = true;
 		}
+		*/
 		
 		this.turnStages.setNext('FOLLOWUP');
 
