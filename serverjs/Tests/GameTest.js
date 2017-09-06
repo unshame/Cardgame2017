@@ -4,11 +4,18 @@ const
 	Game = require('../Game/Durak/DurakGame'),
 	TestBot = require('./TestBot');
 
-function runTest(numBots, duration, debug){
+function runTest(params){
+
 	console.log('Testing...');
+
+	let numBots = params.numBots;
+	let duration = params.testing;
+	let debug = params.debug;
+
 	if(typeof duration != 'number'){
 		duration = 2000;
 	}
+
 	let bots = [];
 	let randomNames = [];
 	let i = numBots;
@@ -25,11 +32,13 @@ function runTest(numBots, duration, debug){
 		bots.push(new TestBot(tester,randomNames));
 	}
 	let fakeQueue = {endGame: () => {}};
-	global.game = new Game(
+	let game = global.game = new Game(
 		fakeQueue,
 		bots, 
 		{
-			transfer: true,
+			limitFollowup: !params.followup,
+			freeForAll: params.freeForAll,
+			transfer: params.transfer,
 			debug: debug,
 			test: true
 		}

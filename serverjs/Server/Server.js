@@ -232,7 +232,7 @@ class Server extends Eureca.Server{
 		this.httpServer.listen(this.params.port, () => {
 			this.log.notice('Running on port', this.params.port);
 			if(this.params.testing){
-				Tests.runTest(this.params.numBots, this.params.testing, this.params.debug);
+				Tests.runTest(this.params);
 			}
 		});
 	}

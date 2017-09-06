@@ -298,7 +298,7 @@ class DurakCards extends GameCards{
 	
 	getAttackActionsForPlayers(players, actionHolder, defenseFields, freeForAll){
 		let workingPlayers = [];
-		
+
 		for(let i = 0, len = players.length; i < len; i++){
 			let player = players[i];
 			let pid = player.id;

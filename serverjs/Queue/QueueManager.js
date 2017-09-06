@@ -203,7 +203,6 @@ class QueueManager{
 	* @return {Queue} Возвращает созданную очередь.
 	*/
 	addQueue(type, config){
-
 		config = Object.assign({}, config);
 		config.gameConfig = Object.assign({}, config.gameConfig);
 

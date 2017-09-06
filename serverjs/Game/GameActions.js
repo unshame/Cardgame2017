@@ -213,6 +213,7 @@ class GameActions{
 				'Invalid action', player.id,
 				incomingAction && incomingAction.type, incomingAction, this.valid
 			);
+			//debugger
 			return null;
 		}
 
