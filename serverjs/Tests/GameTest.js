@@ -25,7 +25,7 @@ function runTest(numBots, duration, debug){
 		bots.push(new TestBot(tester,randomNames));
 	}
 	let fakeQueue = {endGame: () => {}};
-	let game = new Game(
+	global.game = new Game(
 		fakeQueue,
 		bots, 
 		{
