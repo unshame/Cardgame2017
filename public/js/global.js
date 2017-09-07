@@ -301,6 +301,7 @@ function drawArc(circle, startAngle, endAngle, color){
 	ctx.lineWidth = circle.lineWidth;
 	ctx.strokeStyle = numberToHexColor(color);
 	ctx.globalAlpha = 0.75;
+	ctx.lineCap = "round";
 	ctx.stroke();
 	circle.update();
 }
