@@ -37,23 +37,23 @@ UI.PopupManager = function(){
 	this.showing = false;
 
 	/**
-	* Плашка/фон текста.
-	* @type {Phaser.Image}
-	*/
-	this.background = game.make.image(0, 0);
-	this.add(this.background);
-
-	/**
 	* BitmapData фона.
 	* @type {Phaser.BitmapData}
 	*/
 	this._bitmapData = game.make.bitmapData();
 
 	/**
+	* Плашка/фон текста.
+	* @type {Phaser.Image}
+	*/
+	this.background = game.make.image(0, 0, this._bitmapData);
+	this.add(this.background);
+
+	/**
 	* Текст.
 	* @type {Phaser.Text}
 	*/
-	this.text = game.add.text(0, 0, 'Test popup', {fill: 'black', font: '18px Exo', wordWrap: true, wordWrapWidth: 250, align: 'center'}, this);
+	this.text = game.add.text(0, 0, '', {fill: 'black', font: '18px Exo', wordWrap: true, wordWrapWidth: 250, align: 'center'}, this);
 	this.text.anchor.set(0.5, 0.5);
 	this.text.setShadow(1, 1, 'rgba(0,0,0,0.5)', 3);
 
@@ -185,7 +185,6 @@ UI.PopupManager.prototype._updateText = function(text){
 		0, 
 		'grey'
 	);
-	this.background.loadTexture(this._bitmapData);
 
 	this.text.x = this.background.width/2;
 	this.text.y = this.background.height/2 + 3;

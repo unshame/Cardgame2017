@@ -156,6 +156,4 @@ Menu.prototype._createArea = function(width, height){
 		this.options.header && this.options.headerHeight, 
 		this.options.headerColor
 	);
-
-	this.background.loadTexture(this._bitmapArea);	
 };

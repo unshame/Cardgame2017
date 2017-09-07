@@ -238,21 +238,21 @@ var Field = function(options, style){
 	*/
 	this._entranceTween = null;
 
-
-	/**
-	* Поверхность поля.
-	* @type {Phaser.Image}
-	*/
-	this.area = game.add.image(0, 0);
-	this.area.alpha = this.style.alpha;
-	this.area.visible = false;
-	this.add(this.area);
-
 	/**
 	* BitmapData поверхности поля.
 	* @type {Phaser.BitmapData}
 	*/
 	this._bitmapArea = game.make.bitmapData();
+
+	/**
+	* Поверхность поля.
+	* @type {Phaser.Image}
+	*/
+	this.area = game.add.image(0, 0, this._bitmapArea);
+	this.area.alpha = this.style.alpha;
+	this.area.visible = false;
+	this.add(this.area);
+
 
 	/**
 	* Размер активного места поля для дебага.

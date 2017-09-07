@@ -10,17 +10,17 @@ Field.PlayerField = function(options, style, badgeStyle){
 	Field.BadgeField.call(this, options, style, badgeStyle);
 
 	/**
-	* Полукруглая поверхность поля.
-	* @type {Phaser.Image}
-	*/
-	this.circle = game.add.image(0, 0);
-	this.add(this.circle);
-
-	/**
 	* BitmapData полукруглой поверхности поля.
 	* @type {Phaser.BitmapData}
 	*/
 	this._bitmapCircle = game.make.bitmapData();
+
+	/**
+	* Полукруглая поверхность поля.
+	* @type {Phaser.Image}
+	*/
+	this.circle = game.add.image(0, 0, this._bitmapCircle);
+	this.add(this.circle);
 };
 
 extend(Field.PlayerField, Field.BadgeField);
@@ -103,7 +103,6 @@ Field.PlayerField.prototype._createCircle = function(width, height){
 	ctx.globalAlpha = 1;
 	ctx.stroke();
 	circle.update();
-	this.circle.loadTexture(circle);
 
 	this.circle.x = -this.x;
 
