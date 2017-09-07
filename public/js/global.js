@@ -157,7 +157,6 @@ function numberToHexColor(number){
 
 
 // TEST AND DEBUG FUNCTIONS
-// jshint ignore:start
 var	getCard,
 	getCards;
 
@@ -252,3 +251,86 @@ var animTest = {
 		}, 50);
 	}
 };
+
+function setupArc(lineWidth, circle, img){
+	var field = fieldManager.fields[gameInfo.pid];
+	if(lineWidth === undefined){
+		lineWidth = 8;
+	}
+	var offset = lineWidth - field.style.border;
+	var center = {
+		x: game.screenWidth/2,
+		y: field.circleCenter.y + offset
+	};
+	var radius = center.y - offset;
+	var height = game.screenHeight - field.y + offset + lineWidth;
+	if(!circle){
+		circle = game.add.bitmapData();
+		img = circle.addToWorld(0, 0);
+	}
+
+	var ctx = circle.ctx;
+	var y = center.y - height;
+	var x = Math.sqrt(radius*radius - y*y);
+	if(center.x - x < 0){
+		x = center.x + lineWidth;
+		y = Math.sqrt(radius*radius - x*x);
+	}
+	circle.endAngle = -Math.atan2(y, x);
+	circle.startAngle = -Math.atan2(y, -x);
+	circle.center = center;
+	circle.height = height;
+	circle.radius = radius;
+	circle.lineWidth = lineWidth;
+	img.x = 0;
+	img.y = field.y - offset;
+	// console.log({x: x, y: y});
+	// console.log(circle.startAngle, circle.endAngle);
+
+	return [circle, img];
+}
+
+function drawArc(circle, startAngle, endAngle, color){
+	var field = fieldManager.fields[gameInfo.pid];
+	var center = circle.center;
+	var ctx = circle.ctx;
+	circle.clear();		
+	circle.resize(game.screenWidth, circle.height);
+	ctx.beginPath();
+	ctx.arc(center.x, center.y, circle.radius, startAngle, endAngle);
+	ctx.lineWidth = circle.lineWidth;
+	ctx.strokeStyle = numberToHexColor(color);
+	ctx.globalAlpha = 0.75;
+	ctx.stroke();
+	circle.update();
+}
+
+function animateArc(circle, duration){
+	if(duration === undefined){
+		duration = 5000;
+	}
+	var startAngle = circle.startAngle;
+	var endAngle = circle.endAngle;
+	var dif = startAngle - endAngle;
+	var end = Date.now() + duration;
+	var color = ui.colors.orange;
+	drawArc(circle, startAngle, endAngle, color);
+	var anim = setInterval(function(){
+		var left = end - Date.now();
+		if(left <= 0){
+			clearInterval(anim);
+			drawArc(circle, startAngle, startAngle, color);
+			return;
+		}
+		var progress = (duration - left)/duration;
+		if(progress > 0.75){
+			color = ui.colors.red;
+		}
+		drawArc(circle, startAngle, endAngle + dif*progress, color);
+	}, 10);
+}
+
+function arc(duration, lineWidth){
+	var circle = setupArc(lineWidth)[0];
+	animateArc(circle, duration);
+}

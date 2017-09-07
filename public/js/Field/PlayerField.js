@@ -94,7 +94,7 @@ Field.PlayerField.prototype._createCircle = function(width, height){
 	circle.clear();		
 	circle.resize(game.screenWidth, height);
 	ctx.beginPath();
-	ctx.arc(center.x + this.x, center.y, radius,2 * Math.PI, 0); 
+	ctx.arc(center.x + this.x, center.y, radius, 2 * Math.PI, 0); 
 	ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
 	ctx.lineWidth = this.style.border;
