@@ -8,6 +8,7 @@
 * Обновляется группой, в которую добавлен.
 * @class
 * @extends {Phaser.Sprite}
+* @param {string} [name='rope'] имя таймера
 */
 UI.Rope = function(name){
 
@@ -231,8 +232,8 @@ UI.Rope.prototype.start = function(duration, useLastColor){
 
 /**
 * Останавливает таймер и опционально очищает прогресс.
-* @param  {boolean} [clearProgress=true] нужно ли очистить прогресс
-* @param  {boolean} [hard]          убирает анимацию очищения прогресса
+* @param {boolean} [clearProgress=true] нужно ли очистить прогресс
+* @param {boolean} [hard]               убирает анимацию очищения прогресса
 */
 UI.Rope.prototype.stop = function(clearProgress, hard){
 	if(!this.running){
@@ -337,10 +338,11 @@ UI.Rope.prototype._draw = function(angleStart, angleEnd, color){
 
 /**
 * Останавливает таймер перед запуском.
-* @param  {number} duration новая длительность таймера
-* @return {number}          Возвращает время, которое таймер не будет показан,
-*                           или -1, если нужно сохранить длительность таймера на будущее,
-*                           т.к. проигрывается анимация очищения прогресса.
+* @param {number} duration новая длительность таймера
+*
+* @return {number} Возвращает время, которое таймер не будет показан,
+*                  или -1, если нужно сохранить длительность таймера на будущее,
+*                  т.к. проигрывается анимация очищения прогресса.
 */
 UI.Rope.prototype._abort = function(duration){
 	var durationDif = Math.max(duration - this.durationShow, 0);

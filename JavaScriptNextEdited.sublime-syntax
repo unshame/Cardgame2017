@@ -30,7 +30,7 @@ contexts:
           captures:
             1: keyword.control.conditional.js
           push:
-            - match: ({\S*})\s+(\[?[^=\]\s]*)=?'([^=\]\s]*)'(\]?)
+            - match: ({\S*})\s+(\[?[^=\]\s]*)=?["']([^=\]\s]*)["'](\]?)
               captures:
                 1: variable.language.this.js
                 2: variable.parameter.function.js
@@ -84,11 +84,15 @@ contexts:
             - match: $
               pop: true
 
-        # @tag purple
+        # @tag purple/'yellow'
         - match: \*\s(@(?:default|version))
           captures:
             1: keyword.control.conditional.js
           push:
+            - match: \s+(["']\S*["'])
+              captures:
+                1: string.quoted.double.js
+              pop: true
             - match: \s+(\S*)
               captures:
                 1: constant.numeric.js
