@@ -161,6 +161,11 @@ extend(UI.Rope, Phaser.Sprite);
 */
 UI.Rope.prototype.initialize = function(field){
 
+	if(!(field instanceof Field.PlayerField)){
+		console.error('Rope: field must be an instance of PlayerField');
+		return;
+	}
+
 	this.field = field;
 
 	var lineWidth = this.lineWidth;
@@ -261,8 +266,11 @@ UI.Rope.prototype.stop = function(clearProgress, hard){
 UI.Rope.prototype.update = function(){
 
 	// Останавливаем таймер, если он был деинициализирован
-	if(this.running && !this.field){
-		this.stop(true, true);
+	if(!this.field){
+		if(this.running){
+			this.stop(true, true);
+		}
+		return;
 	}
 
 	var now = Date.now();
@@ -282,9 +290,10 @@ UI.Rope.prototype.update = function(){
 	// Время вышло
 	if(timeLeft <= 0){
 		this._finish(now);
+		return;
 	}
 	// Мы показываем таймер, только когда оставшееся время меньше durationShow
-	else if(timeLeft <= this.durationShow){
+	if(timeLeft <= this.durationShow){
 
 		this.visible = true;
 		
@@ -299,9 +308,11 @@ UI.Rope.prototype.update = function(){
 
 		// Рисуем таймер
 		this._draw(this.angleStart, this.angleEnd + progress, color);
+
+		return;
 	}
 	// Прячем таймер, пока оставшееся время не станет меньше durationShow
-	else if(this.visible){
+	if(this.visible){
 		this.visible = false;
 	}
 };
@@ -403,8 +414,9 @@ UI.Rope.STARTED = 42;
 
 /**
 * Считает и запоминает прогресс в процентах.
-* @param  {number} timeLeft оставшееся время, по которому расчитывается прогресс
-* @return {number}          Возвращает прогресс в радианах.
+* @param {number} timeLeft оставшееся время, по которому расчитывается прогресс
+*
+* @return {number} Возвращает прогресс в радианах.
 */
 UI.Rope.prototype._calculateProgress = function(timeLeft){
 
