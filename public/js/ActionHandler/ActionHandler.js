@@ -147,7 +147,6 @@ ActionHandler.prototype.handlePossibleActions = function(action){
 		if(time){
 			ui.rope.start(time - 1000);
 		}
-
 	}
 	if(action.roles){
 		gameInfo.updateInfo(action.roles, action.turnStage);

@@ -238,6 +238,16 @@ class GamePlayers extends PlayerManager{
 		}
 	}
 
+	allAfk(players){
+		for(let i = 0, len = players.length; i < len; i++){
+			let player = players[i];
+			if(this.game.actions.valid[player.id].length && !player.afk){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	// ЛОГ
 
 	logTurnStart(){

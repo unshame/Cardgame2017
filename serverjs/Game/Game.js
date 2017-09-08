@@ -496,7 +496,7 @@ class Game{
 			let duration = time * 1000;
 
 			// Если игрок afk, время действия уменьшается
-			if(players.length == 1 && players[0].afk){
+			if(this.players.allAfk(players)){
 				duration = this.actions.timeouts.afk * 1000;
 			}
 
