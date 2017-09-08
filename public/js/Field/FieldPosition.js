@@ -101,4 +101,5 @@ Field.prototype._createArea = function(width, height){
 		'rgba(255, 255, 255, 1)', 
 		'rgba(255, 255, 255, 1)'
 	);
+	this.area.texture.requiresReTint = true;
 };

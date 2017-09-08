@@ -252,7 +252,7 @@ UI.PopupManager.prototype._getPopupPosition = function(){
 		break;
 
 		default:
-		x = Math.max(Math.min(game.input.x - this.background.width/2, game.screenWidth - this.background.width), 0);
+		x = Math.min(game.input.x - this.background.width/2, game.screenWidth - this.background.width);
 		y = Math.min(game.input.y - this.background.height - this.offset, game.screenHeight - this.background.height);
 		if(y < 0){
 			y = Math.max(game.input.y + ui.cursor.height + this.offset, 0);
@@ -260,6 +260,8 @@ UI.PopupManager.prototype._getPopupPosition = function(){
 
 		break;
 	}
+	x = Math.max(Math.min(x, game.screenWidth), 0);
+	y = Math.max(Math.min(y, game.screenHeight), 0);
 	return {x: x, y: y};
 };
 

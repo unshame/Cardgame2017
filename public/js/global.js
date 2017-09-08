@@ -257,23 +257,23 @@ function setupArc(lineWidth, circle, img){
 	if(lineWidth === undefined){
 		lineWidth = 8;
 	}
-	var offset = lineWidth - field.style.border;
+	var offset = lineWidth/2 + field.style.border/2;
 	var center = {
 		x: game.screenWidth/2,
 		y: field.circleCenter.y + offset
 	};
 	var radius = center.y - offset;
-	var height = game.screenHeight - field.y + offset + lineWidth;
+	var height = game.screenHeight - field.y + offset;
 	if(!circle){
 		circle = game.add.bitmapData();
 		img = circle.addToWorld(0, 0);
 	}
 
 	var ctx = circle.ctx;
-	var y = center.y - height;
+	var y = center.y - height - offset;
 	var x = Math.sqrt(radius*radius - y*y);
 	if(center.x - x < 0){
-		x = center.x + lineWidth;
+		x = center.x;
 		y = Math.sqrt(radius*radius - x*x);
 	}
 	circle.endAngle = -Math.atan2(y, x);
@@ -320,7 +320,8 @@ function animateArc(circle, duration){
 		var left = end - Date.now();
 		if(left <= 0){
 			clearInterval(anim);
-			drawArc(circle, startAngle, startAngle, color);
+			circle.clear();
+			circle.update();
 			return;
 		}
 		var progress = (duration - left)/duration;

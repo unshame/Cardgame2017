@@ -248,11 +248,10 @@ var Field = function(options, style){
 	* Поверхность поля.
 	* @type {Phaser.Image}
 	*/
-	this.area = game.add.image(0, 0, this._bitmapArea);
+	this.area = game.make.image(0, 0, this._bitmapArea);
 	this.area.alpha = this.style.alpha;
 	this.area.visible = false;
 	this.add(this.area);
-
 
 	/**
 	* Размер активного места поля для дебага.

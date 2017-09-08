@@ -19,7 +19,7 @@ Field.PlayerField = function(options, style, badgeStyle){
 	* Полукруглая поверхность поля.
 	* @type {Phaser.Image}
 	*/
-	this.circle = game.add.image(0, 0, this._bitmapCircle);
+	this.circle = game.make.image(0, 0, this._bitmapCircle);
 	this.add(this.circle);
 };
 
@@ -94,7 +94,7 @@ Field.PlayerField.prototype._createCircle = function(width, height){
 	circle.clear();		
 	circle.resize(game.screenWidth, height);
 	ctx.beginPath();
-	ctx.arc(center.x + this.x, center.y, radius, 2 * Math.PI, 0); 
+	ctx.arc(center.x + this.x, center.y + this.style.border/2, radius, 2 * Math.PI, 0); 
 	ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
 	ctx.lineWidth = this.style.border;
@@ -103,6 +103,7 @@ Field.PlayerField.prototype._createCircle = function(width, height){
 	ctx.globalAlpha = 1;
 	ctx.stroke();
 	circle.update();
+	this.circle.texture.requiresReTint = true;
 
 	this.circle.x = -this.x;
 

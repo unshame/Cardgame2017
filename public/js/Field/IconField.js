@@ -26,7 +26,7 @@ Field.IconField = function(options, style, iconStyle){
 		* Иконка поля, если `iconStyle.texture` указано.
 		* @type {Phaser.Image}
 		*/
-		this.icon = game.add.image(0, 0, this.iconStyle.texture);
+		this.icon = game.make.image(0, 0, this.iconStyle.texture);
 		this.icon.frame = this.iconStyle.frame;
 		this.icon.visible = this.iconStyle.visible;
 		this.icon.anchor.set(0.5, 0.5);
