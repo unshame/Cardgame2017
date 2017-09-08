@@ -129,6 +129,13 @@ var reactPrimary = {
 			});
 		}
 
+		seq.append(function(){
+			var playerField = fieldManager.fields[gameInfo.pid];
+			if(playerField){
+				ui.rope.initialize(playerField);
+			}
+		})
+
 		return duration;
 	},
 

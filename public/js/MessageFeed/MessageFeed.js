@@ -98,7 +98,7 @@ MessageFeed.prototype._styleText = function(text){
 * @return {number} Позиция по горизонтали.
 */
 MessageFeed.prototype._getX = function(){
-	return ui.rope.width + 10;
+	return 20;
 };
 
 /**

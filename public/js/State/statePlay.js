@@ -92,7 +92,7 @@ var statePlay = new State('play', {
 		cardEmitter.stop();
 		fieldManager.resetNetwork();
 		gameInfo.reset();
-		ui.rope.stop();
+		ui.rope.deinitialize();
 		ui.layers.hideLayer(ui.actionButtons, true);
 		ui.menus.options.hideElement('concede');
 		ui.menus.endGame.fadeOut();

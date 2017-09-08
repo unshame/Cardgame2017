@@ -4,54 +4,73 @@
 * @extends {Phaser.Sprite}
 */
 UI.Rope = function(){
-	var pixel = ui.newPixel();
-	Phaser.Sprite.call(this, game, 0, 0, pixel.generateTexture());
-	this.tint = ui.colors.orange;
-	this.width = 30;
-	this.height = 0;
-	this.y = game.screenHeight;
-	this.anchor.setTo(0, 1);
+	this._bitmapData = game.make.bitmapData();
+	Phaser.Sprite.call(this, game, 0, 0, this._bitmapData);
 	this.name = 'rope';
-	game.add.existing(this);
+
+	this.lineWidth = 10;
+	this.endAngle = 0;
+	this.startAngle = 0;
+	this.center = null;
+	this.bitmapHeight = 0;
+	this.radius = 0;
 
 	this.startTime = 0;
 	this.duration = 0;
 	this.burning = false;
 	this.maxHeight = game.screenHeight;
 	this.showTime = 15000;
-	this.redTime = 5000;
+	this.warnTime = 5000;
 
+	this.colorNormal = ui.colors.orange;
+	this.colorWarn = ui.colors.red;
+
+	this.burning = false;
 };
 
 extend(UI.Rope, Phaser.Sprite);
 
-/**
-* Обновляет прогресс таймера.
-*/
-UI.Rope.prototype.update = function(){
-	var now = Date.now(),
-		burning = false;
-	if(!this.burning && this.startTime && this.startTime < now){
-		burning = true;
+UI.Rope.prototype.initialize = function(field){
+	this.field = field;
+	var lineWidth = this.lineWidth;
+	var offset = lineWidth/2 + field.style.border/2;
+	var center = {
+		x: game.screenWidth/2,
+		y: field.circleCenter.y + offset
+	};
+	var radius = center.y - offset;
+	var height = game.screenHeight - field.y + offset;
+
+	var y = center.y - height - offset;
+	var x = Math.sqrt(radius*radius - y*y);
+	if(center.x - x < 0){
+		x = center.x;
+		y = Math.sqrt(radius*radius - x*x);
 	}
-	else if(!this.burning){
-		return;
-	}
-	var endTime = this.duration + this.startTime,
-		left = endTime - now;
-	if(left <= 0){
-		this.stop();
-	}
-	else if(left <= this.showTime){
-		this.visible = true;
-		this.height = left/this.showTime * this.maxHeight;
-		if(left <= this.redTime && this.tint != ui.colors.red){
-			this.tint = ui.colors.red;
-		}
-	}
-	else{
-		this.visible = false;
-	}
+	this.endAngle = -Math.atan2(y, x);
+	this.startAngle = -Math.atan2(y, -x);
+	this.center = center;
+	this.bitmapHeight = height;
+	this.radius = radius;
+
+	this.x = 0;
+	this.y = field.y - offset;
+};
+
+UI.Rope.prototype.draw = function(startAngle, endAngle, color){
+	var circle = this._bitmapData;
+	var center = this.center;
+	var ctx = circle.ctx;
+	circle.clear();		
+	circle.resize(game.screenWidth, this.bitmapHeight);
+	ctx.beginPath();
+	ctx.arc(center.x, center.y, this.radius, startAngle, endAngle);
+	ctx.lineWidth = this.lineWidth;
+	ctx.strokeStyle = numberToHexColor(color);
+	ctx.globalAlpha = 0.75;
+	ctx.lineCap = "round";
+	ctx.stroke();
+	circle.update();
 };
 
 /**
@@ -61,7 +80,7 @@ UI.Rope.prototype.update = function(){
 */
 UI.Rope.prototype.start = function(duration, start){
 	if(!duration || isNaN(duration)){
-		return false;
+		return;
 	}
 
 	if(this.burning){
@@ -72,7 +91,38 @@ UI.Rope.prototype.start = function(duration, start){
 	this.burning = true;
 	this.startTime = start ? (now + start) : now; 
 	this.duration = duration;
-	this.height = this.maxHeight;
+};
+
+/**
+* Обновляет прогресс таймера.
+*/
+UI.Rope.prototype.update = function(){
+	var now = Date.now();
+	var burning = false;
+	if(!this.burning && this.startTime && this.startTime < now){
+		burning = true;
+	}
+	else if(!this.burning){
+		return;
+	}
+	var endTime = this.startTime + this.duration;
+	var left = endTime - now;
+	var color = this.colorNormal;
+	if(left <= 0){
+		this.stop();
+	}
+	else if(left <= this.showTime){
+		this.visible = true;
+		
+		if(left <= this.warnTime){
+			color = this.colorWarn;
+		}
+		var dif = this.startAngle - this.endAngle;
+		this.draw(this.startAngle, this.endAngle + dif*(1 - left/this.showTime), color);
+	}
+	else{
+		this.visible = false;
+	}
 };
 
 /**
@@ -80,15 +130,22 @@ UI.Rope.prototype.start = function(duration, start){
 */
 UI.Rope.prototype.stop = function(){
 	this.burning = false;
-	this.height = 0;
 	this.startTime = 0;
 	this.duration = 0;
-	this.tint = ui.colors.orange;
+	this._bitmapData.clear();
+	this._bitmapData.update();
+};
+
+UI.Rope.prototype.deinitialize = function(){
+	this.stop();
+	this.field = null;
 };
 
 /**
 * Обновляет позицию таймера.
 */
 UI.Rope.prototype.updatePosition = function(){
-	this.maxHeight = this.y = game.screenHeight;
+	if(this.field){
+		this.initialize(this.field);
+	}
 };
