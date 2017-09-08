@@ -156,6 +156,7 @@ UI.prototype.initialize = function(){
 		[this.background, 0],
 		// this.actionButtons, 1
 		[fieldManager, 2],
+		[this.rope, 3],
 		// this.eventFeed, 3 (zIndexBelowCards)
 		[cardManager, 4],
 		[cardEmitter, 5],
@@ -165,7 +166,6 @@ UI.prototype.initialize = function(){
 		[this.feed, 7],
 		[this.eventFeed, this.eventFeed.zIndexAboveCards],
 		[this.announcer, 8],
-		[this.rope, 8],
 		// игровые меню, -6
 		[this.modalManager, -5],
 		// модальные меню, -4
