@@ -10,11 +10,12 @@ class Queue{
 	/**
 	* Очередь.
 	* @class
-	* @param  {QueueManager} manager менеджер очередей
-	* @param  {string} type    тип очереди
-	* @param  {object} config  конфигурация очереди
+	* @param {QueueManager} manager менеджер очередей
+	* @param {string}       type    тип очереди
+	* @param {object}       config  конфигурация очереди
+	* @param {object}       rules   правила игры
 	*/
-	constructor(manager, type, config){
+	constructor(manager, type, config, rules){
 
 		/**
 		* id очереди
@@ -59,14 +60,18 @@ class Queue{
 		*/
 		this.name = config.name || 'Unnamed Queue';
 
-		if(typeof config.numPlayers != 'number' || isNaN(config.numPlayers)){
+		if(
+			typeof config.numPlayers != 'number' || isNaN(config.numPlayers) || 
+			config.numPlayers < 1
+		){
 			config.numPlayers = config.game.minPlayers;
 		}
 		config.numPlayers = Math.min(config.numPlayers, config.game.maxPlayers);
 
 		if(
 			typeof config.numBots != 'number' || isNaN(config.numBots) ||
-			config.numPlayers + config.numBots > config.game.maxPlayers
+			config.numPlayers + config.numBots > config.game.maxPlayers ||
+			config.numBots < 0
 		){
 			config.numBots = 0;
 		}
@@ -81,8 +86,15 @@ class Queue{
 		* Конфигурация игры, запускаемой этой очередью.
 		* @type {object}
 		*/
-		this.gameConfig = config.gameConfig;
-		this.gameConfig.debug = config.debug;
+		this.gameConfig = {
+			debug: config.debug
+		};
+
+		/**
+		* Правила игры очереди.
+		* @type {object}
+		*/
+		this.gameRules = rules;
 
 		/**
 		* Игроки в этой очереди.
@@ -105,7 +117,7 @@ class Queue{
 			numPlayers: this.players.length,
 			numPlayersRequired: this.config.numPlayers,
 			numBots: this.config.numBots,
-			gameConfig: this.gameConfig,
+			gameRules: this.gameRules,
 			name: this.name
 		};
 	}
@@ -170,7 +182,7 @@ class Queue{
 			}
 		}
 
-		this.game = new this.config.game(this, players, this.gameConfig);
+		this.game = new this.config.game(this, players, this.gameConfig, this.gameRules);
 		this.manager.games[this.game.id] = this.game;
 		this.manager.removeQueueFromList(this);
 		this.game.init();

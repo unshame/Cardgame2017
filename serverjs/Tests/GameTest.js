@@ -36,12 +36,14 @@ function runTest(params){
 		fakeQueue,
 		bots, 
 		{
+			debug: debug,
+			test: true
+		},
+		{
 			limitFollowup: !params.followup,
 			limitAttack: !params.attack,
 			freeForAll: params.freeForAll,
-			transfer: params.transfer,
-			debug: debug,
-			test: true
+			transfer: params.transfer
 		}
 	);
 	game.init();

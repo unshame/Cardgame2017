@@ -54,17 +54,17 @@ class Server extends Eureca.Server{
 		*/
 		this.manager = new QueueManager(this, {
 			game: this.gameModes['durak'][0],
-			gameConfig: {
-				transfer: this.params.transfer,
-				limitFollowup: !this.params.followup,
-				limitAttack: !this.params.attack,
-				freeForAll: this.params.freeForAll
-			},
 			bot: this.gameModes['durak'][1],
 			numPlayers: this.params.numPlayers,
 			numBots: this.params.numBots,			
 			debug: this.params.debug,
 			name: 'Quick Queue'
+		},
+		{
+			transfer: this.params.transfer,
+			limitFollowup: !this.params.followup,
+			limitAttack: !this.params.attack,
+			freeForAll: this.params.freeForAll
 		});
 
 		let rootPath = '/../../';

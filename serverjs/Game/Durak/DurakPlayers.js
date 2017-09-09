@@ -133,7 +133,8 @@ class DurakPlayers extends GamePlayers{
 					turnIndex: game.turnNumber,
 					gameIndex: game.index,
 					noResponse: noResponse || false,
-					simulating: game.simulating
+					simulating: game.simulating,
+					gameRules: Object.assign({}, game.rules)
 				}
 			);
 		}, players);

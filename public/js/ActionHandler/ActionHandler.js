@@ -177,12 +177,7 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 		return;
 	}
 
-	fieldManager.resetHighlights();
-
 	gameInfo.applyInteractivity(actions, this.actionButton);
-
-	fieldManager.tryHighlightDummy();
-
 };
 
 /** Убирает все возможные действия */

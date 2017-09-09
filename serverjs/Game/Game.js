@@ -14,8 +14,9 @@ class Game{
 	* @param {Player[]}      players массив игроков.
 	* @param {object<class>} Classes классы, из которых создаются игровые компоненты
 	* @param {object}        config  настройки игры
+	* @param {object}        rules	 правила игры
 	*/
-	constructor(queue, players, Classes, config){
+	constructor(queue, players, Classes, config, rules){
 
 		// Генерируем айди игры
 		let id = generateId();
@@ -170,6 +171,18 @@ class Game{
 		* @type {Boolean}
 		*/
 		this.active = false;
+
+		/**
+		* Игровые настройки.
+		* @type {Object}
+		*/
+		this.config = config;
+
+		/**
+		* Правила игры.
+		* @type {Object}
+		*/
+		this.rules = rules;
 	}
 
 	/**

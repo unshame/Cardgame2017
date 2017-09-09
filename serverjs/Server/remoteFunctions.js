@@ -108,17 +108,17 @@ module.exports = function(server){
 
 		/**
 		* Передает менеджеру очередей информацию для создания новой очереди.
-		* @param  {Boolean} isPrivate  является ли очередь скрытой
-		* @param  {string}  gameMode   режим игры
-		* @param  {object}  config     конфигурация очереди
-		* @param  {object}  gameConfig конфигурация игры
+		* @param {Boolean} isPrivate   является ли очередь скрытой
+		* @param {string}  gameMode    режим игры
+		* @param {object}  queueConfig      конфигурация очереди
+		* @param {object}  [gameRules] конфигурация игры
 		*/
-		createCustomQueue: function(isPrivate, gameMode, config, gameConfig){
+		createCustomQueue: function(isPrivate, gameMode, queueConfig, gameRules){
 			let player = server.players[this.connection.id];
 			if(!player){
 				return;
 			}
-			server.manager.addCustomQueue(player, isPrivate, gameMode, config, gameConfig);
+			server.manager.addCustomQueue(player, isPrivate, gameMode, queueConfig, gameRules);
 		},
 
 		/**

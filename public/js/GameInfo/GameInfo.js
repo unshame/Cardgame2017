@@ -50,6 +50,8 @@ GameInfo.prototype.reset = function(){
 	* @type {Boolean}
 	*/
 	this.simulating = false;
+
+	this.rules = null;
 };
 
 GameInfo.prototype.resetTurnInfo = function(){
@@ -183,7 +185,6 @@ GameInfo.prototype.shouldResetActions = function(actions){
 * Возвращает нужно ли удалить действие в соответствии с `turnStage`
 */
 GameInfo.prototype.shouldDeleteAction = function(action, card, field, doneAction){
-	return true;
 	switch(this.turnStage){
 		case 'INITIAL_ATTACK':
 		if(card.value !== cardManager.cards[action.cid].value){
@@ -236,6 +237,9 @@ GameInfo.prototype._fixActionField = function(action){
 }
 
 GameInfo.prototype.applyInteractivity = function(actions, button){
+
+	fieldManager.resetHighlights();
+
 	var cardHolding = cardControl.card;
 	var hasButtonAction = false;
 
@@ -278,6 +282,8 @@ GameInfo.prototype.applyInteractivity = function(actions, button){
 		button.disable();
 		button.changeStyle(0);
 	}
+
+	fieldManager.tryHighlightDummy();
 };
 
 GameInfo.prototype._makeInteractible = function(card, field, action, defenseFields, emptyTable){
