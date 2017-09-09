@@ -71,7 +71,7 @@ Field.PlayerField.prototype._createArea = function(width, height){
 * @param {number} height высота поля
 */
 Field.PlayerField.prototype._createCircle = function(width, height){
-	var total = Math.max(2500, width),	// ширина квадрата, в который точно помещается окружность
+	var total = Math.max(2750, width),	// ширина квадрата, в который точно помещается окружность
 		extra = (total - width)/2,		// на сколько окружность выходит за пределы экрана
 		a = {
 			x: -extra,
@@ -89,8 +89,8 @@ Field.PlayerField.prototype._createCircle = function(width, height){
 	var center = this._calculateCircleCenter(a, c, b);
 	var radius = center.y;
 
-	var circle = this._bitmapCircle,
-		ctx = circle.ctx;
+	var circle = this._bitmapCircle;
+	var ctx = circle.ctx;
 	circle.clear();		
 	circle.resize(game.screenWidth, height);
 	ctx.beginPath();

@@ -83,6 +83,12 @@ UI.Rope = function(name){
 	this.startTime = 0;
 
 	/**
+	* Сохраненное время окончания таймера.
+	* @type {Number}
+	*/
+	this.savedEndTime = 0;
+
+	/**
 	* Время, которое отсчитывает таймер.
 	* @type {Number}
 	*/
