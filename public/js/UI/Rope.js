@@ -95,7 +95,7 @@ UI.Rope = function(name){
 	this.running = false;
 
 	/**
-	* Таймер анимирует остановку.
+	* Идет анимимация остановки.
 	* @type {Boolean}
 	*/
 	this.clearing = false;
@@ -117,12 +117,6 @@ UI.Rope = function(name){
 	* @type {number}
 	*/
 	this.adjustingDirection = UI.Rope.NOT_STARTED;
-
-	/**
-	* Минимальный угол при подсчете разницы между позициями таймера и завершении таймера.
-	* @type {Number}
-	*/
-	this.epsilon = 0.01;
 
 	/**
 	* Скорость радиан/мс при корректировке позиции таймера.
@@ -200,13 +194,15 @@ UI.Rope.prototype.initialize = function(field){
 * Останавливает таймер и убирает ссылку на поле игрока.
 */
 UI.Rope.prototype.deinitialize = function(){
-	this.stop();
+	this.stop(true, true);
 	this.field = null;
 };
 
 /**
 * Запускает таймер.
-* @param {number} duration время таймера
+* @param {number}  duration     время таймера
+* @param {boolean} useLastColor будет использоваться последний заданный цвет таймера
+*                               и цвет не будет меняться до истечения `duration`
 */
 UI.Rope.prototype.start = function(duration, useLastColor){
 	if(!duration || isNaN(duration)){
@@ -215,19 +211,19 @@ UI.Rope.prototype.start = function(duration, useLastColor){
 
 	var now = Date.now();
 
-	// Прерываем таймер и находим разницу между duration и durationShow
-	var durationDif = this._abort(duration);
+	// Прерываем таймер и находим задержку (разницу между duration и durationShow)
+	var delay = this._abort(duration);
 
 	// Сохраняем запуск напотом
-	if(durationDif < 0){
+	if(delay < 0){
 		this.savedEndTime = now + duration;
 		return;
 	}
 
 	this.running = true;
 
-	this.startTime = now + durationDif; 
-	this.duration = duration - durationDif;
+	this.startTime = now + delay; 
+	this.duration = duration - delay;
 
 	this.useLastColor = useLastColor || false;
 	if(!useLastColor){
@@ -238,10 +234,10 @@ UI.Rope.prototype.start = function(duration, useLastColor){
 /**
 * Останавливает таймер и опционально очищает прогресс.
 * @param {boolean} [clearProgress=true] нужно ли очистить прогресс
-* @param {boolean} [hard]               убирает анимацию очищения прогресса
+* @param {boolean} [hard]               останавливает или предотвращает анимацию очищения прогресса 
 */
 UI.Rope.prototype.stop = function(clearProgress, hard){
-	if(!this.running){
+	if(!this.running || this.clearing && !hard){
 		return;
 	}
 	var timeLeft = this.startTime + this.duration - Date.now();
@@ -285,13 +281,14 @@ UI.Rope.prototype.update = function(){
 
 	var endTime = this.startTime + this.duration;
 	var timeLeft = endTime - now;
-	var color = this.lastColor;
 
-	// Время вышло
-	if(timeLeft <= 0){
-		this._finish(now);
+	if(this._tryFinishing(timeLeft, this.savedEndTime - now)){
 		return;
 	}
+
+	// Последний цвет таймера
+	var color = this.lastColor;
+
 	// Мы показываем таймер, только когда оставшееся время меньше durationShow
 	if(timeLeft <= this.durationShow){
 
@@ -356,35 +353,65 @@ UI.Rope.prototype._draw = function(angleStart, angleEnd, color){
 *                  т.к. проигрывается анимация очищения прогресса.
 */
 UI.Rope.prototype._abort = function(duration){
-	var durationDif = Math.max(duration - this.durationShow, 0);
+	var delay = Math.max(duration - this.durationShow, 0);
+	
+	// Таймер не запущен, значит можно его просто запустить
 	if(!this.running){
-		return durationDif;
+		return delay;
 	}
-	if(durationDif > 0){
+
+	// Если duration больше durationShow - таймер не будет показан в течении delay
+	if(delay > 0){
+		// Уже есть сохраненное время или идет очищение,
+		// сообщаем, что нужно перезаписать сохраненное время
 		if(this.savedEndTime || this.clearing){
 			return -1;
 		}
+
+		// Останавливаем таймер
+		this.clearing = false;
 		this.stop();
+
+		// Идет анимация завершение, нужно сохранить время на будущее
 		if(this.running){
 			return -1;
 		}
 	}
+	// иначе останавливаем таймер с сохранением прогресса
 	else{
+		this.clearing = false;
 		this.stop(false);
 	}
-	return durationDif;
+	// Сообщаем, что можно запустить таймер по истечении delay
+	return delay;
 };
 
 /**
-* Завершает таймер и запускает его снова, если было сохранена дополнительная длительность.
-* @param  {number} now текущее время
+* Завершает таймер, если вышло время или пришло время показывать сохраненное время,
+* и запускает его снова, если есть сохраненное время. 
+* @param {number} timeLeft      оставшееся время
+* @param {number} savedDuration сохраненная длительность
+*
+* @return {boolean} Был ли завершен или перезапущен таймер.
 */
-UI.Rope.prototype._finish = function(now){
-	var savedEndTime = this.savedEndTime;
-	this.stop(true, true);
-	if(savedEndTime){
-		this.start(savedEndTime - now);
+UI.Rope.prototype._tryFinishing = function(timeLeft, savedDuration){
+	// Сохраненное время можно показывать
+	if(savedDuration > 0 && savedDuration <= this.durationShow){
+		this.start(savedDuration);
+		this.update();
+		return true;
 	}
+
+	// Время вышло
+	if(timeLeft <= 0){
+		this.stop(true, true);
+		if(savedDuration > 0){
+			this.start(savedDuration);
+		}
+		return true;
+	}
+
+	return false;
 };
 
 /**
@@ -426,8 +453,8 @@ UI.Rope.prototype._calculateProgress = function(timeLeft){
 	var progressDif = this.progress - progress;
 	var adjustingDirection = this.adjustingDirection;
 
-	// Выесняем, в какую сторону нужно двигать таймер, чтобы дойти до текущей позиции
-	if(Math.abs(progressDif) > this.epsilon && adjustingDirection == UI.Rope.NOT_STARTED){
+	// Выясняем, в какую сторону нужно двигать таймер, чтобы дойти до текущей позиции
+	if(adjustingDirection == UI.Rope.NOT_STARTED && Math.abs(progressDif) > 0.01){
 		adjustingDirection = progressDif > 0 ? UI.Rope.BACKWARD : UI.Rope.FORWARD;
 	}
 	else{
@@ -441,7 +468,7 @@ UI.Rope.prototype._calculateProgress = function(timeLeft){
 		var newProgress = this.progress + newDif;
 		var newProgressDif = progress - newProgress;
 
-		if(newProgressDif*adjustingDirection < this.epsilon){
+		if(newProgressDif*adjustingDirection <= 0){
 			adjustingDirection = UI.Rope.STARTED;
 		}
 		else{				

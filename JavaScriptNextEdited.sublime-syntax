@@ -30,7 +30,7 @@ contexts:
           captures:
             1: keyword.control.conditional.js
           push:
-            - match: ({\S*})\s+(\[?[^=\]\s]*)=?["']([^=\]\s]*)["'](\]?)
+            - match: ({\S*})\s+(\[?[^=\]\s]*)=?(["'][^=\]\s]*["'])(\]?)
               captures:
                 1: variable.language.this.js
                 2: variable.parameter.function.js
