@@ -214,8 +214,8 @@ UI.Rope.prototype.start = function(duration, useLastColor){
 	// Прерываем таймер и находим задержку (разницу между duration и durationShow)
 	var delay = this._abort(duration);
 
-	// Сохраняем запуск напотом
-	if(delay < 0){
+	// Сохраняем запуск на потом
+	if(delay == Infinity){
 		this.savedEndTime = now + duration;
 		return;
 	}
@@ -282,6 +282,7 @@ UI.Rope.prototype.update = function(){
 	var endTime = this.startTime + this.duration;
 	var timeLeft = endTime - now;
 
+	// Пробуем завершить
 	if(this._tryFinishing(timeLeft, this.savedEndTime - now)){
 		return;
 	}
@@ -292,8 +293,10 @@ UI.Rope.prototype.update = function(){
 	// Мы показываем таймер, только когда оставшееся время меньше durationShow
 	if(timeLeft <= this.durationShow){
 
-		this.visible = true;
-		
+		if(!this.visible){
+			this.visible = true;
+		}
+
 		// Раситываем и запоминаем пройденный таймером угол
 		var progress = this._calculateProgress(timeLeft);
 
@@ -309,6 +312,8 @@ UI.Rope.prototype.update = function(){
 		return;
 	}
 	// Прячем таймер, пока оставшееся время не станет меньше durationShow
+	// В данное время до этого дойдет только если startTime был установлен вручную
+	// (не через start)
 	if(this.visible){
 		this.visible = false;
 	}
@@ -339,7 +344,7 @@ UI.Rope.prototype._draw = function(angleStart, angleEnd, color){
 	ctx.arc(center.x, center.y, this.radius, angleStart, angleEnd);
 	ctx.lineWidth = this.lineWidth;
 	ctx.strokeStyle = numberToHexColor(color);
-	ctx.lineCap = "round";
+	ctx.lineCap = 'round';
 	ctx.stroke();
 	circle.update();
 };
@@ -349,7 +354,7 @@ UI.Rope.prototype._draw = function(angleStart, angleEnd, color){
 * @param {number} duration новая длительность таймера
 *
 * @return {number} Возвращает время, которое таймер не будет показан,
-*                  или -1, если нужно сохранить длительность таймера на будущее,
+*                  или Infinity, если нужно сохранить длительность таймера на будущее,
 *                  т.к. проигрывается анимация очищения прогресса.
 */
 UI.Rope.prototype._abort = function(duration){
@@ -365,16 +370,16 @@ UI.Rope.prototype._abort = function(duration){
 		// Уже есть сохраненное время или идет очищение,
 		// сообщаем, что нужно перезаписать сохраненное время
 		if(this.savedEndTime || this.clearing){
-			return -1;
+			return Infinity;
 		}
 
 		// Останавливаем таймер
 		this.clearing = false;
 		this.stop();
 
-		// Идет анимация завершение, нужно сохранить время на будущее
+		// Идет анимация завершения, нужно сохранить время на будущее
 		if(this.running){
-			return -1;
+			return Infinity;
 		}
 	}
 	// иначе останавливаем таймер с сохранением прогресса
@@ -454,15 +459,17 @@ UI.Rope.prototype._calculateProgress = function(timeLeft){
 	var adjustingDirection = this.adjustingDirection;
 
 	// Выясняем, в какую сторону нужно двигать таймер, чтобы дойти до текущей позиции
-	if(adjustingDirection == UI.Rope.NOT_STARTED && Math.abs(progressDif) > 0.01){
-		adjustingDirection = progressDif > 0 ? UI.Rope.BACKWARD : UI.Rope.FORWARD;
-	}
-	else{
-		adjustingDirection = UI.Rope.STARTED;
+	if(adjustingDirection == UI.Rope.NOT_STARTED){
+		if(Math.abs(progressDif) > 0.01){
+			adjustingDirection = progressDif > 0 ? UI.Rope.BACKWARD : UI.Rope.FORWARD;
+		}
+		else{
+			adjustingDirection = UI.Rope.STARTED;
+		}
 	}
 
 	// Двигаем таймер к текущей позиции
-	if(adjustingDirection == UI.Rope.FORWARD || adjustingDirection == UI.Rope.BACKWARD){
+	if(adjustingDirection != UI.Rope.STARTED){
 
 		var newDif = this.adjustingSpeed*game.time.elapsed*adjustingDirection;
 		var newProgress = this.progress + newDif;
@@ -475,6 +482,9 @@ UI.Rope.prototype._calculateProgress = function(timeLeft){
 			progress = newProgress;				
 		}
 	}
+
+	// Сохраняем статус корректировки позиции
+	this.adjustingDirection = adjustingDirection;
 
 	// Сохраняем прогресс в процентах
 	this.progress = progress;
