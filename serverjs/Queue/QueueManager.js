@@ -157,7 +157,7 @@ class QueueManager{
 		let queue = this.addQueue(
 			isPrivate ? 'private' : 'custom',
 			queueConfig,
-			queueConfig.game.sanitiseRules(gameRules)
+			gameRules
 		);
 		queue.addPlayer(player);
 	}

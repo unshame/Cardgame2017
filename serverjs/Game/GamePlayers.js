@@ -221,7 +221,7 @@ class GamePlayers extends PlayerManager{
 		const game = this.game;
 		game.log.silly(game.actions.valid);
 		this.forEachOwn((p) => {
-			p.recieveValidActions(game.actions.valid[p.id].slice(), deadline, this.roles, game.turnStages.current);
+			p.recieveValidActions(game.actions.valid[p.id].slice(), deadline, this.roles, game.turnIndex, game.turnStages.current);
 		}, game.simulating ? this.bots : this);
 	}
 

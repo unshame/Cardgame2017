@@ -44,10 +44,11 @@ class DurakPlayers extends GamePlayers{
 			let role = p.statuses.role;
 			let roleIndex = p.statuses.roleIndex;
 			let working = p.statuses.working;
+			let defenseStartCards = game.hands[p.id].defenseStartLength;
 			if(role == 'defender' && game.actions.takeOccurred){
 				role = 'takes';
 			}
-			roles[p.id] = {role, roleIndex, working};
+			roles[p.id] = {role, roleIndex, working, defenseStartCards};
 		});
 		return roles;
 	}
@@ -130,7 +131,7 @@ class DurakPlayers extends GamePlayers{
 					players: send.players ? playersToSend : [],
 					trumpSuit: send.suit ? game.cards.trumpSuit : null,
 					lockedFields: game.cards.lockedTablesIds,
-					turnIndex: game.turnNumber,
+					turnIndex: game.turnIndex,
 					gameIndex: game.index,
 					noResponse: noResponse || false,
 					simulating: game.simulating,
@@ -466,7 +467,7 @@ class DurakPlayers extends GamePlayers{
 		this.log.info('==================================');
 		this.log.info(
 			'Turn %d %s => %s <= %s',
-			game.turnNumber,
+			game.turnIndex,
 			attacker.name,
 			this.defender.name,
 			attackers.map(a => a.name).join(', ')

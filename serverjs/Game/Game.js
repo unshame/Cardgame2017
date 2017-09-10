@@ -125,7 +125,7 @@ class Game{
 		* Индекс хода.
 		* @type {Number}
 		*/
-		this.turnNumber = 0;
+		this.turnIndex = 0;
 
 		/**
 		* Таймер ожидания ответа от игроков.
@@ -200,6 +200,7 @@ class Game{
 	
 	/** Инициализация и запуск первой игры. */
 	init(){
+		this.log.info(this.rules);
 		this.active = true;
 		this.reset();
 		this.start();
@@ -221,7 +222,7 @@ class Game{
 		this.actions.reset();
 
 		// Свойства хода
-		this.turnNumber = 1;
+		this.turnIndex = 1;
 		this.turnStages.next = 'DEFAULT';
 	}
 
@@ -412,11 +413,11 @@ class Game{
 		this.turnStartTime = Date.now();
 
 		// Увеличиваем счетчик ходов, меняем стадию игры на первую атаку и продолжаем ход
-		this.turnNumber++;	
+		this.turnIndex++;	
 
 		this.players.notify({
 			type: 'TURN_STARTED',
-			index: this.turnNumber
+			index: this.turnIndex
 		});
 		this.turnStages.setNext('INITIAL_ATTACK');	
 	}

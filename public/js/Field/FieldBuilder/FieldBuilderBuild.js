@@ -1,7 +1,7 @@
 // Player hand
 FieldBuilder.prototype._buildPlayerField = function(){
 	var manager = this.manager;
-	var player = gameInfo.players[gameInfo.pi];
+	var player = gameInfo.player;
 	var field = manager.addPlayerField({
 		type: 'HAND',
 		id: gameInfo.pid,

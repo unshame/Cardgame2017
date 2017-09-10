@@ -94,7 +94,7 @@ class Queue{
 		* Правила игры очереди.
 		* @type {object}
 		*/
-		this.gameRules = rules;
+		this.gameRules = this.config.game.sanitiseRules(rules);
 
 		/**
 		* Игроки в этой очереди.

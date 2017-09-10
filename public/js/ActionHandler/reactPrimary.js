@@ -65,8 +65,8 @@ var reactPrimary = {
 		cardControl.reset();
 		cardManager.disablePhysics();
 
-		gameInfo.simulating = action.simulating;
-		gameInfo.rules = action.gameRules;
+		var gameId = gameInfo.gameId;
+		gameInfo.saveGameInfo(action.gameId, action.gameIndex, action.gameRules, action.simulating);
 
 		// Создаем недостающие карты
 		cardManager.createCards(action.cards);
@@ -74,8 +74,7 @@ var reactPrimary = {
 		// Создаем поля с учетом новой информации об игроках
 		if(action.players.length){
 			// Сохраняем информацию об игроках
-			var gameId = gameInfo.gameId;
-			gameInfo.savePlayers(action.players, action.gameId);
+			gameInfo.savePlayers(action.players);
 
 			// Если id игры не совпадает с локальным id игры, значит каким-то образом
 			// мы переподключились к другой игре, значит удаляем поля

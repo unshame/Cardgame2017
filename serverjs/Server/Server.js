@@ -61,7 +61,7 @@ class Server extends Eureca.Server{
 			name: 'Quick Queue'
 		},
 		{
-			transfer: this.params.transfer,
+			canTransfer: this.params.transfer,
 			limitFollowup: !this.params.followup,
 			limitAttack: !this.params.attack,
 			freeForAll: this.params.freeForAll

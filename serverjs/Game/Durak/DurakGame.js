@@ -48,7 +48,7 @@ class DurakGame extends Game{
 
 	static sanitiseRules(rules){
 		return {
-			canTransfer: Boolean(rules.transfer),
+			canTransfer: Boolean(rules.canTransfer),
 			limitFollowup: Boolean(rules.limitFollowup),
 			limitAttack: Boolean(rules.limitAttack),
 			freeForAll: Boolean(rules.freeForAll)
