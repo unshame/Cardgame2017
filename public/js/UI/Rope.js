@@ -20,7 +20,13 @@ UI.Rope = function(name){
 
 	Phaser.Sprite.call(this, game, 0, 0, this.bitmapData);
 
-	this.alpha = 0.7;
+	/**
+	* Прозрачность таймера к которой он будет возвращаться.
+	* @type {Number}
+	*/
+	this.defaultAlpha = 0.7;
+
+	this.alpha = this.defaultAlpha;
 
 	/**
 	* Имя таймера.
@@ -151,6 +157,12 @@ UI.Rope = function(name){
 	* @type {Boolean}
 	*/
 	this.useLastColor = false;
+
+	/**
+	* Твин мигания таймера.
+	* @type {Phaser.Tween}
+	*/
+	this.blinker = null;
 };
 
 extend(UI.Rope, Phaser.Sprite);
@@ -257,6 +269,11 @@ UI.Rope.prototype.stop = function(clearProgress, hard){
 	this.visible = false;
 	this.savedEndTime = 0;
 	this.clearing = false;
+	if(this.blinker){
+		this.blinker.stop();
+		this.blinker = null;
+	}
+	this.alpha = this.defaultAlpha;
 	if(clearProgress || clearProgress === undefined){
 		this._clearProgress(timeLeft, hard);
 	}
@@ -310,6 +327,12 @@ UI.Rope.prototype.update = function(){
 		// если не было указано, что нужно использовать последний установленный цвет
 		if(!this.useLastColor && color != this.colorWarn && timeLeft <= this.durationWarn){
 			color = this.lastColor = this.colorWarn;
+
+			// Включаем мигание таймера
+			if(!this.blinker){
+				this.alpha = 1;
+				this.blinker = game.add.tween(ui.rope).to({alpha: 0.2}, 300, Phaser.Easing.Linear.None, true, 0, -1, true);
+			}
 		}
 
 		// Рисуем таймер
