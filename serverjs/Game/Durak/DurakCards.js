@@ -338,6 +338,8 @@ class DurakCards extends GameCards{
 				let action = {
 					type: 'ATTACK',
 					cid: cid,
+					cvalue: card.value,
+					csuit: card.suit,
 					field: emptyTable.id
 				};
 				actions.push(action);
@@ -363,6 +365,8 @@ class DurakCards extends GameCards{
 					let action = {
 						type: 'DEFENSE',
 						cid: cid,
+						cvalue: card.value,
+						csuit: card.suit,
 						field: fid
 					};
 					actions.push(action);
@@ -393,7 +397,9 @@ class DurakCards extends GameCards{
 
 				let action = { 
 				    type: 'ATTACK', 
-				    cid: cid, 
+				    cid: cid,
+					cvalue: card.value,
+					csuit: card.suit,
 				    field: emptyTable.id
 				}; 
 				actions.push(action); 
