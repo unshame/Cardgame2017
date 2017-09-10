@@ -64,7 +64,9 @@ var reactPrimary = {
 		cardEmitter.stop();
 		cardControl.reset();
 		cardManager.disablePhysics();
-		gameInfo.simulating = action.simulating;
+
+		var gameId = gameInfo.gameId;
+		gameInfo.saveGameInfo(action.gameId, action.gameIndex, action.gameRules, action.simulating);
 
 		// Создаем недостающие карты
 		cardManager.createCards(action.cards);
@@ -72,8 +74,7 @@ var reactPrimary = {
 		// Создаем поля с учетом новой информации об игроках
 		if(action.players.length){
 			// Сохраняем информацию об игроках
-			var gameId = gameInfo.gameId;
-			gameInfo.savePlayers(action.players, action.gameId);
+			gameInfo.savePlayers(action.players);
 
 			// Если id игры не совпадает с локальным id игры, значит каким-то образом
 			// мы переподключились к другой игре, значит удаляем поля
@@ -129,6 +130,13 @@ var reactPrimary = {
 			});
 		}
 
+		seq.append(function(){
+			var playerField = fieldManager.fields[gameInfo.pid];
+			if(playerField){
+				ui.rope.initialize(playerField);
+			}
+		})
+
 		return duration;
 	},
 
@@ -183,7 +191,7 @@ var reactPrimary = {
 			return delay;
 		}
 		actionHandler.reset();
-		gameInfo.resetTurnInfo();
+		gameInfo.resetTurnInfo(seq);
 		var field = fieldManager.fields[action.pid];
 		delay = fieldManager.moveCards(field, action.cards.slice(), BRING_TO_TOP_ON.START);
 		return delay;
@@ -204,7 +212,7 @@ var reactPrimary = {
 		};
 		var field = fieldManager.fields[action.field];
 		delay = fieldManager.moveCards(field, [card]);
-		return delay || field.moveTime;
+		return 0;
 	},
 
 	/**
@@ -216,7 +224,7 @@ var reactPrimary = {
 	*/
 	DISCARD: function(action, seq){
 		actionHandler.reset();
-		gameInfo.resetTurnInfo();
+		gameInfo.resetTurnInfo(seq);
 		var field = fieldManager.fields.DISCARD_PILE;
 		var delay = fieldManager.moveCards(field, action.cards);
 		if(action.unlockedField){

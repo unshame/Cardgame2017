@@ -23,7 +23,7 @@ UI.Background = function(){
 	this.surface.name = 'surface';
 	this.surface.textureName = textureName;
 
-	this.vignette = game.add.image(0, 0, 'vignette');
+	this.vignette = game.make.image(0, 0, 'vignette');
 	this.vignette.width = game.screenWidth;
 	this.vignette.height =  game.screenHeight;
 

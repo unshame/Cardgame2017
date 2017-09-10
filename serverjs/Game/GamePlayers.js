@@ -218,9 +218,11 @@ class GamePlayers extends PlayerManager{
 	}
 
 	validActionsNotify(deadline){
+		const game = this.game;
+		game.log.silly(game.actions.valid);
 		this.forEachOwn((p) => {
-			p.recieveValidActions(this.game.actions.valid[p.id].slice(), deadline, this.roles, this.game.turnStages.current);
-		}, this.game.simulating ? this.bots : this);
+			p.recieveValidActions(game.actions.valid[p.id].slice(), deadline, this.roles, game.turnIndex, game.turnStages.current);
+		}, game.simulating ? this.bots : this);
 	}
 
 	// Отправляет сообщение игрокам с опциональными действиями
@@ -234,6 +236,16 @@ class GamePlayers extends PlayerManager{
 		if(!action.noResponse && this.game.simulating && player.type == 'player'){
 			action.noResponse = true;
 		}
+	}
+
+	allAfk(players){
+		for(let i = 0, len = players.length; i < len; i++){
+			let player = players[i];
+			if(this.game.actions.valid[player.id].length && !player.afk){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	// ЛОГ

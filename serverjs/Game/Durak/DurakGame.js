@@ -12,7 +12,7 @@ const
 	DurakDirectives = reqfromroot('Game/Durak/DurakDirectives');
 
 class DurakGame extends Game{
-	constructor(queue, players, config){
+	constructor(queue, players, config, rules){
 		super(
 			queue,
 			players, 
@@ -30,14 +30,29 @@ class DurakGame extends Game{
 				minPlayers: DurakGame.minPlayers,
 				debug: config.debug,
 				test: config.test
-			}
+			},
+			rules
 		);
+
 		// Можно ли переводить карты
-		this.canTransfer = Boolean(config.transfer);
+		this.canTransfer = this.rules.canTransfer;
 
 		// Ограничивать ли количество подкладываемых карт кол-вом карт в руке защищающегося
 		// после того, как защищающийся решил брать карты
-		this.limitFollowup = Boolean(config.limitFollowup);
+		this.limitFollowup = this.rules.limitFollowup;
+
+		this.freeForAll = this.rules.freeForAll;
+
+		this.players.maxInvolved = this.rules.limitAttack ? 3 : Infinity;
+	}
+
+	static sanitiseRules(rules){
+		return {
+			canTransfer: Boolean(rules.canTransfer),
+			limitFollowup: Boolean(rules.limitFollowup),
+			limitAttack: Boolean(rules.limitAttack),
+			freeForAll: Boolean(rules.freeForAll)
+		};
 	}
 
 	getDefaultResults(){
@@ -45,6 +60,11 @@ class DurakGame extends Game{
 			winners: [],
 			loser: null
 		};
+	}
+
+	resetTurn(){
+		super.resetTurn();
+		this.cards.rememberHandLengths();
 	}
 }
 

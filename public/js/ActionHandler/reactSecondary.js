@@ -46,7 +46,7 @@ var reactSecondary = {
 	*/
 	TURN_ENDED: function(action, seq){
 		fieldManager.resetTableOrder();
-		gameInfo.resetTurnInfo();
+		gameInfo.resetTurnInfo(seq);
 	},
 
 	/**
@@ -58,7 +58,7 @@ var reactSecondary = {
 	*/
 	GAME_ENDED: function(action, seq, sync){
 		actionHandler.reset();
-		gameInfo.resetTurnInfo();
+		gameInfo.resetTurnInfo(seq);
 		fieldManager.updateBadges();
 
 		ui.layers.setLayerIndex(ui.eventFeed, ui.eventFeed.zIndexAboveCards);
@@ -149,7 +149,7 @@ var reactSecondary = {
 	*/
 	INVALID_ACTION: function(action, seq){
 		var undoAction = action.action,
-			card = cardManager.cards[action.cid];
+			card = cardManager.cards[undoAction.cid];
 		if(undoAction.cid && card){
 			fieldManager.resetTableOrder();
 			var cardInfo = {

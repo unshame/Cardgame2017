@@ -27,10 +27,16 @@ var Menu = function(options){
 	this.visible = false;
 
 	/**
+	* Графика фона меню.
+	* @type {Phaser.BitmapData}
+	*/
+	this._bitmapArea = game.make.bitmapData();
+
+	/**
 	* Фон меню.
 	* @type {Phaser.Image}
 	*/
-	this.background = game.make.image(0, 0);
+	this.background = game.make.image(0, 0, this._bitmapArea);
 	this.background.alpha = this.options.alpha;
 	this.background.inputEnabled = true;
 	this.add(this.background);
@@ -73,20 +79,6 @@ var Menu = function(options){
 	* @type {Array}
 	*/
 	this.layout = [];
-
-	/**
-	* Графика фона меню.
-	* @type {Phaser.BitmapData}
-	*/
-	this._bitmapArea = game.make.bitmapData();
-	if(this.options.texture){
-		var image = game.cache.getImage(this.options.texture);
-		/**
-		* Повторяющаяся текстура фона меню.
-		* @type {CanvasPattern}
-		*/
-		this._pattern = this._bitmapArea.ctx.createPattern(image, 'repeat');
-	}
 
 	/**
 	* Методы добавления элементов по типу элемента.

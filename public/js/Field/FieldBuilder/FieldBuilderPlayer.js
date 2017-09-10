@@ -1,7 +1,7 @@
 FieldBuilder.prototype._calcGenPlayerSizes = function(){
 
 	/* Константы */
-	this.offsets.player = 12;
+	this.offsets.player = 18;
 	this.minActiveSpaces.player = this.minActiveSpace;
 	/*--*/
 
@@ -16,10 +16,8 @@ FieldBuilder.prototype._calcGenPlayerSizes = function(){
 		(game.scale.numCols - playerNumCols)/2,
 		game.scale.numRows - game.scale.density + 1,
 		-this.offsets.player,
-		-this.offsets.player - game.scale.cellHeight/2
+		-this.offsets.player - game.scale.cellHeight/2 + 2
 	);
-
-
 };
 
 FieldBuilder.prototype._calcSpecPlayerSizes = function(){

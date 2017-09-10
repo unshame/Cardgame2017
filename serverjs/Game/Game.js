@@ -14,8 +14,9 @@ class Game{
 	* @param {Player[]}      players массив игроков.
 	* @param {object<class>} Classes классы, из которых создаются игровые компоненты
 	* @param {object}        config  настройки игры
+	* @param {object}        rules	 правила игры
 	*/
-	constructor(queue, players, Classes, config){
+	constructor(queue, players, Classes, config, rules){
 
 		// Генерируем айди игры
 		let id = generateId();
@@ -124,7 +125,7 @@ class Game{
 		* Индекс хода.
 		* @type {Number}
 		*/
-		this.turnNumber = 0;
+		this.turnIndex = 0;
 
 		/**
 		* Таймер ожидания ответа от игроков.
@@ -170,6 +171,18 @@ class Game{
 		* @type {Boolean}
 		*/
 		this.active = false;
+
+		/**
+		* Игровые настройки.
+		* @type {Object}
+		*/
+		this.config = config;
+
+		/**
+		* Правила игры.
+		* @type {Object}
+		*/
+		this.rules = rules;
 	}
 
 	/**
@@ -187,6 +200,7 @@ class Game{
 	
 	/** Инициализация и запуск первой игры. */
 	init(){
+		this.log.info(this.rules);
 		this.active = true;
 		this.reset();
 		this.start();
@@ -206,10 +220,9 @@ class Game{
 		this.players.resetGame();
 		this.cards.reset();
 		this.actions.reset();
-		this.skipCounter = 0;
 
 		// Свойства хода
-		this.turnNumber = 1;
+		this.turnIndex = 1;
 		this.turnStages.next = 'DEFAULT';
 	}
 
@@ -384,7 +397,6 @@ class Game{
 		this.log.info('Turn Ended', (Date.now() - this.turnStartTime)/1000);
 		
 		this.table.usedFields = 0;
-		this.skipCounter = 0;
 		this.turnStages.reset();
 
 		this.actions.reset();
@@ -401,11 +413,11 @@ class Game{
 		this.turnStartTime = Date.now();
 
 		// Увеличиваем счетчик ходов, меняем стадию игры на первую атаку и продолжаем ход
-		this.turnNumber++;	
+		this.turnIndex++;	
 
 		this.players.notify({
 			type: 'TURN_STARTED',
-			index: this.turnNumber
+			index: this.turnIndex
 		});
 		this.turnStages.setNext('INITIAL_ATTACK');	
 	}
@@ -498,7 +510,7 @@ class Game{
 			let duration = time * 1000;
 
 			// Если игрок afk, время действия уменьшается
-			if(players.length == 1 && players[0].afk){
+			if(this.players.allAfk(players)){
 				duration = this.actions.timeouts.afk * 1000;
 			}
 

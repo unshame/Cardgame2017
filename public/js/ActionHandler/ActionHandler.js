@@ -141,14 +141,15 @@ ActionHandler.prototype.executeAction = function(action){
 * @param {number} timeSent время в которое действия были отправлены с сервера
 * @param {string} turnStage текущая стадия хода
 */
-ActionHandler.prototype.handlePossibleActions = function(action){
-	var time = action.time - Date.now();
-	if(time){
-		ui.rope.start(time - 1000);
+ActionHandler.prototype.handlePossibleActions = function(action, seq){
+	if(action.actions.length){
+		var time = action.time - Date.now();
+		if(time){
+			ui.rope.start(time - 1000);
+		}
 	}
-
 	if(action.roles){
-		gameInfo.updateInfo(action.roles, action.turnStage);
+		gameInfo.updateTurnInfo(action.roles, action.turnIndex, action.turnStage, seq);
 		fieldManager.updateBadges();
 	}
 
@@ -176,18 +177,14 @@ ActionHandler.prototype.highlightPossibleActions = function(actions){
 		return;
 	}
 
-	fieldManager.resetHighlights();
-
 	gameInfo.applyInteractivity(actions, this.actionButton);
-
-	fieldManager.tryHighlightDummy();
-
 };
 
 /** Убирает все возможные действия */
 ActionHandler.prototype.resetActions = function(){
 	this.possibleActions = null;
 	this.actionButton.serverAction = null;
+	this.actionButton.changeStyle(0);
 };
 
 /** Убирает все возможные действия и ресетит связанные с ними элементы игры */
@@ -197,7 +194,6 @@ ActionHandler.prototype.reset = function(){
 	this.actionButton.disable();
 	this.actionButton.changeStyle(0);
 	ui.rope.stop();
-
 };
 
 /** Убирает определенные действия из `possibleActions` в соответствии с `turnStage`. */
@@ -210,9 +206,6 @@ ActionHandler.prototype.removeActionsWith = function(card, field, doneAction){
 		if(gameInfo.shouldDeleteAction(action, card, field, doneAction)){
 			this.possibleActions.splice(i, 1);
 		}
-	}
-	if(gameInfo.shouldResetActions(this.possibleActions)){
-		this.possibleActions.length = 0;
 	}
 };
 

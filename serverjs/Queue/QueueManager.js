@@ -11,7 +11,7 @@ class QueueManager{
 	* @param  {Server} server      сервер
 	* @param  {object} quickConfig настройки быстрой игры
 	*/
-	constructor(server, quickConfig){
+	constructor(server, quickConfig, quickRules){
 
 		/**
 		* Сервер.
@@ -30,6 +30,9 @@ class QueueManager{
 		* @type {object}
 		*/
 		this.quickQueueConfig = quickConfig;
+
+
+		this.quickQueueRules = quickRules;
 
 		/**
 		* Запущенные игры.
@@ -61,7 +64,7 @@ class QueueManager{
 		* Случайные имена ботов.
 		* @type {Array}
 		*/
-		this.randomNames = ['Lynda','Eldridge','Shanita','Mickie','Eileen','Hiedi','Shavonne','Leola','Arlena','Marilynn','Shawnna','Alanna','Armando','Julieann','Alyson','Rutha','Wilber','Marty','Tyrone','Mammie','Shalon','Faith','Mi','Denese','Flora','Josphine','Christa','Sharonda','Sofia','Collene','Marlyn','Herma','Mac','Marybelle','Casimira','Nicholle','Ervin','Evia','Noriko','Yung','Devona','Kenny','Aliza','Stacey','Toni','Brigette','Lorri','Bernetta','Sonja','Margaretta', 'Johnny Cocksucker III'];
+		this.randomNames = ['John Snow','Gandalf','Joel','Ellie','Batman','Joker','Yoh','Geralt','Cirilla Fiona Elen Riannon','Triss','Yennefer','Harry','Hermione','Ron','Arya Stark','Sherlock','Neo','Marty McFly','Chester','Jodie','Aiden','Aloy','Doctor','Severus','Alan','Regis','Nemo','Walter White','Jesse','Heisenberg','Merlin','House M.D.','Bilbo','Legolas','Strider','Aragorn','Frodo','Sam','Merry','Pippin','Tess','Kenny','Ted','Barney','Marshall','Robin','Lily','Oleg','Sergey','Georgy', 'Johnny Cocksucker III'];
 	}
 
 	/**
@@ -121,17 +124,17 @@ class QueueManager{
 
 	/**
 	* Создает очередь с заданными настройками и добавляет в нее игрока.
-	* @param {Player} player       игрок
-	* @param {string} gameMode     режим игры
-	* @param {object} config       настройки очереди
-	* @param {object} [gameConfig] настройки игры
+	* @param {Player} player      игрок
+	* @param {string} gameMode    режим игры
+	* @param {object} queueConfig настройки очереди
+	* @param {object} [gameRules] настройки игры
 	*/
-	addCustomQueue(player, isPrivate, gameMode, config, gameConfig){
+	addCustomQueue(player, isPrivate, gameMode, queueConfig, gameRules){
 		if(player.queue || player.game){
 			return;
 		}
 
-		if(!config || typeof config != 'object'){
+		if(!queueConfig || typeof queueConfig != 'object'){
 			player.recieveMenuNotification({type: 'QUEUE_INVALID'});
 			return;
 		}
@@ -142,17 +145,20 @@ class QueueManager{
 		}
 
 		let gameClass = this.server.gameModes[gameMode];
-		config.game = gameClass[0];
-		config.bot = gameClass[1];
-		config.debug = this.server.params.debug;
-		config.name = player.name + '\'s Queue';
+		queueConfig.game = gameClass[0];
+		queueConfig.bot = gameClass[1];
+		queueConfig.debug = this.server.params.debug;
+		queueConfig.name = player.name + '\'s Queue';
 
-		if(!gameConfig || typeof gameConfig != 'object'){
-			gameConfig = {};
+		if(!gameRules || typeof gameRules != 'object'){
+			gameRules = {};
 		}
-		config.gameConfig = gameConfig;
 
-		let queue = this.addQueue(isPrivate ? 'private' : 'custom', config);
+		let queue = this.addQueue(
+			isPrivate ? 'private' : 'custom',
+			queueConfig,
+			gameRules
+		);
 		queue.addPlayer(player);
 	}
 
@@ -188,7 +194,7 @@ class QueueManager{
 		// Находим или создаем незаполненную быструю очередь
 		let queue = this.quickQueues[0];
 		if(!queue){
-			queue = this.addQueue('quick', this.quickQueueConfig);
+			queue = this.addQueue('quick', this.quickQueueConfig, this.quickQueueRules);
 		}
 
 		queue.addPlayer(player);
@@ -202,12 +208,11 @@ class QueueManager{
 	*
 	* @return {Queue} Возвращает созданную очередь.
 	*/
-	addQueue(type, config){
-
+	addQueue(type, config, rules){
 		config = Object.assign({}, config);
-		config.gameConfig = Object.assign({}, config.gameConfig);
+		rules = Object.assign({}, rules);
 
-		let queue = new Queue(this, type, config);
+		let queue = new Queue(this, type, config, rules);
 
 		this.queues[queue.id] = queue;
 		this.addQueueToList(queue);

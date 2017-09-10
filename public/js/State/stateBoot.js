@@ -17,7 +17,9 @@ var stateBoot = new State('boot', {
 	*/
 	init: function(){
 
-		console.log('Starting up');		
+		if(game.inDebugMode){
+			console.log('Starting up');		
+		}
 
 		this.loadCounter = 0;
 
@@ -63,7 +65,9 @@ var stateBoot = new State('boot', {
 	*/
 	preload: function(){
 
-		console.log('Preloading');
+		if(game.inDebugMode){
+			console.log('Preloading');
+		}
 
 		// Лого
 		game.load.image('logo', 'assets/logo.png');
@@ -137,7 +141,9 @@ var stateBoot = new State('boot', {
 	* @memberof stateBoot
 	*/
 	create: function(){
-		console.log('Initializing');
+		if(game.inDebugMode){
+			console.log('Initializing');
+		}
 		game.initialize();
 	},
 
@@ -146,11 +152,15 @@ var stateBoot = new State('boot', {
 	* @memberof stateBoot 
 	*/ 
 	shutdown: function(){ 
-		console.log('Connection ready');
+		if(game.inDebugMode){
+			console.log('Connection ready');
+		}
 		ui.layers.loadLabels();
 		this.loadtextDOM.innerHTML = ''; 
 		document.getElementById('loading').style.display = 'none';
-		console.log('Game ready');
+		if(game.inDebugMode){
+			console.log('Game ready');
+		}
 	},
 
 	/**

@@ -18,13 +18,16 @@ class TestBot extends Bot{
 	}
 
 	recieveValidActions(actions, deadline, roles){
+		if(!actions.length){
+			return;
+		}
 		// console.log('Here we\'ll send info to tester', this.name, this.game.id)	
 		let game = this.game;
 		let types = actions.map(a => a.type),
 			attackIndex = types.indexOf('ATTACK'),
 			defenseIndex = types.indexOf('DEFENSE');
 
-		if(this.tester.running && game.turnStages.current != 'FOLLOWUP' && game.turnStages.next == 'DEFENSE' && ~attackIndex && !~defenseIndex){
+		if(this.tester.running && game.turnStages.current == 'ATTACK_DEFENSE' && ~attackIndex && !~defenseIndex){
 			let defenseTables = 0;
 			this.tests++;
 			for(let fi = 0; fi < game.table.length; fi++){
@@ -45,7 +48,7 @@ class TestBot extends Bot{
 		}
 
 		// Тесты перевода
-		if(this.tester.running && game.turnStages.current == 'DEFENSE' && ~attackIndex){		
+		if(this.tester.running && game.turnStages.current == 'DEFENSE_TRANSFER' && ~attackIndex){
 			let action = actions[attackIndex];
 
 			// Тест перевода игроку, у которого нет достаточного кол-ва карт, чтобы отбиться
@@ -132,13 +135,13 @@ class TestBot extends Bot{
 	recieveNotification(note){
 		switch(note.type){
 
-		case 'GAME_ENDED':
+			case 'GAME_ENDED':
 			// console.log(note.type);
 			this.tester.bots = this.game.players;
 			// console.log(this.tester.bots.map(b => b.name))
 			break;
 
-		case 'TURN_ENDED':
+			case 'TURN_ENDED':
 			this.tester.transfers = 0;
 		}
 		super.recieveNotification(note);

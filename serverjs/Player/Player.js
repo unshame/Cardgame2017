@@ -33,6 +33,9 @@ class Player{
 
 	}
 
+
+	// Получение действий //
+
 	recieveGameInfo(info){
 		if(!info.channel){
 			info.channel = 'primary';
@@ -59,13 +62,14 @@ class Player{
 		}
 	}
 
-	recieveValidActions(actions, deadline, roles, turnStage){
+	recieveValidActions(actions, deadline, roles, turnIndex, turnStage){
 		if(this.remote && this.connected){
 			let now = Date.now();
 			let action = {
 				actions: actions,
 				time: deadline,
 				timeSent: now,
+				turnIndex: turnIndex,
 				turnStage: turnStage,
 				roles: roles,
 				channel: 'possible_actions'
@@ -74,8 +78,8 @@ class Player{
 		}
 
 		// Функции для дебага
-		// this.sendRandomAction(actions);
-		// this.sendTakeOrSkipAction(actions);
+		// this.sendResponse(this.findRandomAction(actions));
+		// this.sendResponse(this.sendTakeOrSkipAction(actions));
 	}
 
 
@@ -118,6 +122,9 @@ class Player{
 		}
 	}
 
+
+	// Отправка ответов //
+
 	// Синхронно посылает асинхронный ответ серверу
 	sendResponse(action){
 		if(!this.game){
@@ -129,25 +136,11 @@ class Player{
 		}
 		this.game.recieveResponse(this, action || null);
 	}
+	
 
-	// Асинхронно посылает синхронный ответ серверу с коллбэком (для тестов)
-	sendResponseWithCallback(action, callback){
-		if(!this.game){
-			this.log.warn('No game has been assigned', action);
-			return;
-		}
-		setTimeout(() => {
-			if(!this.game || !this.game.active){
-				return;
-			}
-			this.game.recieveResponseSync(this, action || null);
-			if(callback){
-				callback();
-			}
-		},0);
-	}
+	// Поиск действий //
 
-	sendRandomAction(actions){
+	findRandomAction(actions){
 		let randomIndex;
 		if(actions.length > 1 && (actions[actions.length - 1].type == 'TAKE' || actions[actions.length - 1].type == 'PASS')){
 			randomIndex = Math.floor(Math.random()*(actions.length-1));
@@ -155,17 +148,17 @@ class Player{
 		else{
 			randomIndex = Math.floor(Math.random()*actions.length);
 		}
-		let action = actions[randomIndex];
-		this.sendResponse(action);
+		return actions[randomIndex];
 	}
 
-	sendTakeOrSkipAction(actions){
+	findTakeOrSkipAction(actions){
 		if(actions.length == 1 && (actions[0].type == 'TAKE' || actions[0].type == 'PASS')){
-			let action = actions[0];
-			this.sendResponse(action);
+			return actions[0];
 		}
 	}
 
+
+	// Обновляет клиента, к которому подключен игрок
 	updateRemote(newConnId, newRemote){
 		if(newConnId){
 			this.connId = newConnId;

@@ -1,7 +1,7 @@
 // Player hand
 FieldBuilder.prototype._buildPlayerField = function(){
 	var manager = this.manager;
-	var player = gameInfo.players[gameInfo.pi];
+	var player = gameInfo.player;
 	var field = manager.addPlayerField({
 		type: 'HAND',
 		id: gameInfo.pid,
@@ -10,12 +10,13 @@ FieldBuilder.prototype._buildPlayerField = function(){
 		debug: manager.inDebugMode
 	},
 	{
-		x:this.positions[gameInfo.pid].x,
-		y:this.positions[gameInfo.pid].y,
+		x: this.positions[gameInfo.pid].x,
+		y: this.positions[gameInfo.pid].y,
 		width:this.dimensions.player.width,
 		alwaysVisible: true,
 		minActiveSpace: this.minActiveSpaces.player,
 		padding:this.offsets.player,
+		border: 8,
 		sortable: true,
 		focusable: true,
 		draggable: true,

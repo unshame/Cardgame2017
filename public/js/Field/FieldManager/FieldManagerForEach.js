@@ -193,3 +193,19 @@ FieldManager.prototype.updateBadges = function(){
 		}
 	});
 };
+
+/**
+* Возвращает все поля, соотвтетствующие переданному условию
+* @param {(function|number)} check условие в виде функции, в которую передаются поля
+*                                  и которая возвращает `true` если поле выполняет условие;
+*                                  либо в виде числа, соответствующего кол-ву карт в поле
+* @return {Field[]}
+*/
+FieldManager.prototype.getFieldsWith = function(check){
+	return this.forEachField(function(f){
+		var isFunc = typeof check == 'function';
+		if(!isFunc && f.cards.length === check || isFunc && check(f)){
+			return f;
+		}
+	});
+};

@@ -76,17 +76,6 @@ class DurakCards extends GameCards{
 		return lockedFields;
 	}
 
-	get emptyTables(){
-		let emptyTables = [];
-		this.table.forEach((tableField) => {
-			if(!tableField.attack && !tableField.defense){
-				emptyTables.push(tableField);
-			} 
-		});
-		return emptyTables;
-	}
-
-
 	// Поля
 
 	// Колода с козырной картой на дне
@@ -109,16 +98,13 @@ class DurakCards extends GameCards{
 	// Стол с несколькими полями и attackField и defendField на каждом поле
 	addTableInfo(cardsInfo, pid, reveal){
 		this.table.forEach((tableField) => {
-			if(tableField.attack){
-				let card = tableField.attack;
-				let newCard = card.info;
-				cardsInfo.push(newCard);
-			}
-			if(tableField.defense){
-				let card = tableField.defense;
-				let newCard = card.info;
-				cardsInfo.push(newCard);
-			}		
+			['attack', 'defense'].forEach((key) => {
+				if(tableField[key]){
+					let card = tableField[key];
+					let newCard = card.info;
+					cardsInfo.push(newCard);
+				}
+			});	
 		});
 	}
 
@@ -147,6 +133,15 @@ class DurakCards extends GameCards{
 
 		// Запоминаем козырь
 		this.findTrumpCard();
+	}
+
+	rememberHandLengths(){
+		for(let pid in this.hands){
+			if(this.hands.hasOwnProperty(pid)){
+				let hand = this.hands[pid];
+				hand.defenseStartLength = hand.length;
+			}
+		}
 	}
 
 	// Находит козырную карту
@@ -221,15 +216,17 @@ class DurakCards extends GameCards{
 	moveCardsFromTable(field, fieldId, actionType, flipCards){
 		let cardsInfo = [];
 		this.table.forEach((tableField) => {
+			['attack', 'defense'].forEach((key) => {
+				if(!tableField[key]){
+					return;
+				}
 
-			if(tableField.attack){
-
-				let card = tableField.attack;
+				let card = tableField[key];
 				this.game.actions.logAction(card, actionType, card.field, fieldId);
 				card.field = fieldId;
 
-				field.push(tableField.attack);
-				tableField.attack = null;
+				field.push(card);
+				tableField[key] = null;
 
 				let cardToSend = {
 					cid: card.id,
@@ -238,26 +235,7 @@ class DurakCards extends GameCards{
 				};
 
 				cardsInfo.push(cardToSend);
-			}
-
-			if(tableField.defense){
-
-				let card = tableField.defense;
-				this.game.actions.logAction(card, actionType, card.field, fieldId);
-				card.field = fieldId;
-
-				field.push(tableField.defense);
-				tableField.defense = null;
-
-				let cardToSend = {
-					cid: card.id,
-					suit: flipCards ? null : card.suit,
-					value: flipCards ? undefined : card.value
-				};
-
-				cardsInfo.push(cardToSend);
-			}
-
+			});
 		});
 		return {
 			type: actionType,
@@ -298,18 +276,53 @@ class DurakCards extends GameCards{
 
 	// Действия
 	
+	getAttackActionsForPlayers(players, actionHolder, defenseFields, freeForAll){
+		let workingPlayers = [];
+
+		for(let i = 0, len = players.length; i < len; i++){
+			let player = players[i];
+			let pid = player.id;
+			let hand = this.hands[pid];
+			if(player.statuses.passed){
+				continue;
+			}
+			if(!hand.length){
+				player.statuses.passed = true;
+				continue;
+			}
+
+			workingPlayers.push(player);
+
+			let actions = [];
+
+			this.getAttackActions(hand, actions);
+
+			// Добавляем возможность пропустить ход
+			if(!defenseFields.length){
+				let action = {
+					type: 'PASS'
+				};
+				actions.push(action);
+			}
+
+			actionHolder[pid] = actions;
+			if(!freeForAll){
+				break;
+			}
+		}
+		return workingPlayers;
+	}
+
 	getAttackActions(hand, actions){
 		// Находим значения карт, которые можно подбрасывать
 		let validValues = [];
 		this.table.forEach((tableField) => {
-			if(tableField.attack){
-				let card = tableField.attack;
-				validValues.push(card.value);
-			}
-			if(tableField.defense){
-				let card = tableField.defense;
-				validValues.push(card.value);
-			}
+			['attack', 'defense'].forEach((key) => {
+				if(tableField[key]){
+					let card = tableField[key];
+					validValues.push(card.value);
+				}
+			});
 		});
 
 		if(!validValues.length){
@@ -363,32 +376,14 @@ class DurakCards extends GameCards{
 	}
 
 	getTransferActions(hand, actions, defenseTables){
-		// Узнаем, можно ли переводить
 		let attackers = this.game.players.attackers;
-		let canTransfer = 
-			this.hands[
-				attackers[1] && attackers[1].id || attackers[0].id
-			].length > this.table.usedFields;
+		let nextPlayer = attackers[1] || attackers[0];
+		let emptyTable = this.firstEmptyTable;
 
-		let attackField = this.table[this.table.usedFields];
-
-		if(!canTransfer || !attackField){
+		// Узнаем, можно ли переводить
+		if(this.hands[nextPlayer.id].length <= this.table.usedFields || !emptyTable){
 			return;
 		}
-
-		for(let fi = 0; fi < this.table.length; fi++){
-			let tableField = this.table[fi];
-			if(tableField.defense){
-				canTransfer = false;
-				break;
-			}
-		}
-
-		if(!canTransfer){
-			return;
-		}
-
-		let emptyTable = this.firstEmptyTable; 
 
 		for(let di = 0; di < defenseTables.length; di++){
 			for(let ci = 0; ci < hand.length; ci++){

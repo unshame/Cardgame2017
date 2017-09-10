@@ -17,12 +17,14 @@ class DurakPlayers extends GamePlayers{
 			{
 				role: null,
 				roleIndex: null,
-				originalAttacker: false
+				originalAttacker: false,
+				passed: false
 			},
 			{
 				role: null,
 				roleIndex: null,
 				originalAttacker: false,
+				passed: false,
 				active: true
 			}
 		);
@@ -41,13 +43,12 @@ class DurakPlayers extends GamePlayers{
 		this.forEach((p) => {
 			let role = p.statuses.role;
 			let roleIndex = p.statuses.roleIndex;
+			let working = p.statuses.working;
+			let defenseStartCards = game.hands[p.id].defenseStartLength;
 			if(role == 'defender' && game.actions.takeOccurred){
 				role = 'takes';
 			}
-			roles[p.id] = {
-				role: role,
-				roleIndex: roleIndex
-			};
+			roles[p.id] = {role, roleIndex, working, defenseStartCards};
 		});
 		return roles;
 	}
@@ -130,10 +131,11 @@ class DurakPlayers extends GamePlayers{
 					players: send.players ? playersToSend : [],
 					trumpSuit: send.suit ? game.cards.trumpSuit : null,
 					lockedFields: game.cards.lockedTablesIds,
-					turnIndex: game.turnNumber,
+					turnIndex: game.turnIndex,
 					gameIndex: game.index,
 					noResponse: noResponse || false,
-					simulating: game.simulating
+					simulating: game.simulating,
+					gameRules: Object.assign({}, game.rules)
 				}
 			);
 		}, players);
@@ -237,6 +239,19 @@ class DurakPlayers extends GamePlayers{
 		let currentAttackerIndex = this.active.indexOf(attackers[0]);
 		this.setOriginalAttacker(attackers[0]);
 		this.findToGoNext(currentAttackerIndex);
+	}
+
+	getLastActiveAttacker(attackers){
+		if(!attackers){
+			attackers = this.attackers;
+		}
+		let lastActiveAttacker = null;
+		this.forEachOwn((attacker) => {
+			if(!attacker.statuses.passed){
+				lastActiveAttacker = attacker;
+			}
+		}, attackers);
+		return lastActiveAttacker;
 	}
 
 	// Устанавливает игроков, вышедших из игры
@@ -344,18 +359,12 @@ class DurakPlayers extends GamePlayers{
 			let pi = activePlayers.map(p => p.id).indexOf(pid);
 
 			this.findToGoNext(pi - 1);
-
-			this.log.info('Player to go first: ', this.attackers[0].name);
 		}
 		// В противном случае, берем первого попавшегося игрока и начинаем ход
 		else{
-			let attackers = [this[0]];
-			if(this[2]){
-				attackers.push(this[2]);
-			}
-			this.attackers = attackers;
-			this.defender = this[1];
+			this.findToGoNext(-1);
 		}
+		this.log.info('Player to go first: ', this.attackers[0].name);
 		return [minCards, minCard];
 	}
 
@@ -407,24 +416,25 @@ class DurakPlayers extends GamePlayers{
 	findToGoNext(currentAttackerIndex){	
 
 		let activePlayers = this.active;
-		let attackers = this.attackers;
 
-		let numInvolved = Math.min(activePlayers.length, 3);
-		let involved = [];
+		let numInvolved = Math.min(activePlayers.length, this.maxInvolved);
+		let attackers = [];
 		let i = currentAttackerIndex + 1;
-		while(numInvolved--){
+		let n = 0;
+		while(n < numInvolved){
 			if(i >= activePlayers.length){
 				i = 0;
 			}
-			involved.push(activePlayers[i]);
+			if(n == 1){
+				this.defender = activePlayers[i];
+			}
+			else{
+				attackers.push(activePlayers[i]);
+			}
 			i++;
+			n++;
 		}
-		attackers = [involved[0]];
-		if(involved[2]){
-			attackers.push(involved[2]);
-		}
-		this.attackers = attackers;
-		this.defender = involved[1];
+		this.attackers = attackers;		
 	}
 
 	// Находим проигравшего
@@ -453,13 +463,14 @@ class DurakPlayers extends GamePlayers{
 	logTurnStart(){
 		const game = this.game;
 		let attackers = this.attackers;
-		this.log.info();
+		let attacker = attackers.splice(0, 1)[0];
+		this.log.info('==================================');
 		this.log.info(
 			'Turn %d %s => %s <= %s',
-			game.turnNumber,
-			attackers[0].name,
+			game.turnIndex,
+			attacker.name,
 			this.defender.name,
-			attackers[1] ? attackers[1].name : ''
+			attackers.map(a => a.name).join(', ')
 		);
 		this.log.info('Cards in deck:', game.deck.length);
 		for(let pi = 0; pi < this.length; pi++){

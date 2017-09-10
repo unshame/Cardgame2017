@@ -52,7 +52,7 @@ class GameActions{
 
 		// Запоздавший или непредвиденный ответ
 		if(!~pi){
-			this.log.warn( player.name, player.id, 'Late or uncalled response');
+			this.log.warn( player.name, player.id, 'Late or uncalled response', action);
 
 			// Сообщаем игроку, что действие пришло не вовремя
 			if(action){
@@ -213,6 +213,7 @@ class GameActions{
 				'Invalid action', player.id,
 				incomingAction && incomingAction.type, incomingAction, this.valid
 			);
+			//debugger
 			return null;
 		}
 

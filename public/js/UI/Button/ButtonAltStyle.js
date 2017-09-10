@@ -61,7 +61,7 @@ UI.ButtonAltStyles.prototype.changeStyle = function(index){
 	}
 	var frame = this.button.frame;
 	this.button.loadTexture(style.key);
-	this.frame = frame;
+	this.button.frame = frame;
 	if(this.label && this.label.isText){
 		this.label.font = style.font;
 		this.label.fontSize = style.fontSize;

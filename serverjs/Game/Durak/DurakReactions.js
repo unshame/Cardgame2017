@@ -10,26 +10,25 @@ class DurakReactions{
 	// Игрок походил
 	ATTACK(player, action){
 
-		let cardsById = this.cards.byId;
-		let tableFields = this.table.byKey('id');
-		let ci, card;
-
 		let str;
-		if(this.turnStages.current == 'FOLLOWUP'){
+		switch(this.turnStages.current){
+			case 'FOLLOWUP':
 			str = 'follows up';
-		}
-		else if(this.turnStages.current == 'DEFENSE'){
+			break;
+
+			case 'DEFENSE_TRANSFER':
 			str = 'transfers';
-		}
-		else{
+			break;
+
+			default:
 			str = 'attacks';
 		}
 
 		this.log.info(player.name,  str);
 
-		card = cardsById[action.cid];
-		ci = this.hands[player.id].indexOf(card);
-
+		let tableFields = this.table.byKey('id');
+		let card = this.cards.byId[action.cid];
+		let ci = this.hands[player.id].indexOf(card);
 		let field = this.cards.firstEmptyTable.id;
 
 		this.actions.logAction(card, action.type, card.field, field );
@@ -46,38 +45,41 @@ class DurakReactions{
 		// Увеличиваем кол-во занятых мест на столе
 		this.table.usedFields++;
 
-		// Если игрок клал карту в догонку, даем ему воможность положить еще карту
-		if(this.turnStages.current == 'FOLLOWUP'){
-			this.turnStages.setNext('FOLLOWUP');
-		}
-		else if(this.turnStages.current == 'DEFENSE'){
-			this.players.notify({type: 'EVENT', message: 'transfered', pid: player.id, showForSelf: false, channel: 'extra'});
-			this.players.shiftAttacker();			
-			this.turnStages.setNext('DEFENSE');	
-		}
-		else{
-			this.skipCounter = 0;	// Если же это просто ход, сбрасываем счетчик пропущенных ходов
+		// Сдвигаем атакующего, если это был перевод и даем ему защищаться\переводить
+		if(this.turnStages.current == 'DEFENSE_TRANSFER'){
+			//this.players.notify({type: 'EVENT', message: 'transfered', pid: player.id, showForSelf: false, channel: 'extra'});
+			this.players.shiftAttacker();
+
+			// Перезапоминаем кол-ва карт в руках
+			this.cards.rememberHandLengths();
+
+			// Даем следующему игроку переводить, если есть место на столе
+			// (при 5-6 местах и 4-х мастях оно всегда будет)
+			if(this.cards.firstEmptyTable){ 
+				this.turnStages.setNext('DEFENSE_TRANSFER');
+			}
+			else{
+			    this.turnStages.setNext('DEFENSE');     
+			} 
+			
 		}
 
 		return action;
-
 	}
 
 	// Игрок отбивается
 	DEFENSE(player, action){
 
-		let cardsById = this.cards.byId;
-		let tableFields = this.table.byKey('id');
-		let ci, card;
-
 		this.log.info(player.name, 'defends');
 
-		card = cardsById[action.cid];
-		ci = this.hands[player.id].indexOf(card);
+		let cardsById = this.cards.byId;
+		let tableFields = this.table.byKey('id');
+		let card = cardsById[action.cid];
+		let ci = this.hands[player.id].indexOf(card);
 
 		this.actions.logAction(card, action.type, card.field, action.field );
 
-		// Перемещаем карту на стол и убираем карту из рукиs
+		// Перемещаем карту на стол и убираем карту из руки
 		card.field = action.field;
 		this.hands[player.id].splice(ci, 1);
 		tableFields[action.field].defense = card;
@@ -86,8 +88,15 @@ class DurakReactions{
 		action.value = card.value;
 		action.suit = card.suit;
 
-		if(this.cards.defenseTables.length){
-			this.turnStages.setNext('DEFENSE');
+		// Запоминаем, что защита произошла, если игроки атакуют по одному
+		// или даем всем атаковать, если игроки атакуют сразу
+		if(this.turnStages.current == 'ATTACK_DEFENSE'){
+			if(this.freeForAll){
+				this.players.set('passed', false, this.players.attackers);
+			}
+			else{
+				this.actions.defenseOccurred = true;
+			}
 		}
 
 		return action;
@@ -96,63 +105,44 @@ class DurakReactions{
 	// Ходящий игрок пропустил ход
 	PASS(player, action){
 
-		let activePlayers = this.players.active;
-		let attackers = this.players.attackers;
+		this.log.info(player.name, 'passes');
 
-		this.log.info(player.name, 'skips turn');
-
-		// Debug
-		if(activePlayers.length > 2 && !attackers[1]){
-			this.log.error(new Error('More than 2 players but no ally assigned'));
+		// Если произошла защита и игроки атакуют по одному,
+		// при этом защищающийся не берет карты,
+		// проверяем, является ли текущий игрок последним пасующим,
+		// и, если да, то даем всем игрокам атаковать снова
+		if(this.actions.defenseOccurred && this.players.getLastActiveAttacker() == player){			
+			this.players.set('passed', false, this.players.attackers);
 		}
 
-		// Если есть помогающий игрок
-		if(attackers[1]){
-			switch(this.turnStages.current){
+		// Устанавливаем, что игрок спасовал
+		player.statuses.passed = true;
 
-			// Если игра в режиме докладывания карт в догонку и только ходящий игрок походил,
-			// даем возможность другому игроку доложить карты
-			case 'FOLLOWUP':
-				if(!this.skipCounter){
-					this.skipCounter++;
-					this.turnStages.setNext('FOLLOWUP');
-				}
-				break;
+		// Убираем флаг того, что произошла защита
+		this.actions.defenseOccurred = false;
 
-			// Атакующий не доложил карту, переходим к помогающему
-			case 'REPEATING_ATTACK':
-				this.skipCounter++;
-				this.turnStages.setNext('SUPPORT');
-				break;
-
-			default:
-				// Если кто-то из игроков еще не походил, даем ему возможность 
-				this.skipCounter++;
-				if(this.skipCounter < 2){
-
-					if(this.turnStages.current == 'SUPPORT'){
-						this.turnStages.setNext('ATTACK');
-					}
-					else if(this.turnStages.current == 'ATTACK'){
-						this.turnStages.setNext('SUPPORT');
-					}
-					else{
-						this.log.error(new Error(`Invalid action ${action.type}`));
-					}
-
-				}
-				break;
-			}
-		}
 		return action;
 	}
 
 	// Защищающийся берет карты
 	TAKE(player, action){
 		this.log.info(player.name, "takes");
+
+		// Запоминаем, что игрок взял
 		this.actions.takeOccurred = true;
-		this.skipCounter = 0;
+
+		//TODO: подумать, нужно ли давать спасовавшим подкидывать
+		/*
+		if(this.freeForAll){
+			this.players.set('passed', false, this.players.attackers);
+		}
+		else{
+			this.actions.defenseOccurred = true;
+		}
+		*/
+		
 		this.turnStages.setNext('FOLLOWUP');
+
 		return action;
 	}
 }

@@ -54,15 +54,17 @@ class Server extends Eureca.Server{
 		*/
 		this.manager = new QueueManager(this, {
 			game: this.gameModes['durak'][0],
-			gameConfig: {
-				transfer: this.params.transfer,
-				limitFollowup: !this.params.followup
-			},
 			bot: this.gameModes['durak'][1],
 			numPlayers: this.params.numPlayers,
 			numBots: this.params.numBots,			
 			debug: this.params.debug,
 			name: 'Quick Queue'
+		},
+		{
+			canTransfer: this.params.transfer,
+			limitFollowup: !this.params.followup,
+			limitAttack: !this.params.attack,
+			freeForAll: this.params.freeForAll
 		});
 
 		let rootPath = '/../../';
@@ -122,6 +124,8 @@ class Server extends Eureca.Server{
 			numPlayers: Number(process.env.PLAYERS) || (argv.p === undefined ? Number(argv.players) : Number(argv.p)),
 			transfer: Boolean(process.env.TRANSFER || argv.transfer),
 			followup: Boolean(process.env.FOLLOWUP || argv.followup),
+			freeForAll: Boolean(process.env.FREEFORALL || argv.ffa || argv.freeforall),
+			attack: Boolean(process.env.ATTACK || argv.attack),
 			testing: argv.t || argv.test || argv.testing || false,
 			debug: process.env.DEBUG || argv.d || argv.debug || 'notice',
 			port: process.env.PORT || Number(argv.port)
@@ -156,6 +160,7 @@ class Server extends Eureca.Server{
 			'numBots=' + this.params.numBots,
 			'numPlayers=' + this.params.numPlayers,
 			'transfer=' + this.params.transfer,
+			'freeForAll=' + this.params.freeForAll,
 			'testing=' + this.params.testing,
 			'debug=' + this.params.debug
 		);
@@ -229,7 +234,7 @@ class Server extends Eureca.Server{
 		this.httpServer.listen(this.params.port, () => {
 			this.log.notice('Running on port', this.params.port);
 			if(this.params.testing){
-				Tests.runTest(this.params.numBots, this.params.testing, this.params.debug);
+				Tests.runTest(this.params);
 			}
 		});
 	}

@@ -157,7 +157,6 @@ function numberToHexColor(number){
 
 
 // TEST AND DEBUG FUNCTIONS
-// jshint ignore:start
 var	getCard,
 	getCards;
 

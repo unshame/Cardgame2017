@@ -10,17 +10,17 @@ Field.PlayerField = function(options, style, badgeStyle){
 	Field.BadgeField.call(this, options, style, badgeStyle);
 
 	/**
-	* Полукруглая поверхность поля.
-	* @type {Phaser.Image}
-	*/
-	this.circle = game.add.image(0, 0);
-	this.add(this.circle);
-
-	/**
 	* BitmapData полукруглой поверхности поля.
 	* @type {Phaser.BitmapData}
 	*/
 	this._bitmapCircle = game.make.bitmapData();
+
+	/**
+	* Полукруглая поверхность поля.
+	* @type {Phaser.Image}
+	*/
+	this.circle = game.make.image(0, 0, this._bitmapCircle);
+	this.add(this.circle);
 };
 
 extend(Field.PlayerField, Field.BadgeField);
@@ -71,7 +71,7 @@ Field.PlayerField.prototype._createArea = function(width, height){
 * @param {number} height высота поля
 */
 Field.PlayerField.prototype._createCircle = function(width, height){
-	var total = Math.max(2500, width),	// ширина квадрата, в который точно помещается окружность
+	var total = Math.max(2750, width),	// ширина квадрата, в который точно помещается окружность
 		extra = (total - width)/2,		// на сколько окружность выходит за пределы экрана
 		a = {
 			x: -extra,
@@ -89,12 +89,12 @@ Field.PlayerField.prototype._createCircle = function(width, height){
 	var center = this._calculateCircleCenter(a, c, b);
 	var radius = center.y;
 
-	var circle = this._bitmapCircle,
-		ctx = circle.ctx;
+	var circle = this._bitmapCircle;
+	var ctx = circle.ctx;
 	circle.clear();		
 	circle.resize(game.screenWidth, height);
 	ctx.beginPath();
-	ctx.arc(center.x + this.x, center.y, radius,2 * Math.PI, 0); 
+	ctx.arc(center.x + this.x, center.y + this.style.border/2, radius, 2 * Math.PI, 0); 
 	ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 	ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
 	ctx.lineWidth = this.style.border;
@@ -103,7 +103,7 @@ Field.PlayerField.prototype._createCircle = function(width, height){
 	ctx.globalAlpha = 1;
 	ctx.stroke();
 	circle.update();
-	this.circle.loadTexture(circle);
+	this.circle.texture.requiresReTint = true;
 
 	this.circle.x = -this.x;
 
