@@ -58,6 +58,10 @@ class Bot extends Player{
 		clearTimeout(this.actionTimeout);
 		if(actions.length){
 			this.actionTimeout = setTimeout(() => {
+				if(!this.game || !this.game.active){
+					this.log.warn('No game or game is inactive');
+					return;
+				}
 				//this.sendResponse(this.chooseBestActions(actions));
 
 				console.log('RECEIVED ACTIONS: ', actions);
