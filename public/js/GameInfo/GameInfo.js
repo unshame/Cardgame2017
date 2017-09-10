@@ -16,7 +16,7 @@ var GameInfo = function(){
 	this.buttonActions = ['PASS', 'TAKE'];
 
 	/**
-	* Стадии хода, которые изменяют поли игроков во время хода
+	* Стадии хода, которые изменяют роли игроков во время хода
 	* и требуют ресета информации о ходе для обработки.
 	* @type {Array}
 	*/
@@ -178,7 +178,7 @@ GameInfo.prototype = {
 		if(game.inDebugMode){
 			this._logPlayerRoles(statuses);
 		}
-		
+
 		this._updatePlayerRoles(statuses);
 
 		this._updateMessage(seq);
@@ -254,7 +254,8 @@ GameInfo.prototype = {
 
 	/**
 	* Определяет, является ли игрок атакуюшим по статусу.
-	* @param  {object} status
+	* @param {object} status
+	*
 	* @return {boolean}
 	*/
 	_roleIsAttacker: function(status){
@@ -289,7 +290,7 @@ GameInfo.prototype = {
 	/**
 	* Удаляет сообщение о состоянии хода.
 	* @param {Phaser.Text} message
-	* @param {object}      [seq]     последовательность, в которую будет добавлено удалени
+	* @param {object}      [seq]   последовательность, в которую будет добавлено удалени
 	*/
 	_removeMessage: function(message, seq){
 		if(seq){
@@ -502,7 +503,7 @@ GameInfo.prototype = {
 			button.serverAction = null;
 			button.disable();
 			button.changeStyle(0);
-			button.label.setText(this.player.role == 'defender' ? 'TAKE' : 'PASS');
+			button.label.setText(this.player.role == 'defender' ? 'Take' : 'Pass');
 		}
 
 		fieldManager.tryHighlightDummy();
