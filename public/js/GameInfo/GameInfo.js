@@ -455,8 +455,8 @@ GameInfo.prototype = {
 
 	/**
 	* Делает элементы игры интерактивными в соответствии с переданными действиям.
-	* @param  {ActionInfo[]} actions
-	* @param  {UI.Button} button  кнопка, на которую будет навешено действие из {@link GameInfo#buttonActions|buttonActions}.
+	* @param {ActionInfo[]} actions
+	* @param {UI.Button}    button  кнопка, на которую будет навешено действие из {@link GameInfo#buttonActions|buttonActions}.
 	*/
 	applyInteractivity: function(actions, button){
 
