@@ -47,7 +47,7 @@ class DurakReactions{
 
 		// Сдвигаем атакующего, если это был перевод и даем ему защищаться\переводить
 		if(this.turnStages.current == 'DEFENSE_TRANSFER'){
-			this.players.notify({type: 'EVENT', message: 'transfered', pid: player.id, showForSelf: false, channel: 'extra'});
+			//this.players.notify({type: 'EVENT', message: 'transfered', pid: player.id, showForSelf: false, channel: 'extra'});
 			this.players.shiftAttacker();
 
 			// Перезапоминаем кол-ва карт в руках

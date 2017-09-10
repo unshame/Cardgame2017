@@ -191,7 +191,7 @@ var reactPrimary = {
 			return delay;
 		}
 		actionHandler.reset();
-		gameInfo.resetTurnInfo();
+		gameInfo.resetTurnInfo(seq);
 		var field = fieldManager.fields[action.pid];
 		delay = fieldManager.moveCards(field, action.cards.slice(), BRING_TO_TOP_ON.START);
 		return delay;
@@ -224,7 +224,7 @@ var reactPrimary = {
 	*/
 	DISCARD: function(action, seq){
 		actionHandler.reset();
-		gameInfo.resetTurnInfo();
+		gameInfo.resetTurnInfo(seq);
 		var field = fieldManager.fields.DISCARD_PILE;
 		var delay = fieldManager.moveCards(field, action.cards);
 		if(action.unlockedField){

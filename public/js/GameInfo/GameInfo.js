@@ -14,6 +14,13 @@ var GameInfo = function(){
 	* @type {string[]}
 	*/
 	this.buttonActions = ['PASS', 'TAKE'];
+
+	/**
+	* Стадии хода, которые изменяют поли игроков во время хода
+	* и требуют ресета информации о ходе для обработки.
+	* @type {Array}
+	*/
+	this.roleAlteringTurnStages = ['DEFENSE_TRANSFER'];
 };
 
 GameInfo.prototype = {
@@ -93,7 +100,7 @@ GameInfo.prototype = {
 		this.attacker = null;
 
 		if(this.message){
-			ui.eventFeed.removeMessage(this.message);
+			this._removeMessage(this.message);
 		}
 		/**
 		* Сообщение о текущем состоянии хода.
@@ -156,10 +163,14 @@ GameInfo.prototype = {
 	* @param {object} statuses  статусы игроков
 	* @param {number} turnIndex номер хода
 	* @param {string} turnStage стадия хода
-	* @param {object} seq       последовательность действий, в которую будет добавлено
+	* @param {object} [seq]     последовательность действий, в которую будет добавлено
 	*                           удаление старого сообщения о состоянии хода
 	*/
 	updateTurnInfo: function(statuses, turnIndex, turnStage, seq){
+
+		if(~this.roleAlteringTurnStages.indexOf(turnStage)){
+			this.resetTurnInfo(seq);
+		}
 
 		this.turnStage = turnStage;
 		this.turnIndex = turnIndex;
@@ -167,6 +178,7 @@ GameInfo.prototype = {
 		if(game.inDebugMode){
 			this._logPlayerRoles(statuses);
 		}
+		
 		this._updatePlayerRoles(statuses);
 
 		this._updateMessage(seq);
@@ -174,10 +186,11 @@ GameInfo.prototype = {
 
 	/**
 	* Обнуляет роли игроков и стадию хода, удаляет сообщение о статусе хода.
+	* @param  {object} [seq] последовательность в которую будет добавлено удаление сообщения о состоянии хода
 	*/
-	resetTurnInfo: function(){
+	resetTurnInfo: function(seq){
 		if(this.message){
-			ui.eventFeed.removeMessage(this.message);
+			this._removeMessage(this.message, seq);
 			this.message = null;
 		}
 		this.turnStage = null;
@@ -253,7 +266,7 @@ GameInfo.prototype = {
 
 	/**
 	* Обновляет сообщение о состоянии хода, удаляет предыдущее сообщение.
-	* @param {object} seq последовательность, в которую будет добавлено удаление старого сообщения
+	* @param {object} [seq] последовательность, в которую будет добавлено удаление старого сообщения
 	*/
 	_updateMessage: function(seq){
 
@@ -269,7 +282,21 @@ GameInfo.prototype = {
 			}
 		}
 		if(oldMessage && (oldMessage.text != newMessage.text || !this.message)){
-			seq.append(300).then(ui.eventFeed.removeMessage.bind(ui.eventFeed, oldMessage));
+			this._removeMessage(oldMessage, seq);
+		}
+	},
+
+	/**
+	* Удаляет сообщение о состоянии хода.
+	* @param {Phaser.Text} message
+	* @param {object}      [seq]     последовательность, в которую будет добавлено удалени
+	*/
+	_removeMessage: function(message, seq){
+		if(seq){
+			seq.append(300).then(ui.eventFeed.removeMessage.bind(ui.eventFeed, message));
+		}
+		else{
+			ui.eventFeed.removeMessage(message);
 		}
 	},
 
