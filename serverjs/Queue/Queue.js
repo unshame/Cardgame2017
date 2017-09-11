@@ -177,7 +177,7 @@ class Queue{
 			let randomNamesCopy = this.manager.randomNames.slice();
 
 			for (let n = 0; n < numBots; n++) {
-				let bot = new this.config.bot(randomNamesCopy);
+				let bot = new this.config.bot(randomNamesCopy, this.type);
 				players.push(bot);
 			}
 		}

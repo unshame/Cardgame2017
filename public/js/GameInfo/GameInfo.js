@@ -128,23 +128,25 @@ GameInfo.prototype = {
 	* @param  {array} players
 	*/
 	savePlayers: function(players){
-		this.players = players;
-		var playersById = this.playersById = {};
 		this.pid = game.pid;
-		this.pi = players.map(function(p){ 
-			playersById[p.id] = p;
-			return p.id;
-		}).indexOf(this.pid);
+		this.players = players;
+		this.playersById = {};
+		players.forEach(function(p, i){ 
+			this.playersById[p.id] = p;
+			if(p.id == this.pid){
+				this.player = p;
+				this.pi = i;
+			}
+		}, this);
 		if(!~this.pi){
 			console.error('Game info: Player', this.pid, 'not found in players\n', players);
-			return;
-		}
-		this.player = this.getPlayer(this.pid);
+		}		
 	},
 
 	/**
 	* Возвращает информацию об игрока по id.
-	* @param  {string} pid
+	* @param {string} pid
+	*
 	* @return {object}
 	*/
 	getPlayer: function(pid){
@@ -175,7 +177,7 @@ GameInfo.prototype = {
 		this.turnStage = turnStage;
 		this.turnIndex = turnIndex;
 
-		if(game.inDebugMode){
+		if(game.inDebugMode && statuses){
 			this._logPlayerRoles(statuses);
 		}
 
@@ -186,7 +188,7 @@ GameInfo.prototype = {
 
 	/**
 	* Обнуляет роли игроков и стадию хода, удаляет сообщение о статусе хода.
-	* @param  {object} [seq] последовательность в которую будет добавлено удаление сообщения о состоянии хода
+	* @param {object} [seq] последовательность в которую будет добавлено удаление сообщения о состоянии хода
 	*/
 	resetTurnInfo: function(seq){
 		if(this.message){
@@ -202,11 +204,15 @@ GameInfo.prototype = {
 		this.defender = null;
 	},
 
-	_logPlayerRoles: function(roles){
+	/**
+	* Выводит статусы игроков в консоль.
+	* @param  {object} statuses
+	*/
+	_logPlayerRoles: function(statuses){
 		console.log('------');
 		this.players.forEach(function(p){
-			var role = roles[p.id];
-			console.log(p.name, role.role, role.roleIndex, role.working, role.defenseStartCards);
+			var status = statuses[p.id];
+			console.log(p.name, ':', status.role, status.roleIndex, status.working, status.defenseStartCards);
 		});
 	},
 
@@ -216,11 +222,16 @@ GameInfo.prototype = {
 	*/
 	_updatePlayerRoles: function(statuses){
 
+		if(!statuses){
+			this.resetTurnInfo();
+			return;
+		}
+
 		var playerIsAttacker = this._roleIsAttacker(statuses[this.player.id]);
 
 		this.players.forEach(function(p){
 			var status = statuses[p.id];
-			var role = statuses && status && status.role || null;
+			var role = status && status.role || null;
 			var roleIndex = role && status.roleIndex || null;
 			var working = role && status.working || false;
 			var defenseStartCards = status.defenseStartCards || 0;
@@ -509,12 +520,26 @@ GameInfo.prototype = {
 		fieldManager.tryHighlightDummy();
 	},
 
-	/** Возвращает нужно ли сделать карту играбильной. */
+	/** 
+	* Возвращает нужно ли сделать карту играбильной.
+	* @param {Card}       card
+	* @param {ActionInfo} actions
+	* @param {Card}       cardHolding карта, которую держит игрок
+	*
+	* @return {boolean}
+	*/
 	_cardShouldBePlayable: function(card, action, cardHolding){
 		return action.cid && card && (!cardHolding || (cardHolding == card || cardHolding.value == card.value && action.type != 'DEFENSE'));
 	},
 
-	/** Делает поле и карту интерактивной в соответствии с действием. */
+	/** 
+	* Делает поле и карту интерактивной в соответствии с действием.
+	* @param {Card}       card
+	* @param {Field}      field
+	* @param {ActionInfo} action
+	* @param {Field[]}    defenseFields поля, которые игрок должен отбивать
+	* @param {Field}      emptyTable    первое свободное поле на столе
+	*/
 	_makeInteractible: function(card, field, action, defenseFields, emptyTable){
 		card.setPlayability(true);
 		field.setOwnPlayability(action.type);

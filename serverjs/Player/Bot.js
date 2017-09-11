@@ -11,11 +11,12 @@ const
 
 
 class Bot extends Player{
-	constructor(randomNames){
+	constructor(randomNames, queueType){
 		super(null, null, null, false);
 		this.id = 'bot_' + generateId();
 		this.log = Log(module, this.id);
 		this.type = 'bot';
+		this.queueType = queueType;
 		this.connected = true;
 		this.actionTimeout = null;
 
@@ -84,7 +85,7 @@ class Bot extends Player{
 		}
 		clearTimeout(this.actionTimeout);
 		if(action.actions){
-			let ai = (this.game && this.game.isTest || this.queue && this.queue.type == 'botmatch') ? 0 : 1;
+			let ai = (this.game && this.game.isTest || this.queueType == 'botmatch') ? 0 : 1;
 			this.sendDelayedResponse(action.actions[ai]);
 		}			
 	}
