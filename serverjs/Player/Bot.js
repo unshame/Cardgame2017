@@ -172,25 +172,23 @@ class Bot extends Player{
 				let cardsOnTheTableValues = this.findCardsOnTheTableValues(),
 					minActionWithValueOnTheTable = this.findMinAction(actions, cardsOnTheTableValues),
 					bestTransferAction = this.findMinAction(actions, undefined , true);
+
 				console.log('lowestActionWithValueOnTheTable: ', minActionWithValueOnTheTable);
 
-				if ((bestTransferAction) && this.isTransferBeneficial(gameStage, bestTransferAction)){
+				if ((bestTransferAction) && this.isTransferBeneficial(gameStage, bestTransferAction, actions)){
             		return bestTransferAction;
 				}
 
-				if (minActionWithValueOnTheTable && (minActionWithValueOnTheTable.value - (this.findAttackCardOnTheTable(minActionWithValueOnTheTable.field)).value <= 3) &&
-					((gameStage === 'EARLY_GAME') && (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit) ||
-						(minActionWithValueOnTheTable.value < 11) || (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit))){
+				if ((!minAction) || this.isTakeActionBeneficial(gameStage, minAction, actions)){
+					return takeAction;
+				}
+
+				if (minActionWithValueOnTheTable && this.isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable)){
 					return minActionWithValueOnTheTable;
 				}
 
             	if (maxQtyCard){
 					return this.changeCardIntoAction(actions, maxQtyCard);
-				}
-
-				if ((!minAction) || (gameStage !== 'END_GAME') && (minAction.csuit === this.game.cards.trumpSuit) && ((this.game.table.usedFields === 1) &&
-									 (this.game.hands[this.id].length < 7) || (this.game.table.usedFields === 2) && (minAction.cvalue > 10))){
-					return takeAction;
 				}
 
 				return minAction;
@@ -206,12 +204,12 @@ class Bot extends Player{
         };
     
         for (let i = 0; i < actions.length; i++){
-            if ((actions[i].type === 'TAKE') || (actions[i].type === 'PASS') || (isTransfer && (actions[i].type === 'DEFENSE')) ||
-			   (cardsOnTheTableValues && ((actions[i].type !== 'DEFENSE') || (!~cardsOnTheTableValues.indexOf(actions[i].cvalue))))){
+            if ( (actions[i].type === 'TAKE') || (actions[i].type === 'PASS') || (isTransfer && (actions[i].type === 'DEFENSE') ) ||
+			   (cardsOnTheTableValues && ( (actions[i].type !== 'DEFENSE') || (!~cardsOnTheTableValues.indexOf(actions[i].cvalue)) ) )){
                 continue;
             }
 
-			if ((minAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit)){
+			if ( (minAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit) ){
 				minAction = actions[i];
 				continue;
 			}
@@ -282,27 +280,6 @@ class Bot extends Player{
         return gameStages[0];
     }
 
-    isTransferBeneficial(gameStage, transferAction){
-        /**
-        * Метод, определяющий эффективность перевода.
-		*
-        * В начале игры перевод выгоден, если бот не переводит козырем или козырем, меньшем 5.
-        */
-		let trumpSuitQty = this.findTrumpCardsQty();
-
-        if ((gameStage === 'EARLY_GAME') && ((transferAction.csuit !== this.game.cards.trumpSuit) || ((transferAction.cvalue < 5) && (trumpSuitQty > 1)))){
-            return true;
-        }
-        /**
-        * В конце игры перевод выгоден, если бот не переводит козырем или козырем, меньшем J.
-        */
-        if ((gameStage === 'END_GAME') && ((transferAction.csuit !== this.game.cards.trumpSuit) || ((transferAction.cvalue < 11) && (trumpSuitQty > 0)))){
-            return true;
-        }
-        
-        return false;
-    }
-
     findMaxQtyCard(minAction, allowedCardsIDs, gameStage){
         /*
 		* !!!! Подумать над тем, как использовать это метод при защите. Как найти карту(ы), которую надо побить данной картой(ами). (minDifference???)
@@ -361,10 +338,6 @@ class Bot extends Player{
 			return maxQtyCards[0];
 		}
     }
-
-	isTrumpAttackBeneficial(){
-		// Подкидывать(ходить) козырем, если у бота их много.
-	}
 
 	isThisValueOut(value){
 		/*
@@ -496,6 +469,50 @@ class Bot extends Player{
 
         return cards;
     }
+
+	isBeatableOnlyByThis(cardAction, actions){
+		/*
+		* Метод, возвращающий true, если на столе есть карты, которые бьются только картой из cardAction.
+		*/
+		let cardsOnTheTable = this.findNullDefenseCardsOnTheTable(),
+			beatableCards = [];
+
+		for (let i = 0; i < actions.length; i++){
+			if ( (actions[i].field !== cardAction.field) && (!~beatableCards.indexOf(actions[i].field)) ){
+					beatableCards.push(actions[i].field);
+				}
+		}
+
+		if (beatableCards.length === cardsOnTheTable.length){
+			false;
+		}
+
+		return true;
+	}
+
+	isNotBeatable(actions){
+		/*
+		* Метод, возвращающий true, если на столе есть карты, которые нельзя побить.
+		*/
+		let cardsOnTheTable = this.findNullDefenseCardsOnTheTable(),
+			beatableCards = [];
+
+		for (let i = 0; i < actions.length; i++){
+			if ((!~beatableCards.indexOf(actions[i].field)) && (actions[i].field !== undefined)){
+					beatableCards.push(actions[i].field);
+			}
+		}
+
+		console.log('Beatable Cards ', beatableCards);
+		console.log('Beatable Cards length', beatableCards.length);
+		console.log('Cards On TheTable length', cardsOnTheTable.length);
+
+		if (beatableCards.length === cardsOnTheTable.length){
+			return false;
+		}
+
+		return true;
+	}
 	/*
 	*
 	* Методы, работающие с рукой бота.
@@ -551,6 +568,58 @@ class Bot extends Player{
 		}
 
 		return trumpCardsQty;
+	}
+	/*
+	*
+	* Методы, определяющие полезность чего-либо.
+	*
+	*/
+	isTransferBeneficial(gameStage, transferAction, actions){
+        /**
+        * Метод, определяющий эффективность перевода.
+		*
+        * В начале игры перевод выгоден, если бот не переводит козырем или козырем, меньшем 5.
+        */
+		let trumpSuitQty = this.findTrumpCardsQty();
+
+        if ( (gameStage === 'EARLY_GAME') && ( (transferAction.csuit !== this.game.cards.trumpSuit) || ((transferAction.cvalue < 5) && (trumpSuitQty > 1)) ||
+											( (transferAction.cvalue < 11) && ((this.game.table.usedFields > 1) || this.isBeatableOnlyByThis(transferAction, actions)) ) )){
+            return true;
+        }
+        /**
+        * В конце игры перевод выгоден, если бот не переводит козырем или козырем, меньшем J.
+        */
+        if ((gameStage === 'END_GAME') && ( (transferAction.csuit !== this.game.cards.trumpSuit) ||
+										   ( (transferAction.cvalue < 11) && ( (trumpSuitQty > 0) ||
+																			 this.isBeatableOnlyByThis(transferAction, actions) ) ))){
+            return true;
+        }
+
+        return false;
+    }
+
+	isTrumpAttackBeneficial(){
+		// Подкидывать(ходить) козырем, если у бота их много.
+	}
+
+	isTakeActionBeneficial(gameStage, minAction, actions){
+		if ( this.isNotBeatable(actions) || ( (gameStage !== 'END_GAME') && (minAction.csuit === this.game.cards.trumpSuit) &&
+			( ((this.game.table.usedFields === 1) && (this.game.hands[this.id].length < 7)) ||
+			 ((this.game.table.usedFields === 2) && (minAction.cvalue > 10)) ) ) ){
+			return true
+		}
+
+		return false;
+	}
+
+	isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable){
+		if ( (minActionWithValueOnTheTable.value - (this.findAttackCardOnTheTable(minActionWithValueOnTheTable.field)).value <= 3) &&
+					( ((gameStage === 'EARLY_GAME') && (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit)) ||
+						(minActionWithValueOnTheTable.value < 11) || (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit) ) ){
+			return true;
+		}
+
+		return false;
 	}
 }
 
