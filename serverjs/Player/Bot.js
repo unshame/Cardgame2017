@@ -63,13 +63,12 @@ class Bot extends Player{
 					this.log.warn('No game or game is inactive');
 					return;
 				}
-				//this.sendResponse(this.chooseBestActions(actions));
-
 				console.log('RECEIVED ACTIONS: ', actions);
 
+				console.log('DEFENSE PLAYER ID');
 				this.sendResponseSync(this.chooseBestAction(actions));
 
-			}, this.getDescisionTime(1500));
+			}, this.getDescisionTime(500));
 		}
 	}
 
@@ -146,13 +145,12 @@ class Bot extends Player{
 		
         switch (this.defineTurnType()){
             case 'ATTACK':
-				if (maxQtyCard){
-					return this.changeCardIntoAction(actions, maxQtyCard);
+				if (passAction && (!this.isAttackActionBeneficial(minAction, gameStage)) && this.isPassActionBeneficial(minAction, gameStage)){
+					return passAction;
 				}
 
-				if (passAction && ((!minAction) || (minAction.cvalue > 10) ||
-								   (minAction.csuit === this.game.cards.trumpSuit))){
-					return passAction;
+				if (maxQtyCard){
+					return this.changeCardIntoAction(actions, maxQtyCard);
 				}
 
 				return minAction;
@@ -260,9 +258,9 @@ class Bot extends Player{
             return 'DEFENSE';
         }
         
-       if ((this.statuses.role === 'attacker') && (this.statuses.roleIndex > 1)){
-		   return 'SUPPORT';
-	   }
+//       if ((this.statuses.role === 'attacker') && (this.statuses.roleIndex > 1)){
+//		   return 'SUPPORT';
+//	   }
 		
         return 'ATTACK';
     }
@@ -389,6 +387,14 @@ class Bot extends Player{
 
 		return allowedCardsIDs;
 	}
+
+	getDefensePlayerID(){
+		for (let i = 0; i < this.game.players.length; i++){
+			if (this.game.players[i].statuses.role === 'defender'){
+				return this.game.players[i].id;
+			}
+		}
+	}
 	/*
 	*
 	* Методы, работающие со столом.
@@ -423,7 +429,7 @@ class Bot extends Player{
 
 	findCardsOnTheTableValues(){
         /**
-        * Метод, возвращающий все карты на столе.
+        * Метод, возвращающий значения всех карт на столе.
         */
         let cardsValues = [];
 
@@ -598,8 +604,34 @@ class Bot extends Player{
         return false;
     }
 
-	isTrumpAttackBeneficial(){
-		// Подкидывать(ходить) козырем, если у бота их много.
+	isAttackActionBeneficial(minAction, gameStage){
+		// getDefensePlayerID
+		// this.game.hands[this.id]
+		// this.turnStages.current === 'FOLLOWUP'
+
+		let defensePlayerCardsQty = this.game.hands[this.getDefensePlayerID()].length;
+
+		if ( (defensePlayerCardsQty < 3) && (!this.game.turnStages.current === 'FOLLOWUP') &&
+			( (minAction.csuit === this.game.cards.trumpSuit) && (minAction.cvalue < 11) ||
+			(minAction.csuit !== this.game.cards.trumpSuit))){
+			return true;
+		}
+
+		if ( (defensePlayerCardsQty < 4) && (!this.game.turnStages.current === 'FOLLOWUP') &&
+			( (minAction.csuit === this.game.cards.trumpSuit) && (minAction.cvalue < 6) ||
+			(minAction.csuit !== this.game.cards.trumpSuit))){
+			return true;
+		}
+
+		return false;
+	}
+
+	isPassActionBeneficial(minAction, gameStage){
+		if ((!minAction) || ((this.game.turnStages.current === 'FOLLOWUP') && ( (minAction.csuit === this.game.cards.trumpSuit) || (minAction.cvalue > 10) ))){
+			return true;
+		}
+
+		return false;
 	}
 
 	isTakeActionBeneficial(gameStage, minAction, actions){
