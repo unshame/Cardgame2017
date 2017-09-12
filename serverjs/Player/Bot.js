@@ -64,8 +64,6 @@ class Bot extends Player{
 					return;
 				}
 				console.log('RECEIVED ACTIONS: ', actions);
-
-				console.log('DEFENSE PLAYER ID');
 				this.sendResponseSync(this.chooseBestAction(actions));
 
 			}, this.getDescisionTime(500));
@@ -145,7 +143,7 @@ class Bot extends Player{
 		
         switch (this.defineTurnType()){
             case 'ATTACK':
-				if (passAction && (!this.isAttackActionBeneficial(minAction, gameStage)) && this.isPassActionBeneficial(minAction, gameStage)){
+				if (passAction && ( (!this.isAttackActionBeneficial(minAction, gameStage)) || this.isPassActionBeneficial(minAction, gameStage)) ){
 					return passAction;
 				}
 
@@ -608,18 +606,26 @@ class Bot extends Player{
 		// getDefensePlayerID
 		// this.game.hands[this.id]
 		// this.turnStages.current === 'FOLLOWUP'
+		if (!minAction){
+			return false;
+		}
 
 		let defensePlayerCardsQty = this.game.hands[this.getDefensePlayerID()].length;
 
-		if ( (defensePlayerCardsQty < 3) && (!this.game.turnStages.current === 'FOLLOWUP') &&
+		if ( (defensePlayerCardsQty < 3) && (this.game.turnStages.current !== 'FOLLOWUP') &&
 			( (minAction.csuit === this.game.cards.trumpSuit) && (minAction.cvalue < 11) ||
 			(minAction.csuit !== this.game.cards.trumpSuit))){
 			return true;
 		}
 
-		if ( (defensePlayerCardsQty < 4) && (!this.game.turnStages.current === 'FOLLOWUP') &&
+		if ( (defensePlayerCardsQty < 4) && (this.game.turnStages.current !== 'FOLLOWUP') &&
 			( (minAction.csuit === this.game.cards.trumpSuit) && (minAction.cvalue < 6) ||
 			(minAction.csuit !== this.game.cards.trumpSuit))){
+			return true;
+		}
+
+		if ((defensePlayerCardsQty < 5) && (this.game.turnStages.current !== 'FOLLOWUP') &&
+			(minAction.csuit !== this.game.cards.trumpSuit)){
 			return true;
 		}
 
@@ -627,7 +633,7 @@ class Bot extends Player{
 	}
 
 	isPassActionBeneficial(minAction, gameStage){
-		if ((!minAction) || ((this.game.turnStages.current === 'FOLLOWUP') && ( (minAction.csuit === this.game.cards.trumpSuit) || (minAction.cvalue > 10) ))){
+		if ((!minAction) || ( (minAction.csuit === this.game.cards.trumpSuit) || (minAction.cvalue > 10) )){
 			return true;
 		}
 
