@@ -149,7 +149,7 @@ ActionHandler.prototype.handlePossibleActions = function(action, seq){
 		}
 	}
 	if(action.roles){
-		gameInfo.updateTurnInfo(action.roles, action.turnIndex, action.turnStage, seq);
+		gameInfo.updateTurnInfo(action.roles, action.turnIndex, action.turnStage, action.actions.length !== 0, seq);
 		fieldManager.updateBadges();
 	}
 

@@ -14,13 +14,6 @@ var GameInfo = function(){
 	* @type {string[]}
 	*/
 	this.buttonActions = ['PASS', 'TAKE'];
-
-	/**
-	* Стадии хода, которые изменяют роли игроков во время хода
-	* и требуют ресета информации о ходе для обработки.
-	* @type {Array}
-	*/
-	this.roleAlteringTurnStages = ['DEFENSE_TRANSFER'];
 };
 
 GameInfo.prototype = {
@@ -162,15 +155,17 @@ GameInfo.prototype = {
 	/**
 	* Обновляет статусы и роли игроков, запоминает текущую стадию хода,
 	* и выводит сообщение о состоянии хода. 
-	* @param {object} statuses  статусы игроков
-	* @param {number} turnIndex номер хода
-	* @param {string} turnStage стадия хода
-	* @param {object} [seq]     последовательность действий, в которую будет добавлено
-	*                           удаление старого сообщения о состоянии хода
+	* @param {object}  statuses   статусы игроков
+	* @param {number}  turnIndex  номер хода
+	* @param {string}  turnStage  стадия хода
+	* @param {boolean} hasActions игрок может ходить
+	* @param {object}  [seq]      последовательность действий, в которую будет добавлено
+	*                             удаление старого сообщения о состоянии хода
 	*/
-	updateTurnInfo: function(statuses, turnIndex, turnStage, seq){
+	updateTurnInfo: function(statuses, turnIndex, turnStage, hasActions, seq){
 
-		if(~this.roleAlteringTurnStages.indexOf(turnStage)){
+		if(this._shouldResetTurnInfo(turnStage, hasActions)){
+			console.log('reset')
 			this.resetTurnInfo(seq);
 		}
 
@@ -202,6 +197,17 @@ GameInfo.prototype = {
 		});
 		this.attacker = null;
 		this.defender = null;
+	},
+
+	/**
+	* Возвращает нужно ли ресетить информацию о ходе.
+	* @param {string}  turnStage  текущая стадия хода
+	* @param {boolean} hasActions может ли игрок ходить
+	*
+	* @return {boolean}
+	*/
+	_shouldResetTurnInfo: function(turnStage, hasActions){
+		return turnStage == 'DEFENSE_TRANSFER' && !hasActions;
 	},
 
 	/**
