@@ -30,8 +30,8 @@
  * `--testing [number]`, `--test [number]`, `-t [number]` - запускает тесты вместо обычного режима, опционально можно указать длительность тестов (2000мс по-умолчанию)  
 
  Параметры настройки быстрой игры:  
- * `--bots number`, `-b number` - игра будет запускаться с этим кол-вом ботов (по-умолчанию 4)  
- * `--players number`, `-p number` - игра будет ожидать этого кол-ва игроков перед запуском (по-умолчанию 0)  
+ * `--bots number`, `-b number` - игра будет запускаться с этим кол-вом ботов (по-умолчанию 0)  
+ * `--players number`, `-p number` - игра будет ожидать этого кол-ва игроков перед запуском (по-умолчанию 4)  
  * `--transfer` - можно переводить карты  
  * `--followup` - убирает ограничение подбрасывания карт кол-вом карт в руке защищающегося в начале хода  
  * `--attack` - убирает ограничение кол-ва атакующих  
@@ -91,53 +91,54 @@
 Тестовая версия загружена на [durak.herokuapp.com/doc/client/](https://durak.herokuapp.com/doc/client/).  
 Шаблон документации классов на сервере:  
 
-    'use strict';
+```javascript  
+'use strict';
 
-    class Example extends OtherClass{
-    
-    	/**
-     	 * Описание класса.
-     	 * @extends {OtherClass}
-    	 * @param  {type} param
-    	 */
-    	constructor(param){
-    		super();
-    
-    		/**
-    		 * Описание свойства
-    		 * @type {type}
-    		 */
-    		this.param = param
-    	}
+class Example extends OtherClass{
+
+	/**
+ 	 * Описание класса.
+ 	 * @extends {OtherClass}
+	 * @param  {type} param
+	 */
+	constructor(param){
+		super();
+
+		/**
+		 * Описание свойства
+		 * @type {type}
+		 */
+		this.param = param
+	}
 
 
-    	/**
-    	 * Описание getterSetter.
-    	 * @type {type}
-    	 */
-    	get getterSetter(){
+	/**
+	 * Описание getterSetter.
+	 * @type {type}
+	 */
+	get getterSetter(){
 
-    	}
-    	set getterSetter(value){
+	}
+	set getterSetter(value){
 
-    	}
+	}
 
-    	/**
-    	 * Описание readOnlyParam.
-    	 * @type {type}
-    	 * @readonly
-    	 */
-    	get readOnlyParam(){
+	/**
+	 * Описание readOnlyParam.
+	 * @type {type}
+	 * @readonly
+	 */
+	get readOnlyParam(){
 
-    	}
-    }
+	}
+}
 
-    /**
-     * {@link Example}
-     * @module
-     */    
-    module.exports = Example;
-
+/**
+ * {@link Example}
+ * @module
+ */    
+module.exports = Example;  
+```  
 
 `@module` ставится внизу, чтобы заставить генератор добавить файл в список модулей, но не представлять класс, как свойство модуля (класс это и есть модуль).  
 В корне репозитория лежит модифицированный файл подсветки синтаксиса для Sublime 3 с подсветкой документации (с этим она значительно более читабильна в коде).
@@ -159,7 +160,6 @@
     * Меню опций  
 * Оповещение о последовательности хода  
     * Иконки ролей игроков  
-    * Сохранение возможных действий при переходе на следующую стадию хода  
     * Оповещение о специальных действиях игроков  
     * Корректное поведение системы при всех игровых опциях  
     * Ограничить размер игровых сообщений, чтобы они не показывались под картами и не переходили на две строки  
