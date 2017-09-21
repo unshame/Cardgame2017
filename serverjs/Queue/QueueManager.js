@@ -212,6 +212,8 @@ class QueueManager{
 		config = Object.assign({}, config);
 		rules = Object.assign({}, rules);
 
+		config.decisionTime = this.server.params.decisionTime;
+
 		let queue = new Queue(this, type, config, rules);
 
 		this.queues[queue.id] = queue;

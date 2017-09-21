@@ -156,8 +156,8 @@ class Game{
 		* Уменьшается, если стоит флаг `simulating`.
 		* @type {number}
 		*/
-		this.fakeDescisionTimer = 500;
-		this.defaultFakeDescisionTimer = this.fakeDescisionTimer;
+		this.fakeDecisionTimer = 500;
+		this.defaultFakeDecisionTimer = this.fakeDecisionTimer;
 
 		/**
 		* Является ли игра тестом.
@@ -369,7 +369,7 @@ class Game{
 			this.log.notice('Simulating');
 			this.players.notify({type: 'SIMULATING'}, this.players.humans);
 			this.simulating = true;
-			this.fakeDescisionTimer = 0;
+			this.fakeDecisionTimer = 0;
 		}
 	}
 
@@ -381,10 +381,10 @@ class Game{
 
 		this.simulating = this.isTest;
 		if(this.simulating){
-			this.fakeDescisionTimer = 0;
+			this.fakeDecisionTimer = 0;
 		}
 		else{
-			this.fakeDescisionTimer = this.defaultFakeDescisionTimer;
+			this.fakeDecisionTimer = this.defaultFakeDecisionTimer;
 		}
 	}
 

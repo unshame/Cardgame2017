@@ -127,6 +127,7 @@ class Server extends Eureca.Server{
 			freeForAll: Boolean(process.env.FREEFORALL || argv.ffa || argv.freeforall),
 			attack: Boolean(process.env.ATTACK || argv.attack),
 			testing: argv.t || argv.test || argv.testing || false,
+			decisionTime: typeof argv.dt == 'number' ? argv.dt : argv.decisiontime,
 			debug: process.env.DEBUG || argv.d || argv.debug || 'notice',
 			port: process.env.PORT || Number(argv.port)
 		};
@@ -143,6 +144,9 @@ class Server extends Eureca.Server{
 		}
 		if(isNaN(params.numPlayers) || !params.numPlayers){
 			params.numPlayers = 4;
+		}
+		if(isNaN(params.decisionTime)){
+			params.decisionTime = 1500;
 		}
 
 		return params;
@@ -161,6 +165,7 @@ class Server extends Eureca.Server{
 			'numPlayers=' + this.params.numPlayers,
 			'transfer=' + this.params.transfer,
 			'freeForAll=' + this.params.freeForAll,
+			'decisionTime=' + this.params.decisionTime,
 			'testing=' + this.params.testing,
 			'debug=' + this.params.debug
 		);

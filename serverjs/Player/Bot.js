@@ -11,7 +11,7 @@ const
 
 
 class Bot extends Player{
-	constructor(randomNames, queueType){
+	constructor(randomNames, queueType, decisionTime){
 		super(null, null, null, false);
 		this.id = 'bot_' + generateId();
 		this.log = Log(module, this.id);
@@ -19,6 +19,11 @@ class Bot extends Player{
 		this.queueType = queueType;
 		this.connected = true;
 		this.actionTimeout = null;
+
+		if(typeof decisionTime != 'number' || isNaN(decisionTime)){
+			decisionTime = 1500;
+		}
+		this.decisionTime = decisionTime;
 
 		let nameIndex = Math.floor(Math.random()*randomNames.length);
 		if(randomNames.length){
@@ -30,11 +35,11 @@ class Bot extends Player{
 		}
 	}
 
-	getDescisionTime(addedTime){
+	getDecisionTime(addedTime){
 		if(!this.game){
 			return 0;
 		}
-		let minTime = this.game.fakeDescisionTimer || 0;
+		let minTime = this.game.fakeDecisionTimer || 0;
 
 		if(addedTime === undefined || minTime === 0){
 			addedTime = 0;
@@ -66,7 +71,7 @@ class Bot extends Player{
 				console.log('RECEIVED ACTIONS: ', actions);
 				this.sendResponseSync(this.chooseBestAction(actions));
 
-			}, this.getDescisionTime(500));
+			}, this.getDecisionTime(this.decisionTime));
 		}
 	}
 
@@ -94,7 +99,7 @@ class Bot extends Player{
 		clearTimeout(this.actionTimeout);
 		this.actionTimeout = setTimeout(() => {
 			this.sendResponseSync(action);
-		}, this.getDescisionTime());
+		}, this.getDecisionTime());
 	}
 
 	// Синхронно посылает синхронный ответ серверу

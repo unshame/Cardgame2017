@@ -13,7 +13,7 @@ class TestBot extends Bot{
 		this.failedTests = 0;
 	}
 
-	getDescisionTime(){
+	getDecisionTime(){
 		return 0;
 	}
 
