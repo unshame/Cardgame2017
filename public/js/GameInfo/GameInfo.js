@@ -165,7 +165,6 @@ GameInfo.prototype = {
 	updateTurnInfo: function(statuses, turnIndex, turnStage, hasActions, seq){
 
 		if(this._shouldResetTurnInfo(turnStage, hasActions)){
-			console.log('reset')
 			this.resetTurnInfo(seq);
 		}
 
