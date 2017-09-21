@@ -63,13 +63,10 @@ class Bot extends Player{
 					this.log.warn('No game or game is inactive');
 					return;
 				}
-				//this.sendResponse(this.chooseBestActions(actions));
-
 				console.log('RECEIVED ACTIONS: ', actions);
-
 				this.sendResponseSync(this.chooseBestAction(actions));
 
-			}, this.getDescisionTime(1500));
+			}, this.getDescisionTime(500));
 		}
 	}
 
@@ -146,13 +143,12 @@ class Bot extends Player{
 		
         switch (this.defineTurnType()){
             case 'ATTACK':
-				if (maxQtyCard){
-					return this.changeCardIntoAction(actions, maxQtyCard);
+				if (passAction && ( (!this.isAttackActionBeneficial(minAction, gameStage)) || this.isPassActionBeneficial(minAction, gameStage)) ){
+					return passAction;
 				}
 
-				if (passAction && ((!minAction) || (minAction.cvalue > 10) ||
-								   (minAction.csuit === this.game.cards.trumpSuit))){
-					return passAction;
+				if (maxQtyCard){
+					return this.changeCardIntoAction(actions, maxQtyCard);
 				}
 
 				return minAction;
@@ -172,25 +168,23 @@ class Bot extends Player{
 				let cardsOnTheTableValues = this.findCardsOnTheTableValues(),
 					minActionWithValueOnTheTable = this.findMinAction(actions, cardsOnTheTableValues),
 					bestTransferAction = this.findMinAction(actions, undefined , true);
+
 				console.log('lowestActionWithValueOnTheTable: ', minActionWithValueOnTheTable);
 
-				if ((bestTransferAction) && this.isTransferBeneficial(gameStage, bestTransferAction)){
+				if ((bestTransferAction) && this.isTransferBeneficial(gameStage, bestTransferAction, actions)){
             		return bestTransferAction;
 				}
 
-				if (minActionWithValueOnTheTable && (minActionWithValueOnTheTable.value - (this.findAttackCardOnTheTable(minActionWithValueOnTheTable.field)).value <= 3) &&
-					((gameStage === 'EARLY_GAME') && (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit) ||
-						(minActionWithValueOnTheTable.value < 11) || (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit))){
+				if ((!minAction) || this.isTakeActionBeneficial(gameStage, minAction, actions)){
+					return takeAction;
+				}
+
+				if (minActionWithValueOnTheTable && this.isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable)){
 					return minActionWithValueOnTheTable;
 				}
 
             	if (maxQtyCard){
 					return this.changeCardIntoAction(actions, maxQtyCard);
-				}
-
-				if ((!minAction) || (gameStage !== 'END_GAME') && (minAction.csuit === this.game.cards.trumpSuit) && ((this.game.table.usedFields === 1) &&
-									 (this.game.hands[this.id].length < 7) || (this.game.table.usedFields === 2) && (minAction.cvalue > 10))){
-					return takeAction;
 				}
 
 				return minAction;
@@ -206,12 +200,12 @@ class Bot extends Player{
         };
     
         for (let i = 0; i < actions.length; i++){
-            if ((actions[i].type === 'TAKE') || (actions[i].type === 'PASS') || (isTransfer && (actions[i].type === 'DEFENSE')) ||
-			   (cardsOnTheTableValues && ((actions[i].type !== 'DEFENSE') || (!~cardsOnTheTableValues.indexOf(actions[i].cvalue))))){
+            if ( (actions[i].type === 'TAKE') || (actions[i].type === 'PASS') || (isTransfer && (actions[i].type === 'DEFENSE') ) ||
+			   (cardsOnTheTableValues && ( (actions[i].type !== 'DEFENSE') || (!~cardsOnTheTableValues.indexOf(actions[i].cvalue)) ) )){
                 continue;
             }
 
-			if ((minAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit)){
+			if ( (minAction.csuit === this.game.cards.trumpSuit) && (actions[i].csuit !== this.game.cards.trumpSuit) ){
 				minAction = actions[i];
 				continue;
 			}
@@ -262,9 +256,9 @@ class Bot extends Player{
             return 'DEFENSE';
         }
         
-       if ((this.statuses.role === 'attacker') && (this.statuses.roleIndex > 1)){
-		   return 'SUPPORT';
-	   }
+//       if ((this.statuses.role === 'attacker') && (this.statuses.roleIndex > 1)){
+//		   return 'SUPPORT';
+//	   }
 		
         return 'ATTACK';
     }
@@ -280,27 +274,6 @@ class Bot extends Player{
         }
         
         return gameStages[0];
-    }
-
-    isTransferBeneficial(gameStage, transferAction){
-        /**
-        * Метод, определяющий эффективность перевода.
-		*
-        * В начале игры перевод выгоден, если бот не переводит козырем или козырем, меньшем 5.
-        */
-		let trumpSuitQty = this.findTrumpCardsQty();
-
-        if ((gameStage === 'EARLY_GAME') && ((transferAction.csuit !== this.game.cards.trumpSuit) || ((transferAction.cvalue < 5) && (trumpSuitQty > 1)))){
-            return true;
-        }
-        /**
-        * В конце игры перевод выгоден, если бот не переводит козырем или козырем, меньшем J.
-        */
-        if ((gameStage === 'END_GAME') && ((transferAction.csuit !== this.game.cards.trumpSuit) || ((transferAction.cvalue < 11) && (trumpSuitQty > 0)))){
-            return true;
-        }
-        
-        return false;
     }
 
     findMaxQtyCard(minAction, allowedCardsIDs, gameStage){
@@ -362,10 +335,6 @@ class Bot extends Player{
 		}
     }
 
-	isTrumpAttackBeneficial(){
-		// Подкидывать(ходить) козырем, если у бота их много.
-	}
-
 	isThisValueOut(value){
 		/*
 		* Метод, проверяющий, вышли ли оставшиеся карты этого типа из игры (которых нету у этого бота в руке).
@@ -416,6 +385,14 @@ class Bot extends Player{
 
 		return allowedCardsIDs;
 	}
+
+	getDefensePlayerID(){
+		for (let i = 0; i < this.game.players.length; i++){
+			if (this.game.players[i].statuses.role === 'defender'){
+				return this.game.players[i].id;
+			}
+		}
+	}
 	/*
 	*
 	* Методы, работающие со столом.
@@ -450,7 +427,7 @@ class Bot extends Player{
 
 	findCardsOnTheTableValues(){
         /**
-        * Метод, возвращающий все карты на столе.
+        * Метод, возвращающий значения всех карт на столе.
         */
         let cardsValues = [];
 
@@ -496,6 +473,50 @@ class Bot extends Player{
 
         return cards;
     }
+
+	isBeatableOnlyByThis(cardAction, actions){
+		/*
+		* Метод, возвращающий true, если на столе есть карты, которые бьются только картой из cardAction.
+		*/
+		let cardsOnTheTable = this.findNullDefenseCardsOnTheTable(),
+			beatableCards = [];
+
+		for (let i = 0; i < actions.length; i++){
+			if ( (actions[i].field !== cardAction.field) && (!~beatableCards.indexOf(actions[i].field)) ){
+					beatableCards.push(actions[i].field);
+				}
+		}
+
+		if (beatableCards.length === cardsOnTheTable.length){
+			false;
+		}
+
+		return true;
+	}
+
+	isNotBeatable(actions){
+		/*
+		* Метод, возвращающий true, если на столе есть карты, которые нельзя побить.
+		*/
+		let cardsOnTheTable = this.findNullDefenseCardsOnTheTable(),
+			beatableCards = [];
+
+		for (let i = 0; i < actions.length; i++){
+			if ((!~beatableCards.indexOf(actions[i].field)) && (actions[i].field !== undefined)){
+					beatableCards.push(actions[i].field);
+			}
+		}
+
+		console.log('Beatable Cards ', beatableCards);
+		console.log('Beatable Cards length', beatableCards.length);
+		console.log('Cards On TheTable length', cardsOnTheTable.length);
+
+		if (beatableCards.length === cardsOnTheTable.length){
+			return false;
+		}
+
+		return true;
+	}
 	/*
 	*
 	* Методы, работающие с рукой бота.
@@ -551,6 +572,92 @@ class Bot extends Player{
 		}
 
 		return trumpCardsQty;
+	}
+	/*
+	*
+	* Методы, определяющие полезность чего-либо.
+	*
+	*/
+	isTransferBeneficial(gameStage, transferAction, actions){
+        /**
+        * Метод, определяющий эффективность перевода.
+		*
+        * В начале игры перевод выгоден, если бот не переводит козырем или козырем, меньшем 5.
+        */
+		let trumpSuitQty = this.findTrumpCardsQty();
+
+        if ( (gameStage === 'EARLY_GAME') && ( (transferAction.csuit !== this.game.cards.trumpSuit) || ((transferAction.cvalue < 5) && (trumpSuitQty > 1)) ||
+											( (transferAction.cvalue < 11) && ((this.game.table.usedFields > 1) || this.isBeatableOnlyByThis(transferAction, actions)) ) )){
+            return true;
+        }
+        /**
+        * В конце игры перевод выгоден, если бот не переводит козырем или козырем, меньшем J.
+        */
+        if ((gameStage === 'END_GAME') && ( (transferAction.csuit !== this.game.cards.trumpSuit) ||
+										   ( (transferAction.cvalue < 11) && ( (trumpSuitQty > 0) ||
+																			 this.isBeatableOnlyByThis(transferAction, actions) ) ))){
+            return true;
+        }
+
+        return false;
+    }
+
+	isAttackActionBeneficial(minAction, gameStage){
+		// getDefensePlayerID
+		// this.game.hands[this.id]
+		// this.turnStages.current === 'FOLLOWUP'
+		if (!minAction){
+			return false;
+		}
+
+		let defensePlayerCardsQty = this.game.hands[this.getDefensePlayerID()].length;
+
+		if ( (defensePlayerCardsQty < 3) && (this.game.turnStages.current !== 'FOLLOWUP') &&
+			( (minAction.csuit === this.game.cards.trumpSuit) && (minAction.cvalue < 11) ||
+			(minAction.csuit !== this.game.cards.trumpSuit))){
+			return true;
+		}
+
+		if ( (defensePlayerCardsQty < 4) && (this.game.turnStages.current !== 'FOLLOWUP') &&
+			( (minAction.csuit === this.game.cards.trumpSuit) && (minAction.cvalue < 6) ||
+			(minAction.csuit !== this.game.cards.trumpSuit))){
+			return true;
+		}
+
+		if ((defensePlayerCardsQty < 5) && (this.game.turnStages.current !== 'FOLLOWUP') &&
+			(minAction.csuit !== this.game.cards.trumpSuit)){
+			return true;
+		}
+
+		return false;
+	}
+
+	isPassActionBeneficial(minAction, gameStage){
+		if ((!minAction) || ( (minAction.csuit === this.game.cards.trumpSuit) || (minAction.cvalue > 10) )){
+			return true;
+		}
+
+		return false;
+	}
+
+	isTakeActionBeneficial(gameStage, minAction, actions){
+		if ( this.isNotBeatable(actions) || ( (gameStage !== 'END_GAME') && (minAction.csuit === this.game.cards.trumpSuit) &&
+			( ((this.game.table.usedFields === 1) && (this.game.hands[this.id].length < 7)) ||
+			 ((this.game.table.usedFields === 2) && (minAction.cvalue > 10)) ) ) ){
+			return true
+		}
+
+		return false;
+	}
+
+	isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable){
+		if ( (minActionWithValueOnTheTable.value - (this.findAttackCardOnTheTable(minActionWithValueOnTheTable.field)).value <= 3) &&
+					( ((gameStage === 'EARLY_GAME') && (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit)) ||
+						(minActionWithValueOnTheTable.value < 11) || (minActionWithValueOnTheTable.csuit !== this.game.cards.trumpSuit) ) ){
+			return true;
+		}
+
+		return false;
 	}
 }
 
