@@ -141,8 +141,8 @@ class Bot extends Player{
 			allowedCardsIDs = this.getAllowedCardsIDs(actions),
 			passAction = this.findPassAction(actions),
 			takeAction = this.findTakeAction(actions),
-			maxQtyCard = this.findMaxQtyCard(minAction, allowedCardsIDs, gameStage),
-			trumpCardsQty = this.findTrumpCardsQty(); //не используется?
+			maxQtyCard = this.findMaxQtyCard(minAction, allowedCardsIDs, gameStage);
+		//let trumpCardsQty = this.findTrumpCardsQty(); //не используется?
 
 		console.log('Min Action ', minAction);
 		
@@ -493,7 +493,7 @@ class Bot extends Player{
 		}
 
 		if (beatableCards.length === cardsOnTheTable.length){
-			false;
+			return false;
 		}
 
 		return true;
@@ -649,7 +649,7 @@ class Bot extends Player{
 		if ( this.isNotBeatable(actions) || ( (gameStage !== 'END_GAME') && (minAction.csuit === this.game.cards.trumpSuit) &&
 			( ((this.game.table.usedFields === 1) && (this.game.hands[this.id].length < 7)) ||
 			 ((this.game.table.usedFields === 2) && (minAction.cvalue > 10)) ) ) ){
-			return true
+			return true;
 		}
 
 		return false;

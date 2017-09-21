@@ -1,5 +1,5 @@
 /*
-* Класс, управляющий картами и полями игры.
+* Класс, управляющий картами и колодой.
 */
 'use strict';
 
@@ -41,7 +41,7 @@ class GameCards extends BetterArray{
 		this.deck.length = 0;
 	}
 
-	// Создает карты, поля и руки
+	// Создает карты и колоду
 	make(){
 		if(!this.length){
 			this.createValues();

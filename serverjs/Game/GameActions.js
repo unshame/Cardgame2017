@@ -34,6 +34,7 @@ class GameActions{
 		}
 	}
 
+	// Ресетит все действия
 	reset(){
 		this.complete = null;
 		this.deadline = null;
@@ -119,7 +120,7 @@ class GameActions{
 		// Если действие легально
 		if(outgoingAction){
 
-			// Убираем игрока из списка действующих (он там один)
+			// Очищаем список действующих игроков
 			game.players.working = [];
 
 			this.complete = outgoingAction;
@@ -150,7 +151,7 @@ class GameActions{
 	}
 
 	// Находит и возвращает локальную копию переданного действия или null
-	// ignored может быть 1 или массивом игнорируемых свойств действия
+	// ignored может быть массивом игнорируемых свойств действия
 	checkValidity(pid, action, ignored){
 
 		let validActions = this.valid[pid];
@@ -170,6 +171,7 @@ class GameActions{
 		return null;
 	}
 
+	// Запоминает возможные действия игроков
 	setValid(actions){
 		for(let pid in this.valid){
 			if(this.valid.hasOwnProperty(pid)){
@@ -178,6 +180,7 @@ class GameActions{
 		}
 	}
 
+	// Удаляет возможные действия игроков
 	clearValid(){
 		for(let pid in this.valid){
 			if(this.valid.hasOwnProperty(pid)){
@@ -186,6 +189,7 @@ class GameActions{
 		}
 	}
 
+	// Возвращает есть ли возможные действия
 	hasValid(){
 		for(let pid in this.valid){
 			if(this.valid.hasOwnProperty(pid) && this.valid[pid].length){
