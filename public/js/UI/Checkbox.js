@@ -30,7 +30,7 @@ UI.Checkbox.prototype.getDefaultCheckboxOptions = function(){
 		color: 'grey',
 		actionEnable: function(){},
 		actionDisable: function(){},
-		text: 'KJASDHKSAH',
+		text: '',
 		name: null,
 		textColor: 'black',
 		font: 'Exo',

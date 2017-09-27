@@ -17,11 +17,11 @@ extend(UI.ButtonBase, Phaser.Button);
 */
 UI.ButtonBase.prototype.changeStateFrame = function (state) {
 	if(this.parent && this.parent.label && this.inputEnabled){
-		if(state != 'Down' && this.parent.isDown){
+		if(state != UI.ButtonBase.States.STATE_DOWN && this.parent.isDown){
 			this.parent.isDown = false;
 			this.parent.updatePosition();
 		}
-		else if(state == 'Down' && !this.parent.isDown){
+		else if(state == UI.ButtonBase.States.STATE_DOWN && !this.parent.isDown){
 			this.parent.isDown = true;
 			this.parent.label.y += this.parent.options.downOffset;
 		}

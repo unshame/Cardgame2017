@@ -6,8 +6,7 @@ UI.Text = function(options){
 	this.font = this.options.font;
 	this.fontSize = this.options.fontSize;
 	this.fontWeight = this.options.fontWeight;
-	this.stroke = '#000000';
-	this.strokeThickness = 6;
+	this.setShadow(1, 1, 'rgba(0,0,0,0.5)', 1);
 	this.fill = this.options.textColor;
 	if(this.options.group){
 		this.options.group.add(this);
@@ -30,7 +29,6 @@ extend(UI.Text, Phaser.Text);
 		textColor: 'black',
 		font: 'Exo',
 		fontSize: 26,
-		fontWeight: 'bold',
 		group: null,
 	};
 };

@@ -83,7 +83,7 @@ UI.Button = function(options){
 	}	
 
 	if(this.label){
-		this.label.state = 'Out';
+		this.label.state = UI.ButtonBase.States.STATE_OUT;
 		this.label.anchor.set(0.5, 0.5);
 		this.add(this.label);
 	}
@@ -171,7 +171,7 @@ UI.Button.prototype.disable = function(changeToDefaultFrame){
 		this.button.frame = this.options.disabledFrame;
 	}
 	else{
-		this.button.changeStateFrame('Up');
+		this.button.changeStateFrame(UI.ButtonBase.States.STATE_UP);
 	}
 	this.button.inputEnabled = false;
 

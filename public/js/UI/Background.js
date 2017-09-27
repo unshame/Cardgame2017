@@ -7,14 +7,20 @@ UI.Background = function(){
 	Phaser.Group.call(this, game);
 	this.name = 'background';
 	this.offset = 40;
-	this.textures = [
-		'blue',
-		'green',
-		'black',
-		'assault',
-		'wood_light',
-		'wood_dark'
-	];
+	this.namedTextures = {
+		'blue': 'Blue',
+		'green': 'Green',
+		'black': 'Black',
+		'assault': 'Assault',
+		'wood_light': 'Wood Light',
+		'wood_dark': 'Wood Dark'	
+	}
+	this.textures = [];
+	for(var key in this.namedTextures){
+		if(this.namedTextures.hasOwnProperty(key)){
+			this.textures.push(key);
+		}
+	}
 	var textureName = gameOptions.get('ui_background');
 	if(!~this.textures.indexOf(textureName)){
 		textureName = skinManager.skin.background;

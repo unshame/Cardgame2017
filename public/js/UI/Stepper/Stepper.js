@@ -27,9 +27,9 @@ UI.Stepper = function(options) {
 		this.addTextContent('default', 'NO_CHOICES');
 	}
 
-	this.maxHeight = this.content[0].height;
-	this.maxWidth = this.content[0].width;
-	for(var i = 1; i < this.content.length;i++){
+	this.maxHeight = this.options.minHeight;
+	this.maxWidth = this.options.minWidth;
+	for(var i = 0; i < this.content.length;i++){
 		if(this.content[i].width > this.maxWidth){
 			this.maxWidth = this.content[i].width;
 		}
@@ -99,7 +99,9 @@ UI.Stepper.prototype.getDefaultOptions = function(){
 		choices: {},
 		startKey: null,
 		action: function(){},
-		context: null
+		context: null,
+		minWidth: 0,
+		minHeight: 0
 	};
 };
 
@@ -162,6 +164,7 @@ UI.Stepper.prototype.addTextContent = function (key, value) {
 		align: 'center'
 	};
 	var text = game.make.text(this.centerX, this.centerY, value, style);
+	text.setShadow(1, 1, 'rgba(0,0,0,0.5)', 1);
 	text.visible = false;
 	this.add(text);
 	this.content.push(text);
@@ -293,4 +296,10 @@ UI.Stepper.prototype.enable = function(){
 		this.leftArrow.alpha = this.disabledAlpha;
 	}
 	this.currentContent.alpha = 1;
+};
+
+UI.Stepper.prototype.loadLabels = function(){
+	this.content.forEach(function(c){
+		c.setText(c.text);
+	})
 };

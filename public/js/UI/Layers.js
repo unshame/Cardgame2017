@@ -192,8 +192,12 @@ UI.Layers.prototype.loadLabels = function(){
 		if(!this.byName.hasOwnProperty(pname)){
 			continue;
 		}
-
+		
 		var layer = this.byName[pname];
+		if(layer.loadLabels){
+			layer.loadLabels();
+			continue;
+		}
 		if(layer instanceof Phaser.Text){
 			layer.setText(layer.text);
 			continue;
@@ -203,6 +207,10 @@ UI.Layers.prototype.loadLabels = function(){
 		}
 
 		layer.forEach(function(el){
+			if(el.loadLabels){
+				el.loadLabels();
+				return;
+			}
 			if(el.label && el.label.isText){
 				el.label.setText(el.label.text);
 			}

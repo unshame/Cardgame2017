@@ -89,45 +89,61 @@ UI.prototype._createMenus = function(){
 					mobileClickProtect: true,
 					hoverText: 'Leave current game.\n You will be replaced by a bot (how shameful).'
 				}),
-				{
-					action: function(button, pointer){
-						ui.background.nextTexture();
-					},
-					name: 'background',
-					text: 'Change Background',
-					fontSize: 20
-				},
-				{
-					action: function(button, pointer){
-						if(pointer.isMouse && pointer.button !== 0){
-							skinManager.setSkin('uno');
-						}
-						else if(skinManager.skin.name == 'modern'){
-							skinManager.setSkin('classic');
-						}
-						else{
-							skinManager.setSkin('modern');
-						}
-
-					},
-					name: 'change_skin',
-					text: 'Change skin'
-				},
-				Menu.stepper({
-					action: function(key){
-						gameOptions.set('system_renderer', key);
-						gameOptions.save();
-						location.href = location.href;
-					},
-					choices: {
-						[Phaser.AUTO]: 'Auto',
-						[Phaser.WEBGL]: 'WebGL',
-						[Phaser.CANVAS]: 'Canvas'
-					},
-					name: 'renderer',
-					textColor: 'black',
-					startKey: renderer
-				}),
+				Menu.alignAlternate(
+					Menu.text({
+						text: 'Background'
+					}),
+					Menu.stepper({
+						action: function(key){
+							ui.background.setTexture(key);
+						},
+						choices: ui.background.namedTextures,
+						name: 'skin',
+						textColor: 'black',
+						startKey: gameOptions.get('ui_background'),
+						minWidth: 150
+					})
+				),
+				Menu.alignAlternate(
+					Menu.text({
+						text: 'Skin'
+					}),
+					Menu.stepper({
+						action: function(key){
+							skinManager.setSkin(key);
+						},
+						choices: {
+							modern: 'Modern',
+							classic: 'Classic',
+							uno: 'Uno'
+						},
+						name: 'skin',
+						textColor: 'black',
+						startKey: gameOptions.get('ui_skin'),
+						minWidth: 150
+					})
+				),
+				Menu.alignAlternate(
+					Menu.text({
+						text: 'Render mode'
+					}),
+					Menu.stepper({
+						action: function(key){
+							gameOptions.set('system_renderer', key);
+							gameOptions.save();
+							location.href = location.href;
+						},
+						choices: {
+							[Phaser.AUTO]: 'Auto',
+							[Phaser.WEBGL]: 'WebGL',
+							[Phaser.CANVAS]: 'Canvas'
+						},
+						name: 'renderer',
+						textColor: 'black',
+						startKey: renderer,
+						minWidth: 150
+					}),
+				),
 /*				Menu.buttonPopup({
 					action: function(){
 						gameOptions.set('system_renderer', renderer === Phaser.WEBGL ? Phaser.CANVAS : Phaser.WEBGL);
@@ -137,23 +153,25 @@ UI.prototype._createMenus = function(){
 					text: rendererText,
 					hoverText: 'Change renderer to ' + rendererText + '. WebGL runs much better on mobile devices.'
 				}),*/
-				Menu.buttonPopup({	
-					action: function(){
-						gameOptions.restoreAllDefaults();
-						gameOptions.save();
-						location.href = location.href;
-					}, 
-					name: 'restore',
-					text: 'Restore',
-					hoverText: 'Get rid of all saved data (including your session id!).'
-				}),
-				{
-					action: function(){
-						ui.modalManager.openModal('debug');
-					},
-					name: 'debug',
-					text: 'Debug'
-				}
+				[
+					Menu.buttonPopup({	
+						action: function(){
+							gameOptions.restoreAllDefaults();
+							gameOptions.save();
+							location.href = location.href;
+						}, 
+						name: 'restore',
+						text: 'Restore',
+						hoverText: 'Get rid of all saved data (including your session id!).'
+					}),
+					{
+						action: function(){
+							ui.modalManager.openModal('debug');
+						},
+						name: 'debug',
+						text: 'Debug'
+					}
+				]
 			]
 		}),
 
