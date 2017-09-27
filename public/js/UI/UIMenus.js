@@ -91,21 +91,6 @@ UI.prototype._createMenus = function(){
 				}),
 				Menu.alignAlternate(
 					Menu.text({
-						text: 'Background'
-					}),
-					Menu.stepper({
-						action: function(key){
-							ui.background.setTexture(key);
-						},
-						choices: ui.background.namedTextures,
-						name: 'skin',
-						textColor: 'black',
-						startKey: gameOptions.get('ui_background'),
-						minWidth: 150
-					})
-				),
-				Menu.alignAlternate(
-					Menu.text({
 						text: 'Skin'
 					}),
 					Menu.stepper({
@@ -120,6 +105,21 @@ UI.prototype._createMenus = function(){
 						name: 'skin',
 						textColor: 'black',
 						startKey: gameOptions.get('ui_skin'),
+						minWidth: 150
+					})
+				),
+				Menu.alignAlternate(
+					Menu.text({
+						text: 'Background'
+					}),
+					Menu.stepper({
+						action: function(key){
+							ui.background.setTexture(key);
+						},
+						choices: ui.background.namedTextures,
+						name: 'skin',
+						textColor: 'black',
+						startKey: gameOptions.get('ui_background'),
 						minWidth: 150
 					})
 				),

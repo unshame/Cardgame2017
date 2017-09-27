@@ -147,6 +147,9 @@ Game.prototype.applySkin = function(){
 	this.scale.drawDebugGrid();
 	var state = this.state.getCurrent();
 	state.applySkin();
+
+	// TODO: вынести в общую функцию для всех состояний
+	ui.menus.options.getElementByName('skin').setTo(ui.background.surface.textureName, false);
 };
 
 /**
