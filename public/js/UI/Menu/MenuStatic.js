@@ -30,18 +30,6 @@ Menu.buttonPopup = function(options){
 		options: options
 	};
 };*/
-Menu.checkbox = function(options){
-	return {
-		type: 'checkbox',
-		options: options
-	};
-};
-Menu.text = function(options){
-	return {
-		type: 'text',
-		options: options
-	};
-};
 
 /**
 * Элементы будут выравнены по левому краю.

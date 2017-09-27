@@ -31,16 +31,11 @@ UI.prototype._createMenus = function(){
 					name: 'quickGame',
 					text: 'Quick Game'
 				},
-				Menu.checkbox({
-					actionEnable: function(){
-						console.log('enabled')
-					},
-					actionDisable: function(){
-						console.log('disabled')
-					},
+				{
+					action: function(){},
 					name: 'custom',
 					text: 'Create Game'
-				}),
+				},
 				{
 					action: function(){},
 					name: 'join',

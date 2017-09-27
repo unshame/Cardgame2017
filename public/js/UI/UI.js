@@ -146,7 +146,7 @@ UI.prototype.initialize = function(){
 	);
 
 	/* Временно выключенные кнопки */
-	//this.menus.main.disableElement('custom');
+	this.menus.main.disableElement('custom');
 	this.menus.main.disableElement('join');
 	this.menus.queue.disableElement('invite');
 
@@ -211,4 +211,3 @@ UI.prototype.setDebugButtonText = function(name, text, on){
 //@include:Cursor
 //@include:ModalManager
 //@include:Credits
-//@include:UITitle
