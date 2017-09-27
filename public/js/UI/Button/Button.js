@@ -29,7 +29,7 @@ UI.Button = function(options){
 	*/
 	this.options = mergeOptions(this.getDefaultOptions(), options);
 
-	Phaser.Group.call(this, null, null, this.options.name);
+	Phaser.Group.call(this, game, null, this.options.name);
 
 	/**
 	* Действие.
