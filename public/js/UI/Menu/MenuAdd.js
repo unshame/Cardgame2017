@@ -124,12 +124,42 @@ Menu.prototype._addStepper = function(options){
 	return stepper;
 };
 
-Menu.prototype._addCheckbox = function(){
-
+Menu.prototype._addCheckbox = function(options){
+	options.group = this;
+	if(!options.color && options.color !== 0){
+			options.color = this.options.elementColor;
+		}
+		if(!options.textColor && options.textColor !== 0){
+			options.textColor = this.options.textColor;
+		}
+		if(options.context === false){
+			options.context = undefined;
+		}
+		else if(!options.context){
+			options.context = this;
+		}
+	var checkbox = new UI.Checkbox(options);
+	this.elements.push(checkbox);
+	return checkbox;
 };
 
-Menu.prototype._addTitle = function(){
-
+Menu.prototype._addText = function(options){
+	options.group = this;
+	if(!options.color && options.color !== 0){
+			options.color = this.options.elementColor;
+		}
+		if(!options.textColor && options.textColor !== 0){
+			options.textColor = this.options.textColor;
+		}
+		if(options.context === false){
+			options.context = undefined;
+		}
+		else if(!options.context){
+			options.context = this;
+		}
+	var text = new UI.Text(options);
+	this.elements.push(text);
+	return text;
 };
 
 Menu.prototype._addImage = function(){

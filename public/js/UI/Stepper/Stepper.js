@@ -62,12 +62,14 @@ UI.Stepper = function(options) {
 		group: this
 	});
 
+	this.disabledAlpha = 0.5;
+
 	if(!this.previousContent){
-		this.leftArrow.alpha = 0;
+		this.leftArrow.alpha = this.disabledAlpha;
 		this.leftArrow.disable();
 	}
 	if(!this.nextContent){
-		this.rightArrow.alpha = 0;
+		this.rightArrow.alpha = this.disabledAlpha;
 		this.rightArrow.disable();
 	}
 
@@ -156,7 +158,7 @@ UI.Stepper.prototype.addTextContent = function (key, value) {
 	var style = {
 		font: this.options.font,
 		fontSize: this.options.fontSize,
-		fill: 'white',
+		fill: this.options.textColor,
 		align: 'center'
 	};
 	var text = game.make.text(this.centerX, this.centerY, value, style);
@@ -206,7 +208,7 @@ UI.Stepper.prototype.nextSlide = function(){
 		}
 		else{
 			this.nextContent = null;
-			this.rightArrow.alpha = 0;
+			this.rightArrow.alpha = this.disabledAlpha;
 			this.rightArrow.disable();
 		}
 
@@ -240,7 +242,7 @@ UI.Stepper.prototype.prevSlide = function(){
 		}
 		else{
 			this.previousContent = null;
-			this.leftArrow.alpha = 0;
+			this.leftArrow.alpha = this.disabledAlpha;
 			this.leftArrow.disable();
 		}
 
@@ -263,22 +265,32 @@ UI.Stepper.prototype.update = function(){
 	}
 };
 
-UI.Stepper.prototype.disable = function(){
-	this.leftArrow.disable();
-	this.rightArrow.disable();
+UI.Stepper.prototype.disable = function(passive){
+	this.leftArrow.disable(passive);
+	this.rightArrow.disable(passive);
+	if(!passive){
+		this.leftArrow.alpha = this.disabledAlpha;
+		this.rightArrow.alpha = this.disabledAlpha;
+		this.currentContent.alpha = this.disabledAlpha;
+	}
 };
 
 UI.Stepper.prototype.enable = function(){
 	if(this.nextContent){
 		this.rightArrow.enable();
+		this.rightArrow.alpha = 1;
 	}
 	else{
 		this.rightArrow.disable();
+		this.rightArrow.alpha = this.disabledAlpha;
 	}
 	if(this.previousContent){
 		this.leftArrow.enable();
+		this.leftArrow.alpha = 1;
 	}
 	else{
 		this.leftArrow.disable();
+		this.leftArrow.alpha = this.disabledAlpha;
 	}
+	this.currentContent.alpha = 1;
 };

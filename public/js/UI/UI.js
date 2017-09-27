@@ -206,8 +206,12 @@ UI.prototype.setDebugButtonText = function(name, text, on){
 //@include:PopupManager
 //@include:Layers
 //@include:Background
+
 //@include:Button
 //@include:Stepper
+//@include:Text
+//@include:Checkbox
+
 //@include:Rope
 //@include:Logo
 //@include:Cursor

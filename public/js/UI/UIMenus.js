@@ -113,16 +113,30 @@ UI.prototype._createMenus = function(){
 					name: 'change_skin',
 					text: 'Change skin'
 				},
-				Menu.buttonPopup({
+				Menu.stepper({
+					action: function(key){
+						gameOptions.set('system_renderer', key);
+						gameOptions.save();
+						location.href = location.href;
+					},
+					choices: {
+						[Phaser.AUTO]: 'Auto',
+						[Phaser.WEBGL]: 'WebGL',
+						[Phaser.CANVAS]: 'Canvas'
+					},
+					name: 'renderer',
+					textColor: 'black',
+					startKey: renderer
+				}),
+/*				Menu.buttonPopup({
 					action: function(){
 						gameOptions.set('system_renderer', renderer === Phaser.WEBGL ? Phaser.CANVAS : Phaser.WEBGL);
 						gameOptions.save();
-						location.href = location.href;
 					}, 
 					name: 'renderer',
 					text: rendererText,
 					hoverText: 'Change renderer to ' + rendererText + '. WebGL runs much better on mobile devices.'
-				}),
+				}),*/
 				Menu.buttonPopup({	
 					action: function(){
 						gameOptions.restoreAllDefaults();
