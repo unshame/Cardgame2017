@@ -34,3 +34,29 @@ UI.ButtonBase.prototype.changeStateFrame = function (state) {
 		return supercall(UI.ButtonBase).changeStateFrame.call(this, state);
 	}
 };
+
+
+UI.ButtonBase.setStateFrames = function(button, frame){
+	if(button.options){
+		button.options.defaultFrame = button.options.overFrame = button.options.disabledFrame = button.options.downFrame = frame;
+	}
+	if(!(button instanceof Phaser.Button)){
+		button = button.button;
+	}
+	if(!(button instanceof Phaser.Button)){
+		console.error('UI: isn\'t a button');
+		return;
+	}
+    button.setStateFrame(UI.ButtonBase.States.STATE_OVER, frame, button.input.pointerOver()); 
+    button.setStateFrame(UI.ButtonBase.States.STATE_OUT, frame, !button.input.pointerOver()); 
+    button.setStateFrame(UI.ButtonBase.States.STATE_DOWN, frame, button.input.pointerDown()); 
+    button.setStateFrame(UI.ButtonBase.States.STATE_UP, frame, button.input.pointerUp());
+    button.frame = frame;
+}
+
+UI.ButtonBase.States = { 
+    STATE_OVER: 'Over', 
+    STATE_OUT: 'Out', 
+    STATE_DOWN: 'Down', 
+    STATE_UP: 'Up' 
+}

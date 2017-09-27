@@ -24,12 +24,24 @@ Menu.buttonPopup = function(options){
 	};
 };
 
-/*Menu.slider = function(options){
+Menu.stepper = function(options){
 	return {
-		type: 'slider',
+		type: 'stepper',
 		options: options
 	};
-};*/
+};
+Menu.checkbox = function(options){
+	return {
+		type: 'checkbox',
+		options: options
+	};
+};
+Menu.text = function(options){
+	return {
+		type: 'text',
+		options: options
+	};
+};
 
 /**
 * Элементы будут выравнены по левому краю.
