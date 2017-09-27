@@ -117,7 +117,7 @@ UI.prototype._createMenus = function(){
 							ui.background.setTexture(key);
 						},
 						choices: ui.background.namedTextures,
-						name: 'skin',
+						name: 'background',
 						textColor: 'black',
 						startKey: gameOptions.get('ui_background'),
 						minWidth: 150

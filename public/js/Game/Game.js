@@ -149,7 +149,7 @@ Game.prototype.applySkin = function(){
 	state.applySkin();
 
 	// TODO: вынести в общую функцию для всех состояний
-	ui.menus.options.getElementByName('skin').setTo(ui.background.surface.textureName, false);
+	ui.menus.options.getElementByName('background').setTo(ui.background.surface.textureName, false);
 };
 
 /**
