@@ -22,7 +22,7 @@
 * 
 * 	// Строка с одним элементов, выравненным по левому краю
 * 	Menu.alignLeft(
-* 		Menu.slider({text: 'row'})
+* 		Menu.button({text: 'row'})
 * 	)
 * ]);
 */
@@ -103,7 +103,6 @@ Menu.prototype._addButton = function(options, withPopup){
 	var button = withPopup ? new UI.ButtonPopup(options) : new UI.Button(options);
 	button.disable(true);
 	this.elements.push(button);
-	//this.add(button);
 	return button;
 };
 
@@ -111,8 +110,18 @@ Menu.prototype._addButtonPopup = function(options){
 	return this._addButton(options, true);
 };
 
-Menu.prototype._addSlider = function(){
-
+Menu.prototype._addStepper = function(options){
+	options.group = this;
+	if(!options.color && options.color !== 0){
+		options.color = this.options.elementColor;
+	}
+	if(!options.textColor && options.textColor !== 0){
+		options.textColor = this.options.textColor;
+	}
+	var stepper = new UI.Stepper(options);
+	stepper.disable();
+	this.elements.push(stepper);
+	return stepper;
 };
 
 Menu.prototype._addCheckbox = function(){

@@ -197,6 +197,7 @@ UI.prototype.setDebugButtonText = function(name, text, on){
 	ui.menus.debug.getByName(name).label.setText(text + ': ' + (on ? 'on' : 'off'));
 };
 
+
 //@include:UIMenus
 //@include:UIButtons
 
@@ -206,6 +207,7 @@ UI.prototype.setDebugButtonText = function(name, text, on){
 //@include:Layers
 //@include:Background
 //@include:Button
+//@include:Stepper
 //@include:Rope
 //@include:Logo
 //@include:Cursor

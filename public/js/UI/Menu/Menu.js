@@ -145,7 +145,7 @@ Menu.prototype._getTypeMap = function(){
 	return {
 		button: this._addButton.bind(this),
 		buttonPopup: this._addButtonPopup.bind(this),
-		// slider: this._addSlider.bind(this),
+		stepper: this._addStepper.bind(this),
 		// add more
 	};
 };

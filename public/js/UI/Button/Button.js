@@ -53,7 +53,7 @@ UI.Button = function(options){
 		'button_' + this.options.color + '_' + this.options.size,
 		actionWrapper,
 		this,
-		1, 0, 2, 0,
+		this.options.overFrame, this.options.defaultFrame, this.options.downFrame, this.options.defaultFrame,
 		this
 	);
 	this.button.scale.set(this.options.scale, this.options.scale);
@@ -127,7 +127,11 @@ UI.Button.prototype.getDefaultOptions = function(){
 		context: null,
 		group: null,
 		mobileClickProtect: false,
-		scale: 1
+		scale: 1,
+		defaultFrame: 0,
+		overFrame: 1,
+		downFrame: 2,
+		disabledFrame: 3
 	};
 };
 
@@ -146,7 +150,7 @@ UI.Button.prototype.enable = function(){
 	if(this.button.inputEnabled){
 		return;
 	}
-	this.button.frame = 0;
+	this.button.frame = this.options.defaultFrame;
 	this.button.inputEnabled = true;
 
 	if(this.label){
@@ -164,7 +168,7 @@ UI.Button.prototype.enable = function(){
 */
 UI.Button.prototype.disable = function(changeToDefaultFrame){
 	if(!changeToDefaultFrame){
-		this.button.frame = 3;
+		this.button.frame = this.options.disabledFrame;
 	}
 	else{
 		this.button.changeStateFrame('Up');
