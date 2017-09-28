@@ -194,11 +194,10 @@ class Bot extends Player {
 		for (let i = 0; i < actions.length; i++) {
 			let isDefense = actions[i].type === 'DEFENSE',
 				isPass = actions[i].type === 'PASS',
-				isTake = actions[i].type === 'TAKE',
-				isValueOnTheTable = cardsOnTheTableValues.includes(actions[i].cvalue);
+				isTake = actions[i].type === 'TAKE';
 
 			if (isTake || (isPass || (isTransfer && isDefense) ||
-					(cardsOnTheTableValues && ((!isDefense) || (!isValueOnTheTable))))) {
+					(cardsOnTheTableValues && ((!isDefense) || (!cardsOnTheTableValues.includes(actions[i].cvalue)))))) {
 				continue;
 			}
 
@@ -284,10 +283,11 @@ class Bot extends Player {
 
 		let cardsInHand = this.game.hands[this.id],
 			cardsByValue = {},
-			isEndGame = gameStage === 'END_GAME';
+			isEndGame = gameStage === 'END_GAME',
+			trumpSuit = this.game.cards.trumpSuit;
 
 		function isTrump(card) {
-			return card.suit === this.game.cards.trumpSuit;
+			return card.suit === trumpSuit;
 		}
 		/*
 		 * Заполяем объект cardsByValue
@@ -616,9 +616,6 @@ class Bot extends Player {
 	}
 
 	isAttackActionBeneficial(minAction, gameStage) {
-		// getDefensePlayerID
-		// this.game.hands[this.id]
-		// this.turnStages.current === 'FOLLOWUP'
 		if (!minAction) {
 			return false;
 		}
@@ -647,7 +644,7 @@ class Bot extends Player {
 	isPassActionBeneficial(minAction, gameStage) {
 		let isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit;
 
-		return (!minAction) || (isMinActionTrump || (minAction.cvalue > 10)) ;
+		return (!minAction) || (isMinActionTrump || (minAction.cvalue > 10));
 	}
 
 	isTakeActionBeneficial(gameStage, minAction, actions) {
