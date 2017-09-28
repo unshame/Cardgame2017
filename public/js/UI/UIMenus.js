@@ -3,7 +3,6 @@
 */
 UI.prototype._createMenus = function(){
 	var renderer = gameOptions.get('system_renderer');
-	var rendererText = (renderer === Phaser.WEBGL ? 'Canvas' : 'WebGL');
 	return {
 
 		// ГЛАВНОЕ МЕНЮ
@@ -134,15 +133,15 @@ UI.prototype._createMenus = function(){
 							location.href = location.href;
 						},
 						choices: {
-							[Phaser.AUTO]: 'Auto',
-							[Phaser.WEBGL]: 'WebGL',
-							[Phaser.CANVAS]: 'Canvas'
+							0: 'Auto',
+							2: 'WebGL',
+							1: 'Canvas'
 						},
 						name: 'renderer',
 						textColor: 'black',
 						startKey: renderer,
 						minWidth: 150
-					}),
+					})
 				),
 /*				Menu.buttonPopup({
 					action: function(){

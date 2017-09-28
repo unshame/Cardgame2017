@@ -293,3 +293,7 @@ UI.Stepper.prototype.loadLabels = function(){
 		c.setText(c.text);
 	})
 };
+
+UI.Stepper.prototype.getCurrentKey = function(){
+	return this.keys[this.index];
+};
