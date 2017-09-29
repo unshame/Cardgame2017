@@ -22,10 +22,10 @@ class Bot extends Player {
 		this.actionTimeout = null;
 
 		if (difficulty) {
-			this.difficulty =	difficulty;
+			this.difficulty = difficulty;
 		} else {
-				this.difficulty = 'MEDIUM';
-//			this.difficulty = 'HARD';
+			this.difficulty = 'MEDIUM';
+			//			this.difficulty = 'HARD';
 		}
 
 
@@ -139,10 +139,10 @@ class Bot extends Player {
 	}
 
 	/*
-	*
-	* Выбор действия бота
-	*
-	*/
+	 *
+	 * Выбор действия бота
+	 *
+	 */
 
 	chooseBestAction(actions) {
 		/**
@@ -163,8 +163,8 @@ class Bot extends Player {
 		console.log('Min Action ', minAction);
 
 		if (this.isAttackTurn()) {
-			if (passAction && ((isHardDifficulty && (!this.isAttackActionBeneficial(minAction, gameStage)))
-												 || (isMediumDifficulty && this.isPassActionBeneficial(minAction, gameStage)))) {
+			if (passAction && ((isHardDifficulty && (!this.isAttackActionBeneficial(minAction, gameStage))) ||
+					(isMediumDifficulty && this.isPassActionBeneficial(minAction, gameStage)))) {
 				return passAction;
 			}
 
@@ -659,9 +659,11 @@ class Bot extends Player {
 	}
 
 	isPassActionBeneficial(minAction, gameStage) {
-		let isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit;
+		if (minAction) {
+			let isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit;
+		}
 
-		return (!minAction) || (isMinActionTrump || (minAction.cvalue > 10));
+		return (!minAction) || isMinActionTrump || (minAction.cvalue > 10);
 	}
 
 	isTakeActionBeneficial(gameStage, minAction, actions) {
