@@ -156,15 +156,15 @@ class Bot extends Player {
 			passAction = this.findPassAction(actions),
 			takeAction = this.findTakeAction(actions),
 			maxQtyCard = this.findMaxQtyCard(minAction, allowedCardsIDs, gameStage),
-			isMediumDifficulty = this.difficulty === 'MEDIUM',
+			isMediumOrHardDifficulty = (this.difficulty === 'MEDIUM') || (this.difficulty === 'HARD'),
 			isHardDifficulty = this.difficulty === 'HARD';
 		//let trumpCardsQty = this.findTrumpCardsQty(); //не используется?
 
 		console.log('Min Action ', minAction);
 
 		if (this.isAttackTurn()) {
-			if (passAction && ((isHardDifficulty && (!this.isAttackActionBeneficial(minAction, gameStage))) ||
-					(isMediumDifficulty && this.isPassActionBeneficial(minAction, gameStage)))) {
+			if (passAction && (isMediumOrHardDifficulty && ((!this.isAttackActionBeneficial(minAction, gameStage)) ||
+					(this.isPassActionBeneficial(minAction, gameStage))))) {
 				return passAction;
 			}
 
@@ -180,7 +180,7 @@ class Bot extends Player {
 
 			console.log('minActionWithValueOnTheTable: ', minActionWithValueOnTheTable);
 
-			if (bestTransferAction && isMediumDifficulty && this.isTransferBeneficial(gameStage, bestTransferAction, actions)) {
+			if (bestTransferAction && isMediumOrHardDifficulty && this.isTransferBeneficial(gameStage, bestTransferAction, actions)) {
 				return bestTransferAction;
 			}
 
@@ -188,7 +188,7 @@ class Bot extends Player {
 				return takeAction;
 			}
 
-			if (minActionWithValueOnTheTable && isMediumDifficulty && this.isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable)) {
+			if (minActionWithValueOnTheTable && isMediumOrHardDifficulty && this.isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable)) {
 				return minActionWithValueOnTheTable;
 			}
 
