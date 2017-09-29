@@ -55,6 +55,7 @@ UI.prototype._createMenus = function(){
 					name: 'credits',
 					text: 'Credits'
 				}
+				
 			]
 		}),
 
@@ -142,9 +143,9 @@ UI.prototype._createMenus = function(){
 						textColor: 'black',
 						startKey: renderer,
 						minWidth: 150
-					}),
+					})
 				),
-/*				Menu.buttonPopup({
+/*Menu.buttonPopup({
 					action: function(){
 						gameOptions.set('system_renderer', renderer === Phaser.WEBGL ? Phaser.CANVAS : Phaser.WEBGL);
 						gameOptions.save();
