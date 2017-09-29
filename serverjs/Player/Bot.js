@@ -659,11 +659,7 @@ class Bot extends Player {
 	}
 
 	isPassActionBeneficial(minAction, gameStage) {
-		if (minAction) {
-			let isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit;
-		}
-
-		return (!minAction) || isMinActionTrump || (minAction.cvalue > 10);
+		return (!minAction) ||  minAction.csuit === this.game.cards.trumpSuit || (minAction.cvalue > 10);
 	}
 
 	isTakeActionBeneficial(gameStage, minAction, actions) {
