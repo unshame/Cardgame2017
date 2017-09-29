@@ -24,8 +24,7 @@ class Bot extends Player {
 		if (difficulty) {
 			this.difficulty = difficulty;
 		} else {
-			this.difficulty = 'MEDIUM';
-			//			this.difficulty = 'HARD';
+			this.difficulty = 'HARD';
 		}
 
 
