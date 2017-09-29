@@ -11,7 +11,8 @@ const
 
 
 class Bot extends Player {
-	constructor(randomNames, queueType, decisionTime) {
+	constructor(randomNames, queueType, decisionTime, difficulty) {
+		// Difficulties: EASY, MEDIUM, HARD
 		super(null, null, null, false);
 		this.id = 'bot_' + generateId();
 		this.log = Log(module, this.id);
@@ -19,6 +20,14 @@ class Bot extends Player {
 		this.queueType = queueType;
 		this.connected = true;
 		this.actionTimeout = null;
+
+		if (difficulty) {
+			this.difficulty =	difficulty;
+		} else {
+				this.difficulty = 'MEDIUM;
+//			this.difficulty = 'HARD';
+		}
+
 
 		if (typeof decisionTime != 'number' || isNaN(decisionTime)) {
 			decisionTime = 1500;
@@ -129,6 +138,12 @@ class Bot extends Player {
 		}, 0);
 	}
 
+	/*
+	*
+	* Выбор действия бота
+	*
+	*/
+
 	chooseBestAction(actions) {
 		/**
 		 * Метод, возвращающий наиболее выгодное для бота действие.
@@ -140,17 +155,20 @@ class Bot extends Player {
 			allowedCardsIDs = this.getAllowedCardsIDs(actions),
 			passAction = this.findPassAction(actions),
 			takeAction = this.findTakeAction(actions),
-			maxQtyCard = this.findMaxQtyCard(minAction, allowedCardsIDs, gameStage);
+			maxQtyCard = this.findMaxQtyCard(minAction, allowedCardsIDs, gameStage),
+			isMediumDifficulty = this.difficulty === 'MEDIUM',
+			isHardDifficulty = this.difficulty === 'HARD';
 		//let trumpCardsQty = this.findTrumpCardsQty(); //не используется?
 
 		console.log('Min Action ', minAction);
 
 		if (this.isAttackTurn()) {
-			if (passAction && ((!this.isAttackActionBeneficial(minAction, gameStage)) || this.isPassActionBeneficial(minAction, gameStage))) {
+			if (passAction && ((isHardDifficulty && (!this.isAttackActionBeneficial(minAction, gameStage)))
+												 || (isMediumDifficulty && this.isPassActionBeneficial(minAction, gameStage)))) {
 				return passAction;
 			}
 
-			if (maxQtyCard) {
+			if (isHardDifficulty && maxQtyCard) {
 				return this.changeCardIntoAction(actions, maxQtyCard);
 			}
 
@@ -160,9 +178,9 @@ class Bot extends Player {
 				minActionWithValueOnTheTable = this.findMinAction(actions, cardsOnTheTableValues),
 				bestTransferAction = this.findMinAction(actions, undefined, true);
 
-			console.log('lowestActionWithValueOnTheTable: ', minActionWithValueOnTheTable);
+			console.log('minActionWithValueOnTheTable: ', minActionWithValueOnTheTable);
 
-			if (bestTransferAction && this.isTransferBeneficial(gameStage, bestTransferAction, actions)) {
+			if (bestTransferAction && isMediumDifficulty && this.isTransferBeneficial(gameStage, bestTransferAction, actions)) {
 				return bestTransferAction;
 			}
 
@@ -170,11 +188,11 @@ class Bot extends Player {
 				return takeAction;
 			}
 
-			if (minActionWithValueOnTheTable && this.isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable)) {
+			if (minActionWithValueOnTheTable && isMediumDifficulty && this.isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable)) {
 				return minActionWithValueOnTheTable;
 			}
 
-			if (maxQtyCard) {
+			if (maxQtyCard && isHardDifficulty) {
 				return this.changeCardIntoAction(actions, maxQtyCard);
 			}
 
@@ -271,7 +289,6 @@ class Bot extends Player {
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	findMaxQtyCard(minAction, allowedCardsIDs, gameStage) {
 		/*
-		 * !!!! Подумать над тем, как использовать это метод при защите. Как найти карту(ы), которую надо побить данной картой(ами). (minDifference???)
 		 * Метод, находящий id пары или тройки карт одного типа, которые не являются козырными и меньше J.
 		 * При этом разница между этой парой(тройкой) и минимальной картой, которой можно походить, не
 		 * должна быть больше 2.
