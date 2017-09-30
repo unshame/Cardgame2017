@@ -236,7 +236,7 @@ class Bot extends Player {
 		* Если наиболее выгодное действие было найдено,
 		* то метод возвращает его
 		*/
-		return (minAction.cvalue !== Infinity) ? minAction;
+		return (minAction.cvalue !== Infinity) ? minAction : undefined;
 	}
 
 	findPassAction(actions) {
