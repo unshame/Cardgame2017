@@ -157,7 +157,7 @@ class Bot extends Player {
 			maxQtyCard = this.findMaxQtyCard(minAction, allowedCardsIDs, gameStage),
 			isMediumOrHardDifficulty = (this.difficulty === 'MEDIUM') || (this.difficulty === 'HARD'),
 			isHardDifficulty = this.difficulty === 'HARD';
-		//let trumpCardsQty = this.findTrumpCardsQty(); //не используется?
+		//let trumpCardsQty = this.findTrumpCardsQty(); // NOTE trumpCardsQty не используется
 
 		console.log('Min Action ', minAction);
 
@@ -196,7 +196,6 @@ class Bot extends Player {
 			}
 
 			return minAction;
-
 		}
 	}
 
@@ -233,14 +232,11 @@ class Bot extends Player {
 				minAction = actions[i];
 			}
 		}
-
-		if (minAction.cvalue !== Infinity) {
-			/**
-			 * Если наиболее выгодное действие было найдено,
-			 * то метод возвращает его
-			 */
-			return minAction;
-		}
+		/*
+		* Если наиболее выгодное действие было найдено,
+		* то метод возвращает его
+		*/
+		return (minAction.cvalue !== Infinity) ? minAction;
 	}
 
 	findPassAction(actions) {
@@ -276,16 +272,10 @@ class Bot extends Player {
 		let gameStages = ['EARLY_GAME', 'END_GAME'],
 			deck = this.game.deck;
 
-		if (deck.length < 5) {
-			return gameStages[1];
-		}
-
-		return gameStages[0];
+		return (deck.length < 5) ? gameStages[1] : gameStages[0];
 	}
 
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	// !!!!!!!Придумать как сократить код
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// TODO Придумать как сократить код findMaxQtyCard
 	findMaxQtyCard(minAction, allowedCardsIDs, gameStage) {
 		/*
 		 * Метод, находящий id пары или тройки карт одного типа, которые не являются козырными и меньше J.
@@ -372,11 +362,7 @@ class Bot extends Player {
 			}
 		}
 
-		if (valueQty) {
-			return true;
-		}
-
-		return false;
+		return valueQty ? true: false;
 	}
 
 	changeCardIntoAction(actions, card) {
@@ -511,11 +497,7 @@ class Bot extends Player {
 			}
 		}
 
-		if (beatableCards.length === cardsOnTheTable.length) {
-			return false;
-		}
-
-		return true;
+		return (beatableCards.length === cardsOnTheTable.length) ? false : true;
 	}
 
 	isNotBeatable(actions) {
@@ -537,11 +519,7 @@ class Bot extends Player {
 		console.log('Beatable Cards length', beatableCards.length);
 		console.log('Cards On TheTable length', cardsOnTheTable.length);
 
-		if (beatableCards.length === cardsOnTheTable.length) {
-			return false;
-		}
-
-		return true;
+		return (beatableCards.length === cardsOnTheTable.length) ? false : true;
 	}
 	/*
 	 *
@@ -631,6 +609,7 @@ class Bot extends Player {
 		return false;
 	}
 
+	// NOTE Game Stage не используется
 	isAttackActionBeneficial(minAction, gameStage) {
 		if (!minAction) {
 			return false;
@@ -641,12 +620,12 @@ class Bot extends Player {
 			isFollowUp = this.game.turnStages.current === 'FOLLOWUP';
 
 		if ((defensePlayerCardsQty < 3) && (!isFollowUp) &&
-			(isMinActionTrump && (minAction.cvalue < 11) || (!isMinActionTrump))) {
+			((isMinActionTrump && (minAction.cvalue < 11)) || (!isMinActionTrump))) {
 			return true;
 		}
 
 		if ((defensePlayerCardsQty < 4) && (!isFollowUp) &&
-			(isMinActionTrump && (minAction.cvalue < 6) || (!isMinActionTrump))) {
+			((isMinActionTrump && (minAction.cvalue < 6)) || (!isMinActionTrump))) {
 			return true;
 		}
 
@@ -657,6 +636,7 @@ class Bot extends Player {
 		return false;
 	}
 
+	// NOTE Game Stage не используется
 	isPassActionBeneficial(minAction, gameStage) {
 		return (!minAction) ||  minAction.csuit === this.game.cards.trumpSuit || (minAction.cvalue > 10);
 	}
