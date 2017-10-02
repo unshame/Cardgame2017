@@ -12,10 +12,10 @@ UI.Checkbox = function(options){
 	UI.ButtonBase.setStateFrames(this, this.frame);
 
 	this.checked = this.options.checked;
-
 	if(this.label){
 		this.label.inputEnabled = true;
 		this.label.events.onInputUp.add(this.action);
+		this.label.anchor.set(0, 0.5);
 	}
 };
 
@@ -61,7 +61,7 @@ UI.Checkbox.prototype.check = function(){
 UI.Checkbox.prototype.updatePosition = function(position){
 	supercall(UI.Checkbox).updatePosition.call(this, position);
 	if(this.label){
-		this.label.x = this.button.x + this.button.width + 80;
+		this.label.x = this.button.x + this.button.width+8;
 		this.label.y = this.button.centerY + this.label.height/16;
 		
 	}
