@@ -147,9 +147,6 @@ Game.prototype.applySkin = function(){
 	this.scale.drawDebugGrid();
 	var state = this.state.getCurrent();
 	state.applySkin();
-
-	// TODO: вынести в общую функцию для всех состояний
-	ui.menus.options.getElementByName('background').setTo(ui.background.surface.textureName, false);
 };
 
 /**
@@ -287,13 +284,15 @@ Game.prototype.shake = function(distance, duration, sin, cos){
 		ui.actionButtons
 	];
 
+	var position;
+
 	function restorePosition(el){
 		el.position = position;
 	}
 
 	for(var i = 0; i < elements.length; i++){
 		var el = elements[i];
-		var position = {x: el.position.x, y: el.position.y};
+		position = {x: el.position.x, y: el.position.y};
 		var tween = game.add.tween(el.position);
 		tween.to(
 			{

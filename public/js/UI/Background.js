@@ -70,6 +70,8 @@ UI.Background.prototype.setTexture = function(textureName){
 		fakebg.destroy();
 	});
 	transition.start();
+
+	ui.menus.options.getElementByName('background').setTo(this.surface.textureName, false);
 };
 
 UI.Background.prototype.nextTexture = function(){
