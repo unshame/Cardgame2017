@@ -2,6 +2,12 @@
 	Серверные боты
 */
 
+// TODO 1 on 1 mode
+// TODO Cheater dfficulty Attack: uses cards that opponent can't beat
+// TODO MaxQtyCard: problem with trump suit?????
+//
+
+
 'use strict';
 
 const
@@ -21,12 +27,12 @@ class Bot extends Player {
 		this.connected = true;
 		this.actionTimeout = null;
 
-		if (difficulty) {
-			this.difficulty = difficulty;
-		} else {
-			this.difficulty = 'HARD';
+		// NOTE difficulties: 0 - Easy, 1 - Medium, 2 - Hard, 3 - Cheater
+		if (difficulty === undefined) {
+			difficulty = 3;
 		}
 
+		this.difficulty = difficulty;
 
 		if (typeof decisionTime != 'number' || isNaN(decisionTime)) {
 			decisionTime = 1500;
@@ -76,7 +82,14 @@ class Bot extends Player {
 					return;
 				}
 				console.log('RECEIVED ACTIONS: ', actions);
-				this.sendResponseSync(this.chooseBestAction(actions));
+				console.log('Is Attack Turn', this.isAttackTurn());
+
+				if (this.isAttackTurn()) {
+					this.sendResponseSync(this.chooseAttack(actions));
+				} else {
+					this.sendResponseSync(this.choooseDefence(actions));
+				}
+
 
 			}, this.getDecisionTime(this.decisionTime));
 		}
@@ -143,63 +156,55 @@ class Bot extends Player {
 	 *
 	 */
 
-	chooseBestAction(actions) {
-		/**
-		 * Метод, возвращающий наиболее выгодное для бота действие.
-		 */
-		console.log('TABLE', this.game.table);
+	chooseAttack(actions) {
+		let minAction = this.findMinAction(actions),
+			pass = this.findPassAction(actions),
+			gameStage = this.defineGameStage(),
+			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage),
+			cardToAction = this.changeCardIntoAction;
 
-		let gameStage = this.defineGameStage(),
-			minAction = this.findMinAction(actions),
-			allowedCardsIDs = this.getAllowedCardsIDs(actions),
-			passAction = this.findPassAction(actions),
-			takeAction = this.findTakeAction(actions),
-			maxQtyCard = this.findMaxQtyCard(minAction, allowedCardsIDs, gameStage),
-			isMediumOrHardDifficulty = (this.difficulty === 'MEDIUM') || (this.difficulty === 'HARD'),
-			isHardDifficulty = this.difficulty === 'HARD';
-		//let trumpCardsQty = this.findTrumpCardsQty(); // NOTE trumpCardsQty не используется
+		console.log('MaxQtyCard: ', maxQtyCard);
+		console.log('Min Action: ', minAction);
 
-		console.log('Min Action ', minAction);
-
-		if (this.isAttackTurn()) {
-			if (passAction && (isMediumOrHardDifficulty && ((!this.isAttackActionBeneficial(minAction, gameStage)) ||
-					(this.isPassActionBeneficial(minAction, gameStage))))) {
-				return passAction;
-			}
-
-			if (isHardDifficulty && maxQtyCard) {
-				return this.changeCardIntoAction(actions, maxQtyCard);
-			}
-
-			return minAction;
-		} else {
-			let cardsOnTheTableValues = this.findCardsOnTheTableValues(),
-				minActionWithValueOnTheTable = this.findMinAction(actions, cardsOnTheTableValues),
-				bestTransferAction = this.findMinAction(actions, undefined, true);
-
-			console.log('minActionWithValueOnTheTable: ', minActionWithValueOnTheTable);
-
-			if (bestTransferAction && isMediumOrHardDifficulty && this.isTransferBeneficial(gameStage, bestTransferAction, actions)) {
-				return bestTransferAction;
-			}
-
-			if ((!minAction) || this.isTakeActionBeneficial(gameStage, minAction, actions)) {
-				return takeAction;
-			}
-
-			if (minActionWithValueOnTheTable && isMediumOrHardDifficulty && this.isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable)) {
-				return minActionWithValueOnTheTable;
-			}
-
-			if (maxQtyCard && isHardDifficulty) {
-				return this.changeCardIntoAction(actions, maxQtyCard);
-			}
-
-			return minAction;
-		}
+		// return this.isOneOnOne ? this.chooseOneOnOneAttack(actions) :
+		return this.isPass(minAction, pass) ? pass :
+			maxQtyCard ? cardToAction(actions, maxQtyCard) :
+			minAction;
 	}
 
-	findMinAction(actions, cardsOnTheTableValues, isTransfer) {
+	choooseDefence(actions) {
+		let minAction = this.findMinAction(actions),
+			tableCardsValues = this.findTableCardsValues(),
+			transfer = this.findMinAction(actions, undefined, true),
+			take = this.findTakeAction(actions),
+			gameStage = this.defineGameStage(),
+			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage),
+			minActionWithTableValue = this.findMinAction(actions, tableCardsValues),
+			cardToAction = this.changeCardIntoAction;
+
+		console.log('TRANSFER: ', transfer);
+		console.log('MaxQtyCard: ', maxQtyCard);
+		console.log('Min Action: ', minAction);
+
+		//return this.isOneOnOne ? this.chooseOneOnOneDefence(actions, transfer) :
+		return this.isTransfer(gameStage, transfer, actions) ? transfer :
+			this.isTake(gameStage, minAction, actions) ? take :
+			this.isMinActionWithTableValue(gameStage, minActionWithTableValue) ? minActionWithTableValue :
+			maxQtyCard ? cardToAction(actions, maxQtyCard) :
+			minAction;
+	}
+
+	chooseOneOnOneDefence(actions) {
+
+	}
+
+	chooseOneOnOneAttack(actions) {
+
+	}
+
+
+
+	findMinAction(actions, tableCardsValues, isTransfer) {
 		/**
 		 * Метод, возврающий наименьшую карту из тех, которыми можно походить.
 		 */
@@ -213,7 +218,7 @@ class Bot extends Player {
 				isTake = actions[i].type === 'TAKE';
 
 			if (isTake || (isPass || (isTransfer && isDefense) ||
-					(cardsOnTheTableValues && ((!isDefense) || (!cardsOnTheTableValues.includes(actions[i].cvalue)))))) {
+					(tableCardsValues && ((!isDefense) || (!tableCardsValues.includes(actions[i].cvalue)))))) {
 				continue;
 			}
 
@@ -233,9 +238,9 @@ class Bot extends Player {
 			}
 		}
 		/*
-		* Если наиболее выгодное действие было найдено,
-		* то метод возвращает его
-		*/
+		 * Если наиболее выгодное действие было найдено,
+		 * то метод возвращает его
+		 */
 		return (minAction.cvalue !== Infinity) ? minAction : undefined;
 	}
 
@@ -275,44 +280,19 @@ class Bot extends Player {
 		return (deck.length < 5) ? gameStages[1] : gameStages[0];
 	}
 
-	// TODO Придумать как сократить код findMaxQtyCard
-	findMaxQtyCard(minAction, allowedCardsIDs, gameStage) {
+	findMaxQtyCard(minAction, actions, gameStage) {
 		/*
 		 * Метод, находящий id пары или тройки карт одного типа, которые не являются козырными и меньше J.
 		 * При этом разница между этой парой(тройкой) и минимальной картой, которой можно походить, не
 		 * должна быть больше 2.
 		 * В итоге выводится одно из этих действий. В приоритете выбор с самой частой мастью. Или мастью не равной самой редкой.
 		 */
-		if (!minAction) {
+		if ((!minAction) || (this.difficulty < 2)) {
 			return undefined;
 		}
 
-		let cardsInHand = this.game.hands[this.id],
-			cardsByValue = {},
-			isEndGame = gameStage === 'END_GAME',
-			trumpSuit = this.game.cards.trumpSuit;
-
-		function isTrump(card) {
-			return card.suit === trumpSuit;
-		}
-		/*
-		 * Заполяем объект cardsByValue
-		 */
-		for (let i = 0; i < cardsInHand.length; i++) {
-			if ((!isTrump(cardsInHand[i])) && (isEndGame || (cardsInHand[i].value < 11)) &&
-				(cardsInHand[i].value <= (minAction.cvalue + 2) && (allowedCardsIDs.includes(cardsInHand[i].id)))) {
-				if (!cardsByValue[cardsInHand[i].value]) {
-					cardsByValue[cardsInHand[i].value] = [];
-				}
-
-				cardsByValue[cardsInHand[i].value].push(cardsInHand[i]);
-			}
-		}
-
-		let maxQtyCards = [];
-
-		console.log('CARDS BY VALUE: ');
-		console.log(cardsByValue);
+		let cardsByValue = this.getCardsByValue(minAction, actions, gameStage),
+			maxQtyCards = [];
 
 		for (let value in cardsByValue) {
 			if (cardsByValue[value].length > maxQtyCards.length) {
@@ -362,7 +342,7 @@ class Bot extends Player {
 			}
 		}
 
-		return valueQty ? true: false;
+		return valueQty ? true : false;
 	}
 
 	changeCardIntoAction(actions, card) {
@@ -374,6 +354,32 @@ class Bot extends Player {
 				return actions[i];
 			}
 		}
+	}
+
+	getCardsByValue(minAction, actions, gameStage) {
+		let cardsInHand = this.game.hands[this.id],
+			allowedCardsIDs = this.getAllowedCardsIDs(actions),
+			isEndGame = gameStage === 'END_GAME',
+			trumpSuit = this.game.cards.trumpSuit,
+			cardsByValue = {};
+
+		function isTrump(card) {
+			return card.suit === trumpSuit;
+		}
+
+		for (let i = 0; i < cardsInHand.length; i++) {
+			if ((!isTrump(cardsInHand[i])) && (isEndGame || (cardsInHand[i].value < 11)) &&
+				(cardsInHand[i].value <= (minAction.cvalue + 2) && (allowedCardsIDs.includes(cardsInHand[i].id)))) {
+
+				if (!cardsByValue[cardsInHand[i].value]) {
+					cardsByValue[cardsInHand[i].value] = [];
+				}
+
+				cardsByValue[cardsInHand[i].value].push(cardsInHand[i]);
+			}
+		}
+
+		return cardsByValue;
 	}
 
 	getAllowedCardsIDs(actions) {
@@ -397,6 +403,7 @@ class Bot extends Player {
 			}
 		}
 	}
+
 	/*
 	 *
 	 * Методы, работающие со столом.
@@ -432,7 +439,7 @@ class Bot extends Player {
 		return cards;
 	}
 
-	findCardsOnTheTableValues() {
+	findTableCardsValues() {
 		/**
 		 * Метод, возвращающий значения всех карт на столе.
 		 */
@@ -582,36 +589,37 @@ class Bot extends Player {
 	 * Методы, определяющие полезность чего-либо.
 	 *
 	 */
-	isTransferBeneficial(gameStage, transferAction, actions) {
+	isTransfer(gameStage, transfer, actions) {
 		/**
 		 * Метод, определяющий эффективность перевода.
-		 *
-		 * В начале игры перевод выгоден, если бот не переводит козырем или козырем, меньшем 5.
 		 */
+		if ((!transfer) || (this.difficulty === 0)) {
+			return false;
+		}
+
 		let trumpSuitQty = this.findTrumpCardsQty(),
 			isEarlyGame = gameStage === 'EARLY_GAME',
-			isTransferActionTrump = transferAction.csuit === this.game.cards.trumpSuit,
+			isTransferTrump = transfer.csuit === this.game.cards.trumpSuit,
 			usedField = this.game.table.usedFields,
-			transferActionValue = transferAction.cvalue;
+			transferValue = transfer.cvalue;
 
-		if (isEarlyGame && ((!isTransferActionTrump) || ((transferActionValue < 5) && (trumpSuitQty > 1)) ||
-				((transferActionValue < 11) && ((usedField > 1) || this.isBeatableOnlyByThis(transferAction, actions))))) {
+		if (isEarlyGame && ((!isTransferTrump) || ((transferValue < 5) && (trumpSuitQty > 1)) ||
+				((transferValue < 11) && ((usedField > 1) || this.isBeatableOnlyByThis(transfer, actions))))) {
 			return true;
 		}
 		/**
 		 * В конце игры перевод выгоден, если бот не переводит козырем или козырем, меньшем J.
 		 */
-		if (isEarlyGame && ((!isTransferActionTrump) || ((transferActionValue < 11) && ((trumpSuitQty > 0) ||
-				this.isBeatableOnlyByThis(transferAction, actions))))) {
+		if ((!isEarlyGame) && ((!isTransferTrump) || ((transferValue < 11) && ((trumpSuitQty > 0) ||
+				this.isBeatableOnlyByThis(transfer, actions))))) {
 			return true;
 		}
 
 		return false;
 	}
 
-	// NOTE Game Stage не используется
-	isAttackActionBeneficial(minAction, gameStage) {
-		if (!minAction) {
+	isAttack(minAction) {
+		if ((!minAction) || (this.difficulty < 2)) {
 			return false;
 		}
 
@@ -636,28 +644,45 @@ class Bot extends Player {
 		return false;
 	}
 
-	// NOTE Game Stage не используется
-	isPassActionBeneficial(minAction, gameStage) {
-		return (!minAction) ||  minAction.csuit === this.game.cards.trumpSuit || (minAction.cvalue > 10);
-	}
+	isPass(minAction, passAction) {
+		if ((!passAction) || this.isAttack(minAction)) {
+			return false;
+		}
 
-	isTakeActionBeneficial(gameStage, minAction, actions) {
-		let usedFields = this.game.table.usedFields,
-			isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit,
-			isEndGame = gameStage === 'END_GAME',
-			handLength = this.game.hands[this.id].length;
-
-		if (this.isNotBeatable(actions) || ((!isEndGame) && isMinActionTrump &&
-				(((usedFields === 1) && (handLength < 7)) ||
-					((usedFields === 2) && (minAction.cvalue > 10))))) {
+		if ((!minAction) || (minAction.csuit === this.game.cards.trumpSuit) ||
+			(this.difficulty > 0) || (minAction.cvalue > 10)) {
 			return true;
 		}
 
 		return false;
 	}
 
-	isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable) {
-		let minAction = minActionWithValueOnTheTable,
+	isTake(gameStage, minAction, actions) {
+		if (!minAction) {
+			return true;
+		}
+
+		let usedFields = this.game.table.usedFields,
+			isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit,
+			isEndGame = gameStage === 'END_GAME',
+			handLength = this.game.hands[this.id].length,
+			trumpCardsQty = this.findTrumpCardsQty(),
+			minValue = minAction.cvalue;
+
+		if (this.isNotBeatable(actions) || ((!isEndGame) && isMinActionTrump &&
+				(trumpCardsQty < 3) && (((usedFields === 1) && (handLength < 7) && (minValue > 7)) || ((usedFields === 2) && (minValue > 10))))) {
+			return true;
+		}
+
+		return false;
+	}
+
+	isMinActionWithTableValue(gameStage, minActionWithTableValue) {
+		if ((!minActionWithTableValue) || (this.difficulty === 0)) {
+			return false;
+		}
+
+		let minAction = minActionWithTableValue,
 			isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit,
 			isEarlyGame = gameStage === 'EARLY_GAME';
 
@@ -667,6 +692,15 @@ class Bot extends Player {
 		}
 
 		return false;
+	}
+
+	isOneOnOne(gameStage) {
+		if ((this.difficulty < 2) || (gameStage === 'EARLY_GAME') ||
+			this.game.players.length !== 2) {
+			return false;
+		}
+
+		return true;
 	}
 }
 
