@@ -173,8 +173,8 @@ class Bot extends Player {
 
 		return this.isPass(minAction, pass) ? pass :
 			this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
-			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
 			maxQtyCard ? cardToAction(actions, maxQtyCard) :
+			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
 			minAction;
 	}
 
@@ -216,7 +216,7 @@ class Bot extends Player {
 			untransferableAction = this.findMinUntransferableAction(actions, opponentsHand);
 
 		if (unbeatableAction && (!isTransferable) && (opponentsHand.length < 4) && (hand.length < 5) &&
-			((unbeatableAction.cvalue < 11) || (unbeatableAction.suit !== this.game.trumpSuit) ||
+			((unbeatableAction.cvalue < 11) || (unbeatableAction.suit !== this.game.cards.trumpSuit) ||
 				(opponentsHand.length === 1))) {
 			return unbeatableAction;
 		}
@@ -230,7 +230,8 @@ class Bot extends Player {
 
 	findMinUnbeatableAction(actions, opponentsHand) {
 		let minAction = {
-			cvalue: Infinity
+			cvalue: Infinity,
+			csuit: this.game.cards.trumpSuit
 		};
 
 
@@ -241,7 +242,8 @@ class Bot extends Player {
 				continue;
 			}
 
-			if (!this.isBeatableByOpponent(actions[i], opponentsHand)) {
+			if ((!this.isBeatableByOpponent(actions[i], opponentsHand)) &&
+				this.isLesserAction(actions[i], minAction)) {
 				minAction = actions[i];
 			}
 		}
@@ -251,7 +253,8 @@ class Bot extends Player {
 
 	findMinUntransferableAction(actions, opponentsHand) {
 		let minAction = {
-			cvalue: Infinity
+			cvalue: Infinity,
+			csuit: this.game.cards.trumpSuit
 		};
 
 
@@ -262,7 +265,8 @@ class Bot extends Player {
 				continue;
 			}
 
-			if (!this.isTransferableByOpponent(actions[i], opponentsHand)) {
+			if ((!this.isTransferableByOpponent(actions[i], opponentsHand)) &&
+				this.isLesserAction(actions[i], minAction)) {
 				minAction = actions[i];
 			}
 		}
@@ -276,7 +280,8 @@ class Bot extends Player {
 		 */
 
 		let minAction = {
-			cvalue: Infinity
+			cvalue: Infinity,
+			csuit: this.game.cards.trumpSuit
 		};
 
 		for (let i = 0; i < actions.length; i++) {
@@ -297,7 +302,8 @@ class Bot extends Player {
 
 	findMinTableCardAction(actions, tableCardsValues) {
 		let minAction = {
-			cvalue: Infinity
+			cvalue: Infinity,
+			csuit: this.game.cards.trumpSuit
 		};
 
 		for (let i = 0; i < actions.length; i++) {
@@ -319,7 +325,8 @@ class Bot extends Player {
 
 	findMinTransfer(actions) {
 		let minAction = {
-			cvalue: Infinity
+			cvalue: Infinity,
+			csuit: this.game.cards.trumpSuit
 		};
 
 		for (let i = 0; i < actions.length; i++) {
@@ -552,7 +559,6 @@ class Bot extends Player {
 
 		return cards;
 	}
-
 	/*
 	 *
 	 * Методы, работающие с рукой бота.
@@ -817,17 +823,20 @@ class Bot extends Player {
 		}
 
 		if ((action.cvalue < minAction.cvalue) &&
-			(isActionTrump && isMinActionTrump) ||
-			((!isMinActionTrump) && (!isActionTrump))) {
+			(isActionTrump === isMinActionTrump)) {
 			return true;
 		}
 
 		return false;
 	}
 
-	isBeatableByOpponent(action, opponentsCards) {
-		for (let i = 0; i < opponentsCards.length; i++) {
-			let isOpponentsCardTrump = opponentsCards[i].suit === this.game.cards.trumpSuit,
+	isBeatableByOpponent(action, opponentsHand) {
+		if (!action) {
+			return false;
+		}
+
+		for (let i = 0; i < opponentsHand.length; i++) {
+			let isOpponentsCardTrump = opponentsHand[i].suit === this.game.cards.trumpSuit,
 				isActionTrump = action.csuit === this.game.cards.trumpSuit;
 
 
@@ -835,9 +844,8 @@ class Bot extends Player {
 				return true;
 			}
 
-			if ((action.cvalue < opponentsCards[i].value) &&
-				(isActionTrump && isOpponentsCardTrump) ||
-				((!isOpponentsCardTrump) && (!isActionTrump))) {
+			if ((action.cvalue < opponentsHand[i].value) &&
+				(isActionTrump === isOpponentsCardTrump)) {
 				return true;
 			}
 		}
@@ -845,13 +853,13 @@ class Bot extends Player {
 		return false;
 	}
 
-	isTransferableByOpponent(action, opponentsCards) {
+	isTransferableByOpponent(action, opponentsHand) {
 		if (!action) {
 			return false;
 		}
 
-		for (let i = 0; i < opponentsCards.length; i++) {
-			if (action.cvalue === opponentsCards[i].value) {
+		for (let i = 0; i < opponentsHand.length; i++) {
+			if (action.cvalue === opponentsHand[i].value) {
 				return true;
 			}
 		}
@@ -860,7 +868,7 @@ class Bot extends Player {
 	}
 
 	isUnbeatableAction(unbeatableAction, minAction, opponentsHand) {
-		if ((!unbeatableAction) || (!minAction)) {
+		if (!unbeatableAction) {
 			return false;
 		}
 
@@ -876,11 +884,11 @@ class Bot extends Player {
 	}
 
 	isUntransferableAction(untransferableAction, minAction) {
-		if ((!untransferableAction) || (!minAction)) {
+		if (!untransferableAction) {
 			return false;
 		}
 
-		if ((untransferableAction.cvalue <= minAction.cvalue + 3) &&
+		if ((untransferableAction.cvalue <= minAction.cvalue + 2) &&
 			(untransferableAction.csuit === minAction.csuit) && (this.difficulty === 3)) {
 			return true;
 		}
