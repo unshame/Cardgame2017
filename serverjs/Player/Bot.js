@@ -2,9 +2,7 @@
 	Серверные боты
 */
 
-// TODO 1 on 1 mode
-// TODO Cheater dfficulty Attack: uses cards that opponent can't beat
-// TODO MaxQtyCard: problem with trump suit?????
+// TODO 1 on 1 mode && cheater difficulty defence
 //
 
 
@@ -227,6 +225,7 @@ class Bot extends Player {
 			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
 			minAction;
 	}
+
 
 
 	findMinUnbeatableAction(actions, opponentsHand) {
@@ -863,7 +862,7 @@ class Bot extends Player {
 	isUnbeatableAction(unbeatableAction, minAction, opponentsHand) {
 		let isTransferable = this.isTransferableByOpponent(unbeatableAction, opponentsHand);
 
-		if ((unbeatableAction.cvalue <= minAction + 3) &&
+		if ((unbeatableAction.cvalue <= minAction.cvalue + 3) &&
 			(this.difficulty === 3) && (!isTransferable)) {
 			return true;
 		}
@@ -872,7 +871,7 @@ class Bot extends Player {
 	}
 
 	isUntransferableAction(untransferableAction, minAction) {
-		if ((untransferableAction.cvalue <= minAction + 3) && (this.difficulty === 3)) {
+		if ((untransferableAction.cvalue <= minAction.cvalue + 3) && (this.difficulty === 3)) {
 			return true;
 		}
 
