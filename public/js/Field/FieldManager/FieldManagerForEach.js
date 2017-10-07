@@ -128,6 +128,8 @@ FieldManager.prototype.resizeFields = function(){
 
 		field.setBase(this.builder.positions[id].x, this.builder.positions[id].y);
 		field.setSize(this.builder.dimensions[id].width, this.builder.dimensions[id].height, true);
+
+		field.savedPosition = null;
 	});
 };
 
