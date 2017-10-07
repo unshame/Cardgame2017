@@ -721,7 +721,7 @@ class Bot extends Player {
 
 	isOneOnOne(gameStage) {
 		if ((this.difficulty < 2) || (gameStage === 'EARLY_GAME') ||
-			this.game.players.length !== 2) {
+			(this.game.players.length !== 2)) {
 			return false;
 		}
 
@@ -860,9 +860,14 @@ class Bot extends Player {
 	}
 
 	isUnbeatableAction(unbeatableAction, minAction, opponentsHand) {
+		if ((!unbeatableAction) || (!minAction)) {
+			return false;
+		}
+
 		let isTransferable = this.isTransferableByOpponent(unbeatableAction, opponentsHand);
 
 		if ((unbeatableAction.cvalue <= minAction.cvalue + 3) &&
+			(unbeatableAction.csuit == minAction.csuit) &&
 			(this.difficulty === 3) && (!isTransferable)) {
 			return true;
 		}
@@ -871,7 +876,12 @@ class Bot extends Player {
 	}
 
 	isUntransferableAction(untransferableAction, minAction) {
-		if ((untransferableAction.cvalue <= minAction.cvalue + 3) && (this.difficulty === 3)) {
+		if ((!untransferableAction) || (!minAction)) {
+			return false;
+		}
+
+		if ((untransferableAction.cvalue <= minAction.cvalue + 3) &&
+			(untransferableAction.csuit === minAction.csuit) && (this.difficulty === 3)) {
 			return true;
 		}
 
