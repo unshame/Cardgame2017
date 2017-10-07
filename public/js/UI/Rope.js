@@ -204,8 +204,14 @@ UI.Rope.prototype.initialize = function(field){
 	this.bitmapHeight = height;
 	this.radius = radius;
 
-	this.x = 0;
-	this.y = field.y - offset + lineWidth/2;
+	this.pivot.x = center.x;
+	this.pivot.y = center.y;
+	this.x = center.x;
+	this.y = field.y - offset + lineWidth/2 + center.y;
+
+	this.visible = false;
+
+	this._draw(this.angleStart, this.angleEnd);
 };
 
 /**
@@ -264,8 +270,6 @@ UI.Rope.prototype.stop = function(clearProgress, hard){
 	this.startTime = 0;
 	this.duration = 0;
 	this.useLastColor = false;
-	this.bitmapData.clear();
-	this.bitmapData.update();
 	this.visible = false;
 	this.savedEndTime = 0;
 	this.clearing = false;
@@ -336,7 +340,7 @@ UI.Rope.prototype.update = function(){
 		}
 
 		// Рисуем таймер
-		this._draw(this.angleStart, this.angleEnd + progress, color);
+		this._updateProgress(progress, color);
 
 		return;
 	}
@@ -361,22 +365,34 @@ UI.Rope.prototype.updatePosition = function(){
 * Рисует указанную окружность таймера слева направо.
 * @param {number} angleStart начальный угол
 * @param {number} angleEnd   конечный угол
-* @param {number} color      цвет таймер
 */
-UI.Rope.prototype._draw = function(angleStart, angleEnd, color){
+UI.Rope.prototype._draw = function(angleStart, angleEnd){
 	var circle = this.bitmapData;
 	var center = this.center;
 	var ctx = circle.ctx;
 	circle.clear();		
-	circle.resize(game.screenWidth, this.bitmapHeight);
+	circle.resize(game.screenWidth + 5, this.bitmapHeight + 50);
 	ctx.beginPath();
 	ctx.arc(center.x, center.y, this.radius, angleStart, angleEnd);
 	ctx.lineWidth = this.lineWidth;
-	ctx.strokeStyle = numberToHexColor(color);
+	ctx.strokeStyle = numberToHexColor(0xFFFFFF);
 	ctx.lineCap = 'round';
 	ctx.stroke();
 	circle.update();
+	this.texture.requiresReTint = true;
 };
+
+/**
+* Поворачивает таймер в нужную позицию и обновляет цвет.
+* @param  {number} rotation угол поворота в радианах
+* @param  {number} color    цвет
+*/
+UI.Rope.prototype._updateProgress = function(rotation, color){
+	this.rotation = rotation;
+	if(this.tint != color){
+		this.tint = color;
+	}
+}
 
 /**
 * Останавливает таймер перед запуском.
