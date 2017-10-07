@@ -51,7 +51,7 @@ var Game = function(parent, speed, inDebugMode){
 		{
 			width: this.screenWidth,
  			height: this.screenHeight, 
-			renderer: gameOptions.get('system_renderer'), 
+			renderer: Number(gameOptions.get('system_renderer')), 
 			parent: parent,
 			transparent: true
 		}
