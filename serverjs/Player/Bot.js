@@ -167,10 +167,6 @@ class Bot extends Player {
 			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage),
 			cardToAction = this.changeCardIntoAction;
 
-
-		console.log('MaxQtyCard: ', maxQtyCard);
-		console.log('Min Action: ', minAction);
-
 		return this.isPass(minAction, pass) ? pass :
 			this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
 			maxQtyCard ? cardToAction(actions, maxQtyCard) :
@@ -187,10 +183,6 @@ class Bot extends Player {
 			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage),
 			minActionWithTableValue = this.findMinTableCardAction(actions, tableCardsValues),
 			cardToAction = this.changeCardIntoAction;
-
-		console.log('TRANSFER: ', transfer);
-		console.log('MaxQtyCard: ', maxQtyCard);
-		console.log('Min Action: ', minAction);
 
 		//return this.isOneOnOne ? this.chooseOneOnOneDefence(actions, transfer) :
 		return this.isTransfer(gameStage, transfer, actions) ? transfer :
@@ -649,27 +641,41 @@ class Bot extends Player {
 		return false;
 	}
 
-	isAttack(minAction) {
-		if ((!minAction) || (this.difficulty < 2)) {
+	isAttack(action) {
+		if ((!action) || (this.difficulty < 2)) {
 			return false;
 		}
 
 		let defensePlayerCardsQty = this.game.hands[this.getDefensePlayerID()].length,
-			isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit,
+			isActionTrump = action.csuit === this.game.cards.trumpSuit,
 			isFollowUp = this.game.turnStages.current === 'FOLLOWUP';
 
-		if ((defensePlayerCardsQty < 3) && (!isFollowUp) &&
-			((isMinActionTrump && (minAction.cvalue < 11)) || (!isMinActionTrump))) {
-			return true;
-		}
+		if (!isFollowUp) {
+			switch (defensePlayerCardsQty) {
+				case 1:
+				case 2:
+					if ((isActionTrump && (action.cvalue < 11)) ||
+						(!isActionTrump)) {
+						return true;
+					}
 
-		if ((defensePlayerCardsQty < 4) && (!isFollowUp) &&
-			((isMinActionTrump && (minAction.cvalue < 6)) || (!isMinActionTrump))) {
-			return true;
-		}
+					break;
 
-		if ((defensePlayerCardsQty < 5) && (!isFollowUp) && (!isMinActionTrump)) {
-			return true;
+				case 3:
+					if ((isActionTrump && (action.cvalue < 6)) ||
+						(!isActionTrump)) {
+						return true;
+					}
+
+					break;
+
+				case 4:
+					if (!isActionTrump) {
+						return true;
+					}
+
+					break;
+			}
 		}
 
 		return false;
@@ -875,7 +881,8 @@ class Bot extends Player {
 		let isTransferable = this.isTransferableByOpponent(unbeatableAction, opponentsHand);
 
 		if ((unbeatableAction.cvalue <= minAction.cvalue + 3) &&
-			(unbeatableAction.csuit == minAction.csuit) &&
+			(unbeatableAction.csuit === minAction.csuit) &&
+			this.isAttack(unbeatableAction) &&
 			(this.difficulty === 3) && (!isTransferable)) {
 			return true;
 		}
@@ -889,7 +896,8 @@ class Bot extends Player {
 		}
 
 		if ((untransferableAction.cvalue <= minAction.cvalue + 2) &&
-			(untransferableAction.csuit === minAction.csuit) && (this.difficulty === 3)) {
+			(untransferableAction.csuit === minAction.csuit) &&
+			this.isAttack(untransferableAction) && (this.difficulty === 3)) {
 			return true;
 		}
 
