@@ -16,7 +16,6 @@ const
 
 class Bot extends Player {
 	constructor(randomNames, queueType, decisionTime, difficulty) {
-		// Difficulties: EASY, MEDIUM, HARD
 		super(null, null, null, false);
 		this.id = 'bot_' + generateId();
 		this.log = Log(module, this.id);
@@ -26,7 +25,7 @@ class Bot extends Player {
 		this.actionTimeout = null;
 
 		// NOTE difficulties: 0 - Easy, 1 - Medium, 2 - Hard, 3 - Cheater
-		if (difficulty === undefined) {
+		if (typeof difficulty !== 'number' || isNaN(difficulty) || difficulty > 3) {
 			difficulty = 3;
 		}
 
@@ -152,26 +151,25 @@ class Bot extends Player {
 	 * Выбор действия бота
 	 *
 	 */
-
 	chooseAttack(actions) {
-		if (this.isOneOnOne) {
+		let gameStage = this.defineGameStage();
+
+		if (this.isOneOnOne(gameStage)) {
 			return this.chooseOneOnOneAttack(actions);
 		}
 
 		let minAction = this.findMinAction(actions),
-			opponentsHand = this.game.hands[this.getDefensePlayerID()],
+			opponentsHand = this.game.hands[this.getDefencePlayerID()],
 			unbeatableAction = this.findMinUnbeatableAction(actions, opponentsHand),
 			untransferableAction = this.findMinUntransferableAction(actions, opponentsHand),
 			pass = this.findPassAction(actions),
-			gameStage = this.defineGameStage(),
-			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage),
-			cardToAction = this.changeCardIntoAction;
+			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage);
 
 		return this.isPass(minAction, pass) ? pass :
 			this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
-			maxQtyCard ? cardToAction(actions, maxQtyCard) :
-			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
-			minAction;
+				maxQtyCard ? this.changeCardIntoAction(actions, maxQtyCard) :
+					this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
+						minAction;
 	}
 
 	choooseDefence(actions) {
@@ -187,9 +185,9 @@ class Bot extends Player {
 		//return this.isOneOnOne ? this.chooseOneOnOneDefence(actions, transfer) :
 		return this.isTransfer(gameStage, transfer, actions) ? transfer :
 			this.isTake(gameStage, minAction, actions) ? take :
-			this.isMinActionWithTableValue(gameStage, minActionWithTableValue) ? minActionWithTableValue :
-			maxQtyCard ? cardToAction(actions, maxQtyCard) :
-			minAction;
+				this.isMinActionWithTableValue(gameStage, minActionWithTableValue) ? minActionWithTableValue :
+					maxQtyCard ? cardToAction(actions, maxQtyCard) :
+						minAction;
 	}
 
 	chooseOneOnOneDefence(actions, minAction, transfer, take) {
@@ -215,17 +213,18 @@ class Bot extends Player {
 
 		return this.isPass(minAction, pass) ? pass :
 			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
-			minAction;
+				minAction;
 	}
-
-
-
+	/*
+	 *
+	 *	Методы нахождения чего-либо в массиве доступных действий
+	 *
+	 */
 	findMinUnbeatableAction(actions, opponentsHand) {
 		let minAction = {
 			cvalue: Infinity,
 			csuit: this.game.cards.trumpSuit
 		};
-
 
 		for (let i = 0; i < actions.length; i++) {
 			let isPass = actions[i].type === 'PASS';
@@ -248,7 +247,6 @@ class Bot extends Player {
 			cvalue: Infinity,
 			csuit: this.game.cards.trumpSuit
 		};
-
 
 		for (let i = 0; i < actions.length; i++) {
 			let isPass = actions[i].type === 'PASS';
@@ -397,6 +395,9 @@ class Bot extends Player {
 		}
 	}
 
+
+
+
 	changeCardIntoAction(actions, card) {
 		/*
 		 * Метод, получающий из карты, доступное с ней действие.
@@ -446,7 +447,7 @@ class Bot extends Player {
 		return allowedCardsIDs;
 	}
 
-	getDefensePlayerID() {
+	getDefencePlayerID() {
 		let players = this.game.players;
 
 		for (let i = 0; i < players.length; i++) {
@@ -520,7 +521,7 @@ class Bot extends Player {
 		return cardsValues;
 	}
 
-	findNullDefenseCardsOnTheTable() {
+	findNullDefenceCardsOnTheTable() {
 		/**
 		 * Метод, возвращающий карты атакующих на столе.
 		 */
@@ -536,7 +537,7 @@ class Bot extends Player {
 		return cards;
 	}
 
-	findDefenseCardsOnTheTable() {
+	findDefenceCardsOnTheTable() {
 		/**
 		 * Метод, возвращающий карты защищающегося на столе.
 		 */
@@ -566,8 +567,10 @@ class Bot extends Player {
 		suits[this.game.cards.trumpSuit] = Infinity;
 
 		for (let i = 0; i < cardsInHand.length; i++) {
-			if (cardsInHand[i].suit !== this.game.cards.trumpSuit) {
-				suits[cardsInHand[i].suit]++;
+			let cardSuit = cardsInHand[i].suit;
+
+			if (cardSuit !== this.game.cards.trumpSuit) {
+				suits[cardSuit]++;
 			}
 		}
 
@@ -627,14 +630,14 @@ class Bot extends Player {
 			transferValue = transfer.cvalue;
 
 		if (isEarlyGame && ((!isTransferTrump) || ((transferValue < 5) && (trumpSuitQty > 1)) ||
-				((transferValue < 11) && ((usedField > 1) || this.isBeatableOnlyByThis(transfer, actions))))) {
+			((transferValue < 11) && ((usedField > 1) || this.isBeatableOnlyByThis(transfer, actions))))) {
 			return true;
 		}
 		/**
 		 * В конце игры перевод выгоден, если бот не переводит козырем или козырем, меньшем J.
 		 */
 		if ((!isEarlyGame) && ((!isTransferTrump) || ((transferValue < 11) && ((trumpSuitQty > 0) ||
-				this.isBeatableOnlyByThis(transfer, actions))))) {
+			this.isBeatableOnlyByThis(transfer, actions))))) {
 			return true;
 		}
 
@@ -646,7 +649,7 @@ class Bot extends Player {
 			return false;
 		}
 
-		let defensePlayerCardsQty = this.game.hands[this.getDefensePlayerID()].length,
+		let defensePlayerCardsQty = this.game.hands[this.getDefencePlayerID()].length,
 			isActionTrump = action.csuit === this.game.cards.trumpSuit,
 			isFollowUp = this.game.turnStages.current === 'FOLLOWUP';
 
@@ -707,7 +710,7 @@ class Bot extends Player {
 			minValue = minAction.cvalue;
 
 		if (this.isNotBeatable(actions) || ((!isEndGame) && isMinActionTrump &&
-				(trumpCardsQty < 3) && (((usedFields === 1) && (handLength < 7) && (minValue > 7)) || ((usedFields === 2) && (minValue > 10))))) {
+			(trumpCardsQty < 3) && (((usedFields === 1) && (handLength < 7) && (minValue > 7)) || ((usedFields === 2) && (minValue > 10))))) {
 			return true;
 		}
 
@@ -769,7 +772,7 @@ class Bot extends Player {
 		/*
 		 * Метод, возвращающий true, если на столе есть карты, которые бьются только картой из cardAction.
 		 */
-		let cardsOnTheTable = this.findNullDefenseCardsOnTheTable(),
+		let cardsOnTheTable = this.findNullDefenceCardsOnTheTable(),
 			beatableCards = [];
 
 		for (let i = 0; i < actions.length; i++) {
@@ -778,14 +781,15 @@ class Bot extends Player {
 			}
 		}
 
-		return (beatableCards.length === cardsOnTheTable.length) ? false : true;
+		return beatableCards.length !== cardsOnTheTable.length;
 	}
 
 	isNotBeatable(actions) {
+
 		/*
 		 * Метод, возвращающий true, если на столе есть карты, которые нельзя побить.
 		 */
-		let cardsOnTheTable = this.findNullDefenseCardsOnTheTable(),
+		let cardsOnTheTable = this.findNullDefenceCardsOnTheTable(),
 			beatableCards = [];
 
 		for (let i = 0; i < actions.length; i++) {
@@ -800,7 +804,7 @@ class Bot extends Player {
 		console.log('Beatable Cards length', beatableCards.length);
 		console.log('Cards On TheTable length', cardsOnTheTable.length);
 
-		return (beatableCards.length === cardsOnTheTable.length) ? false : true;
+		return beatableCards.length !== cardsOnTheTable.length;
 	}
 
 	isAttackTurn() {
@@ -884,6 +888,7 @@ class Bot extends Player {
 			(unbeatableAction.csuit === minAction.csuit) &&
 			this.isAttack(unbeatableAction) &&
 			(this.difficulty === 3) && (!isTransferable)) {
+			console.log('UNBEATABLE ACTION: ', true);
 			return true;
 		}
 
@@ -898,6 +903,7 @@ class Bot extends Player {
 		if ((untransferableAction.cvalue <= minAction.cvalue + 2) &&
 			(untransferableAction.csuit === minAction.csuit) &&
 			this.isAttack(untransferableAction) && (this.difficulty === 3)) {
+			console.log('UNTRANSFERABLE ACTION: ', true);
 			return true;
 		}
 
