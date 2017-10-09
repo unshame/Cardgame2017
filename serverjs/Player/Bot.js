@@ -165,11 +165,18 @@ class Bot extends Player {
 			pass = this.findPassAction(actions),
 			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage);
 
-		return this.isPass(minAction, pass) ? pass :
-			this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
-				maxQtyCard ? this.changeCardIntoAction(actions, maxQtyCard) :
-					this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
-						minAction;
+		if ((!this.isFirstAttack()) && this.isPass(minAction, pass)) {
+			if (pass) {
+				return pass;
+			} else {
+				return null;
+			}
+		}
+
+		return this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
+			maxQtyCard ? this.changeCardIntoAction(actions, maxQtyCard) :
+			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
+			minAction;
 	}
 
 	choooseDefence(actions) {
@@ -185,9 +192,9 @@ class Bot extends Player {
 		//return this.isOneOnOne ? this.chooseOneOnOneDefence(actions, transfer) :
 		return this.isTransfer(gameStage, transfer, actions) ? transfer :
 			this.isTake(gameStage, minAction, actions) ? take :
-				this.isMinActionWithTableValue(gameStage, minActionWithTableValue) ? minActionWithTableValue :
-					maxQtyCard ? cardToAction(actions, maxQtyCard) :
-						minAction;
+			this.isMinActionWithTableValue(gameStage, minActionWithTableValue) ? minActionWithTableValue :
+			maxQtyCard ? cardToAction(actions, maxQtyCard) :
+			minAction;
 	}
 
 	chooseOneOnOneDefence(actions, minAction, transfer, take) {
@@ -211,9 +218,16 @@ class Bot extends Player {
 			return unbeatableAction;
 		}
 
-		return this.isPass(minAction, pass) ? pass :
-			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
-				minAction;
+		if ((!this.isFirstAttack()) && this.isPass(minAction, pass)) {
+			if (pass) {
+				return pass;
+			} else {
+				return null;
+			}
+		}
+
+		return this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
+			minAction;
 	}
 	/*
 	 *
@@ -630,14 +644,14 @@ class Bot extends Player {
 			transferValue = transfer.cvalue;
 
 		if (isEarlyGame && ((!isTransferTrump) || ((transferValue < 5) && (trumpSuitQty > 1)) ||
-			((transferValue < 11) && ((usedField > 1) || this.isBeatableOnlyByThis(transfer, actions))))) {
+				((transferValue < 11) && ((usedField > 1) || this.isBeatableOnlyByThis(transfer, actions))))) {
 			return true;
 		}
 		/**
 		 * В конце игры перевод выгоден, если бот не переводит козырем или козырем, меньшем J.
 		 */
 		if ((!isEarlyGame) && ((!isTransferTrump) || ((transferValue < 11) && ((trumpSuitQty > 0) ||
-			this.isBeatableOnlyByThis(transfer, actions))))) {
+				this.isBeatableOnlyByThis(transfer, actions))))) {
 			return true;
 		}
 
@@ -678,6 +692,9 @@ class Bot extends Player {
 					}
 
 					break;
+
+				default:
+					return false;
 			}
 		}
 
@@ -685,13 +702,13 @@ class Bot extends Player {
 	}
 
 	isPass(minAction, passAction) {
-		if ((!passAction) || this.isAttack(minAction)) {
+		if (this.isAttack(minAction)) {
 			return false;
 		}
 
-		if ((!minAction) || (minAction.csuit === this.game.cards.trumpSuit) ||
-			(this.difficulty > 0) || (minAction.cvalue > 10)) {
-			return true;
+		if ((this.difficulty > 0) && ((!minAction) || (minAction.csuit === this.game.cards.trumpSuit) ||
+				(minAction.cvalue > 10))) {
+						return true;	
 		}
 
 		return false;
@@ -710,7 +727,7 @@ class Bot extends Player {
 			minValue = minAction.cvalue;
 
 		if (this.isNotBeatable(actions) || ((!isEndGame) && isMinActionTrump &&
-			(trumpCardsQty < 3) && (((usedFields === 1) && (handLength < 7) && (minValue > 7)) || ((usedFields === 2) && (minValue > 10))))) {
+				(trumpCardsQty < 3) && (((usedFields === 1) && (handLength < 7) && (minValue > 7)) || ((usedFields === 2) && (minValue > 10))))) {
 			return true;
 		}
 
@@ -864,7 +881,7 @@ class Bot extends Player {
 	}
 
 	isTransferableByOpponent(action, opponentsHand) {
-		if (!action) {
+		if (!action || this.findDefenceCardsOnTheTable()) {
 			return false;
 		}
 
@@ -908,6 +925,10 @@ class Bot extends Player {
 		}
 
 		return false;
+	}
+
+	isFirstAttack() {
+		return this.game.turnStages.current === 'INITIAL_ATTACK';
 	}
 }
 
