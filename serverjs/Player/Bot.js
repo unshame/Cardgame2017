@@ -881,7 +881,7 @@ class Bot extends Player {
 	}
 
 	isTransferableByOpponent(action, opponentsHand) {
-		if (!action || this.findDefenceCardsOnTheTable()) {
+		if (!action || !this.game.canTransfer || this.findDefenceCardsOnTheTable()) {
 			return false;
 		}
 
