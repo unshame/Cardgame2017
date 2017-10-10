@@ -165,15 +165,8 @@ class Bot extends Player {
 			pass = this.findPassAction(actions),
 			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage);
 
-		if ((!this.isFirstAttack()) && this.isPass(minAction, pass)) {
-			if (pass) {
-				return pass;
-			} else {
-				return null;
-			}
-		}
-
-		return this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
+		return this.isPass(minAction, pass) ? pass :
+			this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
 			maxQtyCard ? this.changeCardIntoAction(actions, maxQtyCard) :
 			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
 			minAction;
@@ -218,15 +211,8 @@ class Bot extends Player {
 			return unbeatableAction;
 		}
 
-		if ((!this.isFirstAttack()) && this.isPass(minAction, pass)) {
-			if (pass) {
-				return pass;
-			} else {
-				return null;
-			}
-		}
-
-		return this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
+		return this.isPass(minAction, pass) ? pass :
+			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
 			minAction;
 	}
 	/*
@@ -702,13 +688,13 @@ class Bot extends Player {
 	}
 
 	isPass(minAction, passAction) {
-		if (this.isAttack(minAction)) {
+		if (this.isFirstAttack() || this.isAttack(minAction)) {
 			return false;
 		}
 
 		if ((this.difficulty > 0) && ((!minAction) || (minAction.csuit === this.game.cards.trumpSuit) ||
 				(minAction.cvalue > 10))) {
-						return true;	
+			return true;
 		}
 
 		return false;
