@@ -521,7 +521,7 @@ class Bot extends Player {
 		return cardsValues;
 	}
 
-	findNullDefenceCardsOnTheTable() {
+	findNullDefenceTableCards() {
 		/**
 		 * Метод, возвращающий карты атакующих на столе.
 		 */
@@ -537,7 +537,7 @@ class Bot extends Player {
 		return cards;
 	}
 
-	findDefenceCardsOnTheTable() {
+	findDefenceTableCards() {
 		/**
 		 * Метод, возвращающий карты защищающегося на столе.
 		 */
@@ -651,9 +651,11 @@ class Bot extends Player {
 
 		let defensePlayerCardsQty = this.game.hands[this.getDefencePlayerID()].length,
 			isActionTrump = action.csuit === this.game.cards.trumpSuit,
-			isFollowUp = this.game.turnStages.current === 'FOLLOWUP';
+			isFollowUp = this.game.turnStages.current === 'FOLLOWUP',
+			areNullDefenceTableCards = this.findNullDefenceTableCards();
+			
 
-		if (!isFollowUp) {
+		if ((!isFollowUp) && (!areNullDefenceTableCards)) {
 			switch (defensePlayerCardsQty) {
 				case 1:
 				case 2:
@@ -775,7 +777,7 @@ class Bot extends Player {
 		/*
 		 * Метод, возвращающий true, если на столе есть карты, которые бьются только картой из cardAction.
 		 */
-		let cardsOnTheTable = this.findNullDefenceCardsOnTheTable(),
+		let cardsOnTheTable = this.findNullDefenceTableCards(),
 			beatableCards = [];
 
 		for (let i = 0; i < actions.length; i++) {
@@ -792,7 +794,7 @@ class Bot extends Player {
 		/*
 		 * Метод, возвращающий true, если на столе есть карты, которые нельзя побить.
 		 */
-		let cardsOnTheTable = this.findNullDefenceCardsOnTheTable(),
+		let cardsOnTheTable = this.findNullDefenceTableCards(),
 			beatableCards = [];
 
 		for (let i = 0; i < actions.length; i++) {
@@ -867,7 +869,7 @@ class Bot extends Player {
 	}
 
 	isTransferableByOpponent(action, opponentsHand) {
-		if (!action || !this.game.canTransfer || this.findDefenceCardsOnTheTable()) {
+		if (!action || !this.game.canTransfer || this.findDefenceTableCards()) {
 			return false;
 		}
 
