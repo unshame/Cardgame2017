@@ -137,17 +137,18 @@ UI.prototype.initialize = function(){
 	this.popupManager = new UI.PopupManager();
 
 	this.credits = new UI.Credits(creditsText, game.state.change.bind(game.state, 'menu'));
-
+	this.queueBrowser = new QueueBrowser();
 	this.menus = this._createMenus();
 	this.menus.options.hideElement('concede');
 	this.modalManager.makeModal(
 		this.menus.options,
-		this.menus.debug
+		this.menus.debug,
+		this.menus.lobby
 	);
 
 	/* Временно выключенные кнопки */
 	this.menus.main.disableElement('custom');
-	this.menus.main.disableElement('join');
+	//this.menus.main.disableElement('join');
 	this.menus.queue.disableElement('invite');
 
 	this._createButtons();
@@ -211,6 +212,7 @@ UI.prototype.setDebugButtonText = function(name, text, on){
 //@include:Stepper
 //@include:Text
 //@include:Checkbox
+//@include:LobbyRoom
 
 //@include:Rope
 //@include:Logo
