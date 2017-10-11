@@ -4,6 +4,6 @@ var reactMenu = {
 		console.log('Queue is full');
 	},
 	QUEUE_LIST: function(action){
-		ui.queueBrowser.updateList(action);
+		ui.lobbyBrowser.updateList(action);
 	}
 };

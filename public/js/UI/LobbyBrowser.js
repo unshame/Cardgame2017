@@ -1,4 +1,5 @@
 var LobbyBrowser = function(options){
+	this.options = this.getDefaultLobbyOptions();
 	this.rooms = [];
 	this.list = null;
 	this.page = null;
@@ -13,31 +14,58 @@ var LobbyBrowser = function(options){
 			action: function(){}
 		})
 	}
-	layout[0] = [layout[0],Menu.text()];
+	var temp = layout[0];
+	layout[0] = [temp,Menu.text({text:''})];
 	layout.push({
 		name:'join',
 		text:'Join game',
 		action: function(){}
 	}) 
-	UI.Menu.call(this.options);
+	Menu.call(this, options);
 	this.rightArrow = new UI.Button({
 			name: 'left',
 			action:function(){}
-		}),
+		});
 	this.leftArrow = new UI.Button({
 				name: 'right',
 				action:function(){}
-			}),
+			});
 
-	Menu.justify(leftArrow,rightArrow)
+	//Menu.justify(this.leftArrow,Menu.text({text:''}), this.rightArrow)
 	for(var i= 0; i<10; i++){
-		this.rooms[i] = this.layout.getElementsByName('button' + i);
+//		this.rooms[i] = layout.getElementByName('button' + i);
 
 	}
 }
 
-extend(LobbyBrowser, UI.Menu);
+extend(LobbyBrowser, Menu);
 
+LobbyBrowser.prototype.getDefaultLobbyOptions = function(){
+	return {
+		position: {
+			x: 0,
+			y: 0
+		},
+		z: 0,
+		margin: 25,
+		name: 'default',
+		alpha: 0.9,
+		color: 'grey',
+		texture: null,
+		elementColor: 'orange',
+		textColor: 'white',
+		corner: 10,
+		border: 4,
+		fadeTime: 200,
+		layout: null,
+		closeButton: null,
+		closeButtonCrossColor: 'white',
+		header: false,
+		headerHeight: 40,
+		headerColor: 'orange',
+		headerTextColor: 'white'
+	};
+};
 LobbyBrowser.prototype.resetButtons = function(){
 	for(var i = 0; i<10;i++){
 		this.rooms[i].label.setText('');
@@ -66,3 +94,11 @@ LobbyBrowser.prototype.recieveList = function(action){
  	}
  	this.rooms[u].setStyle(1);
  }
+LobbyBrowser.prototype.updateList = function(action){
+this.list = action.list;
+this.page = action.page;
+this.pagination = action.pagination;
+this.moreAfter = action.moreAfter;
+this.channel = action.channel;
+this.moreBefore = action.moreBefore;
+}
