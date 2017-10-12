@@ -137,16 +137,18 @@ UI.prototype.initialize = function(){
 	this.popupManager = new UI.PopupManager();
 
 	this.credits = new UI.Credits(creditsText, game.state.change.bind(game.state, 'menu'));
-	this.lobbyBrowser = new LobbyBrowser();
+	
 	this.menus = this._createMenus();
+	this.menus.browser = new LobbyBrowser();
 	this.menus.options.hideElement('concede');
 	this.modalManager.makeModal(
 		this.menus.options,
-		this.menus.debug
+		this.menus.debug,
+		this.menus.lobby
 	);
 
 	/* Временно выключенные кнопки */
-	this.menus.main.disableElement('custom');
+	//this.menus.main.disableElement('custom');
 	//this.menus.main.disableElement('join');
 	this.menus.queue.disableElement('invite');
 
@@ -161,6 +163,7 @@ UI.prototype.initialize = function(){
 		[cardManager, 4],
 		[cardEmitter, 5],
 		// this.menus.main, 6
+		// this.menus.broswer, 6
 		[this.logo, 6],
 		[this.credits, 6],
 		[this.feed, 7],
@@ -211,7 +214,7 @@ UI.prototype.setDebugButtonText = function(name, text, on){
 //@include:Stepper
 //@include:Text
 //@include:Checkbox
-//@include:LobbyRoom
+//@include:LobbyBrowser
 
 //@include:Rope
 //@include:Logo

@@ -28,14 +28,16 @@ Menu.prototype.updatePosition = function(position){
 		var rowVisible = false;
 		var offset = 0;
 		row.forEach(function(element, ei){
+			var elWidth = element.fixedWidth !== undefined ? element.fixedWidth : element.width;
+			var elHeight = element.fixedHeight !== undefined ? element.fixedHeight : element.height;
 			if(element.visible){
 				rowVisible = true;
 				var align = this._calculateAlign(row.align, ei, menuWidth, row.width, row.length);
 				var ex = margin + align + margin*ei + offset;
-				var ey = margin + y + row.height/2 - element.height/2;
+				var ey = margin + y + row.height/2 - elHeight/2;
 				element.updatePosition({x: ex, y: ey});
 			}
-			offset += element.width;
+			offset += elWidth;
 		}, this);
 		if(!rowVisible){
 			return;
@@ -119,15 +121,18 @@ Menu.prototype._resize = function(){
 				return;
 			}
 
-			width += element.width;
+			var elWidth = element.fixedWidth !== undefined ? element.fixedWidth : element.width;
+			var elHeight = element.fixedHeight !== undefined ? element.fixedHeight : element.height;
+
+			width += elWidth;
 
 			if(ei < row.length - 1){
 				width += margin;
 			}
 
-			if(maxHeight < element.height + margin){
-				maxHeight = element.height + margin;
-				rowHeight = element.height;
+			if(maxHeight < elHeight + margin){
+				maxHeight = elHeight + margin;
+				rowHeight = elHeight;
 			}
 		}, this);
 		height += maxHeight;

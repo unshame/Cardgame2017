@@ -1,54 +1,99 @@
 var LobbyBrowser = function(options){
-	this.options = this.getDefaultLobbyOptions();
-	this.rooms = [];
-	this.list = null;
+
+	this.options = mergeOptions(this.getDefaultLobbyOptions(), options);
 	this.page = null;
-	this.moreBefore = null;
-	this.moreAfter = null;
-	this.info = null;
+	this.list = null;
+
+	this.pagination = 5;
+
 	var layout = [];
-	for(var i= 0; i<10; i++){
-		layout.push({
+	var i;
+	for(i = 0; i < this.pagination; i++){
+		layout.push(Menu.alignLeft({
 			name:'button'+i,
 			text: '',
-			action: function(){}
-		})
+			action: this.select.bind(this, i)
+		}));
 	}
-	var temp = layout[0];
-	layout[0] = [temp,Menu.text({text:''})];
-	layout.push({
+	layout[0].push(Menu.text({
+		text:'',
+		name: 'info'
+	}));
+	layout.push(Menu.alignJustify(
+		{
+			name: 'left',
+			action: function(){
+				connection.proxy.requestQueueList(this.page - 1, this.pagination);
+			},
+			context:this
+		},
+		Menu.text({
+			text:this.page,
+			name: 'pageNum'
+		}),
+		{
+			name: 'right',
+			action: function(){ 
+				connection.proxy.requestQueueList(this.page + 1, this.pagination);
+			},
+			context:this
+		}
+	));
+	layout.push([{
 		name:'join',
 		text:'Join game',
-		action: function(){}
-	}) 
-	Menu.call(this, options);
-	this.rightArrow = new UI.Button({
-			name: 'left',
-			action:function(){}
-		});
-	this.leftArrow = new UI.Button({
-				name: 'right',
-				action:function(){}
-			});
+		action: function(){
+			connection.proxy.joinCustomQueue(this.selectedQueuele);
+		},
+		context: this
+	},
+	{
+		name:'refresh',
+		text:'Refresh',
+		action: function(){
+			connection.proxy.requestQueueList(0, this.pagination);
+		},
+		context: this
+	}
+	]);
+	
+	this.options.layout = layout;
+	Menu.call(this, this.options);
+
 
 	//Menu.justify(this.leftArrow,Menu.text({text:''}), this.rightArrow)
-	for(var i= 0; i<10; i++){
-//		this.rooms[i] = layout.getElementByName('button' + i);
+	this.buttons = [];
+	for(i= 0; i < this.pagination; i++){
+		this.buttons[i] = this.getElementByName('button' + i);
+		if(i != this.pagination - 1){
+			this.buttons[i].fixedHeight  = this.buttons[i].height - this.options.margin;
+		}
 
 	}
-}
+
+	this.info = this.getElementByName('info');
+	this.info.fixedWidth = 300;
+	this.info.fixedHeight = this.buttons[0].fixedHeight;
+	this.rightArrow = this.getElementByName('right');
+	this.leftArrow = this.getElementByName('left');
+	this.pageText = this.getElementByName('pageNum');
+	this.joinButton = this.getElementByName('join');
+	this.refreshButton = this.getElementByName('refresh');
+};
 
 extend(LobbyBrowser, Menu);
 
 LobbyBrowser.prototype.getDefaultLobbyOptions = function(){
 	return {
-		position: {
-			x: 0,
-			y: 0
+		position: function(){
+			return {
+				x:game.screenWidth/2,
+				y:game.screenHeight/2
+			};
 		},
-		z: 0,
+		z: 6,
 		margin: 25,
-		name: 'default',
+		name: 'browser',
 		alpha: 0.9,
 		color: 'grey',
 		texture: null,
@@ -58,7 +103,11 @@ LobbyBrowser.prototype.getDefaultLobbyOptions = function(){
 		border: 4,
 		fadeTime: 200,
 		layout: null,
-		closeButton: null,
+		closeButton: function(){
+			ui.menus.main.fadeIn();
+			ui.logo.fadeIn();
+			ui.menus.browser.fadeOut();
+		},
 		closeButtonCrossColor: 'white',
 		header: false,
 		headerHeight: 40,
@@ -66,39 +115,70 @@ LobbyBrowser.prototype.getDefaultLobbyOptions = function(){
 		headerTextColor: 'white'
 	};
 };
-LobbyBrowser.prototype.resetButtons = function(){
-	for(var i = 0; i<10;i++){
-		this.rooms[i].label.setText('');
-		this.rooms[i].disable();
-		this.rooms[i].setStyle(0);
-	}
+LobbyBrowser.prototype.requestList = function(){
+	connection.proxy.request
 }
+LobbyBrowser.prototype.resetButtons = function(){
+	for(var i = 0; i < this.pagination; i++){
+		this.buttons[i].label.setText('');
+		this.disableElement('button' + i);
+		this.buttons[i].changeStyle(0);
+	}
+	this.disableElement('right');
+	this.disableElement('left');	
+};
+
 LobbyBrowser.prototype.recieveList = function(action){
 	this.resetButtons();
 	this.list = action.list;
 	this.page = action.page;
-	this.moreBefore = action.moreBefore;
-	this.moreAfter = action.moreAfter;
-	for(var i = 0; i<10;i++){
-		this.rooms[i].setText(this.list[i].id)
+	for(var i = 0; i < this.list.length; i++){
+		this.buttons[i].label.setText(this.list[i].name);
+		this.enableElement('button' + i);		
 	}
-	if(moreAfter) this.rightArrow.enable();
-	if(moreBefore) this.leftArrow.enable();
-}
+	if(action.moreAfter){
+		this.enableElement('right');
+	}
+	this.pageText.setText(this.page+1);
+	if(action.moreBefore){
+		this.enableElement('left');
+	}
+};
+
  LobbyBrowser.prototype.select = function(u){
- 	a = this.list[u].id + ' ' + this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + ' ' + this.list[u].type;
+ 	var a = this.list[u].name + '\n' + this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + '\n' + this.list[u].type;
  	this.info.setText(a);
+ 	this.selectedQueue = this.list[u].id
  	this.selectedID = this.list[u].id;
- 	for(var i = 0; i < 10;i++){
- 		this.rooms[i].setStyle(0);
+ 	for(var i = 0; i < this.pagination; i++){
+ 		this.buttons[i].changeStyle(0);
  	}
- 	this.rooms[u].setStyle(1);
- }
-LobbyBrowser.prototype.updateList = function(action){
-this.list = action.list;
-this.page = action.page;
-this.pagination = action.pagination;
-this.moreAfter = action.moreAfter;
-this.channel = action.channel;
-this.moreBefore = action.moreBefore;
-}
+ 	this.buttons[u].changeStyle(1);
+ };
+
+LobbyBrowser.prototype._addButton = function(options){
+	options.group = this;
+	if(!options.color && options.color !== 0){
+		options.color = this.options.elementColor;
+	}
+	if(!options.textColor && options.textColor !== 0){
+		options.textColor = this.options.textColor;
+	}
+	if(options.context === false){
+		options.context = undefined;
+	}
+	else if(!options.context){
+		options.context = this;
+	}
+	if(options.styles === undefined){
+		options.styles = [
+			{
+				key: 'button_red_wide',
+			}
+		];
+	}
+	var button = new UI.ButtonAltStyles(options);
+	button.disable(true);
+	this.elements.push(button);
+	return button;
+};
