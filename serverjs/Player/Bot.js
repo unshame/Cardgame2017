@@ -2,6 +2,10 @@
 	Серверные боты
 */
 
+// TODO 1 on 1 mode && cheater difficulty defence
+//
+
+
 'use strict';
 
 const
@@ -12,7 +16,6 @@ const
 
 class Bot extends Player {
 	constructor(randomNames, queueType, decisionTime, difficulty) {
-		// Difficulties: EASY, MEDIUM, HARD
 		super(null, null, null, false);
 		this.id = 'bot_' + generateId();
 		this.log = Log(module, this.id);
@@ -21,12 +24,12 @@ class Bot extends Player {
 		this.connected = true;
 		this.actionTimeout = null;
 
-		if (difficulty) {
-			this.difficulty = difficulty;
-		} else {
-			this.difficulty = 'HARD';
+		// NOTE difficulties: 0 - Easy, 1 - Medium, 2 - Hard, 3 - Cheater
+		if (typeof difficulty !== 'number' || isNaN(difficulty) || difficulty > 3) {
+			difficulty = 3;
 		}
 
+		this.difficulty = difficulty;
 
 		if (typeof decisionTime != 'number' || isNaN(decisionTime)) {
 			decisionTime = 1500;
@@ -76,7 +79,13 @@ class Bot extends Player {
 					return;
 				}
 				console.log('RECEIVED ACTIONS: ', actions);
-				this.sendResponseSync(this.chooseBestAction(actions));
+				console.log('Is Attack Turn', this.isAttackTurn());
+
+				if (this.isAttackTurn()) {
+					this.sendResponseSync(this.chooseAttack(actions));
+				} else {
+					this.sendResponseSync(this.choooseDefence(actions));
+				}
 
 			}, this.getDecisionTime(this.decisionTime));
 		}
@@ -142,100 +151,187 @@ class Bot extends Player {
 	 * Выбор действия бота
 	 *
 	 */
+	chooseAttack(actions) {
+		let gameStage = this.defineGameStage();
 
-	chooseBestAction(actions) {
-		/**
-		 * Метод, возвращающий наиболее выгодное для бота действие.
-		 */
-		console.log('TABLE', this.game.table);
-
-		let gameStage = this.defineGameStage(),
-			minAction = this.findMinAction(actions),
-			allowedCardsIDs = this.getAllowedCardsIDs(actions),
-			passAction = this.findPassAction(actions),
-			takeAction = this.findTakeAction(actions),
-			maxQtyCard = this.findMaxQtyCard(minAction, allowedCardsIDs, gameStage),
-			isMediumOrHardDifficulty = (this.difficulty === 'MEDIUM') || (this.difficulty === 'HARD'),
-			isHardDifficulty = this.difficulty === 'HARD';
-		//let trumpCardsQty = this.findTrumpCardsQty(); // NOTE trumpCardsQty не используется
-
-		console.log('Min Action ', minAction);
-
-		if (this.isAttackTurn()) {
-			if (passAction && (isMediumOrHardDifficulty && ((!this.isAttackActionBeneficial(minAction, gameStage)) ||
-					(this.isPassActionBeneficial(minAction, gameStage))))) {
-				return passAction;
-			}
-
-			if (isHardDifficulty && maxQtyCard) {
-				return this.changeCardIntoAction(actions, maxQtyCard);
-			}
-
-			return minAction;
-		} else {
-			let cardsOnTheTableValues = this.findCardsOnTheTableValues(),
-				minActionWithValueOnTheTable = this.findMinAction(actions, cardsOnTheTableValues),
-				bestTransferAction = this.findMinAction(actions, undefined, true);
-
-			console.log('minActionWithValueOnTheTable: ', minActionWithValueOnTheTable);
-
-			if (bestTransferAction && isMediumOrHardDifficulty && this.isTransferBeneficial(gameStage, bestTransferAction, actions)) {
-				return bestTransferAction;
-			}
-
-			if ((!minAction) || this.isTakeActionBeneficial(gameStage, minAction, actions)) {
-				return takeAction;
-			}
-
-			if (minActionWithValueOnTheTable && isMediumOrHardDifficulty && this.isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable)) {
-				return minActionWithValueOnTheTable;
-			}
-
-			if (maxQtyCard && isHardDifficulty) {
-				return this.changeCardIntoAction(actions, maxQtyCard);
-			}
-
-			return minAction;
+		if (this.isOneOnOne(gameStage)) {
+			return this.chooseOneOnOneAttack(actions);
 		}
+
+		let minAction = this.findMinAction(actions),
+			opponentsHand = this.game.hands[this.getDefencePlayerID()],
+			unbeatableAction = this.findMinUnbeatableAction(actions, opponentsHand),
+			untransferableAction = this.findMinUntransferableAction(actions, opponentsHand),
+			pass = this.findPassAction(actions),
+			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage);
+
+		return this.isPass(minAction, pass) ? pass :
+			this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
+			maxQtyCard ? this.changeCardIntoAction(actions, maxQtyCard) :
+			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
+			minAction;
 	}
 
-	findMinAction(actions, cardsOnTheTableValues, isTransfer) {
-		/**
-		 * Метод, возврающий наименьшую карту из тех, которыми можно походить.
-		 */
+	choooseDefence(actions) {
+		let minAction = this.findMinAction(actions),
+			tableCardsValues = this.findTableCardsValues(),
+			transfer = this.findMinTransfer(actions, undefined, true),
+			take = this.findTakeAction(actions),
+			gameStage = this.defineGameStage(),
+			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage),
+			minActionWithTableValue = this.findMinTableCardAction(actions, tableCardsValues),
+			cardToAction = this.changeCardIntoAction;
+
+		//return this.isOneOnOne ? this.chooseOneOnOneDefence(actions, transfer) :
+		return this.isTransfer(gameStage, transfer, actions) ? transfer :
+			this.isTake(gameStage, minAction, actions) ? take :
+			this.isMinActionWithTableValue(gameStage, minActionWithTableValue) ? minActionWithTableValue :
+			maxQtyCard ? cardToAction(actions, maxQtyCard) :
+			minAction;
+	}
+
+	chooseOneOnOneDefence(actions, minAction, transfer, take) {
+		let opponentsHand = this.game.hands[this.getAnotherPlayerID()];
+
+		return minAction;
+	}
+
+	chooseOneOnOneAttack(actions) {
+		let hand = this.game.hands[this.id],
+			minAction = this.findMinAction(actions),
+			pass = this.findPassAction(actions),
+			opponentsHand = this.game.hands[this.getAnotherPlayerID()],
+			unbeatableAction = this.findMinUnbeatableAction(actions, opponentsHand),
+			isTransferable = this.isTransferableByOpponent(unbeatableAction, opponentsHand),
+			untransferableAction = this.findMinUntransferableAction(actions, opponentsHand);
+
+		if (unbeatableAction && (!isTransferable) && (opponentsHand.length < 4) && (hand.length < 5) &&
+			((unbeatableAction.cvalue < 11) || (unbeatableAction.suit !== this.game.cards.trumpSuit) ||
+				(opponentsHand.length === 1))) {
+			return unbeatableAction;
+		}
+
+		return this.isPass(minAction, pass) ? pass :
+			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
+			minAction;
+	}
+	/*
+	 *
+	 *	Методы нахождения чего-либо в массиве доступных действий
+	 *
+	 */
+	findMinUnbeatableAction(actions, opponentsHand) {
 		let minAction = {
-			cvalue: Infinity
+			cvalue: Infinity,
+			csuit: this.game.cards.trumpSuit
+		};
+
+		for (let i = 0; i < actions.length; i++) {
+			let isPass = actions[i].type === 'PASS';
+
+			if (isPass) {
+				continue;
+			}
+
+			if ((!this.isBeatableByOpponent(actions[i], opponentsHand)) &&
+				this.isLesserAction(actions[i], minAction)) {
+				minAction = actions[i];
+			}
+		}
+
+		return (minAction.cvalue !== Infinity) ? minAction : undefined;
+	}
+
+	findMinUntransferableAction(actions, opponentsHand) {
+		let minAction = {
+			cvalue: Infinity,
+			csuit: this.game.cards.trumpSuit
+		};
+
+		for (let i = 0; i < actions.length; i++) {
+			let isPass = actions[i].type === 'PASS';
+
+			if (isPass) {
+				continue;
+			}
+
+			if ((!this.isTransferableByOpponent(actions[i], opponentsHand)) &&
+				this.isLesserAction(actions[i], minAction)) {
+				minAction = actions[i];
+			}
+		}
+
+		return (minAction.cvalue !== Infinity) ? minAction : undefined;
+	}
+
+	findMinAction(actions, tableCardsValues) {
+		/**
+		 * Метод, возврающий наименьшую карту из тех, которыми можно проатаковать / защититься.
+		 */
+
+		let minAction = {
+			cvalue: Infinity,
+			csuit: this.game.cards.trumpSuit
+		};
+
+		for (let i = 0; i < actions.length; i++) {
+			let isPass = actions[i].type === 'PASS',
+				isTake = actions[i].type === 'TAKE';
+
+			if (isTake || isPass) {
+				continue;
+			}
+
+			if (this.isLesserAction(actions[i], minAction)) {
+				minAction = actions[i];
+			}
+		}
+
+		return (minAction.cvalue !== Infinity) ? minAction : undefined;
+	}
+
+	findMinTableCardAction(actions, tableCardsValues) {
+		let minAction = {
+			cvalue: Infinity,
+			csuit: this.game.cards.trumpSuit
+		};
+
+		for (let i = 0; i < actions.length; i++) {
+			let isTransfer = actions[i].type === 'ATTACK',
+				isTake = actions[i].type === 'TAKE',
+				isOnTheTable = tableCardsValues.includes(actions[i].cvalue);
+
+			if (isTransfer || isTake || (!isOnTheTable)) {
+				continue;
+			}
+
+			if (this.isLesserAction(actions[i], minAction)) {
+				minAction = actions[i];
+			}
+		}
+
+		return (minAction.cvalue !== Infinity) ? minAction : undefined;
+	}
+
+	findMinTransfer(actions) {
+		let minAction = {
+			cvalue: Infinity,
+			csuit: this.game.cards.trumpSuit
 		};
 
 		for (let i = 0; i < actions.length; i++) {
 			let isDefense = actions[i].type === 'DEFENSE',
-				isPass = actions[i].type === 'PASS',
 				isTake = actions[i].type === 'TAKE';
 
-			if (isTake || (isPass || (isTransfer && isDefense) ||
-					(cardsOnTheTableValues && ((!isDefense) || (!cardsOnTheTableValues.includes(actions[i].cvalue)))))) {
+			if (isDefense || isTake) {
 				continue;
 			}
 
-			let isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit,
-				isActionTrump = actions[i].csuit === this.game.cards.trumpSuit;
-
-
-			if (isMinActionTrump && (!isActionTrump)) {
-				minAction = actions[i];
-				continue;
-			}
-
-			if ((actions[i].cvalue < minAction.cvalue) &&
-				(isActionTrump && (isMinActionTrump || (minAction.csuit === undefined))) ||
-				((!isMinActionTrump) && (!isActionTrump))) {
+			if (this.isLesserAction(actions[i], minAction)) {
 				minAction = actions[i];
 			}
 		}
-		/*
-		* Если наиболее выгодное действие было найдено,
-		* то метод возвращает его
-		*/
+
 		return (minAction.cvalue !== Infinity) ? minAction : undefined;
 	}
 
@@ -259,60 +355,19 @@ class Bot extends Player {
 		}
 	}
 
-	isAttackTurn() {
-		// Метод, определяющий тип действия, которое нужно совершить боту.
-
-		return this.statuses.role === 'attacker';
-	}
-
-	defineGameStage() {
-		/**
-		 * Метод, определяющий стадию игры.
-		 */
-		let gameStages = ['EARLY_GAME', 'END_GAME'],
-			deck = this.game.deck;
-
-		return (deck.length < 5) ? gameStages[1] : gameStages[0];
-	}
-
-	// TODO Придумать как сократить код findMaxQtyCard
-	findMaxQtyCard(minAction, allowedCardsIDs, gameStage) {
+	findMaxQtyCard(minAction, actions, gameStage) {
 		/*
 		 * Метод, находящий id пары или тройки карт одного типа, которые не являются козырными и меньше J.
 		 * При этом разница между этой парой(тройкой) и минимальной картой, которой можно походить, не
 		 * должна быть больше 2.
 		 * В итоге выводится одно из этих действий. В приоритете выбор с самой частой мастью. Или мастью не равной самой редкой.
 		 */
-		if (!minAction) {
+		if ((!minAction) || (this.difficulty < 2)) {
 			return undefined;
 		}
 
-		let cardsInHand = this.game.hands[this.id],
-			cardsByValue = {},
-			isEndGame = gameStage === 'END_GAME',
-			trumpSuit = this.game.cards.trumpSuit;
-
-		function isTrump(card) {
-			return card.suit === trumpSuit;
-		}
-		/*
-		 * Заполяем объект cardsByValue
-		 */
-		for (let i = 0; i < cardsInHand.length; i++) {
-			if ((!isTrump(cardsInHand[i])) && (isEndGame || (cardsInHand[i].value < 11)) &&
-				(cardsInHand[i].value <= (minAction.cvalue + 2) && (allowedCardsIDs.includes(cardsInHand[i].id)))) {
-				if (!cardsByValue[cardsInHand[i].value]) {
-					cardsByValue[cardsInHand[i].value] = [];
-				}
-
-				cardsByValue[cardsInHand[i].value].push(cardsInHand[i]);
-			}
-		}
-
-		let maxQtyCards = [];
-
-		console.log('CARDS BY VALUE: ');
-		console.log(cardsByValue);
+		let cardsByValue = this.getBeneficialCardsByValue(minAction, actions, gameStage),
+			maxQtyCards = [];
 
 		for (let value in cardsByValue) {
 			if (cardsByValue[value].length > maxQtyCards.length) {
@@ -340,30 +395,8 @@ class Bot extends Player {
 		}
 	}
 
-	isThisValueOut(value) {
-		/*
-		 * Метод, проверяющий, вышли ли оставшиеся карты этого типа из игры (которых нету у этого бота в руке).
-		 * Для проверки используются только данные этого бота и стопки сброса.
-		 * НЕ ПРОТЕСТИРОВАНО
-		 */
-		let cardsInHand = this.game.hands[this.id],
-			valueQty = 4,
-			discardPile = this.game.discardPile;
 
-		for (let i = 0; i < cardsInHand.length; i++) {
-			if (cardsInHand[i].value === value) {
-				valueQty--;
-			}
-		}
 
-		for (let i = 0; i < discardPile.length; i++) {
-			if (discardPile[i].value === value) {
-				valueQty--;
-			}
-		}
-
-		return valueQty ? true: false;
-	}
 
 	changeCardIntoAction(actions, card) {
 		/*
@@ -374,6 +407,32 @@ class Bot extends Player {
 				return actions[i];
 			}
 		}
+	}
+
+	getBeneficialCardsByValue(minAction, actions, gameStage) {
+		let cardsInHand = this.game.hands[this.id],
+			allowedCardsIDs = this.getAllowedCardsIDs(actions),
+			isEndGame = gameStage === 'END_GAME',
+			trumpSuit = this.game.cards.trumpSuit,
+			cardsByValue = {};
+
+		function isTrump(card) {
+			return card.suit === trumpSuit;
+		}
+
+		for (let i = 0; i < cardsInHand.length; i++) {
+			if ((!isTrump(cardsInHand[i])) && (isEndGame || (cardsInHand[i].value < 11)) &&
+				((cardsInHand[i].value <= (minAction.cvalue + 2)) && (allowedCardsIDs.includes(cardsInHand[i].id)))) {
+
+				if (!cardsByValue[cardsInHand[i].value]) {
+					cardsByValue[cardsInHand[i].value] = [];
+				}
+
+				cardsByValue[cardsInHand[i].value].push(cardsInHand[i]);
+			}
+		}
+
+		return cardsByValue;
 	}
 
 	getAllowedCardsIDs(actions) {
@@ -388,11 +447,21 @@ class Bot extends Player {
 		return allowedCardsIDs;
 	}
 
-	getDefensePlayerID() {
+	getDefencePlayerID() {
 		let players = this.game.players;
 
 		for (let i = 0; i < players.length; i++) {
 			if (players[i].statuses.role === 'defender') {
+				return players[i].id;
+			}
+		}
+	}
+
+	getAnotherPlayerID() {
+		let players = this.game.players;
+
+		for (let i = 0; i < players.length; i++) {
+			if (players[i].id !== this.id) {
 				return players[i].id;
 			}
 		}
@@ -432,7 +501,7 @@ class Bot extends Player {
 		return cards;
 	}
 
-	findCardsOnTheTableValues() {
+	findTableCardsValues() {
 		/**
 		 * Метод, возвращающий значения всех карт на столе.
 		 */
@@ -452,7 +521,7 @@ class Bot extends Player {
 		return cardsValues;
 	}
 
-	findNullDefenseCardsOnTheTable() {
+	findNullDefenceTableCards() {
 		/**
 		 * Метод, возвращающий карты атакующих на столе.
 		 */
@@ -468,7 +537,7 @@ class Bot extends Player {
 		return cards;
 	}
 
-	findDefenseCardsOnTheTable() {
+	findDefenceTableCards() {
 		/**
 		 * Метод, возвращающий карты защищающегося на столе.
 		 */
@@ -482,44 +551,6 @@ class Bot extends Player {
 		}
 
 		return cards;
-	}
-
-	isBeatableOnlyByThis(cardAction, actions) {
-		/*
-		 * Метод, возвращающий true, если на столе есть карты, которые бьются только картой из cardAction.
-		 */
-		let cardsOnTheTable = this.findNullDefenseCardsOnTheTable(),
-			beatableCards = [];
-
-		for (let i = 0; i < actions.length; i++) {
-			if ((actions[i].field !== cardAction.field) && (!beatableCards.includes(actions[i].field))) {
-				beatableCards.push(actions[i].field);
-			}
-		}
-
-		return (beatableCards.length === cardsOnTheTable.length) ? false : true;
-	}
-
-	isNotBeatable(actions) {
-		/*
-		 * Метод, возвращающий true, если на столе есть карты, которые нельзя побить.
-		 */
-		let cardsOnTheTable = this.findNullDefenseCardsOnTheTable(),
-			beatableCards = [];
-
-		for (let i = 0; i < actions.length; i++) {
-			let field = actions[i].field;
-
-			if ((!beatableCards.includes(field)) && (field !== undefined)) {
-				beatableCards.push(field);
-			}
-		}
-
-		console.log('Beatable Cards ', beatableCards);
-		console.log('Beatable Cards length', beatableCards.length);
-		console.log('Cards On TheTable length', cardsOnTheTable.length);
-
-		return (beatableCards.length === cardsOnTheTable.length) ? false : true;
 	}
 	/*
 	 *
@@ -536,8 +567,10 @@ class Bot extends Player {
 		suits[this.game.cards.trumpSuit] = Infinity;
 
 		for (let i = 0; i < cardsInHand.length; i++) {
-			if (cardsInHand[i].suit !== this.game.cards.trumpSuit) {
-				suits[cardsInHand[i].suit]++;
+			let cardSuit = cardsInHand[i].suit;
+
+			if (cardSuit !== this.game.cards.trumpSuit) {
+				suits[cardSuit]++;
 			}
 		}
 
@@ -579,85 +612,122 @@ class Bot extends Player {
 	}
 	/*
 	 *
-	 * Методы, определяющие полезность чего-либо.
+	 * Методы, определяющие что-либо.
 	 *
 	 */
-	isTransferBeneficial(gameStage, transferAction, actions) {
+	isTransfer(gameStage, transfer, actions) {
 		/**
 		 * Метод, определяющий эффективность перевода.
-		 *
-		 * В начале игры перевод выгоден, если бот не переводит козырем или козырем, меньшем 5.
 		 */
+		if ((!transfer) || (this.difficulty === 0)) {
+			return false;
+		}
+
 		let trumpSuitQty = this.findTrumpCardsQty(),
 			isEarlyGame = gameStage === 'EARLY_GAME',
-			isTransferActionTrump = transferAction.csuit === this.game.cards.trumpSuit,
+			isTransferTrump = transfer.csuit === this.game.cards.trumpSuit,
 			usedField = this.game.table.usedFields,
-			transferActionValue = transferAction.cvalue;
+			transferValue = transfer.cvalue;
 
-		if (isEarlyGame && ((!isTransferActionTrump) || ((transferActionValue < 5) && (trumpSuitQty > 1)) ||
-				((transferActionValue < 11) && ((usedField > 1) || this.isBeatableOnlyByThis(transferAction, actions))))) {
+		if (isEarlyGame && ((!isTransferTrump) || ((transferValue < 5) && (trumpSuitQty > 1)) ||
+				((transferValue < 11) && ((usedField > 1) || this.isBeatableOnlyByThis(transfer, actions))))) {
 			return true;
 		}
 		/**
 		 * В конце игры перевод выгоден, если бот не переводит козырем или козырем, меньшем J.
 		 */
-		if (isEarlyGame && ((!isTransferActionTrump) || ((transferActionValue < 11) && ((trumpSuitQty > 0) ||
-				this.isBeatableOnlyByThis(transferAction, actions))))) {
+		if ((!isEarlyGame) && ((!isTransferTrump) || ((transferValue < 11) && ((trumpSuitQty > 0) ||
+				this.isBeatableOnlyByThis(transfer, actions))))) {
 			return true;
 		}
 
 		return false;
 	}
 
-	// NOTE Game Stage не используется
-	isAttackActionBeneficial(minAction, gameStage) {
-		if (!minAction) {
+	isAttack(action) {
+		if ((!action) || (this.difficulty < 2)) {
 			return false;
 		}
 
-		let defensePlayerCardsQty = this.game.hands[this.getDefensePlayerID()].length,
-			isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit,
-			isFollowUp = this.game.turnStages.current === 'FOLLOWUP';
+		let defensePlayerCardsQty = this.game.hands[this.getDefencePlayerID()].length,
+			isActionTrump = action.csuit === this.game.cards.trumpSuit,
+			isFollowUp = this.game.turnStages.current === 'FOLLOWUP',
+			areNullDefenceTableCards = this.findNullDefenceTableCards();
+			
 
-		if ((defensePlayerCardsQty < 3) && (!isFollowUp) &&
-			((isMinActionTrump && (minAction.cvalue < 11)) || (!isMinActionTrump))) {
-			return true;
+		if ((!isFollowUp) && (!areNullDefenceTableCards)) {
+			switch (defensePlayerCardsQty) {
+				case 1:
+				case 2:
+					if ((isActionTrump && (action.cvalue < 11)) ||
+						(!isActionTrump)) {
+						return true;
+					}
+
+					break;
+
+				case 3:
+					if ((isActionTrump && (action.cvalue < 6)) ||
+						(!isActionTrump)) {
+						return true;
+					}
+
+					break;
+
+				case 4:
+					if (!isActionTrump) {
+						return true;
+					}
+
+					break;
+
+				default:
+					return false;
+			}
 		}
 
-		if ((defensePlayerCardsQty < 4) && (!isFollowUp) &&
-			((isMinActionTrump && (minAction.cvalue < 6)) || (!isMinActionTrump))) {
-			return true;
+		return false;
+	}
+
+	isPass(minAction, passAction) {
+		if (this.isFirstAttack() || this.isAttack(minAction)) {
+			return false;
 		}
 
-		if ((defensePlayerCardsQty < 5) && (!isFollowUp) && (!isMinActionTrump)) {
+		if ((this.difficulty > 0) && ((!minAction) || (minAction.csuit === this.game.cards.trumpSuit) ||
+				(minAction.cvalue > 10))) {
 			return true;
 		}
 
 		return false;
 	}
 
-	// NOTE Game Stage не используется
-	isPassActionBeneficial(minAction, gameStage) {
-		return (!minAction) ||  minAction.csuit === this.game.cards.trumpSuit || (minAction.cvalue > 10);
-	}
+	isTake(gameStage, minAction, actions) {
+		if (!minAction) {
+			return true;
+		}
 
-	isTakeActionBeneficial(gameStage, minAction, actions) {
 		let usedFields = this.game.table.usedFields,
 			isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit,
 			isEndGame = gameStage === 'END_GAME',
-			handLength = this.game.hands[this.id].length;
+			handLength = this.game.hands[this.id].length,
+			trumpCardsQty = this.findTrumpCardsQty(),
+			minValue = minAction.cvalue;
 
 		if (this.isNotBeatable(actions) || ((!isEndGame) && isMinActionTrump &&
-				(((usedFields === 1) && (handLength < 7)) ||
-					((usedFields === 2) && (minAction.cvalue > 10))))) {
+				(trumpCardsQty < 3) && (((usedFields === 1) && (handLength < 7) && (minValue > 7)) || ((usedFields === 2) && (minValue > 10))))) {
 			return true;
 		}
 
 		return false;
 	}
 
-	isMinActionWithValueOnTheTableBeneficial(gameStage, minActionWithValueOnTheTable) {
-		let minAction = minActionWithValueOnTheTable,
+	isMinActionWithTableValue(gameStage, minActionWithTableValue) {
+		if ((!minActionWithTableValue) || (this.difficulty === 0)) {
+			return false;
+		}
+
+		let minAction = minActionWithTableValue,
 			isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit,
 			isEarlyGame = gameStage === 'EARLY_GAME';
 
@@ -667,6 +737,186 @@ class Bot extends Player {
 		}
 
 		return false;
+	}
+
+	isOneOnOne(gameStage) {
+		if ((this.difficulty < 2) || (gameStage === 'EARLY_GAME') ||
+			(this.game.players.length !== 2)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	isThisValueOut(value) {
+		/*
+		 * Метод, проверяющий, вышли ли оставшиеся карты этого типа из игры (которых нету у этого бота в руке).
+		 * Для проверки используются только данные этого бота и стопки сброса.
+		 * НЕ ПРОТЕСТИРОВАНО
+		 */
+		let cardsInHand = this.game.hands[this.id],
+			valueQty = 4,
+			discardPile = this.game.discardPile;
+
+		for (let i = 0; i < cardsInHand.length; i++) {
+			if (cardsInHand[i].value === value) {
+				valueQty--;
+			}
+		}
+
+		for (let i = 0; i < discardPile.length; i++) {
+			if (discardPile[i].value === value) {
+				valueQty--;
+			}
+		}
+
+		return valueQty ? true : false;
+	}
+
+	isBeatableOnlyByThis(cardAction, actions) {
+		/*
+		 * Метод, возвращающий true, если на столе есть карты, которые бьются только картой из cardAction.
+		 */
+		let cardsOnTheTable = this.findNullDefenceTableCards(),
+			beatableCards = [];
+
+		for (let i = 0; i < actions.length; i++) {
+			if ((actions[i].field !== cardAction.field) && (!beatableCards.includes(actions[i].field))) {
+				beatableCards.push(actions[i].field);
+			}
+		}
+
+		return beatableCards.length !== cardsOnTheTable.length;
+	}
+
+	isNotBeatable(actions) {
+
+		/*
+		 * Метод, возвращающий true, если на столе есть карты, которые нельзя побить.
+		 */
+		let cardsOnTheTable = this.findNullDefenceTableCards(),
+			beatableCards = [];
+
+		for (let i = 0; i < actions.length; i++) {
+			let field = actions[i].field;
+
+			if ((!beatableCards.includes(field)) && (field !== undefined)) {
+				beatableCards.push(field);
+			}
+		}
+
+		console.log('Beatable Cards ', beatableCards);
+		console.log('Beatable Cards length', beatableCards.length);
+		console.log('Cards On TheTable length', cardsOnTheTable.length);
+
+		return beatableCards.length !== cardsOnTheTable.length;
+	}
+
+	isAttackTurn() {
+		// Метод, определяющий тип действия, которое нужно совершить боту.
+
+		return this.statuses.role === 'attacker';
+	}
+
+	defineGameStage() {
+		/**
+		 * Метод, определяющий стадию игры.
+		 */
+		let gameStages = ['EARLY_GAME', 'END_GAME'],
+			deck = this.game.deck;
+
+		return (deck.length < 5) ? gameStages[1] : gameStages[0];
+	}
+
+	isLesserAction(action, minAction) {
+		let isMinActionTrump = minAction.csuit === this.game.cards.trumpSuit,
+			isActionTrump = action.csuit === this.game.cards.trumpSuit;
+
+
+		if (isMinActionTrump && (!isActionTrump)) {
+			return true;
+		}
+
+		if ((action.cvalue < minAction.cvalue) &&
+			(isActionTrump === isMinActionTrump)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	isBeatableByOpponent(action, opponentsHand) {
+		if (!action) {
+			return false;
+		}
+
+		for (let i = 0; i < opponentsHand.length; i++) {
+			let isOpponentsCardTrump = opponentsHand[i].suit === this.game.cards.trumpSuit,
+				isActionTrump = action.csuit === this.game.cards.trumpSuit;
+
+
+			if (isOpponentsCardTrump && (!isActionTrump)) {
+				return true;
+			}
+
+			if ((action.cvalue < opponentsHand[i].value) &&
+				(isActionTrump === isOpponentsCardTrump)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	isTransferableByOpponent(action, opponentsHand) {
+		if (!action || !this.game.canTransfer || this.findDefenceTableCards()) {
+			return false;
+		}
+
+		for (let i = 0; i < opponentsHand.length; i++) {
+			if (action.cvalue === opponentsHand[i].value) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	isUnbeatableAction(unbeatableAction, minAction, opponentsHand) {
+		if (!unbeatableAction) {
+			return false;
+		}
+
+		let isTransferable = this.isTransferableByOpponent(unbeatableAction, opponentsHand);
+
+		if ((unbeatableAction.cvalue <= minAction.cvalue + 3) &&
+			(unbeatableAction.csuit === minAction.csuit) &&
+			this.isAttack(unbeatableAction) &&
+			(this.difficulty === 3) && (!isTransferable)) {
+			console.log('UNBEATABLE ACTION: ', true);
+			return true;
+		}
+
+		return false;
+	}
+
+	isUntransferableAction(untransferableAction, minAction) {
+		if (!untransferableAction) {
+			return false;
+		}
+
+		if ((untransferableAction.cvalue <= minAction.cvalue + 2) &&
+			(untransferableAction.csuit === minAction.csuit) &&
+			this.isAttack(untransferableAction) && (this.difficulty === 3)) {
+			console.log('UNTRANSFERABLE ACTION: ', true);
+			return true;
+		}
+
+		return false;
+	}
+
+	isFirstAttack() {
+		return this.game.turnStages.current === 'INITIAL_ATTACK';
 	}
 }
 
