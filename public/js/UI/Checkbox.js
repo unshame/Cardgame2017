@@ -7,6 +7,8 @@ UI.Checkbox = function(options){
 	this.actionEnable = this.options.actionEnable;
 	this.actionDisable = this.options.actionDisable;
 	this.options.action = this.check.bind(this);
+	var hoverPlacement = this.options.hoverPlacement;
+	var hoverText = this.options.hoverText;
 
 	UI.Button.call(this, this.options);
 	UI.ButtonBase.setStateFrames(this, this.frame);
@@ -16,10 +18,18 @@ UI.Checkbox = function(options){
 		this.label.inputEnabled = true;
 		this.label.events.onInputUp.add(this.action);
 		this.label.anchor.set(0, 0.5);
+		if(hoverText){
+			UI.PopupComponent.call(
+				this,
+				this.label,
+				hoverPlacement,
+				hoverText
+			);
+		}
 	}
 };
 
-extend(UI.Checkbox, UI.Button);
+extend(UI.Checkbox, UI.Button, [UI.PopupComponent]);
 
 UI.Checkbox.prototype.getDefaultCheckboxOptions = function(){
 	return {
@@ -38,7 +48,9 @@ UI.Checkbox.prototype.getDefaultCheckboxOptions = function(){
 		context: null,
 		group: null,
 		scale: 1,
-		checked: false
+		checked: false,
+		hoverText: null,
+		hoverPlacement: 'top'
 	};
 };
 
