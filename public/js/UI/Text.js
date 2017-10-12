@@ -8,6 +8,16 @@ UI.Text = function(options){
 	this.fontWeight = this.options.fontWeight;
 	this.setShadow(1, 1, 'rgba(0,0,0,0.5)', 1);
 	this.fill = this.options.textColor;
+
+	if(this.options.hoverText){
+		UI.PopupComponent.call(
+			this,
+			this,
+			this.options.hoverPlacement,
+			this.options.hoverText
+		);
+	}
+	
 	if(this.options.group){
 		this.options.group.add(this);
 	}
@@ -16,7 +26,7 @@ UI.Text = function(options){
 	}
 }
 
-extend(UI.Text, Phaser.Text);
+extend(UI.Text, Phaser.Text, [UI.PopupComponent]);
 
  UI.Text.prototype.getDefaultOptions = function(){
 	return {
@@ -30,6 +40,8 @@ extend(UI.Text, Phaser.Text);
 		font: 'Exo',
 		fontSize: 26,
 		group: null,
+		hoverText: null,
+		hoverPlacement: 'top'
 	};
 };
 
