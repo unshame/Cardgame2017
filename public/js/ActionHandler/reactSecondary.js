@@ -145,7 +145,7 @@ var reactSecondary = {
 	* @param {ActionInfo}         action.action   действие, которое необходимо обратить
 	* @param {object}             action.time     время до которого нужно выполнить новое действие
 	* @param {object}             action.timeSent время в которое действия были отправленны с сервера
-	* @param {object<ActionInfo>} action.actions       действия из которых нужно выбрать одно в замен неверного
+	* @param {object<ActionInfo>} action.actions  действия из которых нужно выбрать одно в замен неверного
 	*/
 	INVALID_ACTION: function(action, seq){
 		var undoAction = action.action,
@@ -161,7 +161,7 @@ var reactSecondary = {
 			fieldManager.moveCards(field, [cardInfo], BRING_TO_TOP_ON.END_ALL);
 		}
 		if(action.actions){
-			actionHandler.handlePossibleActions(action.actions, action.time, action.timeSent);
+			actionHandler.handlePossibleActions(action, seq);
 		}
 		else{
 			actionHandler.reset();
