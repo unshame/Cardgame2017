@@ -32,7 +32,9 @@ UI.prototype._createMenus = function(){
 				},
 				{
 					action: function(){
-						ui.modalManager.openModal('lobby');
+						ui.menus.main.fadeOut();
+						ui.logo.fadeOut();
+						ui.menus.creator.fadeIn()
 					},
 					name: 'custom',
 					text: 'Create Game'
@@ -179,126 +181,6 @@ UI.prototype._createMenus = function(){
 						text: 'Debug'
 					}
 				]
-			]
-		}),
-
-		// лобби
-		lobby: new Menu({
-			position: function(){
-				return {
-					x:game.screenWidth/2,
-					y:game.screenHeight/2
-				};
-			}, 
-			z: -4,
-			base: true,
-			color: 'grey',
-			elementColor: 'grey',
-			textColor: 'black',
-			name: 'menu_lobby',
-			header: 'Create Lobby',
-			closeButton: function(){
-				ui.modalManager.closeModal();
-			},
-			closeButtonCrossColor: 'grey',
-			layout: [
-			Menu.alignJustify(
-				Menu.text({
-						text: 'Game Mode'
-					}),
-				Menu.stepper({
-						action: function(key){
-							
-						},
-						choices: {
-							[1]: 'Podkidnoy',
-							[2]: 'Perevodnoy',
-		
-						},
-						name: 'gameMode',
-						textColor: 'black',
-						minWidth: 150
-					})
-				),
-				Menu.alignJustify(
-					Menu.text({
-						text: 'Number of players'
-					}),
-					Menu.stepper({
-						action: function(key){
-							
-						},
-						choices: {
-							[2]: '2',
-							[3]: '3',
-							[4]: '4',
-							[5]: '5',
-							[6]: '6',
-						},
-						name: 'numberOfPlayers',
-						textColor: 'black',
-						minWidth: 150
-					})),
-				Menu.alignJustify(
-					Menu.text({
-						text: 'deckSize'
-					}),
-					Menu.stepper({
-						action: function(key){
-							
-						},
-						choices: {
-							[1]: '36',
-							[2]: '52',
-						},
-						name: 'deckSize',
-						textColor: 'black',
-						minWidth: 150
-					})),
-				
-				Menu.checkbox({
-					text:'Bots',
-					name:'bots',
-					action:function(){
-
-					}
-				}),
-				Menu.checkbox({
-					text:'Private',
-					name:'private',
-					actionEnable:function(){
-
-					}
-
-				}),
-				{
-					name:'create',
-					text:'Create',
-					context:this,
-					action:function(){
-						var numOfPlayers = ui.menus.lobby.getElementByName('numberOfPlayers').currentContent;
-						var private = ui.menus.lobby.getElementByName('private').checked;
-						var bots = ui.menus.lobby.getElementByName('bots').checked;
-						var mode = ui.menus.lobby.getElementByName('gameMode').currentContent;
-						debugger
-						if(mode == '1'){
-							mode = false;
-						}
-						else{
-							mode == true;
-						}
-						//players, send, reveal, type, noResponse
-						
-						ui.modalManager.closeModal();
-						connection.proxy.createCustomQueue(false,'durak',({
-							bot:bots
-							}),
-						({
-							//canTransfer:mode
-						}));
-					}
-				}
-				
 			]
 		}),
 		// КОНЕЦ ИГРЫ

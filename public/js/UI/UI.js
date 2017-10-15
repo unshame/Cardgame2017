@@ -140,11 +140,11 @@ UI.prototype.initialize = function(){
 	
 	this.menus = this._createMenus();
 	this.menus.browser = new LobbyBrowser();
+	this.menus.creator = new LobbyCreator();
 	this.menus.options.hideElement('concede');
 	this.modalManager.makeModal(
 		this.menus.options,
-		this.menus.debug,
-		this.menus.lobby
+		this.menus.debug
 	);
 
 	/* Временно выключенные кнопки */

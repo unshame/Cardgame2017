@@ -62,5 +62,6 @@ var stateMenu = new State('menu', {
 		}
 		ui.menus.main.fadeOut();
 		ui.logo.fadeOut();
+		ui.modalManager.closeModal();
 	}
 });

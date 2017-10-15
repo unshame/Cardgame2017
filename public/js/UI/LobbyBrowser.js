@@ -43,7 +43,10 @@ var LobbyBrowser = function(options){
 		name:'join',
 		text:'Join game',
 		action: function(){
-			connection.proxy.joinCustomQueue(this.selectedQueuele);
+			game.state.change('queue');
+			ui.menus.browser.fadeOut();
+			connection.proxy.joinCustomQueue(this.selectedQueue);
+
 		},
 		context: this
 	},
@@ -52,6 +55,7 @@ var LobbyBrowser = function(options){
 		text:'Refresh',
 		action: function(){
 			connection.proxy.requestQueueList(0, this.pagination);
+
 		},
 		context: this
 	}
@@ -147,7 +151,10 @@ LobbyBrowser.prototype.recieveList = function(action){
 
  LobbyBrowser.prototype.select = function(u){
  	var a = this.list[u].name + '\n' + this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + '\n' + this.list[u].type;
+ 	//if(!this.list[u].private){
+ 	//	debugger
  	this.info.setText(a);
+ //	}	
  	this.selectedQueue = this.list[u].id
  	this.selectedID = this.list[u].id;
  	for(var i = 0; i < this.pagination; i++){

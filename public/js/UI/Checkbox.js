@@ -13,7 +13,7 @@ UI.Checkbox = function(options){
 	UI.Button.call(this, this.options);
 	UI.ButtonBase.setStateFrames(this, this.frame);
 
-	this.checked = this.options.checked;
+	this.checked = false;
 	if(this.label){
 		this.label.inputEnabled = true;
 		this.label.events.onInputUp.add(this.action);

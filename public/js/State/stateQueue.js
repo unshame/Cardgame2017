@@ -50,6 +50,7 @@ var stateQueue = new State('queue', {
 	shutdown: function(nextState){
 		//ui.menus.options.hideElement('concede');
 		ui.menus.queue.fadeOut();
+		ui.modalManager.closeModal();
 		ui.eventFeed.clear();
 		if(nextState != 'menu'){
 			cardEmitter.stop();
