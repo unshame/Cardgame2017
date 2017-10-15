@@ -139,7 +139,6 @@ var LobbyCreator = function(options){
 				this.createGame()
 			},
 		},
-		}
 		
 	];
 	this.options.layout = layout;
