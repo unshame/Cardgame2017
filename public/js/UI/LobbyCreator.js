@@ -3,7 +3,7 @@ var LobbyCreator = function(options){
 	var layout = [
 		Menu.alignLeft(
 			Menu.text({
-				text:'Players  ',
+				text:'Players   ',
 				name:'numOfPlayers',
 				hoverText:'Number of real players'
 			}),
@@ -53,7 +53,7 @@ var LobbyCreator = function(options){
 		),
 		Menu.alignLeft(
 			Menu.text({
-				text:'Bots       ',
+				text:'Bots        ',
 				name:'numOfBots',
 				hoverText:'Number of bots'
 			}),
