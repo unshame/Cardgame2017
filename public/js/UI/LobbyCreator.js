@@ -5,7 +5,7 @@ var LobbyCreator = function(options){
 			Menu.text({
 				text:'Players  ',
 				name:'numOfPlayers',
-				hoverText:'Number of players'
+				hoverText:'Number of real players'
 			}),
 			Menu.stepper({
 				action:function(key){
@@ -48,7 +48,7 @@ var LobbyCreator = function(options){
 			Menu.checkbox({
 				text:'Private',
 				name:'private',
-				hoverText:'youre the pidor'
+				hoverText:'Youre game will be private'
 			})
 		),
 		Menu.alignLeft(
@@ -83,17 +83,6 @@ var LobbyCreator = function(options){
 								bots.arrowRight.alpha = 0.5
 							}
 						}
-
-					/*if(bots.previousContent)
-						if(bots.previousContent.text){
-							bots.arrowLeft.enable();
-							bots.arrowLeft.alpha = 1;
-						}
-					if(bots.nextContent)
-						if((Number(key) + Number(players.nextContent.nextContent.text) > 6)){
-							bots.arrowRight.disable();
-							bots.arrowRight.alpha = 0.5;
-						}*/
 				},
 				name:'stepOfBots',
 				choices:{ 
@@ -111,12 +100,12 @@ var LobbyCreator = function(options){
 			Menu.checkbox({ 
 				text:'Transfer',
 				name:'transfer',
-				hoverText:'youre the pidor'
+				hoverText:'Enable Transfer'
 			})
 		),
 		Menu.alignLeft(
 			Menu.text({
-				text:'Dick size',
+				text:'Deck size',
 				name:'deckSize',
 			}),
 			Menu.stepper({
@@ -130,18 +119,18 @@ var LobbyCreator = function(options){
 			Menu.checkbox({
 				text:'Free for all',
 				name:'freeForAll',
-				hoverText:'youre the pidor'
+				hoverText:' something'
 			})
 		),
 		Menu.checkbox({
 				text:'Limit attack',
 				name:'limitAttack',
-				hoverText:'youre the pidor'
+				hoverText:'something'
 			}),
 		Menu.checkbox({
 				text:'Limit followup',
 				name:'limitFollowup',
-				hoverText:'youre the pidor'
+				hoverText:'something'
 			}),
 		{
 			name:'createGame',
@@ -150,19 +139,6 @@ var LobbyCreator = function(options){
 				this.createGame()
 			},
 		},
-		{
-			name:'createGame',
-			text:'Change',
-			action:function(){
-				/*this.getElementByName('stepOfBots').next();
-				this.getElementByName('stepOfBots').arrowLeft.disable();
-				this.getElementByName('stepOfBots').arrowLeft.alpha = 0.5;
-				/////////////////////////////////////////////////////////////
-				this.getElementByName('stepOfBots').prev();
-				this.getElementByName('stepOfBots').arrowRight.disable();
-				this.getElementByName('stepOfBots').arrowRight.alpha = 0.5;*/
-			}	
-
 		}
 		
 	];
