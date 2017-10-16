@@ -3,7 +3,7 @@ var LobbyCreator = function(options){
 	var layout = [
 		Menu.alignLeft(
 			Menu.text({
-				text:'Players   ',
+				text:'Players                ',
 				name:'numOfPlayers',
 				hoverText:'Number of real players'
 			}),
@@ -42,7 +42,7 @@ var LobbyCreator = function(options){
 					'5': '5',
 					'6': '6',
 				},
-				minWidth: 50,
+				minWidth: 100,
 				context:this
 			}),
 			Menu.checkbox({
@@ -53,7 +53,7 @@ var LobbyCreator = function(options){
 		),
 		Menu.alignLeft(
 			Menu.text({
-				text:'Bots        ',
+				text:'Bots                     ',
 				name:'numOfBots',
 				hoverText:'Number of bots'
 			}),
@@ -93,7 +93,7 @@ var LobbyCreator = function(options){
 					'4': '4',
 					'5': '5',
 				},
-				minWidth: 50,
+				minWidth: 100,
 				context:this,
 				startKey: '0'
 			}),
@@ -105,7 +105,7 @@ var LobbyCreator = function(options){
 		),
 		Menu.alignLeft(
 			Menu.text({
-				text:'Deck size',
+				text:'Deck size             ',
 				name:'deckSize',
 			}),
 			Menu.stepper({
@@ -114,7 +114,7 @@ var LobbyCreator = function(options){
 					'1': '36',
 					'2': '52'			
 				},
-				minWidth: 50
+				minWidth: 100
 			}),
 			Menu.checkbox({
 				text:'Free for all',
@@ -122,11 +122,30 @@ var LobbyCreator = function(options){
 				hoverText:' something'
 			})
 		),
-		Menu.checkbox({
+		
+		Menu.alignLeft(
+			Menu.text({
+				text:'Difficulty of Bots',
+				name:'difficulty',
+				hoverText:''
+			}),
+			Menu.stepper({
+				name:'stepOfDifficulty',
+				choices: { 
+					'1': 'Easy',
+					'2': 'Medium',
+					'3': 'Hard',
+					'4': 'Cheater',
+				},
+				minWidth: 100,
+				context:this
+			}),
+			Menu.checkbox({
 				text:'Limit attack',
 				name:'limitAttack',
 				hoverText:'something'
-			}),
+			})
+		),
 		Menu.checkbox({
 				text:'Limit followup',
 				name:'limitFollowup',
