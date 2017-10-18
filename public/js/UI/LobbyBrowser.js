@@ -3,6 +3,7 @@ var LobbyBrowser = function(options){
 	this.options = mergeOptions(this.getDefaultLobbyOptions(), options);
 	this.page = null;
 	this.list = null;
+	this.info = null;
 	this.selected = false;
 	this.pagination = 3;
 
@@ -18,7 +19,7 @@ var LobbyBrowser = function(options){
 	layout[0].push(Menu.text({
 		text:'',
 		name: 'info',
-		textColor: 'black'
+		textColor: 'black',
 	}));
 	layout.push(Menu.alignJustify(
 		{
@@ -82,7 +83,11 @@ var LobbyBrowser = function(options){
 		}
 
 	}
-
+	for(var i = 0; i < this.pagination; i++){
+ 		this.buttons[i].changeStyle(3);
+ 		if(i==0) this.buttons[i].changeStyle(1);
+		if(i== this.pagination-1) this.buttons[i].changeStyle(2);
+ 	}
 	this.info = this.getElementByName('info');
 	this.info.fixedWidth = 300;
 	this.info.fixedHeight = this.buttons[0].fixedHeight;
@@ -93,7 +98,7 @@ var LobbyBrowser = function(options){
 	this.refreshButton = this.getElementByName('refresh');
 	UI.ButtonBase.setStateFrames(this.leftArrow, 0);
 	UI.ButtonBase.setStateFrames(this.rightArrow, 1);
-	this.updatePosition();
+
 };
 
 extend(LobbyBrowser, Menu);
@@ -140,13 +145,18 @@ LobbyBrowser.prototype.resetButtons = function(){
 		if(i== this.pagination-1) this.buttons[i].changeStyle(2);
 	}
 	this.disableElement('right');
-	this.disableElement('left');	
+	this.disableElement('left');
+	if(this.list[0])
+		this.select(0);	
 };
 
 LobbyBrowser.prototype.recieveList = function(action){
-	this.resetButtons();
+	
+	
 	this.list = action.list;
 	this.page = action.page;
+
+	this.resetButtons();
 	for(var i = 0; i < this.list.length; i++){
 		this.buttons[i].label.setText(this.list[i].name);
 		this.enableElement('button' + i);		
@@ -158,10 +168,12 @@ LobbyBrowser.prototype.recieveList = function(action){
 	if(action.moreBefore){
 		this.enableElement('left');
 	}
+	
 };
 
  LobbyBrowser.prototype.select = function(u){
  	//debugger
+ 	
  	var a = this.list[u].name + '\n' + this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + '\n' + this.list[u].type;
  	this.info.setText(a);
  	this.selected = true;

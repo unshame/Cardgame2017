@@ -45,7 +45,6 @@ UI.prototype._createMenus = function(){
 						ui.logo.fadeOut();
 						ui.menus.browser.fadeIn();
 						connection.proxy.requestQueueList(0, ui.menus.browser.pagination)
-						debugger
 					},
 					name: 'join',
 					text: 'Join Game'
