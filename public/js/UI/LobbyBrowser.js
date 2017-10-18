@@ -3,8 +3,8 @@ var LobbyBrowser = function(options){
 	this.options = mergeOptions(this.getDefaultLobbyOptions(), options);
 	this.page = null;
 	this.list = null;
-
-	this.pagination = 5;
+	this.selected = false;
+	this.pagination = 3;
 
 	var layout = [];
 	var i;
@@ -17,11 +17,14 @@ var LobbyBrowser = function(options){
 	}
 	layout[0].push(Menu.text({
 		text:'',
-		name: 'info'
+		name: 'info',
+		textColor: 'black'
 	}));
 	layout.push(Menu.alignJustify(
 		{
+			
 			name: 'left',
+			size:'arrowBig',
 			action: function(){
 				connection.proxy.requestQueueList(this.page - 1, this.pagination);
 			},
@@ -29,10 +32,12 @@ var LobbyBrowser = function(options){
 		},
 		Menu.text({
 			text:this.page,
-			name: 'pageNum'
+			name: 'pageNum',
+			textColor: 'black'
 		}),
 		{
 			name: 'right',
+			size:'arrowBig',
 			action: function(){ 
 				connection.proxy.requestQueueList(this.page + 1, this.pagination);
 			},
@@ -43,9 +48,11 @@ var LobbyBrowser = function(options){
 		name:'join',
 		text:'Join game',
 		action: function(){
+			if(this.selected){
 			game.state.change('queue');
 			ui.menus.browser.fadeOut();
 			connection.proxy.joinCustomQueue(this.selectedQueue);
+			}	
 
 		},
 		context: this
@@ -54,19 +61,20 @@ var LobbyBrowser = function(options){
 		name:'refresh',
 		text:'Refresh',
 		action: function(){
+ 			this.selected = false;
+
 			connection.proxy.requestQueueList(0, this.pagination);
 
 		},
 		context: this
 	}
 	]);
-	
+		
 	this.options.layout = layout;
 	Menu.call(this, this.options);
 
-
-	//Menu.justify(this.leftArrow,Menu.text({text:''}), this.rightArrow)
 	this.buttons = [];
+
 	for(i= 0; i < this.pagination; i++){
 		this.buttons[i] = this.getElementByName('button' + i);
 		if(i != this.pagination - 1){
@@ -83,6 +91,9 @@ var LobbyBrowser = function(options){
 	this.pageText = this.getElementByName('pageNum');
 	this.joinButton = this.getElementByName('join');
 	this.refreshButton = this.getElementByName('refresh');
+	UI.ButtonBase.setStateFrames(this.leftArrow, 0);
+	UI.ButtonBase.setStateFrames(this.rightArrow, 1);
+	this.updatePosition();
 };
 
 extend(LobbyBrowser, Menu);
@@ -119,14 +130,14 @@ LobbyBrowser.prototype.getDefaultLobbyOptions = function(){
 		headerTextColor: 'white'
 	};
 };
-LobbyBrowser.prototype.requestList = function(){
-	connection.proxy.request
-}
 LobbyBrowser.prototype.resetButtons = function(){
 	for(var i = 0; i < this.pagination; i++){
 		this.buttons[i].label.setText('');
 		this.disableElement('button' + i);
-		this.buttons[i].changeStyle(0);
+		
+		this.buttons[i].changeStyle(3);
+		if(i==0) this.buttons[i].changeStyle(1);
+		if(i== this.pagination-1) this.buttons[i].changeStyle(2);
 	}
 	this.disableElement('right');
 	this.disableElement('left');	
@@ -150,17 +161,21 @@ LobbyBrowser.prototype.recieveList = function(action){
 };
 
  LobbyBrowser.prototype.select = function(u){
+ 	//debugger
  	var a = this.list[u].name + '\n' + this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + '\n' + this.list[u].type;
- 	//if(!this.list[u].private){
- 	//	debugger
  	this.info.setText(a);
- //	}	
+ 	this.selected = true;
  	this.selectedQueue = this.list[u].id
- 	this.selectedID = this.list[u].id;
+ //	this.selectedID = this.list[u].id;
  	for(var i = 0; i < this.pagination; i++){
- 		this.buttons[i].changeStyle(0);
+ 		this.buttons[i].changeStyle(3);
+ 		if(i==0) this.buttons[i].changeStyle(1);
+		if(i== this.pagination-1) this.buttons[i].changeStyle(2);
  	}
- 	this.buttons[u].changeStyle(1);
+ 	this.buttons[u].changeStyle(6);
+ 	if(u==0) this.buttons[u].changeStyle(4);
+	if(u== this.pagination-1) this.buttons[u].changeStyle(5);
+ 	
  };
 
 LobbyBrowser.prototype._addButton = function(options){
@@ -180,7 +195,22 @@ LobbyBrowser.prototype._addButton = function(options){
 	if(options.styles === undefined){
 		options.styles = [
 			{
-				key: 'button_red_wide',
+				key: 'button_orange_largeTop',
+			},
+			{
+				key: 'button_orange_largeBottom',
+			},
+			{
+				key: 'button_orange_largeMiddle',
+			},
+			{
+				key: 'button_red_largeTop',
+			},
+			{
+				key: 'button_red_largeBottom',
+			},
+			{
+				key: 'button_red_largeMiddle',
 			}
 		];
 	}

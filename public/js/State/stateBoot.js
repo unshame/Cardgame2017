@@ -98,6 +98,11 @@ var stateBoot = new State('boot', {
 		this.loadAllColors('button', 'radial', 'assets/buttons/', 'radial.png', 40, 38, 2);
 		this.loadAllColors('button', 'checkbox', 'assets/buttons/', 'checkbox.png', 40, 38, 2);
 		this.loadAllColors('button', 'arrow', 'assets/buttons/', 'arrow.png', 40, 38, 2);
+		this.loadAllColors('button', 'arrowBig', 'assets/buttons/', 'arrowBig.png', 60, 47, 2);
+		this.loadAllColors('button', 'largeTop', 'assets/buttons/', 'largeTop.png', 285, 49, 1);
+		this.loadAllColors('button', 'largeBottom', 'assets/buttons/', 'largeBottom.png', 285, 49, 1);
+		this.loadAllColors('button', 'largeMiddle', 'assets/buttons/', 'largeMiddle.png', 285, 49, 1);
+
 
 		// Иконки кнопок
 		this.colors.push('white');

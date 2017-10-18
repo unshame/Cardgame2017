@@ -3,7 +3,7 @@ var LobbyCreator = function(options){
 	var layout = [
 		Menu.alignLeft(
 			Menu.text({
-				text:'Players                ',
+				text:'Players   ',
 				name:'numOfPlayers',
 				hoverText:'Number of real players'
 			}),
@@ -53,7 +53,7 @@ var LobbyCreator = function(options){
 		),
 		Menu.alignLeft(
 			Menu.text({
-				text:'Bots                     ',
+				text:'Bots        ',
 				name:'numOfBots',
 				hoverText:'Number of bots'
 			}),
@@ -105,7 +105,7 @@ var LobbyCreator = function(options){
 		),
 		Menu.alignLeft(
 			Menu.text({
-				text:'Deck size             ',
+				text:'Deck size',
 				name:'deckSize',
 			}),
 			Menu.stepper({
@@ -125,7 +125,7 @@ var LobbyCreator = function(options){
 		
 		Menu.alignLeft(
 			Menu.text({
-				text:'Difficulty of Bots',
+				text:'Difficulty',
 				name:'difficulty',
 				hoverText:''
 			}),
@@ -146,11 +146,11 @@ var LobbyCreator = function(options){
 				hoverText:'something'
 			})
 		),
-		Menu.checkbox({
-				text:'Limit followup',
+		Menu.alignRight(Menu.checkbox({
+				text:'Limit    ' +'\n' + 'followup     ',
 				name:'limitFollowup',
 				hoverText:'something'
-			}),
+			})),
 		{
 			name:'createGame',
 			text:'Create Game',
