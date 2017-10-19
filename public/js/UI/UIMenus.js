@@ -172,15 +172,57 @@ UI.prototype._createMenus = function(){
 						name: 'restore',
 						text: 'Restore',
 						hoverText: 'Get rid of all saved data (including your session id!).'
-					}),
-					{
+					})
+					/*{
 						action: function(){
 							ui.modalManager.openModal('debug');
 						},
 						name: 'debug',
 						text: 'Debug'
-					}
+					}*/
 				]
+			]
+		}),
+		// ОПЦИИ
+		rules: new Menu({
+			position: function(){
+				return {
+					x:game.screenWidth/2,
+					y:game.screenHeight/2
+				};
+			}, 
+			z: -4,
+			base: true,
+			color: 'grey',
+			elementColor: 'grey',
+			textColor: 'black',
+			name: 'menu_rules',
+			header: 'Rules',
+			closeButton: function(){
+				ui.modalManager.closeModal();
+			},
+			closeButtonCrossColor: 'grey',
+			layout: [
+				Menu.text({
+					name: 'rules',
+text:'В игре используется колода из 36 карт,\n\
+но можно использовать и колоду на 52 карты,\n\
+в игре участвуют от двух до шести игроков;\n\
+Старшинство карт в колоде из 52 карт:\n\
+2, 3, 4, 5, 6, 7, 8, 9, 10, В, Д, К, Т.\n\
+Старшинство мастей для игры в дурака не определено.\n\
+Каждому раздаётся по 6 карт, следующая\n\
+(или последняя, возможно и любая из колоды)\n\
+карта открывается и её масть устанавливает\n\
+козырь для данной игры,\n\
+и остальная колода кладётся сверху так,\n\
+чтобы козырная карта была всем видна.\n\
+Цель игры — избавиться от всех карт.\n\
+Последний игрок, не избавившийся от карт, остаётся в «дураках».\n\
+Запрещается забирать карты, которые отбили.\n\
+Отбитые карты идут в отбой (биту).'					
+				})
+
 			]
 		}),
 		// КОНЕЦ ИГРЫ

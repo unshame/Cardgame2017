@@ -61,22 +61,19 @@ UI.Credits.prototype.stop = function(){
 
 /* exported creditsText */
 var creditsText = 
-'Lorem ipsum DOLOR SIT AMET, AMET CONSECTETUR\n\n\
+'Игровая программа "Дурак подкидной"\n\n\
 \
+Сергей Дарнопых\n\
+в роли программиста ИИ\n\n\
+Тесленко Георгий\n\
+в роли разработчика интерфейса пользователя\n\n\
+Шибаев Олег\n\
+в роли создателя игрового поля,\n\
+логики игры,\n\
+и разработчика серверной части,\n\n\
 OpenGameArt.Org Assets:\n\
 "UI pack" by Kenney\n\
 "Modern Cards" by Kenney\n\
 "Classic Cards" by Byron Knoll\n\n\
 \
-Class aptent TACITI SOCIOSQU, AD LITORA\n\
-Vivamus PULVINAR LACUS\n\
-Sound Recordist MARK TARPEY\n\
-Aliquam SIT AMET\n\
-Aliquam AMET VEHICULA\n\
-Phasellus NISI LECTUS\n\
-In a diam SAPIEN\n\
-Nunc eu LIGULA SEM\n\
-Vivamus PULVINAR LACUS\n\
-Phasellus DAPIBUS QUAM\n\
-Donec IPSUM AUGUE\n\
 Vitae TRISTIQUE MAURIS';

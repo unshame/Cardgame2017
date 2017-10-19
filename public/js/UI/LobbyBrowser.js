@@ -5,7 +5,7 @@ var LobbyBrowser = function(options){
 	this.list = null;
 	this.info = null;
 	this.selected = false;
-	this.pagination = 3;
+	this.pagination = 7;
 
 	var layout = [];
 	var i;

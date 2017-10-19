@@ -94,7 +94,25 @@ UI.prototype._createButtons = function(){
 		group: this.cornerButtons
 	}).hide();
 
-	// Дебаг
+// Правила Игры
+	new UI.Button({
+		position: function(width, height){
+			return {
+				x: game.screenWidth - 30 - width*2,
+				y: game.screenHeight - 15 - height
+			};
+		},
+		action: function(){
+					ui.modalManager.openModal('rules');
+				},
+		icon: 'question',
+		context: game,
+		color: 'orange',
+		name: 'rules',
+		size: 'small',
+		group: this.cornerButtons
+	});
+	/*// Дебаг
 	new UI.Button({
 		position: function(width, height){
 			return {
@@ -110,9 +128,9 @@ UI.prototype._createButtons = function(){
 		size: 'small',
 		textColor: 'white',
 		group: this.cornerButtons
-	});
+	});*/
 
-	// Завершение последовательности
+	/*// Завершение последовательности
 	new UI.Button({
 		position: function(width, height){
 			return {
@@ -128,5 +146,5 @@ UI.prototype._createButtons = function(){
 		size: 'small',
 		textColor: 'white',
 		group: this.cornerButtons
-	});
+	});*/
 };
