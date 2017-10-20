@@ -88,6 +88,12 @@ class Server extends Eureca.Server{
 		*/
 		this.players = {};
 
+		this.playerNames = [];
+
+		for(var i = 0; i < 1000; i++){
+			this.playerNames.unshift('Player' + (i + 1));
+		}
+
 		// Биндим функции на ивенты
 		this.on('connect', this.handleConnect);
 		this.on('disconnect', this.handleDisconnect);
@@ -188,8 +194,13 @@ class Server extends Eureca.Server{
 		// Запоминаем информацию о клиенте
 		this.clients[conn.id] = {id: conn.id, remote: remote};
 
+		var name;
+		if(this.playerNames.length){
+			name = this.playerNames.pop();
+		}
+
 		// Подключаем клиента к экземпляру игрока	
-		let p = new Player(remote, conn.id);
+		let p = new Player(remote, conn.id, name);
 
 		this.log.notice('New client %s (%s)', p.id, conn.id, conn.remoteAddress);
 
@@ -214,7 +225,7 @@ class Server extends Eureca.Server{
 
 		if(p){
 			if(this.manager.disconnectPlayer(p)){
-				delete this.players[removeId];
+				this.deletePlayer(removeId);
 			}
 		}
 
@@ -242,6 +253,18 @@ class Server extends Eureca.Server{
 				Tests.runTest(this.params);
 			}
 		});
+	}
+
+	deletePlayer(connId){
+		let p = this.players[connId];
+		if(p){
+			var text = p.name.replace(/\d/g, '');
+			var number = Number(p.name.replace('Player', ''));
+			if(text == 'Player' && !isNaN(number) && number < 1000 && number > 0){
+				this.playerNames.push(p.name);
+			}
+			delete this.players[connId];
+		}
 	}
 
 }

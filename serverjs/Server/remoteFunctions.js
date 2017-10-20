@@ -51,7 +51,7 @@ module.exports = function(server){
 
 			if(player && !player.connected && player.game && player.game.isRunning){
 				server.players[newConnId] = player;
-				delete server.players[connId];
+				server.deletePlayer(connId);
 				player.updateRemote(newConnId, server.clients[newConnId].remote);
 			}
 			// Иначе сообщаем игроку, что переподключиться нельзя
