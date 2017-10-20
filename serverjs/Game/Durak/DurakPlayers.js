@@ -28,6 +28,8 @@ class DurakPlayers extends GamePlayers{
 				active: true
 			}
 		);
+
+		this.maxInvolved = this.game.rules.limitAttack ? 3 : Infinity;
 	}
 
 	static get [Symbol.species]() { return Array; }

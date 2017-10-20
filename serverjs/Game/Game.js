@@ -18,6 +18,18 @@ class Game{
 	*/
 	constructor(queue, players, Classes, config, rules){
 
+		/**
+		* Игровые настройки.
+		* @type {Object}
+		*/
+		this.config = config;
+
+		/**
+		* Правила игры.
+		* @type {Object}
+		*/
+		this.rules = rules;
+
 		// Генерируем айди игры
 		let id = generateId();
 
@@ -171,18 +183,6 @@ class Game{
 		* @type {Boolean}
 		*/
 		this.active = false;
-
-		/**
-		* Игровые настройки.
-		* @type {Object}
-		*/
-		this.config = config;
-
-		/**
-		* Правила игры.
-		* @type {Object}
-		*/
-		this.rules = rules;
 	}
 
 	/**

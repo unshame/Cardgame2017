@@ -1,84 +1,67 @@
 var LobbyBrowser = function(options){
 
 	this.options = mergeOptions(this.getDefaultLobbyOptions(), options);
+	this.list = [];
 	this.page = null;
 	this.info = null;
 	this.selected = false;
 	this.pagination = 7;
 
-	this.list = [];
-
 	var layout = [];
 	var i;
 	for(i = 0; i < this.pagination; i++){
 		layout.push(Menu.alignLeft({
-			name:'button'+i,
+			name: 'button'+i,
 			text: '',
 			downOffset: 0,
 			action: this.select.bind(this, i)
 		}));
 	}
+
 	layout[0].push(Menu.text({
 		text:'',
 		name: 'info',
 		textColor: 'black',
 	}));
+
 	layout.push(Menu.alignLeft(
 		{
 			
 			name: 'left',
-			size:'arrow',
-			action: function(){
-				connection.proxy.requestQueueList(this.page - 1, this.pagination);
-			},
+			size: 'arrow',
+			action: this.loadPrevious,
 			context:this
 		},
 		Menu.text({
-			text:this.page,
+			text: this.page,
 			name: 'pageNum',
 			textColor: 'black'
 		}),
 		{
 			name: 'right',
-			size:'arrow',
-			action: function(){ 
-				connection.proxy.requestQueueList(this.page + 1, this.pagination);
-			},
+			size: 'arrow',
+			action: this.loadNext,
 			context:this
 		}
 	));
+
 	layout.push([
 		{
-			name:'join',
-			text:'Join game',
-			action: function(){
-				if(this.selected){
-				game.state.change('queue');
-				ui.menus.browser.fadeOut();
-				connection.proxy.joinCustomQueue(this.selectedQueue);
-				}	
-
-			},
+			name: 'join',
+			text: 'Join game',
+			action: this.join,
 			context: this
 		},
 		{
-			name:'refresh',
-			text:'Refresh',
-			action: function(){
-	 			this.selected = false;
-				connection.proxy.requestQueueList(0, this.pagination);
-
-			},
+			name: 'refresh',
+			text: 'Refresh',
+			action: this.refresh,
 			context: this
 		},
 		{
-			name:'cancel',
-			text:'Cancel',
-			action:function(){
-				ui.menus.main.fadeIn();
-				ui.logo.fadeIn();
-				this.fadeOut();
-			},
+			name: 'cancel',
+			text: 'Cancel',
+			action: this.close,
 			context: this
 		}
 	]);
@@ -194,13 +177,16 @@ LobbyBrowser.prototype.recieveList = function(action){
  LobbyBrowser.prototype.select = function(u){
  	var a = this.list[u].name + '\n' + this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + '\n' + this.list[u].type;
  	this.info.setText(a, true);
- 	this.selected = true;
  	this.selectedQueue = this.list[u].id;
  	for(var i = 0; i < this.pagination; i++){
 		this.buttons[i].changeStyle(i === 0 ? 1 : i == this.pagination - 1 ? 2 : 3);
+ 		if(i < this.list.length){
+			this.enableElement('button' + i);
+ 		}
  	}
+ 	this.disableElement('button' + u);
  	this.buttons[u].changeStyle(u === 0 ? 4 : u == this.pagination - 1 ? 5 : 6);
- 	this.info.update();
+ 	this.buttons[u].label.alpha = 1;
  	
  };
 
@@ -244,4 +230,30 @@ LobbyBrowser.prototype._addButton = function(options){
 	button.disable(true);
 	this.elements.push(button);
 	return button;
+};
+
+LobbyBrowser.prototype.loadPrevious = function(){
+	this.disableElement('join');
+	connection.proxy.requestQueueList(this.page - 1, this.pagination);
+};
+
+LobbyBrowser.prototype.loadNext = function(){
+	this.disableElement('join');
+	connection.proxy.requestQueueList(this.page + 1, this.pagination);
+};
+
+LobbyBrowser.prototype.join = function(){
+	this.disableElement('join');
+	connection.proxy.joinCustomQueue(this.selectedQueue);
+};
+
+LobbyBrowser.prototype.refresh = function(){
+	this.disableElement('join');
+	connection.proxy.requestQueueList(0, this.pagination);
+};
+
+LobbyBrowser.prototype.close = function(){
+	ui.menus.main.fadeIn();
+	ui.logo.fadeIn();
+	this.fadeOut();
 };

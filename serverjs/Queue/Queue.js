@@ -118,6 +118,7 @@ class Queue{
 			numPlayersRequired: this.config.numPlayers,
 			numBots: this.config.numBots,
 			gameRules: this.gameRules,
+			difficulty: this.config.difficulty,
 			name: this.name
 		};
 	}

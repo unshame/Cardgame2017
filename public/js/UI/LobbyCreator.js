@@ -76,8 +76,8 @@ var LobbyCreator = function(options){
 			Menu.stepper({
 				name:'deckSizeStep',
 				choices:{ 
-					'1': '36',
-					'2': '52'			
+					'36': '36',
+					'52': '52'			
 				},
 				minWidth: stepperWidth
 			}),
@@ -180,18 +180,19 @@ LobbyCreator.prototype.getDefaultLobbyOptions = function(){
 LobbyCreator.prototype.createGame = function(){
 	var gameMode = 'durak';
 	var private = this.getElementByName('private').checked;
+	var difficulty = Number(this.getElementByName('stepOfDifficulty').getCurrentKey());
 	var config = {
 		numPlayers: Number(this.getElementByName('stepOfPlayers').getCurrentKey()),
-		numBots: Number(this.getElementByName('stepOfBots').getCurrentKey())
-
+		numBots: Number(this.getElementByName('stepOfBots').getCurrentKey()),
+		difficulty: difficulty
 	};
-	//var canTransfer =this.getElementByName('transfer').checked;
 	var rules = {
-		canTransfer:this.getElementByName('transfer').checked,
-		freeForAll:this.getElementByName('freeForAll').checked,
-		limitAttack:this.getElementByName('limitAttack').checked,
-		limitFollowup:this.getElementByName('limitFollowup').checked
-	};
+		canTransfer: this.getElementByName('transfer').checked,
+		freeForAll: this.getElementByName('freeForAll').checked,
+		limitAttack: this.getElementByName('limitAttack').checked,
+		limitFollowup: this.getElementByName('limitFollowup').checked,
+		numCards: Number(this.getElementByName('deckSizeStep').getCurrentKey())
+	}
 	ui.menus.creator.fadeOut();
 	connection.proxy.createCustomQueue(private, gameMode, config, rules);
 };

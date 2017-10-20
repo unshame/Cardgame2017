@@ -25,7 +25,7 @@ class Bot extends Player {
 		this.actionTimeout = null;
 
 		// NOTE difficulties: 0 - Easy, 1 - Medium, 2 - Hard, 3 - Cheater
-		if (typeof difficulty !== 'number' || isNaN(difficulty) || difficulty > 3) {
+		if (typeof difficulty !== 'number' || isNaN(difficulty) || difficulty > 3 || difficulty < 0) {
 			difficulty = 3;
 		}
 
