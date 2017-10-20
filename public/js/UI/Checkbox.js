@@ -4,16 +4,22 @@ UI.Checkbox = function(options){
 	this.options.size = 'checkbox';
 	this.options.downOffset = 0;
 	this.options.mobileClickProtect = false;
+	this.options.action = this.check.bind(this);
+
+	this.checked = this.options.checked;
 	this.actionEnable = this.options.actionEnable;
 	this.actionDisable = this.options.actionDisable;
-	this.options.action = this.check.bind(this);
+
 	var hoverPlacement = this.options.hoverPlacement;
 	var hoverText = this.options.hoverText;
 
 	UI.Button.call(this, this.options);
+
+	if(this.checked){
+		this.frame = 1;
+	}
 	UI.ButtonBase.setStateFrames(this, this.frame);
 
-	this.checked = false;
 	if(this.label){
 		this.label.inputEnabled = true;
 		this.label.events.onInputUp.add(this.action);
