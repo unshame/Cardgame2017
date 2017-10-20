@@ -77,7 +77,6 @@ UI.prototype._createMenus = function(){
 				};
 			}, 
 			z: -4,
-			base: true,
 			color: 'grey',
 			elementColor: 'grey',
 			textColor: 'black',
@@ -132,6 +131,54 @@ UI.prototype._createMenus = function(){
 						minWidth: 150
 					})
 				),
+				[
+					{
+						action: function(){
+							ui.modalManager.openModal('rules');
+						},
+						name: 'rules',
+						text: 'Rules',
+					},
+					{
+						action: function(){
+							ui.modalManager.openModal('moreOptions');
+						},
+						name: 'moreOptions',
+						text: 'More Options',
+					},
+					/*{
+						action: function(){
+							ui.modalManager.openModal('debug');
+						},
+						name: 'debug',
+						text: 'Debug'
+					}*/
+				]
+			]
+		}),
+
+		// БОЛЬШЕ ОПЦИЙ
+		moreOptions: new Menu({
+			position: function(){
+				return {
+					x:game.screenWidth/2,
+					y:game.screenHeight/2
+				};
+			}, 
+			z: -4,
+			color: 'grey',
+			elementColor: 'grey',
+			textColor: 'black',
+			name: 'menu_moreOptions',
+			header: 'Options',
+			closeButton: function(){
+				ui.modalManager.closeModal();
+			},
+			closeButtonCrossColor: 'grey',
+			layout: [
+				Menu.text({
+					text: 'I\'ll add more'
+				}),
 				Menu.alignAlternate(
 					Menu.text({
 						text: 'Render mode'
@@ -153,37 +200,20 @@ UI.prototype._createMenus = function(){
 						minWidth: 150
 					})
 				),
-/*Menu.buttonPopup({
+				Menu.buttonPopup({	
 					action: function(){
-						gameOptions.set('system_renderer', renderer === Phaser.WEBGL ? Phaser.CANVAS : Phaser.WEBGL);
+						gameOptions.restoreAllDefaults();
 						gameOptions.save();
+						location.href = location.href;
 					}, 
-					name: 'renderer',
-					text: rendererText,
-					hoverText: 'Change renderer to ' + rendererText + '. WebGL runs much better on mobile devices.'
-				}),*/
-				[
-					Menu.buttonPopup({	
-						action: function(){
-							gameOptions.restoreAllDefaults();
-							gameOptions.save();
-							location.href = location.href;
-						}, 
-						name: 'restore',
-						text: 'Restore',
-						hoverText: 'Get rid of all saved data (including your session id!).'
-					})
-					/*{
-						action: function(){
-							ui.modalManager.openModal('debug');
-						},
-						name: 'debug',
-						text: 'Debug'
-					}*/
-				]
+					name: 'restore',
+					text: 'Restore',
+					hoverText: 'Get rid of all saved data (including your session id!).'
+				})
 			]
 		}),
-		// ОПЦИИ
+
+		// ПРАВИЛА
 		rules: new Menu({
 			position: function(){
 				return {
@@ -192,7 +222,6 @@ UI.prototype._createMenus = function(){
 				};
 			}, 
 			z: -4,
-			base: true,
 			color: 'grey',
 			elementColor: 'grey',
 			textColor: 'black',

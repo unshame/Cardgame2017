@@ -145,7 +145,8 @@ UI.prototype.initialize = function(){
 	this.modalManager.makeModal(
 		this.menus.options,
 		this.menus.debug,
-		this.menus.rules
+		this.menus.rules,
+		this.menus.moreOptions
 	);
 
 	/* Временно выключенные кнопки */

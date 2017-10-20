@@ -49,7 +49,7 @@ UI.ModalManager.prototype.openModal = function(modalName){
 		len = this.openModals.length,
 		i = this.openModals.indexOf(modal);
 
-	if(!modal.modal){
+	if(!modal || !modal.modal){
 		console.error('Modal manager: cannot open non-modal modal');
 		return;
 	}
