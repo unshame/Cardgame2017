@@ -2,10 +2,11 @@ var LobbyBrowser = function(options){
 
 	this.options = mergeOptions(this.getDefaultLobbyOptions(), options);
 	this.page = null;
-	this.list = null;
 	this.info = null;
 	this.selected = false;
 	this.pagination = 7;
+
+	this.list = [];
 
 	var layout = [];
 	var i;
@@ -13,6 +14,7 @@ var LobbyBrowser = function(options){
 		layout.push(Menu.alignLeft({
 			name:'button'+i,
 			text: '',
+			downOffset: 0,
 			action: this.select.bind(this, i)
 		}));
 	}
@@ -21,11 +23,11 @@ var LobbyBrowser = function(options){
 		name: 'info',
 		textColor: 'black',
 	}));
-	layout.push(Menu.alignJustify(
+	layout.push(Menu.alignLeft(
 		{
 			
 			name: 'left',
-			size:'arrowBig',
+			size:'arrow',
 			action: function(){
 				connection.proxy.requestQueueList(this.page - 1, this.pagination);
 			},
@@ -38,37 +40,47 @@ var LobbyBrowser = function(options){
 		}),
 		{
 			name: 'right',
-			size:'arrowBig',
+			size:'arrow',
 			action: function(){ 
 				connection.proxy.requestQueueList(this.page + 1, this.pagination);
 			},
 			context:this
 		}
 	));
-	layout.push([{
-		name:'join',
-		text:'Join game',
-		action: function(){
-			if(this.selected){
-			game.state.change('queue');
-			ui.menus.browser.fadeOut();
-			connection.proxy.joinCustomQueue(this.selectedQueue);
-			}	
+	layout.push([
+		{
+			name:'join',
+			text:'Join game',
+			action: function(){
+				if(this.selected){
+				game.state.change('queue');
+				ui.menus.browser.fadeOut();
+				connection.proxy.joinCustomQueue(this.selectedQueue);
+				}	
 
+			},
+			context: this
 		},
-		context: this
-	},
-	{
-		name:'refresh',
-		text:'Refresh',
-		action: function(){
- 			this.selected = false;
+		{
+			name:'refresh',
+			text:'Refresh',
+			action: function(){
+	 			this.selected = false;
+				connection.proxy.requestQueueList(0, this.pagination);
 
-			connection.proxy.requestQueueList(0, this.pagination);
-
+			},
+			context: this
 		},
-		context: this
-	}
+		{
+			name:'cancel',
+			text:'Cancel',
+			action:function(){
+				ui.menus.main.fadeIn();
+				ui.logo.fadeIn();
+				this.fadeOut();
+			},
+			context: this
+		}
 	]);
 		
 	this.options.layout = layout;
@@ -76,29 +88,30 @@ var LobbyBrowser = function(options){
 
 	this.buttons = [];
 
-	for(i= 0; i < this.pagination; i++){
+	for(i = 0; i < this.pagination; i++){
 		this.buttons[i] = this.getElementByName('button' + i);
 		if(i != this.pagination - 1){
 			this.buttons[i].fixedHeight  = this.buttons[i].height - this.options.margin;
 		}
-
 	}
-	for(var i = 0; i < this.pagination; i++){
- 		this.buttons[i].changeStyle(3);
- 		if(i==0) this.buttons[i].changeStyle(1);
-		if(i== this.pagination-1) this.buttons[i].changeStyle(2);
- 	}
+
 	this.info = this.getElementByName('info');
-	this.info.fixedWidth = 300;
-	this.info.fixedHeight = this.buttons[0].fixedHeight;
+	this.info.setTextBounds(0, 0, 280, this.buttons[0].fixedHeight, 'center', 'top');
+
 	this.rightArrow = this.getElementByName('right');
 	this.leftArrow = this.getElementByName('left');
-	this.pageText = this.getElementByName('pageNum');
-	this.joinButton = this.getElementByName('join');
-	this.refreshButton = this.getElementByName('refresh');
 	UI.ButtonBase.setStateFrames(this.leftArrow, 0);
 	UI.ButtonBase.setStateFrames(this.rightArrow, 1);
 
+	this.pageText = this.getElementByName('pageNum');
+	this.pageText.setTextBounds(0, 0, this.buttons[0].width - this.options.margin, this.leftArrow.height, 'center', 'middle');
+
+	this.joinButton = this.getElementByName('join');
+	this.refreshButton = this.getElementByName('refresh');
+
+	this.resetButtons();
+
+	this.updatePosition();
 };
 
 extend(LobbyBrowser, Menu);
@@ -123,13 +136,7 @@ LobbyBrowser.prototype.getDefaultLobbyOptions = function(){
 		border: 4,
 		fadeTime: 200,
 		layout: null,
-		closeButton: function(){
-			ui.menus.main.fadeIn();
-			ui.logo.fadeIn();
-			ui.menus.browser.fadeOut();
-		},
-		closeButtonCrossColor: 'white',
-		header: false,
+		header: 'Join Game',
 		headerHeight: 40,
 		headerColor: 'orange',
 		headerTextColor: 'white'
@@ -140,53 +147,60 @@ LobbyBrowser.prototype.resetButtons = function(){
 		this.buttons[i].label.setText('');
 		this.disableElement('button' + i);
 		
-		this.buttons[i].changeStyle(3);
-		if(i==0) this.buttons[i].changeStyle(1);
-		if(i== this.pagination-1) this.buttons[i].changeStyle(2);
+		this.buttons[i].changeStyle(i === 0 ? 1 : i == this.pagination - 1 ? 2 : 3);
 	}
 	this.disableElement('right');
+	this.getElementByName('right').alpha = 0.5;
 	this.disableElement('left');
-	if(this.list[0])
+	this.getElementByName('left').alpha = 0.5;
+
+	if(this.list[0]){
+		this.enableElement('join');
 		this.select(0);	
+	}
+	else{
+		this.disableElement('join');
+		this.info.setText('No games found :(');
+	}
 };
 
-LobbyBrowser.prototype.recieveList = function(action){
-	
+LobbyBrowser.prototype.recieveList = function(action){	
 	
 	this.list = action.list;
 	this.page = action.page;
 
 	this.resetButtons();
+
 	for(var i = 0; i < this.list.length; i++){
 		this.buttons[i].label.setText(this.list[i].name);
 		this.enableElement('button' + i);		
 	}
+
+	this.pageText.setText('Page ' + (this.page + 1));
+
 	if(action.moreAfter){
 		this.enableElement('right');
+		this.getElementByName('right').alpha = 1;
 	}
-	this.pageText.setText(this.page+1);
 	if(action.moreBefore){
 		this.enableElement('left');
+		this.getElementByName('left').alpha = 1;
 	}
+
+	this.updatePosition();
 	
 };
 
  LobbyBrowser.prototype.select = function(u){
- 	//debugger
- 	
  	var a = this.list[u].name + '\n' + this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + '\n' + this.list[u].type;
- 	this.info.setText(a);
+ 	this.info.setText(a, true);
  	this.selected = true;
- 	this.selectedQueue = this.list[u].id
- //	this.selectedID = this.list[u].id;
+ 	this.selectedQueue = this.list[u].id;
  	for(var i = 0; i < this.pagination; i++){
- 		this.buttons[i].changeStyle(3);
- 		if(i==0) this.buttons[i].changeStyle(1);
-		if(i== this.pagination-1) this.buttons[i].changeStyle(2);
+		this.buttons[i].changeStyle(i === 0 ? 1 : i == this.pagination - 1 ? 2 : 3);
  	}
- 	this.buttons[u].changeStyle(6);
- 	if(u==0) this.buttons[u].changeStyle(4);
-	if(u== this.pagination-1) this.buttons[u].changeStyle(5);
+ 	this.buttons[u].changeStyle(u === 0 ? 4 : u == this.pagination - 1 ? 5 : 6);
+ 	this.info.update();
  	
  };
 

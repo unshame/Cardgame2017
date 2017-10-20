@@ -146,7 +146,7 @@ UI.prototype.initialize = function(){
 		this.menus.options,
 		this.menus.debug,
 		this.menus.rules,
-		this.menus.moreOptions
+		this.menus.more_options
 	);
 
 	/* Временно выключенные кнопки */

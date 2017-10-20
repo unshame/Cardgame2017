@@ -57,7 +57,7 @@ var stateBoot = new State('boot', {
 	* @type {Array}
 	* @memberof stateBoot
 	*/
-	colors: ['grey', 'orange', 'red', 'blue', 'yellow', 'green'],
+	colors: ['grey', 'orange', 'red'/*, 'blue', 'yellow', 'green'*/],
 
 	/**
 	* Загружает ассеты.
@@ -98,10 +98,6 @@ var stateBoot = new State('boot', {
 		this.loadAllColors('button', 'radial', 'assets/buttons/', 'radial.png', 40, 38, 2);
 		this.loadAllColors('button', 'checkbox', 'assets/buttons/', 'checkbox.png', 40, 38, 2);
 		this.loadAllColors('button', 'arrow', 'assets/buttons/', 'arrow.png', 40, 38, 2);
-		this.loadAllColors('button', 'arrowBig', 'assets/buttons/', 'arrowBig.png', 60, 47, 2);
-		this.loadAllColors('button', 'largeTop', 'assets/buttons/', 'largeTop.png', 295, 49, 1);
-		this.loadAllColors('button', 'largeBottom', 'assets/buttons/', 'largeBottom.png', 295, 49, 1);
-		this.loadAllColors('button', 'largeMiddle', 'assets/buttons/', 'largeMiddle.png', 295, 49, 1);
 
 		// Иконки кнопок
 		this.colors.push('white');
@@ -111,7 +107,14 @@ var stateBoot = new State('boot', {
 
 		game.load.spritesheet('icon_fullscreen', 'assets/icons/fullscreen.png', 30, 30, 2);
 		game.load.image('icon_menu', 'assets/icons/menu.png');
-		game.load.image('icon_question', 'assets/icons/question.png');
+
+		// Кнопки браузера
+		this.colors = ['orange', 'red'];
+		this.loadAllColors('button', 'arrowBig', 'assets/buttons/', 'arrowBig.png', 60, 47, 2);
+
+		this.loadAllColors('button', 'largeTop', 'assets/buttons/', 'largeTop.png', 295, 49, 1);
+		this.loadAllColors('button', 'largeBottom', 'assets/buttons/', 'largeBottom.png', 295, 49, 1);
+		this.loadAllColors('button', 'largeMiddle', 'assets/buttons/', 'largeMiddle.png', 295, 49, 1);
 
 		// Курсоры
 		game.load.spritesheet('cursor_orange', 'assets/cursors/orange.png', 128, 128, 3);

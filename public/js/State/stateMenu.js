@@ -61,6 +61,8 @@ var stateMenu = new State('menu', {
 			cardEmitter.stop();
 		}
 		ui.menus.main.fadeOut();
+		ui.menus.browser.fadeOut();
+		ui.menus.creator.fadeOut();
 		ui.logo.fadeOut();
 		ui.modalManager.closeModal();
 	}

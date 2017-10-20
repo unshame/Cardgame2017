@@ -72,3 +72,18 @@ UI.Text.prototype.updatePosition = function(position){
 
 UI.Text.prototype.enable = function(){};
 UI.Text.prototype.disable = function(){};
+
+UI.Text.prototype.setTextBounds = function(x, y, width, height, alignH, alignV){
+	if(typeof alignH == 'string'){
+		this.boundsAlignH = alignH;
+	}
+	if(typeof alignV == 'string'){
+		this.boundsAlignV = alignV;
+	}
+	supercall(UI.Text).setTextBounds.call(this, x, y, width, height);
+
+	this.fixedWidth = width;
+	this.fixedHeight = height;
+
+	return this;
+}

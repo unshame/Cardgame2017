@@ -141,9 +141,9 @@ UI.prototype._createMenus = function(){
 					},
 					{
 						action: function(){
-							ui.modalManager.openModal('moreOptions');
+							ui.modalManager.openModal('more_options');
 						},
-						name: 'moreOptions',
+						name: 'more_options',
 						text: 'More Options',
 					},
 					/*{
@@ -158,7 +158,7 @@ UI.prototype._createMenus = function(){
 		}),
 
 		// БОЛЬШЕ ОПЦИЙ
-		moreOptions: new Menu({
+		more_options: new Menu({
 			position: function(){
 				return {
 					x:game.screenWidth/2,
@@ -169,7 +169,7 @@ UI.prototype._createMenus = function(){
 			color: 'grey',
 			elementColor: 'grey',
 			textColor: 'black',
-			name: 'menu_moreOptions',
+			name: 'menu_more_options',
 			header: 'Options',
 			closeButton: function(){
 				ui.modalManager.closeModal();
