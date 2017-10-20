@@ -9,6 +9,9 @@ UI.Text = function(options){
 	this.setShadow(1, 1, 'rgba(0,0,0,0.5)', 1);
 	this.fill = this.options.textColor;
 
+	this.fixedWidth = this.options.fixedWidth;
+	this.fixedHeight = this.options.fixedHeight;
+
 	if(this.options.hoverText){
 		UI.PopupComponent.call(
 			this,
@@ -41,7 +44,9 @@ extend(UI.Text, Phaser.Text, [UI.PopupComponent]);
 		fontSize: 26,
 		group: null,
 		hoverText: null,
-		hoverPlacement: 'top'
+		hoverPlacement: 'top',
+		fixedWidth: undefined,
+		fixedHeight: undefined
 	};
 };
 
