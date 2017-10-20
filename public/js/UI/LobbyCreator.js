@@ -25,13 +25,14 @@ var LobbyCreator = function(options){
 					'6': '6',
 				},
 				minWidth: stepperWidth,
-				startKey: '2'
+				startKey: '4'
 			}),
 			Menu.checkbox({
 				text: 'Transfer',
 				name: 'transfer',
 				hoverText: 'Players can play a card with the same value instead of defending to force the next player to defend',
-				hoverPlacement: 'right'
+				hoverPlacement: 'right',
+				checked: true
 			})
 		),
 
@@ -58,10 +59,11 @@ var LobbyCreator = function(options){
 				startKey: '0'
 			}),
 			Menu.checkbox({ 
-				text: 'Free for all',
-				name: 'freeForAll',
-				hoverText: 'Multiple players will be able to attack at the same time',
-				hoverPlacement: 'right'
+				text:'Limit attack',
+				name:'limitAttack',
+				hoverText:'Only players adjacent to the defender can attack',
+				hoverPlacement: 'right',
+				checked: true
 			})
 		),
 
@@ -69,7 +71,7 @@ var LobbyCreator = function(options){
 			Menu.text({
 				text:'Deck size',
 				name:'deckSize',
-				hoverText: '36 cards deck is recommended for 2-4 players game, 52 cards deck is recommended for 4-6 players game',
+				hoverText: '36 cards deck is recommended for games with 2-4 players, 52 cards deck is recommended for games with 4-6 players',
 				hoverPlacement: 'left',
 				fixedWidth: textWidth
 			}),
@@ -79,13 +81,15 @@ var LobbyCreator = function(options){
 					'36': '36',
 					'52': '52'			
 				},
+				startKey: '36',
 				minWidth: stepperWidth
 			}),
 			Menu.checkbox({
 				text: 'Limit followup',
 				name: 'limitFollowup',
 				hoverText: 'Limits the amount of cards that players can follow up with by the defender\'s hand size at the start of the turn',
-				hoverPlacement: 'right'
+				hoverPlacement: 'right',
+				checked: true
 			})
 		),
 		
@@ -105,13 +109,14 @@ var LobbyCreator = function(options){
 					'3': 'Hard',
 					'4': 'Godlike',
 				},
+				startKey: '3',
 				minWidth: stepperWidth,
 				context:this
 			}),
 			Menu.checkbox({
-				text:'Limit attack',
-				name:'limitAttack',
-				hoverText:'Only players adjacent to the defender can attack',
+				text: 'Free for all',
+				name: 'freeForAll',
+				hoverText: 'Multiple players will be able to attack at the same time',
 				hoverPlacement: 'right'
 			})
 		),
