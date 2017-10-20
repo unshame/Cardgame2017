@@ -42,8 +42,6 @@ class DurakGame extends Game{
 		this.limitFollowup = this.rules.limitFollowup;
 
 		this.freeForAll = this.rules.freeForAll;
-
-		this.players.maxInvolved = this.rules.limitAttack ? 3 : Infinity;
 	}
 
 	static sanitiseRules(rules){
@@ -51,7 +49,8 @@ class DurakGame extends Game{
 			canTransfer: Boolean(rules.canTransfer),
 			limitFollowup: Boolean(rules.limitFollowup),
 			limitAttack: Boolean(rules.limitAttack),
-			freeForAll: Boolean(rules.freeForAll)
+			freeForAll: Boolean(rules.freeForAll),
+			numCards: Number(rules.numCards)
 		};
 	}
 

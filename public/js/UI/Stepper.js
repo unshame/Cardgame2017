@@ -44,6 +44,8 @@ UI.Stepper = function(options) {
 	this.currentContent = this.content[this.index];
 	this.previousContent = this.content[this.index - 1] || null;
 	this.nextContent = this.content[this.index + 1] || null;
+	this.limitLeft = 0;
+	this.limitRight = this.content.length;
 	this.currentContent.visible = true;
 
 	this.arrowRight = new UI.Button({
@@ -216,7 +218,7 @@ UI.Stepper.prototype.addTextContent = function (key, value) {
 };*/
 
 UI.Stepper.prototype.setToIndex = function(i, doAction){
-	if(i < 0 || i >= this.content.length){
+	if(i < this.limitLeft || i > this.limitRight){
 		return;
 	}
 
@@ -240,8 +242,8 @@ UI.Stepper.prototype.setToIndex = function(i, doAction){
 		this.currentContent.show();
 	}
 
-	this.nextContent = this.content[i + 1] || null;
-	this.previousContent = this.content[i - 1] || null;
+	this.nextContent = (i + 1 <= this.limitRight && this.content[i + 1]) ? this.content[i + 1] : null;
+	this.previousContent = (i - 1 >= this.limitLeft && this.content[i - 1]) ? this.content[i - 1] : null;
 
 	this.index = i;
 
@@ -291,9 +293,41 @@ UI.Stepper.prototype.update = function(){
 UI.Stepper.prototype.loadLabels = function(){
 	this.content.forEach(function(c){
 		c.setText(c.text);
-	})
+	});
 };
 
 UI.Stepper.prototype.getCurrentKey = function(){
 	return this.keys[this.index];
+};
+
+UI.Stepper.prototype.limitRange = function(left, right){
+
+	if(left !== undefined){
+		if(left < 0){
+			left = 0;
+		}
+		this.limitLeft = left;
+	}
+
+	if(right !== undefined){
+		if(right > this.content.length - 1){
+			right = this.content.length - 1;
+		}
+		this.limitRight = right;
+	}
+
+	if(this.limitRight < this.limitLeft){
+		this.disable();
+	}
+	else{
+		if(this.index < this.limitLeft){
+			this.setTo(this.limitLeft);
+		}
+		else if(this.index > this.limitRight){
+			this.setTo(this.limitRight);
+		}
+		else{
+			this.setTo(this.index);
+		}
+	}
 };

@@ -57,7 +57,7 @@ var stateBoot = new State('boot', {
 	* @type {Array}
 	* @memberof stateBoot
 	*/
-	colors: ['grey', 'orange', 'red', 'blue', 'yellow', 'green'],
+	colors: ['grey', 'orange', 'red'/*, 'blue', 'yellow', 'green'*/],
 
 	/**
 	* Загружает ассеты.
@@ -108,6 +108,14 @@ var stateBoot = new State('boot', {
 		game.load.spritesheet('icon_fullscreen', 'assets/icons/fullscreen.png', 30, 30, 2);
 		game.load.image('icon_menu', 'assets/icons/menu.png');
 
+		// Кнопки браузера
+		this.colors = ['orange', 'red'];
+		this.loadAllColors('button', 'arrowBig', 'assets/buttons/', 'arrowBig.png', 60, 47, 2);
+
+		this.loadAllColors('button', 'largeTop', 'assets/buttons/', 'largeTop.png', 295, 49, 1);
+		this.loadAllColors('button', 'largeBottom', 'assets/buttons/', 'largeBottom.png', 295, 49, 1);
+		this.loadAllColors('button', 'largeMiddle', 'assets/buttons/', 'largeMiddle.png', 295, 49, 1);
+
 		// Курсоры
 		game.load.spritesheet('cursor_orange', 'assets/cursors/orange.png', 128, 128, 3);
 
@@ -118,7 +126,7 @@ var stateBoot = new State('boot', {
 
 		// Поля ввода
 		game.load.image('field_wide', 'assets/fields/wide.png');
-		
+
 
 		/**
 		* Google WebFont Loader  

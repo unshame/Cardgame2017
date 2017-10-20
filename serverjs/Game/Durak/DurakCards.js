@@ -15,6 +15,8 @@ class DurakCards extends GameCards{
 			maxValue: 14
 		});
 
+		this.numCards = this.game.rules.numCards;
+
 		this.table = new BetterArray();
 		this.table.usedFields = 0;
 		this.table.maxLength = 6;
@@ -33,11 +35,17 @@ class DurakCards extends GameCards{
 		this.values.length = 0;
 		
 		// Задаем количество карт и минимальное значение карты
-		if(game.players.length > 3){
-			this.lowestValue = 2;
+		if(
+			(this.numCards == 36 ||
+			game.players.length < 4) &&
+			this.numCards != 52
+		){
+			this.lowestValue = 6;
+			this.numCards = 36;
 		}
 		else{
-			this.lowestValue = 6;
+			this.lowestValue = 2;
+			this.numCards = 52;
 		}
 
 		// Задаем значения карт

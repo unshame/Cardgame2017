@@ -61,22 +61,18 @@ UI.Credits.prototype.stop = function(){
 
 /* exported creditsText */
 var creditsText = 
-'Lorem ipsum DOLOR SIT AMET, AMET CONSECTETUR\n\n\
+'"Durak"\nan unoriginal digital cardgame\n\n\
 \
-OpenGameArt.Org Assets:\n\
+Lead programmer\nSHIBAEV OLEG\n\n\
+UI designer and programmer\nGEORGY TESLENKO\n\n\
+AI programmer\nSERGEY DARNOPYKH\n\n\
+\
+Assets (OpenGameArt.Org)\n\
 "UI pack" by Kenney\n\
 "Modern Cards" by Kenney\n\
 "Classic Cards" by Byron Knoll\n\n\
 \
-Class aptent TACITI SOCIOSQU, AD LITORA\n\
-Vivamus PULVINAR LACUS\n\
-Sound Recordist MARK TARPEY\n\
-Aliquam SIT AMET\n\
-Aliquam AMET VEHICULA\n\
-Phasellus NISI LECTUS\n\
-In a diam SAPIEN\n\
-Nunc eu LIGULA SEM\n\
-Vivamus PULVINAR LACUS\n\
-Phasellus DAPIBUS QUAM\n\
-Donec IPSUM AUGUE\n\
-Vitae TRISTIQUE MAURIS';
+Built on\n\
+Phaser.io\n\
+Node.js\n\
+Eureca.io';

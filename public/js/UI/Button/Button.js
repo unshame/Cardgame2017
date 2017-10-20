@@ -72,7 +72,7 @@ UI.Button = function(options){
 	*/
 	this.label = null;
 	var style = { font: this.options.font, fontSize: this.options.fontSize, fill: this.options.textColor, align: 'center' };
-	if(this.options.text){
+	if(typeof this.options.text == 'string'){
 		this.label = game.make.text(this.centerX, this.centerY, this.options.text, style);
 		this.label.setShadow(1, 1, 'rgba(0,0,0,0.5)', 1);
 		this.label.isText = true;
