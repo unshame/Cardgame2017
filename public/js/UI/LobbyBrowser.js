@@ -110,7 +110,7 @@ LobbyBrowser.prototype.getDefaultLobbyOptions = function(){
 		z: 6,
 		margin: 25,
 		name: 'browser',
-		alpha: 0.9,
+		alpha: 1,
 		color: 'grey',
 		texture: null,
 		elementColor: 'orange',

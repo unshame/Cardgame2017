@@ -160,7 +160,7 @@ LobbyCreator.prototype.getDefaultLobbyOptions = function(){
 		z: 7,
 		margin: 25,
 		name: 'creator',
-		alpha: 0.8,
+		alpha: 1,
 		color: 'orange',
 		texture: null,
 		elementColor: 'red',
