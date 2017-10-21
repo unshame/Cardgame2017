@@ -214,6 +214,9 @@ UI.prototype.activateHotkeys = function(){
 		else if(game.state.currentSync == 'credits'){
 			game.state.change('menu');
 		}
+		else {
+			this.modalManager.openModal('options');
+		}
 	}, this);
 
 	function sendButtonAction(){
