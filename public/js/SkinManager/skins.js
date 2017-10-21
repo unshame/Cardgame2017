@@ -23,7 +23,7 @@ skins.push({
 });
 
 // Familiar
-skins.push({
+/*skins.push({
 	width: 390,
 	height: 570,
 	name: 'familiar',
@@ -35,7 +35,7 @@ skins.push({
 	trumpOffset: 90,
 	trailWidth: 35,
 	trailHeight: 35
-});
+});*/
 
 // Classic
 skins.push({
@@ -56,7 +56,7 @@ skins.push({
 });
 
 // Abstract
-skins.push({
+/*skins.push({
 	width: 130,
 	height: 202,
 	name: 'abstract',
@@ -69,7 +69,7 @@ skins.push({
 	trailWidth: 35,
 	trailHeight: 35,
 	scale: 1
-});
+});*/
 
 // Uno
 skins.push({
