@@ -14,4 +14,9 @@ var reactMenu = {
 		ui.feed.newMessage('Game already started', 2000);
 		ui.menus.browser.refresh();
 	},
+
+	QUEUE_INVALID: function(){
+		ui.feed.newMessage('Invalid game settings', 2000);
+		ui.menus.creator.fadeIn();
+	}
 };
