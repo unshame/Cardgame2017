@@ -184,7 +184,7 @@ LobbyCreator.prototype.getDefaultLobbyOptions = function(){
 
 LobbyCreator.prototype.createGame = function(){
 	var gameMode = 'durak';
-	var private = this.getElementByName('private').checked;
+	var isPrivate = this.getElementByName('private').checked;
 	var difficulty = Number(this.getElementByName('stepOfDifficulty').getCurrentKey());
 	var config = {
 		numPlayers: Number(this.getElementByName('stepOfPlayers').getCurrentKey()),
@@ -199,7 +199,7 @@ LobbyCreator.prototype.createGame = function(){
 		numCards: Number(this.getElementByName('deckSizeStep').getCurrentKey())
 	}
 	ui.menus.creator.fadeOut();
-	connection.proxy.createCustomQueue(private, gameMode, config, rules);
+	connection.proxy.createCustomQueue(isPrivate, gameMode, config, rules);
 };
 
 LobbyCreator.prototype.limitBotSelectorRange = function(key){
