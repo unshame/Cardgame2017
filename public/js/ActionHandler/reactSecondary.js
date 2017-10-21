@@ -56,74 +56,12 @@ var reactSecondary = {
 	* @param {object<object<number>>} action.scores  очки игроков по id игроков в виде `{wins, losses, cardsWhenLost} `
 	* @param {object}                 action.actions      действия голосования за и против рематча `{ { type: 'ACCEPT' }, { type: 'DECLINE' } }`
 	*/
-	GAME_ENDED: function(action, seq, sync){
+	GAME_ENDED: function(action, seq){
 		actionHandler.reset();
 		gameInfo.resetTurnInfo(seq);
 		fieldManager.updateBadges();
-
 		ui.layers.setLayerIndex(ui.eventFeed, ui.eventFeed.zIndexAboveCards);
-
-		var discard = fieldManager.fields.DISCARD_PILE,
-			dummy = fieldManager.fields.dummy, 
-			won = action.results && action.results.winners && ~action.results.winners.indexOf(game.pid),
-			lost = action.results && action.results.loser && action.results.loser == game.pid,
-			delay = 0;
-			
-		if(!discard || !dummy){
-			return;
-		}
-
-		var cards = discard.cards.slice();
-		delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);	
-		delay += cardManager.defaultMoveTime;
-
-		seq.append(function(seq){
-			discard.removeAllCards();
-			dummy.placeQueuedCards();
-			if(!won){
-				seq.abort();
-				seq.append(delay - cardManager.defaultMoveTime)
-					.then(function(seq, sync){
-						if(lost){
-							ui.announcer.newMessage('You lost');
-						}
-						else{
-							ui.announcer.newMessage('Better luck next time');
-						}
-						fieldManager.resetFields();
-						cardManager.enablePhysics(true);
-						//game.camera.shake(0.005, 1000);
-						if(!sync){
-							game.shake(15, 800, 20, 50);
-						}
-						ui.menus.endGame.fadeIn();
-						ui.layers.hideLayer(ui.actionButtons, true);
-					});
-			}
-		}, delay/game.speed)
-		.then(function(){
-			ui.announcer.newMessage('YOU WON!');
-			ui.menus.endGame.fadeIn();
-			ui.layers.hideLayer(ui.actionButtons, true);
-			for(var ci = 0; ci < dummy.cards.length; ci++){
-				var card = dummy.cards[ci],
-					x = card.sprite.x + card.x + (10*(ci - dummy.cards.length/2)),
-					time = Math.random()*cardManager.defaultMoveTime + 500;
-				card.moveTo(x, -200, time, 0, false, true);
-				card.rotateTo(Math.random()*360 - 180, time);
-			}
-			cards = dummy.cards.slice();
-			fieldManager.resetFields();
-			cardManager.enablePhysics(false, dummy.cards);
-		}, cardManager.defaultMoveTime + 500)
-		.then(function(){
-			for(var ci = 0; ci < cards.length; ci++){
-				var card = cards[ci];
-				card.field = null;
-				card.destroy(0, true);
-			}
-			cardEmitter.start(300, 500, 100, false, 100, 10);
-		}, 500);
+		fieldManager.animateGameEnd(action.results, seq);
 	},
 
 	/**
@@ -150,6 +88,8 @@ var reactSecondary = {
 	INVALID_ACTION: function(action, seq){
 		var undoAction = action.action,
 			card = cardManager.cards[undoAction.cid];
+
+		// Отменяем невалидное действие
 		if(undoAction.cid && card){
 			fieldManager.resetTableOrder();
 			var cardInfo = {
@@ -160,6 +100,8 @@ var reactSecondary = {
 			var field = fieldManager.fields[gameInfo.pid];
 			fieldManager.moveCards(field, [cardInfo], BRING_TO_TOP_ON.END_ALL);
 		}
+
+		// Даем игроку действовать снова
 		if(action.actions){
 			actionHandler.handlePossibleActions(action, seq);
 		}
@@ -174,23 +116,8 @@ var reactSecondary = {
 			game.state.change('menu', false);
 			return;
 		}
-		var player = gameInfo.getPlayer(action.pid);
-		ui.eventFeed.newMessage(player.name + ' conceded', 2000);
-		player.name = action.name;
-		var field = fieldManager.fields[action.pid];
-		var duration = field.moveTime/game.speed;
-		seq.append(function(){		
-			field.badge.visible = false;		
-			field.badge.updatePosition();
-			field.setupAnimatedAppearance();
-		}, duration, 300)
-		.then(function(){
-			field.badge.visible = true;		
-			field.animateAppearance();
-		}, duration*2)
-		.then(function(){
-			field.endAnimation();
-		});
+		fieldManager.animatePlayerConcede(action, seq);
+
 	},
 
 	DISCONNECTED: function(action, seq){

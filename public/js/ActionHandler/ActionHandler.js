@@ -105,7 +105,7 @@ ActionHandler.prototype.executeAction = function(action){
 
 		default:
 		console.error('ActionHandler: invalid channel type', channel.type, channel, action);
-		break;
+		return;
 	}
 
 	if(!reaction){

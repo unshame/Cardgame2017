@@ -269,3 +269,114 @@ FieldManager.prototype.unlockField = function(seq, id, noAnimation){
 		}
 	});
 };
+
+/**
+* Анимирует конец игры в зависимости от результатов.
+* @param  {object} results результаты игры
+* @param  {object} seq     последовательность, в которую будут добавлены анимации
+*/
+FieldManager.prototype.animateGameEnd = function(results, seq){
+	var discard = fieldManager.fields.DISCARD_PILE,
+		dummy = fieldManager.fields.dummy, 
+		won = results && results.winners && ~results.winners.indexOf(game.pid),
+		lost = results && results.loser && results.loser == game.pid,
+		delay = 0;
+	
+	if(!discard || !dummy){
+		return;
+	}
+
+	var cards = discard.cards.slice();
+	delay = dummy.queueCards(cards, BRING_TO_TOP_ON.START_ALL);	
+	delay += cardManager.defaultMoveTime;
+
+	// Перемещаем карты в поле по центру и стартуем анимацию
+	seq.append(function(seq){
+
+		discard.removeAllCards();
+		dummy.placeQueuedCards();
+		if(won){
+			return;
+		}
+
+		// Анимируем не выигрыш
+		seq.abort();
+		seq.append(delay - cardManager.defaultMoveTime)
+			.then(function(seq, sync){
+				if(lost){
+					ui.announcer.newMessage('You lost');
+				}
+				else{
+					ui.announcer.newMessage('Better luck next time');
+				}
+
+				fieldManager.resetFields();
+				cardManager.enablePhysics(true);
+
+				if(!sync){
+					game.shake(15, 800, 20, 50);
+				}
+
+				ui.menus.endGame.fadeIn();
+				ui.layers.hideLayer(ui.actionButtons, true);
+			});
+
+	}, delay/game.speed)
+	.then(function(){
+
+		// Анимируем выигрыш
+		ui.announcer.newMessage('YOU WON!');
+		ui.menus.endGame.fadeIn();
+		ui.layers.hideLayer(ui.actionButtons, true);
+
+		for(var ci = 0; ci < dummy.cards.length; ci++){
+			var card = dummy.cards[ci],
+				x = card.sprite.x + card.x + (10 * (ci - dummy.cards.length / 2)),
+				time = Math.random() * cardManager.defaultMoveTime + 500;
+			card.moveTo(x, -200, time, 0, false, true);
+			card.rotateTo(Math.random() * 360 - 180, time);
+		}
+
+		cards = dummy.cards.slice();
+		fieldManager.resetFields();
+		cardManager.enablePhysics(false, dummy.cards);
+
+	}, cardManager.defaultMoveTime + 500)
+	.then(function(){
+
+		// Запускаем эмиттер карт
+		for(var ci = 0; ci < cards.length; ci++){
+			var card = cards[ci];
+			card.field = null;
+			card.destroy(0, true);
+		}
+
+		cardEmitter.start(300, 500, 100, false, 100, 10);
+
+	}, 500);
+};
+
+/**
+* Анимирует выход противника из игры и его замену ботом.
+* @param  {object} action информация об игроках
+* @param  {object} seq    последовательность, в которую будут добавлены анимации
+*/
+FieldManager.prototype.animatePlayerConcede = function(action, seq){
+	var player = gameInfo.getPlayer(action.pid);
+	ui.eventFeed.newMessage(player.name + ' conceded', 2000);
+	player.name = action.name;
+	var field = fieldManager.fields[action.pid];
+	var duration = field.moveTime/game.speed;
+	seq.append(function(){		
+		field.badge.visible = false;		
+		field.badge.updatePosition();
+		field.setupAnimatedAppearance();
+	}, duration, 300)
+	.then(function(){
+		field.badge.visible = true;		
+		field.animateAppearance();
+	}, duration*2)
+	.then(function(){
+		field.endAnimation();
+	});
+};
