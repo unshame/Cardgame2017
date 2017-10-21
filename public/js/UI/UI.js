@@ -183,6 +183,8 @@ UI.prototype.initialize = function(){
 	this.layers.hideLayer(this.actionButtons, true);
 
 	this.layers.positionLayers();
+
+	this.activateHotkeys();
 };
 
 /** Обновляет позиции всех элементов UI. */
@@ -201,6 +203,31 @@ UI.prototype.newPixel = function(){
 
 UI.prototype.setDebugButtonText = function(name, text, on){
 	ui.menus.debug.getByName(name).label.setText(text + ': ' + (on ? 'on' : 'off'));
+};
+
+UI.prototype.activateHotkeys = function(){
+	var esc = game.input.keyboard.addKey(Phaser.Keyboard.ESC);
+	esc.onDown.add(function(){
+		if(this.modalManager.openModals.length){
+			this.modalManager.closeModal();
+		}
+		else if(game.state.currentSync == 'credits'){
+			game.state.change('menu');
+		}
+	}, this);
+
+	function sendButtonAction(){
+		var button = actionHandler.actionButton;
+		if(game.state.currentSync == 'play' && button && button.serverAction){
+			connection.server.sendButtonAction(button.serverAction);
+		}
+	}
+
+	var enter = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
+	enter.onDown.add(sendButtonAction, this);
+
+	var space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	space.onDown.add(sendButtonAction, this);
 };
 
 
