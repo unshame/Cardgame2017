@@ -12,7 +12,7 @@ UI.InputField = function(options){
 		placeHolder: this.options.placeHolder,
 		max: this.options.maxChars,
 		fill: this.options.textColor
-	}
+	};
 
 	PhaserInput.InputField.call(this, game, 0, 0, inputFieldOptions);
 
@@ -32,10 +32,10 @@ UI.InputField = function(options){
 	this.fixedWidth = this.options.fixedWidth;
 	this.fixedHeight = this.options.fixedHeight;
 
-	if(this.fixedWidth == null){
+	if(this.fixedWidth === null){
 		this.fixedWidth = this.options.width;
 	}
-	if(this.fixedHeight == null){
+	if(this.fixedHeight === null){
 		this.fixedHeight = this.options.height;
 	}
 
@@ -81,10 +81,10 @@ UI.InputField.prototype.updatePosition = function(position){
 
 UI.InputField.prototype.show = function(){
 	this.visible = true;
-}
+};
 UI.InputField.prototype.hide = function(){
 	this.visible = false;
-}
+};
 UI.InputField.prototype.enable = function(){
 	this.inputEnabled = true;
 };

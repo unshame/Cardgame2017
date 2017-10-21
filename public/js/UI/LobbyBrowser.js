@@ -208,7 +208,7 @@ LobbyBrowser.prototype.getInfoText = function(u){
 	var yesNo = {
 		true: 'Yes',
 		false: 'No'
-	}
+	};
 	var el = this.list[u];
 	var a = el.name + '\n';
 	a += 'Type: ' + el.type;
@@ -222,7 +222,7 @@ LobbyBrowser.prototype.getInfoText = function(u){
 	else{
 		a += el.numPlayers + ' / ' + el.numPlayersRequired + ' players\n';
 	}
-	if(el.numBots != 0){
+	if(el.numBots !== 0){
 		a += el.numBots + ' bot';
 		if(el.numBots > 1){
 			a += 's';
@@ -257,11 +257,11 @@ LobbyBrowser.prototype.getInfoText = function(u){
 	}
 	a += 'Deck size: ' + deckSize + '\n';
 	a += 'Can transfer: ' + yesNo[el.gameRules.canTransfer] + '\n';
-	a +='Limit attackers: ' + yesNo[el.gameRules.limitAttack] + '\n'; 
-	a +='Limit followup: ' + yesNo[el.gameRules.limitAttack] + '\n';	
+	a += 'Limit attackers: ' + yesNo[el.gameRules.limitAttack] + '\n'; 
+	a += 'Limit followup: ' + yesNo[el.gameRules.limitAttack] + '\n';	
 
 	return a;
-}
+};
 
 LobbyBrowser.prototype._addButton = function(options){
 	options.group = this;
@@ -307,7 +307,7 @@ LobbyBrowser.prototype._addButton = function(options){
 
 LobbyBrowser.prototype.shouldHideStarted = function(){
 	return this.getElementByName('hideStarted').checked;
-}
+};
 
 LobbyBrowser.prototype.loadPrevious = function(){
 	this.disableElement('join');
@@ -338,4 +338,4 @@ LobbyBrowser.prototype.close = function(){
 LobbyBrowser.prototype.fadeIn = function(){
 	this.refresh();
 	supercall(LobbyBrowser).fadeIn.call(this);
-}
+};

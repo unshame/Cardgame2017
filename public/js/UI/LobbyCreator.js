@@ -125,7 +125,7 @@ var LobbyCreator = function(options){
 			Menu.checkbox({
 				text: 'Private',
 				name: 'private',
-				hoverText: 'Players won\'t be able to find your game via the Find Game menu',
+				hoverText: 'Players won\'t be able to find your game via the Join Game menu',
 				hoverPlacement: 'bottom'
 			}),
 			{
@@ -199,14 +199,13 @@ LobbyCreator.prototype.createGame = function(){
 		limitAttack: this.getElementByName('limitAttack').checked,
 		limitFollowup: this.getElementByName('limitFollowup').checked,
 		numCards: Number(this.getElementByName('deckSizeStep').getCurrentKey())
-	}
+	};
 	this.fadeOut();
 	connection.proxy.createCustomQueue(isPrivate, gameMode, config, rules);
 };
 
 LobbyCreator.prototype.limitBotSelectorRange = function(key){
 	var botSelector = this.getElementByName('stepOfBots');
-	var numBots = Number(botSelector.getCurrentKey());
 	var numPlayers = Number(key);
 	var max = 6;
 	if(numPlayers < 2){
