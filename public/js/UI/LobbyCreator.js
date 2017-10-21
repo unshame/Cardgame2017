@@ -59,7 +59,7 @@ var LobbyCreator = function(options){
 				startKey: '0'
 			}),
 			Menu.checkbox({ 
-				text:'Limit attack',
+				text:'Limit attackers',
 				name:'limitAttack',
 				hoverText:'Only players adjacent to the defender can attack',
 				hoverPlacement: 'right',
@@ -112,13 +112,13 @@ var LobbyCreator = function(options){
 				startKey: '3',
 				minWidth: stepperWidth,
 				context:this
-			}),
+			})/*,
 			Menu.checkbox({
 				text: 'Free for all',
 				name: 'freeForAll',
 				hoverText: 'Multiple players will be able to attack at the same time',
 				hoverPlacement: 'right'
-			})
+			})*/
 		),
 
 		[
@@ -195,12 +195,12 @@ LobbyCreator.prototype.createGame = function(){
 	};
 	var rules = {
 		canTransfer: this.getElementByName('transfer').checked,
-		freeForAll: this.getElementByName('freeForAll').checked,
+		freeForAll: false,
 		limitAttack: this.getElementByName('limitAttack').checked,
 		limitFollowup: this.getElementByName('limitFollowup').checked,
 		numCards: Number(this.getElementByName('deckSizeStep').getCurrentKey())
 	}
-	ui.menus.creator.fadeOut();
+	this.fadeOut();
 	connection.proxy.createCustomQueue(isPrivate, gameMode, config, rules);
 };
 
