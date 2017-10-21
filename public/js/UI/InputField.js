@@ -104,8 +104,8 @@ UI.InputField.prototype.cursorIsOver = function(){
 	return Phaser.Rectangle.containsRaw(
 		gx + this.x,
 		gy + this.y,
-		this.width,
-		this.height,
+		this.options.width,
+		this.options.height,
 		game.input.x,
 		game.input.y
 	);
