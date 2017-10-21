@@ -150,6 +150,8 @@ var LobbyCreator = function(options){
 	this.options.layout = layout;
 	
 	Menu.call(this, this.options);	
+
+	this.limitBotSelectorRange(this.getElementByName('stepOfPlayers').getCurrentKey());
 };
 
 extend(LobbyCreator, Menu);

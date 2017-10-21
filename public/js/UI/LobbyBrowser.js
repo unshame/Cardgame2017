@@ -139,7 +139,6 @@ LobbyBrowser.prototype.resetButtons = function(){
 };
 
 LobbyBrowser.prototype.recieveList = function(action){	
-	
 	this.list = action.list;
 	this.page = action.page;
 
@@ -175,7 +174,37 @@ LobbyBrowser.prototype.recieveList = function(action){
 };
 
  LobbyBrowser.prototype.select = function(u){
- 	var a = this.list[u].name + '\n' + this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + '\n' + this.list[u].type;
+ 	var a = this.list[u].name + '\n'+ this.list[u].type + '\n'+ this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + ' Players' + '\n' ;
+ 	
+ 	this.list[u].gameRules.numCards === 36? a+='Deck size: 36' + '\n' : a+='Deck size: 52' + '\n';
+ 	this.list[u].gameRules.canTransfer? a+='Can transfer: Yes' + '\n' : a+='Can transfer: No' + '\n'; 
+ 	this.list[u].gameRules.freeForAll? a+='Free for all: Yes' + '\n' : a+='Free for all: No' + '\n';
+ 	this.list[u].gameRules.limitAttack? a+='Limit attack: Yes' + '\n' : a+='Limit attack: No' + '\n'; 
+ 	this.list[u].gameRules.limitFollowup? a+='Limit followup: Yes' + '\n' : a+='Limit followup: No' + '\n'; 
+ 	
+ 
+ 	if(this.list[u].numBots != 0){
+ 		a+='Bot\'s difficulty: ';
+ 		switch(this.list[u].difficulty){
+ 			case 0:{
+ 				a+='Easy' + '\n';
+ 				break;
+ 			}
+ 			case 1:{
+ 				a+='Medium' + '\n';
+ 				break;
+ 			}
+ 			case 2:{
+ 				a+='Hard' + '\n';
+ 				break;
+ 			}
+ 			case 3:{
+ 				a+='Cheater' + '\n';
+ 				break;
+ 			}
+ 			default: break;
+ 		}
+ 	}
  	this.info.setText(a, true);
  	this.selectedQueue = this.list[u].id;
  	for(var i = 0; i < this.pagination; i++){
