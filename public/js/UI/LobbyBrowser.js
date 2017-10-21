@@ -174,13 +174,14 @@ LobbyBrowser.prototype.recieveList = function(action){
 };
 
  LobbyBrowser.prototype.select = function(u){
- 	var a = this.list[u].name + '\n' + this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + '\n' + this.list[u].type + '\n';
+ 	var a = this.list[u].name + '\n'+ this.list[u].type + '\n'+ this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + ' Players' + '\n' ;
  	
+ 	this.list[u].gameRules.numCards === 36? a+='Deck size: 36' + '\n' : a+='Deck size: 52' + '\n';
  	this.list[u].gameRules.canTransfer? a+='Can transfer: Yes' + '\n' : a+='Can transfer: No' + '\n'; 
  	this.list[u].gameRules.freeForAll? a+='Free for all: Yes' + '\n' : a+='Free for all: No' + '\n';
  	this.list[u].gameRules.limitAttack? a+='Limit attack: Yes' + '\n' : a+='Limit attack: No' + '\n'; 
  	this.list[u].gameRules.limitFollowup? a+='Limit followup: Yes' + '\n' : a+='Limit followup: No' + '\n'; 
- 	this.list[u].gameRules.numCards === 36? a+='Deck size: 36' + '\n' : a+='Deck size: 52' + '\n';
+ 	
  
  	if(this.list[u].numBots != 0){
  		a+='Bost\'s difficulty: ';
