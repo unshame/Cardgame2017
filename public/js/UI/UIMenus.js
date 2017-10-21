@@ -62,7 +62,6 @@ UI.prototype._createMenus = function(){
 					name: 'credits',
 					text: 'Credits'
 				}
-				
 			]
 		}),
 
@@ -152,7 +151,14 @@ UI.prototype._createMenus = function(){
 						name: 'debug',
 						text: 'Debug'
 					}*/
-				]
+				],
+				{
+					action: function(){
+						ui.modalManager.openModal('name');
+					},
+					name: 'name',
+					text: 'Change Name',
+				}
 			]
 		}),
 
@@ -210,6 +216,39 @@ UI.prototype._createMenus = function(){
 					hoverText: 'Get rid of all saved data (including your session id!).'
 				})
 			]
+		}),
+
+		// ВВОД ИМЕНИ
+		name: new Menu({
+			position: function(){
+				return {
+					x:game.screenWidth/2,
+					y:game.screenHeight/2
+				};
+			}, 
+			z: -4,
+			color: 'grey',
+			elementColor: 'grey',
+			textColor: 'black',
+			name: 'menu_name',
+			header: 'Enter Name',
+			closeButton: function(){
+				ui.modalManager.closeModal();
+			},
+			closeButtonCrossColor: 'grey',
+			layout: [[
+				Menu.inputField({
+					name: 'name',
+					placeHolder: 'Player1',
+					maxChars: 10
+				}),
+				{
+					text: 'Change Name',
+					name: 'change',
+					color: 'orange',
+					textColor: 'white'
+				}
+			]]
 		}),
 
 		// ПРАВИЛА

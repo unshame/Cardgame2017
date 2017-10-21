@@ -201,7 +201,7 @@ Phaser.TweenData.prototype.start = function () {
 
         return this;
 
-}
+};
 
 // Эффект тряски
 Phaser.Easing.Wiggle = function(aPeriod1, aPeriod2, aProgress){
@@ -209,4 +209,26 @@ Phaser.Easing.Wiggle = function(aPeriod1, aPeriod2, aProgress){
     var current2 = aProgress * (Math.PI * 2 * aPeriod2 + Math.PI / 2);
 
     return Math.sin(current1) * Math.cos(current2);
-}
+};
+
+// out создается, если он не был передан
+Phaser.Color.webToColor = function (web, out) {
+
+    if(!out){
+        out = {};
+    }
+
+    var result = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(\d+(?:\.\d+)?))?\s*\)$/.exec(web);
+
+    if (result)
+    {
+        out.r = parseInt(result[1], 10);
+        out.g = parseInt(result[2], 10);
+        out.b = parseInt(result[3], 10);
+        out.a = result[4] !== undefined ? parseFloat(result[4]) : 1;
+        Phaser.Color.updateColor(out);
+    }
+
+    return out;
+
+};

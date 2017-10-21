@@ -146,7 +146,8 @@ UI.prototype.initialize = function(){
 		this.menus.options,
 		this.menus.debug,
 		this.menus.rules,
-		this.menus.more_options
+		this.menus.more_options,
+		this.menus.name
 	);
 
 	/* Временно выключенные кнопки */
@@ -216,6 +217,7 @@ UI.prototype.setDebugButtonText = function(name, text, on){
 //@include:Stepper
 //@include:Text
 //@include:Checkbox
+//@include:InputField
 //@include:LobbyBrowser
 //@include:LobbyCreator
 

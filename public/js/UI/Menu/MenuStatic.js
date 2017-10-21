@@ -42,6 +42,12 @@ Menu.text = function(options){
 		options: options
 	};
 };
+Menu.inputField = function(options){
+	return {
+		type: 'inputField',
+		options: options
+	};
+};
 
 /**
 * Элементы будут выравнены по левому краю.

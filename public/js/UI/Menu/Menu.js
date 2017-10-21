@@ -148,6 +148,7 @@ Menu.prototype._getTypeMap = function(){
 		text: this._addText.bind(this),
 		checkbox: this._addCheckbox.bind(this),
 		stepper: this._addStepper.bind(this),
+		inputField: this._addInputField.bind(this),
 		// add more
 	};
 };
