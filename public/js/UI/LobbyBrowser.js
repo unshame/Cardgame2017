@@ -184,7 +184,7 @@ LobbyBrowser.prototype.recieveList = function(action){
  	
  
  	if(this.list[u].numBots != 0){
- 		a+='Bost\'s difficulty: ';
+ 		a+='Bot\'s difficulty: ';
  		switch(this.list[u].difficulty){
  			case 0:{
  				a+='Easy' + '\n';
