@@ -110,8 +110,6 @@ var stateBoot = new State('boot', {
 
 		// Кнопки браузера
 		this.colors = ['orange', 'red'];
-		this.loadAllColors('button', 'arrowBig', 'assets/buttons/', 'arrowBig.png', 60, 47, 2);
-
 		this.loadAllColors('button', 'largeTop', 'assets/buttons/', 'largeTop.png', 295, 49, 1);
 		this.loadAllColors('button', 'largeBottom', 'assets/buttons/', 'largeBottom.png', 295, 49, 1);
 		this.loadAllColors('button', 'largeMiddle', 'assets/buttons/', 'largeMiddle.png', 295, 49, 1);

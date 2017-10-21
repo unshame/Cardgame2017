@@ -53,7 +53,7 @@ class QueueManager{
 		*/
 		this.queueList = [];
 
-		this.queueInProgressList = [];
+		this.queueListAll = [];
 
 		/**
 		* Очереди быстрой игры, в которые могут подключаться игроки (с `type` равным `quick`).  
@@ -89,11 +89,7 @@ class QueueManager{
 		}
 
 		let pageLength = pagination;
-		let queueList = this.queueList;
-		if(!hideStarted){
-			queueList = queueList.slice();
-			queueList = queueList.concat(this.queueInProgressList);
-		}
+		let queueList = hideStarted ? this.queueList : this.queueListAll;
 
 		// Сколько элементов нужно будет пропустить
 		let skip = page * pageLength;
@@ -236,19 +232,20 @@ class QueueManager{
 	*/
 	addQueueToList(queue){
 		// Добавляем очередь в общий список
-		let i = this.queueList.indexOf(queue);
-		if(!~i && queue.type != 'private' && queue.type != 'botmatch'){
-			this.queueList.unshift(queue);
-		}
+		if(queue.type != 'private' && queue.type != 'botmatch'){
+			let i = this.queueList.indexOf(queue);
+			if(!~i){
+				this.queueList.unshift(queue);
+			}
 
-		// Удаляем очередь из списка очередей с запущенными играми
-		i = this.queueInProgressList.indexOf(queue);
-		if(~i){
-			this.queueInProgressList.splice(i, 1);
+			i = this.queueListAll.indexOf(queue);
+			if(!~i){
+				this.queueListAll.unshift(queue);
+			}
 		}
 
 		// Добавляем очередь в список быстрых игр
-		i = this.quickQueues.indexOf(queue);
+		let i = this.quickQueues.indexOf(queue);
 		if(!~i && queue.type == 'quick'){
 			this.quickQueues.push(queue);
 		}
@@ -277,19 +274,13 @@ class QueueManager{
 			this.queueList.splice(i, 1);
 		}
 
-		// Добавляем очередь в список очередей с запущенными играми
-		if(inProgress){
-			i = this.queueInProgressList.indexOf(queue);
-			if(!~i && queue.type != 'private' && queue.type != 'botmatch'){
-				this.queueInProgressList.push(queue);
-			}
-		}
-		else{
-			i = this.queueInProgressList.indexOf(queue);
+		if(!inProgress){
+			i = this.queueListAll.indexOf(queue);
 			if(~i){
-				this.queueInProgressList.splice(i, 1);
+				this.queueListAll.splice(i, 1);
 			}
 		}
+
 
 		// Убираем очередь из списка быстрых игр
 		i = this.quickQueues.indexOf(queue);
