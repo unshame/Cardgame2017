@@ -54,6 +54,7 @@ UI.InputField.prototype.getDefaultOptions = function(){
 		width: 190,
 		height: 49,
 		padding: 8,
+		margin: 2,
 		font: '26px Exo',
 		textColor: 'black',
 		name: null,
@@ -76,7 +77,7 @@ UI.InputField.prototype.updatePosition = function(position){
 		position = position.call(this, this.width, this.height);
 	}
 	this.x = position.x;
-	this.y = position.y;
+	this.y = position.y + this.options.margin;
 };
 
 UI.InputField.prototype.show = function(){
