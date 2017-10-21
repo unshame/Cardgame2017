@@ -217,6 +217,7 @@ UI.prototype.setDebugButtonText = function(name, text, on){
 //@include:Text
 //@include:Checkbox
 //@include:LobbyBrowser
+//@include:LobbyCreator
 
 //@include:Rope
 //@include:Logo

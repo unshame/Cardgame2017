@@ -74,7 +74,7 @@ var LobbyBrowser = function(options){
 	for(i = 0; i < this.pagination; i++){
 		this.buttons[i] = this.getElementByName('button' + i);
 		if(i != this.pagination - 1){
-			this.buttons[i].fixedHeight  = this.buttons[i].height - this.options.margin;
+			this.buttons[i].fixedHeight  = this.buttons[i].height - this.options.margin - 1;
 		}
 	}
 
@@ -110,7 +110,7 @@ LobbyBrowser.prototype.getDefaultLobbyOptions = function(){
 		z: 6,
 		margin: 25,
 		name: 'browser',
-		alpha: 0.9,
+		alpha: 1,
 		color: 'grey',
 		texture: null,
 		elementColor: 'orange',
