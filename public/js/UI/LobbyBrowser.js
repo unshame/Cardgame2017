@@ -48,7 +48,7 @@ var LobbyBrowser = function(options){
 	layout.push([
 		{
 			name: 'join',
-			text: 'Join game',
+			text: 'Join Game',
 			action: this.join,
 			context: this
 		},
@@ -136,15 +136,6 @@ LobbyBrowser.prototype.resetButtons = function(){
 	this.getElementByName('right').alpha = 0.5;
 	this.disableElement('left');
 	this.getElementByName('left').alpha = 0.5;
-
-	if(this.list[0]){
-		this.enableElement('join');
-		this.select(0);	
-	}
-	else{
-		this.disableElement('join');
-		this.info.setText('No games found :(');
-	}
 };
 
 LobbyBrowser.prototype.recieveList = function(action){	
@@ -167,6 +158,15 @@ LobbyBrowser.prototype.recieveList = function(action){
 	if(action.moreBefore){
 		this.enableElement('left');
 		this.getElementByName('left').alpha = 1;
+	}
+
+	if(this.list[0]){
+		this.enableElement('join');
+		this.select(0);	
+	}
+	else{
+		this.disableElement('join');
+		this.info.setText('No games found :(');
 	}
 
 	this.updatePosition();
@@ -278,7 +278,7 @@ LobbyBrowser.prototype.join = function(){
 
 LobbyBrowser.prototype.refresh = function(){
 	this.disableElement('join');
-	connection.proxy.requestQueueList(0, this.pagination);
+	connection.proxy.requestQueueList(this.page, this.pagination);
 };
 
 LobbyBrowser.prototype.close = function(){
