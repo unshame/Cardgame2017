@@ -188,33 +188,6 @@ function moveFirstPlayerCardToTable(i, delay){
 }
 
 var animTest = {
-	win: function(){
-		var discard = fieldManager.fields.DISCARD_PILE;			
-		discard.addCards(getCards(30, discard.cards));			
-		actionHandler.reactSecondary.GAME_ENDED.call(actionHandler, {results: {winners: [game.pid]}});
-	},
-	lose: function(){
-		var discard = fieldManager.fields.DISCARD_PILE;			
-		discard.addCards(getCards(30, discard.cards));			
-		actionHandler.reactSecondary.GAME_ENDED.call(actionHandler, {results: {loser: game.pid}});
-	},
-	eh: function(){
-		var discard = fieldManager.fields.DISCARD_PILE;			
-		discard.addCards(getCards(30, discard.cards));			
-		actionHandler.reactSecondary.GAME_ENDED.call(actionHandler, {});
-	},
-	unlockField: function(){
-		fieldManager.unlockField('TABLE5');
-	},
-	trump: function(){
-		var cards = getCards(5),
-			cardsInfo = [];
-		for(var ci = 0; ci < cards.length; ci++){
-			var c = cards[ci];
-			cardsInfo.push({cid: c.id, suit: c.suit, value: c.value, pid: c.fieldId});
-		}
-		actionHandler.reactPrimary.TRUMP_CARDS.call(actionHandler, {cards: cardsInfo, pid: game.pid});
-	},
 	eventFeed: function(){
 		for(var i = 0; i < 20; i++){
 			eventFeed.newMessage(Math.random(), (20-i)*200);

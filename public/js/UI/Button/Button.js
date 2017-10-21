@@ -131,7 +131,8 @@ UI.Button.prototype.getDefaultOptions = function(){
 		defaultFrame: 0,
 		overFrame: 1,
 		downFrame: 2,
-		disabledFrame: 3
+		disabledFrame: 3,
+		disabledLabelAlpha: 0.55
 	};
 };
 
@@ -176,7 +177,7 @@ UI.Button.prototype.disable = function(changeToDefaultFrame){
 	this.button.inputEnabled = false;
 
 	if(this.label && !changeToDefaultFrame){
-		this.label.alpha = 0.55;
+		this.label.alpha = this.options.disabledLabelAlpha;
 		if(!this.isDown){
 			this.label.y += this.options.downOffset;
 			this.isDown = true;

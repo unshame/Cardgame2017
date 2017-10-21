@@ -53,6 +53,8 @@ class QueueManager{
 		*/
 		this.queueList = [];
 
+		this.queueInProgressList = [];
+
 		/**
 		* Очереди быстрой игры, в которые могут подключаться игроки (с `type` равным `quick`).  
 		* На время прохождения игр быстрые очереди убираются из этого списка.
@@ -69,12 +71,13 @@ class QueueManager{
 
 	/**
 	* Возвращает список с информацией о существующих очередях.
-	* @param {number} page            номер страницы очередей
-	* @param {number} [pagination=10] кол-во очередей на странице
+	* @param {number}  page            номер страницы очередей
+	* @param {number}  [pagination=10] во очередей на странице
+	* @param {boolean} [hideStarted]   не добавлять очереди с начатыми играми
 	*
 	* @return {object[]} Возвращает массив с объектами с информацией об очередях.
 	*/
-	getQueueList(page, pagination){
+	getQueueList(page, pagination, hideStarted){
 		let list = [];
 
 		if(typeof page != 'number' || isNaN(page) || page < 0){
@@ -86,19 +89,24 @@ class QueueManager{
 		}
 
 		let pageLength = pagination;
+		let queueList = this.queueList;
+		if(!hideStarted){
+			queueList = queueList.slice();
+			queueList = queueList.concat(this.queueInProgressList);
+		}
 
 		// Сколько элементов нужно будет пропустить
 		let skip = page * pageLength;
-		if(skip >= this.queueList.length){
-			skip = Math.max(this.queueList.length - pageLength, 0);
-			page = Math.max(this.queueList.length/pageLength, 1) - 1;
+		if(skip >= queueList.length){
+			skip = Math.max(queueList.length - pageLength, 0);
+			page = Math.max(queueList.length/pageLength, 1) - 1;
 		}
 
 		// Есть ли элементы перед и после текущей страницы
 		let moreBefore = (skip > 0);
 		let moreAfter = false;
 
-		for(let i = 0, len = this.queueList.length; i < len; i++){
+		for(let i = 0, len = queueList.length; i < len; i++){
 
 			// Пропускаем заданное кол-во элементов
 			if(skip > 0){
@@ -113,7 +121,7 @@ class QueueManager{
 				break;
 			}
 
-			let queue = this.queueList[i];
+			let queue = queueList[i];
 			list.push(queue.info);
 
 			pageLength--;
@@ -148,7 +156,7 @@ class QueueManager{
 		queueConfig.game = gameClass[0];
 		queueConfig.bot = gameClass[1];
 		queueConfig.debug = this.server.params.debug;
-		queueConfig.name = player.name + '\'s Queue';
+		queueConfig.name = player.name + '\'s Game';
 
 		if(!gameRules || typeof gameRules != 'object'){
 			gameRules = {};
@@ -233,6 +241,12 @@ class QueueManager{
 			this.queueList.unshift(queue);
 		}
 
+		// Удаляем очередь из списка очередей с запущенными играми
+		i = this.queueInProgressList.indexOf(queue);
+		if(~i){
+			this.queueInProgressList.splice(i, 1);
+		}
+
 		// Добавляем очередь в список быстрых игр
 		i = this.quickQueues.indexOf(queue);
 		if(!~i && queue.type == 'quick'){
@@ -256,11 +270,25 @@ class QueueManager{
 	* Удаляет очередь из списка очередей к которым можно присоединиться.
 	* @param  {Queue} queue
 	*/
-	removeQueueFromList(queue){
+	removeQueueFromList(queue, inProgress){
 		// Убираем очередь из общего списка
 		let i = this.queueList.indexOf(queue);
 		if(~i){
 			this.queueList.splice(i, 1);
+		}
+
+		// Добавляем очередь в список очередей с запущенными играми
+		if(inProgress){
+			i = this.queueInProgressList.indexOf(queue);
+			if(!~i && queue.type != 'private' && queue.type != 'botmatch'){
+				this.queueInProgressList.push(queue);
+			}
+		}
+		else{
+			i = this.queueInProgressList.indexOf(queue);
+			if(~i){
+				this.queueInProgressList.splice(i, 1);
+			}
 		}
 
 		// Убираем очередь из списка быстрых игр

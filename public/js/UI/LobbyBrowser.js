@@ -14,7 +14,8 @@ var LobbyBrowser = function(options){
 			name: 'button'+i,
 			text: '',
 			downOffset: 0,
-			action: this.select.bind(this, i)
+			action: this.select.bind(this, i),
+			disabledLabelAlpha: 1
 		}));
 	}
 
@@ -42,7 +43,17 @@ var LobbyBrowser = function(options){
 			size: 'arrow',
 			action: this.loadNext,
 			context:this
-		}
+		},
+		Menu.checkbox({
+			text: 'Hide started games',
+			name: 'hideStarted',
+			checked: true,
+			color: 'orange',
+			textColor: 'black',
+			actionEnable: this.refresh,
+			actionDisable: this.refresh,
+			context: this
+		})
 	));
 
 	layout.push([
@@ -153,15 +164,12 @@ LobbyBrowser.prototype.recieveList = function(action){
 
 	if(action.moreAfter){
 		this.enableElement('right');
-		this.getElementByName('right').alpha = 1;
 	}
 	if(action.moreBefore){
 		this.enableElement('left');
-		this.getElementByName('left').alpha = 1;
 	}
 
 	if(this.list[0]){
-		this.enableElement('join');
 		this.select(0);	
 	}
 	else{
@@ -174,50 +182,86 @@ LobbyBrowser.prototype.recieveList = function(action){
 };
 
  LobbyBrowser.prototype.select = function(u){
- 	var a = this.list[u].name + '\n'+ this.list[u].type + '\n'+ this.list[u].numPlayers + '/' + this.list[u].numPlayersRequired + ' Players' + '\n' ;
- 	
- 	this.list[u].gameRules.numCards === 36? a+='Deck size: 36' + '\n' : a+='Deck size: 52' + '\n';
- 	this.list[u].gameRules.canTransfer? a+='Can transfer: Yes' + '\n' : a+='Can transfer: No' + '\n'; 
- 	this.list[u].gameRules.freeForAll? a+='Free for all: Yes' + '\n' : a+='Free for all: No' + '\n';
- 	this.list[u].gameRules.limitAttack? a+='Limit attack: Yes' + '\n' : a+='Limit attack: No' + '\n'; 
- 	this.list[u].gameRules.limitFollowup? a+='Limit followup: Yes' + '\n' : a+='Limit followup: No' + '\n'; 
- 	
- 
- 	if(this.list[u].numBots != 0){
- 		a+='Bot\'s difficulty: ';
- 		switch(this.list[u].difficulty){
- 			case 0:{
- 				a+='Easy' + '\n';
- 				break;
- 			}
- 			case 1:{
- 				a+='Medium' + '\n';
- 				break;
- 			}
- 			case 2:{
- 				a+='Hard' + '\n';
- 				break;
- 			}
- 			case 3:{
- 				a+='Cheater' + '\n';
- 				break;
- 			}
- 			default: break;
- 		}
- 	}
- 	this.info.setText(a, true);
+  	this.info.setText(this.getInfoText(u), true);
+
  	this.selectedQueue = this.list[u].id;
+
  	for(var i = 0; i < this.pagination; i++){
 		this.buttons[i].changeStyle(i === 0 ? 1 : i == this.pagination - 1 ? 2 : 3);
  		if(i < this.list.length){
 			this.enableElement('button' + i);
  		}
  	}
+
  	this.disableElement('button' + u);
  	this.buttons[u].changeStyle(u === 0 ? 4 : u == this.pagination - 1 ? 5 : 6);
- 	this.buttons[u].label.alpha = 1;
- 	
- };
+
+ 	if(this.list[u].started){
+ 		this.disableElement('join');
+ 	}
+ 	else{
+ 		this.enableElement('join');
+ 	}
+};
+
+LobbyBrowser.prototype.getInfoText = function(u){
+	var yesNo = {
+		true: 'Yes',
+		false: 'No'
+	}
+	var el = this.list[u];
+	var a = el.name + '\n';
+	a += 'Type: ' + el.type;
+	if(el.started){
+		a += ' (started)';
+	}
+	a += '\n';
+	if(el.started){
+		a += el.numPlayersRequired + ' players\n';
+	}
+	else{
+		a += el.numPlayers + ' / ' + el.numPlayersRequired + ' players\n';
+	}
+	if(el.numBots != 0){
+		a += el.numBots + ' bot';
+		if(el.numBots > 1){
+			a += 's';
+		}
+		a += '\n';
+		a += 'Bot difficulty: ';
+		switch(el.difficulty){
+			case 0:
+			a += 'Easy\n';
+			break;
+
+			case 1:
+			a += 'Medium\n';
+			break;
+
+			case 3:
+			a += 'Cheater\n';
+			break;
+
+			case 2:
+			/* falls through */
+
+			default: 
+			a += 'Hard\n';
+			break;
+		}
+	}
+	
+	var deckSize = el.gameRules.numCards;
+	if(typeof deckSize != 'number' || isNaN(deckSize)){
+		deckSize = (el.numBots + el.numPlayersRequired < 4) ? 36 : 52;
+	}
+	a += 'Deck size: ' + deckSize + '\n';
+	a += 'Can transfer: ' + yesNo[el.gameRules.canTransfer] + '\n';
+	a +='Limit attackers: ' + yesNo[el.gameRules.limitAttack] + '\n'; 
+	a +='Limit followup: ' + yesNo[el.gameRules.limitAttack] + '\n';	
+
+	return a;
+}
 
 LobbyBrowser.prototype._addButton = function(options){
 	options.group = this;
@@ -261,14 +305,18 @@ LobbyBrowser.prototype._addButton = function(options){
 	return button;
 };
 
+LobbyBrowser.prototype.shouldHideStarted = function(){
+	return this.getElementByName('hideStarted').checked;
+}
+
 LobbyBrowser.prototype.loadPrevious = function(){
 	this.disableElement('join');
-	connection.proxy.requestQueueList(this.page - 1, this.pagination);
+	connection.proxy.requestQueueList(this.page - 1, this.pagination, this.shouldHideStarted());
 };
 
 LobbyBrowser.prototype.loadNext = function(){
 	this.disableElement('join');
-	connection.proxy.requestQueueList(this.page + 1, this.pagination);
+	connection.proxy.requestQueueList(this.page + 1, this.pagination, this.shouldHideStarted());
 };
 
 LobbyBrowser.prototype.join = function(){
@@ -278,7 +326,7 @@ LobbyBrowser.prototype.join = function(){
 
 LobbyBrowser.prototype.refresh = function(){
 	this.disableElement('join');
-	connection.proxy.requestQueueList(this.page, this.pagination);
+	connection.proxy.requestQueueList(this.page, this.pagination, this.shouldHideStarted());
 };
 
 LobbyBrowser.prototype.close = function(){
@@ -286,3 +334,8 @@ LobbyBrowser.prototype.close = function(){
 	ui.logo.fadeIn();
 	this.fadeOut();
 };
+
+LobbyBrowser.prototype.fadeIn = function(){
+	this.refresh();
+	supercall(LobbyBrowser).fadeIn.call(this);
+}

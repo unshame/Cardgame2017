@@ -58,7 +58,7 @@ class Queue{
 		* Имя очереди.
 		* @type {string}
 		*/
-		this.name = config.name || 'Unnamed Queue';
+		this.name = config.name || 'Unnamed Game';
 
 		if(
 			typeof config.numPlayers != 'number' || isNaN(config.numPlayers) || 
@@ -113,6 +113,7 @@ class Queue{
 		return {
 			id: this.id,
 			type: this.type,
+			started: !!this.game,
 			gameMode: this.config.game.modeName,
 			numPlayers: this.players.length,
 			numPlayersRequired: this.config.numPlayers,
@@ -185,7 +186,7 @@ class Queue{
 
 		this.game = new this.config.game(this, players, this.gameConfig, this.gameRules);
 		this.manager.games[this.game.id] = this.game;
-		this.manager.removeQueueFromList(this);
+		this.manager.removeQueueFromList(this, true);
 		this.game.init();
 	}
 

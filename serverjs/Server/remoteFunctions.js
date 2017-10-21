@@ -97,12 +97,12 @@ module.exports = function(server){
 		* @param  {number} page       страница очередей
 		* @param  {number} pagination кол-во очередей на страницу
 		*/
-		requestQueueList: function(page, pagination){
+		requestQueueList: function(page, pagination, hideStarted){
 			let player = server.players[this.connection.id];
 			if(!player){
 				return;
 			}
-			let action = server.manager.getQueueList(page, pagination);
+			let action = server.manager.getQueueList(page, pagination, hideStarted);
 			player.recieveMenuNotification(action);
 		},
 

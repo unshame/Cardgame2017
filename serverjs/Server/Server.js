@@ -58,7 +58,7 @@ class Server extends Eureca.Server{
 			numPlayers: this.params.numPlayers,
 			numBots: this.params.numBots,			
 			debug: this.params.debug,
-			name: 'Quick Queue'
+			name: 'Quick Game'
 		},
 		{
 			canTransfer: this.params.transfer,

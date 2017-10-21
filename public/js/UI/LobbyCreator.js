@@ -104,12 +104,12 @@ var LobbyCreator = function(options){
 			Menu.stepper({
 				name:'stepOfDifficulty',
 				choices: { 
-					'1': 'Easy',
-					'2': 'Medium',
-					'3': 'Hard',
-					'4': 'Godlike',
+					'0': 'Easy',
+					'1': 'Medium',
+					'2': 'Hard',
+					'3': 'Cheater',
 				},
-				startKey: '3',
+				startKey: '2',
 				minWidth: stepperWidth,
 				context:this
 			})/*,
