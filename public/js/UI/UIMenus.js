@@ -187,11 +187,11 @@ UI.prototype._createMenus = function(){
 							gameOptions.save();
 							location.href = location.href;
 						},
-						choices: {
-							0: 'Auto',
-							2: 'WebGL',
-							1: 'Canvas'
-						},
+						choices: [
+							['0', 'Auto'],
+							['2', 'WebGL'],
+							['1', 'Canvas']
+						],
 						name: 'renderer',
 						textColor: 'black',
 						startKey: renderer,

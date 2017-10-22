@@ -13,40 +13,13 @@ UI.Stepper = function(options) {
 
 	this.action = this.options.action.bind(this.options.context || this);
 
-	this.slidesByName = {};
 	this.content = [];
 	this.keys = [];
 
-	for(var key in this.options.choices){
-		if(this.options.choices.hasOwnProperty(key)){
-			this.addTextContent(key, this.options.choices[key]);
-		}
-	}
-
-	if(this.content.length === 0){
-		this.addTextContent('default', 'NO_CHOICES');
-	}
+	this.disabledAlpha = 0.5;
 
 	this.maxHeight = this.options.minHeight;
 	this.maxWidth = this.options.minWidth;
-	for(var i = 0; i < this.content.length;i++){
-		if(this.content[i].width > this.maxWidth){
-			this.maxWidth = this.content[i].width;
-		}
-		if(this.content[i].height > this.maxHeight){
-			this.maxHeight = this.content[i].height;
-		}
-	}
-
-	var keyIndex = this.options.startKey ? this.keys.indexOf(this.options.startKey) : -1;
-	this.index = ~keyIndex ? keyIndex : 0;
-
-	this.currentContent = this.content[this.index];
-	this.previousContent = this.content[this.index - 1] || null;
-	this.nextContent = this.content[this.index + 1] || null;
-	this.limitLeft = 0;
-	this.limitRight = this.content.length;
-	this.currentContent.visible = true;
 
 	this.arrowRight = new UI.Button({
 		color: this.options.color,
@@ -64,21 +37,12 @@ UI.Stepper = function(options) {
 		group: this
 	});
 
-	this.disabledAlpha = 0.5;
-
-	if(!this.previousContent){
-		this.arrowLeft.alpha = this.disabledAlpha;
-		this.arrowLeft.disable();
-	}
-	if(!this.nextContent){
-		this.arrowRight.alpha = this.disabledAlpha;
-		this.arrowRight.disable();
-	}
-
 	UI.ButtonBase.setStateFrames(this.arrowLeft, 0);
 	UI.ButtonBase.setStateFrames(this.arrowRight, 1);
 
-	this.updatePosition(this.options.position);
+	this.defaultPosition = this.options.position;
+
+	this.setChoices(this.options.choices, this.options.startKey);
 };
 
 extend(UI.Stepper, Phaser.Group);
@@ -105,6 +69,67 @@ UI.Stepper.prototype.getDefaultOptions = function(){
 		minWidth: 0,
 		minHeight: 0
 	};
+};
+
+UI.Stepper.prototype.setChoices = function(choices, key){
+
+	this.keys.length = 0;
+
+	this.content.forEach(function(c){
+		c.destroy();
+	});
+
+	this.content.length = 0;
+
+	if(Array.isArray(choices)){
+		choices.forEach(function(choice){
+			var key, value;
+			if(Array.isArray(choice)){
+				key = choice[0];
+				value = choice[1];
+			}
+			else{
+				key = value = choice;
+			}
+			this.addTextContent(key, value);
+		}, this);
+	}
+	else{
+		for(var key in choices){
+			if(choices.hasOwnProperty(key)){
+				this.addTextContent(key, choices[key]);
+			}
+		}
+	}
+
+	if(this.content.length === 0){
+		this.addTextContent('default', 'NO_CHOICES');
+	}
+
+	this.index = 0;
+
+	for(var i = 0; i < this.content.length; i++){
+		if(this.content[i].width > this.maxWidth){
+			this.maxWidth = this.content[i].width;
+		}
+		if(this.content[i].height > this.maxHeight){
+			this.maxHeight = this.content[i].height;
+		}
+	}
+
+	var keyIndex = key ? this.keys.indexOf(key) : -1;
+	this.index = ~keyIndex ? keyIndex : 0;
+
+	this.currentContent = this.content[this.index];
+	this.previousContent = this.content[this.index - 1] || null;
+	this.nextContent = this.content[this.index + 1] || null;
+	this.limitLeft = 0;
+	this.limitRight = this.content.length - 1;
+	this.currentContent.visible = true;
+
+	this.enable();
+
+	this.updatePosition();
 };
 
 UI.Stepper.prototype.updatePosition = function(position){

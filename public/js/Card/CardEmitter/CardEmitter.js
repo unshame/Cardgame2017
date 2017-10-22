@@ -77,6 +77,7 @@ CardEmitter.prototype.makeMaxParicles = function(max){
 		for(var i = skinManager.skin.firstValueFrame; i < skinManager.skin.firstValueFrame + 52; i++){
 			frames.push(i);
 		}
+		frames.push(skinManager.skin.cardbackFrame);
 		this.makeParticles(skinManager.skin.sheetName, frames, max - current);
 	}
 

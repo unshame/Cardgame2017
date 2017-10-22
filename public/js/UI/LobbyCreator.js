@@ -16,14 +16,14 @@ var LobbyCreator = function(options){
 				action: this.limitBotSelectorRange,
 				context: this,
 				name:'stepOfPlayers',
-				choices: { 
-					'1': '1',
-					'2': '2',
-					'3': '3',
-					'4': '4',
-					'5': '5',
-					'6': '6',
-				},
+				choices: [ 
+					'1',
+					'2',
+					'3',
+					'4',
+					'5',
+					'6',
+				],
 				minWidth: stepperWidth,
 				startKey: '4'
 			}),
@@ -46,14 +46,14 @@ var LobbyCreator = function(options){
 			}),
 			Menu.stepper({
 				name:'stepOfBots',
-				choices:{ 
-					'0': '0',
-					'1': '1',
-					'2': '2',
-					'3': '3',
-					'4': '4',
-					'5': '5',
-				},
+				choices: [
+					'0',
+					'1',
+					'2',
+					'3',
+					'4',
+					'5',
+				],
 				minWidth: stepperWidth,
 				context: this,
 				startKey: '0'
@@ -77,10 +77,10 @@ var LobbyCreator = function(options){
 			}),
 			Menu.stepper({
 				name:'deckSizeStep',
-				choices:{ 
-					'36': '36',
-					'52': '52'			
-				},
+				choices: [ 
+					'36',
+					'52'			
+				],
 				startKey: '36',
 				minWidth: stepperWidth
 			}),
@@ -103,12 +103,12 @@ var LobbyCreator = function(options){
 			}),
 			Menu.stepper({
 				name:'stepOfDifficulty',
-				choices: { 
-					'0': 'Easy',
-					'1': 'Medium',
-					'2': 'Hard',
-					'3': 'Cheater',
-				},
+				choices: [ 
+					['0', 'Easy'],
+					['1', 'Medium'],
+					['2', 'Hard'],
+					['3', 'Cheater']
+				],
 				startKey: '2',
 				minWidth: stepperWidth,
 				context:this
