@@ -233,7 +233,7 @@ UI.prototype._createMenus = function(){
 				Menu.inputField({
 					name: 'name',
 					placeHolder: 'Player1',
-					maxChars: 10
+					maxChars: 8
 				}),
 				{
 					text: 'Change Name',

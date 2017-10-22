@@ -268,7 +268,7 @@ class Server extends Eureca.Server{
 	changePlayerName(connId, name){
 		let player = this.players[connId];
 		if(player){
-			if(typeof name != 'string' || name.length < 1 || name.length > 12){
+			if(typeof name != 'string' || name.length < 1 || name.length > 8){
 				player.recieveSystemNotification({type: 'NAME_INVALID'});
 				return;
 			}

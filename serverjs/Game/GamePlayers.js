@@ -12,6 +12,7 @@ class GamePlayers extends PlayerManager{
 
 	constructor(game, players, turnStartStatus, gameStartStatus){
 		super(game, players);
+		this.replacementNames = [];
 		this.turnStartStatus = turnStartStatus;
 		this.gameStartStatus = gameStartStatus;
 		this.log = game.log;
@@ -43,6 +44,7 @@ class GamePlayers extends PlayerManager{
 		this.forEach((p) => {
 			this.setStatuses(p, this.gameStartStatus);
 		});
+		this.replacementNames = ['Synth', 'Zombie', 'Bot', 'Doppelganger', 'Clone', 'Some Guy'];
 	}
 
 	resetPlayer(player, hard){
@@ -183,7 +185,7 @@ class GamePlayers extends PlayerManager{
 		let pi = this.indexOf(player);
 		this.splice(pi, 1);
 
-		let replacement = new this.game.BotClass(['Synth']);
+		let replacement = new this.game.BotClass(this.replacementNames);
 		this.push(replacement);
 		replacement.statuses = player.statuses;
 		replacement.id = player.id;
