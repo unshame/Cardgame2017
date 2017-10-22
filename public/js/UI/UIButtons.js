@@ -154,6 +154,6 @@ UI.prototype._createButtons = function(){
 	});
 
 	if(!gameOptions.get('debug_buttons')){
-		this.debugButtons.visible = false;
+		this.toggleDebugButtons();
 	}
 };
