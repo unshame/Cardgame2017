@@ -369,6 +369,9 @@ text:'В игре используется колода из 36 карт,\n\
 						var field = document.getElementById('queue_id');
 						field.select();
 						var success = document.execCommand('copy');
+						if(document.activeElement){
+							document.activeElement.blur();
+						}
 						ui.feed.newMessage(success ? 'Link copied' : 'Please copy the link manually from the adress bar', 2000);
 					},
 					fontSize: 24,
