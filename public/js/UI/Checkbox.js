@@ -24,7 +24,7 @@ UI.Checkbox = function(options){
 		this.label.inputEnabled = true;
 		this.label.events.onInputUp.add(this.action);
 		this.label.anchor.set(0, 0.5);
-		if(hoverText){
+		if(hoverText && Phaser.Device.desktop){
 			UI.PopupComponent.call(
 				this,
 				this.label,

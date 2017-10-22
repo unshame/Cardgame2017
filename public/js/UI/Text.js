@@ -12,7 +12,7 @@ UI.Text = function(options){
 	this.fixedWidth = this.options.fixedWidth;
 	this.fixedHeight = this.options.fixedHeight;
 
-	if(this.options.hoverText){
+	if(this.options.hoverText && Phaser.Device.desktop){
 		UI.PopupComponent.call(
 			this,
 			this,
