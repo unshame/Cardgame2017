@@ -164,9 +164,11 @@ LobbyBrowser.prototype.recieveList = function(action){
 
 	if(action.moreAfter){
 		this.enableElement('right');
+		this.getElementByName('right').alpha = 1;
 	}
 	if(action.moreBefore){
 		this.enableElement('left');
+		this.getElementByName('left').alpha = 1;
 	}
 
 	if(this.list[0]){
