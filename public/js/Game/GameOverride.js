@@ -182,3 +182,14 @@ Game.prototype.parseConfig = function (config) {
     this.state = new StateManager(this);
 
 };
+
+Phaser.ScaleManager.prototype.__updateLayout = Phaser.ScaleManager.prototype.updateLayout;
+
+Phaser.ScaleManager.prototype.updateLayout = function () {
+
+    if(PhaserInput.KeyboardOpen && !this.game.scale.isFullScreen){
+        return;
+    }
+
+    this.__updateLayout();
+}

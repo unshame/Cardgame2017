@@ -35,12 +35,14 @@ OptionManager.prototype = {
 	*/
 	getDefaults: function(){
 		return {
+			// DEBUG
 			'debug_game': false,
 			'debug_cards': false,
 			'debug_fields': false,
 			'debug_grid': false,
 			'debug_control': false,
 			'debug_connection': false,
+			'debug_buttons': true,
 
 			'system_renderer': Phaser.AUTO,
 			'system_scale': 1,

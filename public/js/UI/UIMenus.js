@@ -3,6 +3,7 @@
 */
 UI.prototype._createMenus = function(){
 	var renderer = gameOptions.get('system_renderer');
+	var nameMaxLength = 8;
 	return {
 
 		// ГЛАВНОЕ МЕНЮ
@@ -245,7 +246,7 @@ UI.prototype._createMenus = function(){
 				Menu.inputField({
 					name: 'name',
 					placeHolder: 'Player1',
-					maxChars: 8
+					maxChars: nameMaxLength
 				}),
 				{
 					text: 'Change Name',
@@ -258,12 +259,12 @@ UI.prototype._createMenus = function(){
 						if(oldName && oldName == name){
 							ui.feed.newMessage('Please enter a different name', 2000);
 						}
-						else if(name.length > 0){
+						else if(name.length > 0 && name.length <= nameMaxLength){
 							this.disableElement('change');
 							connection.proxy.changeClientName(name);
 						}
 						else{
-							ui.feed.newMessage('Please enter name', 2000);
+							ui.feed.newMessage(name.length > 0 ? 'Name is too long (' + nameMaxLength + ' characters max)' : 'Please enter name', 2000);
 						}
 					}
 				}

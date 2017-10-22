@@ -233,6 +233,12 @@ UI.prototype.activateHotkeys = function(){
 	space.onDown.add(sendButtonAction, this);
 };
 
+UI.prototype.toggleDebugButtons = function(){
+	this.debugButtons.visible = !this.debugButtons.visible;
+	gameOptions.set('debug_buttons', this.debugButtons.visible);
+	gameOptions.save();
+}
+
 
 //@include:UIMenus
 //@include:UIButtons

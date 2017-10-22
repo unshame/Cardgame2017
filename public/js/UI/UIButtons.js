@@ -14,6 +14,12 @@ UI.prototype._createButtons = function(){
 	*/
 	this.cornerButtons = this.layers.addLayer(-3, 'cornerButtons');
 
+	/**
+	* Кнопки дебага.
+	* @type {external:Phaser.Group}
+	*/
+	this.debugButtons = this.layers.addLayer(-3, 'debugButtons');
+
 	// Действие
 	actionHandler.actionButton = new UI.ButtonAltStyles({
 		position: function(width, height){
@@ -126,7 +132,7 @@ UI.prototype._createButtons = function(){
 		name: 'debug',
 		size: 'small',
 		textColor: 'white',
-		group: this.cornerButtons
+		group: this.debugButtons
 	});
 
 	// Завершение последовательности
@@ -144,6 +150,10 @@ UI.prototype._createButtons = function(){
 		name: 'debug',
 		size: 'small',
 		textColor: 'white',
-		group: this.cornerButtons
+		group: this.debugButtons
 	});
+
+	if(!gameOptions.get('debug_buttons')){
+		this.debugButtons.visible = false;
+	}
 };
