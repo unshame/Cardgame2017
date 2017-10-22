@@ -102,6 +102,8 @@ var Menu = function(options){
 	if(this.options.layout){
 		this.createLayout(this.options.layout);
 	}
+
+	this.hide();
 };
 
 extend(Menu, Phaser.Group);
