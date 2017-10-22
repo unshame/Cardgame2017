@@ -35,3 +35,13 @@ body {
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 }
+
+#queue_id {
+	position: absolute;
+	z-index: 0;
+}
+
+#cardgame{
+	position: absolute;
+	z-index: 999;
+}

@@ -55,6 +55,7 @@ var stateQueue = new State('queue', {
 		if(nextState != 'menu'){
 			cardEmitter.stop();
 		}
+		game.clearLocationHash();
 	},
 
 	update: function(){

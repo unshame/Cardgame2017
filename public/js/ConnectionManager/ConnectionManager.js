@@ -43,6 +43,7 @@ ConnectionManager.prototype.initialize = function(){
 
 ConnectionManager.prototype.bindProxy = function(proxy){
 	this.proxy = proxy;
+	window.addEventListener('hashchange', this.server.tryJoiningLinkedQueue);
 	game.state.change(this.connectState);
 };
 

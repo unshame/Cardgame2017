@@ -8,11 +8,13 @@ var reactMenu = {
 	QUEUE_INACTIVE: function(){
 		ui.feed.newMessage('Failed to join game', 2000);
 		ui.menus.browser.refresh();
+		game.clearLocationHash();
 	},
 
 	QUEUE_FULL: function(){
 		ui.feed.newMessage('Game already started', 2000);
 		ui.menus.browser.refresh();
+		game.clearLocationHash();
 	},
 
 	QUEUE_INVALID: function(){

@@ -15,6 +15,7 @@ var clientMethods = {
 		}
 		else{
 			connection.server.restoreClientName();
+			connection.server.tryJoiningLinkedQueue();
 		}
 		gameOptions.set('connection_id', connId);
 		gameOptions.save();
@@ -43,6 +44,7 @@ var clientMethods = {
 			game.state.change('menu');
 		}		
 		connection.server.restoreClientName();
+		connection.server.tryJoiningLinkedQueue();
 	},
 
 	recieveAction: function(action){

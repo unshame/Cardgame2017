@@ -94,7 +94,7 @@ UI.prototype._createMenus = function(){
 					name: 'concede',
 					text: 'Concede',
 					mobileClickProtect: true,
-					hoverText: 'Leave current game.\n You will be replaced by a bot (how shameful).'
+					hoverText: 'Leave current game.\n You will be replaced with a bot.'
 				}),
 				Menu.alignAlternate(
 					Menu.text({
@@ -365,11 +365,16 @@ text:'В игре используется колода из 36 карт,\n\
 			headerColor: 'red',
 			layout: [
 				Menu.buttonPopup({
-					action: function(){},
+					action: function(){
+						var field = document.getElementById('queue_id');
+						field.select();
+						var success = document.execCommand('copy');
+						ui.feed.newMessage(success ? 'Link copied' : 'Please copy the link manually from the adress bar', 2000);
+					},
 					fontSize: 24,
 					name: 'invite',
 					text: 'Copy Invite Link',
-					hoverText: 'Share this link with anybody to invite them to join you.'
+					hoverText: 'Share this link with anybody to invite them to join your game.'
 				}),
 				Menu.buttonPopup({
 					action: function(){

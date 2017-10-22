@@ -1,9 +1,12 @@
 /* exported reactQueue */
 var reactQueue = {
 
-	QUEUE_ENTERED: function(){
+	QUEUE_ENTERED: function(action){
 		ui.menus.queue.disableElement('vs_bots');
 		ui.menus.queue.fadeIn();
+		var link = location.href.replace(location.hash, '') + '#' + action.qid;
+		document.getElementById('queue_id').value = link;
+		history.replaceState(null, null, link);
 	},
 
 	QUEUE_LEFT: function(){

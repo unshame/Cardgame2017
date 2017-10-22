@@ -97,5 +97,6 @@ var statePlay = new State('play', {
 		ui.menus.options.hideElement('concede');
 		ui.menus.endGame.fadeOut();
 		ui.layers.setLayerIndex(ui.eventFeed, ui.eventFeed.zIndexAboveCards);
+		game.clearLocationHash();
 	}
 });

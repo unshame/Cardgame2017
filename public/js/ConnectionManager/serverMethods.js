@@ -65,5 +65,12 @@ var serverMethods = {
 			ui.cornerButtons.getByName('name').show();
 			ui.modalManager.openModal('name');
 		}
+	},
+
+	tryJoiningLinkedQueue: function(){
+		var qid = location.hash.substring(1);
+		if(qid.length > 0 && game.state.currentSync != 'queue' && game.state.currentSync != 'play'){
+			connection.proxy.joinCustomQueue(qid);
+		}
 	}
 };
