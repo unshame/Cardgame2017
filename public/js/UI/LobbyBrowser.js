@@ -26,8 +26,7 @@ var LobbyBrowser = function(options){
 	}));
 
 	layout.push(Menu.alignLeft(
-		{
-			
+		{			
 			name: 'left',
 			size: 'arrow',
 			action: this.loadPrevious,
@@ -160,7 +159,7 @@ LobbyBrowser.prototype.recieveList = function(action){
 		this.enableElement('button' + i);		
 	}
 
-	this.pageText.setText('Page ' + (this.page + 1)), true;
+	this.pageText.setText('Page ' + (this.page + 1), true);
 
 	if(action.moreAfter){
 		this.enableElement('right');
