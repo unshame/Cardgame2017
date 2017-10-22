@@ -66,7 +66,14 @@ class QueueManager{
 		* Случайные имена ботов.
 		* @type {Array}
 		*/
-		this.randomNames = ['John Snow','Gandalf','Joel','Ellie','Batman','Joker','Yoh','Geralt','Cirilla','Triss','Yennefer','Harry','Hermione','Ron','Arya','Sherlock','Neo','Marty McFly','Chester','Jodie','Aiden','Aloy','The Doctor','Severus','Alan','Regis','Nemo','Dio','Jesse','Heisenberg','Merlin','House M.D.','Bilbo','Legolas','Strider','Aragorn','Frodo','Sam','Merry','Pippin','Tess','Kenny','Ted','Barney','Marshall','Robin','Lily','Oleg','Sergey','Georgy','Talion', 'Johnny C.','Carl','Jotaro','Ken','Vanilla Ice','Zepelli','A Pig','Angela','Nataniel','Magnus','Leman','Malcador'];
+		this.randomNames = [
+			'John Snow','Gandalf','Joel','Ellie','Batman','Joker','Yoh','Geralt','Cirilla','Triss','Yennefer','Harry',
+			'Hermione','Ron','Arya','Sherlock','Neo','Marty McFly','Chester','Jodie','Aiden','Aloy','The Doctor','Severus',
+			'Alan','Regis','Nemo','Dio','Jesse','Heisenberg','Merlin','House M.D.','Bilbo','Legolas','Strider','Aragorn','Frodo',
+			'Sam','Merry','Pippin','Tess','Kenny','Ted','Barney','Marshall','Robin','Lily','Oleg','Sergey','Georgy','Talion',
+			'Johnny C.','Carl','Jotaro','Ken','Vanilla Ice','Zepelli','A Pig','Angela','Nataniel','Magnus','Leman','Malcador',
+			'Saltzpyre', 'S. Sam', 'G-Man', 'Kerillian', 'Xan'
+		];
 	}
 
 	/**
