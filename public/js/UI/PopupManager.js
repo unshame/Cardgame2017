@@ -176,7 +176,7 @@ UI.PopupManager.prototype._getText = function(anyway){
 * @param  {string} text новый текст
 */
 UI.PopupManager.prototype._updateText = function(text){
-	this.text.setText(text);
+	this.text.setText(text, true);
 	Menu.drawPanel(
 		this._bitmapData, 
 		this.text.width + this.margin*2, 

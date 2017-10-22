@@ -21,7 +21,7 @@ var reactSystem = {
 		ui.menus.name.enableElement('change');
 		ui.cornerButtons.getByName('name').hide();
 		var field = ui.menus.name.getElementByName('name');
-		field.placeHolder.setText(name);
+		field.placeHolder.setText(name, true);
 		field.resetText();
 	}
 };

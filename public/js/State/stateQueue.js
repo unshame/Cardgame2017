@@ -79,7 +79,7 @@ var stateQueue = new State('queue', {
 			if(!textElement.savedText){
 				textElement.savedText = textElement.text;
 			}
-			textElement.setText(text);
+			textElement.setText(text, true);
 			this.dotCounter++;
 			this.lastDot = now;
 		}

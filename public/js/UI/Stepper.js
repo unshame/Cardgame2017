@@ -292,7 +292,7 @@ UI.Stepper.prototype.update = function(){
 
 UI.Stepper.prototype.loadLabels = function(){
 	this.content.forEach(function(c){
-		c.setText(c.text);
+		c.setText(c.text, true);
 	});
 };
 

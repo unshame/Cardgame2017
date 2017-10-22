@@ -138,7 +138,7 @@ LobbyBrowser.prototype.getDefaultLobbyOptions = function(){
 };
 LobbyBrowser.prototype.resetButtons = function(){
 	for(var i = 0; i < this.pagination; i++){
-		this.buttons[i].label.setText('');
+		this.buttons[i].label.setText('', true);
 		this.disableElement('button' + i);
 		
 		this.buttons[i].changeStyle(i === 0 ? 1 : i == this.pagination - 1 ? 2 : 3);
@@ -156,11 +156,11 @@ LobbyBrowser.prototype.recieveList = function(action){
 	this.resetButtons();
 
 	for(var i = 0; i < this.list.length; i++){
-		this.buttons[i].label.setText(this.list[i].name);
+		this.buttons[i].label.setText(this.list[i].name, true);
 		this.enableElement('button' + i);		
 	}
 
-	this.pageText.setText('Page ' + (this.page + 1));
+	this.pageText.setText('Page ' + (this.page + 1)), true;
 
 	if(action.moreAfter){
 		this.enableElement('right');
@@ -174,7 +174,7 @@ LobbyBrowser.prototype.recieveList = function(action){
 	}
 	else{
 		this.disableElement('join');
-		this.info.setText('No games found :(');
+		this.info.setText('No games found :(', true);
 	}
 
 	this.updatePosition();

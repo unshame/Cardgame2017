@@ -20,7 +20,7 @@ var clientMethods = {
 		gameOptions.save();
 		connection.id = connId;
 		if(name){
-			ui.menus.name.getElementByName('name').placeHolder.setText(name);
+			ui.menus.name.getElementByName('name').placeHolder.setText(name, true);
 		}
 	},
 

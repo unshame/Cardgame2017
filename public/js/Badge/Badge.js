@@ -74,7 +74,7 @@ Badge.prototype.updatePosition = function(){
 		this._limitTextWidth(this.status, statusText, width);
 	}
 	else{
-		this.status.setText('');
+		this.status.setText('', true);
 	}
 };
 

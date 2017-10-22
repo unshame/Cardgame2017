@@ -202,7 +202,7 @@ UI.prototype.newPixel = function(){
 };
 
 UI.prototype.setDebugButtonText = function(name, text, on){
-	ui.menus.debug.getByName(name).label.setText(text + ': ' + (on ? 'on' : 'off'));
+	ui.menus.debug.getByName(name).label.setText(text + ': ' + (on ? 'on' : 'off'), true);
 };
 
 UI.prototype.activateHotkeys = function(){

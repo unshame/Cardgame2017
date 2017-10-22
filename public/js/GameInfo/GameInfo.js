@@ -519,7 +519,7 @@ GameInfo.prototype = {
 			button.serverAction = null;
 			button.disable();
 			button.changeStyle(0);
-			button.label.setText(this.player.role == 'defender' ? 'Take' : 'Pass');
+			button.label.setText(this.player.role == 'defender' ? 'Take' : 'Pass', true);
 		}
 
 		fieldManager.tryHighlightDummy();
@@ -576,7 +576,7 @@ GameInfo.prototype = {
 		var typeText = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
 		//var typeText = type.toLowerCase();
 		//var typeText = type;
-		button.label.setText(typeText);
+		button.label.setText(typeText, true);
 		button.enable();
 	}
 };

@@ -199,7 +199,7 @@ UI.Layers.prototype.loadLabels = function(){
 			continue;
 		}
 		if(layer instanceof Phaser.Text){
-			layer.setText(layer.text);
+			layer.setText(layer.text, true);
 			continue;
 		}
 		if(!(layer instanceof Phaser.Group)){
@@ -212,7 +212,7 @@ UI.Layers.prototype.loadLabels = function(){
 				return;
 			}
 			if(el.label && el.label.isText){
-				el.label.setText(el.label.text);
+				el.label.setText(el.label.text, true);
 			}
 		});
 	}
