@@ -215,8 +215,8 @@ UI.prototype._createMenus = function(){
 		name: new Menu({
 			position: function(){
 				return {
-					x:game.screenWidth/2,
-					y:game.screenHeight/2
+					x: game.screenWidth/2,
+					y: Phaser.Device.desktop ? game.screenHeight/2 : game.screenHeight/3
 				};
 			}, 
 			z: -4,

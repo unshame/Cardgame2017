@@ -132,6 +132,9 @@ Game.prototype.initialize = function(){
 * Корректирует размеры игры в соответствии с размером окна.
 */
 Game.prototype.updateCoordinates = function(){
+	if(PhaserInput.KeyboardOpen && !game.scale.isFullScreen){
+		return;
+	}
 	this.scale.updateGameSize();
 	this.scale.drawDebugGrid();
 	var state = this.state.getCurrent();
@@ -153,6 +156,11 @@ Game.prototype.applySkin = function(){
 * Запускает дебаунс корректировки размеров игры.
 */
 Game.prototype._updateCoordinatesDebounce = function(){
+	if(PhaserInput.KeyboardOpen && !game.scale.isFullScreen){
+		clearTimeout(this._dimensionsUpdateTimeout);
+		document.getElementById('loading').style.display = 'none';
+		return;
+	}
 	if(this._dimensionsUpdateTimeout){
 		clearTimeout(this._dimensionsUpdateTimeout);
 	}
