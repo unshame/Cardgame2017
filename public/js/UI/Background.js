@@ -10,10 +10,9 @@ UI.Background = function(){
 	this.namedTextures = {
 		'blue': 'Blue',
 		'green': 'Green',
-		'black': 'Black',
-		'assault': 'Assault',
+		'wood_dark': 'Wood Dark',
 		'wood_light': 'Wood Light',
-		'wood_dark': 'Wood Dark'	
+		'black': 'Black'
 	};
 	this.textures = [];
 	for(var key in this.namedTextures){

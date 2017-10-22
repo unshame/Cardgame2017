@@ -79,8 +79,6 @@ var stateBoot = new State('boot', {
 		game.load.image('wood_dark', 'assets/backgrounds/wood_dark.png');
 		game.load.image('green', 'assets/backgrounds/green.png');
 		game.load.image('black', 'assets/backgrounds/black.png');
-		game.load.image('assault', 'assets/backgrounds/assault.png');
-		game.load.image('brown', 'assets/backgrounds/brown.png');
 		game.load.image('blue', 'assets/backgrounds/blue.png');
 
 		// Для тестов
