@@ -47,6 +47,7 @@ OptionManager.prototype = {
 
 			'ui_skin': 'modern',
 			'ui_background': 'blue',
+			'ui_cardback': null,
 
 			'connection_id': null,
 

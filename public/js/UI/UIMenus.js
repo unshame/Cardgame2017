@@ -116,6 +116,22 @@ UI.prototype._createMenus = function(){
 				),
 				Menu.alignAlternate(
 					Menu.text({
+						text: 'Cardback'
+					}),
+					Menu.stepper({
+						action: function(key){
+							skinManager.setCardback(Number(key));
+						},
+						choices: skinManager.getCardbacks(),
+						name: 'cardback',
+						textColor: 'black',
+						startKey: skinManager.getCurrentCardbackIndex(),
+						startKey: gameOptions.get('ui_cardback'),
+						minWidth: 150
+					})
+				),
+				Menu.alignAlternate(
+					Menu.text({
 						text: 'Background'
 					}),
 					Menu.stepper({
