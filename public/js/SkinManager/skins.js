@@ -12,6 +12,7 @@ skins.push({
 	width: 140,
 	height: 190,
 	name: 'modern',
+	friendlyName: 'Modern',
 	numOfFrames: 67,
 	cardbackPossibleFrames: [
 		['Blue 1', 52], 
@@ -60,6 +61,7 @@ skins.push({
 	width: 150,
 	height: 218,
 	name: 'classic',
+	friendlyName: 'Classic',
 	numOfFrames: 56,
 	cardbackPossibleFrames: [
 		['Suits', 52],
@@ -99,6 +101,7 @@ skins.push({
 	width: 140,
 	height: 196,
 	name: 'uno',
+	friendlyName: 'Uno',
 	numOfFrames: 56,
 	cardbackPossibleFrames: [
 		['Uno', 54],

@@ -103,11 +103,7 @@ UI.prototype._createMenus = function(){
 						action: function(key){
 							skinManager.setSkin(key);
 						},
-						choices: {
-							modern: 'Modern',
-							classic: 'Classic',
-							uno: 'Uno'
-						},
+						choices: skinManager.getSkinNames(),
 						name: 'skin',
 						textColor: 'black',
 						startKey: gameOptions.get('ui_skin'),

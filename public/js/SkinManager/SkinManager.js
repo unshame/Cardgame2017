@@ -85,11 +85,12 @@ SkinManager.prototype.addSkins = function(skins){
 * @param {number}   [options.color=ui.colors.lightBlue]               цвет, соответствующий скину
 */
 SkinManager.prototype.addSkin = function(options){
-	var skin = {};
 
 	if(!options || !options.name){
 		return;
 	}
+
+	var skin = {};
 
 	skin.background 	 = options.background || 'blue';
 	skin.color 			 = options.color === undefined ? ui.colors.lightBlue : options.color;
@@ -103,6 +104,7 @@ SkinManager.prototype.addSkin = function(options){
 	skin.height 		 = skin.frameHeight*skin.scale;
  
 	skin.name 			 = options.name;
+	skin.friendlyName	 = options.friendlyName || options.name;
 	skin.sheetName 		 = skin.name + 'Cards';
 	skin.sheetPath 		 = 'assets/skins/' + options.name + '/cards.png';
  
@@ -268,5 +270,15 @@ SkinManager.prototype.getCardbacks = function(){
 SkinManager.prototype.getCurrentCardbackIndex = function(){
 	return this.skin.cardbackPossibleFrames.indexOf(this.skin.cardbackFrame);
 };
+
+SkinManager.prototype.getSkinNames = function(){
+	var skins = [];
+	for(var k in this.skins){
+		if(this.skins.hasOwnProperty(k)){
+			skins.push([this.skins[k].name, this.skins[k].friendlyName]);
+		}
+	}
+	return skins;
+}
 
 //@include:skins
