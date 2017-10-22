@@ -17,8 +17,8 @@ var reactSystem = {
 		else{
 			ui.feed.newMessage('Welcome back, ' + name, 2000);
 		}
-		ui.modalManager.closeAllModals();
 		ui.menus.name.enableElement('change');
+		ui.modalManager.closeAllModals();
 		ui.cornerButtons.getByName('name').hide();
 		var field = ui.menus.name.getElementByName('name');
 		field.placeHolder.setText(name, true);

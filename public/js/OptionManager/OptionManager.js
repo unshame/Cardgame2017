@@ -42,7 +42,7 @@ OptionManager.prototype = {
 			'debug_control': false,
 			'debug_connection': false,
 
-			'system_renderer': Phaser.Device.desktop ? Phaser.CANVAS : Phaser.WEBGL,
+			'system_renderer': Phaser.AUTO,
 			'system_scale': 1,
 
 			'ui_skin': 'modern',

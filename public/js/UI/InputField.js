@@ -94,7 +94,7 @@ UI.InputField.prototype.disable = function(){
 };
 
 UI.InputField.prototype.cursorIsOver = function(){
-	if(!this.visible){
+	if(!this.visible || !this.inputEnabled){
 		return false;
 	}
 

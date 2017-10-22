@@ -110,7 +110,9 @@ Menu.prototype.disableElement = function(name){
 	}
 
 	this.disabledElements.push(el);
-	el.disable();
+	if(this._fading == 0){
+		el.disable();
+	}
 };
 
 /**
@@ -126,5 +128,7 @@ Menu.prototype.enableElement = function(name){
 	}
 
 	this.disabledElements.splice(i, 1);
-	el.enable();
+	if(this._fading == 0){
+		el.enable();
+	}
 };
