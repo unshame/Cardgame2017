@@ -71,7 +71,7 @@ UI.Stepper.prototype.getDefaultOptions = function(){
 	};
 };
 
-UI.Stepper.prototype.setChoices = function(choices, key){
+UI.Stepper.prototype.setChoices = function(choices, startKey){
 
 	this.keys.length = 0;
 
@@ -117,7 +117,7 @@ UI.Stepper.prototype.setChoices = function(choices, key){
 		}
 	}
 
-	var keyIndex = key ? this.keys.indexOf(key) : -1;
+	var keyIndex = startKey ? this.keys.indexOf(startKey) : -1;
 	this.index = ~keyIndex ? keyIndex : 0;
 
 	this.currentContent = this.content[this.index];
