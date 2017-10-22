@@ -316,7 +316,7 @@ Game.prototype.shake = function(distance, duration, sin, cos){
 };
 
 Game.prototype.clearLocationHash = function(){
-	game.clearLocationHash();
+	history.replaceState(null, null, location.href.replace(location.hash, ''));
 }
 
 //@include:GameOverride
