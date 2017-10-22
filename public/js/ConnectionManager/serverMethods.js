@@ -54,5 +54,16 @@ var serverMethods = {
 
 	concede: function(){
 		connection.proxy.concedeClient();
+	},
+
+	restoreClientName: function(){
+		var oldName = gameOptions.get('profile_name');
+		if(oldName){
+			connection.proxy.changeClientName(oldName);
+		}
+		else{
+			ui.cornerButtons.getByName('name').show();
+			ui.modalManager.openModal('name');
+		}
 	}
 };

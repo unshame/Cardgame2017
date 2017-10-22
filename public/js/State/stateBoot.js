@@ -107,6 +107,8 @@ var stateBoot = new State('boot', {
 
 		game.load.spritesheet('icon_fullscreen', 'assets/icons/fullscreen.png', 30, 30, 2);
 		game.load.image('icon_menu', 'assets/icons/menu.png');
+		game.load.image('icon_close', 'assets/icons/close.png');
+		game.load.image('icon_account', 'assets/icons/account.png');
 
 		// Кнопки браузера
 		this.colors = ['orange', 'red'];

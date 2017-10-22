@@ -101,6 +101,12 @@ UI.ModalManager.prototype.closeModal = function(){
 	ui.layers.updateModalIndex(subtop);
 };
 
+UI.ModalManager.prototype.closeAllModals = function(){
+	while(this.openModals.length){
+		this.closeModal();
+	}
+}
+
 UI.ModalManager.prototype.updateVisibility = function(){
 	var len = this.openModals.length;
 	if(len && !this.visible){

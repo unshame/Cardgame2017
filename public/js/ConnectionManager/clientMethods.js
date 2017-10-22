@@ -6,29 +6,43 @@
 /* exported clientMethods */
 var clientMethods = {
 
-	setId: function(connId, pid){
+	setId: function(connId, pid, name){
 		actionHandler.sequencer.finish(true);
 		game.pid = pid;
 		var oldId = gameOptions.get('connection_id');
 		if(oldId){
 			connection.proxy.reconnectClient(oldId);
 		}
+		else{
+			connection.server.restoreClientName();
+		}
 		gameOptions.set('connection_id', connId);
 		gameOptions.save();
 		connection.id = connId;
+		if(name){
+			ui.menus.name.getElementByName('name').placeHolder.setText(name);
+		}
 	},
 
-	updateId: function(pid){
+	updateId: function(pid, name){
 		if(pid){
 			console.log('Reconnected to', pid);
 			game.pid = pid;
 			game.state.change('play');
 			connection.proxy.requestGameInfo();
+			if(name){
+				gameOptions.set('profile_name', name);
+				gameOptions.save();
+			}
+			else{
+				connection.server.restoreClientName();
+			}
+			return;
 		}
-		else if(game.state.currentSync != 'menu'){
+		if(game.state.currentSync != 'menu'){
 			game.state.change('menu');
-		}
-		
+		}		
+		connection.server.restoreClientName();
 	},
 
 	recieveAction: function(action){

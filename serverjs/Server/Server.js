@@ -256,14 +256,28 @@ class Server extends Eureca.Server{
 	}
 
 	deletePlayer(connId){
-		let p = this.players[connId];
-		if(p){
-			let text = p.name.replace(/\d/g, '');
-			let number = Number(p.name.replace('Player', ''));
-			if(text == 'Player' && !isNaN(number) && number < 1000 && number > 0){
-				this.playerNames.push(p.name);
+		let player = this.players[connId];
+		if(player){
+			if(!player.nameChanged){
+				this.playerNames.push(player.name);
 			}
 			delete this.players[connId];
+		}
+	}
+
+	changePlayerName(connId, name){
+		let player = this.players[connId];
+		if(player){
+			if(typeof name != 'string' || name.length < 1 || name.length > 12){
+				player.recieveSystemNotification({type: 'NAME_INVALID'});
+				return;
+			}
+			if(!player.nameChanged){
+				this.playerNames.push(player.name);
+			}
+			player.name = name;
+			player.nameChanged = true;
+			player.recieveSystemNotification({type: 'NAME_CHANGED', name: name});
 		}
 	}
 

@@ -19,17 +19,19 @@ class Player{
 		this.remote = remote;
 		this.connId = connId;
 
+		this.name = name || this.id;
+
 		if(this.remote){
-			this.remote.setId(this.connId, this.id);
+			this.remote.setId(this.connId, this.id, this.name);
 			this.connected = true;
 		}
 
 		this.statuses = {};
 
-		this.name = name || this.id;
-
 		this.game = null;
 		this.afk = false;
+
+		this.nameChanged = false;
 
 	}
 
@@ -122,6 +124,15 @@ class Player{
 		}
 	}
 
+	recieveSystemNotification(action){
+		if(!action.channel){
+			action.channel = 'system';
+		}
+		if(this.remote && this.connected){
+			this.remote.recieveAction(action);
+		}
+	}
+
 
 	// Отправка ответов //
 
@@ -165,7 +176,7 @@ class Player{
 			this.remote = newRemote;
 		}
 		if(this.remote){
-			this.remote.updateId(newConnId ? this.id : null);
+			this.remote.updateId(newConnId ? this.id : null, this.nameChanged ? this.name : null);
 		}
 	}
 }

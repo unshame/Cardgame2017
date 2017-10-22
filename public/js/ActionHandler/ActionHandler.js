@@ -34,8 +34,9 @@ var ActionHandler = function(){
 * Добавляет канал для управление игрой с сервера.
 * @param {string}           name               уникальное имя канала
 * @param {CHANNEL_TYPE}     type               тип канала
-* @param {string}           state              Состояние игры, в котором она должна быть для выполнения действий этого канала.
+* @param {string}           [state]            Состояние игры, в котором она должна быть для выполнения действий этого канала.
 *                                              Если действие выполняется в неверном состоянии, игра будет переведена в верное состояние.  
+*                                              Если не указать, действие будет выполняться в любом состоянии.
 * @param {object<function>} [reactions]        объект с функциями, соответствующие типу действий от сервера
 * @param {array}            [additionalStates] Дополнительные состояния игры, в которых действия этого канала не могут выполняться,
 *                                              но в которых эти действия могут быть приняты. Избавляется от выведения предупреждения
@@ -124,7 +125,7 @@ ActionHandler.prototype.executeAction = function(action){
 	}
 
 	this.sequencer.queueUp(function(seq, sync){
-		if(channel.state != game.state.currentSync){
+		if(channel.state !== null && channel.state != game.state.currentSync){
 			if(!~channel.additionalStates.indexOf(game.state.currentSync)){
 				console.warn('Action handler: wrong game state', game.state.currentSync, action.channel, channel.state, action);
 			}
@@ -215,3 +216,4 @@ ActionHandler.prototype.removeActionsWith = function(card, field, doneAction){
 //@include:reactExtra
 //@include:reactQueue
 //@include:reactMenu
+//@include:reactSystem

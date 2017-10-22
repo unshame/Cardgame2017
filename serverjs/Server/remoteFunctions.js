@@ -183,6 +183,10 @@ module.exports = function(server){
 			if(player && player.game){
 				player.game.hoverOutCard(player, cid);
 			}
+		},
+
+		changeClientName: function(name){
+			server.changePlayerName(this.connection.id, name);
 		}
 	};
 };

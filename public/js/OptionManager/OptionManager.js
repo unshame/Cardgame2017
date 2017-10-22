@@ -48,7 +48,9 @@ OptionManager.prototype = {
 			'ui_skin': 'modern',
 			'ui_background': 'blue',
 
-			'connection_id': null
+			'connection_id': null,
+
+			'profile_name': null 
 		};
 	},
 

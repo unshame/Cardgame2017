@@ -151,14 +151,7 @@ UI.prototype._createMenus = function(){
 						name: 'debug',
 						text: 'Debug'
 					}*/
-				],
-				{
-					action: function(){
-						ui.modalManager.openModal('name');
-					},
-					name: 'name',
-					text: 'Change Name',
-				}
+				]
 			]
 		}),
 
@@ -246,7 +239,21 @@ UI.prototype._createMenus = function(){
 					text: 'Change Name',
 					name: 'change',
 					color: 'orange',
-					textColor: 'white'
+					textColor: 'white',
+					action: function(){
+						var name = this.getElementByName('name').getText();
+						var oldName = gameOptions.get('profile_name');
+						if(oldName && oldName == name){
+							ui.feed.newMessage('Please enter a different name', 2000);
+						}
+						else if(name.length > 0){
+							this.disableElement('change');
+							connection.proxy.changeClientName(name);
+						}
+						else{
+							ui.feed.newMessage('Please enter name', 2000);
+						}
+					}
 				}
 			]]
 		}),

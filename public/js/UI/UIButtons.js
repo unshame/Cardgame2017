@@ -78,15 +78,32 @@ UI.prototype._createButtons = function(){
 		group: this.cornerButtons
 	});
 
+	// Ввод имени
+	new UI.Button({
+		position: function(width, height){
+			return {
+				x: game.screenWidth - 15 - width,
+				y: game.screenHeight - 30 - height*2
+			};
+		},
+		action: ui.modalManager.toggleModals.bind(ui.modalManager, 'name'),
+		icon: 'account',
+		color: 'orange',
+		name: 'name',
+		size: 'small',
+		group: this.cornerButtons
+	}).hide();
+
+	// Закрыть титры
 	new UI.Button({
 		position: function(width, height){
 			return {
 				x: 15,
-				y: game.screenHeight - 15 - height
+				y: 15
 			};
 		},
 		action: game.state.change.bind(game.state, 'menu'),
-		text: '<',
+		icon: 'close',
 		textColor: 'white',
 		color: 'orange',
 		name: 'to_main_menu',
