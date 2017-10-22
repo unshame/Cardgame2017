@@ -27,7 +27,7 @@ UI.Text = function(options){
 	else{
 		game.add.existing(this);
 	}
-}
+};
 
 extend(UI.Text, Phaser.Text, [UI.PopupComponent]);
 
@@ -52,10 +52,10 @@ extend(UI.Text, Phaser.Text, [UI.PopupComponent]);
 
 UI.Text.prototype.show = function(){
 	this.visible = true;
-}
+};
 UI.Text.prototype.hide = function(){
 	this.visible = false;
-}
+};
 UI.Text.prototype.updatePosition = function(position){
 	if(position){
 		this.defaultPosition = position;
@@ -68,7 +68,7 @@ UI.Text.prototype.updatePosition = function(position){
 	}
 	this.x = position.x;
 	this.y = position.y;
-}
+};
 
 UI.Text.prototype.enable = function(){};
 UI.Text.prototype.disable = function(){};
@@ -86,4 +86,4 @@ UI.Text.prototype.setTextBounds = function(x, y, width, height, alignH, alignV){
 	this.fixedHeight = height;
 
 	return this;
-}
+};

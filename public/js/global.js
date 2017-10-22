@@ -187,6 +187,7 @@ function moveFirstPlayerCardToTable(i, delay){
 	}, delay);
 }
 
+/* jshint ignore:start */
 var animTest = {
 	eventFeed: function(){
 		for(var i = 0; i < 20; i++){

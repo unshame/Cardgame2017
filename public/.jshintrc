@@ -44,6 +44,8 @@
     "IconField": true,
     "TableField": true,
     "PlayerField": true,
+    "LobbyBrowser": true,
+    "LobbyCreator": true,
     
     "game": true,
     "skinManager": true,

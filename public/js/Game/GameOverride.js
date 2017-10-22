@@ -1,4 +1,5 @@
 // Перезапись существующих функций Phaser.Game.prototype
+/* jshint ignore:start */
 
 /**
 * Создает и бутит все модули игры.

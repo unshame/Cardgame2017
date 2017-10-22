@@ -392,7 +392,7 @@ UI.Rope.prototype._updateProgress = function(rotation, color){
 	if(this.tint != color){
 		this.tint = color;
 	}
-}
+};
 
 /**
 * Останавливает таймер перед запуском.

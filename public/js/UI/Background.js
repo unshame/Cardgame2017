@@ -14,7 +14,7 @@ UI.Background = function(){
 		'assault': 'Assault',
 		'wood_light': 'Wood Light',
 		'wood_dark': 'Wood Dark'	
-	}
+	};
 	this.textures = [];
 	for(var key in this.namedTextures){
 		if(this.namedTextures.hasOwnProperty(key)){

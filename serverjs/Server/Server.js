@@ -90,7 +90,7 @@ class Server extends Eureca.Server{
 
 		this.playerNames = [];
 
-		for(var i = 0; i < 1000; i++){
+		for(let i = 0; i < 1000; i++){
 			this.playerNames.unshift('Player' + (i + 1));
 		}
 
@@ -194,7 +194,7 @@ class Server extends Eureca.Server{
 		// Запоминаем информацию о клиенте
 		this.clients[conn.id] = {id: conn.id, remote: remote};
 
-		var name;
+		let name;
 		if(this.playerNames.length){
 			name = this.playerNames.pop();
 		}
@@ -258,8 +258,8 @@ class Server extends Eureca.Server{
 	deletePlayer(connId){
 		let p = this.players[connId];
 		if(p){
-			var text = p.name.replace(/\d/g, '');
-			var number = Number(p.name.replace('Player', ''));
+			let text = p.name.replace(/\d/g, '');
+			let number = Number(p.name.replace('Player', ''));
 			if(text == 'Player' && !isNaN(number) && number < 1000 && number > 0){
 				this.playerNames.push(p.name);
 			}

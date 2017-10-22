@@ -52,11 +52,11 @@ UI.ButtonBase.setStateFrames = function(button, frame){
     button.setStateFrame(UI.ButtonBase.States.STATE_DOWN, frame, button.input.pointerDown()); 
     button.setStateFrame(UI.ButtonBase.States.STATE_UP, frame, button.input.pointerUp());
     button.frame = frame;
-}
+};
 
 UI.ButtonBase.States = { 
     STATE_OVER: 'Over', 
     STATE_OUT: 'Out', 
     STATE_DOWN: 'Down', 
     STATE_UP: 'Up' 
-}
+};

@@ -34,7 +34,7 @@ UI.prototype._createMenus = function(){
 					action: function(){
 						ui.menus.main.fadeOut();
 						ui.logo.fadeOut();
-						ui.menus.creator.fadeIn()
+						ui.menus.creator.fadeIn();
 					},
 					name: 'custom',
 					text: 'Create Game'

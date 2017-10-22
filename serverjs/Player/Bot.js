@@ -191,8 +191,7 @@ class Bot extends Player {
 	}
 
 	chooseOneOnOneDefence(actions, minAction, transfer, take) {
-		let opponentsHand = this.game.hands[this.getAnotherPlayerID()];
-
+		//let opponentsHand = this.game.hands[this.getAnotherPlayerID()];
 		return minAction;
 	}
 

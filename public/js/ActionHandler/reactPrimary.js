@@ -135,7 +135,7 @@ var reactPrimary = {
 			if(playerField){
 				ui.rope.initialize(playerField);
 			}
-		})
+		});
 
 		return duration;
 	},
