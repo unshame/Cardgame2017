@@ -234,21 +234,25 @@ LobbyBrowser.prototype.getInfoText = function(u){
 		a += ' (started)';
 	}
 	a += '\n';
+	var numPlayers = el.playerNames.length;
+	var numPlayersDif = el.numPlayersRequired - numPlayers;
+	var numBots = el.numBots + numPlayersDif;
+	var numBotsAdded = el.numBotsAdded + numPlayersDif;
 	if(el.started){
-		a += el.numPlayersRequired + ' players';
+		a += numPlayers + ' players';
 	}
 	else{
-		a += el.numPlayers + ' / ' + el.numPlayersRequired + ' players';
+		a += numPlayers + ' / ' + el.numPlayersRequired + ' players';
 	}
 	a += ' (' + el.playerNames.join(', ') + ')';
 	a += '\n';
-	if(el.numBots !== 0){
-		a += el.numBots + ' bot';
-		if(el.numBots > 1){
+	if(numBots !== 0){
+		a += numBots + ' bot';
+		if(numBots > 1){
 			a += 's';
 		}
-		if(el.numBotsAdded > 0){
-			a += ' (' + el.numBotsAdded + ' extra)';
+		if(numBotsAdded > 0){
+			a += ' (' + numBotsAdded + ' extra)';
 		}
 		a += '\n';
 		a += 'Bot difficulty: ';
