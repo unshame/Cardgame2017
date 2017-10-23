@@ -39,20 +39,21 @@ Card.prototype.applyValue = function(){
 
 	this._valueChanged = false;
 
+
 	if(this._flipper){
 		this._flipper.stop();
 		this._flipper = null;
 	}
+
+	var tint = 0xffffff;
+	this.sprite.tint = tint;
 
 	if(this.game.paused){
 		this.setValue(this.suit, this.value, false);
 		return;
 	}
 
-	var duration = (this.flipTime/this.game.speed)/2,
-		tint = 0xffffff;
-
-	this.sprite.tint = tint;
+	var duration = (this.flipTime/this.game.speed)/2;	
 
 	this._flipper = this.game.add.tween(this.sprite.scale);
 
