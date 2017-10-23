@@ -16,7 +16,7 @@ module.exports = function(server){
 		* Принимает выполненое действие от клиента
 		* @param  {object} action действие
 		*/
-		recieveCompleteAction: function(action){
+		recieveCompleteAction(action){
 			if(!action){
 				return;
 			}
@@ -29,7 +29,7 @@ module.exports = function(server){
 		/**
 		* Принимает пустой ответ от клиента
 		*/
-		recieveResponse: function(){
+		recieveResponse(){
 			let player = server.players[this.connection.id];
 			if(player){
 				player.sendResponse();
@@ -40,7 +40,7 @@ module.exports = function(server){
 		* Переподключает клиента к существующему экземпляру игрока
 		* @param  {string} connId старый id клиента
 		*/
-		reconnectClient: function(connId){
+		reconnectClient(connId){
 			let newConnId = this.connection.id;
 			let player = server.players[connId];
 
@@ -85,7 +85,7 @@ module.exports = function(server){
 		* Запрашивает полную информацию об игре от игры и разрешает экземпляру
 		* игрока передавать информацию от игры клиенту.
 		*/
-		requestGameInfo: function(){
+		requestGameInfo(){
 			let player = server.players[this.connection.id];
 			if(player){
 				server.manager.reconnectPlayer(player);
@@ -97,7 +97,7 @@ module.exports = function(server){
 		* @param  {number} page       страница очередей
 		* @param  {number} pagination кол-во очередей на страницу
 		*/
-		requestQueueList: function(page, pagination, hideStarted){
+		requestQueueList(page, pagination, hideStarted){
 			let player = server.players[this.connection.id];
 			if(!player){
 				return;
@@ -113,7 +113,7 @@ module.exports = function(server){
 		* @param {object}  queueConfig      конфигурация очереди
 		* @param {object}  [gameRules] конфигурация игры
 		*/
-		createCustomQueue: function(isPrivate, gameMode, queueConfig, gameRules){
+		createCustomQueue(isPrivate, gameMode, queueConfig, gameRules){
 			let player = server.players[this.connection.id];
 			if(!player){
 				return;
@@ -125,7 +125,7 @@ module.exports = function(server){
 		* Подключает игрока к очереди по id.
 		* @param  {string} id
 		*/
-		joinCustomQueue: function(id){
+		joinCustomQueue(id){
 			let player = server.players[this.connection.id];
 			if(player){
 				server.manager.addPlayerToCustomQueue(player, id);
@@ -135,7 +135,7 @@ module.exports = function(server){
 		/**
 		* Добавляет игрока в очередь
 		*/
-		quickQueueUpClient: function(){
+		quickQueueUpClient(){
 			let player = server.players[this.connection.id];
 			if(player){
 				server.manager.addPlayerToQuickQueue(player);
@@ -145,7 +145,7 @@ module.exports = function(server){
 		/**
 		* Сообщает менеджеру очередей, что нужно запустить очередь в которой находится игрок с ботами.
 		*/
-		voteForPrematureStart: function(){
+		voteForPrematureStart(){
 			let player = server.players[this.connection.id];
 			if(!player || !player.queue){
 				return;
@@ -156,7 +156,7 @@ module.exports = function(server){
 		/**
 		* Сообщает менеджеру, что нужно убрать игрока из игры.
 		*/
-		concedeClient: function(){
+		concedeClient(){
 			let player = server.players[this.connection.id];
 			if(player){
 				server.manager.freePlayer(player);
@@ -167,7 +167,7 @@ module.exports = function(server){
 		* Сообщает игре, в которой находится игрок, что курсор находится над картой с указанным id.
 		* @param  {string} cid id карты
 		*/
-		hoverOverCard: function(cid){
+		hoverOverCard(cid){
 			let player = server.players[this.connection.id];
 			if(player && player.game){
 				player.game.hoverOverCard(player, cid);
@@ -178,14 +178,14 @@ module.exports = function(server){
 		* Сообщает игре, в которой находится игрок, что курсор больше не находится над картой с указанным id.
 		* @param  {string} [cid] id карты
 		*/
-		hoverOutCard: function(cid){
+		hoverOutCard(cid){
 			let player = server.players[this.connection.id];
 			if(player && player.game){
 				player.game.hoverOutCard(player, cid);
 			}
 		},
 
-		changeClientName: function(name){
+		changeClientName(name){
 			server.changePlayerName(this.connection.id, name);
 		}
 	};

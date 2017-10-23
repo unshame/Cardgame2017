@@ -48,18 +48,18 @@ class GameCards extends CardManager{
 		});
 	}
 
+	addCardInfo(cardsInfo, card, pid, reveal){
+		let newCard = card.info;
+
+		if(card.field != pid && !reveal){
+			newCard.value = null;
+			newCard.suit = null;			
+		} 
+
+		cardsInfo.push(newCard);
+	}
+
 	addHandInfo(cardsInfo, pid, reveal){
-
-		function addCardInfo(card){
-			let newCard = card.info;
-
-			if(card.field != pid && !reveal){
-				newCard.value = null;
-				newCard.suit = null;			
-			} 
-
-			cardsInfo.push(newCard);
-		}
 
 		// Руки
 		for(let hid in this.hands){
@@ -68,7 +68,7 @@ class GameCards extends CardManager{
 			}
 
 			let hand = this.hands[hid];
-			hand.forEach(addCardInfo);
+			hand.forEach((c) => this.addCardInfo(cardsInfo, c, pid, reveal));
 		}	
 	}
 
