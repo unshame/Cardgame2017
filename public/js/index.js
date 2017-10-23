@@ -97,7 +97,7 @@ Phaser.Device.whenReady(function(){
 	actionHandler.addChannel('secondary', CHANNEL_TYPE.INTERRUPT, 'play', reactSecondary);
 	actionHandler.addChannel('possible_actions', CHANNEL_TYPE.USER_INVOLVED, 'play');
 	actionHandler.addChannel('extra', CHANNEL_TYPE.NO_ACTION, 'play', reactExtra);
-	actionHandler.addChannel('queue', CHANNEL_TYPE.INTERRUPT, 'queue', reactQueue, ['menu', 'play']);
+	actionHandler.addChannel('queue', CHANNEL_TYPE.INTERRUPT, 'queue', reactQueue, ['menu', 'play', 'credits']);
 	actionHandler.addChannel('menu', CHANNEL_TYPE.NO_ACTION, 'menu', reactMenu, ['credits']);
 	actionHandler.addChannel('system', CHANNEL_TYPE.NO_ACTION, null, reactSystem);
 
