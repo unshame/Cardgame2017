@@ -28,11 +28,11 @@ var LobbyCreator = function(options){
 				startKey: '4'
 			}),
 			Menu.checkbox({
-				text: 'Transfer',
-				name: 'transfer',
-				hoverText: 'Players can play a card with the same value instead of defending to force the next player to defend',
+				text: 'Longer turns',
+				name: 'longerTurn',
+				hoverText: 'Players have 40 instead of 20 seconds to play a card',
 				hoverPlacement: 'right',
-				checked: true
+				checked: false
 			})
 		),
 
@@ -58,10 +58,10 @@ var LobbyCreator = function(options){
 				context: this,
 				startKey: '0'
 			}),
-			Menu.checkbox({ 
-				text:'Limit attackers',
-				name:'limitAttack',
-				hoverText:'Only players adjacent to the defender can attack',
+			Menu.checkbox({
+				text: 'Transfer',
+				name: 'transfer',
+				hoverText: 'Players can play a card with the same value instead of defending to force the next player to defend',
 				hoverPlacement: 'right',
 				checked: true
 			})
@@ -84,10 +84,10 @@ var LobbyCreator = function(options){
 				startKey: '52',
 				minWidth: stepperWidth
 			}),
-			Menu.checkbox({
-				text: 'Limit followup',
-				name: 'limitFollowup',
-				hoverText: 'Limits the amount of cards that players can follow up with by the defender\'s hand size at the start of the turn',
+			Menu.checkbox({ 
+				text:'Limit attackers',
+				name:'limitAttack',
+				hoverText:'Only players adjacent to the defender can attack',
 				hoverPlacement: 'right',
 				checked: true
 			})
@@ -112,6 +112,13 @@ var LobbyCreator = function(options){
 				startKey: '2',
 				minWidth: stepperWidth,
 				context:this
+			}),
+			Menu.checkbox({
+				text: 'Limit followup',
+				name: 'limitFollowup',
+				hoverText: 'Limits the amount of cards that players can follow up with by the defender\'s hand size at the start of the turn',
+				hoverPlacement: 'right',
+				checked: true
 			})/*,
 			Menu.checkbox({
 				text: 'Free for all',
@@ -200,6 +207,7 @@ LobbyCreator.prototype.createGame = function(){
 		freeForAll: false,
 		limitAttack: this.getElementByName('limitAttack').checked,
 		limitFollowup: this.getElementByName('limitFollowup').checked,
+		longerTurn: this.getElementByName('longerTurn').checked,
 		numCards: Number(this.getElementByName('deckSizeStep').getKey())
 	};
 	this.fadeOut();

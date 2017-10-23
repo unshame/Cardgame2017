@@ -101,7 +101,7 @@ UI.prototype._createMenus = function(){
 					name: 'concede',
 					text: 'Concede',
 					mobileClickProtect: true,
-					hoverText: 'Leave current game.\n You will be replaced with a bot.'
+					hoverText: 'Leave current game\n You will be replaced with a bot'
 				}),
 				Menu.alignAlternate(
 					Menu.text({
@@ -234,7 +234,7 @@ UI.prototype._createMenus = function(){
 					Menu.text({
 						text: 'Game speed',
 						hoverPlacement: 'left',
-						hoverText: 'How fast the cards will move around the screen',
+						hoverText: 'How quickly the cards will move around the screen',
 						fixedWidth: optionsTextWidth
 					}),
 					Menu.stepper({
@@ -553,7 +553,7 @@ text:'В игре используется колода из 36 карт,\n\
 					fontSize: 24,
 					name: 'invite',
 					text: 'Copy Invite Link',
-					hoverText: 'Share this link with somebody to invite them to join your game.'
+					hoverText: 'Share this link with somebody to invite them to join your game'
 				}),
 				Menu.buttonPopup({
 					action: function(){
@@ -562,7 +562,7 @@ text:'В игре используется колода из 36 карт,\n\
 					},
 					name: 'vs_bots',
 					text: 'Play VS Bots',
-					hoverText: 'Play versus bots if we can\'t find enough real people to pitch against you.'
+					hoverText: 'Play versus bots if we can\'t find enough real people to pitch against you'
 				}),
 				{
 					action: function(){

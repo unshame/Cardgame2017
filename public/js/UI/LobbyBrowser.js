@@ -239,10 +239,16 @@ LobbyBrowser.prototype.getInfoText = function(u){
 	var numBots = el.numBots + numPlayersDif;
 	var numBotsAdded = el.numBotsAdded + numPlayersDif;
 	if(el.started){
-		a += numPlayers + ' players';
+		a += numPlayers + ' player';
+		if(numPlayers > 1){
+			a += 's';
+		}
 	}
 	else{
-		a += numPlayers + ' / ' + el.numPlayersRequired + ' players';
+		a += numPlayers + ' / ' + el.numPlayersRequired + ' player';
+		if(el.numPlayersRequired > 1){
+			a += 's';
+		}
 	}
 	a += ' (' + el.playerNames.join(', ') + ')';
 	a += '\n';
@@ -283,6 +289,7 @@ LobbyBrowser.prototype.getInfoText = function(u){
 		deckSize = (el.numBots + el.numPlayersRequired < 4) ? 36 : 52;
 	}
 	a += 'Deck size: ' + deckSize + '\n';
+	a += 'Turn time: ' + (el.gameRules.longerTurn ? '40' : '20') + 'sec\n';	
 	a += 'Can transfer: ' + yesNo[el.gameRules.canTransfer] + '\n';
 	a += 'Limit attackers: ' + yesNo[el.gameRules.limitAttack] + '\n'; 
 	a += 'Limit followup: ' + yesNo[el.gameRules.limitAttack] + '\n';	

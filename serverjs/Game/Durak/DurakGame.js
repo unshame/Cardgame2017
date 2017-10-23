@@ -50,7 +50,8 @@ class DurakGame extends Game{
 			limitFollowup: Boolean(rules.limitFollowup),
 			limitAttack: Boolean(rules.limitAttack),
 			freeForAll: false,
-			numCards: Number(rules.numCards)
+			numCards: Number(rules.numCards),
+			longerTurn: Boolean(rules.longerTurn)
 		};
 	}
 

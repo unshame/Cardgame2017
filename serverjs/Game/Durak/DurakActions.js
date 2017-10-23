@@ -5,19 +5,20 @@ const GameActions = reqfromroot('Game/GameActions');
 class DurakActions extends GameActions{
 	constructor(game, players){
 
+		var turnTime = game.rules.longerTurn ? 40 : 20;
 		super(
 			game,
 			players,
 			{
 				gameStart: 10,
-				gameEnd: 20,
-				trumpCards: 10,
+				gameEnd: 30,
+				trumpCards: 5,
 				deal: 10,
 				discard: 5,
-				take: 5,
+				take: 2,
 				actionComplete: 3,
-				actionAttack: 20,
-				actionDefend: 20,
+				actionAttack: turnTime,
+				actionDefend: turnTime,
 				afk: 5
 			},
 			['PASS', 'TAKE']
