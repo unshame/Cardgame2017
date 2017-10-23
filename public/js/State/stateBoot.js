@@ -94,7 +94,7 @@ var stateBoot = new State('boot', {
 
 		this.loadAllColors('button', 'circle', 'assets/buttons/', 'circle.png');
 		this.loadAllColors('button', 'radial', 'assets/buttons/', 'radial.png', 40, 38, 2);
-		this.loadAllColors('button', 'checkbox', 'assets/buttons/', 'checkbox.png', 40, 38, 2);
+		this.loadAllColors('button', 'checkbox', 'assets/buttons/', 'checkbox.png', 48, 38, 2);
 		this.loadAllColors('button', 'arrow', 'assets/buttons/', 'arrow.png', 40, 38, 2);
 
 		// Иконки кнопок

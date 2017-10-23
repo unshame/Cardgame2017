@@ -23,13 +23,14 @@ UI.Checkbox = function(options){
 	if(this.label){
 		this.label.inputEnabled = true;
 		this.label.events.onInputUp.add(this.action);
-		this.label.anchor.set(0, 0.5);
+		this.label.anchor.set(0, 0);
 		if(hoverText && Phaser.Device.desktop){
 			UI.PopupComponent.call(
 				this,
 				this.label,
 				hoverPlacement,
-				hoverText
+				hoverText,
+				[this.button]
 			);
 		}
 	}
@@ -79,9 +80,8 @@ UI.Checkbox.prototype.check = function(){
 UI.Checkbox.prototype.updatePosition = function(position){
 	supercall(UI.Checkbox).updatePosition.call(this, position);
 	if(this.label){
-		this.label.x = this.button.x + this.button.width+8;
-		this.label.y = this.button.centerY + this.label.height/16;
-		
+		this.label.x = this.button.x + this.button.width;
+		this.label.y = this.button.y + this.button.height/2 - this.label.height/2 + 3;
 	}
 };
 

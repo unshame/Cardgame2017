@@ -5,7 +5,7 @@
 * @param {string}        [placement]   Позиция всплывающего текста. Если не указать, текст будет следовать за курсором.
 * @param {string}        [text]        Статичное значение всплывающего текста.
 */
-UI.PopupComponent = function(displayObject, placement, text){
+UI.PopupComponent = function(displayObject, placement, text, otherDisplayObjects){
 
 	/**
 	* Ведет к обновлению значения текста при наведении.
@@ -20,14 +20,25 @@ UI.PopupComponent = function(displayObject, placement, text){
 	this._popupArea = displayObject;
 	this._popupArea.inputEnabled = true;
 
-	if(Phaser.Device.desktop){
-		this._popupArea.events.onInputOver.add(this._notifyPopupManager.bind(this, true));
+	if(!Array.isArray(otherDisplayObjects)){
+		otherDisplayObjects = [];
 	}
 	else{
-		this._popupArea.events.onInputDown.add(this._notifyPopupManager.bind(this, true, true));
-		this._popupArea.events.onInputUp.add(this._notifyPopupManager.bind(this, false));
+		otherDisplayObjects = otherDisplayObjects.slice();
 	}
-	this._popupArea.events.onInputOut.add(this._notifyPopupManager.bind(this, false));
+
+	otherDisplayObjects.push(this._popupArea);
+
+	otherDisplayObjects.forEach(function(obj){
+		if(Phaser.Device.desktop){
+			obj.events.onInputOver.add(this._notifyPopupManager.bind(this, true));
+		}
+		else{
+			obj.events.onInputDown.add(this._notifyPopupManager.bind(this, true, true));
+			obj.events.onInputUp.add(this._notifyPopupManager.bind(this, false));
+		}
+		obj.events.onInputOut.add(this._notifyPopupManager.bind(this, false));
+	}, this);
 
 	/**
 	* Позиция всплывающего текста.
