@@ -239,7 +239,7 @@ class QueueManager{
 	*/
 	addQueueToList(queue){
 		// Добавляем очередь в общий список
-		if(queue.type != 'private' && queue.type != 'botmatch'){
+		if(queue.type != 'private' && queue.savedType != 'private'){
 			let i = this.queueList.indexOf(queue);
 			if(!~i){
 				this.queueList.unshift(queue);
@@ -281,13 +281,12 @@ class QueueManager{
 			this.queueList.splice(i, 1);
 		}
 
-		if(!inProgress){
+		if(!inProgress || queue.type == 'private' || queue.savedType == 'private'){
 			i = this.queueListAll.indexOf(queue);
 			if(~i){
 				this.queueListAll.splice(i, 1);
 			}
 		}
-
 
 		// Убираем очередь из списка быстрых игр
 		i = this.quickQueues.indexOf(queue);
