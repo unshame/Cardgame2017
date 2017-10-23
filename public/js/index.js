@@ -70,7 +70,7 @@ Phaser.Device.whenReady(function(){
 	* @type {SkinManager}
 	* @global
 	*/
-	skinManager = new SkinManager(gameOptions.get('ui_skin'));
+	skinManager = new SkinManager(gameOptions.get('appearance_skin'));
 
 	/**
 	* Контроллер карт
@@ -106,7 +106,7 @@ Phaser.Device.whenReady(function(){
 	* @type {Game}
 	* @global
 	*/
-	game = new Game(containerName, 1, gameOptions.get('debug_game'));
+	game = new Game(containerName, gameOptions.get('game_speed'), gameOptions.get('debug_game'));
 	
 	// Phaser плагины
 	game.add.plugin(PhaserInput.Plugin);

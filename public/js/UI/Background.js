@@ -20,7 +20,7 @@ UI.Background = function(){
 			this.textures.push(key);
 		}
 	}
-	var textureName = gameOptions.get('ui_background');
+	var textureName = gameOptions.get('appearance_background');
 	if(!~this.textures.indexOf(textureName)){
 		textureName = skinManager.skin.background;
 	}
@@ -34,6 +34,10 @@ UI.Background = function(){
 
 	this.add(this.surface);
 	this.add(this.vignette);
+
+	if(!gameOptions.get('ui_vignette')){
+		this.vignette.visible = false;
+	}
 };
 
 extend(UI.Background, Phaser.Group);
@@ -53,7 +57,7 @@ UI.Background.prototype.setTexture = function(textureName){
 	this.addChildAt(fakebg, 1);
 	this.surface.loadTexture(textureName);
 	this.surface.textureName = textureName;
-	gameOptions.set('ui_background', textureName);
+	gameOptions.set('appearance_background', textureName);
 	gameOptions.save();
 	var transition = game.add.tween(fakebg.position);
 
@@ -70,7 +74,7 @@ UI.Background.prototype.setTexture = function(textureName){
 	});
 	transition.start();
 
-	ui.menus.options.getElementByName('background').setTo(this.surface.textureName, false);
+	ui.menus.options.getElementByName('background').setKey(this.surface.textureName, false);
 };
 
 UI.Background.prototype.nextTexture = function(){

@@ -32,7 +32,7 @@ Menu.prototype.updatePosition = function(position){
 			var elHeight = element.fixedHeight !== undefined ? element.fixedHeight : element.height;
 			if(element.visible){
 				rowVisible = true;
-				var align = this._calculateAlign(row.align, ei, menuWidth, row.width, row.length);
+				var align = this._calculateAlign(row, ei, menuWidth);
 				var ex = margin + align + margin*ei + offset;
 				var ey = margin + y + row.height/2 - elHeight/2;
 				element.updatePosition({x: ex, y: ey});
@@ -61,7 +61,10 @@ Menu.prototype.updatePosition = function(position){
 * Возвращает отступ для выравнивания элемента.
 * @return {number}
 */
-Menu.prototype._calculateAlign = function(rowAlign, i, menuWidth, rowWidth, rowLength){
+Menu.prototype._calculateAlign = function(row, i, menuWidth){
+	var rowAlign = row.align,
+		rowWidth = row.width,
+		rowLength = row.length;
 	switch(rowAlign){
 		case 'justify':
 		switch(i){
@@ -77,6 +80,10 @@ Menu.prototype._calculateAlign = function(rowAlign, i, menuWidth, rowWidth, rowL
 			rowAlign = 'center';
 			break;
 		}
+		break;
+
+		case 'special':
+		rowAlign = row.aligns[i];
 		break;
 
 		case 'alternate':

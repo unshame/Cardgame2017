@@ -279,7 +279,7 @@ UI.Stepper.prototype.setToIndex = function(i, doAction){
 	}
 };
 
-UI.Stepper.prototype.setTo = function(key, doAction){
+UI.Stepper.prototype.setKey = function(key, doAction){
 	for(var i = 0; i < this.keys.length; i++){
 		if(this.keys[i] == key){
 			this.setToIndex(i, doAction); 
@@ -321,7 +321,7 @@ UI.Stepper.prototype.loadLabels = function(){
 	});
 };
 
-UI.Stepper.prototype.getCurrentKey = function(){
+UI.Stepper.prototype.getKey = function(){
 	return this.keys[this.index];
 };
 
@@ -346,13 +346,13 @@ UI.Stepper.prototype.limitRange = function(left, right){
 	}
 	else{
 		if(this.index < this.limitLeft){
-			this.setTo(this.limitLeft);
+			this.setKey(this.limitLeft);
 		}
 		else if(this.index > this.limitRight){
-			this.setTo(this.limitRight);
+			this.setKey(this.limitRight);
 		}
 		else{
-			this.setTo(this.index);
+			this.setKey(this.index);
 		}
 	}
 };

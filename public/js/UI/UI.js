@@ -147,7 +147,8 @@ UI.prototype.initialize = function(){
 		this.menus.debug,
 		this.menus.rules,
 		this.menus.more_options,
-		this.menus.name
+		this.menus.name,
+		this.menus.apply_renderer
 	);
 
 	this._createButtons();

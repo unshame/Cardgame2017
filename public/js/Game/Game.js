@@ -319,4 +319,36 @@ Game.prototype.clearLocationHash = function(){
 	history.replaceState(null, null, location.href.replace(location.hash, ''));
 }
 
+Game.prototype.applyOptions = function(menu){
+
+	actionHandler.highlightPossibleActions();
+	
+	var renderer = gameOptions.get('system_renderer');
+	menu.getElementByName('renderer').setKey(renderer);
+
+	var gameOpts = gameOptions.getGroup('game');
+
+	var scale = gameOpts['scale'];
+	game.scale.scaleMultiplier = scale;
+	menu.getElementByName('scale').setKey(scale);
+	game.updateCoordinates();	
+
+	var speed = gameOpts['speed'];
+	game.speed = speed;
+	menu.getElementByName('speed').setKey(speed);
+
+	var uiOpts = gameOptions.getGroup('ui');
+	var visible = uiOpts['vignette'];
+	ui.background.vignette.visible = visible;						
+	var vegBox = menu.getElementByName('vignette');
+	if(vegBox.checked != visible){
+		vegBox.check();
+	}
+	gameOptions.save();
+
+	if(game.renderType != renderer){
+		ui.modalManager.openModal('apply_renderer');
+	}
+}
+
 //@include:GameOverride

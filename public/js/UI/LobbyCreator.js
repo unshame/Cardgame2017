@@ -151,7 +151,7 @@ var LobbyCreator = function(options){
 	
 	Menu.call(this, this.options);	
 
-	this.limitBotSelectorRange(this.getElementByName('stepOfPlayers').getCurrentKey());
+	this.limitBotSelectorRange(this.getElementByName('stepOfPlayers').getKey());
 
 	this.updatePosition();
 };
@@ -189,10 +189,10 @@ LobbyCreator.prototype.getDefaultLobbyOptions = function(){
 LobbyCreator.prototype.createGame = function(){
 	var gameMode = 'durak';
 	var isPrivate = this.getElementByName('private').checked;
-	var difficulty = Number(this.getElementByName('stepOfDifficulty').getCurrentKey());
+	var difficulty = Number(this.getElementByName('stepOfDifficulty').getKey());
 	var config = {
-		numPlayers: Number(this.getElementByName('stepOfPlayers').getCurrentKey()),
-		numBots: Number(this.getElementByName('stepOfBots').getCurrentKey()),
+		numPlayers: Number(this.getElementByName('stepOfPlayers').getKey()),
+		numBots: Number(this.getElementByName('stepOfBots').getKey()),
 		difficulty: difficulty
 	};
 	var rules = {
@@ -200,7 +200,7 @@ LobbyCreator.prototype.createGame = function(){
 		freeForAll: false,
 		limitAttack: this.getElementByName('limitAttack').checked,
 		limitFollowup: this.getElementByName('limitFollowup').checked,
-		numCards: Number(this.getElementByName('deckSizeStep').getCurrentKey())
+		numCards: Number(this.getElementByName('deckSizeStep').getKey())
 	};
 	this.fadeOut();
 	connection.proxy.createCustomQueue(isPrivate, gameMode, config, rules);

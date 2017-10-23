@@ -45,11 +45,16 @@ OptionManager.prototype = {
 			'debug_buttons': true,
 
 			'system_renderer': Phaser.AUTO,
-			'system_scale': 1,
 
-			'ui_skin': 'modern',
-			'ui_background': 'blue',
-			'ui_cardback': null,
+			'game_scale': 1,
+			'game_speed': 1,
+
+			'appearance_skin': 'modern',
+			'appearance_background': 'blue',
+			'appearance_cardback': null,
+
+			'ui_vignette': true,
+			'ui_glow': true,
 
 			'connection_id': null,
 

@@ -160,10 +160,10 @@ Card.prototype.setPlayability = function(playable, tint){
 
 	this.playable = playable;
 
-	if(playable){
+	if(playable && gameOptions.get('ui_glow')){
 		this._glowStart(0.25, 0.75, 1500, 500, tint);
 	}
-	else{
+	else if(!playable){
 		this._glowStop();
 	}
 };

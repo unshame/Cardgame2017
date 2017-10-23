@@ -94,6 +94,25 @@ Menu.alignAlternate = function(){
 };
 
 /**
+* Выравнивание каждого элемента указывается в первом параметре.
+* @param {string[]}          aligns  выравнивания всех элементов (`'left', 'right', 'center'`), `'center'` по умолчанию
+* @param {(array|...object)} options опции элементов меню
+*
+* @return {array} Возвращает массив с настройками элементов и флагом выравнивания.
+*/
+Menu.alignSpecial = function(aligns){
+	var aligns = aligns;
+	var options = [];
+	for(var i = 1, len = arguments.length; i < len; i++){
+		options.push(arguments[i]);
+	}
+	var row = Menu.align('special', options);
+	row.aligns = aligns;
+	console.log(row)
+	return row;
+};
+
+/**
 * Возвращает массив с настройками элементов для передачи в {@link Menu#createLayout}
 * с установленным флагом выравневания.
 * @static

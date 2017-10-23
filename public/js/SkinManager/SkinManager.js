@@ -147,7 +147,7 @@ SkinManager.prototype.addSkin = function(options){
 
 	this.skins[skin.name] = skin;
 	if(this.skinToSet == skin.name){
-		var cardback = gameOptions.get('ui_cardback');
+		var cardback = gameOptions.get('appearance_cardback');
 		if(cardback !== null && cardback < skin.cardbackPossibleFrames.length){
 			skin.cardbackFrame = skin.cardbackPossibleFrames[cardback];
 		}
@@ -218,9 +218,9 @@ SkinManager.prototype.setSkin = function(skinName){
 		this.skinToSet = null;
 	}
 	this.skin = this.skins[skinName];
-	gameOptions.set('ui_skin', skinName);
+	gameOptions.set('appearance_skin', skinName);
 	gameOptions.save();
-	gameOptions.set('ui_cardback', this.getCurrentCardbackIndex());
+	gameOptions.set('appearance_cardback', this.getCurrentCardbackIndex());
 	gameOptions.save();
 	if(!this.skin.loaded){
 		this.loadSkin(skinName, true);
@@ -252,7 +252,7 @@ SkinManager.prototype.setCardback = function(i){
 		return;
 	}
 	this.skin.cardbackFrame = this.skin.cardbackPossibleFrames[i];
-	gameOptions.set('ui_cardback', this.getCurrentCardbackIndex());
+	gameOptions.set('appearance_cardback', this.getCurrentCardbackIndex());
 	gameOptions.save();
 	for(var ci in cardManager.cards){
 		if(cardManager.cards.hasOwnProperty(ci)){

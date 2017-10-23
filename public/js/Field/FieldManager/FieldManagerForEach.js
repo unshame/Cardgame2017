@@ -58,31 +58,6 @@ FieldManager.prototype.resetHighlights = function(){
 	});
 };
 
-/** Подсвечивает dummy поле, если все поля стола играбильны. */
-FieldManager.prototype.tryHighlightDummy = function(){
-	var allMarked = true;
-	for(var fid in this.table){
-		if(!this.table.hasOwnProperty(fid)){
-			continue;
-		}
-		var f = this.table[fid];
-		if(!f.playable){
-			allMarked = false;
-			break;
-		}
-	}
-	if(allMarked){
-		this.forEachField(function(f){
-			if(f.playable != 'ATTACK'){
-				return;
-			}
-			f.setOwnHighlight(false);
-			f.setIconVisibility(true);
-		});
-		this.fields.dummy.setOwnHighlight(true);
-	}
-};
-
 /** 
 * Увеличивает масштаб карт в поле, восстанавливает масштаб во всех остальных полях.
 * @param {Field} field поле

@@ -17,7 +17,7 @@ extend(Field.TableField, Field.IconField);
 * @param {boolean} highlight включить ли подсветку
 */
 Field.TableField.prototype.setLastCardHighlight = function(highlight){
-	if(!this.cards.length){
+	if(!this.cards.length || !gameOptions.get('ui_glow')){
 		return;
 	}
 

@@ -3,7 +3,13 @@
 */
 UI.prototype._createMenus = function(){
 	var renderer = gameOptions.get('system_renderer');
+	if(renderer == Phaser.AUTO){
+		renderer = game.renderType;
+		gameOptions.set('system_renderer', renderer);
+	}
 	var nameMaxLength = 8;
+	var optionsStepperWidth = 100;
+	var optionsTextWidth = 150;
 	return {
 
 		// ГЛАВНОЕ МЕНЮ
@@ -107,7 +113,7 @@ UI.prototype._createMenus = function(){
 						choices: skinManager.getSkinNames(),
 						name: 'skin',
 						textColor: 'black',
-						startKey: gameOptions.get('ui_skin'),
+						startKey: gameOptions.get('appearance_skin'),
 						minWidth: 150
 					})
 				),
@@ -123,7 +129,6 @@ UI.prototype._createMenus = function(){
 						name: 'cardback',
 						textColor: 'black',
 						startKey: skinManager.getCurrentCardbackIndex(),
-						startKey: gameOptions.get('ui_cardback'),
 						minWidth: 150
 					})
 				),
@@ -138,7 +143,7 @@ UI.prototype._createMenus = function(){
 						choices: ui.background.namedTextures,
 						name: 'background',
 						textColor: 'black',
-						startKey: gameOptions.get('ui_background'),
+						startKey: gameOptions.get('appearance_background'),
 						minWidth: 150
 					})
 				),
@@ -187,40 +192,203 @@ UI.prototype._createMenus = function(){
 			},
 			closeButtonCrossColor: 'grey',
 			layout: [
-				Menu.text({
-					text: 'I\'ll add more'
-				}),
-				Menu.alignAlternate(
+				Menu.alignLeft(
 					Menu.text({
-						text: 'Render mode'
+						text: 'Render mode',
+						fixedWidth: optionsTextWidth
 					}),
 					Menu.stepper({
 						action: function(key){
 							gameOptions.set('system_renderer', key);
-							gameOptions.save();
-							location.href = location.href;
 						},
 						choices: [
-							['0', 'Auto'],
-							['2', 'WebGL'],
-							['1', 'Canvas']
+							[0, 'Detect'],
+							[2, 'WebGL'],
+							[1, 'Canvas']
 						],
 						name: 'renderer',
 						textColor: 'black',
 						startKey: renderer,
-						minWidth: 150
+						minWidth: optionsStepperWidth
+					}),
+					Menu.checkbox({
+						actionEnable: function(){
+							gameOptions.set('ui_vignette', true);
+							ui.background.vignette.visible = true;
+						},
+						actionDisable: function(){
+							gameOptions.set('ui_vignette', false);
+							ui.background.vignette.visible = false;
+						},
+						text: 'Enable vignette',
+						name: 'vignette',
+						checked: gameOptions.get('ui_vignette'),
+						hoverText: '',
+						hoverPlacement: 'right'
 					})
 				),
-				Menu.buttonPopup({	
+				Menu.alignLeft(
+					Menu.text({
+						text: 'Game speed',
+						fixedWidth: optionsTextWidth
+					}),
+					Menu.stepper({
+						action: function(key){
+							gameOptions.set('game_speed', key);		
+							game.speed = key;			
+						},
+						choices: [
+							[0.75, '0.75'],
+							[0.80, '0.80'],
+							[0.85, '0.85'],
+							[0.90, '0.90'],
+							[0.95, '0.95'],
+							[1, '1'],
+							[1.05, '1.05'],
+							[1.10, '1.10'],
+							[1.15, '1.15'],
+							[1.20, '1.20'],
+							[1.25, '1.25']
+						],
+						name: 'speed',
+						textColor: 'black',
+						startKey: gameOptions.get('game_speed'),
+						minWidth: optionsStepperWidth
+					}),
+					Menu.checkbox({
+						actionEnable: function(){
+							gameOptions.set('ui_glow', false);
+							actionHandler.highlightPossibleActions();
+						},
+						actionDisable: function(){
+							gameOptions.set('ui_glow', true);
+							actionHandler.highlightPossibleActions();
+						},
+						text: 'Hard mode',
+						name: 'hard_mode',
+						checked: !gameOptions.get('ui_glow'),
+						hoverText: 'Disables card and table highlights',
+						hoverPlacement: 'right'
+					})
+				),
+				Menu.alignLeft(
+					Menu.text({
+						text: 'Game scale',
+						fixedWidth: optionsTextWidth
+					}),
+					Menu.stepper({
+						action: function(key){
+							gameOptions.set('game_scale', key);		
+							game.scale.scaleMultiplier = key;
+							game.updateCoordinates();	
+						},
+						choices: [
+							[0.5, '0.5'],
+							[0.6, '0.6'],
+							[0.7, '0.7'],
+							[0.8, '0.8'],
+							[0.9, '0.9'],
+							[1, '1'],
+							[1.1, '1.1'],
+							[1.2, '1.2'],
+							[1.3, '1.3'],
+							[1.4, '1.4'],
+							[1.5, '1.5']
+						],
+						name: 'scale',
+						textColor: 'black',
+						startKey: gameOptions.get('game_scale'),
+						minWidth: optionsStepperWidth
+					}),
+
+				),
+				Menu.alignLeft({	
 					action: function(){
-						gameOptions.restoreAllDefaults();
-						gameOptions.save();
-						location.href = location.href;
+						ui.modalManager.openModal('name');
 					}, 
-					name: 'restore',
-					text: 'Restore',
-					hoverText: 'Get rid of all saved data (including your session id!).'
-				})
+					name: 'name',
+					text: 'Change Name'
+				}),
+				Menu.alignJustify(
+					Menu.buttonPopup({	
+						action: function(){
+							gameOptions.restoreGroup('system');
+							gameOptions.restoreGroup('ui');
+							gameOptions.restoreGroup('game');
+							game.applyOptions(this);
+							ui.feed.newMessage('Options restored', 2000);
+						}, 
+						name: 'restore',
+						text: 'Restore',
+						hoverText: 'Undo all changes',
+						hoverPlacement: 'bottom'
+					}),
+					Menu.buttonPopup({	
+						action: function(){
+							game.applyOptions(this);
+							ui.feed.newMessage('Options saved', 2000);
+						}, 
+						name: 'save',
+						text: 'Save',
+						color: 'orange',
+						textColor: 'white',
+						hoverText: 'Save all changes',
+						hoverPlacement: 'bottom'
+					}),
+					Menu.buttonPopup({	
+						action: function(){
+							gameOptions.restoreGroupDefaults('system');
+							gameOptions.restoreGroupDefaults('ui');
+							gameOptions.restoreGroupDefaults('game');
+							game.applyOptions(this);
+							ui.feed.newMessage('Options reset to default', 2000);
+						}, 
+						name: 'reset',
+						text: 'Reset',
+						hoverText: 'Reset all options to default values',
+						hoverPlacement: 'bottom'
+					})
+				)
+			]
+		}),
+
+		apply_renderer: new Menu({
+			position: function(){
+				return {
+					x:game.screenWidth/2,
+					y:game.screenHeight/2
+				};
+			}, 
+			z: -4,
+			color: 'grey',
+			elementColor: 'grey',
+			textColor: 'black',
+			name: 'menu_apply_renderer',
+			header: 'Apply Renderer',
+			closeButton: function(){
+				ui.modalManager.closeModal();
+			},
+			closeButtonCrossColor: 'grey',
+			layout: [
+				Menu.text({
+					text: 'Render mode requires the page to be reloaded to take effect.\nReload the page now?'
+				}),
+				[
+					{
+						action: function(){
+							location.reload();
+						}, 
+						name: 'yes',
+						text: 'Yes'
+					},
+					{
+						action: function(){
+							ui.modalManager.closeModal();
+						},
+						name: 'no',
+						text: 'No'
+					}
+				]
 			]
 		}),
 

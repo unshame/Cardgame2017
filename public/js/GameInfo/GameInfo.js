@@ -405,7 +405,9 @@ GameInfo.prototype = {
 		// Избавляемся от кнопочных действий
 		switch(action.type){
 			case 'TAKE':
-			return doneAction.type == 'ATTACK' || fieldManager.getFieldsWith(1).length === 0;
+			return doneAction.type == 'ATTACK' || fieldManager.getFieldsWith(function(f){
+					return f.type == 'TABLE' && f.cards.length == 1;
+			}).length === 0;
 
 			case 'PASS':
 			return this.turnStage != 'FOLLOWUP';
@@ -429,7 +431,7 @@ GameInfo.prototype = {
 			return (
 				this.rules.limitFollowup && this.defender.defenseStartCards <= 
 				fieldManager.getFieldsWith(function(f){
-					return f.cards.length > 0;
+					return f.type == 'TABLE' && f.cards.length > 0;
 				}).length
 			);			
 
@@ -508,10 +510,10 @@ GameInfo.prototype = {
 		}
 
 		if(hasButtonAction){
-			if(actions.length == 1){
+			if(actions.length == 1 && gameOptions.get('ui_glow')){
 				button.changeStyle(1);
 			}
-			else if(actions.length > 1){
+			else if(actions.length != 0){
 				button.changeStyle(0);
 			}
 		}
@@ -522,7 +524,32 @@ GameInfo.prototype = {
 			button.label.setText(this.player.role == 'defender' ? 'Take' : 'Pass', true);
 		}
 
-		fieldManager.tryHighlightDummy();
+		this.tryHighlightDummy(emptyTable);
+	},
+
+	/** Подсвечивает dummy поле, если все поля стола играбильны. */
+	tryHighlightDummy: function(emptyTable){
+		var allMarked = !gameOptions.get('ui_glow') || fieldManager.getFieldsWith(function(f){
+			return f.type == 'TABLE' && !f.playable;
+		}).length == 0;
+
+		if(allMarked){
+			fieldManager.forEachField(function(f){
+				if(f.playable != 'ATTACK'){
+					return;
+				}
+				f.setOwnHighlight(false);
+				f.setIconVisibility(true);
+			});
+			if(
+				gameOptions.get('ui_glow') || 
+				(this.attacker == this.player || this.turnStage == 'DEFENSE_TRANSFER' && this.defender == this.player) && 
+				emptyTable && 
+				fieldManager.fields[this.pid].length > 0
+			){
+				fieldManager.fields.dummy.setOwnHighlight(true);
+			}
+		}
 	},
 
 	/** 

@@ -89,7 +89,7 @@ var ScaleManager = function(options){
 	*/
 	this._thickness = this.options.thickness;
 
-	this.scaleMultiplier = gameOptions.get('system_scale');
+	this.scaleMultiplier = gameOptions.get('game_scale');
 
 	/**
 	* Нужно ли выводить дебаг информацию.
