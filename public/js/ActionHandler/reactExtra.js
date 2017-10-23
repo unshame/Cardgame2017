@@ -24,5 +24,10 @@ var reactExtra = {
 			message = (action.pid == game.pid ? 'You' : player.name) + ' ' + message;
 		}
 		ui.eventFeed.newMessage(message, 2000);
+	},
+
+	VOTE: function(action){
+		var vote = action.accepted ? ' voted for rematch' : ' voted against rematch and left';
+		ui.feed.newMessage(action.name + vote, 3000);
 	}
 };

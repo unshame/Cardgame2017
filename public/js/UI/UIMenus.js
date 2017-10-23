@@ -257,14 +257,14 @@ UI.prototype._createMenus = function(){
 						var name = this.getElementByName('name').getText();
 						var oldName = gameOptions.get('profile_name');
 						if(oldName && oldName == name){
-							ui.feed.newMessage('Please enter a different name', 2000);
+							ui.feed.newMessage('Please enter a different name', 3000);
 						}
 						else if(name.length > 0 && name.length <= nameMaxLength){
 							this.disableElement('change');
 							connection.proxy.changeClientName(name);
 						}
 						else{
-							ui.feed.newMessage(name.length > 0 ? 'Name is too long (' + nameMaxLength + ' characters max)' : 'Please enter name', 2000);
+							ui.feed.newMessage(name.length > 0 ? 'Name is too long (' + nameMaxLength + ' characters max)' : 'Please enter name', 3000);
 						}
 					}
 				}
@@ -374,21 +374,21 @@ text:'В игре используется колода из 36 карт,\n\
 							document.activeElement.blur();
 						}
 						field.style.display = 'none';
-						ui.feed.newMessage(success ? 'Link copied' : 'Please copy the link manually from the adress bar', 2000);
+						ui.feed.newMessage(success ? 'Link copied' : 'Please copy the link manually from the adress bar', success ? 2000 : 5000);
 					},
 					fontSize: 24,
 					name: 'invite',
 					text: 'Copy Invite Link',
-					hoverText: 'Share this link with anybody to invite them to join your game.'
+					hoverText: 'Share this link with somebody to invite them to join your game.'
 				}),
 				Menu.buttonPopup({
 					action: function(){
-						connection.proxy.startQueuedGameVsBots();
+						connection.proxy.voteForPrematureStart();
 						this.disable();
 					},
 					name: 'vs_bots',
 					text: 'Play VS Bots',
-					hoverText: 'Play versus bots if we can\'t find real people to pitch against you.',
+					hoverText: 'Play versus bots if we can\'t find enough real people to pitch against you.',
 					context: false
 				}),
 				{

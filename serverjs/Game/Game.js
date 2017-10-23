@@ -60,7 +60,7 @@ class Game{
 
 		// Добавляем бота, если игрок один
 		while(players.length < config.minPlayers){
-			players.push(new this.BotClass(['addedBot']));
+			players.push(this.queue.createBot(['Mistake'], true));
 			this.log.warn('Only %s players at the start of the game, adding a bot', players.length);
 		}
 

@@ -15,12 +15,11 @@ const
 
 
 class Bot extends Player {
-	constructor(randomNames, queueType, decisionTime, difficulty) {
+	constructor(randomNames, decisionTime, difficulty, replacement = false) {
 		super(null, null, null, false);
 		this.id = 'bot_' + generateId();
 		this.log = Log(module, this.id);
 		this.type = 'bot';
-		this.queueType = queueType;
 		this.connected = true;
 		this.actionTimeout = null;
 
@@ -43,6 +42,8 @@ class Bot extends Player {
 		} else {
 			this.name = this.id;
 		}
+
+		this.replacement = replacement;
 	}
 
 	getDecisionTime(addedTime) {
@@ -98,12 +99,12 @@ class Bot extends Player {
 	}
 
 	recieveNotification(action) {
-		if (action.noResponse) {
+		if (action.noResponse || action.channel && action.channel != 'secondary') {
 			return;
 		}
 		clearTimeout(this.actionTimeout);
-		if (action.actions) {
-			let ai = (this.game && this.game.isTest || this.queueType == 'botmatch') ? 0 : 1;
+		if (this.game && action.actions) {
+			let ai = (this.game.isTest || !this.replacement) ? 0 : 1;
 			this.sendDelayedResponse(action.actions[ai]);
 		}
 	}

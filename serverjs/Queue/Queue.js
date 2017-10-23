@@ -54,6 +54,9 @@ class Queue{
 		*/
 		this.type = type;
 
+		this.savedType = null;
+
+
 		/**
 		* Имя очереди.
 		* @type {string}
@@ -75,6 +78,8 @@ class Queue{
 		){
 			config.numBots = 0;
 		}
+
+		config.addedBots = 0;
 
 		/**
 		* Конфигурация очереди.
@@ -101,6 +106,12 @@ class Queue{
 		* @type {Array}
 		*/
 		this.players = [];
+
+		/**
+		* Игроки, проголосовавшии за старт с ботами.
+		* @type {Array}
+		*/
+		this.playersReady = [];
 
 		this.log.notice('Queue initialized');
 	}
@@ -148,13 +159,13 @@ class Queue{
 		this.players.push(player);
 		player.queue = this;
 
-		player.recieveQueueAction({type: 'QUEUE_ENTERED', qid: this.id});
+		player.recieveQueueNotification({type: 'QUEUE_ENTERED', qid: this.id});
 
 		if(this.players.length >= this.config.numPlayers){
 			this.startGame();
 		}
 		else{
-			this.notifyPlayers();
+			this.notifyPlayers([player], false);
 		}
 	}
 
@@ -169,8 +180,8 @@ class Queue{
 		}
 
 		this.log.notice('Starting game');
-
-		this.players.forEach((p) => p.recieveQueueAction({type: 'QUEUE_READY'}));
+		
+		this.playersReady.length = 0;
 
 		let players = this.players.slice();
 
@@ -179,10 +190,11 @@ class Queue{
 			let randomNamesCopy = this.manager.randomNames.slice();
 
 			for (let n = 0; n < numBots; n++) {
-				let bot = new this.config.bot(randomNamesCopy, this.type, this.config.decisionTime, this.config.difficulty);
+				let bot = this.createBot(randomNamesCopy, n < this.config.addedBots);
 				players.push(bot);
 			}
 		}
+		this.players.forEach((p) => p.recieveQueueNotification({type: 'QUEUE_READY'}));
 
 		this.game = new this.config.game(this, players, this.gameConfig, this.gameRules);
 		this.manager.games[this.game.id] = this.game;
@@ -197,8 +209,10 @@ class Queue{
 	startGameWithBots(){
 		this.log.notice('Switching to botmatch');
 		let numPlayers = this.config.numPlayers;
-		this.config.numBots += numPlayers - this.players.length;
+		this.config.addedBots = numPlayers - this.players.length;
+		this.config.numBots += this.config.addedBots;
 		this.config.numPlayers = this.players.length;
+		this.savedType = this.type;
 		this.type = 'botmatch';
 		this.startGame();
 	}
@@ -218,6 +232,7 @@ class Queue{
 		}
 		this.log.notice('Game ended');
 		let results = {};
+		let left = [];
 		if(voteResults){
 			voteResults.forEach(r => results[r.pid] = r.type);
 		}
@@ -227,12 +242,21 @@ class Queue{
 			this.log.debug(p.id, 'voted', results[p.id] || 'no vote');
 
 			if(!p.connected || !results[p.id] || results[p.id] != 'ACCEPT'){
+				left.push(p);
 				this.removePlayer(p, false);
 			}
 		}
 
 		delete this.manager[this.game.id];
 		this.game = null;
+
+		if(this.savedType){
+			this.type = this.savedType;
+			this.savedType = null;
+			this.config.numBots -= this.config.addedBots;
+			this.config.numPlayers += this.config.addedBots;
+			this.config.addedBots = 0;
+		}
 
 		if(!this.players.length){
 			this.shutdown();
@@ -242,8 +266,8 @@ class Queue{
 		}
 		else{
 			this.manager.addQueueToList(this);
-			this.players.forEach((p) => p.recieveQueueAction({type: 'QUEUE_ENTERED', qid: this.id}));
-			this.notifyPlayers();
+			this.players.forEach((p) => p.recieveQueueNotification({type: 'QUEUE_ENTERED', qid: this.id}));
+			this.notifyPlayers(left, true);
 		}
 	}
 
@@ -267,19 +291,47 @@ class Queue{
 		this.manager.removeQueue(this);
 	}
 
+	createBot(randomNames, replacement){
+		return new this.config.bot(randomNames, this.config.decisionTime, this.config.difficulty, replacement)
+	}
+
+	voteForPrematureStart(player){
+		if(this.game || !~this.players.indexOf(player) || ~this.playersReady.indexOf(player)){
+			return;
+		}
+		this.playersReady.push(player);
+		this.players.forEach((p) => {
+			if(p != player){
+				p.recieveQueueNotification({type: 'QUEUE_READY_VOTE', name: player.name});
+			}
+		});
+		if(this.playersReady.length == this.players.length){
+			this.startGameWithBots();
+		}
+	}
+
 	/**
 	* Сообщает игрокам о состоянии очереди.
 	*/
-	notifyPlayers(){
+	notifyPlayers(players, left = false){
 		if(this.game){
 			return;
 		}
 		this.players.forEach((p) => {
-			p.recieveQueueAction({
+			let names = [];
+			if(players){
+				players.forEach((pp) => {
+					if(pp.id != p.id){
+						names.push(pp.name);
+					}
+				});
+			}
+			p.recieveQueueNotification({
 				type: 'QUEUE_STATUS',
 				playersQueued: this.players.length,
 				playersNeeded: this.config.numPlayers,
-				noResponse: true
+				names: names,
+				left: left
 			});
 		});
 		this.log.notice('Waiting for players:', this.config.numPlayers - this.players.length);
@@ -303,17 +355,25 @@ class Queue{
 			return;
 		}
 
-		let i = this.players.indexOf(player);
+		let i = this.playersReady.indexOf(player);
+		if(~i){
+			this.playersReady.splice(i, 1);
+		}
+
+		i = this.players.indexOf(player);
 		this.players.splice(i, 1);
 		player.queue = null;
 		if(notify){
-			player.recieveQueueAction({type: 'QUEUE_LEFT', instant: true});
-			this.notifyPlayers();
+			player.recieveQueueNotification({type: 'QUEUE_LEFT', instant: true});
+			this.notifyPlayers([player], true);
 		}
 		this.log.notice('Player %s left queue', player.id, this.id);
 
 		if(!this.players.length && !alreadyShuttingDown){
 			this.shutdown();
+		}
+		else if(this.players.length > 0 && this.playersReady.length == this.players.length){
+			this.startGameWithBots();
 		}
 	}
 

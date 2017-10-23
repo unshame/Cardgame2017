@@ -97,7 +97,7 @@ class Player{
 		}
 	}
 
-	recieveQueueAction(action){
+	recieveQueueNotification(action){
 		if(!action.channel){
 			action.channel = 'queue';
 		}

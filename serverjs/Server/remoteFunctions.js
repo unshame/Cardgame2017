@@ -145,12 +145,12 @@ module.exports = function(server){
 		/**
 		* Сообщает менеджеру очередей, что нужно запустить очередь в которой находится игрок с ботами.
 		*/
-		startQueuedGameVsBots: function(){
+		voteForPrematureStart: function(){
 			let player = server.players[this.connection.id];
-			if(!player || !player.queue || player.queue.game || player.queue.players.length != 1){
+			if(!player || !player.queue){
 				return;
 			}
-			player.queue.startGameWithBots();
+			player.queue.voteForPrematureStart(player);
 		},
 
 		/**

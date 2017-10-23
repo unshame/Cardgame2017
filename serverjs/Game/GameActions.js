@@ -296,7 +296,15 @@ class GameActions{
 
 		this.stored[player.id] = Object.assign({}, action);
 
-		if(action.type != 'ACCEPT'){
+		let accepted = action.type == 'ACCEPT';
+
+		this.game.players.forEachOwn((p) => {
+			if(p != player){
+				p.recieveNotification({type: 'VOTE', accepted, name: player.name, channel: 'extra'});
+			}
+		})
+
+		if(!accepted){
 			this.game.players.disconnect(player);
 		}
 	}

@@ -185,7 +185,7 @@ class GamePlayers extends PlayerManager{
 		let pi = this.indexOf(player);
 		this.splice(pi, 1);
 
-		let replacement = new this.game.BotClass(this.replacementNames);
+		let replacement = this.game.queue.createBot(this.replacementNames, true);
 		this.push(replacement);
 		replacement.statuses = player.statuses;
 		replacement.id = player.id;

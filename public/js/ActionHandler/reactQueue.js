@@ -2,7 +2,6 @@
 var reactQueue = {
 
 	QUEUE_ENTERED: function(action){
-		ui.menus.queue.disableElement('vs_bots');
 		ui.menus.queue.fadeIn();
 		var link = location.href.replace(location.hash, '') + '#' + action.qid;
 		document.getElementById('queue_id').value = link;
@@ -10,7 +9,6 @@ var reactQueue = {
 	},
 
 	QUEUE_LEFT: function(){
-		ui.menus.queue.disableElement('vs_bots');
 		ui.feed.newMessage('Left queue', 2000);
 		ui.menus.queue.fadeOut();
 		game.state.change('menu', false);
@@ -24,16 +22,20 @@ var reactQueue = {
 			' more ' +
 			(playersWaiting == 1 ? 'player' : 'players')
 		);
-		if(action.playersQueued == 1){
-			ui.menus.queue.enableElement('vs_bots');
-		}
-		else{
-			ui.menus.queue.disableElement('vs_bots');
+		if(action.names){
+			action.names.forEach(function(name){
+				var status = action.left ? ' left ' : ' entered ';
+				ui.feed.newMessage(name + status + 'queue', 3000);
+			});
 		}
 	},
 
 	QUEUE_READY: function(){
 		ui.eventFeed.clear();
 		game.state.change('play', false);
+	},
+
+	QUEUE_READY_VOTE: function(action){
+		ui.feed.newMessage(action.name + ' voted to play vs bots', 3000);
 	}
 };
