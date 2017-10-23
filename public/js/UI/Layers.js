@@ -211,6 +211,9 @@ UI.Layers.prototype.loadLabels = function(){
 				el.loadLabels();
 				return;
 			}
+			if(el instanceof Phaser.Text){
+				el.setText(el.text, true);
+			}
 			if(el.label && el.label.isText){
 				el.label.setText(el.label.text, true);
 			}
