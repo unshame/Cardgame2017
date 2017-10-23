@@ -15,9 +15,9 @@ const
 
 const DEBUG_AI_MODE = false;
 
-function consoleLog(){
+function consoleLog(...args){
 	if(DEBUG_AI_MODE){
-		console.log.apply(console, arguments);
+		console.log(...args);
 	}
 }
 

@@ -515,7 +515,7 @@ class Game{
 			}
 
 			this.actions.deadline = Date.now() + duration;
-			this.timer = setTimeout(this.timeOut.bind(this), duration);
+			this.timer = setTimeout(() => this.timeOut(), duration);
 			return this.actions.deadline;
 		}
 		else{
