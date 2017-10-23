@@ -2,6 +2,7 @@
 var reactQueue = {
 
 	QUEUE_ENTERED: function(action){
+		ui.menus.queue.enableElement('vs_bots');
 		ui.menus.queue.fadeIn();
 		var link = location.href.replace(location.hash, '') + '#' + action.qid;
 		document.getElementById('queue_id').value = link;

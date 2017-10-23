@@ -384,12 +384,11 @@ text:'В игре используется колода из 36 карт,\n\
 				Menu.buttonPopup({
 					action: function(){
 						connection.proxy.voteForPrematureStart();
-						this.disable();
+						this.disableElement('vs_bots');
 					},
 					name: 'vs_bots',
 					text: 'Play VS Bots',
-					hoverText: 'Play versus bots if we can\'t find enough real people to pitch against you.',
-					context: false
+					hoverText: 'Play versus bots if we can\'t find enough real people to pitch against you.'
 				}),
 				{
 					action: function(){
