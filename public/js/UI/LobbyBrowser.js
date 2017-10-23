@@ -228,6 +228,9 @@ LobbyBrowser.prototype.getInfoText = function(u){
 		if(el.numBots > 1){
 			a += 's';
 		}
+		if(el.numBotsAdded > 0){
+			a += ' (' + el.numBotsAdded + ' extra)';
+		}
 		a += '\n';
 		a += 'Bot difficulty: ';
 		switch(el.difficulty){
