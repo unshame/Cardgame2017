@@ -65,7 +65,7 @@ Field.IconField.prototype.setIconVisibility = function(visible){
 		return;
 	}
 
-	if(!visible && this.iconStyle.shouldHide || visible && !this.icon.visible){
+	if(!visible && this.iconStyle.shouldHide || visible && !this.icon.visible && (this.type != 'TABLE' || gameOptions.get('ui_glow'))){
 		this.icon.visible = visible;
 	}
 };
