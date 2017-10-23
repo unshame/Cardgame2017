@@ -132,7 +132,8 @@ class Queue{
 			numBotsAdded: this.config.addedBots,
 			gameRules: this.gameRules,
 			difficulty: this.config.difficulty,
-			name: this.name
+			name: this.name,
+			playerNames: this.players.map(p => p.name)
 		};
 	}
 

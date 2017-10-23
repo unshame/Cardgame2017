@@ -82,8 +82,23 @@ UI.Text.prototype.setTextBounds = function(x, y, width, height, alignH, alignV){
 	}
 	supercall(UI.Text).setTextBounds.call(this, x, y, width, height);
 
+	this.wordWrap = true;
+	this.wordWrapWidth = width;
+
 	this.fixedWidth = width;
 	this.fixedHeight = height;
 
 	return this;
+};
+
+UI.Text.limitWidth = function(textDisplay, text, width){
+	textDisplay.setText(text);
+	if(text.length && textDisplay.width > width){
+		textDisplay.setText(text + '...');
+		while(textDisplay.width > width && text.length > 3){
+			text = text.slice(0, -1);
+			textDisplay.setText(text + '...');
+		}
+	}
+	textDisplay.setText(textDisplay.text, true);
 };

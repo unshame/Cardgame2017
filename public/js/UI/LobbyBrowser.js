@@ -155,7 +155,7 @@ LobbyBrowser.prototype.recieveList = function(action){
 	this.resetButtons();
 
 	for(var i = 0; i < this.list.length; i++){
-		this.buttons[i].label.setText(this.list[i].name, true);
+		UI.Text.limitWidth(this.buttons[i].label, this.list[i].name, this.buttons[i].width - 5);
 		this.enableElement('button' + i);		
 	}
 
@@ -175,15 +175,32 @@ LobbyBrowser.prototype.recieveList = function(action){
 	}
 	else{
 		this.disableElement('join');
+		this.resetInfo();
 		this.info.setText('No games found :(', true);
 	}
 
-	this.updatePosition();
-	
 };
 
- LobbyBrowser.prototype.select = function(u){
+LobbyBrowser.prototype.resetInfo = function(){
+	this.info.scale.set(1, 1);
+	this.info.setText('');
+	this.info.updatePosition();
+};
+
+LobbyBrowser.prototype.centerInfo = function(){
+	this.info.updatePosition();
+	this.info.x += (this.info.fixedWidth - this.info.fixedWidth*this.info.scale.y)/2;
+};
+
+LobbyBrowser.prototype.select = function(u){
+	this.resetInfo();
   	this.info.setText(this.getInfoText(u), true);
+  	var maxHeight = this.buttons[0].height*this.pagination + this.options.margin;
+  	if(this.info.height > maxHeight){
+  		var scale = maxHeight/this.info.height;
+  		this.info.scale.set(scale, scale);
+  		this.centerInfo();
+  	}
 
  	this.selectedQueue = this.list[u].id;
 
@@ -218,11 +235,13 @@ LobbyBrowser.prototype.getInfoText = function(u){
 	}
 	a += '\n';
 	if(el.started){
-		a += el.numPlayersRequired + ' players\n';
+		a += el.numPlayersRequired + ' players';
 	}
 	else{
-		a += el.numPlayers + ' / ' + el.numPlayersRequired + ' players\n';
+		a += el.numPlayers + ' / ' + el.numPlayersRequired + ' players';
 	}
+	a += ' (' + el.playerNames.join(', ') + ')';
+	a += '\n';
 	if(el.numBots !== 0){
 		a += el.numBots + ' bot';
 		if(el.numBots > 1){
@@ -283,24 +302,12 @@ LobbyBrowser.prototype._addButton = function(options){
 	}
 	if(options.styles === undefined){
 		options.styles = [
-			{
-				key: 'button_orange_largeTop',
-			},
-			{
-				key: 'button_orange_largeBottom',
-			},
-			{
-				key: 'button_orange_largeMiddle',
-			},
-			{
-				key: 'button_red_largeTop',
-			},
-			{
-				key: 'button_red_largeBottom',
-			},
-			{
-				key: 'button_red_largeMiddle',
-			}
+			{key: 'button_orange_largeTop'},
+			{key: 'button_orange_largeBottom'},
+			{key: 'button_orange_largeMiddle'},
+			{key: 'button_red_largeTop'},
+			{key: 'button_red_largeBottom'},
+			{key: 'button_red_largeMiddle'}
 		];
 	}
 	var button = new UI.ButtonAltStyles(options);
@@ -342,4 +349,9 @@ LobbyBrowser.prototype.close = function(){
 LobbyBrowser.prototype.fadeIn = function(){
 	this.refresh();
 	supercall(LobbyBrowser).fadeIn.call(this);
+};
+
+LobbyBrowser.prototype.updatePosition = function(){
+	supercall(LobbyBrowser).updatePosition.call(this);
+	this.centerInfo();
 };

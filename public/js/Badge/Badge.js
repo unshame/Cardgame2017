@@ -69,22 +69,12 @@ Badge.prototype.updatePosition = function(){
 		console.error('Badge: invalid align', align);
 		break;
 	}
-	this._limitTextWidth(this.name, nameText, width);
+	UI.Text.limitWidth(this.name, nameText, width);
 	if(statusText){
-		this._limitTextWidth(this.status, statusText, width);
+		UI.Text.limitWidth(this.status, statusText, width);
 	}
 	else{
 		this.status.setText('', true);
 	}
 };
 
-Badge.prototype._limitTextWidth = function(textDisplay, text, width){
-	textDisplay.setText(text);
-	if(text.length && textDisplay.width > width){
-		textDisplay.setText(text + '...');
-		while(textDisplay.width > width && text.length > 3){
-			text = text.slice(0, -1);
-			textDisplay.setText(text + '...');
-		}
-	}
-};
