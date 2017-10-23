@@ -13,6 +13,13 @@ const
 	Log = require('../logger'),
 	Player = require('./Player');
 
+const DEBUG_AI_MODE = false;
+
+function consoleLog(){
+	if(DEBUG_AI_MODE){
+		console.log.apply(console, arguments);
+	}
+}
 
 class Bot extends Player {
 	constructor(randomNames, decisionTime, difficulty, replacement = false) {
@@ -79,8 +86,8 @@ class Bot extends Player {
 					this.log.warn('No game or game is inactive');
 					return;
 				}
-				console.log('RECEIVED ACTIONS: ', actions);
-				console.log('Is Attack Turn', this.isAttackTurn());
+				consoleLog('RECEIVED ACTIONS: ', actions);
+				consoleLog('Is Attack Turn', this.isAttackTurn());
 
 				if (this.isAttackTurn()) {
 					this.sendResponseSync(this.chooseAttack(actions));
@@ -805,9 +812,9 @@ class Bot extends Player {
 			}
 		}
 
-		console.log('Beatable Cards ', beatableCards);
-		console.log('Beatable Cards length', beatableCards.length);
-		console.log('Cards On TheTable length', cardsOnTheTable.length);
+		consoleLog('Beatable Cards ', beatableCards);
+		consoleLog('Beatable Cards length', beatableCards.length);
+		consoleLog('Cards On TheTable length', cardsOnTheTable.length);
 
 		return beatableCards.length !== cardsOnTheTable.length;
 	}
@@ -893,7 +900,7 @@ class Bot extends Player {
 			(unbeatableAction.csuit === minAction.csuit) &&
 			this.isAttack(unbeatableAction) &&
 			(this.difficulty === 3) && (!isTransferable)) {
-			console.log('UNBEATABLE ACTION: ', true);
+			consoleLog('UNBEATABLE ACTION: ', true);
 			return true;
 		}
 
@@ -908,7 +915,7 @@ class Bot extends Player {
 		if ((untransferableAction.cvalue <= minAction.cvalue + 2) &&
 			(untransferableAction.csuit === minAction.csuit) &&
 			this.isAttack(untransferableAction) && (this.difficulty === 3)) {
-			console.log('UNTRANSFERABLE ACTION: ', true);
+			consoleLog('UNTRANSFERABLE ACTION: ', true);
 			return true;
 		}
 
