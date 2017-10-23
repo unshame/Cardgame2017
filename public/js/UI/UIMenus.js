@@ -6,6 +6,7 @@ UI.prototype._createMenus = function(){
 	if(renderer == Phaser.AUTO){
 		renderer = game.renderType;
 		gameOptions.set('system_renderer', renderer);
+		gameOptions.save();
 	}
 	var nameMaxLength = 8;
 	var optionsStepperWidth = 100;
@@ -195,6 +196,8 @@ UI.prototype._createMenus = function(){
 				Menu.alignLeft(
 					Menu.text({
 						text: 'Render mode',
+						hoverText: 'WebGL usually has better performance but might not be supported on some devices\nThe page will need to be reloaded for this to take effect',
+						hoverPlacement: 'left',
 						fixedWidth: optionsTextWidth
 					}),
 					Menu.stepper({
@@ -220,16 +223,18 @@ UI.prototype._createMenus = function(){
 							gameOptions.set('ui_vignette', false);
 							ui.background.vignette.visible = false;
 						},
-						text: 'Enable vignette',
+						text: 'Vignette',
 						name: 'vignette',
 						checked: gameOptions.get('ui_vignette'),
-						hoverText: '',
+						hoverText: 'Dims the edges',
 						hoverPlacement: 'right'
 					})
 				),
 				Menu.alignLeft(
 					Menu.text({
 						text: 'Game speed',
+						hoverPlacement: 'left',
+						hoverText: 'How fast the cards will move around the screen',
 						fixedWidth: optionsTextWidth
 					}),
 					Menu.stepper({
@@ -274,6 +279,8 @@ UI.prototype._createMenus = function(){
 				Menu.alignLeft(
 					Menu.text({
 						text: 'Game scale',
+						hoverPlacement: 'left',
+						hoverText: 'Scales game objects and interface\nUpper bound is limited by the window size',
 						fixedWidth: optionsTextWidth
 					}),
 					Menu.stepper({
@@ -283,32 +290,31 @@ UI.prototype._createMenus = function(){
 							game.updateCoordinates();	
 						},
 						choices: [
-							[0.5, '0.5'],
-							[0.6, '0.6'],
-							[0.7, '0.7'],
-							[0.8, '0.8'],
-							[0.9, '0.9'],
+							[1.5, '0.5'],
+							[1.4, '0.6'],
+							[1.3, '0.7'],
+							[1.2, '0.8'],
+							[1.1, '0.9'],
 							[1, '1'],
-							[1.1, '1.1'],
-							[1.2, '1.2'],
-							[1.3, '1.3'],
-							[1.4, '1.4'],
-							[1.5, '1.5']
+							[0.9, '1.1'],
+							[0.8, '1.2'],
+							[0.7, '1.3'],
+							[0.6, '1.4'],
+							[0.5, '1.5']
 						],
 						name: 'scale',
 						textColor: 'black',
 						startKey: gameOptions.get('game_scale'),
 						minWidth: optionsStepperWidth
 					}),
-
+					{	
+						action: function(){
+							ui.modalManager.openModal('name');
+						}, 
+						name: 'name',
+						text: 'Change Name'
+					}
 				),
-				Menu.alignLeft({	
-					action: function(){
-						ui.modalManager.openModal('name');
-					}, 
-					name: 'name',
-					text: 'Change Name'
-				}),
 				Menu.alignJustify(
 					Menu.buttonPopup({	
 						action: function(){
@@ -364,14 +370,14 @@ UI.prototype._createMenus = function(){
 			elementColor: 'grey',
 			textColor: 'black',
 			name: 'menu_apply_renderer',
-			header: 'Apply Renderer',
+			header: 'Render Mode',
 			closeButton: function(){
 				ui.modalManager.closeModal();
 			},
 			closeButtonCrossColor: 'grey',
 			layout: [
 				Menu.text({
-					text: 'Render mode requires the page to be reloaded to take effect.\nReload the page now?'
+					text: 'Changing render mode requires the page to be reloaded.\nReload the page now?'
 				}),
 				[
 					{

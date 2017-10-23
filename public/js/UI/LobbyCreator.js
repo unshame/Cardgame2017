@@ -81,7 +81,7 @@ var LobbyCreator = function(options){
 					'36',
 					'52'			
 				],
-				startKey: '36',
+				startKey: '52',
 				minWidth: stepperWidth
 			}),
 			Menu.checkbox({
@@ -121,7 +121,7 @@ var LobbyCreator = function(options){
 			})*/
 		),
 
-		[
+		Menu.alignJustify(
 			Menu.checkbox({
 				text: 'Private',
 				name: 'private',
@@ -145,7 +145,7 @@ var LobbyCreator = function(options){
 				},
 				context: this
 			}
-		]	
+		)
 	];
 	this.options.layout = layout;
 	

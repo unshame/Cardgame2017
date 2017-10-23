@@ -49,7 +49,7 @@ class DurakGame extends Game{
 			canTransfer: Boolean(rules.canTransfer),
 			limitFollowup: Boolean(rules.limitFollowup),
 			limitAttack: Boolean(rules.limitAttack),
-			freeForAll: Boolean(rules.freeForAll),
+			freeForAll: false,
 			numCards: Number(rules.numCards)
 		};
 	}
