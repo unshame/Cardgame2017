@@ -21,7 +21,7 @@ var clientMethods = {
 		gameOptions.save();
 		connection.id = connId;
 		if(name){
-			ui.menus.name.getElementByName('name').placeHolder.setText(name, true);
+			ui.menus.name.setPlaceHolder(name);
 		}
 	},
 
@@ -32,8 +32,7 @@ var clientMethods = {
 			game.state.change('play');
 			connection.proxy.requestGameInfo();
 			if(name){
-				gameOptions.set('profile_name', name);
-				gameOptions.save();
+				ui.menus.name.updateName(name);
 			}
 			else{
 				connection.server.restoreClientName();

@@ -103,7 +103,11 @@ NamePicker.prototype.updateName = function(name){
 	ui.modalManager.closeAllModals();
 	this.cornerButton.hide();
 	this.nameChanged = true;
-	
+
+	this.setPlaceHolder(name);
+};
+
+NamePicker.prototype.setPlaceHolder = function(name){
 	var field = this.getElementByName('name');
 	field.placeHolder.setText(name, true);
 	field.resetText();
