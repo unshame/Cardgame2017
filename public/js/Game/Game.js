@@ -39,6 +39,8 @@ var Game = function(parent, speed, inDebugMode){
 	*/
 	this.pausedByViewChange = false;
 
+	this.pausedAt = 0;
+
 	/**
 	* Находится ли игра в горизонтальном положении, 
 	* рассчитывается только по размеру экрана.
@@ -175,6 +177,7 @@ Game.prototype._updateCoordinatesDebounce = function(){
 Game.prototype.pause = function(){
 	this.paused = true;	
 	this.pausedByViewChange = true;
+	this.pausedAt = Date.now();
 	if(this.inDebugMode){
 		console.log('Game: paused by visibility change');
 	}
@@ -190,6 +193,11 @@ Game.prototype.unpause = function(){
 
 	var state = this.state.getCurrent();
 	setTimeout(state.postResumed.bind(state), 1000);
+
+	if(Date.now() - this.pausedAt > 5000){
+		actionHandler.sequencer.finish();
+	}
+	this.pausedAt = 0;
 };
 
 /**
