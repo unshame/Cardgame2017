@@ -152,7 +152,7 @@ var OptionsMenu = function(options){
 					[1, 'By suit'],
 					[2, 'By value']
 				],
-				name: 'scale',
+				name: 'sorting',
 				textColor: 'black',
 				startKey: gameOptions.get('ui_sorting'),
 				minWidth: optionsStepperWidth
@@ -291,8 +291,15 @@ OptionsMenu.prototype.applyOptions = function(){
 		vegBox.check();
 	}
 
-	actionHandler.highlightPossibleActions();
+	this.getElementByName('sorting').setKey(uiOpts['sorting']);
 	fieldManager.sortPlayerHand();
+
+	var glow = uiOpts['glow'];
+	var glowBox = this.getElementByName('hard_mode');
+	if(glowBox.checked == glow){
+		glowBox.check();
+	}
+	actionHandler.highlightPossibleActions();
 
 	gameOptions.save();
 

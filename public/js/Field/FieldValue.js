@@ -138,6 +138,5 @@ Field.prototype._compareCards = function(sorting, a, b){
 			return 1;
 		}
 		return -1;
-
 	}
 };
