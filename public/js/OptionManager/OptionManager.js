@@ -56,6 +56,7 @@ OptionManager.prototype = {
 			'ui_vignette': true,
 			'ui_glow': true,
 			'ui_sorting': 1,
+			'ui_cursor': true,
 
 			'connection_id': null,
 

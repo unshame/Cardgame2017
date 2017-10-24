@@ -83,24 +83,43 @@ UI.Cursor.prototype.update = function(cursorinGame, noOverlapCheck){
 		return;
 	}
 
-	game.canvas.style.cursor = "none";
-	this.x = game.input.x;
-	this.y = game.input.y;
+	var replaceCursor = gameOptions.get('ui_cursor');
+	if(replaceCursor){
+		game.canvas.style.cursor = "none";
+		this.x = game.input.x;
+		this.y = game.input.y;
+		if(!this.visible){
+			this.visible = true;
+		}
+	}
+	else if(this.visible){
+		this.visible = false;
+	}
 
 	// Курсор перетаскивает карту
 	// меняем его на сжатую руку
 	if(cardControl.card){
-		this.x -= this.width/2;
-		this.y -= this.height/2;
-		this.frame = 2;
+		if(replaceCursor){
+			this.x -= this.width/2;
+			this.y -= this.height/2;
+			this.frame = 2;
+		}
+		else{
+			game.canvas.style.cursor = "pointer";
+		}
 		return;
 	}
 
 	// Если курсор над картой или элементом интерфейса,
 	// меняем его на указатель
 	if(noOverlapCheck || this.overlappingElement && this.overlappingElement.cursorIsOver()){
-		this.x -= this.width*0.41;
-		this.frame = 1;
+		if(replaceCursor){
+			this.x -= this.width*0.41;
+			this.frame = 1;
+		}
+		else{
+			game.canvas.style.cursor = "pointer";
+		}
 		return;
 	}
 	else{
@@ -108,7 +127,12 @@ UI.Cursor.prototype.update = function(cursorinGame, noOverlapCheck){
 	}
 
 	// Курсор не над чем не находится
-	this.frame = 0;
+	if(replaceCursor){
+		this.frame = 0;
+	}
+	else{
+		game.canvas.style.cursor = "default";
+	}
 };
 
 /**

@@ -87,11 +87,13 @@ UI.Checkbox.prototype.updatePosition = function(position){
 
 UI.Checkbox.prototype.enable = function(){
 	supercall(UI.Checkbox).enable.call(this);
+	this.label.inputEnabled = true;
 	this.alpha = 1;
 };
 
 UI.Checkbox.prototype.disable = function(passive){
 	supercall(UI.Checkbox).disable.call(this, passive);
+	this.label.inputEnabled = false;
 	if(!passive){
 		this.alpha = 0.75;
 	}

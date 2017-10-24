@@ -36,17 +36,17 @@ var OptionsMenu = function(options){
 			}),
 			Menu.checkbox({
 				actionEnable: function(){
-					gameOptions.set('ui_vignette', true);
-					ui.background.vignette.visible = true;
+					gameOptions.set('ui_glow', false);
+					actionHandler.highlightPossibleActions();
 				},
 				actionDisable: function(){
-					gameOptions.set('ui_vignette', false);
-					ui.background.vignette.visible = false;
+					gameOptions.set('ui_glow', true);
+					actionHandler.highlightPossibleActions();
 				},
-				text: 'Vignette',
-				name: 'vignette',
-				checked: gameOptions.get('ui_vignette'),
-				hoverText: 'Dims the edges',
+				text: 'Hard mode',
+				name: 'hard_mode',
+				checked: !gameOptions.get('ui_glow'),
+				hoverText: 'Disables card and table highlights',
 				hoverPlacement: 'right'
 			})
 		),
@@ -82,17 +82,17 @@ var OptionsMenu = function(options){
 			}),
 			Menu.checkbox({
 				actionEnable: function(){
-					gameOptions.set('ui_glow', false);
-					actionHandler.highlightPossibleActions();
+					gameOptions.set('ui_vignette', true);
+					ui.background.vignette.visible = true;
 				},
 				actionDisable: function(){
-					gameOptions.set('ui_glow', true);
-					actionHandler.highlightPossibleActions();
+					gameOptions.set('ui_vignette', false);
+					ui.background.vignette.visible = false;
 				},
-				text: 'Hard mode',
-				name: 'hard_mode',
-				checked: !gameOptions.get('ui_glow'),
-				hoverText: 'Disables card and table highlights',
+				text: 'Vignette',
+				name: 'vignette',
+				checked: gameOptions.get('ui_vignette'),
+				hoverText: 'Dims the edges',
 				hoverPlacement: 'right'
 			})
 		),
@@ -100,7 +100,7 @@ var OptionsMenu = function(options){
 			Menu.text({
 				text: 'Game scale',
 				hoverPlacement: 'left',
-				hoverText: 'Scales game objects and interface\nUpper bound is limited by the window size',
+				hoverText: 'Scales game objects and interface\nWon\'t do anything on smaller screens',
 				fixedWidth: optionsTextWidth
 			}),
 			Menu.stepper({
@@ -127,13 +127,19 @@ var OptionsMenu = function(options){
 				startKey: gameOptions.get('game_scale'),
 				minWidth: optionsStepperWidth
 			}),
-			{	
-				action: function(){
-					ui.modalManager.openModal('name');
-				}, 
-				name: 'name',
-				text: 'Change Name'
-			}
+			Menu.checkbox({
+				actionEnable: function(){
+					gameOptions.set('ui_cursor', true);
+				},
+				actionDisable: function(){
+					gameOptions.set('ui_cursor', false);
+				},
+				text: 'Replace cursor',
+				name: 'cursor',
+				checked: gameOptions.get('ui_cursor'),
+				hoverText: 'Replaces default cursor\nDisable this if you feel like the cursor is lagging behind too much',
+				hoverPlacement: 'right'
+			})
 		),
 		Menu.alignLeft(
 			Menu.text({
@@ -156,7 +162,14 @@ var OptionsMenu = function(options){
 				textColor: 'black',
 				startKey: gameOptions.get('ui_sorting'),
 				minWidth: optionsStepperWidth
-			})
+			}),
+			{	
+				action: function(){
+					ui.modalManager.openModal('name');
+				}, 
+				name: 'name',
+				text: 'Change Name'
+			}
 		),
 		Menu.alignJustify(
 			Menu.buttonPopup({	
@@ -230,6 +243,11 @@ var OptionsMenu = function(options){
 	
 	Menu.call(this, this.options);
 
+	if(!Phaser.Device.desktop){
+		this.disableElement('cursor');
+		this.applyCheckbox('cursor', false);
+	}
+
 	this.updatePosition();
 };
 
@@ -267,6 +285,13 @@ OptionsMenu.prototype.modifyOptions = function(action, message, time){
 	ui.feed.newMessage(message, time);
 };
 
+OptionsMenu.prototype.applyCheckbox = function(name, checked){
+	var checkbox = this.getElementByName(name);
+	if(checkbox.checked != checked){
+		checkbox.check();
+	}
+};
+
 OptionsMenu.prototype.applyOptions = function(){
 
 	var renderer = gameOptions.get('system_renderer');
@@ -284,22 +309,18 @@ OptionsMenu.prototype.applyOptions = function(){
 	this.getElementByName('speed').setKey(speed);
 
 	var uiOpts = gameOptions.getGroup('ui');
-	var visible = uiOpts['vignette'];
-	ui.background.vignette.visible = visible;						
-	var vegBox = this.getElementByName('vignette');
-	if(vegBox.checked != visible){
-		vegBox.check();
-	}
+
+	this.applyCheckbox('vignette', uiOpts['vignette']);
 
 	this.getElementByName('sorting').setKey(uiOpts['sorting']);
 	fieldManager.sortPlayerHand();
 
-	var glow = uiOpts['glow'];
-	var glowBox = this.getElementByName('hard_mode');
-	if(glowBox.checked == glow){
-		glowBox.check();
-	}
+	this.applyCheckbox('hard_mode', !uiOpts['glow']);
 	actionHandler.highlightPossibleActions();
+
+	if(Phaser.Device.desktop){
+		this.applyCheckbox('cursor', uiOpts['cursor']);
+	}
 
 	gameOptions.save();
 
