@@ -20,7 +20,7 @@ MessageFeed.EventFeed = function(game, name){
 		'system': {
 			fill: ui.colors.menu.red.background, 
 			stroke: ui.colors.menu.red.outer, 
-			font: '50px Exo', 
+			font: '50px Exo, Helvetica', 
 			strokeThickness: 2, 
 			wordWrap: true,
 			align: 'center'
@@ -28,7 +28,7 @@ MessageFeed.EventFeed = function(game, name){
 		'positive': {
 			fill: ui.colors.menu.green.background, 
 			stroke: ui.colors.menu.green.outer, 
-			font: '50px Exo',
+			font: '50px Exo, Helvetica',
 			strokeThickness: 2, 
 			wordWrap: true,
 			align: 'center'
@@ -36,7 +36,7 @@ MessageFeed.EventFeed = function(game, name){
 		'neutral': {
 			fill: ui.colors.menu.orange.background, 
 			stroke: ui.colors.menu.orange.outer, 
-			font: '50px Exo',
+			font: '50px Exo, Helvetica',
 			strokeThickness: 2, 
 			wordWrap: true,
 			align: 'center'

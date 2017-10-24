@@ -40,7 +40,7 @@ extend(UI.Text, Phaser.Text, [UI.PopupComponent]);
 		text: null,
 		name: null,
 		textColor: 'black',
-		font: 'Exo',
+		font: 'Exo, Helvetica',
 		fontSize: 26,
 		group: null,
 		hoverText: null,

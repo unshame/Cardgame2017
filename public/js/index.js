@@ -3,7 +3,6 @@
 /* jshint unused:false */
 
 //@include:global
-//@include:fonts
 //@include:loc
 //@include:types
 

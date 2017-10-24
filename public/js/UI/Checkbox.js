@@ -50,7 +50,7 @@ UI.Checkbox.prototype.getDefaultCheckboxOptions = function(){
 		text: '',
 		name: null,
 		textColor: 'black',
-		font: 'Exo',
+		font: 'Exo, Helvetica',
 		fontSize: 26,
 		context: null,
 		group: null,

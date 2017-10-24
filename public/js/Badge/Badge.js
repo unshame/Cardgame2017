@@ -1,8 +1,8 @@
 var Badge = function(field, pid){
 	Phaser.Group.call(this, game, null, name);
 	this.field = field;
-	this.status = game.add.text(0, 0, '', {fill: 'white', font: '24px Exo'}, this);
-	this.name = game.add.text(0, 0, name, {fill: 'white', font: '24px Exo'}, this);
+	this.status = game.add.text(0, 0, '', {fill: 'white', font: '24px Exo, Helvetica'}, this);
+	this.name = game.add.text(0, 0, name, {fill: 'white', font: '24px Exo, Helvetica'}, this);
 	this.player = gameInfo.getPlayer(pid);
 	this.updatePosition();
 };

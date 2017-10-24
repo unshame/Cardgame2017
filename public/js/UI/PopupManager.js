@@ -53,7 +53,7 @@ UI.PopupManager = function(){
 	* Текст.
 	* @type {Phaser.Text}
 	*/
-	this.text = game.add.text(0, 0, '', {fill: 'black', font: '18px Exo', wordWrap: true, wordWrapWidth: 250, align: 'center'}, this);
+	this.text = game.add.text(0, 0, '', {fill: 'black', font: '18px Exo, Helvetica', wordWrap: true, wordWrapWidth: 250, align: 'center'}, this);
 	this.text.anchor.set(0.5, 0.5);
 	this.text.setShadow(1, 1, 'rgba(0,0,0,0.5)', 3);
 

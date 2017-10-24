@@ -61,7 +61,7 @@ UI.Stepper.prototype.getDefaultOptions = function(){
 		icon: null,
 		group: null,
 		fontSize: 28,
-		font: 'Exo',
+		font: 'Exo, Helvetica',
 		choices: {},
 		startKey: null,
 		action: function(){},

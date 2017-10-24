@@ -1,6 +1,6 @@
 UI.Credits = function(text, onClick){
     Phaser.Text.call(this, game, 0, 0, text, {
-          font: "bold 50px Exo",
+          font: "bold 50px Exo, Helvetica",
           fill: "white",
           align: "center",
           wordWrap: true

@@ -14,8 +14,8 @@ var MessageFeed = function(game, name){
 	* @property {object} warning Красный текст 40px
 	*/
 	this.styles = {
-		system: {fill: 'white', font: '30px Exo', wordWrap: true},
-		warning: {fill: 'red', font: '40px Exo',wordWrap: true}
+		system: {fill: 'white', font: '30px Exo, Helvetica', wordWrap: true},
+		warning: {fill: 'red', font: '40px Exo, Helvetica',wordWrap: true}
 	};
 
 	/**

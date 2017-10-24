@@ -14,7 +14,7 @@
 * @param {number}                options.scale=1                  Масштаб кнопки.
 * @param {string}                options.text=null                Текст кнопки.
 * @param {string}                options.textColor='black'        Цвет текста.
-* @param {string}                options.font='Exo'               Шрифт текста.
+* @param {string}                options.font='Exo, Helvetica'               Шрифт текста.
 * @param {number}                options.fontSize=26              Размер шрифта.
 * @param {string}                options.icon=null                Иконка кнопки.
 * @param {string}                options.name=null                Имя кнопки.
@@ -122,7 +122,7 @@ UI.Button.prototype.getDefaultOptions = function(){
 		name: null,
 		downOffset: 4,
 		textColor: 'black',
-		font: 'Exo',
+		font: 'Exo, Helvetica',
 		fontSize: 26,
 		context: null,
 		group: null,

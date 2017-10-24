@@ -55,7 +55,7 @@ UI.InputField.prototype.getDefaultOptions = function(){
 		height: 49,
 		padding: 8,
 		margin: 2,
-		font: '26px Exo',
+		font: '26px Exo, Helvetica',
 		textColor: 'black',
 		name: null,
 		placeHolder: null,

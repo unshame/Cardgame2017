@@ -20,7 +20,7 @@ MessageFeed.AnnounceFeed = function(game, name){
 		'system': {
 			fill: ui.colors.menu.orange.background,
 			stroke: ui.colors.menu.orange.outer,
-			font: '100px Exo',
+			font: '100px Exo, Helvetica',
 			strokeThickness: 2, 
 			wordWrap: true,
 			align: 'center'
