@@ -76,49 +76,68 @@ Field.prototype.setPopOut = function(popped){
 /**
 * Сортирует карты в `{@link Field#cards}` по значению.
 */
-Field.prototype._sortCards = function(){
-	if(this.style.sortable){
-		this.cards.sort(this._compareCards);
+Field.prototype.sortCards = function(){
+	var sorting = gameOptions.get('ui_sorting');
+	if(this.style.sortable && sorting !== 0){
+		this.cards.sort(this._compareCards.bind(this, sorting));
 	}
 };
 
 /**
 * Компаратор для сортировки.
-* @see  {@link Field#_sortCards}
+* @see  {@link Field#sortCards}
 * @see  {@link https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/sort?v=control|Array#sort}
 */
-Field.prototype._compareCards = function(a, b){
+Field.prototype._compareCards = function(sorting, a, b){
+	console.log(sorting)
 	if(!a.suit && a.suit !== 0){
 		if(b.suit || b.suit === 0){
 			return -1;
 		}
-		else{
-			return 0;
-		}
+		return 0;
 	}
 	if(!b.suit && b.suit !== 0){
 		if(a.suit || a.suit === 0){
 			return 1;
 		}
-		else{
-			return 0;
-		}
+		return 0;
 	}
-	if(a.suit == b.suit){
-		if(a.value == b.value){
-			return 0;
-		}
-		else if(a.value > b.value){
-			return 1;
-		}
-		else{
+
+	if(sorting === 1){
+		if(a.suit == b.suit){
+			if(a.value == b.value){
+				return 0;
+			}
+			if(a.value < b.value){
+				return 1;
+			}
 			return -1;
 		}
-	}
-	else if(a.suit > b.suit){
-		return 1;
+		if(a.suit > b.suit){
+			return 1;
+		}
+		return -1;
 	}
 	else{
+		if(a.suit == gameInfo.trumpSuit && b.suit !== gameInfo.trumpSuit){
+			return -1;
+		}
+		if(b.suit == gameInfo.trumpSuit && a.suit !== gameInfo.trumpSuit){
+			return 1;
+		}
+		if(a.value == b.value){
+			if(a.suit == b.suit){
+				return 0;
+			}
+			if(a.suit > b.suit){
+				return 1;
+			}
+			return -1;
+		}
+		if(a.value < b.value){
+			return 1;
+		}
 		return -1;
+
 	}
 };

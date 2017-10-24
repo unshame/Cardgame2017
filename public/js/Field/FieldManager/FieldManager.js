@@ -182,3 +182,12 @@ FieldManager.prototype.toggleDebugMode = function(){
 	actionHandler.highlightPossibleActions();
 	ui.setDebugButtonText('fields', 'Fields', this.inDebugMode);
 };
+
+FieldManager.prototype.sortPlayerHand = function(){
+	if(!this.networkCreated || !gameInfo.pid || !this.fields[gameInfo.pid]){
+		return;
+	}
+	var field = this.fields[gameInfo.pid];
+	field.sortCards();
+	field.placeCards();
+};

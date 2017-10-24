@@ -66,7 +66,7 @@ var reactPrimary = {
 		cardManager.disablePhysics();
 
 		var gameId = gameInfo.gameId;
-		gameInfo.saveGameInfo(action.gameId, action.gameIndex, action.gameRules, action.simulating);
+		gameInfo.saveGameInfo(action.gameId, action.gameIndex, action.gameRules, action.simulating, action.trumpSuit);
 
 		// Создаем недостающие карты
 		cardManager.createCards(action.cards);

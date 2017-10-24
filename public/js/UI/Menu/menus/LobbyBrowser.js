@@ -177,6 +177,7 @@ LobbyBrowser.prototype.recieveList = function(action){
 		this.disableElement('join');
 		this.resetInfo();
 		this.info.setText('No games found :(', true);
+		this.centerInfo();
 	}
 
 };
@@ -190,6 +191,9 @@ LobbyBrowser.prototype.resetInfo = function(){
 LobbyBrowser.prototype.centerInfo = function(){
 	this.info.updatePosition();
 	this.info.x += (this.info.fixedWidth - this.info.fixedWidth*this.info.scale.y)/2;
+	if(this.list.length === 0){
+		this.info.y += (this.buttons[0].height*this.pagination)/2 - this.info.height/2;
+	}
 };
 
 LobbyBrowser.prototype.select = function(u){

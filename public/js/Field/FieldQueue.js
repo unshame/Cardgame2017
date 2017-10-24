@@ -71,7 +71,7 @@ Field.prototype.placeQueuedCards = function(bringToTopOn, noDelay){
 	if(this.style.sortable){
 		bringToTopOn = BRING_TO_TOP_ON.START_ALL;
 	}
-	this._sortCards();
+	this.sortCards();
 	this.placeCards(null, bringToTopOn, noDelay);
 	this._setUninteractibleTimer(this._expectedDelay);
 	this._queuedCards = [];

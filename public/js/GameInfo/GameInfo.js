@@ -44,6 +44,11 @@ GameInfo.prototype = {
 		* @type {Boolean}
 		*/
 		this.simulating = false;
+		/**
+		* Козырная масть.
+		* @type {number}
+		*/
+		this.trumpSuit = null;
 
 		/**
 		* Индекс локального игрока в массиве игроков.
@@ -109,11 +114,12 @@ GameInfo.prototype = {
 	* @param {object}  rules      правила игры
 	* @param {boolean} simulating находится ли игра в режиме ускоренной симуляции
 	*/
-	saveGameInfo: function(gameId, gameIndex, rules, simulating){
+	saveGameInfo: function(gameId, gameIndex, rules, simulating, trumpSuit){
 		this.gameId = gameId;
 		this.gameIndex = gameIndex;
 		this.rules = rules;
 		this.simulating = simulating || false;
+		this.trumpSuit = trumpSuit;
 	},
 
 	/**

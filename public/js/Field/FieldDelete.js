@@ -28,7 +28,7 @@ Field.prototype.removeCards = function(cardsToRemove){
 	}
 	if(this.cards.length){
 		var bringToTopOn = (this.type == 'DECK') ? BRING_TO_TOP_ON.NEVER : BRING_TO_TOP_ON.END;
-		this._sortCards();
+		this.sortCards();
 		this.placeCards(null, bringToTopOn);
 	}
 };

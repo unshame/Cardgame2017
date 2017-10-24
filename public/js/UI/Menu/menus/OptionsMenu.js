@@ -135,6 +135,29 @@ var OptionsMenu = function(options){
 				text: 'Change Name'
 			}
 		),
+		Menu.alignLeft(
+			Menu.text({
+				text: 'Hand sorting',
+				hoverPlacement: 'left',
+				hoverText: 'How the cards will be sorted in your hand',
+				fixedWidth: optionsTextWidth
+			}),
+			Menu.stepper({
+				action: function(key){
+					gameOptions.set('ui_sorting', key);
+					fieldManager.sortPlayerHand();
+				},
+				choices: [
+					[0, 'No'],
+					[1, 'By suit'],
+					[2, 'By value']
+				],
+				name: 'scale',
+				textColor: 'black',
+				startKey: gameOptions.get('ui_sorting'),
+				minWidth: optionsStepperWidth
+			})
+		),
 		Menu.alignJustify(
 			Menu.buttonPopup({	
 				action: this.modifyOptions.bind(this, 'restoreGroup', 'Options restored', 2000), 
@@ -246,8 +269,6 @@ OptionsMenu.prototype.modifyOptions = function(action, message, time){
 
 OptionsMenu.prototype.applyOptions = function(){
 
-	actionHandler.highlightPossibleActions();
-	
 	var renderer = gameOptions.get('system_renderer');
 	this.getElementByName('renderer').setKey(renderer);
 
@@ -269,6 +290,10 @@ OptionsMenu.prototype.applyOptions = function(){
 	if(vegBox.checked != visible){
 		vegBox.check();
 	}
+
+	actionHandler.highlightPossibleActions();
+	fieldManager.sortPlayerHand();
+
 	gameOptions.save();
 
 	if(game.renderType != renderer){
