@@ -295,24 +295,24 @@ OptionsMenu.prototype.applyCheckbox = function(name, checked){
 OptionsMenu.prototype.applyOptions = function(){
 
 	var renderer = gameOptions.get('system_renderer');
-	this.getElementByName('renderer').setKey(renderer);
+	this.getElementByName('renderer').setKey(renderer, false);
 
 	var gameOpts = gameOptions.getGroup('game');
 
 	var scale = gameOpts['scale'];
 	game.scale.scaleMultiplier = scale;
-	this.getElementByName('scale').setKey(scale);
+	this.getElementByName('scale').setKey(scale, false);
 	game.updateCoordinates();	
 
 	var speed = gameOpts['speed'];
 	game.speed = speed;
-	this.getElementByName('speed').setKey(speed);
+	this.getElementByName('speed').setKey(speed, false);
 
 	var uiOpts = gameOptions.getGroup('ui');
 
 	this.applyCheckbox('vignette', uiOpts['vignette']);
 
-	this.getElementByName('sorting').setKey(uiOpts['sorting']);
+	this.getElementByName('sorting').setKey(uiOpts['sorting'], false);
 	fieldManager.sortPlayerHand();
 
 	this.applyCheckbox('hard_mode', !uiOpts['glow']);

@@ -95,7 +95,7 @@ skins.push({
 });*/
 
 // Uno
-skins.push({
+/*skins.push({
 	color: 0x68C655,
 	background: 'green',
 	width: 140,
@@ -116,3 +116,4 @@ skins.push({
 	scale: 1,
 	hasSuits: false
 });
+*/

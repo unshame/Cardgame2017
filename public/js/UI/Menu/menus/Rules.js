@@ -5,6 +5,7 @@ var Rules = function(options){
 	this.numOfSlides = 7;
 	this.currentSlide = 'rules0';
 	this.loaded = false;
+	this.stepper = null;
 
 	for(var i = 0; i < this.numOfSlides; i++){
 		game.load.image('rules' + i, 'assets/rules/rules' + (i + 1) + '.png');
@@ -51,6 +52,7 @@ Rules.prototype.proxyOpen = function(){
 Rules.prototype.showSlide = function(key){
 	this.hideElement(this.currentSlide);
 	this.showElement(key);
+	this.stepper.setKey(key, false);
 	this.currentSlide = key;
 };
 
@@ -82,11 +84,14 @@ Rules.prototype.createSlides = function(){
 			context: this,
 			choices: choices,
 			name: 'slides',
-			textColor: 'black'
+			textColor: 'black',
+			color: 'orange'
 		})
 	);
 
 	this.createLayout(layout);
+
+	this.stepper = this.getElementByName('slides');
 
 	for(var i = 1; i < this.numOfSlides; i++){
 		this.hideElement('rules' + i);
