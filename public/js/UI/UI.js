@@ -230,7 +230,18 @@ UI.prototype.toggleDebugButtons = function(){
 	}, this);
 	gameOptions.set('debug_buttons', this.debugButtons.visible);
 	gameOptions.save();
-}
+};
+
+UI.prototype.openRules = function(){
+	if(this.menus.rules){
+		this.menus.rules.proxyOpen();
+	}
+	else{
+		var message = this.feed.newMessage('Loading rules...');
+		this.menus.rules = new Rules({message: message});
+		this.layers.positionLayers();
+	}
+};
 
 
 //@include:UIMenus
@@ -247,6 +258,7 @@ UI.prototype.toggleDebugButtons = function(){
 //@include:Text
 //@include:Checkbox
 //@include:InputField
+//@include:Image
 
 //@include:Rope
 //@include:Logo

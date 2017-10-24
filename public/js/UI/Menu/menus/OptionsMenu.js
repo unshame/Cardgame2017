@@ -2,7 +2,7 @@ var OptionsMenu = function(options){
 
 	this.options = mergeOptions(this.getDefaultMenuOptions(), options);
 
-	var optionsStepperWidth = 100;
+	var optionsStepperWidth = 115;
 	var optionsTextWidth = 150;
 
 	var renderer = gameOptions.get('system_renderer');

@@ -144,22 +144,6 @@ Menu.prototype.getDefaultOptions = function(){
 	};
 };
 
-/**
-* Возвращает объект с функциями для создания элементов по названию элемента.
-* @return {object}
-*/
-Menu.prototype._getTypeMap = function(){
-	return {
-		button: this._addButton.bind(this),
-		buttonPopup: this._addButtonPopup.bind(this),
-		text: this._addText.bind(this),
-		checkbox: this._addCheckbox.bind(this),
-		stepper: this._addStepper.bind(this),
-		inputField: this._addInputField.bind(this),
-		// add more
-	};
-};
-
 //@include:MenuStatic
 //@include:MenuPosition
 //@include:MenuState
@@ -172,3 +156,4 @@ Menu.prototype._getTypeMap = function(){
 //@include:menus\OptionsMenu
 //@include:menus\NamePicker
 //@include:menus\LobbyMenu
+//@include:menus\Rules

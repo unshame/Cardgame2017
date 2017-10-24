@@ -1,4 +1,21 @@
 /**
+* Возвращает объект с функциями для создания элементов по названию элемента.
+* @return {object}
+*/
+Menu.prototype._getTypeMap = function(){
+	return {
+		button: this._addButton.bind(this),
+		buttonPopup: this._addButtonPopup.bind(this),
+		text: this._addText.bind(this),
+		checkbox: this._addCheckbox.bind(this),
+		stepper: this._addStepper.bind(this),
+		inputField: this._addInputField.bind(this),
+		image: this._addImage.bind(this),
+		// add more
+	};
+};
+
+/**
 * Создает макет меню и соответствующие макету элементы.
 * Предварительно удаляет любые существующие элементы меню.
 * @param  {array} layout Массив с настройками и типами элементов, представляющий макет меню. 
@@ -172,10 +189,9 @@ Menu.prototype._addInputField = function(options){
 	return field;
 };
 
-Menu.prototype._addImage = function(){
-
-};
-
-Menu.prototype._addDivider = function(){
-
+Menu.prototype._addImage = function(options){
+	options.group = this;
+	var image = new UI.Image(options);
+	this.elements.push(image);
+	return image;
 };

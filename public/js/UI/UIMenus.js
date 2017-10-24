@@ -3,23 +3,6 @@
 */
 UI.prototype._createMenus = function(){
 	
-	var text = 'В игре используется колода из 36 карт,\n\
-но можно использовать и колоду на 52 карты,\n\
-в игре участвуют от двух до шести игроков;\n\
-Старшинство карт в колоде из 52 карт:\n\
-2, 3, 4, 5, 6, 7, 8, 9, 10, В, Д, К, Т.\n\
-Старшинство мастей для игры в дурака не определено.\n\
-Каждому раздаётся по 6 карт, следующая\n\
-(или последняя, возможно и любая из колоды)\n\
-карта открывается и её масть устанавливает\n\
-козырь для данной игры,\n\
-и остальная колода кладётся сверху так,\n\
-чтобы козырная карта была всем видна.\n\
-Цель игры — избавиться от всех карт.\n\
-Последний игрок, не избавившийся от карт, остаётся в «дураках».\n\
-Запрещается забирать карты, которые отбили.\n\
-Отбитые карты идут в отбой (биту).';
-
 	var menus = {
 
 		// ГЛАВНОЕ МЕНЮ
@@ -27,10 +10,11 @@ UI.prototype._createMenus = function(){
 			position: function(width, height){
 				return {
 					x:game.screenWidth/2,
-					y:game.screenHeight/2 + width/2 + 75
+					y:game.screenHeight/2 + width/2 + 90
 				};
 			}, 
 			z: 6,
+			margin: 20,
 			name: 'menu_main',
 			color: 'orange',
 			elementColor: 'red',
@@ -71,6 +55,12 @@ UI.prototype._createMenus = function(){
 					},
 					name: 'options',
 					text: 'Options'
+				},
+				{
+					action: ui.openRules,
+					context: ui,
+					name: 'rules',
+					text: 'Rules'
 				},
 				{
 					action: function(){
@@ -159,9 +149,8 @@ UI.prototype._createMenus = function(){
 				),
 				[
 					{
-						action: function(){
-							ui.modalManager.openModal('rules');
-						},
+						action: ui.openRules,
+						context: ui,
 						name: 'rules',
 						text: 'Rules',
 					},
@@ -180,34 +169,6 @@ UI.prototype._createMenus = function(){
 						text: 'Debug'
 					}*/
 				]
-			]
-		}),
-		
-		// ПРАВИЛА
-		rules: new Menu({
-			position: function(){
-				return {
-					x:game.screenWidth/2,
-					y:game.screenHeight/2
-				};
-			}, 
-			z: -4,
-			color: 'grey',
-			elementColor: 'grey',
-			textColor: 'black',
-			name: 'menu_rules',
-			header: 'Rules',
-			modal: true,
-			closeButton: function(){
-				ui.modalManager.closeModal();
-			},
-			closeButtonCrossColor: 'grey',
-			layout: [
-				Menu.text({
-					name: 'rules',
-					text: text					
-				})
-
 			]
 		}),
 
@@ -336,6 +297,7 @@ UI.prototype._createMenus = function(){
 	menus.queue = new LobbyMenu();
 	menus.more_options = new OptionsMenu();
 	menus.name = new NamePicker();
+	//menus.rules = new Rules();
 
 	return menus;
 };

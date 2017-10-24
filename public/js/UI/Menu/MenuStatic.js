@@ -48,6 +48,12 @@ Menu.inputField = function(options){
 		options: options
 	};
 };
+Menu.image = function(options){
+	return {
+		type: 'image',
+		options: options
+	};
+};
 
 /**
 * Элементы будут выравнены по левому краю.

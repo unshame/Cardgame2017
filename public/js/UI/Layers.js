@@ -148,7 +148,7 @@ UI.Layers.prototype.setLayerIndex = function(layer, i){
 */
 UI.Layers.prototype.positionLayers = function(){
 	this._sortPositions();
-	game.world.children = this.positions;
+	game.world.children = this.positions.slice();
 };
 
 /**

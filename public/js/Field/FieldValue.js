@@ -89,7 +89,6 @@ Field.prototype.sortCards = function(){
 * @see  {@link https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/sort?v=control|Array#sort}
 */
 Field.prototype._compareCards = function(sorting, a, b){
-	console.log(sorting)
 	if(!a.suit && a.suit !== 0){
 		if(b.suit || b.suit === 0){
 			return -1;
