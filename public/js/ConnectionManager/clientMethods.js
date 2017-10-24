@@ -6,10 +6,18 @@
 /* exported clientMethods */
 var clientMethods = {
 
+	/**
+	* Сервер передает id соединения и id и имя игрока.
+	* @param {string} connId id соединения
+	* @param {string} pid    id игрока
+	* @param {string} name   стандартное имя игрока (PlayerX)
+	*/
 	setId: function(connId, pid, name){
 		actionHandler.sequencer.finish(true);
 		game.pid = pid;
 		var oldId = gameOptions.get('connection_id');
+		gameOptions.set('connection_id', connId);
+		gameOptions.save();
 		if(oldId){
 			connection.proxy.reconnectClient(oldId);
 		}
@@ -17,17 +25,21 @@ var clientMethods = {
 			connection.server.restoreClientName();
 			connection.server.tryJoiningLinkedQueue();
 		}
-		gameOptions.set('connection_id', connId);
-		gameOptions.save();
-		connection.id = connId;
 		if(name){
 			ui.menus.name.setPlaceHolder(name);
 		}
 	},
 
+	/**
+	* Сервер передает id и имя игрока, если удалось преподключить игрока к игре.
+	* @param {string} pid  id игрока
+	* @param {string} name имя игрока
+	*/
 	updateId: function(pid, name){
 		if(pid){
-			console.log('Reconnected to', pid);
+			if(connection.inDebugMode){
+				console.log('Reconnected to', pid);
+			}
 			game.pid = pid;
 			game.state.change('play');
 			connection.proxy.requestGameInfo();
@@ -46,6 +58,10 @@ var clientMethods = {
 		connection.server.tryJoiningLinkedQueue();
 	},
 
+	/**
+	* Все остальные серверные события/действия передаются в виде объектов в {@link ActionHandler}.
+	* @param  {object} action событие/действие
+	*/
 	recieveAction: function(action){
 		if(connection.inDebugMode){
 			console.log(action);
