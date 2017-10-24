@@ -10,7 +10,7 @@ var reactQueue = {
 	},
 
 	QUEUE_LEFT: function(){
-		ui.feed.newMessage('Left queue', 2000);
+		ui.feed.newMessage('Left lobby', 2000);
 		ui.menus.queue.fadeOut();
 		game.state.change('menu', false);
 	},
@@ -26,7 +26,7 @@ var reactQueue = {
 		if(action.names){
 			action.names.forEach(function(name){
 				var status = action.left ? ' left ' : ' entered ';
-				ui.feed.newMessage(name + status + 'queue', 3000);
+				ui.feed.newMessage(name + status + 'lobby', 3000);
 			});
 		}
 	},

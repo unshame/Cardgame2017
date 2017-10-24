@@ -138,20 +138,9 @@ UI.prototype.initialize = function(){
 
 	this.credits = new UI.Credits(creditsText, game.state.change.bind(game.state, 'menu'));
 	
-	this.menus = this._createMenus();
-	this.menus.browser = new LobbyBrowser();
-	this.menus.creator = new LobbyCreator();
-	this.menus.options.hideElement('concede');
-	this.modalManager.makeModal(
-		this.menus.options,
-		this.menus.debug,
-		this.menus.rules,
-		this.menus.more_options,
-		this.menus.name,
-		this.menus.apply_renderer
-	);
-
 	this._createButtons();
+
+	this.menus = this._createMenus();
 
 	this.layers.addExistingLayers([
 		[this.background, 0],
@@ -258,8 +247,6 @@ UI.prototype.toggleDebugButtons = function(){
 //@include:Text
 //@include:Checkbox
 //@include:InputField
-//@include:LobbyBrowser
-//@include:LobbyCreator
 
 //@include:Rope
 //@include:Logo

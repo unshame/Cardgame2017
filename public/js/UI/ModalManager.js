@@ -24,20 +24,16 @@ UI.ModalManager.prototype.updatePosition = function(){
 	this.height = game.screenHeight;
 };
 
-UI.ModalManager.prototype.makeModal = function(){
-	for(var i = 0; i < arguments.length; i++){
-		var modal = arguments[i];
-		if(!modal.fadeIn || !modal.fadeOut){
-			console.error('UI.ModalManager: modal doesn\'t have required methods');
-			continue;
-		}
-		this.modals[modal.name] = modal;
-		modal.modal = true;
-		modal._fadeIn = modal.fadeIn;
-		modal._fadeOut = modal.fadeOut;
-		modal._fadeToggle = modal.fadeToggle;
-		modal.fadeIn = modal.fadeOut = modal.fadeToggle = this._preventDirectCall.bind(modal);
+UI.ModalManager.prototype.makeModal = function(modal){
+	if(!modal.fadeIn || !modal.fadeOut){
+		console.error('UI.ModalManager: modal doesn\'t have required methods');
 	}
+	this.modals[modal.name] = modal;
+	modal.modal = true;
+	modal._fadeIn = modal.fadeIn;
+	modal._fadeOut = modal.fadeOut;
+	modal._fadeToggle = modal.fadeToggle;
+	modal.fadeIn = modal.fadeOut = modal.fadeToggle = this._preventDirectCall.bind(modal);
 };
 
 UI.ModalManager.prototype._preventDirectCall = function(){

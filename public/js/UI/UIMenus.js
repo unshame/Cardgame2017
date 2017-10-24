@@ -2,16 +2,25 @@
 * Создает меню.
 */
 UI.prototype._createMenus = function(){
-	var renderer = gameOptions.get('system_renderer');
-	if(renderer == Phaser.AUTO){
-		renderer = game.renderType;
-		gameOptions.set('system_renderer', renderer);
-		gameOptions.save();
-	}
-	var nameMaxLength = 8;
-	var optionsStepperWidth = 100;
-	var optionsTextWidth = 150;
-	return {
+	
+	var text = 'В игре используется колода из 36 карт,\n\
+но можно использовать и колоду на 52 карты,\n\
+в игре участвуют от двух до шести игроков;\n\
+Старшинство карт в колоде из 52 карт:\n\
+2, 3, 4, 5, 6, 7, 8, 9, 10, В, Д, К, Т.\n\
+Старшинство мастей для игры в дурака не определено.\n\
+Каждому раздаётся по 6 карт, следующая\n\
+(или последняя, возможно и любая из колоды)\n\
+карта открывается и её масть устанавливает\n\
+козырь для данной игры,\n\
+и остальная колода кладётся сверху так,\n\
+чтобы козырная карта была всем видна.\n\
+Цель игры — избавиться от всех карт.\n\
+Последний игрок, не избавившийся от карт, остаётся в «дураках».\n\
+Запрещается забирать карты, которые отбили.\n\
+Отбитые карты идут в отбой (биту).';
+
+	var menus = {
 
 		// ГЛАВНОЕ МЕНЮ
 		main: new Menu({
@@ -73,7 +82,6 @@ UI.prototype._createMenus = function(){
 			]
 		}),
 
-
 		// ОПЦИИ
 		options: new Menu({
 			position: function(){
@@ -88,6 +96,7 @@ UI.prototype._createMenus = function(){
 			textColor: 'black',
 			name: 'menu_options',
 			header: 'Options',
+			modal: true,
 			closeButton: function(){
 				ui.modalManager.closeModal();
 			},
@@ -173,278 +182,7 @@ UI.prototype._createMenus = function(){
 				]
 			]
 		}),
-
-		// БОЛЬШЕ ОПЦИЙ
-		more_options: new Menu({
-			position: function(){
-				return {
-					x:game.screenWidth/2,
-					y:game.screenHeight/2
-				};
-			}, 
-			z: -4,
-			color: 'grey',
-			elementColor: 'grey',
-			textColor: 'black',
-			name: 'menu_more_options',
-			header: 'Options',
-			closeButton: function(){
-				ui.modalManager.closeModal();
-			},
-			closeButtonCrossColor: 'grey',
-			layout: [
-				Menu.alignLeft(
-					Menu.text({
-						text: 'Render mode',
-						hoverText: 'WebGL usually has better performance but might not be supported on some devices\nThe page will need to be reloaded for this to take effect',
-						hoverPlacement: 'left',
-						fixedWidth: optionsTextWidth
-					}),
-					Menu.stepper({
-						action: function(key){
-							gameOptions.set('system_renderer', key);
-						},
-						choices: [
-							[0, 'Detect'],
-							[2, 'WebGL'],
-							[1, 'Canvas']
-						],
-						name: 'renderer',
-						textColor: 'black',
-						startKey: renderer,
-						minWidth: optionsStepperWidth
-					}),
-					Menu.checkbox({
-						actionEnable: function(){
-							gameOptions.set('ui_vignette', true);
-							ui.background.vignette.visible = true;
-						},
-						actionDisable: function(){
-							gameOptions.set('ui_vignette', false);
-							ui.background.vignette.visible = false;
-						},
-						text: 'Vignette',
-						name: 'vignette',
-						checked: gameOptions.get('ui_vignette'),
-						hoverText: 'Dims the edges',
-						hoverPlacement: 'right'
-					})
-				),
-				Menu.alignLeft(
-					Menu.text({
-						text: 'Game speed',
-						hoverPlacement: 'left',
-						hoverText: 'How quickly the cards will move around the screen',
-						fixedWidth: optionsTextWidth
-					}),
-					Menu.stepper({
-						action: function(key){
-							gameOptions.set('game_speed', key);		
-							game.speed = key;			
-						},
-						choices: [
-							[0.75, '0.75'],
-							[0.80, '0.80'],
-							[0.85, '0.85'],
-							[0.90, '0.90'],
-							[0.95, '0.95'],
-							[1, '1'],
-							[1.05, '1.05'],
-							[1.10, '1.10'],
-							[1.15, '1.15'],
-							[1.20, '1.20'],
-							[1.25, '1.25']
-						],
-						name: 'speed',
-						textColor: 'black',
-						startKey: gameOptions.get('game_speed'),
-						minWidth: optionsStepperWidth
-					}),
-					Menu.checkbox({
-						actionEnable: function(){
-							gameOptions.set('ui_glow', false);
-							actionHandler.highlightPossibleActions();
-						},
-						actionDisable: function(){
-							gameOptions.set('ui_glow', true);
-							actionHandler.highlightPossibleActions();
-						},
-						text: 'Hard mode',
-						name: 'hard_mode',
-						checked: !gameOptions.get('ui_glow'),
-						hoverText: 'Disables card and table highlights',
-						hoverPlacement: 'right'
-					})
-				),
-				Menu.alignLeft(
-					Menu.text({
-						text: 'Game scale',
-						hoverPlacement: 'left',
-						hoverText: 'Scales game objects and interface\nUpper bound is limited by the window size',
-						fixedWidth: optionsTextWidth
-					}),
-					Menu.stepper({
-						action: function(key){
-							gameOptions.set('game_scale', key);		
-							game.scale.scaleMultiplier = key;
-							game.updateCoordinates();	
-						},
-						choices: [
-							[1.5, '0.5'],
-							[1.4, '0.6'],
-							[1.3, '0.7'],
-							[1.2, '0.8'],
-							[1.1, '0.9'],
-							[1, '1'],
-							[0.9, '1.1'],
-							[0.8, '1.2'],
-							[0.7, '1.3'],
-							[0.6, '1.4'],
-							[0.5, '1.5']
-						],
-						name: 'scale',
-						textColor: 'black',
-						startKey: gameOptions.get('game_scale'),
-						minWidth: optionsStepperWidth
-					}),
-					{	
-						action: function(){
-							ui.modalManager.openModal('name');
-						}, 
-						name: 'name',
-						text: 'Change Name'
-					}
-				),
-				Menu.alignJustify(
-					Menu.buttonPopup({	
-						action: function(){
-							gameOptions.restoreGroup('system');
-							gameOptions.restoreGroup('ui');
-							gameOptions.restoreGroup('game');
-							game.applyOptions(this);
-							ui.feed.newMessage('Options restored', 2000);
-						}, 
-						name: 'restore',
-						text: 'Restore',
-						hoverText: 'Undo all changes',
-						hoverPlacement: 'bottom'
-					}),
-					Menu.buttonPopup({	
-						action: function(){
-							game.applyOptions(this);
-							ui.feed.newMessage('Options saved', 2000);
-						}, 
-						name: 'save',
-						text: 'Save',
-						color: 'orange',
-						textColor: 'white',
-						hoverText: 'Save all changes',
-						hoverPlacement: 'bottom'
-					}),
-					Menu.buttonPopup({	
-						action: function(){
-							gameOptions.restoreGroupDefaults('system');
-							gameOptions.restoreGroupDefaults('ui');
-							gameOptions.restoreGroupDefaults('game');
-							game.applyOptions(this);
-							ui.feed.newMessage('Options reset to default', 2000);
-						}, 
-						name: 'reset',
-						text: 'Reset',
-						hoverText: 'Reset all options to default values',
-						hoverPlacement: 'bottom'
-					})
-				)
-			]
-		}),
-
-		apply_renderer: new Menu({
-			position: function(){
-				return {
-					x:game.screenWidth/2,
-					y:game.screenHeight/2
-				};
-			}, 
-			z: -4,
-			color: 'grey',
-			elementColor: 'grey',
-			textColor: 'black',
-			name: 'menu_apply_renderer',
-			header: 'Render Mode',
-			closeButton: function(){
-				ui.modalManager.closeModal();
-			},
-			closeButtonCrossColor: 'grey',
-			layout: [
-				Menu.text({
-					text: 'Changing render mode requires the page to be reloaded.\nReload the page now?'
-				}),
-				[
-					{
-						action: function(){
-							location.reload();
-						}, 
-						name: 'yes',
-						text: 'Yes'
-					},
-					{
-						action: function(){
-							ui.modalManager.closeModal();
-						},
-						name: 'no',
-						text: 'No'
-					}
-				]
-			]
-		}),
-
-		// ВВОД ИМЕНИ
-		name: new Menu({
-			position: function(){
-				return {
-					x: game.screenWidth/2,
-					y: Phaser.Device.desktop ? game.screenHeight/2 : game.screenHeight/3
-				};
-			}, 
-			z: -4,
-			color: 'grey',
-			elementColor: 'grey',
-			textColor: 'black',
-			name: 'menu_name',
-			header: 'Enter Name',
-			closeButton: function(){
-				ui.modalManager.closeModal();
-			},
-			closeButtonCrossColor: 'grey',
-			layout: [[
-				Menu.inputField({
-					name: 'name',
-					placeHolder: 'Player1',
-					maxChars: nameMaxLength
-				}),
-				{
-					text: 'Change Name',
-					name: 'change',
-					color: 'orange',
-					textColor: 'white',
-					action: function(){
-						var name = this.getElementByName('name').getText();
-						var oldName = gameOptions.get('profile_name');
-						if(oldName && oldName == name){
-							ui.feed.newMessage('Please enter a different name', 3000);
-						}
-						else if(name.length > 0 && name.length <= nameMaxLength){
-							this.disableElement('change');
-							connection.proxy.changeClientName(name);
-						}
-						else{
-							ui.feed.newMessage(name.length > 0 ? 'Name is too long (' + nameMaxLength + ' characters max)' : 'Please enter name', 3000);
-						}
-					}
-				}
-			]]
-		}),
-
+		
 		// ПРАВИЛА
 		rules: new Menu({
 			position: function(){
@@ -459,6 +197,7 @@ UI.prototype._createMenus = function(){
 			textColor: 'black',
 			name: 'menu_rules',
 			header: 'Rules',
+			modal: true,
 			closeButton: function(){
 				ui.modalManager.closeModal();
 			},
@@ -466,26 +205,12 @@ UI.prototype._createMenus = function(){
 			layout: [
 				Menu.text({
 					name: 'rules',
-text:'В игре используется колода из 36 карт,\n\
-но можно использовать и колоду на 52 карты,\n\
-в игре участвуют от двух до шести игроков;\n\
-Старшинство карт в колоде из 52 карт:\n\
-2, 3, 4, 5, 6, 7, 8, 9, 10, В, Д, К, Т.\n\
-Старшинство мастей для игры в дурака не определено.\n\
-Каждому раздаётся по 6 карт, следующая\n\
-(или последняя, возможно и любая из колоды)\n\
-карта открывается и её масть устанавливает\n\
-козырь для данной игры,\n\
-и остальная колода кладётся сверху так,\n\
-чтобы козырная карта была всем видна.\n\
-Цель игры — избавиться от всех карт.\n\
-Последний игрок, не избавившийся от карт, остаётся в «дураках».\n\
-Запрещается забирать карты, которые отбили.\n\
-Отбитые карты идут в отбой (биту).'					
+					text: text					
 				})
 
 			]
 		}),
+
 		// КОНЕЦ ИГРЫ
 		endGame: new Menu({
 			position: function(){
@@ -520,60 +245,6 @@ text:'В игре используется колода из 36 карт,\n\
 				}
 			]]
 		}),
-
-		
-		// ОЧЕРЕДЬ
-		queue: new Menu({
-			position: function(){
-				return {
-					x:game.screenWidth/2,
-					y:game.screenHeight/2
-				};
-			}, 
-			z: -6,
-			color: 'orange',
-			elementColor: 'red',
-			textColor: 'white',
-			name: 'menu_queue',
-			header: 'Queue Options',
-			headerColor: 'red',
-			layout: [
-				Menu.buttonPopup({
-					action: function(){
-						var field = document.getElementById('queue_id');
-						field.style.display = 'block';
-						field.select();
-						var success = document.execCommand('copy');
-						if(document.activeElement){
-							document.activeElement.blur();
-						}
-						field.style.display = 'none';
-						ui.feed.newMessage(success ? 'Link copied' : 'Please copy the link manually from the adress bar', success ? 2000 : 5000);
-					},
-					fontSize: 24,
-					name: 'invite',
-					text: 'Copy Invite Link',
-					hoverText: 'Share this link with somebody to invite them to join your game'
-				}),
-				Menu.buttonPopup({
-					action: function(){
-						connection.proxy.voteForPrematureStart();
-						this.disableElement('vs_bots');
-					},
-					name: 'vs_bots',
-					text: 'Play VS Bots',
-					hoverText: 'Play versus bots if we can\'t find enough real people to pitch against you'
-				}),
-				{
-					action: function(){
-						connection.server.concede();
-					},
-					name: 'leave_queue',
-					text: 'Leave Queue'
-				}
-			]
-		}),
-
 		
 		// ДЕБАГ
 		debug: new Menu({
@@ -589,6 +260,7 @@ text:'В игре используется колода из 36 карт,\n\
 			textColor: 'black',
 			name: 'menu_debug',
 			header: 'Debug',
+			modal: true,
 			closeButton: function(){
 				ui.modalManager.closeModal();
 			},			
@@ -656,4 +328,14 @@ text:'В игре используется колода из 36 карт,\n\
 			]
 		})
 	};
+
+	menus.options.hideElement('concede');
+
+	menus.browser = new LobbyBrowser();
+	menus.creator = new LobbyCreator();
+	menus.queue = new LobbyMenu();
+	menus.more_options = new OptionsMenu();
+	menus.name = new NamePicker();
+
+	return menus;
 };

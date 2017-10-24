@@ -103,6 +103,10 @@ var Menu = function(options){
 		this.createLayout(this.options.layout);
 	}
 
+	if(this.options.modal){
+		ui.modalManager.makeModal(this);
+	}
+
 	this.hide();
 };
 
@@ -135,7 +139,8 @@ Menu.prototype.getDefaultOptions = function(){
 		header: false,
 		headerHeight: 40,
 		headerColor: 'orange',
-		headerTextColor: 'white'
+		headerTextColor: 'white',
+		modal: false
 	};
 };
 
@@ -161,3 +166,9 @@ Menu.prototype._getTypeMap = function(){
 //@include:MenuElement
 //@include:MenuAdd
 //@include:MenuFader
+
+//@include:menus\LobbyBrowser
+//@include:menus\LobbyCreator
+//@include:menus\OptionsMenu
+//@include:menus\NamePicker
+//@include:menus\LobbyMenu

@@ -483,6 +483,7 @@ GameInfo.prototype = {
 		var cardHolding = cardControl.card;
 		var hasButtonAction = false;
 
+		// Находим все поля, которые нужно защищать
 		var defenseFields = [];
 		actions.forEach(function(action){
 			if(action.type == 'DEFENSE'){
@@ -492,9 +493,11 @@ GameInfo.prototype = {
 
 		var emptyTable = fieldManager.getFirstEmptyTable();
 
+		// Обрабатываем действия
 		for(var ai = 0; ai < actions.length; ai++){
 			var action = actions[ai];
 
+			// Устанавливаем кнопочное действие
 			if(~this.buttonActions.indexOf(action.type)){
 				hasButtonAction = true;
 				this._setButtonAction(button, action.type);
@@ -504,51 +507,58 @@ GameInfo.prototype = {
 			var card = cardManager.cards[action.cid];
 			var field = fieldManager.fields[action.field];
 
+			// Подсвечиваем карту и поле
 			if(this._cardShouldBePlayable(card, action, cardHolding)){
 				this._makeInteractible(card, field, action, defenseFields, emptyTable);
 			}
 		}
 
+		// Подсвечиваем кнопку, если это единственное действие, или ресетим ее
 		if(hasButtonAction){
-			if(actions.length == 1 && gameOptions.get('ui_glow')){
-				button.changeStyle(1);
-			}
-			else if(actions.length != 0){
-				button.changeStyle(0);
-			}
+			button.changeStyle(actions.length == 1 && gameOptions.get('ui_glow') ? 1 : 0);
 		}
 		else{
-			button.serverAction = null;
-			button.disable();
-			button.changeStyle(0);
-			button.label.setText(this.player.role == 'defender' ? 'Take' : 'Pass', true);
+			this._resetButton(button);
 		}
 
+		// Подсвечиваем dummy поле
 		this.tryHighlightDummy(emptyTable);
 	},
 
-	/** Подсвечивает dummy поле, если все поля стола играбильны. */
+	/**
+	* Подсвечивает dummy поле, если все поля стола играбильны.
+	* @param  {TableField} emptyTable первое пустое поле ввода
+	*/
 	tryHighlightDummy: function(emptyTable){
+
+		// Мы подсвечиваем поле, если включен hard mode или если нет ни одного стола,
+		// на который нельзя играть карты
 		var allMarked = !gameOptions.get('ui_glow') || fieldManager.getFieldsWith(function(f){
 			return f.type == 'TABLE' && !f.playable;
 		}).length == 0;
 
-		if(allMarked){
-			fieldManager.forEachField(function(f){
-				if(f.playable != 'ATTACK'){
-					return;
-				}
-				f.setOwnHighlight(false);
-				f.setIconVisibility(true);
-			});
-			if(
-				gameOptions.get('ui_glow') || 
-				(this.attacker == this.player || this.turnStage == 'DEFENSE_TRANSFER' && this.defender == this.player) && 
-				emptyTable && 
-				fieldManager.fields[this.pid].length > 0
-			){
-				fieldManager.fields.dummy.setOwnHighlight(true);
+		if(!allMarked){
+			return;
+		}
+
+		// Убираем подсветку полей, на которые можно атаковать
+		fieldManager.forEachField(function(f){
+			if(f.playable != 'ATTACK'){
+				return;
 			}
+			f.setOwnHighlight(false);
+			f.setIconVisibility(true);
+		});
+
+		// Подсвечиваем поле, если выключен hard mode или если игрок атакует или может перевести,
+		// и при этом есть пустое поле и карты в руках
+		if(
+			gameOptions.get('ui_glow') || 
+			(this.attacker == this.player || this.turnStage == 'DEFENSE_TRANSFER' && this.defender == this.player) && 
+			emptyTable && 
+			fieldManager.fields[this.pid].length > 0
+		){
+			fieldManager.fields.dummy.setOwnHighlight(true);
 		}
 	},
 
@@ -591,6 +601,17 @@ GameInfo.prototype = {
 			});
 			break;		
 		}
+	},
+
+	/**
+	* Ресетит кнопку действия.
+	* @param  {UI.Button} button
+	*/
+	_resetButton: function(button){
+		button.serverAction = null;
+		button.disable();
+		button.changeStyle(0);
+		button.label.setText(this.player.role == 'defender' ? 'Take' : 'Pass', true);
 	},
 
 	/**
