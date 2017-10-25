@@ -283,7 +283,7 @@ class GamePlayers extends PlayerManager{
 			let name = playersWorking[pi].name;
 			names += name + ' ';
 		}
-		this.log.notice('Players timed out: ', names);
+		this.log.info('Players timed out: ', names);
 	}
 
 }

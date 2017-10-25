@@ -41,6 +41,13 @@ class GameStates{
 		this.current = 'STARTED';
 		let dealsOut = game.cards.dealStartingHands();
 
+		// Проверяем корректность рук и перезапускаем игру если нужно
+		if(!game.cards.startingHandsAreFine()){
+			game.cards.reshuffleDeck();
+			this.current = 'STARTING';
+			return true;
+		}
+
 		if(dealsOut && dealsOut.length){
 			game.waitForResponse(game.actions.timeouts.deal, game.players);
 			game.players.dealNotify(dealsOut);

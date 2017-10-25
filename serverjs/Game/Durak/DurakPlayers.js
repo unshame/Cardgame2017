@@ -361,20 +361,29 @@ class DurakPlayers extends GamePlayers{
 
 		let activePlayers = this.active;
 
-		let [minCards, minCard] = this.findMinTrumpCards();
+		let minCards, minCard;
 
-		// Если есть хотя бы один козырь
-		if(minCard){
-
-			// Находим игроков, учавствующих в первом ходе
-			let pid = minCard.field;
-			let pi = activePlayers.map(p => p.id).indexOf(pid);
-
-			this.findToGoNext(pi - 1);
+		let loser = this.game.loser && this.byId[this.game.loser];
+		
+		if(loser){
+			this.findToGoNext(this.indexOf(loser));
 		}
-		// В противном случае, берем первого попавшегося игрока и начинаем ход
 		else{
-			this.findToGoNext(-1);
+			[minCards, minCard] = this.findMinTrumpCards();
+
+			// Если есть хотя бы один козырь
+			if(minCard){
+
+				// Находим игроков, учавствующих в первом ходе
+				let pid = minCard.field;
+				let pi = activePlayers.map(p => p.id).indexOf(pid);
+
+				this.findToGoNext(pi - 1);
+			}
+			// В противном случае, берем первого попавшегося игрока и начинаем ход
+			else{
+				this.findToGoNext(-1);
+			}
 		}
 		this.log.info('Player to go first: ', this.attackers[0].name);
 		return [minCards, minCard];
@@ -459,6 +468,8 @@ class DurakPlayers extends GamePlayers{
 			let p = activePlayers[0];
 			let pid = p.id;
 
+			this.game.loser = pid;
+
 			this.game.result.loser = pid;
 			p.score.losses++;
 			p.score.cardsWhenLost += this.game.hands[pid].length;
@@ -466,6 +477,7 @@ class DurakPlayers extends GamePlayers{
 			this.log.info(p.name, 'is the loser');
 		}
 		else{
+			this.game.loser = null;
 			this.log.info('Draw');
 		}
 	}

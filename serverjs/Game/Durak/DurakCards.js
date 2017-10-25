@@ -282,6 +282,46 @@ class DurakCards extends GameCards{
 		return action;
 	}
 
+	startingHandsAreFine(){
+		allhands:
+		for(let pid in this.hands){
+			if(!this.hands.hasOwnProperty(pid)){
+				continue;
+			}
+
+			let hand = this.hands[pid];
+			let suit = hand[0].suit;
+			for(let i = 1; i < hand.length; i++){
+				if(hand[i].suit != suit){
+					continue allhands;
+				}
+			}
+
+			this.log.notice(`Player's %s hand is all the same suit %s`, this.game.players.byId[pid].name, suit);
+			return false;
+		}
+		return true;
+	}
+
+	reshuffleDeck(){
+		this.log.notice('Reshuffling deck');
+		let trump = this.deck[this.deck.length - 1];
+		for(let pid in this.hands){
+			if(!this.hands.hasOwnProperty(pid)){
+				continue;
+			}
+
+			let hand = this.hands[pid];
+			hand.forEach((c) => {
+				this.deck.push(c);
+			});
+			hand.length = 0;
+		}
+		this.deck.shuffle();
+		this.deck.splice(this.deck.indexOf(trump), 1);
+		this.deck.push(trump);
+	}
+
 	// Действия
 	
 	getAttackActionsForPlayers(players, actionHolder, defenseFields, freeForAll){

@@ -43,7 +43,7 @@ class DurakStates extends GameStates{
 			}
 			// Иначе сообщаем об отсутствии козырей в руках
 			else{
-				game.players.notify({type: 'NO_TRUMP_CARDS'});
+				game.players.notify({type: 'GOES_FIRST', pid: game.players.attackers[0].id});
 				return true;
 			}
 		}

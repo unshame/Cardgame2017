@@ -42,7 +42,7 @@ OptionManager.prototype = {
 			'debug_grid': false,
 			'debug_control': false,
 			'debug_connection': false,
-			'debug_buttons': true,
+			'debug_buttons': false,
 
 			'system_renderer': Phaser.AUTO,
 

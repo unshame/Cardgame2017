@@ -177,13 +177,14 @@ class Bot extends Player {
 			unbeatableAction = this.findMinUnbeatableAction(actions, opponentsHand),
 			untransferableAction = this.findMinUntransferableAction(actions, opponentsHand),
 			pass = this.findPassAction(actions),
-			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage);
+			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage),
+			mustPass = this.game.turnStages.next === 'ATTACK' && actions.length === 1;
 
 		return this.isPass(minAction, pass) ? pass :
 			this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
 			maxQtyCard ? this.changeCardIntoAction(actions, maxQtyCard) :
 			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
-			minAction;
+			minAction || (mustPass ? pass : null);
 	}
 
 	choooseDefence(actions) {
@@ -707,8 +708,14 @@ class Bot extends Player {
 			return false;
 		}
 
-		if ((this.difficulty > 0) && ((!minAction) || (minAction.csuit === this.game.cards.trumpSuit) ||
-				(minAction.cvalue > 10))) {
+		if (
+			this.difficulty > 0 && 
+			(
+				!minAction || 
+				minAction.csuit === this.game.cards.trumpSuit ||
+				minAction.cvalue > 10
+			)
+		) {
 			return true;
 		}
 

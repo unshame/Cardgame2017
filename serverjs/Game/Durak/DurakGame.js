@@ -34,6 +34,8 @@ class DurakGame extends Game{
 			rules
 		);
 
+		this.loser = null;
+
 		// Можно ли переводить карты
 		this.canTransfer = this.rules.canTransfer;
 

@@ -7,7 +7,7 @@
 /* exported reactSecondary */
 var reactSecondary = {
 
-	NO_TRUMP_CARDS: function(action, seq){
+	GOES_FIRST: function(action, seq){
 		ui.layers.setLayerIndex(ui.eventFeed, ui.eventFeed.zIndexBelowCards);
 	},
 
