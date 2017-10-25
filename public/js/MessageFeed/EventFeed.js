@@ -21,24 +21,21 @@ MessageFeed.EventFeed = function(game, name){
 			fill: ui.colors.menu.red.background, 
 			stroke: ui.colors.menu.red.outer, 
 			font: '50px Exo, Helvetica', 
-			strokeThickness: 2, 
-			wordWrap: true,
+			strokeThickness: 2,
 			align: 'center'
 		},
 		'positive': {
 			fill: ui.colors.menu.green.background, 
 			stroke: ui.colors.menu.green.outer, 
 			font: '50px Exo, Helvetica',
-			strokeThickness: 2, 
-			wordWrap: true,
+			strokeThickness: 2,
 			align: 'center'
 		},
 		'neutral': {
 			fill: ui.colors.menu.orange.background, 
 			stroke: ui.colors.menu.orange.outer, 
 			font: '50px Exo, Helvetica',
-			strokeThickness: 2, 
-			wordWrap: true,
+			strokeThickness: 2,
 			align: 'center'
 		}
 	};
@@ -57,6 +54,14 @@ extend(MessageFeed.EventFeed, MessageFeed);
 MessageFeed.EventFeed.prototype._styleText = function(text){
 	text.setShadow(2, 2, 'rgba(0,0,0,1)', 5);
 	text.anchor.set(0.5, 0.5);
+	if(fieldManager.networkCreated){
+		var builder = fieldManager.builder;
+		var width = game.scale.gridWidth - (builder.dimensions.opponent[0].width + 10)*2;
+		var dif = width/text.width;
+		if(dif < 1){
+			text.baseScale = dif;
+		}
+	}
 };
 
 MessageFeed.EventFeed.prototype._getX = function(){
@@ -91,9 +96,13 @@ MessageFeed.EventFeed.prototype._moveMessage = function(text, i, ii, x, y){
 	}
 
 	var scale = this._scales[ii] || 0;
+	var alpha = scale;
+	if(text.baseScale){
+		scale *= text.baseScale;
+	}
 
 	text.moveTween = this.game.add.tween(text);
-	text.moveTween.to({x: x, y: y, alpha: scale}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
+	text.moveTween.to({x: x, y: y, alpha: alpha}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
 
 	text.scaleTween = this.game.add.tween(text.scale);
 	text.scaleTween.to({x: scale, y: scale}, this.fadeTime, Phaser.Easing.Quadratic.Out, true);
