@@ -7,8 +7,7 @@ class DurakTurnStages extends GameTurnStages{
 	/**
 	* Класс содержит действия, выполняемые в различные стадии хода.  
 	* Выполняется в своем собственном контексте.
-	* Визуальное представление хода:  
-	* ![DurakTurnStages](https://i.imgur.com/Lje4C0D.png)
+	* Визуальное представление хода: https://i.imgur.com/Lje4C0D.png (outdated)
 	*/
 	constructor(game){
 		super(game);
@@ -24,8 +23,13 @@ class DurakTurnStages extends GameTurnStages{
 	}
 
 	INITIAL_ATTACK(){
+		return this.game.let('INITIAL_ATTACK', this.game.players.attackers[0]);
+		// Turn stage: ATTACK, ATTACK_DEFENSE
+	}
+
+	ATTACK(){
 		return this.game.let('ATTACK', this.game.players.attackers[0]);
-		// Turn stage: DEFENSE_TRANSFER, ATTACK_DEFENSE
+		// Turn stage: ATTACK, DEFENSE_TRANSFER
 	}
 
 	DEFENSE_TRANSFER(){

@@ -1,6 +1,6 @@
 {
   "name": "durak",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A cardgame",
   "engines": {
     "node": "6.11.1"

@@ -22,6 +22,7 @@ var reactExtra = {
 		}
 	},
 
+	// Сообщения о событиях - не используется
 	EVENT: function(action, seq){
 		var message = action.message;
 		var player = action.pid && gameInfo.getPlayer(action.pid);

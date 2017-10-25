@@ -9,7 +9,51 @@
 class DurakDirectives{
 
 	// Отправляет атакующему возможные ходы в стадии начальной атаки
+	INITIAL_ATTACK(attacker){
+
+		let pid = attacker.id;
+		let hand = this.hands[pid];
+
+		if(hand.length === 0){
+			throw new Error(`Player ${attacker.id} has no actions`);
+		}
+
+		let actions = [];
+
+		this.cards.getAttackActions(hand, actions);
+		
+		// Меняем стадию
+		if(this.canTransfer){
+			this.turnStages.setNext('ATTACK');
+		}
+		else{
+			this.turnStages.setNext('ATTACK_DEFENSE');
+		}
+
+		this.actions.valid[pid] = actions;
+		let deadline = this.waitForResponse(this.actions.timeouts.actionAttack, [attacker]);
+		this.players.validActionsNotify(deadline);	
+		return false;
+	}
+
+	// Дает первому атакующему подкинуть карты перед тем, как дать защищающемуся перевести
 	ATTACK(attacker){
+
+		let defHand = this.hands[this.players.defender.id];
+		let defenseTables = this.cards.defenseTables;
+		let firstEmptyTable = this.cards.firstEmptyTable;
+
+		if(!firstEmptyTable || defenseTables.length >= defHand.length){
+			if(!firstEmptyTable){
+				this.log.info('Field is full');
+			}
+			else{				
+				this.log.info('Defender has as many cards as he needs to beat');
+			}
+
+			this.turnStages.setNext('DEFENSE_TRANSFER');
+			return true;
+		}
 
 		let pid = attacker.id;
 		let hand = this.hands[pid];
@@ -17,18 +61,9 @@ class DurakDirectives{
 		let actions = [];
 
 		this.cards.getAttackActions(hand, actions);
-
-		if(!hand.length){
-			throw new Error(`Player ${attacker.id} has no actions`);
-		}
-		
-		// Меняем стадию на стадию защиты
-		if(this.canTransfer){
-			this.turnStages.setNext('DEFENSE_TRANSFER');
-		}
-		else{
-			this.turnStages.setNext('ATTACK_DEFENSE');
-		}
+		actions.push({
+			type: 'PASS'
+		});
 
 		this.actions.valid[pid] = actions;
 		let deadline = this.waitForResponse(this.actions.timeouts.actionAttack, [attacker]);
@@ -86,10 +121,9 @@ class DurakDirectives{
 		let actions = this.actions.valid[defender.id];
 		this.cards.getDefenseActions(defHand, actions, defenseTables);
 		if(defenseTables.length){
-			let action = {
+			actions.push({
 				type: 'TAKE'
-			};
-			actions.push(action);
+			});
 		}
 
 		this.turnStages.setNext('ATTACK_DEFENSE');
@@ -162,10 +196,9 @@ class DurakDirectives{
 		}
 
 		// Добавляем возможность взять карты
-		let action = {
+		actions.push({
 			type: 'TAKE'
-		};
-		actions.push(action);
+		});
 
 		this.actions.valid[pid] = actions;
 

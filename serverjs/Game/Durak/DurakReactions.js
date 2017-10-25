@@ -47,7 +47,7 @@ class DurakReactions{
 
 		// Сдвигаем атакующего, если это был перевод и даем ему защищаться\переводить
 		if(this.turnStages.current == 'DEFENSE_TRANSFER'){
-			//this.players.notify({type: 'EVENT', message: 'transfered', pid: player.id, showForSelf: false, channel: 'extra'});
+
 			this.players.shiftAttacker();
 
 			// Перезапоминаем кол-ва карт в руках
@@ -61,7 +61,6 @@ class DurakReactions{
 			else{
 			    this.turnStages.setNext('DEFENSE');     
 			} 
-			
 		}
 
 		return action;
@@ -107,6 +106,12 @@ class DurakReactions{
 
 		this.log.info(player.name, 'passes');
 
+		// Даем защищающемуся возможность перевести
+		if(this.turnStages.next == 'ATTACK'){
+			this.turnStages.setNext('DEFENSE_TRANSFER');
+			return action;
+		}
+
 		// Если произошла защита и игроки атакуют по одному,
 		// при этом защищающийся не берет карты,
 		// проверяем, является ли текущий игрок последним пасующим,
@@ -131,7 +136,7 @@ class DurakReactions{
 		// Запоминаем, что игрок взял
 		this.actions.takeOccurred = true;
 
-		//TODO: подумать, нужно ли давать спасовавшим подкидывать
+		//можно давать спасовавшим подкидывать
 		/*
 		if(this.freeForAll){
 			this.players.set('passed', false, this.players.attackers);
