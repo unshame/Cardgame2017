@@ -183,6 +183,12 @@ class Game{
 		* @type {Boolean}
 		*/
 		this.active = false;
+
+		/**
+		* Время после которого игрок будет отключен от игры.
+		* @type {number}
+		*/
+		this.disconnectTimeout = 30*1000;
 	}
 
 	/**
@@ -403,6 +409,8 @@ class Game{
 
 		this.players.resetTurn();
 		this.players.notify({type: 'TURN_ENDED'});
+
+		this.players.concedeDisconnected();
 	}
 
 	/** Начинает ход */

@@ -297,7 +297,7 @@ class QueueManager{
 
 	/**
 	* Устанавливает статус соединения игрока на `false` и возвращает `false`, 
-	* если игро находится в игре, либо убирает игрока из очереди и возвращает `true`,
+	* если игрок находится в игре, либо убирает игрока из очереди и возвращает `true`,
 	* если игрок не находится в игре.
 	* @param {Player} player
 	*
@@ -316,6 +316,7 @@ class QueueManager{
 		// иначе устанавливаем отключенный статус
 		else{
 			player.connected = false;
+			player.disconnectTime = Date.now();
 			return false;
 		}
 	}
@@ -386,6 +387,7 @@ class QueueManager{
 	*/
 	reconnectPlayer(player){
 		player.connected = true;
+		player.disconnectTime = -1;
 		if(player.game){
 			player.game.players.reconnect(player);
 		}

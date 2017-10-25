@@ -210,6 +210,15 @@ class GamePlayers extends PlayerManager{
 		}
 	}
 
+	concedeDisconnected(){
+		let now = Date.now();
+		this.forEach((p) => {
+			if(!p.connected && now - p.disconnectTime > this.game.disconnectTimeout){
+				this.concede(p);
+			}
+		});
+	}
+
 	// Оповещает игроков о совершенном действии
 	completeActionNotify(action, players){
 		this.forEachOwn((p) => {

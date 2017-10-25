@@ -30,6 +30,7 @@ class Player{
 
 		this.game = null;
 		this.afk = false;
+		this.disconnectTime = -1;
 
 		this.nameChanged = false;
 
