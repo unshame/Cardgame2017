@@ -293,7 +293,7 @@ LobbyBrowser.prototype.getInfoText = function(u){
 		deckSize = (el.numBots + el.numPlayersRequired < 4) ? 36 : 52;
 	}
 	a += 'Deck size: ' + deckSize + '\n';
-	a += 'Turn time: ' + (el.gameRules.longerTurn ? '40' : '20') + 'sec\n';	
+	a += 'Turn time: ' + (el.gameRules.longerTurn ? '40' : '25') + 'sec\n';	
 	a += 'Can transfer: ' + yesNo[el.gameRules.canTransfer] + '\n';
 	a += 'Limit attackers: ' + yesNo[el.gameRules.limitAttack] + '\n'; 
 	a += 'Limit followup: ' + yesNo[el.gameRules.limitAttack] + '\n';	

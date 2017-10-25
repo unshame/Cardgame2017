@@ -30,7 +30,7 @@ var LobbyCreator = function(options){
 			Menu.checkbox({
 				text: 'Longer turns',
 				name: 'longerTurn',
-				hoverText: 'Players have 40 instead of 20 seconds to play a card',
+				hoverText: 'Players have 40 instead of 25 seconds to play a card',
 				hoverPlacement: 'right',
 				checked: false
 			})
