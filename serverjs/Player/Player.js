@@ -115,6 +115,15 @@ class Player{
 		}
 	}
 
+	recieveExtraNotification(action){
+		if(!action.channel){
+			action.channel = 'extra';
+		}
+		if(this.remote && this.connected){
+			this.remote.recieveAction(action);
+		}
+	}
+
 	recieveMenuNotification(action){
 		if(!action.channel){
 			action.channel = 'menu';

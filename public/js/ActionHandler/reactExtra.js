@@ -1,5 +1,13 @@
 /* exported reactExtra */
 var reactExtra = {
+
+	UPDATE_ROLES: function(action, seq){
+		if(action.roles){
+			gameInfo.updateTurnInfo(action.roles, action.turnIndex, action.turnStage, false, seq);
+			fieldManager.updateBadges();
+		}
+	},
+
 	HOVER_OVER_CARD: function(action, seq){
 		var card = cardManager.cards[action.cid];
 		if(card){

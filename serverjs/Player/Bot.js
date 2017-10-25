@@ -89,10 +89,16 @@ class Bot extends Player {
 				consoleLog('RECEIVED ACTIONS: ', actions);
 				consoleLog('Is Attack Turn', this.isAttackTurn());
 
+				let action;
 				if (this.isAttackTurn()) {
-					this.sendResponseSync(this.chooseAttack(actions));
-				} else {
-					this.sendResponseSync(this.choooseDefence(actions));
+					action = this.chooseAttack(actions);
+				} 
+				else {
+					action = this.choooseDefence(actions);
+				}
+
+				if(action){
+					this.sendResponseSync(action);
 				}
 
 			}, this.getDecisionTime(this.decisionTime));

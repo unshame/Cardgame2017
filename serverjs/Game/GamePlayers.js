@@ -234,6 +234,17 @@ class GamePlayers extends PlayerManager{
 		}, players);
 	}
 
+	rolesNotify(players){
+		this.forEachOwn((p) =>{
+			p.recieveExtraNotification({
+				type: 'UPDATE_ROLES',
+				roles: this.roles, 
+				turnIndex: this.game.turnIndex,
+				turnStage: this.game.turnStages.current
+			});
+		}, players);
+	}
+
 	applyNoResponseStatus(action, player){
 		if(!action.noResponse && this.game.simulating && player.type == 'player'){
 			action.noResponse = true;

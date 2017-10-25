@@ -54,7 +54,9 @@ class DurakTurnStages extends GameTurnStages{
 
 		let action = game.cards.take(game.players.defender);
 
-		game.turnStages.setNext('END');
+		this.setNext('END');
+
+		game.players.rolesNotify();
 
 		game.waitForResponse(game.actions.timeouts.take, game.players);
 		game.players.takeNotify(action);
@@ -69,6 +71,8 @@ class DurakTurnStages extends GameTurnStages{
 		let discarded = game.cards.discard();
 
 		this.setNext('END_DEAL');
+
+		game.players.rolesNotify();
 
 		if(discarded){
 			game.waitForResponse(game.actions.timeouts.discard, game.players);
@@ -86,6 +90,8 @@ class DurakTurnStages extends GameTurnStages{
 		let dealsOut = game.cards.dealTillFullHand();
 		
 		this.setNext('ENDED');
+
+		game.players.rolesNotify();
 
 		if(dealsOut.length){
 			game.waitForResponse(game.actions.timeouts.deal, game.players);

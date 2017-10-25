@@ -14,7 +14,7 @@ Badge.prototype.updatePosition = function(){
 	var width = this.field.area.width;
 	var align = this.field.badgeStyle.align;
 	var nameText = this.player.name;
-	var statusText = this.player.role;
+	var statusText = this.player.status || this.player.role;
 	switch(align){
 		case 'top':
 		// this.name.x = 0;

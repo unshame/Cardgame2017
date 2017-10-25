@@ -300,7 +300,7 @@ class GameActions{
 
 		this.game.players.forEachOwn((p) => {
 			if(p != player){
-				p.recieveNotification({type: 'VOTE', accepted, name: player.name, channel: 'extra'});
+				p.recieveExtraNotification({type: 'VOTE', accepted, name: player.name});
 			}
 		})
 

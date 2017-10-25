@@ -271,6 +271,7 @@ GameInfo.prototype = {
 			p.roleIndex = roleIndex;
 			p.working = working;
 			p.defenseStartCards = defenseStartCards;
+			p.status = status.status;
 		}, this);
 	},
 
@@ -333,40 +334,44 @@ GameInfo.prototype = {
 		var messageText = '',
 			messageStyle = null;
 
-		var onlyOneAttacker = !this.rules.freeForAll || this.turnStage == 'INITIAL_ATTACK';
 
-		if(player == this.defender || player == this.attacker){
-			switch(player.role){
-				case 'attacker':
-				if(fieldManager.fields[this.pid].cards.length > 0){
-					messageText = (this.defender.role == 'takes' ? 'You\'re following up on ' : 'You\'re attacking ') + this.defender.name;
+		if(this.turnStage != 'TAKE' && this.turnStage != 'END' && this.turnStage != 'END_DEAL'){
+
+			var onlyOneAttacker = !this.rules.freeForAll || this.turnStage == 'INITIAL_ATTACK';
+
+			if(player == this.defender || player == this.attacker){
+				switch(player.role){
+					case 'attacker':
+					if(fieldManager.fields[this.pid].cards.length > 0){
+						messageText = (this.defender.role == 'takes' ? 'You\'re following up on ' : 'You\'re attacking ') + this.defender.name;
+					}
+					messageStyle = 'neutral';
+					break;
+
+					case 'defender':
+					messageText = 'You\'re defending';
+					messageStyle = 'neutral';
+					break;
+
+					case 'takes':
+					messageText = 'Following up...';
+					messageStyle = 'system';
+					break;
+
+					default:
+					console.error('Game info: unknown player role', player.role);
 				}
-				messageStyle = 'neutral';
-				break;
-
-				case 'defender':
-				messageText = 'You\'re defending';
-				messageStyle = 'neutral';
-				break;
-
-				case 'takes':
-				messageText = 'Following up...';
-				messageStyle = 'system';
-				break;
-
-				default:
-				console.error('Game info: unknown player role', player.role);
 			}
-		}
-		else if(this.attacker && onlyOneAttacker){
-			var action = this.defender.role == 'takes' ? ' is following up on ' : ' is attacking ';
-			var defenderName = this.defender.id == game.pid ? 'you' : this.defender.name;
-			messageText = this.attacker.name + action + defenderName;
-			messageStyle = 'system';
-		}
-		else if(this.defender){
-			messageText = this.defender.name + ' is defending'; 
-			messageStyle = 'system';
+			else if(this.attacker && onlyOneAttacker){
+				var action = this.defender.role == 'takes' ? ' is following up on ' : ' is attacking ';
+				var defenderName = this.defender.id == game.pid ? 'you' : this.defender.name;
+				messageText = this.attacker.name + action + defenderName;
+				messageStyle = 'system';
+			}
+			else if(this.defender){
+				messageText = this.defender.name + ' is defending'; 
+				messageStyle = 'system';
+			}
 		}
 
 		return {
@@ -398,7 +403,7 @@ GameInfo.prototype = {
 
 	/**
 	* Возвращает нужно ли удалить действие в соответствии с типом действия, правилами игры и `turnStage`.  
-	* В некоторых случаях модифицирует едйствие.
+	* В некоторых случаях модифицирует действие.
 	* @param {ActionInfo} action     проверяемое действий
 	* @param {Card}       card       использованная в `doneAction` карта
 	* @param {Field}      field      использованное в `doneAction` поле

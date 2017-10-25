@@ -42,15 +42,25 @@ class DurakPlayers extends GamePlayers{
 	get roles(){
 		const game = this.game;
 		let roles = {};
+		let prevPlayer = this[this.length - 1];
 		this.forEach((p) => {
 			let role = p.statuses.role;
 			let roleIndex = p.statuses.roleIndex;
 			let working = p.statuses.working;
+			let status = null;
 			let defenseStartCards = game.hands[p.id].defenseStartLength;
 			if(role == 'defender' && game.actions.takeOccurred){
 				role = 'takes';
+				status = 'takes';
 			}
-			roles[p.id] = {role, roleIndex, working, defenseStartCards};
+			else if(role == 'attacker' && p.statuses.passed && game.hands[p.id].length > 0){
+				status = 'passed';
+			}
+			else if(role != 'defender' && prevPlayer.statuses.originalAttacker && game.hands[p.id].length > 0){
+				status = 'transfered';
+			}
+			roles[p.id] = {role, roleIndex, status, working, defenseStartCards};
+			prevPlayer = p;
 		});
 		return roles;
 	}
