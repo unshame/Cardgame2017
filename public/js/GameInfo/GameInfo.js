@@ -669,7 +669,7 @@ GameInfo.prototype = {
 		}
 		return (
 			player.role && player.working || // Текущий атакующий
-			player.role == 'defender' || 	 // Защищающийся
+			player.role == 'defender' || player.role == 'takes' || // Защищающийся
 			wasActive && ~['TAKE', 'END', 'END_DEAL'].indexOf(this.turnStage) // Был активным и конец хода
 		);
 	}
