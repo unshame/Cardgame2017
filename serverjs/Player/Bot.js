@@ -178,7 +178,7 @@ class Bot extends Player {
 			untransferableAction = this.findMinUntransferableAction(actions, opponentsHand),
 			pass = this.findPassAction(actions),
 			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage),
-			mustPass = this.game.turnStages.next === 'ATTACK' && actions.length === 1;
+			mustPass = this.game.turnStages.current === 'ATTACK' && actions.length === 1;
 
 		return this.isPass(minAction, pass) ? pass :
 			this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
