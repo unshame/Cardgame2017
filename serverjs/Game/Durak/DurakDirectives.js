@@ -113,7 +113,7 @@ class DurakDirectives{
 		let workingPlayers = this.cards.getAttackActionsForPlayers(attackers, this.actions.valid, defenseTables, this.freeForAll);
 
 		if(!workingPlayers.length){
-			this.log.info('Attackers have no cards');
+			this.log.info('Attackers passed or have no cards');
 			this.turnStages.setNext('DEFENSE');
 			return true;
 		}

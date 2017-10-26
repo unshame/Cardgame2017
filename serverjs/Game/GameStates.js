@@ -49,7 +49,7 @@ class GameStates{
 		}
 
 		if(dealsOut && dealsOut.length){
-			game.waitForResponse(game.actions.timeouts.deal, game.players);
+			game.waitForResponse(game.actions.timeouts.dealStart, game.players);
 			game.players.dealNotify(dealsOut);
 		}
 		else{
