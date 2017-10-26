@@ -148,7 +148,7 @@ FieldBuilder.prototype._buildDeckField = function(){
 	manager.addField(Field.PopupField, {
 		type: 'DECK',
 		id: 'DECK',
-		delayTime: 50,
+		delayTime: 80,
 		debug: manager.inDebugMode
 	},
 	{

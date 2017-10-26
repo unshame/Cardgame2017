@@ -168,7 +168,7 @@ class Game{
 		* Уменьшается, если стоит флаг `simulating`.
 		* @type {number}
 		*/
-		this.fakeDecisionTimer = 500;
+		this.fakeDecisionTimer = 200;
 		this.defaultFakeDecisionTimer = this.fakeDecisionTimer;
 
 		/**

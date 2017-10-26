@@ -105,7 +105,7 @@ FieldManager.prototype.fancyShuffleCards = function(seq, cardsInfo, trumpSuit){
 	var tableLitTime = 500;		// Время остановки на подсвеченном столе
 	var tableLightOutTime = 500;	// Время отключения подсветки стола
 	// Минимальное время до перемещения карт в колоду
-	var minTime = interval * len + duration + 1000/gameSpeed;
+	var minTime = interval * len + duration + 500/gameSpeed;
 	// Полное время анимации
 	var totalTime = minTime + len*interval2 + trailLifespan + tableLitTime + tableLightOutTime;
 
