@@ -20,7 +20,9 @@ FieldBuilder.prototype._buildPlayerField = function(){
 		sortable: true,
 		focusable: true,
 		draggable: true,
-		animateAppearance: 'bottom'
+		animateAppearance: 'bottom',
+		alpha: 0.35,
+		alphaActive: 0.35
 	},
 	{
 		align: 'top'

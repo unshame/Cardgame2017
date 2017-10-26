@@ -255,7 +255,6 @@ GameInfo.prototype = {
 				}
 			}
 			else if(role != p.role || roleIndex != p.roleIndex || working != p.working){
-
 				if(role == 'defender' || role == 'takes'){
 					this.defender = p;
 				}
@@ -654,5 +653,24 @@ GameInfo.prototype = {
 		//var typeText = type;
 		button.label.setText(typeText, true);
 		button.enable();
+	},
+
+	/**
+	* Возвращается является ли игрок активным в данный момент.
+	* @param {string}  pid       id игрока
+	* @param {boolean} wasActive был ли игрок активным в предыдущую фазу
+	*
+	* @return {boolean} активен ли игрок теперь
+	*/
+	playerIsActive(pid, wasActive){
+		var player = this.playersById[pid];
+		if(!player){
+			return false;
+		}
+		return (
+			player.role && player.working || // Текущий атакующий
+			player.role == 'defender' || 	 // Защищающийся
+			wasActive && ~['TAKE', 'END', 'END_DEAL'].indexOf(this.turnStage) // Был активным и конец хода
+		)
 	}
 };

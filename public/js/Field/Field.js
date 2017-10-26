@@ -319,6 +319,7 @@ Field.prototype.getDefaultOptions = function(){
 			
 			alwaysVisible: false,
 			alpha: 0.35,
+			alphaActive: 0.85,
 			corner: 5,
 			border: 4
 		}

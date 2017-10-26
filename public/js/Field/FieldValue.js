@@ -33,7 +33,13 @@ Field.prototype.setOwnHighlight = function(on, tint){
 	this.highlighted = on;
 	this.setVisibility(on);
 	this.area.tint = on ? tint : skinManager.skin.color;
-	this.area.alpha = (this.style.alwaysVisible || on) ? this.style.alpha : 0.15;
+
+	var alpha = this.style.alpha;
+	if(this.type == 'HAND_OPPONENT' && gameInfo.playerIsActive(this.id, this.area.alpha == this.style.alphaActive)){
+		alpha = this.style.alphaActive;
+	}
+
+	this.area.alpha = (this.style.alwaysVisible || on) ? alpha : 0.15;
 };
 
 /**
