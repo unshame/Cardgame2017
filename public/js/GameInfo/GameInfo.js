@@ -662,7 +662,7 @@ GameInfo.prototype = {
 	*
 	* @return {boolean} активен ли игрок теперь
 	*/
-	playerIsActive(pid, wasActive){
+	playerIsActive: function(pid, wasActive){
 		var player = this.playersById[pid];
 		if(!player){
 			return false;
@@ -671,6 +671,6 @@ GameInfo.prototype = {
 			player.role && player.working || // Текущий атакующий
 			player.role == 'defender' || 	 // Защищающийся
 			wasActive && ~['TAKE', 'END', 'END_DEAL'].indexOf(this.turnStage) // Был активным и конец хода
-		)
+		);
 	}
 };
