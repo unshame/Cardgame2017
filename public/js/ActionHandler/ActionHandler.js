@@ -69,6 +69,8 @@ ActionHandler.prototype.executeAction = function(action){
 		console.error('Action handler: no action recieved');
 		return;
 	}
+
+	// Находим указанный канал
 	var channel = this.channels[action.channel];
 
 	if(!channel){
@@ -76,10 +78,13 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
-	var reaction;
+	var reaction = null;
 	var context = null;
 
+	// Устанавливаем ожидание от сервера в соответствии с типом сообщения
 	switch(channel.type){
+
+		// В случае принятия действий для игрока, указываем действие и контекст сразу
 		case CHANNEL_TYPE.USER_INVOLVED:
 		connection.serverWaiting = false;
 		reaction = this.handlePossibleActions;
@@ -109,6 +114,7 @@ ActionHandler.prototype.executeAction = function(action){
 		return;
 	}
 
+	// Находим указанное действие
 	if(!reaction){
 		reaction = channel.reactions[action.type];
 	}
@@ -120,22 +126,33 @@ ActionHandler.prototype.executeAction = function(action){
 		context = channel.reactions;
 	}
 
+	// Завершаем все действия, если новое действие этого требует
 	if(gameInfo.simulating || action.instant){
 		this.sequencer.finish();
 	}
 
+	// Если действие должно выполняться в определенном состоянии игры, добавляем его в очередь действий
 	if(channel.state){
 		this.sequencer.queueUp(function(seq, sync){
+
+			// Переключаем состояние, если текущее не совпадает с указанным
 			if(channel.state != game.state.currentSync){
+
+				// Выводим предупреждение, если действие не должно приходить в текущем состоянии
 				if(!~channel.additionalStates.indexOf(game.state.currentSync)){
 					console.warn('Action handler: wrong game state', game.state.currentSync, action.channel, channel.state, action);
 				}
+
+				// Переключем состояние без завершения очереди действий
 				game.state.change(channel.state, false);
 			}
+
+			// Выполняем действие
 			return reaction.call(this, action, seq, sync);
 		}, null, context);
 	}
 	else{
+		// Иначе просто выполняем действие
 		reaction.call(context, action);
 	}
 };
@@ -148,23 +165,28 @@ ActionHandler.prototype.executeAction = function(action){
 * @param {string} turnStage текущая стадия хода
 */
 ActionHandler.prototype.handlePossibleActions = function(action, seq){
+
+	// Включаем таймер, если игрок может что-то делать
 	if(action.actions.length){
 		var time = action.time - Date.now();
 		if(time){
 			ui.rope.start(time - 1000);
 		}
 	}
+
+	// Обновляем статусы игроков
 	if(action.roles){
 		gameInfo.updateTurnInfo(action.roles, action.turnIndex, action.turnStage, action.actions.length !== 0, seq);
 		fieldManager.updateBadges();
 	}
 
+	// Подсвечиваем возможные действия
 	this.highlightPossibleActions(action.actions);
 };
 
 /**
 * Подсвечивает карты, которыми можно ходить и активирует кнопку действия.
-* @param {object} actions 	возможные действия
+* @param {object} [actions] возможные действия
 */
 ActionHandler.prototype.highlightPossibleActions = function(actions){
 	if(!actions && !this.possibleActions){
@@ -207,9 +229,10 @@ ActionHandler.prototype.removeActionsWith = function(card, field, doneAction){
 	if(!this.possibleActions){
 		return;
 	}
+	var fieldStatuses = gameInfo.getFieldStatuses();
 	for(var i = this.possibleActions.length - 1; i >= 0; i--){
 		var action = this.possibleActions[i];
-		if(gameInfo.shouldDeleteAction(action, card, field, doneAction)){
+		if(gameInfo.shouldDeleteAction(action, card, field, doneAction, fieldStatuses)){
 			this.possibleActions.splice(i, 1);
 		}
 	}

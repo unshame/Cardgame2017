@@ -337,7 +337,7 @@ GameInfo.prototype = {
 
 		if(this.turnStage != 'TAKE' && this.turnStage != 'END' && this.turnStage != 'END_DEAL'){
 
-			var onlyOneAttacker = !this.rules.freeForAll || this.turnStage == 'INITIAL_ATTACK';
+			var onlyOneAttacker = !this.rules.freeForAll || this.turnStage == 'INITIAL_ATTACK' || this.turnStage == 'ATTACK';
 
 			if(player == this.defender || player == this.attacker){
 				switch(player.role){
@@ -401,6 +401,21 @@ GameInfo.prototype = {
 		return field;
 	},
 
+	/** Находит кол-ва полей стола с картами */
+	getFieldStatuses: function(){
+		return {
+			numDefenseFields: fieldManager.getFieldsWith(function(f){
+					return f.type == 'TABLE' && f.cards.length == 1;
+			}).length,
+
+			numAttackFields: fieldManager.getFieldsWith(function(f){
+				return f.type == 'TABLE' && f.cards.length > 0;
+			}).length,
+
+			firstEmptyTable: fieldManager.getFirstEmptyTable()
+		};
+	},
+
 	/**
 	* Возвращает нужно ли удалить действие в соответствии с типом действия, правилами игры и `turnStage`.  
 	* В некоторых случаях модифицирует действие.
@@ -411,17 +426,15 @@ GameInfo.prototype = {
 	*
 	* @return {boolean}
 	*/
-	shouldDeleteAction: function(action, card, field, doneAction){
+	shouldDeleteAction: function(action, card, field, doneAction, fieldStatuses){
 
 		// Избавляемся от кнопочных действий
 		switch(action.type){
 			case 'TAKE':
-			return doneAction.type == 'ATTACK' || fieldManager.getFieldsWith(function(f){
-					return f.type == 'TABLE' && f.cards.length == 1;
-			}).length === 0;
+			return doneAction.type == 'ATTACK' || fieldStatuses.numDefenseFields === 0;
 
 			case 'PASS':
-			return this.turnStage != 'FOLLOWUP';
+			return this.turnStage != 'FOLLOWUP' && (!this.rules.canTransfer || this.turnStage != 'ATTACK');
 		}
 
 		// Избавляемся от действий с картой, которой мы походили
@@ -432,23 +445,27 @@ GameInfo.prototype = {
 		// Избавляемся от действий, специфичных определенным стадиям хода
 		switch(this.turnStage){
 
-			case 'INITIAL_ATTACK':
-			if(this.rules.canTransfer || card.value !== cardManager.cards[action.cid].value){
+			case 'ATTACK':
+			if(this.defender.defenseStartCards <= fieldStatuses.numDefenseFields){
 				return true;
 			}
-			return this._fixActionField(action);
+			/* falls through */
+
+			case 'INITIAL_ATTACK':
+			if(card.value !== cardManager.cards[action.cid].value){
+				return true;
+			}
+			return this._fixActionField(action, fieldStatuses.firstEmptyTable);
 
 			case 'FOLLOWUP':
 			return (
-				this.rules.limitFollowup && this.defender.defenseStartCards <= 
-				fieldManager.getFieldsWith(function(f){
-					return f.type == 'TABLE' && f.cards.length > 0;
-				}).length
+				this.rules.limitFollowup && 
+				this.defender.defenseStartCards <= fieldStatuses.numAttackFields
 			);			
 
 			case 'ATTACK_DEFENSE':
 			if(this.player.role == 'attacker'){
-				return this._fixActionField(action);
+				return this._fixActionField(action, fieldStatuses.firstEmptyTable);
 			}
 			/* falls through */
 
@@ -470,13 +487,13 @@ GameInfo.prototype = {
 	/**
 	* Заменяет поле действия на первое свободное поле если оно есть.
 	* @param {ActionInfo} action
+	* @param {Field}      emptyTable
 	*
 	* @return {boolean} Нужно ли удалить действие.
 	*/
-	_fixActionField: function(action){
-		var table = fieldManager.getFirstEmptyTable();
-		if(table){
-			action.field = table.id;
+	_fixActionField: function(action, emptyTable){
+		if(emptyTable){
+			action.field = emptyTable.id;
 			return false;
 		}
 		return true;
@@ -546,7 +563,7 @@ GameInfo.prototype = {
 		// на который нельзя играть карты
 		var allMarked = !gameOptions.get('ui_glow') || fieldManager.getFieldsWith(function(f){
 			return f.type == 'TABLE' && !f.playable;
-		}).length == 0;
+		}).length === 0;
 
 		if(!allMarked){
 			return;

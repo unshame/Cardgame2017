@@ -21,6 +21,7 @@ class DurakDirectives{
 		let actions = [];
 
 		this.cards.getAttackActions(hand, actions);
+		this.actions.valid[pid] = actions;
 		
 		// Меняем стадию
 		if(this.canTransfer){
@@ -30,7 +31,6 @@ class DurakDirectives{
 			this.turnStages.setNext('ATTACK_DEFENSE');
 		}
 
-		this.actions.valid[pid] = actions;
 		let deadline = this.waitForResponse(this.actions.timeouts.actionAttack, [attacker]);
 		this.players.validActionsNotify(deadline);	
 		return false;
@@ -64,8 +64,10 @@ class DurakDirectives{
 		actions.push({
 			type: 'PASS'
 		});
-
 		this.actions.valid[pid] = actions;
+
+		this.turnStages.setNext('ATTACK');
+		
 		let deadline = this.waitForResponse(this.actions.timeouts.actionAttack, [attacker]);
 		this.players.validActionsNotify(deadline);	
 		return false;
