@@ -28,6 +28,7 @@ const otherPaths = [
 	'./.gitignore',		// для heroku
 	'./Procfile',		// для heroku
 	path.join(publicPath, 'style.css'),
+	path.join(publicPath, 'favicon.ico'),
 	path.join(publicPath, '/assets/**/*'),	
 	path.join(serverPath, '/**/*')	// серверные скрипты
 ];
