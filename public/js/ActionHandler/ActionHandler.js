@@ -124,15 +124,20 @@ ActionHandler.prototype.executeAction = function(action){
 		this.sequencer.finish();
 	}
 
-	this.sequencer.queueUp(function(seq, sync){
-		if(channel.state !== null && channel.state != game.state.currentSync){
-			if(!~channel.additionalStates.indexOf(game.state.currentSync)){
-				console.warn('Action handler: wrong game state', game.state.currentSync, action.channel, channel.state, action);
+	if(channel.state){
+		this.sequencer.queueUp(function(seq, sync){
+			if(channel.state != game.state.currentSync){
+				if(!~channel.additionalStates.indexOf(game.state.currentSync)){
+					console.warn('Action handler: wrong game state', game.state.currentSync, action.channel, channel.state, action);
+				}
+				game.state.change(channel.state, false);
 			}
-			game.state.change(channel.state, false);
-		}
-		return reaction.call(this, action, seq, sync);
-	}, null, context);
+			return reaction.call(this, action, seq, sync);
+		}, null, context);
+	}
+	else{
+		reaction.call(context, action);
+	}
 };
 
 /**
