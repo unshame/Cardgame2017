@@ -305,7 +305,7 @@ class DurakCards extends GameCards{
 
 	reshuffleDeck(){
 		this.log.notice('Reshuffling deck');
-		let trump = this.deck[this.deck.length - 1];
+		let trump = this.deck.length > 0 ? this.deck[this.deck.length - 1] : null;
 		for(let pid in this.hands){
 			if(!this.hands.hasOwnProperty(pid)){
 				continue;
@@ -318,8 +318,13 @@ class DurakCards extends GameCards{
 			hand.length = 0;
 		}
 		this.deck.shuffle();
-		this.deck.splice(this.deck.indexOf(trump), 1);
-		this.deck.push(trump);
+		if(trump){
+			this.deck.splice(this.deck.indexOf(trump), 1);
+			this.deck.push(trump);
+		}
+		else{
+			this.log.notice('Deck was empty');
+		}
 	}
 
 	// Действия
