@@ -58,6 +58,12 @@ class DurakDirectives{
 		let pid = attacker.id;
 		let hand = this.hands[pid];
 
+		if(hand.length === 0){
+			this.log.info('Attacker has no cards');
+			this.turnStages.setNext('DEFENSE_TRANSFER');
+			return true;
+		}
+
 		let actions = [];
 
 		this.cards.getAttackActions(hand, actions);
