@@ -268,12 +268,12 @@ class Server extends Eureca.Server{
 	changePlayerName(connId, name){
 		let player = this.players[connId];
 		if(player){			
-			if(typeof name != 'string' || name.length < 1 || name.length > 8){
+			if(typeof name != 'string' || name.length < 1 || name.length > 15){
 				player.recieveSystemNotification({type: 'NAME_INVALID'});
 				return;
 			}
 			name = name.replace(/[^a-zA-Z0-9 \.,!?{}\(\)\[\]\*$#@%^&\-+=\\\/_<>~"';:|`]/g, '');
-			if(name.length < 1 || name.length > 8){
+			if(name.length < 1 || name.length > 15){
 				player.recieveSystemNotification({type: 'NAME_INVALID'});
 				return;
 			}

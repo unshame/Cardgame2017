@@ -2,7 +2,7 @@ var NamePicker = function(options){
 
 	this.options = mergeOptions(this.getDefaultMenuOptions(), options);
 
-	this.nameMaxLength = 8;
+	this.nameMaxLength = 15;
 
 	this.cornerButton = ui.cornerButtons.getByName('name');
 
