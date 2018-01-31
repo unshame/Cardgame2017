@@ -42,11 +42,16 @@ skins.push({
 
 skins.push({
 	name: 'game',
-	width: 438,
-	heigth: 650,
-	friendlyName: 'Game Of Thrones',
-	firstValueFrame: 1,
-	cardbackFrame: 0
+	width: 441,
+	height: 653,
+	friendlyName: 'GoT',
+	numOfFrames: 53,
+	cardbackPossibleFrames: [
+		['Red', 52]
+	],
+	cardbackFrame: 52,
+	scale: 0.4,
+	hasSuits: false
 });
 
 
