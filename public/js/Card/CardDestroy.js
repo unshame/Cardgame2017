@@ -41,7 +41,7 @@ Card.prototype.destroy = function(delay, now) {
 	}
 	else{
 		alphaTween.to({alpha: 0}, time/this.game.speed, Phaser.Easing.Linear.None, true, delay/this.game.speed);
-		scaleTween.to({x: 0.6, y: 0.6}, time/this.game.speed, Phaser.Easing.Linear.None, true, delay/this.game.speed);
+		scaleTween.to({x: 0.6 * this.sprite.scale.x, y: 0.6 * this.sprite.scale.y}, time/this.game.speed, Phaser.Easing.Linear.None, true, delay/this.game.speed);
 		alphaTween.onComplete.addOnce(this._destroyNow, this);
 	}
 };

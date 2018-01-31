@@ -134,6 +134,8 @@ CardEmitter.prototype.start = function(minSpeed, maxSpeed, sway, interval, rotat
 	this.minRotation = -rotation;
 	this.maxRotation = rotation;
 
+	this.minParticleScale = this.maxParticleScale = skinManager.skin.scale;
+
 	this.x = game.world.centerX;
 	this.width = game.screenWidth;
 
@@ -151,7 +153,7 @@ CardEmitter.prototype.start = function(minSpeed, maxSpeed, sway, interval, rotat
 		interval = minInterval;
 	}
 	this.interval = interval;
-	this._cachedGameSpeed = game.speed;
+	this._cachedGameSpeed = game.speed;	
 	this._start(false, lifespan, interval, undefined, undefined);
 };
 
@@ -192,7 +194,6 @@ CardEmitter.prototype.restart = function(noFadeOut){
 * Применяет скин к эмиттеру.
 */
 CardEmitter.prototype.applySkin = function(){
-	this.minParticleScale = this.maxParticleScale = skinManager.skin.scale;
 	if(this.on){
 		this.restart();
 		setTimeout(this._applySkinToEmitter.bind(this), this.fadeTime/game.speed);
