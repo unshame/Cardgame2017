@@ -39,6 +39,18 @@ skins.push({
 	trailHeight: 35
 });
 
+
+skins.push({
+	name: 'game',
+	width: 438,
+	heigth: 650,
+	friendlyName: 'Game Of Thrones',
+	firstValueFrame: 1,
+	cardbackFrame: 0
+});
+
+
+
 // Familiar
 /*skins.push({
 	width: 390,
