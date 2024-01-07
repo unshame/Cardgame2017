@@ -8,16 +8,15 @@
   "packageManager": "^npm@10.2.3",
   "main": "server.js",
   "scripts": {
-    "game": "node server --transfer",
-    "prod": "node prod/server --transfer",
-    "dev": "npm i --only=dev && npm install plato -g && npm install jsdoc -g && npm install gulp-cli -g",
+    "dev": "node server --transfer",
     "report": "plato -d report/client --jshint ./public/.jshintrc -t \"Durak: Client Javascript Report\" ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc -t \"Durak: Server Javascript Report\" ./serverjs/**/*.js ./server.js",
     "doc": "jsdoc -c ./doc/config.json -d ./doc/client/ -p ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ -p ./serverjs/ ./server.js",
     "docpublic": "jsdoc -c ./doc/config.json -d ./doc/client/ ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ ./serverjs/ ./server.js",
     "build": "run-s \"build:*\"",
     "build:docs": "npm run doc",
     "build:game": "gulp buildallsafe",
-    "preview": "node prod/server"
+    "preview": "node prod/server.js",
+    "deploy": "gcloud app deploy prod/app.yaml"
   },
   "dependencies": {
     "engine.io": "3.6.1",

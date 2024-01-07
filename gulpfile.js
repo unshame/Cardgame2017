@@ -23,6 +23,8 @@ const prodPath = './prod';
 const otherPaths = [
 	'./server.js',
 	'./package.json',	// информация о приложении
+	'./package-lock.json',
+	'./app.yaml',
 	'./logs/.gitkeep',	// нужно сохранить папку с логами, но без самих логов
 	path.join(publicPath, 'style.css'),
 	path.join(publicPath, 'favicon.ico'),
