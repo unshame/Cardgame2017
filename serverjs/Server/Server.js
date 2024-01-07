@@ -75,7 +75,10 @@ class Server extends Eureca.Eureca.Server{
 		*/
 		this.app = express();
 		this.app.set('trust proxy', true);
-		this.app.use(express.static(path.join(__dirname, rootPath, '/public')));
+
+		if (!process.env.PROD) {
+			this.app.use(express.static(path.join(__dirname, rootPath, '/public')));
+		}
 
 		/**
 		* Подключенные клиенты
