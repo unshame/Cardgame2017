@@ -86,7 +86,7 @@ var Menu = function(options){
 	*/
 	this._elementTypeMap = this._getTypeMap();
 
-	ui.layers.addExistingLayer(this, this.options.z);	
+	ui.layers.addExistingLayer(this, this.options.z);
 
 	if(this.options.header){
 		this.header = game.add.text(0, 0, this.options.header, {fill: this.options.headerTextColor, font: '22px Exo, Helvetica'}, this);
@@ -112,7 +112,7 @@ var Menu = function(options){
 
 extend(Menu, Phaser.Group);
 
-/** 
+/**
 * Опции по умолчанию
 * @return {object} опции
 */
@@ -150,10 +150,4 @@ Menu.prototype.getDefaultOptions = function(){
 //@include:MenuElement
 //@include:MenuAdd
 //@include:MenuFader
-
-//@include:menus\LobbyBrowser
-//@include:menus\LobbyCreator
-//@include:menus\OptionsMenu
-//@include:menus\NamePicker
-//@include:menus\LobbyMenu
-//@include:menus\Rules
+//@include:menus
