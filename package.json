@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "A cardgame",
   "engines": {
-    "node": "6.11.1"
+    "node": ">=20.10.0"
   },
   "main": "server.js",
   "scripts": {
