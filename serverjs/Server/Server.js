@@ -1,16 +1,16 @@
 'use strict';
 
 // Node модули
-const 
+const
 	express = require('express'),
 	http = require('http'),
 	path = require('path'),
-	Eureca = require('eureca.io'),
+	Eureca = require('../vendor/eureca.io/EurecaServer'),
 	minimist = require('minimist'),
 	Log = require('../logger');
 
 // Игровые модули
-const 
+const
 	QueueManager = reqfromroot('Queue/QueueManager'),
 	DurakGame = reqfromroot('Game/Durak/DurakGame'),
 	Bot = reqfromroot('Player/Bot'),
@@ -18,7 +18,7 @@ const
 	Tests = reqfromroot('Tests/GameTest'),
 	getRemoteFunctions = reqfromroot('Server/remoteFunctions');
 
-class Server extends Eureca.Server{
+class Server extends Eureca.Eureca.Server{
 
 	/**
  	 * Сервер на основе eureca.io
@@ -56,7 +56,7 @@ class Server extends Eureca.Server{
 			game: this.gameModes['durak'][0],
 			bot: this.gameModes['durak'][1],
 			numPlayers: this.params.numPlayers,
-			numBots: this.params.numBots,			
+			numBots: this.params.numBots,
 			debug: this.params.debug,
 			name: 'Quick Game'
 		},
@@ -74,6 +74,7 @@ class Server extends Eureca.Server{
 		* @type {function}
 		*/
 		this.app = express();
+		this.app.set('trust proxy', true);
 		this.app.use(express.static(path.join(__dirname, rootPath, '/public')));
 
 		/**
@@ -109,7 +110,7 @@ class Server extends Eureca.Server{
 
 		/**
 		* Node.js http сервер.
-		* {@link Server#app} прикрепляется сюда, как колбэк.  
+		* {@link Server#app} прикрепляется сюда, как колбэк.
 		* http сервер затем прикрепляется к Eureca.Server (расширением которого является текущий класс)
 		* и обрабатывается им.
 		* @type {http.Server}
@@ -199,7 +200,7 @@ class Server extends Eureca.Server{
 			name = this.playerNames.pop();
 		}
 
-		// Подключаем клиента к экземпляру игрока	
+		// Подключаем клиента к экземпляру игрока
 		let p = new Player(remote, conn.id, name);
 
 		this.log.notice('New client %s (%s)', p.id, conn.id, conn.remoteAddress);
@@ -237,7 +238,7 @@ class Server extends Eureca.Server{
 
 	}
 
-	/** 
+	/**
 	* Выполняется при любом ответе от клиента.
 	* @param  {object} conn информация о соединении
 	*/
@@ -267,7 +268,7 @@ class Server extends Eureca.Server{
 
 	changePlayerName(connId, name){
 		let player = this.players[connId];
-		if(player){			
+		if(player){
 			if(typeof name != 'string' || name.length < 1 || name.length > 15){
 				player.recieveSystemNotification({type: 'NAME_INVALID'});
 				return;
@@ -290,6 +291,6 @@ class Server extends Eureca.Server{
 
 /**
 * {@link Server}
-* @module 
+* @module
 */
 module.exports = Server;
