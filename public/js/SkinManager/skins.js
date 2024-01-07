@@ -134,7 +134,8 @@ skins.push({
 
 // Pixel
 skins.push({
-	color: 0x874A36,
+	color: 0xE0E0E0,
+	background: 'black',
 	width: 136,
 	height: 192,
 	name: 'pixel',
