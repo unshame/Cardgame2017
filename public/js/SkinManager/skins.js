@@ -131,3 +131,25 @@ skins.push({
 	hasSuits: false
 });
 */
+
+// Pixel
+skins.push({
+	color: 0x874A36,
+	width: 136,
+	height: 192,
+	name: 'pixel',
+	friendlyName: 'Pixel',
+	numOfFrames: 56,
+	cardbackPossibleFrames: [
+		['Blue', 53],
+		['Red', 52],
+		['Yellow', 54],
+		['Purple', 55],
+	],
+	cardbackFrame: 53,
+	glowWidth: 148,
+	glowHeight: 204,
+	trumpOffset: 40,
+	trailWidth: 55,
+	trailHeight: 55
+});

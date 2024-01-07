@@ -60,7 +60,7 @@ UI.Credits.prototype.stop = function(){
 };
 
 /* exported creditsText */
-var creditsText = 
+var creditsText =
 '"Durak"\nan unoriginal digital cardgame\n\n\
 \
 Lead programmer\nSHIBAEV OLEG\n\n\
@@ -70,7 +70,8 @@ AI programmer\nSERGEY DARNOPYKH\n\n\
 Assets (OpenGameArt.Org)\n\
 "UI pack" by Kenney\n\
 "Modern Cards" by Kenney\n\
-"Classic Cards" by Byron Knoll\n\n\
+"Classic Cards" by Byron Knoll\n\
+"Pixel Cards" by Lazyspace\n\n\
 \
 Built on\n\
 Phaser.io\n\
