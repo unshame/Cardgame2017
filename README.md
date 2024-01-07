@@ -1,5 +1,5 @@
 Мультиплеерная карточная игра на [Phaser.js](https://phaser.io/), [Node.js](https://nodejs.org/) и [Eureca.io](http://eureca.io/).  
-Тестовая версия - [https://sinuous-crow-410507.ew.r.appspot.com/](https://sinuous-crow-410507.ew.r.appspot.com/).  
+Тестовая версия - [https://unshame.github.io/Cardgame2017/](https://unshame.github.io/Cardgame2017/).  
 Документация (WIP) - [клиент](https://durak.herokuapp.com/doc/client), [сервер](https://durak.herokuapp.com/doc/server).  
 [Правила игры (примерные)](http://www.gambiter.ru/durak/item/69-igra-durak-pravila.html). Реализован переводной и подкидной варианты.
 
@@ -87,7 +87,7 @@
 ### Документация  
 
 `npm run doc` генерирует документацию из комментариев в папке doc при помощи [JSDoc](http://usejsdoc.org/).
-Тестовая версия загружена на [https://sinuous-crow-410507.ew.r.appspot.com/doc/client/](https://sinuous-crow-410507.ew.r.appspot.com/doc/client/).  
+Тестовая версия загружена на [https://unshame.github.io/Cardgame2017/doc/client/](https://unshame.github.io/Cardgame2017/doc/client/).  
 В корне репозитория лежит модифицированный файл подсветки синтаксиса для Sublime 3 с подсветкой документации (с этим она значительно более читабильна в коде).
 
 ### Валидация кода  

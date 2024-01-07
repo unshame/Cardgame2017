@@ -9,8 +9,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     permissions:
       contents: 'read'
+      pages: 'write'
       id-token: 'write'
 
     steps:
@@ -21,6 +26,14 @@ jobs:
           node-version: 20.10.0
       - run: npm install
       - run: npm run build
+        env:
+          SERVER_URL: 'https://sinuous-crow-410507.ew.r.appspot.com/'
+
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: './prod/public'
+      - uses: actions/deploy-pages@v4
 
       - uses: google-github-actions/auth@v2
         with:

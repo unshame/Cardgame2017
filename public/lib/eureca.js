@@ -7093,9 +7093,9 @@ module.exports = _dereq_('./lib/index');
 ]);
 var _eureca_prefix = "eureca.io";
 
-var _eureca_uri = window.location.origin;
+var _eureca_uri = window.serverUrl || window.location.origin;
 
-var _eureca_host = window.location.origin;
+var _eureca_host = window.serverUrl || window.location.origin;
 
 if (typeof Primus != "undefined") Primus.prototype.pathname = "/eureca.io";
 /** @ignore */
@@ -7265,7 +7265,7 @@ var Eureca;
                     this.eureca = {};
                     this.request = socket.request;
                     this.id = socket.id;
-                    //FIXME : with nodejs 0.10.0 remoteAddress of nodejs clients is undefined (this seems to be a engine.io issue)            
+                    //FIXME : with nodejs 0.10.0 remoteAddress of nodejs clients is undefined (this seems to be a engine.io issue)
                     this.remoteAddress = socket.address;
                     //this.registerEvents(['open', 'message', 'error', 'close', 'reconnecting']);
                     this.bindEvents();
@@ -7414,7 +7414,7 @@ var Eureca;
 })(Eureca || (Eureca = {}));
 /// <reference path="../EObject.class.ts" />
 /// <reference path="../Util.class.ts" />
-/// 
+///
 var Eureca;
 (function (Eureca) {
     var Transports;
@@ -7673,7 +7673,7 @@ var Eureca;
                     this.eureca = {};
                     //this.request = socket.request;
                     this.id = peer && peer.id ? peer.id : Eureca.Util.randomStr(16);
-                    //FIXME : with nodejs 0.10.0 remoteAddress of nodejs clients is undefined (this seems to be a engine.io issue)            
+                    //FIXME : with nodejs 0.10.0 remoteAddress of nodejs clients is undefined (this seems to be a engine.io issue)
                     //this.remoteAddress = socket.address;
                     //this.registerEvents(['open', 'message', 'error', 'close', 'reconnecting']);
                     this.bindEvents();
@@ -7773,7 +7773,7 @@ var Eureca;
                         });
                     }
                     else {
-                        //we use POST request for webRTC signaling            
+                        //we use POST request for webRTC signaling
                         server.on('request', function (request, response) {
                             if (request.method === 'POST') {
                                 if (request.url.split('?')[0] === '/webrtc-' + options.prefix) {
@@ -7896,12 +7896,12 @@ var Eureca;
                             var parser = document.createElement('a');
                             parser.href = uri;
                             //parser.protocol;
-                            //parser.host;    
+                            //parser.host;
                             //parser.hostname;
-                            //parser.port;    
+                            //parser.port;
                             //parser.pathname;
-                            //parser.hash;    
-                            //parser.search;  
+                            //parser.hash;
+                            //parser.search;
                             //var params = "lorem=ipsum&name=binny";
                             xhr.open("POST", '//' + parser.hostname + ':' + parser.port + '/webrtc-' + options.prefix, true);
                             //Send the proper header information along with the request
@@ -8097,7 +8097,7 @@ var Eureca;
 
                         var RMIObj: any = {};
 
-                        
+
                         var argsArray = args;//Array.prototype.slice.call(arguments, 0);
                         var uid = Eureca.Util.randomStr();
                         proxyObj.sig = uid;
@@ -8385,7 +8385,7 @@ var Eureca;
             var _this = this;
             this.exports = {};
             this.settings.autoConnect = !(this.settings.autoConnect === false);
-            //if (this.settings.autoConnect !== false) 
+            //if (this.settings.autoConnect !== false)
             this.maxRetries = settings.retry || 20;
             //var tries = 0;
             //this.registerEvents(['ready', 'update', 'onConnect', 'onDisconnect', 'onError', 'onMessage', 'onConnectionLost', 'onConnectionRetry', 'authResponse']);
@@ -8456,7 +8456,7 @@ var Eureca;
          * });
          */
         Client.prototype.authenticate = function () {
-            //if (!this._ready) 
+            //if (!this._ready)
             //{
             //    return;
             //}
@@ -8541,8 +8541,8 @@ var Eureca;
                     /** Experimental : dynamic client contract*/
                     //if (jobj[Protocol.signatureId]) {
                     //    var contract = [];
-                    //    contract = Contract.ensureContract(_this.exports);    
-                    //    var contractResp = {};                    
+                    //    contract = Contract.ensureContract(_this.exports);
+                    //    var contractResp = {};
                     //    contractResp[Protocol.contractId] = contract;
                     //    contractResp[Protocol.signatureId] = jobj[Protocol.signatureId];
                     //    _this.send(contractResp);
@@ -8591,18 +8591,18 @@ var Eureca;
                     client.context.retId = jobj[Eureca.Protocol.signatureId];
                     //Experimental custom context sharing
                     //remote context is shared throught clientProxy or proxy function in the server side
-                    //Example 
+                    //Example
                     // a server exposing hello() function
                     // a client calling server hello() function
                     //
-                    // in the client side you can issue : 
+                    // in the client side you can issue :
                     //    eurecaServer.hello.context = {somefield:'someData'}
                     //    //you can also use eurecaServer.context = {somefield:'someData'} in this case it'll be global to all exposed functions !
                     //    eurecaServer.hello();
                     //
                     // in the server side, you get the remote shared context throught
                     //    exports.hello = function() {
-                    //          console.log(this.remoteContext); // <== you get the remote context here 
+                    //          console.log(this.remoteContext); // <== you get the remote context here
                     //          console.log('hello');
                     //    }
                     //if (jobj[Eureca.Protocol.context]) {
