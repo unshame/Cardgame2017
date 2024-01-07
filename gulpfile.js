@@ -25,6 +25,7 @@ const otherPaths = [
 	'./package.json',	// информация о приложении
 	'./package-lock.json',
 	'./app.yaml',
+	'./.gcloudignore',
 	'./logs/.gitkeep',	// нужно сохранить папку с логами, но без самих логов
 	path.join(publicPath, 'style.css'),
 	path.join(publicPath, 'favicon.ico'),
@@ -42,6 +43,7 @@ const libraryPaths = [
 const jsPath = 'js';
 const minifiedPath = 'durak.js';
 const packPath = 'pack.js';
+const configContent = 'window.serverUrl = "' + (process.env.SERVER_URL || '') + '";';
 
 function concatFiles(folder, paths){
 	let content = '';
@@ -160,7 +162,7 @@ function build(includeDocs, safeBuild, callback){
 
 	// Склеиваем библиотеки
 	let libContent = concatFiles(publicPath, libraryPaths);
-	let libFile = newFile(path.join(publicPath, packPath), libContent);
+	let libFile = newFile(path.join(publicPath, packPath), configContent + libContent);
 
 	// склеиваем все скрипты
 	let jsContent = includeReferenced(path.join(publicPath, jsPath), indexName);
