@@ -1,5 +1,5 @@
 /**
-* Состояние игры, отвечающее за отображение главного меню игры.  
+* Состояние игры, отвечающее за отображение главного меню игры.
 * Синхронное состояние.
 * @namespace stateMenu
 * @property {string} key='menu' Название состояния.
@@ -36,7 +36,7 @@ var stateMenu = new State('menu', {
 	applySkin: function(){
 		ui.updatePositions();
 		cardEmitter.applySkin();
-		ui.background.setTexture(skinManager.skin.background);
+		ui.applySkin();
 	},
 
 	/**

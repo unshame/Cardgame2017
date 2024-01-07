@@ -1,6 +1,6 @@
 /**
 * Состояние процесса игры.
-* Обновляет все игровые элементы.  
+* Обновляет все игровые элементы.
 * Синхронное состояние.
 * @namespace statePlay
 * @property {string} key='play' Название состояния.
@@ -28,7 +28,7 @@ var statePlay = new State('play', {
 
 		cardControl.updateDebug();
 		fieldManager.updateDebug();
-		cardManager.updateDebug();		
+		cardManager.updateDebug();
 		game.updateDebug();
 	},
 
@@ -55,7 +55,7 @@ var statePlay = new State('play', {
 		cardControl.trailApplySkin();
 		fieldManager.applySkin();
 		actionHandler.highlightPossibleActions();
-		ui.background.setTexture(skinManager.skin.background);
+		ui.applySkin();
 	},
 
 	/**
@@ -83,7 +83,7 @@ var statePlay = new State('play', {
 	* Ресетит все игровые модули по окончанию игры, прячет кнопку действия.
 	* @memberof statePlay
 	*/
-	shutdown: function(){ 
+	shutdown: function(){
 		actionHandler.resetActions();
 		ui.eventFeed.clear();
 		ui.announcer.clear();

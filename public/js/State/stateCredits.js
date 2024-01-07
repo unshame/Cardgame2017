@@ -27,7 +27,7 @@ var stateCredits = new State('credits', {
 	applySkin: function(){
 		//cardManager.applySkin();
 		ui.updatePositions();
-		ui.background.setTexture(skinManager.skin.background);
+		ui.applySkin();
 	},
 
 	/**

@@ -27,7 +27,7 @@ var stateQueue = new State('queue', {
 	applySkin: function(){
 		ui.updatePositions();
 		cardEmitter.applySkin();
-		ui.background.setTexture(skinManager.skin.background);
+		ui.applySkin();
 	},
 
 	/**

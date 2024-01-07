@@ -1,7 +1,7 @@
 /**
-* Менеджер интерфейса.  
-* Создает и обновляет позиции всех элементов интерфейса: кнопки, курсор, таймер и т.д.  
-* Создает менеджер слоев интерфейса {@link UI#layers} и добавляет элементы интерфейса, 
+* Менеджер интерфейса.
+* Создает и обновляет позиции всех элементов интерфейса: кнопки, курсор, таймер и т.д.
+* Создает менеджер слоев интерфейса {@link UI#layers} и добавляет элементы интерфейса,
 * а также существующие группы в него.
 * @class
 */
@@ -63,7 +63,7 @@ var UI = function(){
 			red: {
 				outer: '#E00505',
 				inner: '#FF2F2F',
-				background: '#F91E1E'				
+				background: '#F91E1E'
 			}
 		}
 	};
@@ -91,7 +91,7 @@ UI.prototype.initialize = function(){
 	* Фон.
 	* @type {UI.Background}
 	*/
-	this.background = new UI.Background();	
+	this.background = new UI.Background();
 
 	/**
 	* Лого игры.
@@ -117,17 +117,17 @@ UI.prototype.initialize = function(){
 	* Фид важных сообщений.
 	* @type {MessageFeed.AnnounceFeed}
 	*/
-	this.announcer = new MessageFeed.AnnounceFeed(game);	
+	this.announcer = new MessageFeed.AnnounceFeed(game);
 
 	/**
 	* Фид событий.
 	* @type {MessageFeed.EventFeed}
 	*/
-	this.eventFeed = new MessageFeed.EventFeed(game);	
+	this.eventFeed = new MessageFeed.EventFeed(game);
 
 	this.eventFeed.zIndexBelowCards = 3;
 	this.eventFeed.zIndexAboveCards = 7;
-	
+
 	/**
 	* Менеджер модальных меню.
 	* @type {UI.ModalManager}
@@ -137,7 +137,7 @@ UI.prototype.initialize = function(){
 	this.popupManager = new UI.PopupManager();
 
 	this.credits = new UI.Credits(creditsText, game.state.change.bind(game.state, 'menu'));
-	
+
 	this._createButtons();
 
 	this.menus = this._createMenus();
@@ -175,6 +175,11 @@ UI.prototype.initialize = function(){
 /** Обновляет позиции всех элементов UI. */
 UI.prototype.updatePositions = function(){
 	this.layers.positionElements();
+};
+
+UI.prototype.applySkin = function(){
+	ui.background.setTexture(skinManager.skin.background);
+	ui.background.vignette.visible = skinManager.skin.uiVignette;
 };
 
 /** Возвращает phaser пиксель для превращения в текстуру. */

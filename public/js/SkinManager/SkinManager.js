@@ -55,12 +55,12 @@ SkinManager.prototype.addSkins = function(skins){
 * @param {object}   options                                           опции скина
 *
 * @param {string}   options.name                                      имя скина, должно соотвтествтовать папке с графикой скина в `assets/skins/`
-*                                                                     под этим именем скин будет сохранен в {@link SkinManager#skins} 
-*                                                                     и это имя нужно использовать для установки скина  
-*                                                                     графика карт - `cards.png`  
-*                                                                     графика свечения карт - `glow.png`  
-*                      		                                          графика хвоста карт - `trails.png`  
-*                      		                                          графика отображения козырной масти - `suits.png`  
+*                                                                     под этим именем скин будет сохранен в {@link SkinManager#skins}
+*                                                                     и это имя нужно использовать для установки скина
+*                                                                     графика карт - `cards.png`
+*                                                                     графика свечения карт - `glow.png`
+*                      		                                          графика хвоста карт - `trails.png`
+*                      		                                          графика отображения козырной масти - `suits.png`
 * @param {number}   options.width                                     реальная ширина карты (и ширина кадра графики карты)
 * @param {number}   options.height                                    реальная высота карты (и высота кадра графики карты)
 *
@@ -83,6 +83,8 @@ SkinManager.prototype.addSkins = function(skins){
 * @param {boolean}  [options.hasSuits=true]                           есть ли графика отображения козырной масти
 * @param {string}   [options.background='blue']                       какой фон соответствует этому скину
 * @param {number}   [options.color=ui.colors.lightBlue]               цвет, соответствующий скину
+*
+* @param {boolean} [options.uiVignette=true]
 */
 SkinManager.prototype.addSkin = function(options){
 
@@ -94,35 +96,35 @@ SkinManager.prototype.addSkin = function(options){
 
 	skin.background 	 = options.background || 'blue';
 	skin.color 			 = options.color === undefined ? ui.colors.lightBlue : options.color;
- 
+
 	skin.frameWidth 	 = options.width || 0;
 	skin.frameHeight 	 = options.height || 0;
- 
+
 	skin.scale 			 = options.scale || 1;
- 
+
 	skin.width 			 = skin.frameWidth*skin.scale;
 	skin.height 		 = skin.frameHeight*skin.scale;
- 
+
 	skin.name 			 = options.name;
 	skin.friendlyName	 = options.friendlyName || options.name;
 	skin.sheetName 		 = skin.name + 'Cards';
 	skin.sheetPath 		 = 'assets/skins/' + options.name + '/cards.png';
- 
+
 	skin.numOfFrames 	 = options.numOfFrames || 53;
 	skin.firstValueFrame = options.firstValueFrame || 0;
 	skin.cardbackPossibleNames = [];
 	skin.cardbackPossibleFrames = [];
 	skin.cardbackFrame 	 = (options.cardbackFrame || options.cardbackFrame === 0) ? options.cardbackFrame : skin.cardbackPossibleFrames[0];
- 
+
 	skin.trumpOffset 	 = options.trumpOffset || 0;
- 
+
 	skin.glowPath 		 = 'assets/skins/' + options.name + '/glow.png';
 	skin.glowSheetName 	 = options.name + 'Glow';
 	skin.glowRealWidth 	 = options.glowWidth || 0;
 	skin.glowRealHeight  = options.glowHeight || 0;
 	skin.glowWidth 		 = skin.glowRealWidth*skin.scale;
 	skin.glowHeight 	 = skin.glowRealHeight*skin.scale;
- 
+
 	skin.trailWidth 	 = options.trailWidth || 0;
 	skin.trailHeight 	 = options.trailHeight || 0;
 	skin.trailPath 		 = 'assets/skins/' + options.name + '/trails.png';
@@ -131,6 +133,8 @@ SkinManager.prototype.addSkin = function(options){
 	skin.hasSuits 		 = options.hasSuits === undefined ? true : options.hasSuits;
 	skin.suitsPath 		 = 'assets/skins/' + options.name + '/suits.png';
 	skin.suitsName 		 = options.name + 'Suits';
+
+	skin.uiVignette    = options.uiVignette !== false;
 
 	if(options.cardbackPossibleFrames){
 		options.cardbackPossibleFrames.forEach(function(frame){
@@ -158,7 +162,7 @@ SkinManager.prototype.addSkin = function(options){
 };
 
 /**
-* Загружает ассеты скина. 
+* Загружает ассеты скина.
 * @param {string}  skinName название скина
 * @param {boolean} [apply]  нужно ли применять скин после загрузки
 */
@@ -172,10 +176,10 @@ SkinManager.prototype.loadSkin = function(skinName, apply){
 	skin.loaded = true;
 
 	game.load.spritesheet(
-		skin.sheetName, 
-		skin.sheetPath, 
-		skin.frameWidth, 
-		skin.frameHeight, 
+		skin.sheetName,
+		skin.sheetPath,
+		skin.frameWidth,
+		skin.frameHeight,
 		skin.numOfFrames
 	);
 	game.load.image(skin.glowSheetName, skin.glowPath);
@@ -183,7 +187,7 @@ SkinManager.prototype.loadSkin = function(skinName, apply){
 		skin.trailName,
 		skin.trailPath,
 		skin.trailWidth,
-		skin.trailHeight, 
+		skin.trailHeight,
 		4
 	);
 	if(skin.hasSuits){
@@ -191,7 +195,7 @@ SkinManager.prototype.loadSkin = function(skinName, apply){
 			skin.suitsName,
 			skin.suitsPath,
 			skin.frameWidth,
-			skin.frameHeight, 
+			skin.frameHeight,
 			4
 		);
 	}
@@ -221,6 +225,7 @@ SkinManager.prototype.setSkin = function(skinName){
 	gameOptions.set('appearance_skin', skinName);
 	gameOptions.save();
 	gameOptions.set('appearance_cardback', this.getCurrentCardbackIndex());
+	gameOptions.set('ui_vignette', this.skin.uiVignette);
 	gameOptions.save();
 	if(!this.skin.loaded){
 		this.loadSkin(skinName, true);

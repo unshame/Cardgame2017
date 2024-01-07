@@ -152,5 +152,6 @@ skins.push({
 	glowHeight: 204,
 	trumpOffset: 40,
 	trailWidth: 55,
-	trailHeight: 55
+	trailHeight: 55,
+	uiVignette: false
 });
