@@ -11,7 +11,7 @@ jobs:
 
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://unshame.github.io/Cardgame2017/
 
     permissions:
       contents: 'read'
