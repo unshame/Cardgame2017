@@ -15,20 +15,20 @@ skins.push({
 	friendlyName: 'Modern',
 	numOfFrames: 67,
 	cardbackPossibleFrames: [
-		['Blue 1', 52], 
-		['Blue 2', 53], 
-		['Blue 3', 54], 
-		['Blue 4', 55], 
-		['Blue 5', 56], 
-		['Green 1', 57], 
-		['Green 2', 58], 
-		['Green 3', 59], 
-		['Green 4', 60], 
-		['Green 5', 61], 
-		['Red 1', 62], 
-		['Red 2', 63], 
-		['Red 3', 64], 
-		['Red 4', 65], 
+		['Blue 1', 52],
+		['Blue 2', 53],
+		['Blue 3', 54],
+		['Blue 4', 55],
+		['Blue 5', 56],
+		['Green 1', 57],
+		['Green 2', 58],
+		['Green 3', 59],
+		['Green 4', 60],
+		['Green 5', 61],
+		['Red 1', 62],
+		['Red 2', 63],
+		['Red 3', 64],
+		['Red 4', 65],
 		['Red 5', 66]
 	],
 	cardbackFrame: 55,
@@ -38,23 +38,6 @@ skins.push({
 	trailWidth: 35,
 	trailHeight: 35
 });
-
-
-skins.push({
-	name: 'game',
-	width: 441,
-	height: 653,
-	friendlyName: 'GoT',
-	numOfFrames: 53,
-	cardbackPossibleFrames: [
-		['Red', 52]
-	],
-	cardbackFrame: 52,
-	scale: 0.4,
-	hasSuits: false
-});
-
-
 
 // Familiar
 /*skins.push({
@@ -94,6 +77,20 @@ skins.push({
 	trailHeight: 55,
 	scale: 0.9
 });
+
+/*skins.push({
+	name: 'game',
+	width: 441,
+	height: 653,
+	friendlyName: 'GoT',
+	numOfFrames: 53,
+	cardbackPossibleFrames: [
+		['Red', 52]
+	],
+	cardbackFrame: 52,
+	scale: 0.4,
+	hasSuits: false
+});*/
 
 // Abstract
 /*skins.push({
