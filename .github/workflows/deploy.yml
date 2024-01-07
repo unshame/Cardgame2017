@@ -26,7 +26,7 @@ jobs:
       - uses: google-github-actions/auth@v2
         with:
           project_id: 'sinuous-crow-410507'
-          workload_identity_provider: 'projects/1052080817449/locations/global/workloadIdentityPools/cardgame2017/providers/cardgame2017'
+          credentials_json: ${{ secrets.GCLOUD_ACCOUNT_KEY }}
 
       - uses: google-github-actions/deploy-appengine@v2
         with:
