@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - pages
 
 jobs:
   deploy:
@@ -27,6 +26,8 @@ jobs:
           node-version: 20.10.0
       - run: npm install
       - run: npm run build
+        env:
+          SERVER_URL: 'https://sinuous-crow-410507.ew.r.appspot.com/'
 
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
