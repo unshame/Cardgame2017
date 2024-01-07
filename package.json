@@ -5,15 +5,19 @@
   "engines": {
     "node": ">=20.10.0"
   },
+  "packageManager": "^npm@10.2.3",
   "main": "server.js",
   "scripts": {
     "game": "node server --transfer",
     "prod": "node prod/server --transfer",
-    "heroku": "cd prod && heroku local",
     "dev": "npm i --only=dev && npm install plato -g && npm install jsdoc -g && npm install gulp-cli -g",
     "report": "plato -d report/client --jshint ./public/.jshintrc -t \"Durak: Client Javascript Report\" ./public/js/**/*.js && plato -d report/server --jshint ./serverjs/.jshintrc -t \"Durak: Server Javascript Report\" ./serverjs/**/*.js ./server.js",
     "doc": "jsdoc -c ./doc/config.json -d ./doc/client/ -p ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ -p ./serverjs/ ./server.js",
-    "docpublic": "jsdoc -c ./doc/config.json -d ./doc/client/ ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ ./serverjs/ ./server.js"
+    "docpublic": "jsdoc -c ./doc/config.json -d ./doc/client/ ./public/js/ && jsdoc -c ./doc/config.json -d ./doc/server/ ./serverjs/ ./server.js",
+    "build": "run-s \"build:*\"",
+    "build:docs": "npm run doc",
+    "build:game": "gulp buildallsafe",
+    "preview": "node prod/server"
   },
   "dependencies": {
     "engine.io": "3.6.1",
@@ -33,10 +37,12 @@
   },
   "homepage": "https://github.com/unshame/Cardgame2017#readme",
   "devDependencies": {
-    "gulp": "3.9.1",
-    "gulp-file": "0.3.0",
+    "gulp": "4.0.2",
+    "gulp-file": "0.4.0",
     "gulp-uglify": "3.0.0",
-    "pump": "1.0.3"
+    "pump": "1.0.3",
+    "jsdoc": "3.6.11",
+    "npm-run-all": "4.1.5"
   },
   "author": "UnShame"
 }

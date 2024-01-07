@@ -2,7 +2,7 @@
 // jshint node:true
 'use strict';
 
-const 
+const
 	fs = require('fs'),
 	path = require('path'),
 	gulp = require('gulp'),
@@ -22,14 +22,11 @@ const reportPath = './report';
 const prodPath = './prod';
 const otherPaths = [
 	'./server.js',
-	'./app.json',		// для heroku
 	'./package.json',	// информация о приложении
 	'./logs/.gitkeep',	// нужно сохранить папку с логами, но без самих логов
-	'./.gitignore',		// для heroku
-	'./Procfile',		// для heroku
 	path.join(publicPath, 'style.css'),
 	path.join(publicPath, 'favicon.ico'),
-	path.join(publicPath, '/assets/**/*'),	
+	path.join(publicPath, '/assets/**/*'),
 	path.join(serverPath, '/**/*')	// серверные скрипты
 ];
 
@@ -71,7 +68,7 @@ function includeReferenced(dir, fileName, tags, base, addSelf){
 
 	// Находим либо dir/fileName.js, либо dir/fileName/fileName.js
 	if(fs.existsSync(filePath)){
-		content = fs.readFileSync(filePath, "utf8");			
+		content = fs.readFileSync(filePath, "utf8");
 	}
 	else if(fs.existsSync(dirPath) && fs.existsSync(fileAltPath)){
 		content = fs.readFileSync(fileAltPath, "utf8");
@@ -171,7 +168,7 @@ function build(includeDocs, safeBuild, callback){
 	let jsFile = newFile(path.join(publicPath, minifiedPath), jsContent);
 
 	// заменяем пути к скриптам в index.html
-	let tags = addLibraryTags('', [packPath, minifiedPath]); 
+	let tags = addLibraryTags('', [packPath, minifiedPath]);
 	let indexContent = replaceDevCode(publicPath, indexName + '.html', null, tags, true);
 	let indexFile = newFile(path.join(publicPath, indexName + '.html'), indexContent);
 
@@ -199,17 +196,15 @@ function build(includeDocs, safeBuild, callback){
 				path.join(docPath, '/server/**/*'),
 				path.join(reportPath, '/client/**/*'),
 				path.join(reportPath, '/server/**/*')
-			], base)				
+			], base)
 			.pipe(gulp.dest(path.join(prodPath, publicName)));
 	}
 }
 
-// Таск создания версии для heroku
 gulp.task('build', (callback) => {
 	build(false, false, callback);
 });
 
-// Таск создания версии для heroku с обновлением документации
 gulp.task('buildall', (callback) => {
 	build(true, false, callback);
 });
@@ -228,7 +223,7 @@ gulp.task('buildallsafe', (callback) => {
 gulp.task('addtags', (callback) => {
 
 	// Добавляем библиотеки к тегам
-	let libs = addLibraryTags('', libraryPaths); 
+	let libs = addLibraryTags('', libraryPaths);
 
 	// Создаем теги из скриптов
 	let tags = includeReferenced(path.join(publicPath, jsPath), indexName, true, publicName + '\\');
