@@ -92,7 +92,7 @@ class Bot extends Player {
 				let action;
 				if (this.isAttackTurn()) {
 					action = this.chooseAttack(actions);
-				} 
+				}
 				else {
 					action = this.choooseDefence(actions);
 				}
@@ -177,14 +177,19 @@ class Bot extends Player {
 			unbeatableAction = this.findMinUnbeatableAction(actions, opponentsHand),
 			untransferableAction = this.findMinUntransferableAction(actions, opponentsHand),
 			pass = this.findPassAction(actions),
-			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage),
-			mustPass = this.game.turnStages.current === 'ATTACK' && actions.length === 1;
+			maxQtyCard = this.findMaxQtyCard(minAction, actions, gameStage);
 
-		return this.isPass(minAction, pass) ? pass :
-			this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand) ? unbeatableAction :
-			maxQtyCard ? this.changeCardIntoAction(actions, maxQtyCard) :
-			this.isUntransferableAction(untransferableAction, minAction) ? untransferableAction :
-			minAction || (mustPass ? pass : null);
+		if (this.isPass(minAction, pass)) {
+			return pass;
+		} else if (this.isUnbeatableAction(unbeatableAction, minAction, opponentsHand)) {
+			return unbeatableAction;
+		} else if (maxQtyCard) {
+			return this.changeCardIntoAction(actions, maxQtyCard);
+		} else if (this.isUntransferableAction(untransferableAction, minAction)) {
+			return untransferableAction;
+		} else {
+			return minAction || pass || actions[0];
+		}
 	}
 
 	choooseDefence(actions) {
@@ -667,7 +672,7 @@ class Bot extends Player {
 			isActionTrump = action.csuit === this.game.cards.trumpSuit,
 			isFollowUp = this.game.turnStages.current === 'FOLLOWUP',
 			areNullDefenceTableCards = this.findNullDefenceTableCards();
-			
+
 
 		if ((!isFollowUp) && (!areNullDefenceTableCards)) {
 			switch (defensePlayerCardsQty) {
@@ -709,9 +714,9 @@ class Bot extends Player {
 		}
 
 		if (
-			this.difficulty > 0 && 
+			this.difficulty > 0 &&
 			(
-				!minAction || 
+				!minAction ||
 				minAction.csuit === this.game.cards.trumpSuit ||
 				minAction.cvalue > 10
 			)
