@@ -119,6 +119,13 @@ var LobbyCreator = function(options){
 				hoverText: 'Limits the amount of cards that players can follow up with by the defender\'s hand size at the start of the turn',
 				hoverPlacement: 'right',
 				checked: true
+			})
+		),
+
+		Menu.alignLeft(
+			Menu.text({
+				text:'',
+				fixedWidth: 335
 			}),
 			Menu.checkbox({
 				text: 'Free for all',

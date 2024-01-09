@@ -1,6 +1,6 @@
 'use strict';
 
-const 
+const
 	Game = reqfromroot('Game/Game'),
 	Bot = reqfromroot('Player/Bot'),
 	DurakCards = reqfromroot('Game/Durak/DurakCards'),
@@ -15,7 +15,7 @@ class DurakGame extends Game{
 	constructor(queue, players, config, rules){
 		super(
 			queue,
-			players, 
+			players,
 			{
 				cards: DurakCards,
 				players: DurakPlayers,
@@ -25,7 +25,7 @@ class DurakGame extends Game{
 				reactions: DurakReactions,
 				directives: DurakDirectives,
 				bot: Bot
-			}, 
+			},
 			{
 				minPlayers: DurakGame.minPlayers,
 				debug: config.debug,
@@ -51,7 +51,7 @@ class DurakGame extends Game{
 			canTransfer: Boolean(rules.canTransfer),
 			limitFollowup: Boolean(rules.limitFollowup),
 			limitAttack: Boolean(rules.limitAttack),
-			freeForAll: false,
+			freeForAll: Boolean(rules.freeForAll),
 			numCards: Number(rules.numCards),
 			longerTurn: Boolean(rules.longerTurn)
 		};

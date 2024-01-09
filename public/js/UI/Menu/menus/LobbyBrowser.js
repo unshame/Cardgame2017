@@ -26,7 +26,7 @@ var LobbyBrowser = function(options){
 	}));
 
 	layout.push(Menu.alignLeft(
-		{			
+		{
 			name: 'left',
 			size: 'arrow',
 			action: this.loadPrevious,
@@ -75,7 +75,7 @@ var LobbyBrowser = function(options){
 			context: this
 		}
 	]);
-		
+
 	this.options.layout = layout;
 	Menu.call(this, this.options);
 
@@ -139,7 +139,7 @@ LobbyBrowser.prototype.resetButtons = function(){
 	for(var i = 0; i < this.pagination; i++){
 		this.buttons[i].label.setText('', true);
 		this.disableElement('button' + i);
-		
+
 		this.buttons[i].changeStyle(i === 0 ? 1 : i == this.pagination - 1 ? 2 : 3);
 	}
 	this.disableElement('right');
@@ -148,7 +148,7 @@ LobbyBrowser.prototype.resetButtons = function(){
 	this.getElementByName('left').alpha = 0.5;
 };
 
-LobbyBrowser.prototype.recieveList = function(action){	
+LobbyBrowser.prototype.recieveList = function(action){
 	this.list = action.list;
 	this.page = action.page;
 
@@ -156,7 +156,7 @@ LobbyBrowser.prototype.recieveList = function(action){
 
 	for(var i = 0; i < this.list.length; i++){
 		UI.Text.limitWidth(this.buttons[i].label, this.list[i].name, this.buttons[i].width - 5);
-		this.enableElement('button' + i);		
+		this.enableElement('button' + i);
 	}
 
 	this.pageText.setText('Page ' + (this.page + 1), true);
@@ -171,7 +171,7 @@ LobbyBrowser.prototype.recieveList = function(action){
 	}
 
 	if(this.list[0]){
-		this.select(0);	
+		this.select(0);
 	}
 	else{
 		this.disableElement('join');
@@ -282,21 +282,22 @@ LobbyBrowser.prototype.getInfoText = function(u){
 			case 2:
 			/* falls through */
 
-			default: 
+			default:
 			a += 'Hard\n';
 			break;
 		}
 	}
-	
+
 	var deckSize = el.gameRules.numCards;
 	if(typeof deckSize != 'number' || isNaN(deckSize)){
 		deckSize = (el.numBots + el.numPlayersRequired < 4) ? 36 : 52;
 	}
 	a += 'Deck size: ' + deckSize + '\n';
-	a += 'Turn time: ' + (el.gameRules.longerTurn ? '40' : '25') + 'sec\n';	
+	a += 'Turn time: ' + (el.gameRules.longerTurn ? '40' : '25') + 'sec\n';
 	a += 'Can transfer: ' + yesNo[el.gameRules.canTransfer] + '\n';
-	a += 'Limit attackers: ' + yesNo[el.gameRules.limitAttack] + '\n'; 
-	a += 'Limit followup: ' + yesNo[el.gameRules.limitAttack] + '\n';	
+	a += 'Limit attackers: ' + yesNo[el.gameRules.limitAttack] + '\n';
+	a += 'Limit followup: ' + yesNo[el.gameRules.limitAttack] + '\n';
+	a += 'Free for all: ' + yesNo[el.gameRules.freeForAll] + '\n';
 
 	return a;
 };
