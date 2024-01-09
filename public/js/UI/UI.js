@@ -180,6 +180,7 @@ UI.prototype.updatePositions = function(){
 UI.prototype.applySkin = function(){
 	ui.background.setTexture(skinManager.skin.background);
 	ui.background.vignette.visible = skinManager.skin.uiVignette;
+	ui.menus.more_options.applyCheckbox('vignette', skinManager.skin.uiVignette);
 };
 
 /** Возвращает phaser пиксель для превращения в текстуру. */
