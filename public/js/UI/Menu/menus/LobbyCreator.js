@@ -16,7 +16,7 @@ var LobbyCreator = function(options){
 				action: this.limitBotSelectorRange,
 				context: this,
 				name:'stepOfPlayers',
-				choices: [ 
+				choices: [
 					'1',
 					'2',
 					'3',
@@ -77,14 +77,14 @@ var LobbyCreator = function(options){
 			}),
 			Menu.stepper({
 				name:'deckSizeStep',
-				choices: [ 
+				choices: [
 					'36',
-					'52'			
+					'52'
 				],
 				startKey: '52',
 				minWidth: stepperWidth
 			}),
-			Menu.checkbox({ 
+			Menu.checkbox({
 				text:'Limit attackers',
 				name:'limitAttack',
 				hoverText:'Only players adjacent to the defender can attack',
@@ -92,7 +92,7 @@ var LobbyCreator = function(options){
 				checked: true
 			})
 		),
-		
+
 		Menu.alignLeft(
 			Menu.text({
 				text:'Difficulty',
@@ -103,7 +103,7 @@ var LobbyCreator = function(options){
 			}),
 			Menu.stepper({
 				name:'stepOfDifficulty',
-				choices: [ 
+				choices: [
 					['0', 'Easy'],
 					['1', 'Medium'],
 					['2', 'Hard'],
@@ -119,13 +119,13 @@ var LobbyCreator = function(options){
 				hoverText: 'Limits the amount of cards that players can follow up with by the defender\'s hand size at the start of the turn',
 				hoverPlacement: 'right',
 				checked: true
-			})/*,
+			}),
 			Menu.checkbox({
 				text: 'Free for all',
 				name: 'freeForAll',
 				hoverText: 'Multiple players will be able to attack at the same time',
 				hoverPlacement: 'right'
-			})*/
+			})
 		),
 
 		Menu.alignJustify(
@@ -155,8 +155,8 @@ var LobbyCreator = function(options){
 		)
 	];
 	this.options.layout = layout;
-	
-	Menu.call(this, this.options);	
+
+	Menu.call(this, this.options);
 
 	this.limitBotSelectorRange(this.getElementByName('stepOfPlayers').getKey());
 
@@ -204,7 +204,7 @@ LobbyCreator.prototype.createGame = function(){
 	};
 	var rules = {
 		canTransfer: this.getElementByName('transfer').checked,
-		freeForAll: false,
+		freeForAll: this.getElementByName('freeForAll').checked,
 		limitAttack: this.getElementByName('limitAttack').checked,
 		limitFollowup: this.getElementByName('limitFollowup').checked,
 		longerTurn: this.getElementByName('longerTurn').checked,
