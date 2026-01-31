@@ -6,7 +6,7 @@
 ## Установка  
 
 1. Клонировать `git clone https://github.com/unshame/Cardgame2017.git`    
-2. Установить [node.js 20](https://nodejs.org/en/)     
+2. Установить [node.js 22](https://nodejs.org/en/)     
 3. Установить зависимости: `npm i`
 4. Запустить сервер: `npm run dev`    
 5. В браузере открыть `localhost:5000`

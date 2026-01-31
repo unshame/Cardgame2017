@@ -1,4 +1,4 @@
-runtime: nodejs20
+runtime: nodejs22
 build_env_variables:
   GOOGLE_NODE_RUN_SCRIPTS: ''
 env_variables:
