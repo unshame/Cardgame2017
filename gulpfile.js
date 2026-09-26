@@ -5,6 +5,7 @@
 const
 	fs = require('fs'),
 	path = require('path'),
+	crypto = require('crypto'),
 	gulp = require('gulp'),
 	newFile = require('gulp-file'),
 	uglify = require('gulp-uglify'),
@@ -157,12 +158,52 @@ function addLibraryTags(tags, libs){
 	return tags;
 }
 
+// Файлы, получающие хэш содержимого в имени, и папка для них
+const hashedNames = [packPath, minifiedPath, 'style.css'];
+const hashedDir = 'static';
+
+// Переносит файлы из hashedNames в dir/static/ с хэшем содержимого в имени
+// (durak.js -> static/durak.1a2b3c4d5e.js) и обновляет ссылки в index.html.
+// Такие файлы никогда не меняются по одному адресу, поэтому их можно
+// кэшировать навсегда, а index.html - никогда.
+// Пути к assets/ остаются относительными к странице, поэтому перенос
+// скриптов в другую папку их не затрагивает.
+function hashFiles(dir){
+	let staticDir = path.join(dir, hashedDir);
+	let indexPath = path.join(dir, indexName + '.html');
+	let indexContent = fs.readFileSync(indexPath, 'utf8');
+
+	// Старые хэшированные файлы от предыдущих локальных билдов
+	fs.rmSync(staticDir, { recursive: true, force: true });
+	fs.mkdirSync(staticDir, { recursive: true });
+
+	hashedNames.forEach((name) => {
+		let filePath = path.join(dir, name);
+		let content = fs.readFileSync(filePath);
+		let hash = crypto.createHash('sha256').update(content).digest('hex').slice(0, 10);
+		let ext = path.extname(name);
+		let hashedName = hashedDir + '/' + path.basename(name, ext) + '.' + hash + ext;
+
+		fs.renameSync(filePath, path.join(dir, hashedName));
+
+		let ref = new RegExp('((?:src|href)=")' + name.replace(/\./g, '\\.') + '"', 'g');
+		if(!ref.test(indexContent)){
+			throw new Error('No reference to ' + name + ' in ' + indexPath);
+		}
+		indexContent = indexContent.replace(ref, '$1' + hashedName + '"');
+		console.log('%s -> %s', name, hashedName);
+	});
+
+	fs.writeFileSync(indexPath, indexContent);
+}
+
 // Создает билд игры в папке prod
 function build(includeDocs, safeBuild, callback){
 
 	// Склеиваем библиотеки
 	let libContent = concatFiles(publicPath, libraryPaths);
-	let libFile = newFile(path.join(publicPath, packPath), configContent + libContent);
+	// src: true - стрим закрывается сам, иначе он и весь pump никогда не завершаются
+	let libFile = newFile(path.join(publicPath, packPath), configContent + libContent, { src: true });
 
 	// склеиваем все скрипты
 	let jsContent = includeReferenced(path.join(publicPath, jsPath), indexName);
@@ -178,20 +219,31 @@ function build(includeDocs, safeBuild, callback){
 
 	let base = { "base" : "." };
 
-	// Скрипты, которые нужно минифицировать
-	pump([
-		libFile,	// библиотеки
-		jsFile,		// весь js код
-		uglify(),	// минификация
-		gulp.dest(prodPath)
-	], callback);
+	// Оборачивает pump в промис
+	function pumpAsync(streams){
+		return new Promise((resolve, reject) => {
+			pump(streams, (err) => err ? reject(err) : resolve());
+		});
+	}
 
-	// Все остальные файлы игры
-	pump([
-		gulp.src(otherPaths, base),
-		indexFile,	// index.html с замененными путями к скриптам
-		gulp.dest(prodPath)
-	], callback);
+	Promise.all([
+		// Скрипты, которые нужно минифицировать
+		pumpAsync([
+			libFile,	// библиотеки
+			jsFile,		// весь js код
+			uglify(),	// минификация
+			gulp.dest(prodPath)
+		]),
+		// Все остальные файлы игры
+		pumpAsync([
+			gulp.src(otherPaths, base),
+			indexFile,	// index.html с замененными путями к скриптам
+			gulp.dest(prodPath)
+		])
+	])
+		// Хэши в именах файлов, после того как все файлы записаны
+		.then(() => hashFiles(path.join(prodPath, publicName)))
+		.then(() => callback(), callback);
 
 	// Документация и отчеты по коду
 	if(includeDocs){

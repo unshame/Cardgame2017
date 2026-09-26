@@ -1,21 +1,30 @@
-name: Deploy to Google App Engine
+name: Deploy
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: 'sinuous-crow-410507'
+  SERVER_URL: 'https://sinuous-crow-410507.ew.r.appspot.com/'
+  BUCKET: 'cardgame-2017'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     environment:
-      name: github-pages
-      url: https://unshame.github.io/Cardgame2017/
+      name: production
+      url: https://cardgame.olegshibaev.com/
 
     permissions:
       contents: 'read'
-      pages: 'write'
       id-token: 'write'
 
     steps:
@@ -26,21 +35,44 @@ jobs:
           node-version: 22.16.0
       - run: npm install
       - run: npm run build
-        env:
-          SERVER_URL: 'https://sinuous-crow-410507.ew.r.appspot.com/'
-
-      - uses: actions/configure-pages@v4
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: './prod/public'
-      - uses: actions/deploy-pages@v4
 
       - uses: google-github-actions/auth@v2
         with:
-          project_id: 'sinuous-crow-410507'
+          project_id: ${{ env.PROJECT_ID }}
           credentials_json: ${{ secrets.GCLOUD_ACCOUNT_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v2
 
       - uses: google-github-actions/deploy-appengine@v2
         with:
           working_directory: prod
           deliverables: app.yaml
+
+      - name: Upload hashed scripts and styles (immutable)
+        run: |
+          gcloud storage rsync prod/public/static "gs://${BUCKET}/static" \
+            --recursive \
+            --cache-control="public, max-age=31536000, immutable"
+
+      - name: Upload assets (1 day cache)
+        run: |
+          gcloud storage rsync prod/public/assets "gs://${BUCKET}/assets" \
+            --recursive \
+            --cache-control="public, max-age=86400"
+
+      - name: Upload docs
+        run: |
+          gcloud storage rsync prod/public/doc "gs://${BUCKET}/doc" \
+            --recursive \
+            --delete-unmatched-destination-objects \
+            --cache-control="no-cache"
+
+      - name: Upload favicon
+        run: |
+          gcloud storage cp prod/public/favicon.ico "gs://${BUCKET}/favicon.ico" \
+            --cache-control="public, max-age=86400"
+
+      - name: Upload index.html
+        run: |
+          gcloud storage cp prod/public/index.html "gs://${BUCKET}/index.html" \
+            --cache-control="no-cache"
